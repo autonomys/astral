@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -5,6 +7,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -3805,1245 +3808,6 @@ export type Dictionary_Spec_Versions_Stream_Cursor_Input = {
 export type Dictionary_Spec_Versions_Stream_Cursor_Value_Input = {
   block_height?: InputMaybe<Scalars['numeric']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "files.chunks" */
-export type Files_Chunks = {
-  __typename?: 'files_chunks';
-  _block_range: Scalars['int8range']['output'];
-  /** An object relationship */
-  cid?: Maybe<Files_Cids>;
-  data?: Maybe<Scalars['String']['output']>;
-  id: Scalars['String']['output'];
-  link_depth: Scalars['Int']['output'];
-  name?: Maybe<Scalars['String']['output']>;
-  size?: Maybe<Scalars['numeric']['output']>;
-  type: Scalars['String']['output'];
-  upload_options?: Maybe<Scalars['String']['output']>;
-  uuid: Scalars['uuid']['output'];
-};
-
-/** Boolean expression to filter rows from the table "files.chunks". All fields are combined with a logical 'AND'. */
-export type Files_Chunks_Bool_Exp = {
-  _and?: InputMaybe<Array<Files_Chunks_Bool_Exp>>;
-  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _not?: InputMaybe<Files_Chunks_Bool_Exp>;
-  _or?: InputMaybe<Array<Files_Chunks_Bool_Exp>>;
-  cid?: InputMaybe<Files_Cids_Bool_Exp>;
-  data?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  link_depth?: InputMaybe<Int_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-  size?: InputMaybe<Numeric_Comparison_Exp>;
-  type?: InputMaybe<String_Comparison_Exp>;
-  upload_options?: InputMaybe<String_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** Ordering options when selecting data from "files.chunks". */
-export type Files_Chunks_Order_By = {
-  _block_range?: InputMaybe<Order_By>;
-  cid?: InputMaybe<Files_Cids_Order_By>;
-  data?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  link_depth?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  size?: InputMaybe<Order_By>;
-  type?: InputMaybe<Order_By>;
-  upload_options?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "files.chunks" */
-export enum Files_Chunks_Select_Column {
-  /** column name */
-  BlockRange = '_block_range',
-  /** column name */
-  Data = 'data',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  LinkDepth = 'link_depth',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  Size = 'size',
-  /** column name */
-  Type = 'type',
-  /** column name */
-  UploadOptions = 'upload_options',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** Streaming cursor of the table "files_chunks" */
-export type Files_Chunks_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Files_Chunks_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Files_Chunks_Stream_Cursor_Value_Input = {
-  _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  data?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  link_depth?: InputMaybe<Scalars['Int']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  size?: InputMaybe<Scalars['numeric']['input']>;
-  type?: InputMaybe<Scalars['String']['input']>;
-  upload_options?: InputMaybe<Scalars['String']['input']>;
-  uuid?: InputMaybe<Scalars['uuid']['input']>;
-};
-
-/** columns and relationships of "files.cids" */
-export type Files_Cids = {
-  __typename?: 'files_cids';
-  _block_range: Scalars['int8range']['output'];
-  block_hash: Scalars['String']['output'];
-  block_height: Scalars['numeric']['output'];
-  /** An object relationship */
-  chunk?: Maybe<Files_Chunks>;
-  extrinsic_hash: Scalars['String']['output'];
-  extrinsic_id: Scalars['String']['output'];
-  id: Scalars['String']['output'];
-  index_in_block: Scalars['Int']['output'];
-  links: Scalars['jsonb']['output'];
-  timestamp: Scalars['timestamp']['output'];
-  uuid: Scalars['uuid']['output'];
-};
-
-
-/** columns and relationships of "files.cids" */
-export type Files_CidsLinksArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregated selection of "files.cids" */
-export type Files_Cids_Aggregate = {
-  __typename?: 'files_cids_aggregate';
-  aggregate?: Maybe<Files_Cids_Aggregate_Fields>;
-  nodes: Array<Files_Cids>;
-};
-
-/** aggregate fields of "files.cids" */
-export type Files_Cids_Aggregate_Fields = {
-  __typename?: 'files_cids_aggregate_fields';
-  avg?: Maybe<Files_Cids_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Files_Cids_Max_Fields>;
-  min?: Maybe<Files_Cids_Min_Fields>;
-  stddev?: Maybe<Files_Cids_Stddev_Fields>;
-  stddev_pop?: Maybe<Files_Cids_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Files_Cids_Stddev_Samp_Fields>;
-  sum?: Maybe<Files_Cids_Sum_Fields>;
-  var_pop?: Maybe<Files_Cids_Var_Pop_Fields>;
-  var_samp?: Maybe<Files_Cids_Var_Samp_Fields>;
-  variance?: Maybe<Files_Cids_Variance_Fields>;
-};
-
-
-/** aggregate fields of "files.cids" */
-export type Files_Cids_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Files_Cids_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Files_Cids_Avg_Fields = {
-  __typename?: 'files_cids_avg_fields';
-  block_height?: Maybe<Scalars['Float']['output']>;
-  index_in_block?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Boolean expression to filter rows from the table "files.cids". All fields are combined with a logical 'AND'. */
-export type Files_Cids_Bool_Exp = {
-  _and?: InputMaybe<Array<Files_Cids_Bool_Exp>>;
-  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _not?: InputMaybe<Files_Cids_Bool_Exp>;
-  _or?: InputMaybe<Array<Files_Cids_Bool_Exp>>;
-  block_hash?: InputMaybe<String_Comparison_Exp>;
-  block_height?: InputMaybe<Numeric_Comparison_Exp>;
-  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
-  extrinsic_hash?: InputMaybe<String_Comparison_Exp>;
-  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  index_in_block?: InputMaybe<Int_Comparison_Exp>;
-  links?: InputMaybe<Jsonb_Comparison_Exp>;
-  timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Files_Cids_Max_Fields = {
-  __typename?: 'files_cids_max_fields';
-  block_hash?: Maybe<Scalars['String']['output']>;
-  block_height?: Maybe<Scalars['numeric']['output']>;
-  extrinsic_hash?: Maybe<Scalars['String']['output']>;
-  extrinsic_id?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  index_in_block?: Maybe<Scalars['Int']['output']>;
-  timestamp?: Maybe<Scalars['timestamp']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** aggregate min on columns */
-export type Files_Cids_Min_Fields = {
-  __typename?: 'files_cids_min_fields';
-  block_hash?: Maybe<Scalars['String']['output']>;
-  block_height?: Maybe<Scalars['numeric']['output']>;
-  extrinsic_hash?: Maybe<Scalars['String']['output']>;
-  extrinsic_id?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  index_in_block?: Maybe<Scalars['Int']['output']>;
-  timestamp?: Maybe<Scalars['timestamp']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** Ordering options when selecting data from "files.cids". */
-export type Files_Cids_Order_By = {
-  _block_range?: InputMaybe<Order_By>;
-  block_hash?: InputMaybe<Order_By>;
-  block_height?: InputMaybe<Order_By>;
-  chunk?: InputMaybe<Files_Chunks_Order_By>;
-  extrinsic_hash?: InputMaybe<Order_By>;
-  extrinsic_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  index_in_block?: InputMaybe<Order_By>;
-  links?: InputMaybe<Order_By>;
-  timestamp?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "files.cids" */
-export enum Files_Cids_Select_Column {
-  /** column name */
-  BlockRange = '_block_range',
-  /** column name */
-  BlockHash = 'block_hash',
-  /** column name */
-  BlockHeight = 'block_height',
-  /** column name */
-  ExtrinsicHash = 'extrinsic_hash',
-  /** column name */
-  ExtrinsicId = 'extrinsic_id',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IndexInBlock = 'index_in_block',
-  /** column name */
-  Links = 'links',
-  /** column name */
-  Timestamp = 'timestamp',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** aggregate stddev on columns */
-export type Files_Cids_Stddev_Fields = {
-  __typename?: 'files_cids_stddev_fields';
-  block_height?: Maybe<Scalars['Float']['output']>;
-  index_in_block?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Files_Cids_Stddev_Pop_Fields = {
-  __typename?: 'files_cids_stddev_pop_fields';
-  block_height?: Maybe<Scalars['Float']['output']>;
-  index_in_block?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Files_Cids_Stddev_Samp_Fields = {
-  __typename?: 'files_cids_stddev_samp_fields';
-  block_height?: Maybe<Scalars['Float']['output']>;
-  index_in_block?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Streaming cursor of the table "files_cids" */
-export type Files_Cids_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Files_Cids_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Files_Cids_Stream_Cursor_Value_Input = {
-  _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  block_hash?: InputMaybe<Scalars['String']['input']>;
-  block_height?: InputMaybe<Scalars['numeric']['input']>;
-  extrinsic_hash?: InputMaybe<Scalars['String']['input']>;
-  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  index_in_block?: InputMaybe<Scalars['Int']['input']>;
-  links?: InputMaybe<Scalars['jsonb']['input']>;
-  timestamp?: InputMaybe<Scalars['timestamp']['input']>;
-  uuid?: InputMaybe<Scalars['uuid']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Files_Cids_Sum_Fields = {
-  __typename?: 'files_cids_sum_fields';
-  block_height?: Maybe<Scalars['numeric']['output']>;
-  index_in_block?: Maybe<Scalars['Int']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type Files_Cids_Var_Pop_Fields = {
-  __typename?: 'files_cids_var_pop_fields';
-  block_height?: Maybe<Scalars['Float']['output']>;
-  index_in_block?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Files_Cids_Var_Samp_Fields = {
-  __typename?: 'files_cids_var_samp_fields';
-  block_height?: Maybe<Scalars['Float']['output']>;
-  index_in_block?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Files_Cids_Variance_Fields = {
-  __typename?: 'files_cids_variance_fields';
-  block_height?: Maybe<Scalars['Float']['output']>;
-  index_in_block?: Maybe<Scalars['Float']['output']>;
-};
-
-/** columns and relationships of "files.file_cids" */
-export type Files_File_Cids = {
-  __typename?: 'files_file_cids';
-  _block_range: Scalars['int8range']['output'];
-  child_cid: Scalars['String']['output'];
-  /** An object relationship */
-  chunk?: Maybe<Files_Chunks>;
-  id: Scalars['String']['output'];
-  parent_cid: Scalars['String']['output'];
-  uuid: Scalars['uuid']['output'];
-};
-
-/** order by aggregate values of table "files.file_cids" */
-export type Files_File_Cids_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Files_File_Cids_Max_Order_By>;
-  min?: InputMaybe<Files_File_Cids_Min_Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "files.file_cids". All fields are combined with a logical 'AND'. */
-export type Files_File_Cids_Bool_Exp = {
-  _and?: InputMaybe<Array<Files_File_Cids_Bool_Exp>>;
-  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _not?: InputMaybe<Files_File_Cids_Bool_Exp>;
-  _or?: InputMaybe<Array<Files_File_Cids_Bool_Exp>>;
-  child_cid?: InputMaybe<String_Comparison_Exp>;
-  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  parent_cid?: InputMaybe<String_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** order by max() on columns of table "files.file_cids" */
-export type Files_File_Cids_Max_Order_By = {
-  child_cid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  parent_cid?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "files.file_cids" */
-export type Files_File_Cids_Min_Order_By = {
-  child_cid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  parent_cid?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** Ordering options when selecting data from "files.file_cids". */
-export type Files_File_Cids_Order_By = {
-  _block_range?: InputMaybe<Order_By>;
-  child_cid?: InputMaybe<Order_By>;
-  chunk?: InputMaybe<Files_Chunks_Order_By>;
-  id?: InputMaybe<Order_By>;
-  parent_cid?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "files.file_cids" */
-export enum Files_File_Cids_Select_Column {
-  /** column name */
-  BlockRange = '_block_range',
-  /** column name */
-  ChildCid = 'child_cid',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  ParentCid = 'parent_cid',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** Streaming cursor of the table "files_file_cids" */
-export type Files_File_Cids_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Files_File_Cids_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Files_File_Cids_Stream_Cursor_Value_Input = {
-  _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  child_cid?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  parent_cid?: InputMaybe<Scalars['String']['input']>;
-  uuid?: InputMaybe<Scalars['uuid']['input']>;
-};
-
-/** columns and relationships of "files.files" */
-export type Files_Files = {
-  __typename?: 'files_files';
-  _block_range: Scalars['int8range']['output'];
-  /** An object relationship */
-  chunk?: Maybe<Files_Chunks>;
-  /** An object relationship */
-  cid?: Maybe<Files_Cids>;
-  /** An array relationship */
-  file_cids: Array<Files_File_Cids>;
-  id: Scalars['String']['output'];
-  name?: Maybe<Scalars['String']['output']>;
-  size: Scalars['numeric']['output'];
-  uuid: Scalars['uuid']['output'];
-};
-
-
-/** columns and relationships of "files.files" */
-export type Files_FilesFile_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_File_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_File_Cids_Order_By>>;
-  where?: InputMaybe<Files_File_Cids_Bool_Exp>;
-};
-
-/** aggregated selection of "files.files" */
-export type Files_Files_Aggregate = {
-  __typename?: 'files_files_aggregate';
-  aggregate?: Maybe<Files_Files_Aggregate_Fields>;
-  nodes: Array<Files_Files>;
-};
-
-/** aggregate fields of "files.files" */
-export type Files_Files_Aggregate_Fields = {
-  __typename?: 'files_files_aggregate_fields';
-  avg?: Maybe<Files_Files_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Files_Files_Max_Fields>;
-  min?: Maybe<Files_Files_Min_Fields>;
-  stddev?: Maybe<Files_Files_Stddev_Fields>;
-  stddev_pop?: Maybe<Files_Files_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Files_Files_Stddev_Samp_Fields>;
-  sum?: Maybe<Files_Files_Sum_Fields>;
-  var_pop?: Maybe<Files_Files_Var_Pop_Fields>;
-  var_samp?: Maybe<Files_Files_Var_Samp_Fields>;
-  variance?: Maybe<Files_Files_Variance_Fields>;
-};
-
-
-/** aggregate fields of "files.files" */
-export type Files_Files_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Files_Files_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Files_Files_Avg_Fields = {
-  __typename?: 'files_files_avg_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Boolean expression to filter rows from the table "files.files". All fields are combined with a logical 'AND'. */
-export type Files_Files_Bool_Exp = {
-  _and?: InputMaybe<Array<Files_Files_Bool_Exp>>;
-  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _not?: InputMaybe<Files_Files_Bool_Exp>;
-  _or?: InputMaybe<Array<Files_Files_Bool_Exp>>;
-  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
-  cid?: InputMaybe<Files_Cids_Bool_Exp>;
-  file_cids?: InputMaybe<Files_File_Cids_Bool_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-  size?: InputMaybe<Numeric_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Files_Files_Max_Fields = {
-  __typename?: 'files_files_max_fields';
-  id?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  size?: Maybe<Scalars['numeric']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** aggregate min on columns */
-export type Files_Files_Min_Fields = {
-  __typename?: 'files_files_min_fields';
-  id?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  size?: Maybe<Scalars['numeric']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** Ordering options when selecting data from "files.files". */
-export type Files_Files_Order_By = {
-  _block_range?: InputMaybe<Order_By>;
-  chunk?: InputMaybe<Files_Chunks_Order_By>;
-  cid?: InputMaybe<Files_Cids_Order_By>;
-  file_cids_aggregate?: InputMaybe<Files_File_Cids_Aggregate_Order_By>;
-  id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  size?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "files.files" */
-export enum Files_Files_Select_Column {
-  /** column name */
-  BlockRange = '_block_range',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  Size = 'size',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** aggregate stddev on columns */
-export type Files_Files_Stddev_Fields = {
-  __typename?: 'files_files_stddev_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Files_Files_Stddev_Pop_Fields = {
-  __typename?: 'files_files_stddev_pop_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Files_Files_Stddev_Samp_Fields = {
-  __typename?: 'files_files_stddev_samp_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Streaming cursor of the table "files_files" */
-export type Files_Files_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Files_Files_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Files_Files_Stream_Cursor_Value_Input = {
-  _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  size?: InputMaybe<Scalars['numeric']['input']>;
-  uuid?: InputMaybe<Scalars['uuid']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Files_Files_Sum_Fields = {
-  __typename?: 'files_files_sum_fields';
-  size?: Maybe<Scalars['numeric']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type Files_Files_Var_Pop_Fields = {
-  __typename?: 'files_files_var_pop_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Files_Files_Var_Samp_Fields = {
-  __typename?: 'files_files_var_samp_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Files_Files_Variance_Fields = {
-  __typename?: 'files_files_variance_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** columns and relationships of "files.folder_cids" */
-export type Files_Folder_Cids = {
-  __typename?: 'files_folder_cids';
-  _block_range: Scalars['int8range']['output'];
-  child_cid: Scalars['String']['output'];
-  /** An object relationship */
-  chunk?: Maybe<Files_Chunks>;
-  id: Scalars['String']['output'];
-  parent_cid: Scalars['String']['output'];
-  uuid: Scalars['uuid']['output'];
-};
-
-/** aggregated selection of "files.folder_cids" */
-export type Files_Folder_Cids_Aggregate = {
-  __typename?: 'files_folder_cids_aggregate';
-  aggregate?: Maybe<Files_Folder_Cids_Aggregate_Fields>;
-  nodes: Array<Files_Folder_Cids>;
-};
-
-export type Files_Folder_Cids_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Files_Folder_Cids_Aggregate_Bool_Exp_Count>;
-};
-
-export type Files_Folder_Cids_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "files.folder_cids" */
-export type Files_Folder_Cids_Aggregate_Fields = {
-  __typename?: 'files_folder_cids_aggregate_fields';
-  count: Scalars['Int']['output'];
-  max?: Maybe<Files_Folder_Cids_Max_Fields>;
-  min?: Maybe<Files_Folder_Cids_Min_Fields>;
-};
-
-
-/** aggregate fields of "files.folder_cids" */
-export type Files_Folder_Cids_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** order by aggregate values of table "files.folder_cids" */
-export type Files_Folder_Cids_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Files_Folder_Cids_Max_Order_By>;
-  min?: InputMaybe<Files_Folder_Cids_Min_Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "files.folder_cids". All fields are combined with a logical 'AND'. */
-export type Files_Folder_Cids_Bool_Exp = {
-  _and?: InputMaybe<Array<Files_Folder_Cids_Bool_Exp>>;
-  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _not?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-  _or?: InputMaybe<Array<Files_Folder_Cids_Bool_Exp>>;
-  child_cid?: InputMaybe<String_Comparison_Exp>;
-  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  parent_cid?: InputMaybe<String_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Files_Folder_Cids_Max_Fields = {
-  __typename?: 'files_folder_cids_max_fields';
-  child_cid?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  parent_cid?: Maybe<Scalars['String']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** order by max() on columns of table "files.folder_cids" */
-export type Files_Folder_Cids_Max_Order_By = {
-  child_cid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  parent_cid?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Files_Folder_Cids_Min_Fields = {
-  __typename?: 'files_folder_cids_min_fields';
-  child_cid?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  parent_cid?: Maybe<Scalars['String']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** order by min() on columns of table "files.folder_cids" */
-export type Files_Folder_Cids_Min_Order_By = {
-  child_cid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  parent_cid?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** Ordering options when selecting data from "files.folder_cids". */
-export type Files_Folder_Cids_Order_By = {
-  _block_range?: InputMaybe<Order_By>;
-  child_cid?: InputMaybe<Order_By>;
-  chunk?: InputMaybe<Files_Chunks_Order_By>;
-  id?: InputMaybe<Order_By>;
-  parent_cid?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "files.folder_cids" */
-export enum Files_Folder_Cids_Select_Column {
-  /** column name */
-  BlockRange = '_block_range',
-  /** column name */
-  ChildCid = 'child_cid',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  ParentCid = 'parent_cid',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** Streaming cursor of the table "files_folder_cids" */
-export type Files_Folder_Cids_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Files_Folder_Cids_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Files_Folder_Cids_Stream_Cursor_Value_Input = {
-  _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  child_cid?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  parent_cid?: InputMaybe<Scalars['String']['input']>;
-  uuid?: InputMaybe<Scalars['uuid']['input']>;
-};
-
-/** columns and relationships of "files.folders" */
-export type Files_Folders = {
-  __typename?: 'files_folders';
-  _block_range: Scalars['int8range']['output'];
-  /** An object relationship */
-  chunk?: Maybe<Files_Chunks>;
-  /** An object relationship */
-  cid?: Maybe<Files_Cids>;
-  /** An array relationship */
-  folder_cids: Array<Files_Folder_Cids>;
-  /** An aggregate relationship */
-  folder_cids_aggregate: Files_Folder_Cids_Aggregate;
-  id: Scalars['String']['output'];
-  name?: Maybe<Scalars['String']['output']>;
-  size: Scalars['numeric']['output'];
-  uuid: Scalars['uuid']['output'];
-};
-
-
-/** columns and relationships of "files.folders" */
-export type Files_FoldersFolder_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
-  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-};
-
-
-/** columns and relationships of "files.folders" */
-export type Files_FoldersFolder_Cids_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
-  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-};
-
-/** aggregated selection of "files.folders" */
-export type Files_Folders_Aggregate = {
-  __typename?: 'files_folders_aggregate';
-  aggregate?: Maybe<Files_Folders_Aggregate_Fields>;
-  nodes: Array<Files_Folders>;
-};
-
-/** aggregate fields of "files.folders" */
-export type Files_Folders_Aggregate_Fields = {
-  __typename?: 'files_folders_aggregate_fields';
-  avg?: Maybe<Files_Folders_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Files_Folders_Max_Fields>;
-  min?: Maybe<Files_Folders_Min_Fields>;
-  stddev?: Maybe<Files_Folders_Stddev_Fields>;
-  stddev_pop?: Maybe<Files_Folders_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Files_Folders_Stddev_Samp_Fields>;
-  sum?: Maybe<Files_Folders_Sum_Fields>;
-  var_pop?: Maybe<Files_Folders_Var_Pop_Fields>;
-  var_samp?: Maybe<Files_Folders_Var_Samp_Fields>;
-  variance?: Maybe<Files_Folders_Variance_Fields>;
-};
-
-
-/** aggregate fields of "files.folders" */
-export type Files_Folders_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Files_Folders_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Files_Folders_Avg_Fields = {
-  __typename?: 'files_folders_avg_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Boolean expression to filter rows from the table "files.folders". All fields are combined with a logical 'AND'. */
-export type Files_Folders_Bool_Exp = {
-  _and?: InputMaybe<Array<Files_Folders_Bool_Exp>>;
-  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _not?: InputMaybe<Files_Folders_Bool_Exp>;
-  _or?: InputMaybe<Array<Files_Folders_Bool_Exp>>;
-  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
-  cid?: InputMaybe<Files_Cids_Bool_Exp>;
-  folder_cids?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-  folder_cids_aggregate?: InputMaybe<Files_Folder_Cids_Aggregate_Bool_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-  size?: InputMaybe<Numeric_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Files_Folders_Max_Fields = {
-  __typename?: 'files_folders_max_fields';
-  id?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  size?: Maybe<Scalars['numeric']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** aggregate min on columns */
-export type Files_Folders_Min_Fields = {
-  __typename?: 'files_folders_min_fields';
-  id?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  size?: Maybe<Scalars['numeric']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** Ordering options when selecting data from "files.folders". */
-export type Files_Folders_Order_By = {
-  _block_range?: InputMaybe<Order_By>;
-  chunk?: InputMaybe<Files_Chunks_Order_By>;
-  cid?: InputMaybe<Files_Cids_Order_By>;
-  folder_cids_aggregate?: InputMaybe<Files_Folder_Cids_Aggregate_Order_By>;
-  id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  size?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "files.folders" */
-export enum Files_Folders_Select_Column {
-  /** column name */
-  BlockRange = '_block_range',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  Size = 'size',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** aggregate stddev on columns */
-export type Files_Folders_Stddev_Fields = {
-  __typename?: 'files_folders_stddev_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Files_Folders_Stddev_Pop_Fields = {
-  __typename?: 'files_folders_stddev_pop_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Files_Folders_Stddev_Samp_Fields = {
-  __typename?: 'files_folders_stddev_samp_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Streaming cursor of the table "files_folders" */
-export type Files_Folders_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Files_Folders_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Files_Folders_Stream_Cursor_Value_Input = {
-  _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  size?: InputMaybe<Scalars['numeric']['input']>;
-  uuid?: InputMaybe<Scalars['uuid']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Files_Folders_Sum_Fields = {
-  __typename?: 'files_folders_sum_fields';
-  size?: Maybe<Scalars['numeric']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type Files_Folders_Var_Pop_Fields = {
-  __typename?: 'files_folders_var_pop_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Files_Folders_Var_Samp_Fields = {
-  __typename?: 'files_folders_var_samp_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Files_Folders_Variance_Fields = {
-  __typename?: 'files_folders_variance_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** columns and relationships of "files.metadata" */
-export type Files_Metadata = {
-  __typename?: 'files_metadata';
-  _block_range: Scalars['int8range']['output'];
-  /** An object relationship */
-  chunk?: Maybe<Files_Chunks>;
-  /** An object relationship */
-  cid?: Maybe<Files_Cids>;
-  id: Scalars['String']['output'];
-  /** An array relationship */
-  metadata_cids: Array<Files_Metadata_Cids>;
-  /** An aggregate relationship */
-  metadata_cids_aggregate: Files_Metadata_Cids_Aggregate;
-  name?: Maybe<Scalars['String']['output']>;
-  size: Scalars['numeric']['output'];
-  uuid: Scalars['uuid']['output'];
-};
-
-
-/** columns and relationships of "files.metadata" */
-export type Files_MetadataMetadata_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-};
-
-
-/** columns and relationships of "files.metadata" */
-export type Files_MetadataMetadata_Cids_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-};
-
-/** aggregated selection of "files.metadata" */
-export type Files_Metadata_Aggregate = {
-  __typename?: 'files_metadata_aggregate';
-  aggregate?: Maybe<Files_Metadata_Aggregate_Fields>;
-  nodes: Array<Files_Metadata>;
-};
-
-/** aggregate fields of "files.metadata" */
-export type Files_Metadata_Aggregate_Fields = {
-  __typename?: 'files_metadata_aggregate_fields';
-  avg?: Maybe<Files_Metadata_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Files_Metadata_Max_Fields>;
-  min?: Maybe<Files_Metadata_Min_Fields>;
-  stddev?: Maybe<Files_Metadata_Stddev_Fields>;
-  stddev_pop?: Maybe<Files_Metadata_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Files_Metadata_Stddev_Samp_Fields>;
-  sum?: Maybe<Files_Metadata_Sum_Fields>;
-  var_pop?: Maybe<Files_Metadata_Var_Pop_Fields>;
-  var_samp?: Maybe<Files_Metadata_Var_Samp_Fields>;
-  variance?: Maybe<Files_Metadata_Variance_Fields>;
-};
-
-
-/** aggregate fields of "files.metadata" */
-export type Files_Metadata_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Files_Metadata_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Files_Metadata_Avg_Fields = {
-  __typename?: 'files_metadata_avg_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Boolean expression to filter rows from the table "files.metadata". All fields are combined with a logical 'AND'. */
-export type Files_Metadata_Bool_Exp = {
-  _and?: InputMaybe<Array<Files_Metadata_Bool_Exp>>;
-  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _not?: InputMaybe<Files_Metadata_Bool_Exp>;
-  _or?: InputMaybe<Array<Files_Metadata_Bool_Exp>>;
-  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
-  cid?: InputMaybe<Files_Cids_Bool_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  metadata_cids?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-  metadata_cids_aggregate?: InputMaybe<Files_Metadata_Cids_Aggregate_Bool_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-  size?: InputMaybe<Numeric_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** columns and relationships of "files.metadata_cids" */
-export type Files_Metadata_Cids = {
-  __typename?: 'files_metadata_cids';
-  _block_range: Scalars['int8range']['output'];
-  child_cid: Scalars['String']['output'];
-  /** An object relationship */
-  chunk?: Maybe<Files_Chunks>;
-  id: Scalars['String']['output'];
-  parent_cid: Scalars['String']['output'];
-  uuid: Scalars['uuid']['output'];
-};
-
-/** aggregated selection of "files.metadata_cids" */
-export type Files_Metadata_Cids_Aggregate = {
-  __typename?: 'files_metadata_cids_aggregate';
-  aggregate?: Maybe<Files_Metadata_Cids_Aggregate_Fields>;
-  nodes: Array<Files_Metadata_Cids>;
-};
-
-export type Files_Metadata_Cids_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Files_Metadata_Cids_Aggregate_Bool_Exp_Count>;
-};
-
-export type Files_Metadata_Cids_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "files.metadata_cids" */
-export type Files_Metadata_Cids_Aggregate_Fields = {
-  __typename?: 'files_metadata_cids_aggregate_fields';
-  count: Scalars['Int']['output'];
-  max?: Maybe<Files_Metadata_Cids_Max_Fields>;
-  min?: Maybe<Files_Metadata_Cids_Min_Fields>;
-};
-
-
-/** aggregate fields of "files.metadata_cids" */
-export type Files_Metadata_Cids_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** order by aggregate values of table "files.metadata_cids" */
-export type Files_Metadata_Cids_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Files_Metadata_Cids_Max_Order_By>;
-  min?: InputMaybe<Files_Metadata_Cids_Min_Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "files.metadata_cids". All fields are combined with a logical 'AND'. */
-export type Files_Metadata_Cids_Bool_Exp = {
-  _and?: InputMaybe<Array<Files_Metadata_Cids_Bool_Exp>>;
-  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _not?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-  _or?: InputMaybe<Array<Files_Metadata_Cids_Bool_Exp>>;
-  child_cid?: InputMaybe<String_Comparison_Exp>;
-  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  parent_cid?: InputMaybe<String_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Files_Metadata_Cids_Max_Fields = {
-  __typename?: 'files_metadata_cids_max_fields';
-  child_cid?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  parent_cid?: Maybe<Scalars['String']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** order by max() on columns of table "files.metadata_cids" */
-export type Files_Metadata_Cids_Max_Order_By = {
-  child_cid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  parent_cid?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Files_Metadata_Cids_Min_Fields = {
-  __typename?: 'files_metadata_cids_min_fields';
-  child_cid?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  parent_cid?: Maybe<Scalars['String']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** order by min() on columns of table "files.metadata_cids" */
-export type Files_Metadata_Cids_Min_Order_By = {
-  child_cid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  parent_cid?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** Ordering options when selecting data from "files.metadata_cids". */
-export type Files_Metadata_Cids_Order_By = {
-  _block_range?: InputMaybe<Order_By>;
-  child_cid?: InputMaybe<Order_By>;
-  chunk?: InputMaybe<Files_Chunks_Order_By>;
-  id?: InputMaybe<Order_By>;
-  parent_cid?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "files.metadata_cids" */
-export enum Files_Metadata_Cids_Select_Column {
-  /** column name */
-  BlockRange = '_block_range',
-  /** column name */
-  ChildCid = 'child_cid',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  ParentCid = 'parent_cid',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** Streaming cursor of the table "files_metadata_cids" */
-export type Files_Metadata_Cids_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Files_Metadata_Cids_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Files_Metadata_Cids_Stream_Cursor_Value_Input = {
-  _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  child_cid?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  parent_cid?: InputMaybe<Scalars['String']['input']>;
-  uuid?: InputMaybe<Scalars['uuid']['input']>;
-};
-
-/** aggregate max on columns */
-export type Files_Metadata_Max_Fields = {
-  __typename?: 'files_metadata_max_fields';
-  id?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  size?: Maybe<Scalars['numeric']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** aggregate min on columns */
-export type Files_Metadata_Min_Fields = {
-  __typename?: 'files_metadata_min_fields';
-  id?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  size?: Maybe<Scalars['numeric']['output']>;
-  uuid?: Maybe<Scalars['uuid']['output']>;
-};
-
-/** Ordering options when selecting data from "files.metadata". */
-export type Files_Metadata_Order_By = {
-  _block_range?: InputMaybe<Order_By>;
-  chunk?: InputMaybe<Files_Chunks_Order_By>;
-  cid?: InputMaybe<Files_Cids_Order_By>;
-  id?: InputMaybe<Order_By>;
-  metadata_cids_aggregate?: InputMaybe<Files_Metadata_Cids_Aggregate_Order_By>;
-  name?: InputMaybe<Order_By>;
-  size?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "files.metadata" */
-export enum Files_Metadata_Select_Column {
-  /** column name */
-  BlockRange = '_block_range',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  Size = 'size',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** aggregate stddev on columns */
-export type Files_Metadata_Stddev_Fields = {
-  __typename?: 'files_metadata_stddev_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Files_Metadata_Stddev_Pop_Fields = {
-  __typename?: 'files_metadata_stddev_pop_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Files_Metadata_Stddev_Samp_Fields = {
-  __typename?: 'files_metadata_stddev_samp_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Streaming cursor of the table "files_metadata" */
-export type Files_Metadata_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Files_Metadata_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Files_Metadata_Stream_Cursor_Value_Input = {
-  _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  size?: InputMaybe<Scalars['numeric']['input']>;
-  uuid?: InputMaybe<Scalars['uuid']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Files_Metadata_Sum_Fields = {
-  __typename?: 'files_metadata_sum_fields';
-  size?: Maybe<Scalars['numeric']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type Files_Metadata_Var_Pop_Fields = {
-  __typename?: 'files_metadata_var_pop_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Files_Metadata_Var_Samp_Fields = {
-  __typename?: 'files_metadata_var_samp_fields';
-  size?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Files_Metadata_Variance_Fields = {
-  __typename?: 'files_metadata_variance_fields';
-  size?: Maybe<Scalars['Float']['output']>;
 };
 
 /** Boolean expression to compare columns of type "int8range". All fields are combined with logical 'AND'. */
@@ -9818,50 +8582,6 @@ export type Query_Root = {
   dictionary_spec_versions: Array<Dictionary_Spec_Versions>;
   /** fetch data from the table: "dictionary.spec_versions" using primary key columns */
   dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
-  /** fetch data from the table: "files.chunks" */
-  files_chunks: Array<Files_Chunks>;
-  /** fetch data from the table: "files.chunks" using primary key columns */
-  files_chunks_by_pk?: Maybe<Files_Chunks>;
-  /** fetch data from the table: "files.cids" */
-  files_cids: Array<Files_Cids>;
-  /** fetch aggregated fields from the table: "files.cids" */
-  files_cids_aggregate: Files_Cids_Aggregate;
-  /** fetch data from the table: "files.cids" using primary key columns */
-  files_cids_by_pk?: Maybe<Files_Cids>;
-  /** fetch data from the table: "files.file_cids" */
-  files_file_cids: Array<Files_File_Cids>;
-  /** fetch data from the table: "files.file_cids" using primary key columns */
-  files_file_cids_by_pk?: Maybe<Files_File_Cids>;
-  /** fetch data from the table: "files.files" */
-  files_files: Array<Files_Files>;
-  /** fetch aggregated fields from the table: "files.files" */
-  files_files_aggregate: Files_Files_Aggregate;
-  /** fetch data from the table: "files.files" using primary key columns */
-  files_files_by_pk?: Maybe<Files_Files>;
-  /** fetch data from the table: "files.folder_cids" */
-  files_folder_cids: Array<Files_Folder_Cids>;
-  /** fetch aggregated fields from the table: "files.folder_cids" */
-  files_folder_cids_aggregate: Files_Folder_Cids_Aggregate;
-  /** fetch data from the table: "files.folder_cids" using primary key columns */
-  files_folder_cids_by_pk?: Maybe<Files_Folder_Cids>;
-  /** fetch data from the table: "files.folders" */
-  files_folders: Array<Files_Folders>;
-  /** fetch aggregated fields from the table: "files.folders" */
-  files_folders_aggregate: Files_Folders_Aggregate;
-  /** fetch data from the table: "files.folders" using primary key columns */
-  files_folders_by_pk?: Maybe<Files_Folders>;
-  /** fetch data from the table: "files.metadata" */
-  files_metadata: Array<Files_Metadata>;
-  /** fetch aggregated fields from the table: "files.metadata" */
-  files_metadata_aggregate: Files_Metadata_Aggregate;
-  /** fetch data from the table: "files.metadata" using primary key columns */
-  files_metadata_by_pk?: Maybe<Files_Metadata>;
-  /** fetch data from the table: "files.metadata_cids" */
-  files_metadata_cids: Array<Files_Metadata_Cids>;
-  /** fetch aggregated fields from the table: "files.metadata_cids" */
-  files_metadata_cids_aggregate: Files_Metadata_Cids_Aggregate;
-  /** fetch data from the table: "files.metadata_cids" using primary key columns */
-  files_metadata_cids_by_pk?: Maybe<Files_Metadata_Cids>;
   /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
   leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
   /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
@@ -10388,172 +9108,6 @@ export type Query_RootDictionary_Spec_VersionsArgs = {
 
 export type Query_RootDictionary_Spec_Versions_By_PkArgs = {
   id: Scalars['String']['input'];
-};
-
-
-export type Query_RootFiles_ChunksArgs = {
-  distinct_on?: InputMaybe<Array<Files_Chunks_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Chunks_Order_By>>;
-  where?: InputMaybe<Files_Chunks_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Chunks_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Query_RootFiles_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Cids_Order_By>>;
-  where?: InputMaybe<Files_Cids_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Cids_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Cids_Order_By>>;
-  where?: InputMaybe<Files_Cids_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Cids_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Query_RootFiles_File_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_File_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_File_Cids_Order_By>>;
-  where?: InputMaybe<Files_File_Cids_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_File_Cids_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Query_RootFiles_FilesArgs = {
-  distinct_on?: InputMaybe<Array<Files_Files_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Files_Order_By>>;
-  where?: InputMaybe<Files_Files_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Files_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Files_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Files_Order_By>>;
-  where?: InputMaybe<Files_Files_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Files_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Query_RootFiles_Folder_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
-  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Folder_Cids_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
-  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Folder_Cids_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Query_RootFiles_FoldersArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folders_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folders_Order_By>>;
-  where?: InputMaybe<Files_Folders_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Folders_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folders_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folders_Order_By>>;
-  where?: InputMaybe<Files_Folders_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Folders_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Query_RootFiles_MetadataArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Metadata_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Metadata_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Query_RootFiles_Metadata_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Metadata_Cids_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-};
-
-
-export type Query_RootFiles_Metadata_Cids_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
 };
 
 
@@ -15805,66 +14359,6 @@ export type Subscription_Root = {
   dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
   /** fetch data from the table in a streaming manner: "dictionary.spec_versions" */
   dictionary_spec_versions_stream: Array<Dictionary_Spec_Versions>;
-  /** fetch data from the table: "files.chunks" */
-  files_chunks: Array<Files_Chunks>;
-  /** fetch data from the table: "files.chunks" using primary key columns */
-  files_chunks_by_pk?: Maybe<Files_Chunks>;
-  /** fetch data from the table in a streaming manner: "files.chunks" */
-  files_chunks_stream: Array<Files_Chunks>;
-  /** fetch data from the table: "files.cids" */
-  files_cids: Array<Files_Cids>;
-  /** fetch aggregated fields from the table: "files.cids" */
-  files_cids_aggregate: Files_Cids_Aggregate;
-  /** fetch data from the table: "files.cids" using primary key columns */
-  files_cids_by_pk?: Maybe<Files_Cids>;
-  /** fetch data from the table in a streaming manner: "files.cids" */
-  files_cids_stream: Array<Files_Cids>;
-  /** fetch data from the table: "files.file_cids" */
-  files_file_cids: Array<Files_File_Cids>;
-  /** fetch data from the table: "files.file_cids" using primary key columns */
-  files_file_cids_by_pk?: Maybe<Files_File_Cids>;
-  /** fetch data from the table in a streaming manner: "files.file_cids" */
-  files_file_cids_stream: Array<Files_File_Cids>;
-  /** fetch data from the table: "files.files" */
-  files_files: Array<Files_Files>;
-  /** fetch aggregated fields from the table: "files.files" */
-  files_files_aggregate: Files_Files_Aggregate;
-  /** fetch data from the table: "files.files" using primary key columns */
-  files_files_by_pk?: Maybe<Files_Files>;
-  /** fetch data from the table in a streaming manner: "files.files" */
-  files_files_stream: Array<Files_Files>;
-  /** fetch data from the table: "files.folder_cids" */
-  files_folder_cids: Array<Files_Folder_Cids>;
-  /** fetch aggregated fields from the table: "files.folder_cids" */
-  files_folder_cids_aggregate: Files_Folder_Cids_Aggregate;
-  /** fetch data from the table: "files.folder_cids" using primary key columns */
-  files_folder_cids_by_pk?: Maybe<Files_Folder_Cids>;
-  /** fetch data from the table in a streaming manner: "files.folder_cids" */
-  files_folder_cids_stream: Array<Files_Folder_Cids>;
-  /** fetch data from the table: "files.folders" */
-  files_folders: Array<Files_Folders>;
-  /** fetch aggregated fields from the table: "files.folders" */
-  files_folders_aggregate: Files_Folders_Aggregate;
-  /** fetch data from the table: "files.folders" using primary key columns */
-  files_folders_by_pk?: Maybe<Files_Folders>;
-  /** fetch data from the table in a streaming manner: "files.folders" */
-  files_folders_stream: Array<Files_Folders>;
-  /** fetch data from the table: "files.metadata" */
-  files_metadata: Array<Files_Metadata>;
-  /** fetch aggregated fields from the table: "files.metadata" */
-  files_metadata_aggregate: Files_Metadata_Aggregate;
-  /** fetch data from the table: "files.metadata" using primary key columns */
-  files_metadata_by_pk?: Maybe<Files_Metadata>;
-  /** fetch data from the table: "files.metadata_cids" */
-  files_metadata_cids: Array<Files_Metadata_Cids>;
-  /** fetch aggregated fields from the table: "files.metadata_cids" */
-  files_metadata_cids_aggregate: Files_Metadata_Cids_Aggregate;
-  /** fetch data from the table: "files.metadata_cids" using primary key columns */
-  files_metadata_cids_by_pk?: Maybe<Files_Metadata_Cids>;
-  /** fetch data from the table in a streaming manner: "files.metadata_cids" */
-  files_metadata_cids_stream: Array<Files_Metadata_Cids>;
-  /** fetch data from the table in a streaming manner: "files.metadata" */
-  files_metadata_stream: Array<Files_Metadata>;
   /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
   leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
   /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
@@ -16570,228 +15064,6 @@ export type Subscription_RootDictionary_Spec_Versions_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Dictionary_Spec_Versions_Stream_Cursor_Input>>;
   where?: InputMaybe<Dictionary_Spec_Versions_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_ChunksArgs = {
-  distinct_on?: InputMaybe<Array<Files_Chunks_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Chunks_Order_By>>;
-  where?: InputMaybe<Files_Chunks_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Chunks_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Subscription_RootFiles_Chunks_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Files_Chunks_Stream_Cursor_Input>>;
-  where?: InputMaybe<Files_Chunks_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Cids_Order_By>>;
-  where?: InputMaybe<Files_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Cids_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Cids_Order_By>>;
-  where?: InputMaybe<Files_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Cids_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Subscription_RootFiles_Cids_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Files_Cids_Stream_Cursor_Input>>;
-  where?: InputMaybe<Files_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_File_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_File_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_File_Cids_Order_By>>;
-  where?: InputMaybe<Files_File_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_File_Cids_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Subscription_RootFiles_File_Cids_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Files_File_Cids_Stream_Cursor_Input>>;
-  where?: InputMaybe<Files_File_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_FilesArgs = {
-  distinct_on?: InputMaybe<Array<Files_Files_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Files_Order_By>>;
-  where?: InputMaybe<Files_Files_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Files_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Files_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Files_Order_By>>;
-  where?: InputMaybe<Files_Files_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Files_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Subscription_RootFiles_Files_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Files_Files_Stream_Cursor_Input>>;
-  where?: InputMaybe<Files_Files_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Folder_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
-  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Folder_Cids_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
-  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Folder_Cids_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Subscription_RootFiles_Folder_Cids_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Files_Folder_Cids_Stream_Cursor_Input>>;
-  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_FoldersArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folders_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folders_Order_By>>;
-  where?: InputMaybe<Files_Folders_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Folders_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Folders_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Folders_Order_By>>;
-  where?: InputMaybe<Files_Folders_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Folders_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Subscription_RootFiles_Folders_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Files_Folders_Stream_Cursor_Input>>;
-  where?: InputMaybe<Files_Folders_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_MetadataArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Metadata_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Metadata_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Subscription_RootFiles_Metadata_CidsArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Metadata_Cids_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
-  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Metadata_Cids_By_PkArgs = {
-  uuid: Scalars['uuid']['input'];
-};
-
-
-export type Subscription_RootFiles_Metadata_Cids_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Files_Metadata_Cids_Stream_Cursor_Input>>;
-  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
-};
-
-
-export type Subscription_RootFiles_Metadata_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Files_Metadata_Stream_Cursor_Input>>;
-  where?: InputMaybe<Files_Metadata_Bool_Exp>;
 };
 
 
@@ -17888,13 +16160,26 @@ export type ExtrinsicsByHashQueryVariables = Exact<{
 
 export type ExtrinsicsByHashQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, index_in_block: number, success: boolean, name: string, nonce: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }> };
 
-export type HomeQueryQueryVariables = Exact<{
+export type HomeCardsQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HomeCardsQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', height: any, blockchain_size: any, space_pledged: any }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
+
+export type HomeBlocksQueryQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
 }>;
 
 
-export type HomeQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, hash: string, height: any, timestamp: any, state_root: string, blockchain_size: any, space_pledged: any, extrinsics_count: number, events_count: number }>, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, success: boolean, index_in_block: number, timestamp: any, block_height: any, name: string }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, accountsWithBalanceCount: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, signedExtrinsics: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
+export type HomeBlocksQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, extrinsics_count: number, events_count: number }> };
+
+export type HomeExtrinsicsQueryQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+}>;
+
+
+export type HomeExtrinsicsQueryQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, name: string, timestamp: any, success: boolean }> };
 
 export type LogsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -18274,3 +16559,3855 @@ export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LastBlockQuery = { __typename?: 'query_root', lastBlock: Array<{ __typename?: 'consensus_blocks', height: any }> };
+
+
+export const AccountsDocument = gql`
+    query Accounts($limit: Int!, $offset: Int, $orderBy: [consensus_accounts_order_by!]!, $where: consensus_accounts_bool_exp) {
+  consensus_accounts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  consensus_accounts(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    nonce
+    free
+    reserved
+    total
+    createdAt: created_at
+    updatedAt: updated_at
+    extrinsicsCount: extrinsics_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAccountsQuery__
+ *
+ * To run a query within a React component, call `useAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountsQuery(baseOptions: Apollo.QueryHookOptions<AccountsQuery, AccountsQueryVariables> & ({ variables: AccountsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountsQuery, AccountsQueryVariables>(AccountsDocument, options);
+      }
+export function useAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountsQuery, AccountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountsQuery, AccountsQueryVariables>(AccountsDocument, options);
+        }
+export function useAccountsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountsQuery, AccountsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountsQuery, AccountsQueryVariables>(AccountsDocument, options);
+        }
+export type AccountsQueryHookResult = ReturnType<typeof useAccountsQuery>;
+export type AccountsLazyQueryHookResult = ReturnType<typeof useAccountsLazyQuery>;
+export type AccountsSuspenseQueryHookResult = ReturnType<typeof useAccountsSuspenseQuery>;
+export type AccountsQueryResult = Apollo.QueryResult<AccountsQuery, AccountsQueryVariables>;
+export const AccountByIdDocument = gql`
+    query AccountById($accountId: String!) {
+  consensus_account_histories(
+    where: {id: {_eq: $accountId}}
+    limit: 1
+    order_by: {_block_range: desc}
+  ) {
+    id
+    free
+    reserved
+    total
+    nonce
+  }
+  consensus_rewards(
+    limit: 10
+    order_by: {block_height: desc}
+    where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
+  ) {
+    id
+    blockHeight: block_height
+    rewardType: reward_type
+    amount
+    timestamp
+  }
+}
+    `;
+
+/**
+ * __useAccountByIdQuery__
+ *
+ * To run a query within a React component, call `useAccountByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountByIdQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useAccountByIdQuery(baseOptions: Apollo.QueryHookOptions<AccountByIdQuery, AccountByIdQueryVariables> & ({ variables: AccountByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountByIdQuery, AccountByIdQueryVariables>(AccountByIdDocument, options);
+      }
+export function useAccountByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountByIdQuery, AccountByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountByIdQuery, AccountByIdQueryVariables>(AccountByIdDocument, options);
+        }
+export function useAccountByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountByIdQuery, AccountByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountByIdQuery, AccountByIdQueryVariables>(AccountByIdDocument, options);
+        }
+export type AccountByIdQueryHookResult = ReturnType<typeof useAccountByIdQuery>;
+export type AccountByIdLazyQueryHookResult = ReturnType<typeof useAccountByIdLazyQuery>;
+export type AccountByIdSuspenseQueryHookResult = ReturnType<typeof useAccountByIdSuspenseQuery>;
+export type AccountByIdQueryResult = Apollo.QueryResult<AccountByIdQuery, AccountByIdQueryVariables>;
+export const LatestRewardsWeekDocument = gql`
+    query LatestRewardsWeek($accountId: String!, $timestampComparison: timestamp_comparison_exp!) {
+  consensus_rewards(
+    limit: 500
+    order_by: {block_height: desc}
+    where: {timestamp: $timestampComparison, account_id: {_eq: $accountId}, amount: {_gt: 0}}
+  ) {
+    id
+    block_height
+    index_in_block
+    reward_type
+    amount
+    timestamp
+  }
+}
+    `;
+
+/**
+ * __useLatestRewardsWeekQuery__
+ *
+ * To run a query within a React component, call `useLatestRewardsWeekQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestRewardsWeekQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestRewardsWeekQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *      timestampComparison: // value for 'timestampComparison'
+ *   },
+ * });
+ */
+export function useLatestRewardsWeekQuery(baseOptions: Apollo.QueryHookOptions<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables> & ({ variables: LatestRewardsWeekQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>(LatestRewardsWeekDocument, options);
+      }
+export function useLatestRewardsWeekLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>(LatestRewardsWeekDocument, options);
+        }
+export function useLatestRewardsWeekSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>(LatestRewardsWeekDocument, options);
+        }
+export type LatestRewardsWeekQueryHookResult = ReturnType<typeof useLatestRewardsWeekQuery>;
+export type LatestRewardsWeekLazyQueryHookResult = ReturnType<typeof useLatestRewardsWeekLazyQuery>;
+export type LatestRewardsWeekSuspenseQueryHookResult = ReturnType<typeof useLatestRewardsWeekSuspenseQuery>;
+export type LatestRewardsWeekQueryResult = Apollo.QueryResult<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>;
+export const RewardsListDocument = gql`
+    query RewardsList($accountId: String!, $limit: Int!, $offset: Int, $sortBy: [consensus_rewards_order_by!]!) {
+  consensus_rewards_aggregate(
+    where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  consensus_rewards(
+    order_by: $sortBy
+    limit: $limit
+    offset: $offset
+    where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
+  ) {
+    id
+    block_height
+    index_in_block
+    reward_type
+    amount
+    timestamp
+    block {
+      hash
+      id
+      height
+    }
+    account {
+      id
+      free
+      reserved
+      total
+      updated_at
+    }
+  }
+}
+    `;
+
+/**
+ * __useRewardsListQuery__
+ *
+ * To run a query within a React component, call `useRewardsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRewardsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRewardsListQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      sortBy: // value for 'sortBy'
+ *   },
+ * });
+ */
+export function useRewardsListQuery(baseOptions: Apollo.QueryHookOptions<RewardsListQuery, RewardsListQueryVariables> & ({ variables: RewardsListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RewardsListQuery, RewardsListQueryVariables>(RewardsListDocument, options);
+      }
+export function useRewardsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RewardsListQuery, RewardsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RewardsListQuery, RewardsListQueryVariables>(RewardsListDocument, options);
+        }
+export function useRewardsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<RewardsListQuery, RewardsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RewardsListQuery, RewardsListQueryVariables>(RewardsListDocument, options);
+        }
+export type RewardsListQueryHookResult = ReturnType<typeof useRewardsListQuery>;
+export type RewardsListLazyQueryHookResult = ReturnType<typeof useRewardsListLazyQuery>;
+export type RewardsListSuspenseQueryHookResult = ReturnType<typeof useRewardsListSuspenseQuery>;
+export type RewardsListQueryResult = Apollo.QueryResult<RewardsListQuery, RewardsListQueryVariables>;
+export const ExtrinsicsByAccountIdDocument = gql`
+    query ExtrinsicsByAccountId($limit: Int!, $offset: Int, $where: consensus_extrinsics_bool_exp, $orderBy: [consensus_extrinsics_order_by!]!) {
+  consensus_extrinsics_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  consensus_extrinsics(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sort_id
+    hash
+    name
+    success
+    block_height
+    timestamp
+    index_in_block
+  }
+}
+    `;
+
+/**
+ * __useExtrinsicsByAccountIdQuery__
+ *
+ * To run a query within a React component, call `useExtrinsicsByAccountIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsByAccountIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtrinsicsByAccountIdQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      where: // value for 'where'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useExtrinsicsByAccountIdQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables> & ({ variables: ExtrinsicsByAccountIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables>(ExtrinsicsByAccountIdDocument, options);
+      }
+export function useExtrinsicsByAccountIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables>(ExtrinsicsByAccountIdDocument, options);
+        }
+export function useExtrinsicsByAccountIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables>(ExtrinsicsByAccountIdDocument, options);
+        }
+export type ExtrinsicsByAccountIdQueryHookResult = ReturnType<typeof useExtrinsicsByAccountIdQuery>;
+export type ExtrinsicsByAccountIdLazyQueryHookResult = ReturnType<typeof useExtrinsicsByAccountIdLazyQuery>;
+export type ExtrinsicsByAccountIdSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByAccountIdSuspenseQuery>;
+export type ExtrinsicsByAccountIdQueryResult = Apollo.QueryResult<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables>;
+export const TransfersByAccountIdDocument = gql`
+    query TransfersByAccountId($limit: Int!, $offset: Int, $where: consensus_transfers_bool_exp, $orderBy: [consensus_transfers_order_by!]!) {
+  consensus_transfers_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  consensus_transfers(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    extrinsic_id
+    event_id
+    from
+    to
+    value
+    fee
+    success
+    timestamp
+    date
+    created_at
+  }
+}
+    `;
+
+/**
+ * __useTransfersByAccountIdQuery__
+ *
+ * To run a query within a React component, call `useTransfersByAccountIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTransfersByAccountIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTransfersByAccountIdQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      where: // value for 'where'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useTransfersByAccountIdQuery(baseOptions: Apollo.QueryHookOptions<TransfersByAccountIdQuery, TransfersByAccountIdQueryVariables> & ({ variables: TransfersByAccountIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TransfersByAccountIdQuery, TransfersByAccountIdQueryVariables>(TransfersByAccountIdDocument, options);
+      }
+export function useTransfersByAccountIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TransfersByAccountIdQuery, TransfersByAccountIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TransfersByAccountIdQuery, TransfersByAccountIdQueryVariables>(TransfersByAccountIdDocument, options);
+        }
+export function useTransfersByAccountIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<TransfersByAccountIdQuery, TransfersByAccountIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TransfersByAccountIdQuery, TransfersByAccountIdQueryVariables>(TransfersByAccountIdDocument, options);
+        }
+export type TransfersByAccountIdQueryHookResult = ReturnType<typeof useTransfersByAccountIdQuery>;
+export type TransfersByAccountIdLazyQueryHookResult = ReturnType<typeof useTransfersByAccountIdLazyQuery>;
+export type TransfersByAccountIdSuspenseQueryHookResult = ReturnType<typeof useTransfersByAccountIdSuspenseQuery>;
+export type TransfersByAccountIdQueryResult = Apollo.QueryResult<TransfersByAccountIdQuery, TransfersByAccountIdQueryVariables>;
+export const BalanceHistoryByAccountIdDocument = gql`
+    query BalanceHistoryByAccountId($limit: Int!, $offset: Int, $where: consensus_account_histories_bool_exp, $orderBy: [consensus_account_histories_order_by!]!) {
+  consensus_account_histories_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  consensus_account_histories(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id: uuid
+    reserved
+    total
+    nonce
+    free
+    created_at
+    updated_at
+    _block_range
+  }
+}
+    `;
+
+/**
+ * __useBalanceHistoryByAccountIdQuery__
+ *
+ * To run a query within a React component, call `useBalanceHistoryByAccountIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBalanceHistoryByAccountIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBalanceHistoryByAccountIdQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      where: // value for 'where'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useBalanceHistoryByAccountIdQuery(baseOptions: Apollo.QueryHookOptions<BalanceHistoryByAccountIdQuery, BalanceHistoryByAccountIdQueryVariables> & ({ variables: BalanceHistoryByAccountIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BalanceHistoryByAccountIdQuery, BalanceHistoryByAccountIdQueryVariables>(BalanceHistoryByAccountIdDocument, options);
+      }
+export function useBalanceHistoryByAccountIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BalanceHistoryByAccountIdQuery, BalanceHistoryByAccountIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BalanceHistoryByAccountIdQuery, BalanceHistoryByAccountIdQueryVariables>(BalanceHistoryByAccountIdDocument, options);
+        }
+export function useBalanceHistoryByAccountIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BalanceHistoryByAccountIdQuery, BalanceHistoryByAccountIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BalanceHistoryByAccountIdQuery, BalanceHistoryByAccountIdQueryVariables>(BalanceHistoryByAccountIdDocument, options);
+        }
+export type BalanceHistoryByAccountIdQueryHookResult = ReturnType<typeof useBalanceHistoryByAccountIdQuery>;
+export type BalanceHistoryByAccountIdLazyQueryHookResult = ReturnType<typeof useBalanceHistoryByAccountIdLazyQuery>;
+export type BalanceHistoryByAccountIdSuspenseQueryHookResult = ReturnType<typeof useBalanceHistoryByAccountIdSuspenseQuery>;
+export type BalanceHistoryByAccountIdQueryResult = Apollo.QueryResult<BalanceHistoryByAccountIdQuery, BalanceHistoryByAccountIdQueryVariables>;
+export const AllRewardForAccountByIdDocument = gql`
+    query AllRewardForAccountById($accountId: String!) {
+  consensus_rewards(
+    where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
+    limit: 1
+  ) {
+    id
+    block_height
+    index_in_block
+    reward_type
+    amount
+    timestamp
+  }
+}
+    `;
+
+/**
+ * __useAllRewardForAccountByIdQuery__
+ *
+ * To run a query within a React component, call `useAllRewardForAccountByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllRewardForAccountByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllRewardForAccountByIdQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useAllRewardForAccountByIdQuery(baseOptions: Apollo.QueryHookOptions<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables> & ({ variables: AllRewardForAccountByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>(AllRewardForAccountByIdDocument, options);
+      }
+export function useAllRewardForAccountByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>(AllRewardForAccountByIdDocument, options);
+        }
+export function useAllRewardForAccountByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>(AllRewardForAccountByIdDocument, options);
+        }
+export type AllRewardForAccountByIdQueryHookResult = ReturnType<typeof useAllRewardForAccountByIdQuery>;
+export type AllRewardForAccountByIdLazyQueryHookResult = ReturnType<typeof useAllRewardForAccountByIdLazyQuery>;
+export type AllRewardForAccountByIdSuspenseQueryHookResult = ReturnType<typeof useAllRewardForAccountByIdSuspenseQuery>;
+export type AllRewardForAccountByIdQueryResult = Apollo.QueryResult<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>;
+export const BlocksDocument = gql`
+    query Blocks($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!, $where: consensus_blocks_bool_exp) {
+  consensus_blocks_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  consensus_blocks(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sortId: sort_id
+    height
+    hash
+    timestamp
+    parentHash: parent_hash
+    specId: spec_id
+    stateRoot: state_root
+    extrinsicsRoot: extrinsics_root
+    spacePledged: space_pledged
+    blockchainSize: blockchain_size
+    extrinsicsCount: extrinsics_count
+    eventsCount: events_count
+    authorId: author_id
+  }
+}
+    `;
+
+/**
+ * __useBlocksQuery__
+ *
+ * To run a query within a React component, call `useBlocksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBlocksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBlocksQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useBlocksQuery(baseOptions: Apollo.QueryHookOptions<BlocksQuery, BlocksQueryVariables> & ({ variables: BlocksQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BlocksQuery, BlocksQueryVariables>(BlocksDocument, options);
+      }
+export function useBlocksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlocksQuery, BlocksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BlocksQuery, BlocksQueryVariables>(BlocksDocument, options);
+        }
+export function useBlocksSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BlocksQuery, BlocksQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BlocksQuery, BlocksQueryVariables>(BlocksDocument, options);
+        }
+export type BlocksQueryHookResult = ReturnType<typeof useBlocksQuery>;
+export type BlocksLazyQueryHookResult = ReturnType<typeof useBlocksLazyQuery>;
+export type BlocksSuspenseQueryHookResult = ReturnType<typeof useBlocksSuspenseQuery>;
+export type BlocksQueryResult = Apollo.QueryResult<BlocksQuery, BlocksQueryVariables>;
+export const BlockByIdDocument = gql`
+    query BlockById($blockId: numeric!, $blockHash: String!) {
+  consensus_blocks(
+    where: {_or: [{height: {_eq: $blockId}}, {hash: {_eq: $blockHash}}]}
+  ) {
+    id
+    height
+    hash
+    state_root
+    timestamp
+    extrinsics_root
+    spec_id
+    parent_hash
+    extrinsics_count
+    events_count
+    logs(limit: 10, order_by: {block_height: desc}) {
+      block_height
+      block {
+        timestamp
+      }
+      kind
+      id
+    }
+    author_id
+  }
+}
+    `;
+
+/**
+ * __useBlockByIdQuery__
+ *
+ * To run a query within a React component, call `useBlockByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBlockByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBlockByIdQuery({
+ *   variables: {
+ *      blockId: // value for 'blockId'
+ *      blockHash: // value for 'blockHash'
+ *   },
+ * });
+ */
+export function useBlockByIdQuery(baseOptions: Apollo.QueryHookOptions<BlockByIdQuery, BlockByIdQueryVariables> & ({ variables: BlockByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BlockByIdQuery, BlockByIdQueryVariables>(BlockByIdDocument, options);
+      }
+export function useBlockByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlockByIdQuery, BlockByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BlockByIdQuery, BlockByIdQueryVariables>(BlockByIdDocument, options);
+        }
+export function useBlockByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BlockByIdQuery, BlockByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BlockByIdQuery, BlockByIdQueryVariables>(BlockByIdDocument, options);
+        }
+export type BlockByIdQueryHookResult = ReturnType<typeof useBlockByIdQuery>;
+export type BlockByIdLazyQueryHookResult = ReturnType<typeof useBlockByIdLazyQuery>;
+export type BlockByIdSuspenseQueryHookResult = ReturnType<typeof useBlockByIdSuspenseQuery>;
+export type BlockByIdQueryResult = Apollo.QueryResult<BlockByIdQuery, BlockByIdQueryVariables>;
+export const ExtrinsicsByBlockIdDocument = gql`
+    query ExtrinsicsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]) {
+  consensus_extrinsics_aggregate(where: {block_height: {_eq: $blockId}}) {
+    aggregate {
+      count
+    }
+  }
+  consensus_extrinsics(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: {block_height: {_eq: $blockId}}
+  ) {
+    id
+    hash
+    name
+    success
+    block_height
+    timestamp
+    index_in_block
+  }
+}
+    `;
+
+/**
+ * __useExtrinsicsByBlockIdQuery__
+ *
+ * To run a query within a React component, call `useExtrinsicsByBlockIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsByBlockIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtrinsicsByBlockIdQuery({
+ *   variables: {
+ *      blockId: // value for 'blockId'
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useExtrinsicsByBlockIdQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables> & ({ variables: ExtrinsicsByBlockIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>(ExtrinsicsByBlockIdDocument, options);
+      }
+export function useExtrinsicsByBlockIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>(ExtrinsicsByBlockIdDocument, options);
+        }
+export function useExtrinsicsByBlockIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>(ExtrinsicsByBlockIdDocument, options);
+        }
+export type ExtrinsicsByBlockIdQueryHookResult = ReturnType<typeof useExtrinsicsByBlockIdQuery>;
+export type ExtrinsicsByBlockIdLazyQueryHookResult = ReturnType<typeof useExtrinsicsByBlockIdLazyQuery>;
+export type ExtrinsicsByBlockIdSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByBlockIdSuspenseQuery>;
+export type ExtrinsicsByBlockIdQueryResult = Apollo.QueryResult<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>;
+export const EventsByBlockIdDocument = gql`
+    query EventsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
+  consensus_events_aggregate(where: {block_height: {_eq: $blockId}}) {
+    aggregate {
+      count
+    }
+  }
+  consensus_events(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: {block_height: {_eq: $blockId}}
+  ) {
+    id
+    name
+    phase
+    index_in_block
+    block_height
+    extrinsic_id
+  }
+}
+    `;
+
+/**
+ * __useEventsByBlockIdQuery__
+ *
+ * To run a query within a React component, call `useEventsByBlockIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventsByBlockIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventsByBlockIdQuery({
+ *   variables: {
+ *      blockId: // value for 'blockId'
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useEventsByBlockIdQuery(baseOptions: Apollo.QueryHookOptions<EventsByBlockIdQuery, EventsByBlockIdQueryVariables> & ({ variables: EventsByBlockIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>(EventsByBlockIdDocument, options);
+      }
+export function useEventsByBlockIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>(EventsByBlockIdDocument, options);
+        }
+export function useEventsByBlockIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>(EventsByBlockIdDocument, options);
+        }
+export type EventsByBlockIdQueryHookResult = ReturnType<typeof useEventsByBlockIdQuery>;
+export type EventsByBlockIdLazyQueryHookResult = ReturnType<typeof useEventsByBlockIdLazyQuery>;
+export type EventsByBlockIdSuspenseQueryHookResult = ReturnType<typeof useEventsByBlockIdSuspenseQuery>;
+export type EventsByBlockIdQueryResult = Apollo.QueryResult<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>;
+export const BlocksByHashDocument = gql`
+    query BlocksByHash($hash: String!) {
+  consensus_blocks(limit: 10, where: {hash: {_eq: $hash}}) {
+    id
+    height
+  }
+}
+    `;
+
+/**
+ * __useBlocksByHashQuery__
+ *
+ * To run a query within a React component, call `useBlocksByHashQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBlocksByHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBlocksByHashQuery({
+ *   variables: {
+ *      hash: // value for 'hash'
+ *   },
+ * });
+ */
+export function useBlocksByHashQuery(baseOptions: Apollo.QueryHookOptions<BlocksByHashQuery, BlocksByHashQueryVariables> & ({ variables: BlocksByHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BlocksByHashQuery, BlocksByHashQueryVariables>(BlocksByHashDocument, options);
+      }
+export function useBlocksByHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlocksByHashQuery, BlocksByHashQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BlocksByHashQuery, BlocksByHashQueryVariables>(BlocksByHashDocument, options);
+        }
+export function useBlocksByHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BlocksByHashQuery, BlocksByHashQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BlocksByHashQuery, BlocksByHashQueryVariables>(BlocksByHashDocument, options);
+        }
+export type BlocksByHashQueryHookResult = ReturnType<typeof useBlocksByHashQuery>;
+export type BlocksByHashLazyQueryHookResult = ReturnType<typeof useBlocksByHashLazyQuery>;
+export type BlocksByHashSuspenseQueryHookResult = ReturnType<typeof useBlocksByHashSuspenseQuery>;
+export type BlocksByHashQueryResult = Apollo.QueryResult<BlocksByHashQuery, BlocksByHashQueryVariables>;
+export const EventsDocument = gql`
+    query Events($limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]!, $where: consensus_events_bool_exp) {
+  consensus_events_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  consensus_events(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sortId: sort_id
+    blockHeight: block_height
+    blockHash: block_hash
+    extrinsicId: extrinsic_id
+    extrinsicHash: extrinsic_hash
+    section
+    module
+    name
+    indexInBlock: index_in_block
+    timestamp
+    phase
+  }
+  consensus_event_modules(limit: 300) {
+    method
+  }
+}
+    `;
+
+/**
+ * __useEventsQuery__
+ *
+ * To run a query within a React component, call `useEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useEventsQuery(baseOptions: Apollo.QueryHookOptions<EventsQuery, EventsQueryVariables> & ({ variables: EventsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
+      }
+export function useEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventsQuery, EventsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
+        }
+export function useEventsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EventsQuery, EventsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
+        }
+export type EventsQueryHookResult = ReturnType<typeof useEventsQuery>;
+export type EventsLazyQueryHookResult = ReturnType<typeof useEventsLazyQuery>;
+export type EventsSuspenseQueryHookResult = ReturnType<typeof useEventsSuspenseQuery>;
+export type EventsQueryResult = Apollo.QueryResult<EventsQuery, EventsQueryVariables>;
+export const EventByIdDocument = gql`
+    query EventById($eventId: String!) {
+  consensus_events(where: {id: {_eq: $eventId}}) {
+    args
+    id
+    index_in_block
+    name
+    phase
+    timestamp
+    extrinsic {
+      args
+      success
+      tip
+      fee
+      id
+      signer
+    }
+    block {
+      height
+      id
+      timestamp
+      spec_id
+      hash
+    }
+  }
+}
+    `;
+
+/**
+ * __useEventByIdQuery__
+ *
+ * To run a query within a React component, call `useEventByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventByIdQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useEventByIdQuery(baseOptions: Apollo.QueryHookOptions<EventByIdQuery, EventByIdQueryVariables> & ({ variables: EventByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EventByIdQuery, EventByIdQueryVariables>(EventByIdDocument, options);
+      }
+export function useEventByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventByIdQuery, EventByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EventByIdQuery, EventByIdQueryVariables>(EventByIdDocument, options);
+        }
+export function useEventByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EventByIdQuery, EventByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EventByIdQuery, EventByIdQueryVariables>(EventByIdDocument, options);
+        }
+export type EventByIdQueryHookResult = ReturnType<typeof useEventByIdQuery>;
+export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQuery>;
+export type EventByIdSuspenseQueryHookResult = ReturnType<typeof useEventByIdSuspenseQuery>;
+export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
+export const ExtrinsicsDocument = gql`
+    query Extrinsics($limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]!, $where: consensus_extrinsics_bool_exp) {
+  consensus_extrinsics_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  consensus_extrinsics(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sortId: sort_id
+    hash
+    blockHeight: block_height
+    blockHash: block_hash
+    section
+    module
+    name
+    indexInBlock: index_in_block
+    success
+    timestamp
+    nonce
+    signer
+    signature
+    tip
+    fee
+  }
+  consensus_extrinsic_modules(limit: 300) {
+    method
+  }
+}
+    `;
+
+/**
+ * __useExtrinsicsQuery__
+ *
+ * To run a query within a React component, call `useExtrinsicsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtrinsicsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useExtrinsicsQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsQuery, ExtrinsicsQueryVariables> & ({ variables: ExtrinsicsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(ExtrinsicsDocument, options);
+      }
+export function useExtrinsicsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsQuery, ExtrinsicsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(ExtrinsicsDocument, options);
+        }
+export function useExtrinsicsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsQuery, ExtrinsicsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(ExtrinsicsDocument, options);
+        }
+export type ExtrinsicsQueryHookResult = ReturnType<typeof useExtrinsicsQuery>;
+export type ExtrinsicsLazyQueryHookResult = ReturnType<typeof useExtrinsicsLazyQuery>;
+export type ExtrinsicsSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsSuspenseQuery>;
+export type ExtrinsicsQueryResult = Apollo.QueryResult<ExtrinsicsQuery, ExtrinsicsQueryVariables>;
+export const ExtrinsicsByIdDocument = gql`
+    query ExtrinsicsById($extrinsicId: String!) {
+  consensus_extrinsics(
+    where: {_or: [{id: {_eq: $extrinsicId}}, {hash: {_eq: $extrinsicId}}]}
+  ) {
+    id
+    index_in_block
+    hash
+    block_height
+    timestamp
+    signature
+    success
+    tip
+    args
+    signer
+    events_aggregate {
+      aggregate {
+        count
+      }
+    }
+    name
+  }
+}
+    `;
+
+/**
+ * __useExtrinsicsByIdQuery__
+ *
+ * To run a query within a React component, call `useExtrinsicsByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtrinsicsByIdQuery({
+ *   variables: {
+ *      extrinsicId: // value for 'extrinsicId'
+ *   },
+ * });
+ */
+export function useExtrinsicsByIdQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables> & ({ variables: ExtrinsicsByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>(ExtrinsicsByIdDocument, options);
+      }
+export function useExtrinsicsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>(ExtrinsicsByIdDocument, options);
+        }
+export function useExtrinsicsByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>(ExtrinsicsByIdDocument, options);
+        }
+export type ExtrinsicsByIdQueryHookResult = ReturnType<typeof useExtrinsicsByIdQuery>;
+export type ExtrinsicsByIdLazyQueryHookResult = ReturnType<typeof useExtrinsicsByIdLazyQuery>;
+export type ExtrinsicsByIdSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByIdSuspenseQuery>;
+export type ExtrinsicsByIdQueryResult = Apollo.QueryResult<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>;
+export const EventsByExtrinsicIdDocument = gql`
+    query EventsByExtrinsicId($extrinsicId: String!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
+  consensus_events_aggregate(where: {extrinsic_id: {_eq: $extrinsicId}}) {
+    aggregate {
+      count
+    }
+  }
+  consensus_events(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: {extrinsic_id: {_eq: $extrinsicId}}
+  ) {
+    id
+    name
+    phase
+    index_in_block
+    block_height
+    extrinsic_id
+  }
+}
+    `;
+
+/**
+ * __useEventsByExtrinsicIdQuery__
+ *
+ * To run a query within a React component, call `useEventsByExtrinsicIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventsByExtrinsicIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventsByExtrinsicIdQuery({
+ *   variables: {
+ *      extrinsicId: // value for 'extrinsicId'
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useEventsByExtrinsicIdQuery(baseOptions: Apollo.QueryHookOptions<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables> & ({ variables: EventsByExtrinsicIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables>(EventsByExtrinsicIdDocument, options);
+      }
+export function useEventsByExtrinsicIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables>(EventsByExtrinsicIdDocument, options);
+        }
+export function useEventsByExtrinsicIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables>(EventsByExtrinsicIdDocument, options);
+        }
+export type EventsByExtrinsicIdQueryHookResult = ReturnType<typeof useEventsByExtrinsicIdQuery>;
+export type EventsByExtrinsicIdLazyQueryHookResult = ReturnType<typeof useEventsByExtrinsicIdLazyQuery>;
+export type EventsByExtrinsicIdSuspenseQueryHookResult = ReturnType<typeof useEventsByExtrinsicIdSuspenseQuery>;
+export type EventsByExtrinsicIdQueryResult = Apollo.QueryResult<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables>;
+export const ExtrinsicsByHashDocument = gql`
+    query ExtrinsicsByHash($hash: String!) {
+  consensus_extrinsics(limit: 10, where: {hash: {_eq: $hash}}) {
+    id
+    hash
+    index_in_block
+    success
+    block {
+      id
+      timestamp
+      height
+    }
+    name
+    nonce
+  }
+}
+    `;
+
+/**
+ * __useExtrinsicsByHashQuery__
+ *
+ * To run a query within a React component, call `useExtrinsicsByHashQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsByHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtrinsicsByHashQuery({
+ *   variables: {
+ *      hash: // value for 'hash'
+ *   },
+ * });
+ */
+export function useExtrinsicsByHashQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables> & ({ variables: ExtrinsicsByHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
+      }
+export function useExtrinsicsByHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
+        }
+export function useExtrinsicsByHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
+        }
+export type ExtrinsicsByHashQueryHookResult = ReturnType<typeof useExtrinsicsByHashQuery>;
+export type ExtrinsicsByHashLazyQueryHookResult = ReturnType<typeof useExtrinsicsByHashLazyQuery>;
+export type ExtrinsicsByHashSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByHashSuspenseQuery>;
+export type ExtrinsicsByHashQueryResult = Apollo.QueryResult<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>;
+export const HomeCardsQueryDocument = gql`
+    query HomeCardsQuery {
+  consensus_blocks(limit: 1, order_by: {sort_id: desc}) {
+    height
+    blockchain_size
+    space_pledged
+  }
+  consensus_accounts_aggregate {
+    aggregate {
+      count
+    }
+  }
+  consensus_extrinsics_aggregate {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+
+/**
+ * __useHomeCardsQueryQuery__
+ *
+ * To run a query within a React component, call `useHomeCardsQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeCardsQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeCardsQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useHomeCardsQueryQuery(baseOptions?: Apollo.QueryHookOptions<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>(HomeCardsQueryDocument, options);
+      }
+export function useHomeCardsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>(HomeCardsQueryDocument, options);
+        }
+export function useHomeCardsQuerySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>(HomeCardsQueryDocument, options);
+        }
+export type HomeCardsQueryQueryHookResult = ReturnType<typeof useHomeCardsQueryQuery>;
+export type HomeCardsQueryLazyQueryHookResult = ReturnType<typeof useHomeCardsQueryLazyQuery>;
+export type HomeCardsQuerySuspenseQueryHookResult = ReturnType<typeof useHomeCardsQuerySuspenseQuery>;
+export type HomeCardsQueryQueryResult = Apollo.QueryResult<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>;
+export const HomeBlocksQueryDocument = gql`
+    query HomeBlocksQuery($limit: Int!, $offset: Int!) {
+  consensus_blocks(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {
+    id
+    height
+    timestamp
+    extrinsics_count
+    events_count
+  }
+}
+    `;
+
+/**
+ * __useHomeBlocksQueryQuery__
+ *
+ * To run a query within a React component, call `useHomeBlocksQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeBlocksQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeBlocksQueryQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *   },
+ * });
+ */
+export function useHomeBlocksQueryQuery(baseOptions: Apollo.QueryHookOptions<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables> & ({ variables: HomeBlocksQueryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>(HomeBlocksQueryDocument, options);
+      }
+export function useHomeBlocksQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>(HomeBlocksQueryDocument, options);
+        }
+export function useHomeBlocksQuerySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>(HomeBlocksQueryDocument, options);
+        }
+export type HomeBlocksQueryQueryHookResult = ReturnType<typeof useHomeBlocksQueryQuery>;
+export type HomeBlocksQueryLazyQueryHookResult = ReturnType<typeof useHomeBlocksQueryLazyQuery>;
+export type HomeBlocksQuerySuspenseQueryHookResult = ReturnType<typeof useHomeBlocksQuerySuspenseQuery>;
+export type HomeBlocksQueryQueryResult = Apollo.QueryResult<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>;
+export const HomeExtrinsicsQueryDocument = gql`
+    query HomeExtrinsicsQuery($limit: Int!, $offset: Int!) {
+  consensus_extrinsics(
+    limit: $limit
+    offset: $offset
+    order_by: {timestamp: desc}
+  ) {
+    id
+    hash
+    block_height
+    name
+    timestamp
+    success
+  }
+}
+    `;
+
+/**
+ * __useHomeExtrinsicsQueryQuery__
+ *
+ * To run a query within a React component, call `useHomeExtrinsicsQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeExtrinsicsQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeExtrinsicsQueryQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *   },
+ * });
+ */
+export function useHomeExtrinsicsQueryQuery(baseOptions: Apollo.QueryHookOptions<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables> & ({ variables: HomeExtrinsicsQueryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>(HomeExtrinsicsQueryDocument, options);
+      }
+export function useHomeExtrinsicsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>(HomeExtrinsicsQueryDocument, options);
+        }
+export function useHomeExtrinsicsQuerySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>(HomeExtrinsicsQueryDocument, options);
+        }
+export type HomeExtrinsicsQueryQueryHookResult = ReturnType<typeof useHomeExtrinsicsQueryQuery>;
+export type HomeExtrinsicsQueryLazyQueryHookResult = ReturnType<typeof useHomeExtrinsicsQueryLazyQuery>;
+export type HomeExtrinsicsQuerySuspenseQueryHookResult = ReturnType<typeof useHomeExtrinsicsQuerySuspenseQuery>;
+export type HomeExtrinsicsQueryQueryResult = Apollo.QueryResult<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>;
+export const LogsDocument = gql`
+    query Logs($limit: Int!, $offset: Int, $orderBy: [consensus_logs_order_by!]!, $where: consensus_logs_bool_exp) {
+  consensus_logs_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  consensus_logs(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sortId: sort_id
+    blockHeight: block_height
+    blockHash: block_hash
+    indexInBlock: index_in_block
+    kind
+    timestamp
+  }
+}
+    `;
+
+/**
+ * __useLogsQuery__
+ *
+ * To run a query within a React component, call `useLogsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLogsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLogsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useLogsQuery(baseOptions: Apollo.QueryHookOptions<LogsQuery, LogsQueryVariables> & ({ variables: LogsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LogsQuery, LogsQueryVariables>(LogsDocument, options);
+      }
+export function useLogsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LogsQuery, LogsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LogsQuery, LogsQueryVariables>(LogsDocument, options);
+        }
+export function useLogsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<LogsQuery, LogsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LogsQuery, LogsQueryVariables>(LogsDocument, options);
+        }
+export type LogsQueryHookResult = ReturnType<typeof useLogsQuery>;
+export type LogsLazyQueryHookResult = ReturnType<typeof useLogsLazyQuery>;
+export type LogsSuspenseQueryHookResult = ReturnType<typeof useLogsSuspenseQuery>;
+export type LogsQueryResult = Apollo.QueryResult<LogsQuery, LogsQueryVariables>;
+export const LogByIdDocument = gql`
+    query LogById($logId: String!) {
+  consensus_logs(where: {id: {_eq: $logId}}) {
+    id
+    kind
+    value
+    block_height
+    timestamp
+    block {
+      id
+      events(limit: 10, order_by: {sort_id: desc}) {
+        id
+        args
+        name
+        phase
+        timestamp
+        block_height
+        extrinsic_id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useLogByIdQuery__
+ *
+ * To run a query within a React component, call `useLogByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLogByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLogByIdQuery({
+ *   variables: {
+ *      logId: // value for 'logId'
+ *   },
+ * });
+ */
+export function useLogByIdQuery(baseOptions: Apollo.QueryHookOptions<LogByIdQuery, LogByIdQueryVariables> & ({ variables: LogByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LogByIdQuery, LogByIdQueryVariables>(LogByIdDocument, options);
+      }
+export function useLogByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LogByIdQuery, LogByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LogByIdQuery, LogByIdQueryVariables>(LogByIdDocument, options);
+        }
+export function useLogByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<LogByIdQuery, LogByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LogByIdQuery, LogByIdQueryVariables>(LogByIdDocument, options);
+        }
+export type LogByIdQueryHookResult = ReturnType<typeof useLogByIdQuery>;
+export type LogByIdLazyQueryHookResult = ReturnType<typeof useLogByIdLazyQuery>;
+export type LogByIdSuspenseQueryHookResult = ReturnType<typeof useLogByIdSuspenseQuery>;
+export type LogByIdQueryResult = Apollo.QueryResult<LogByIdQuery, LogByIdQueryVariables>;
+export const DomainsListDocument = gql`
+    query DomainsList($limit: Int!, $offset: Int, $orderBy: [staking_domains_order_by!]!, $where: staking_domains_bool_exp) {
+  staking_domains_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_domains(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sortId: sort_id
+    name
+    accountId: account_id
+    bundleCount: bundle_count
+    totalVolume: total_volume
+    totalTaxCollected: total_tax_collected
+    totalRewardsCollected: total_rewards_collected
+    totalDomainExecutionFee: total_domain_execution_fee
+    totalDeposits: total_deposits
+    totalConsensusStorageFee: total_consensus_storage_fee
+    totalBurnedBalance: total_burned_balance
+    runtimeInfo: runtime_info
+    runtimeId: runtime_id
+    runtime
+    lastDomainBlockNumber: last_domain_block_number
+    lastBundleAt: last_bundle_at
+    currentTotalStake: current_total_stake
+    currentStorageFeeDeposit: current_storage_fee_deposit
+    currentSharePrice: current_share_price
+    createdAt: created_at
+    completedEpoch: completed_epoch
+    totalTransfersIn: total_transfers_in
+    transfersInCount: transfers_in_count
+    totalTransfersOut: total_transfers_out
+    transfers_out_count
+    totalRejectedTransfersClaimed: total_rejected_transfers_claimed
+    rejectedTransfersClaimedCount: rejected_transfers_claimed_count
+    totalTransfersRejected: total_transfers_rejected
+    transfersRejectedCount: transfers_rejected_count
+    updatedAt: updated_at
+    totalEstimatedWithdrawals: total_estimated_withdrawals
+    totalWithdrawals: total_withdrawals
+    currentTotalShares: current_total_shares
+    current_share_price
+    accumulated_epoch_stake
+    accumulatedEpochStorageFeeDeposit: accumulated_epoch_storage_fee_deposit
+    accumulatedEpochRewards: accumulated_epoch_rewards
+    accumulatedEpochShares: accumulated_epoch_shares
+    currentEpochDuration: current_epoch_duration
+    lastEpochDuration: last_epoch_duration
+    last6EpochsDuration: last6_epochs_duration
+    last144EpochDuration: last144_epoch_duration
+    last1kEpochDuration: last1k_epoch_duration
+    operatorsAggregate: operators_aggregate {
+      aggregate {
+        count
+      }
+    }
+    nominatorsAggregate: nominators_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useDomainsListQuery__
+ *
+ * To run a query within a React component, call `useDomainsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDomainsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDomainsListQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useDomainsListQuery(baseOptions: Apollo.QueryHookOptions<DomainsListQuery, DomainsListQueryVariables> & ({ variables: DomainsListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DomainsListQuery, DomainsListQueryVariables>(DomainsListDocument, options);
+      }
+export function useDomainsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DomainsListQuery, DomainsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DomainsListQuery, DomainsListQueryVariables>(DomainsListDocument, options);
+        }
+export function useDomainsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DomainsListQuery, DomainsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<DomainsListQuery, DomainsListQueryVariables>(DomainsListDocument, options);
+        }
+export type DomainsListQueryHookResult = ReturnType<typeof useDomainsListQuery>;
+export type DomainsListLazyQueryHookResult = ReturnType<typeof useDomainsListLazyQuery>;
+export type DomainsListSuspenseQueryHookResult = ReturnType<typeof useDomainsListSuspenseQuery>;
+export type DomainsListQueryResult = Apollo.QueryResult<DomainsListQuery, DomainsListQueryVariables>;
+export const DomainsStatusDocument = gql`
+    query DomainsStatus($limit: Int!, $offset: Int, $orderBy: [staking_domains_order_by!]!, $where: staking_domains_bool_exp) {
+  staking_domains(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    name
+    last_domain_block_number
+    completed_epoch
+    current_epoch_duration
+    last_epoch_duration
+    last6_epochs_duration
+    last144_epoch_duration
+    last1k_epoch_duration
+  }
+}
+    `;
+
+/**
+ * __useDomainsStatusQuery__
+ *
+ * To run a query within a React component, call `useDomainsStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDomainsStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDomainsStatusQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useDomainsStatusQuery(baseOptions: Apollo.QueryHookOptions<DomainsStatusQuery, DomainsStatusQueryVariables> & ({ variables: DomainsStatusQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DomainsStatusQuery, DomainsStatusQueryVariables>(DomainsStatusDocument, options);
+      }
+export function useDomainsStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DomainsStatusQuery, DomainsStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DomainsStatusQuery, DomainsStatusQueryVariables>(DomainsStatusDocument, options);
+        }
+export function useDomainsStatusSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DomainsStatusQuery, DomainsStatusQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<DomainsStatusQuery, DomainsStatusQueryVariables>(DomainsStatusDocument, options);
+        }
+export type DomainsStatusQueryHookResult = ReturnType<typeof useDomainsStatusQuery>;
+export type DomainsStatusLazyQueryHookResult = ReturnType<typeof useDomainsStatusLazyQuery>;
+export type DomainsStatusSuspenseQueryHookResult = ReturnType<typeof useDomainsStatusSuspenseQuery>;
+export type DomainsStatusQueryResult = Apollo.QueryResult<DomainsStatusQuery, DomainsStatusQueryVariables>;
+export const DomainByIdDocument = gql`
+    query DomainById($domainId: String!) {
+  staking_domains_by_pk(id: $domainId) {
+    id
+    sort_id
+    name
+    account_id
+    bundle_count
+    total_volume
+    total_tax_collected
+    total_rewards_collected
+    total_domain_execution_fee
+    total_deposits
+    total_consensus_storage_fee
+    total_burned_balance
+    runtime_info
+    runtime_id
+    runtime
+    last_domain_block_number
+    last_bundle_at
+    current_total_stake
+    current_storage_fee_deposit
+    created_at
+    completed_epoch
+    total_transfers_in
+    transfers_in_count
+    total_transfers_out
+    transfers_out_count
+    total_rejected_transfers_claimed
+    rejected_transfers_claimed_count
+    total_transfers_rejected
+    transfers_rejected_count
+    updated_at
+    total_estimated_withdrawals
+    total_withdrawals
+    accumulated_epoch_stake
+    accumulated_epoch_storage_fee_deposit
+    operators_aggregate {
+      aggregate {
+        count
+      }
+    }
+    nominators_aggregate {
+      aggregate {
+        count
+      }
+    }
+    deposits_aggregate {
+      aggregate {
+        count
+      }
+    }
+    withdrawals_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useDomainByIdQuery__
+ *
+ * To run a query within a React component, call `useDomainByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDomainByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDomainByIdQuery({
+ *   variables: {
+ *      domainId: // value for 'domainId'
+ *   },
+ * });
+ */
+export function useDomainByIdQuery(baseOptions: Apollo.QueryHookOptions<DomainByIdQuery, DomainByIdQueryVariables> & ({ variables: DomainByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DomainByIdQuery, DomainByIdQueryVariables>(DomainByIdDocument, options);
+      }
+export function useDomainByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DomainByIdQuery, DomainByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DomainByIdQuery, DomainByIdQueryVariables>(DomainByIdDocument, options);
+        }
+export function useDomainByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DomainByIdQuery, DomainByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<DomainByIdQuery, DomainByIdQueryVariables>(DomainByIdDocument, options);
+        }
+export type DomainByIdQueryHookResult = ReturnType<typeof useDomainByIdQuery>;
+export type DomainByIdLazyQueryHookResult = ReturnType<typeof useDomainByIdLazyQuery>;
+export type DomainByIdSuspenseQueryHookResult = ReturnType<typeof useDomainByIdSuspenseQuery>;
+export type DomainByIdQueryResult = Apollo.QueryResult<DomainByIdQuery, DomainByIdQueryVariables>;
+export const AccountTransferSenderTotalCountDocument = gql`
+    query AccountTransferSenderTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_account_transfer_sender_total_counts_order_by!]!, $where: leaderboard_account_transfer_sender_total_counts_bool_exp) {
+  leaderboard_account_transfer_sender_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_account_transfer_sender_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useAccountTransferSenderTotalCountQuery__
+ *
+ * To run a query within a React component, call `useAccountTransferSenderTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountTransferSenderTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountTransferSenderTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountTransferSenderTotalCountQuery(baseOptions: Apollo.QueryHookOptions<AccountTransferSenderTotalCountQuery, AccountTransferSenderTotalCountQueryVariables> & ({ variables: AccountTransferSenderTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountTransferSenderTotalCountQuery, AccountTransferSenderTotalCountQueryVariables>(AccountTransferSenderTotalCountDocument, options);
+      }
+export function useAccountTransferSenderTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountTransferSenderTotalCountQuery, AccountTransferSenderTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountTransferSenderTotalCountQuery, AccountTransferSenderTotalCountQueryVariables>(AccountTransferSenderTotalCountDocument, options);
+        }
+export function useAccountTransferSenderTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountTransferSenderTotalCountQuery, AccountTransferSenderTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountTransferSenderTotalCountQuery, AccountTransferSenderTotalCountQueryVariables>(AccountTransferSenderTotalCountDocument, options);
+        }
+export type AccountTransferSenderTotalCountQueryHookResult = ReturnType<typeof useAccountTransferSenderTotalCountQuery>;
+export type AccountTransferSenderTotalCountLazyQueryHookResult = ReturnType<typeof useAccountTransferSenderTotalCountLazyQuery>;
+export type AccountTransferSenderTotalCountSuspenseQueryHookResult = ReturnType<typeof useAccountTransferSenderTotalCountSuspenseQuery>;
+export type AccountTransferSenderTotalCountQueryResult = Apollo.QueryResult<AccountTransferSenderTotalCountQuery, AccountTransferSenderTotalCountQueryVariables>;
+export const AccountTransferSenderTotalValueDocument = gql`
+    query AccountTransferSenderTotalValue($limit: Int!, $offset: Int, $orderBy: [leaderboard_account_transfer_sender_total_values_order_by!]!, $where: leaderboard_account_transfer_sender_total_values_bool_exp) {
+  leaderboard_account_transfer_sender_total_values_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_account_transfer_sender_total_values(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useAccountTransferSenderTotalValueQuery__
+ *
+ * To run a query within a React component, call `useAccountTransferSenderTotalValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountTransferSenderTotalValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountTransferSenderTotalValueQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountTransferSenderTotalValueQuery(baseOptions: Apollo.QueryHookOptions<AccountTransferSenderTotalValueQuery, AccountTransferSenderTotalValueQueryVariables> & ({ variables: AccountTransferSenderTotalValueQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountTransferSenderTotalValueQuery, AccountTransferSenderTotalValueQueryVariables>(AccountTransferSenderTotalValueDocument, options);
+      }
+export function useAccountTransferSenderTotalValueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountTransferSenderTotalValueQuery, AccountTransferSenderTotalValueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountTransferSenderTotalValueQuery, AccountTransferSenderTotalValueQueryVariables>(AccountTransferSenderTotalValueDocument, options);
+        }
+export function useAccountTransferSenderTotalValueSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountTransferSenderTotalValueQuery, AccountTransferSenderTotalValueQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountTransferSenderTotalValueQuery, AccountTransferSenderTotalValueQueryVariables>(AccountTransferSenderTotalValueDocument, options);
+        }
+export type AccountTransferSenderTotalValueQueryHookResult = ReturnType<typeof useAccountTransferSenderTotalValueQuery>;
+export type AccountTransferSenderTotalValueLazyQueryHookResult = ReturnType<typeof useAccountTransferSenderTotalValueLazyQuery>;
+export type AccountTransferSenderTotalValueSuspenseQueryHookResult = ReturnType<typeof useAccountTransferSenderTotalValueSuspenseQuery>;
+export type AccountTransferSenderTotalValueQueryResult = Apollo.QueryResult<AccountTransferSenderTotalValueQuery, AccountTransferSenderTotalValueQueryVariables>;
+export const AccountTransferReceiverTotalCountDocument = gql`
+    query AccountTransferReceiverTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_account_transfer_receiver_total_counts_order_by!]!, $where: leaderboard_account_transfer_receiver_total_counts_bool_exp) {
+  leaderboard_account_transfer_receiver_total_counts_aggregate(
+    order_by: $orderBy
+    where: $where
+  ) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_account_transfer_receiver_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useAccountTransferReceiverTotalCountQuery__
+ *
+ * To run a query within a React component, call `useAccountTransferReceiverTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountTransferReceiverTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountTransferReceiverTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountTransferReceiverTotalCountQuery(baseOptions: Apollo.QueryHookOptions<AccountTransferReceiverTotalCountQuery, AccountTransferReceiverTotalCountQueryVariables> & ({ variables: AccountTransferReceiverTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountTransferReceiverTotalCountQuery, AccountTransferReceiverTotalCountQueryVariables>(AccountTransferReceiverTotalCountDocument, options);
+      }
+export function useAccountTransferReceiverTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountTransferReceiverTotalCountQuery, AccountTransferReceiverTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountTransferReceiverTotalCountQuery, AccountTransferReceiverTotalCountQueryVariables>(AccountTransferReceiverTotalCountDocument, options);
+        }
+export function useAccountTransferReceiverTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountTransferReceiverTotalCountQuery, AccountTransferReceiverTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountTransferReceiverTotalCountQuery, AccountTransferReceiverTotalCountQueryVariables>(AccountTransferReceiverTotalCountDocument, options);
+        }
+export type AccountTransferReceiverTotalCountQueryHookResult = ReturnType<typeof useAccountTransferReceiverTotalCountQuery>;
+export type AccountTransferReceiverTotalCountLazyQueryHookResult = ReturnType<typeof useAccountTransferReceiverTotalCountLazyQuery>;
+export type AccountTransferReceiverTotalCountSuspenseQueryHookResult = ReturnType<typeof useAccountTransferReceiverTotalCountSuspenseQuery>;
+export type AccountTransferReceiverTotalCountQueryResult = Apollo.QueryResult<AccountTransferReceiverTotalCountQuery, AccountTransferReceiverTotalCountQueryVariables>;
+export const AccountTransferReceiverTotalValueDocument = gql`
+    query AccountTransferReceiverTotalValue($limit: Int!, $offset: Int, $orderBy: [leaderboard_account_transfer_receiver_total_values_order_by!]!, $where: leaderboard_account_transfer_receiver_total_values_bool_exp) {
+  leaderboard_account_transfer_receiver_total_values_aggregate(
+    order_by: $orderBy
+    where: $where
+  ) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_account_transfer_receiver_total_values(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useAccountTransferReceiverTotalValueQuery__
+ *
+ * To run a query within a React component, call `useAccountTransferReceiverTotalValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountTransferReceiverTotalValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountTransferReceiverTotalValueQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountTransferReceiverTotalValueQuery(baseOptions: Apollo.QueryHookOptions<AccountTransferReceiverTotalValueQuery, AccountTransferReceiverTotalValueQueryVariables> & ({ variables: AccountTransferReceiverTotalValueQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountTransferReceiverTotalValueQuery, AccountTransferReceiverTotalValueQueryVariables>(AccountTransferReceiverTotalValueDocument, options);
+      }
+export function useAccountTransferReceiverTotalValueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountTransferReceiverTotalValueQuery, AccountTransferReceiverTotalValueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountTransferReceiverTotalValueQuery, AccountTransferReceiverTotalValueQueryVariables>(AccountTransferReceiverTotalValueDocument, options);
+        }
+export function useAccountTransferReceiverTotalValueSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountTransferReceiverTotalValueQuery, AccountTransferReceiverTotalValueQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountTransferReceiverTotalValueQuery, AccountTransferReceiverTotalValueQueryVariables>(AccountTransferReceiverTotalValueDocument, options);
+        }
+export type AccountTransferReceiverTotalValueQueryHookResult = ReturnType<typeof useAccountTransferReceiverTotalValueQuery>;
+export type AccountTransferReceiverTotalValueLazyQueryHookResult = ReturnType<typeof useAccountTransferReceiverTotalValueLazyQuery>;
+export type AccountTransferReceiverTotalValueSuspenseQueryHookResult = ReturnType<typeof useAccountTransferReceiverTotalValueSuspenseQuery>;
+export type AccountTransferReceiverTotalValueQueryResult = Apollo.QueryResult<AccountTransferReceiverTotalValueQuery, AccountTransferReceiverTotalValueQueryVariables>;
+export const AccountRemarkCountDocument = gql`
+    query AccountRemarkCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_account_remark_counts_order_by!]!, $where: leaderboard_account_remark_counts_bool_exp) {
+  leaderboard_account_remark_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_account_remark_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useAccountRemarkCountQuery__
+ *
+ * To run a query within a React component, call `useAccountRemarkCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountRemarkCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountRemarkCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountRemarkCountQuery(baseOptions: Apollo.QueryHookOptions<AccountRemarkCountQuery, AccountRemarkCountQueryVariables> & ({ variables: AccountRemarkCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountRemarkCountQuery, AccountRemarkCountQueryVariables>(AccountRemarkCountDocument, options);
+      }
+export function useAccountRemarkCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountRemarkCountQuery, AccountRemarkCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountRemarkCountQuery, AccountRemarkCountQueryVariables>(AccountRemarkCountDocument, options);
+        }
+export function useAccountRemarkCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountRemarkCountQuery, AccountRemarkCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountRemarkCountQuery, AccountRemarkCountQueryVariables>(AccountRemarkCountDocument, options);
+        }
+export type AccountRemarkCountQueryHookResult = ReturnType<typeof useAccountRemarkCountQuery>;
+export type AccountRemarkCountLazyQueryHookResult = ReturnType<typeof useAccountRemarkCountLazyQuery>;
+export type AccountRemarkCountSuspenseQueryHookResult = ReturnType<typeof useAccountRemarkCountSuspenseQuery>;
+export type AccountRemarkCountQueryResult = Apollo.QueryResult<AccountRemarkCountQuery, AccountRemarkCountQueryVariables>;
+export const AccountExtrinsicTotalCountDocument = gql`
+    query AccountExtrinsicTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_account_extrinsic_total_counts_order_by!]!, $where: leaderboard_account_extrinsic_total_counts_bool_exp) {
+  leaderboard_account_extrinsic_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_account_extrinsic_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useAccountExtrinsicTotalCountQuery__
+ *
+ * To run a query within a React component, call `useAccountExtrinsicTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountExtrinsicTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountExtrinsicTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountExtrinsicTotalCountQuery(baseOptions: Apollo.QueryHookOptions<AccountExtrinsicTotalCountQuery, AccountExtrinsicTotalCountQueryVariables> & ({ variables: AccountExtrinsicTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountExtrinsicTotalCountQuery, AccountExtrinsicTotalCountQueryVariables>(AccountExtrinsicTotalCountDocument, options);
+      }
+export function useAccountExtrinsicTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountExtrinsicTotalCountQuery, AccountExtrinsicTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountExtrinsicTotalCountQuery, AccountExtrinsicTotalCountQueryVariables>(AccountExtrinsicTotalCountDocument, options);
+        }
+export function useAccountExtrinsicTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountExtrinsicTotalCountQuery, AccountExtrinsicTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountExtrinsicTotalCountQuery, AccountExtrinsicTotalCountQueryVariables>(AccountExtrinsicTotalCountDocument, options);
+        }
+export type AccountExtrinsicTotalCountQueryHookResult = ReturnType<typeof useAccountExtrinsicTotalCountQuery>;
+export type AccountExtrinsicTotalCountLazyQueryHookResult = ReturnType<typeof useAccountExtrinsicTotalCountLazyQuery>;
+export type AccountExtrinsicTotalCountSuspenseQueryHookResult = ReturnType<typeof useAccountExtrinsicTotalCountSuspenseQuery>;
+export type AccountExtrinsicTotalCountQueryResult = Apollo.QueryResult<AccountExtrinsicTotalCountQuery, AccountExtrinsicTotalCountQueryVariables>;
+export const AccountExtrinsicSuccessTotalCountDocument = gql`
+    query AccountExtrinsicSuccessTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_account_extrinsic_success_total_counts_order_by!]!, $where: leaderboard_account_extrinsic_success_total_counts_bool_exp) {
+  leaderboard_account_extrinsic_success_total_counts_aggregate(
+    order_by: $orderBy
+    where: $where
+  ) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_account_extrinsic_success_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useAccountExtrinsicSuccessTotalCountQuery__
+ *
+ * To run a query within a React component, call `useAccountExtrinsicSuccessTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountExtrinsicSuccessTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountExtrinsicSuccessTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountExtrinsicSuccessTotalCountQuery(baseOptions: Apollo.QueryHookOptions<AccountExtrinsicSuccessTotalCountQuery, AccountExtrinsicSuccessTotalCountQueryVariables> & ({ variables: AccountExtrinsicSuccessTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountExtrinsicSuccessTotalCountQuery, AccountExtrinsicSuccessTotalCountQueryVariables>(AccountExtrinsicSuccessTotalCountDocument, options);
+      }
+export function useAccountExtrinsicSuccessTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountExtrinsicSuccessTotalCountQuery, AccountExtrinsicSuccessTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountExtrinsicSuccessTotalCountQuery, AccountExtrinsicSuccessTotalCountQueryVariables>(AccountExtrinsicSuccessTotalCountDocument, options);
+        }
+export function useAccountExtrinsicSuccessTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountExtrinsicSuccessTotalCountQuery, AccountExtrinsicSuccessTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountExtrinsicSuccessTotalCountQuery, AccountExtrinsicSuccessTotalCountQueryVariables>(AccountExtrinsicSuccessTotalCountDocument, options);
+        }
+export type AccountExtrinsicSuccessTotalCountQueryHookResult = ReturnType<typeof useAccountExtrinsicSuccessTotalCountQuery>;
+export type AccountExtrinsicSuccessTotalCountLazyQueryHookResult = ReturnType<typeof useAccountExtrinsicSuccessTotalCountLazyQuery>;
+export type AccountExtrinsicSuccessTotalCountSuspenseQueryHookResult = ReturnType<typeof useAccountExtrinsicSuccessTotalCountSuspenseQuery>;
+export type AccountExtrinsicSuccessTotalCountQueryResult = Apollo.QueryResult<AccountExtrinsicSuccessTotalCountQuery, AccountExtrinsicSuccessTotalCountQueryVariables>;
+export const AccountExtrinsicFailedTotalCountDocument = gql`
+    query AccountExtrinsicFailedTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_account_extrinsic_failed_total_counts_order_by!]!, $where: leaderboard_account_extrinsic_failed_total_counts_bool_exp) {
+  leaderboard_account_extrinsic_failed_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_account_extrinsic_failed_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useAccountExtrinsicFailedTotalCountQuery__
+ *
+ * To run a query within a React component, call `useAccountExtrinsicFailedTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountExtrinsicFailedTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountExtrinsicFailedTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountExtrinsicFailedTotalCountQuery(baseOptions: Apollo.QueryHookOptions<AccountExtrinsicFailedTotalCountQuery, AccountExtrinsicFailedTotalCountQueryVariables> & ({ variables: AccountExtrinsicFailedTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountExtrinsicFailedTotalCountQuery, AccountExtrinsicFailedTotalCountQueryVariables>(AccountExtrinsicFailedTotalCountDocument, options);
+      }
+export function useAccountExtrinsicFailedTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountExtrinsicFailedTotalCountQuery, AccountExtrinsicFailedTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountExtrinsicFailedTotalCountQuery, AccountExtrinsicFailedTotalCountQueryVariables>(AccountExtrinsicFailedTotalCountDocument, options);
+        }
+export function useAccountExtrinsicFailedTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountExtrinsicFailedTotalCountQuery, AccountExtrinsicFailedTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountExtrinsicFailedTotalCountQuery, AccountExtrinsicFailedTotalCountQueryVariables>(AccountExtrinsicFailedTotalCountDocument, options);
+        }
+export type AccountExtrinsicFailedTotalCountQueryHookResult = ReturnType<typeof useAccountExtrinsicFailedTotalCountQuery>;
+export type AccountExtrinsicFailedTotalCountLazyQueryHookResult = ReturnType<typeof useAccountExtrinsicFailedTotalCountLazyQuery>;
+export type AccountExtrinsicFailedTotalCountSuspenseQueryHookResult = ReturnType<typeof useAccountExtrinsicFailedTotalCountSuspenseQuery>;
+export type AccountExtrinsicFailedTotalCountQueryResult = Apollo.QueryResult<AccountExtrinsicFailedTotalCountQuery, AccountExtrinsicFailedTotalCountQueryVariables>;
+export const AccountTransactionFeePaidTotalValueDocument = gql`
+    query AccountTransactionFeePaidTotalValue($limit: Int!, $offset: Int, $orderBy: [leaderboard_account_transaction_fee_paid_total_values_order_by!]!, $where: leaderboard_account_transaction_fee_paid_total_values_bool_exp) {
+  leaderboard_account_transaction_fee_paid_total_values_aggregate(
+    order_by: $orderBy
+    where: $where
+  ) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_account_transaction_fee_paid_total_values(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useAccountTransactionFeePaidTotalValueQuery__
+ *
+ * To run a query within a React component, call `useAccountTransactionFeePaidTotalValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountTransactionFeePaidTotalValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountTransactionFeePaidTotalValueQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAccountTransactionFeePaidTotalValueQuery(baseOptions: Apollo.QueryHookOptions<AccountTransactionFeePaidTotalValueQuery, AccountTransactionFeePaidTotalValueQueryVariables> & ({ variables: AccountTransactionFeePaidTotalValueQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountTransactionFeePaidTotalValueQuery, AccountTransactionFeePaidTotalValueQueryVariables>(AccountTransactionFeePaidTotalValueDocument, options);
+      }
+export function useAccountTransactionFeePaidTotalValueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountTransactionFeePaidTotalValueQuery, AccountTransactionFeePaidTotalValueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountTransactionFeePaidTotalValueQuery, AccountTransactionFeePaidTotalValueQueryVariables>(AccountTransactionFeePaidTotalValueDocument, options);
+        }
+export function useAccountTransactionFeePaidTotalValueSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountTransactionFeePaidTotalValueQuery, AccountTransactionFeePaidTotalValueQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountTransactionFeePaidTotalValueQuery, AccountTransactionFeePaidTotalValueQueryVariables>(AccountTransactionFeePaidTotalValueDocument, options);
+        }
+export type AccountTransactionFeePaidTotalValueQueryHookResult = ReturnType<typeof useAccountTransactionFeePaidTotalValueQuery>;
+export type AccountTransactionFeePaidTotalValueLazyQueryHookResult = ReturnType<typeof useAccountTransactionFeePaidTotalValueLazyQuery>;
+export type AccountTransactionFeePaidTotalValueSuspenseQueryHookResult = ReturnType<typeof useAccountTransactionFeePaidTotalValueSuspenseQuery>;
+export type AccountTransactionFeePaidTotalValueQueryResult = Apollo.QueryResult<AccountTransactionFeePaidTotalValueQuery, AccountTransactionFeePaidTotalValueQueryVariables>;
+export const FarmerVoteTotalCountDocument = gql`
+    query FarmerVoteTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_farmer_vote_total_counts_order_by!]!, $where: leaderboard_farmer_vote_total_counts_bool_exp) {
+  leaderboard_farmer_vote_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_farmer_vote_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useFarmerVoteTotalCountQuery__
+ *
+ * To run a query within a React component, call `useFarmerVoteTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFarmerVoteTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFarmerVoteTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFarmerVoteTotalCountQuery(baseOptions: Apollo.QueryHookOptions<FarmerVoteTotalCountQuery, FarmerVoteTotalCountQueryVariables> & ({ variables: FarmerVoteTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FarmerVoteTotalCountQuery, FarmerVoteTotalCountQueryVariables>(FarmerVoteTotalCountDocument, options);
+      }
+export function useFarmerVoteTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FarmerVoteTotalCountQuery, FarmerVoteTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FarmerVoteTotalCountQuery, FarmerVoteTotalCountQueryVariables>(FarmerVoteTotalCountDocument, options);
+        }
+export function useFarmerVoteTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FarmerVoteTotalCountQuery, FarmerVoteTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FarmerVoteTotalCountQuery, FarmerVoteTotalCountQueryVariables>(FarmerVoteTotalCountDocument, options);
+        }
+export type FarmerVoteTotalCountQueryHookResult = ReturnType<typeof useFarmerVoteTotalCountQuery>;
+export type FarmerVoteTotalCountLazyQueryHookResult = ReturnType<typeof useFarmerVoteTotalCountLazyQuery>;
+export type FarmerVoteTotalCountSuspenseQueryHookResult = ReturnType<typeof useFarmerVoteTotalCountSuspenseQuery>;
+export type FarmerVoteTotalCountQueryResult = Apollo.QueryResult<FarmerVoteTotalCountQuery, FarmerVoteTotalCountQueryVariables>;
+export const FarmerVoteTotalValueDocument = gql`
+    query FarmerVoteTotalValue($limit: Int!, $offset: Int, $orderBy: [leaderboard_farmer_vote_total_values_order_by!]!, $where: leaderboard_farmer_vote_total_values_bool_exp) {
+  leaderboard_farmer_vote_total_values_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_farmer_vote_total_values(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useFarmerVoteTotalValueQuery__
+ *
+ * To run a query within a React component, call `useFarmerVoteTotalValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFarmerVoteTotalValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFarmerVoteTotalValueQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFarmerVoteTotalValueQuery(baseOptions: Apollo.QueryHookOptions<FarmerVoteTotalValueQuery, FarmerVoteTotalValueQueryVariables> & ({ variables: FarmerVoteTotalValueQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FarmerVoteTotalValueQuery, FarmerVoteTotalValueQueryVariables>(FarmerVoteTotalValueDocument, options);
+      }
+export function useFarmerVoteTotalValueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FarmerVoteTotalValueQuery, FarmerVoteTotalValueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FarmerVoteTotalValueQuery, FarmerVoteTotalValueQueryVariables>(FarmerVoteTotalValueDocument, options);
+        }
+export function useFarmerVoteTotalValueSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FarmerVoteTotalValueQuery, FarmerVoteTotalValueQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FarmerVoteTotalValueQuery, FarmerVoteTotalValueQueryVariables>(FarmerVoteTotalValueDocument, options);
+        }
+export type FarmerVoteTotalValueQueryHookResult = ReturnType<typeof useFarmerVoteTotalValueQuery>;
+export type FarmerVoteTotalValueLazyQueryHookResult = ReturnType<typeof useFarmerVoteTotalValueLazyQuery>;
+export type FarmerVoteTotalValueSuspenseQueryHookResult = ReturnType<typeof useFarmerVoteTotalValueSuspenseQuery>;
+export type FarmerVoteTotalValueQueryResult = Apollo.QueryResult<FarmerVoteTotalValueQuery, FarmerVoteTotalValueQueryVariables>;
+export const FarmerBlockTotalCountDocument = gql`
+    query FarmerBlockTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_farmer_block_total_counts_order_by!]!, $where: leaderboard_farmer_block_total_counts_bool_exp) {
+  leaderboard_farmer_block_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_farmer_block_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useFarmerBlockTotalCountQuery__
+ *
+ * To run a query within a React component, call `useFarmerBlockTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFarmerBlockTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFarmerBlockTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFarmerBlockTotalCountQuery(baseOptions: Apollo.QueryHookOptions<FarmerBlockTotalCountQuery, FarmerBlockTotalCountQueryVariables> & ({ variables: FarmerBlockTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FarmerBlockTotalCountQuery, FarmerBlockTotalCountQueryVariables>(FarmerBlockTotalCountDocument, options);
+      }
+export function useFarmerBlockTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FarmerBlockTotalCountQuery, FarmerBlockTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FarmerBlockTotalCountQuery, FarmerBlockTotalCountQueryVariables>(FarmerBlockTotalCountDocument, options);
+        }
+export function useFarmerBlockTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FarmerBlockTotalCountQuery, FarmerBlockTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FarmerBlockTotalCountQuery, FarmerBlockTotalCountQueryVariables>(FarmerBlockTotalCountDocument, options);
+        }
+export type FarmerBlockTotalCountQueryHookResult = ReturnType<typeof useFarmerBlockTotalCountQuery>;
+export type FarmerBlockTotalCountLazyQueryHookResult = ReturnType<typeof useFarmerBlockTotalCountLazyQuery>;
+export type FarmerBlockTotalCountSuspenseQueryHookResult = ReturnType<typeof useFarmerBlockTotalCountSuspenseQuery>;
+export type FarmerBlockTotalCountQueryResult = Apollo.QueryResult<FarmerBlockTotalCountQuery, FarmerBlockTotalCountQueryVariables>;
+export const FarmerBlockTotalValueDocument = gql`
+    query FarmerBlockTotalValue($limit: Int!, $offset: Int, $orderBy: [leaderboard_farmer_block_total_values_order_by!]!, $where: leaderboard_farmer_block_total_values_bool_exp) {
+  leaderboard_farmer_block_total_values_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_farmer_block_total_values(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useFarmerBlockTotalValueQuery__
+ *
+ * To run a query within a React component, call `useFarmerBlockTotalValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFarmerBlockTotalValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFarmerBlockTotalValueQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFarmerBlockTotalValueQuery(baseOptions: Apollo.QueryHookOptions<FarmerBlockTotalValueQuery, FarmerBlockTotalValueQueryVariables> & ({ variables: FarmerBlockTotalValueQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FarmerBlockTotalValueQuery, FarmerBlockTotalValueQueryVariables>(FarmerBlockTotalValueDocument, options);
+      }
+export function useFarmerBlockTotalValueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FarmerBlockTotalValueQuery, FarmerBlockTotalValueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FarmerBlockTotalValueQuery, FarmerBlockTotalValueQueryVariables>(FarmerBlockTotalValueDocument, options);
+        }
+export function useFarmerBlockTotalValueSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FarmerBlockTotalValueQuery, FarmerBlockTotalValueQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FarmerBlockTotalValueQuery, FarmerBlockTotalValueQueryVariables>(FarmerBlockTotalValueDocument, options);
+        }
+export type FarmerBlockTotalValueQueryHookResult = ReturnType<typeof useFarmerBlockTotalValueQuery>;
+export type FarmerBlockTotalValueLazyQueryHookResult = ReturnType<typeof useFarmerBlockTotalValueLazyQuery>;
+export type FarmerBlockTotalValueSuspenseQueryHookResult = ReturnType<typeof useFarmerBlockTotalValueSuspenseQuery>;
+export type FarmerBlockTotalValueQueryResult = Apollo.QueryResult<FarmerBlockTotalValueQuery, FarmerBlockTotalValueQueryVariables>;
+export const OperatorTotalRewardsCollectedDocument = gql`
+    query OperatorTotalRewardsCollected($limit: Int!, $offset: Int, $orderBy: [leaderboard_operator_total_rewards_collecteds_order_by!]!, $where: leaderboard_operator_total_rewards_collecteds_bool_exp) {
+  leaderboard_operator_total_rewards_collecteds_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_operator_total_rewards_collecteds(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useOperatorTotalRewardsCollectedQuery__
+ *
+ * To run a query within a React component, call `useOperatorTotalRewardsCollectedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorTotalRewardsCollectedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorTotalRewardsCollectedQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useOperatorTotalRewardsCollectedQuery(baseOptions: Apollo.QueryHookOptions<OperatorTotalRewardsCollectedQuery, OperatorTotalRewardsCollectedQueryVariables> & ({ variables: OperatorTotalRewardsCollectedQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorTotalRewardsCollectedQuery, OperatorTotalRewardsCollectedQueryVariables>(OperatorTotalRewardsCollectedDocument, options);
+      }
+export function useOperatorTotalRewardsCollectedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorTotalRewardsCollectedQuery, OperatorTotalRewardsCollectedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorTotalRewardsCollectedQuery, OperatorTotalRewardsCollectedQueryVariables>(OperatorTotalRewardsCollectedDocument, options);
+        }
+export function useOperatorTotalRewardsCollectedSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OperatorTotalRewardsCollectedQuery, OperatorTotalRewardsCollectedQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OperatorTotalRewardsCollectedQuery, OperatorTotalRewardsCollectedQueryVariables>(OperatorTotalRewardsCollectedDocument, options);
+        }
+export type OperatorTotalRewardsCollectedQueryHookResult = ReturnType<typeof useOperatorTotalRewardsCollectedQuery>;
+export type OperatorTotalRewardsCollectedLazyQueryHookResult = ReturnType<typeof useOperatorTotalRewardsCollectedLazyQuery>;
+export type OperatorTotalRewardsCollectedSuspenseQueryHookResult = ReturnType<typeof useOperatorTotalRewardsCollectedSuspenseQuery>;
+export type OperatorTotalRewardsCollectedQueryResult = Apollo.QueryResult<OperatorTotalRewardsCollectedQuery, OperatorTotalRewardsCollectedQueryVariables>;
+export const OperatorTotalTaxCollectedDocument = gql`
+    query OperatorTotalTaxCollected($limit: Int!, $offset: Int, $orderBy: [leaderboard_operator_total_tax_collecteds_order_by!]!, $where: leaderboard_operator_total_tax_collecteds_bool_exp) {
+  leaderboard_operator_total_tax_collecteds_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_operator_total_tax_collecteds(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useOperatorTotalTaxCollectedQuery__
+ *
+ * To run a query within a React component, call `useOperatorTotalTaxCollectedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorTotalTaxCollectedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorTotalTaxCollectedQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useOperatorTotalTaxCollectedQuery(baseOptions: Apollo.QueryHookOptions<OperatorTotalTaxCollectedQuery, OperatorTotalTaxCollectedQueryVariables> & ({ variables: OperatorTotalTaxCollectedQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorTotalTaxCollectedQuery, OperatorTotalTaxCollectedQueryVariables>(OperatorTotalTaxCollectedDocument, options);
+      }
+export function useOperatorTotalTaxCollectedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorTotalTaxCollectedQuery, OperatorTotalTaxCollectedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorTotalTaxCollectedQuery, OperatorTotalTaxCollectedQueryVariables>(OperatorTotalTaxCollectedDocument, options);
+        }
+export function useOperatorTotalTaxCollectedSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OperatorTotalTaxCollectedQuery, OperatorTotalTaxCollectedQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OperatorTotalTaxCollectedQuery, OperatorTotalTaxCollectedQueryVariables>(OperatorTotalTaxCollectedDocument, options);
+        }
+export type OperatorTotalTaxCollectedQueryHookResult = ReturnType<typeof useOperatorTotalTaxCollectedQuery>;
+export type OperatorTotalTaxCollectedLazyQueryHookResult = ReturnType<typeof useOperatorTotalTaxCollectedLazyQuery>;
+export type OperatorTotalTaxCollectedSuspenseQueryHookResult = ReturnType<typeof useOperatorTotalTaxCollectedSuspenseQuery>;
+export type OperatorTotalTaxCollectedQueryResult = Apollo.QueryResult<OperatorTotalTaxCollectedQuery, OperatorTotalTaxCollectedQueryVariables>;
+export const OperatorBundleTotalCountDocument = gql`
+    query OperatorBundleTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_operator_bundle_total_counts_order_by!]!, $where: leaderboard_operator_bundle_total_counts_bool_exp) {
+  leaderboard_operator_bundle_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_operator_bundle_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useOperatorBundleTotalCountQuery__
+ *
+ * To run a query within a React component, call `useOperatorBundleTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorBundleTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorBundleTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useOperatorBundleTotalCountQuery(baseOptions: Apollo.QueryHookOptions<OperatorBundleTotalCountQuery, OperatorBundleTotalCountQueryVariables> & ({ variables: OperatorBundleTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorBundleTotalCountQuery, OperatorBundleTotalCountQueryVariables>(OperatorBundleTotalCountDocument, options);
+      }
+export function useOperatorBundleTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorBundleTotalCountQuery, OperatorBundleTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorBundleTotalCountQuery, OperatorBundleTotalCountQueryVariables>(OperatorBundleTotalCountDocument, options);
+        }
+export function useOperatorBundleTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OperatorBundleTotalCountQuery, OperatorBundleTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OperatorBundleTotalCountQuery, OperatorBundleTotalCountQueryVariables>(OperatorBundleTotalCountDocument, options);
+        }
+export type OperatorBundleTotalCountQueryHookResult = ReturnType<typeof useOperatorBundleTotalCountQuery>;
+export type OperatorBundleTotalCountLazyQueryHookResult = ReturnType<typeof useOperatorBundleTotalCountLazyQuery>;
+export type OperatorBundleTotalCountSuspenseQueryHookResult = ReturnType<typeof useOperatorBundleTotalCountSuspenseQuery>;
+export type OperatorBundleTotalCountQueryResult = Apollo.QueryResult<OperatorBundleTotalCountQuery, OperatorBundleTotalCountQueryVariables>;
+export const OperatorDepositsTotalCountDocument = gql`
+    query OperatorDepositsTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_operator_deposits_total_counts_order_by!]!, $where: leaderboard_operator_deposits_total_counts_bool_exp) {
+  leaderboard_operator_deposits_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_operator_deposits_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useOperatorDepositsTotalCountQuery__
+ *
+ * To run a query within a React component, call `useOperatorDepositsTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorDepositsTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorDepositsTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useOperatorDepositsTotalCountQuery(baseOptions: Apollo.QueryHookOptions<OperatorDepositsTotalCountQuery, OperatorDepositsTotalCountQueryVariables> & ({ variables: OperatorDepositsTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorDepositsTotalCountQuery, OperatorDepositsTotalCountQueryVariables>(OperatorDepositsTotalCountDocument, options);
+      }
+export function useOperatorDepositsTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorDepositsTotalCountQuery, OperatorDepositsTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorDepositsTotalCountQuery, OperatorDepositsTotalCountQueryVariables>(OperatorDepositsTotalCountDocument, options);
+        }
+export function useOperatorDepositsTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OperatorDepositsTotalCountQuery, OperatorDepositsTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OperatorDepositsTotalCountQuery, OperatorDepositsTotalCountQueryVariables>(OperatorDepositsTotalCountDocument, options);
+        }
+export type OperatorDepositsTotalCountQueryHookResult = ReturnType<typeof useOperatorDepositsTotalCountQuery>;
+export type OperatorDepositsTotalCountLazyQueryHookResult = ReturnType<typeof useOperatorDepositsTotalCountLazyQuery>;
+export type OperatorDepositsTotalCountSuspenseQueryHookResult = ReturnType<typeof useOperatorDepositsTotalCountSuspenseQuery>;
+export type OperatorDepositsTotalCountQueryResult = Apollo.QueryResult<OperatorDepositsTotalCountQuery, OperatorDepositsTotalCountQueryVariables>;
+export const OperatorDepositsTotalValueDocument = gql`
+    query OperatorDepositsTotalValue($limit: Int!, $offset: Int, $orderBy: [leaderboard_operator_deposits_total_values_order_by!]!, $where: leaderboard_operator_deposits_total_values_bool_exp) {
+  leaderboard_operator_deposits_total_values_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_operator_deposits_total_values(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useOperatorDepositsTotalValueQuery__
+ *
+ * To run a query within a React component, call `useOperatorDepositsTotalValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorDepositsTotalValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorDepositsTotalValueQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useOperatorDepositsTotalValueQuery(baseOptions: Apollo.QueryHookOptions<OperatorDepositsTotalValueQuery, OperatorDepositsTotalValueQueryVariables> & ({ variables: OperatorDepositsTotalValueQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorDepositsTotalValueQuery, OperatorDepositsTotalValueQueryVariables>(OperatorDepositsTotalValueDocument, options);
+      }
+export function useOperatorDepositsTotalValueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorDepositsTotalValueQuery, OperatorDepositsTotalValueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorDepositsTotalValueQuery, OperatorDepositsTotalValueQueryVariables>(OperatorDepositsTotalValueDocument, options);
+        }
+export function useOperatorDepositsTotalValueSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OperatorDepositsTotalValueQuery, OperatorDepositsTotalValueQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OperatorDepositsTotalValueQuery, OperatorDepositsTotalValueQueryVariables>(OperatorDepositsTotalValueDocument, options);
+        }
+export type OperatorDepositsTotalValueQueryHookResult = ReturnType<typeof useOperatorDepositsTotalValueQuery>;
+export type OperatorDepositsTotalValueLazyQueryHookResult = ReturnType<typeof useOperatorDepositsTotalValueLazyQuery>;
+export type OperatorDepositsTotalValueSuspenseQueryHookResult = ReturnType<typeof useOperatorDepositsTotalValueSuspenseQuery>;
+export type OperatorDepositsTotalValueQueryResult = Apollo.QueryResult<OperatorDepositsTotalValueQuery, OperatorDepositsTotalValueQueryVariables>;
+export const OperatorWithdrawalsTotalCountDocument = gql`
+    query OperatorWithdrawalsTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_operator_withdrawals_total_counts_order_by!]!, $where: leaderboard_operator_withdrawals_total_counts_bool_exp) {
+  leaderboard_operator_withdrawals_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_operator_withdrawals_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useOperatorWithdrawalsTotalCountQuery__
+ *
+ * To run a query within a React component, call `useOperatorWithdrawalsTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorWithdrawalsTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorWithdrawalsTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useOperatorWithdrawalsTotalCountQuery(baseOptions: Apollo.QueryHookOptions<OperatorWithdrawalsTotalCountQuery, OperatorWithdrawalsTotalCountQueryVariables> & ({ variables: OperatorWithdrawalsTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorWithdrawalsTotalCountQuery, OperatorWithdrawalsTotalCountQueryVariables>(OperatorWithdrawalsTotalCountDocument, options);
+      }
+export function useOperatorWithdrawalsTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorWithdrawalsTotalCountQuery, OperatorWithdrawalsTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorWithdrawalsTotalCountQuery, OperatorWithdrawalsTotalCountQueryVariables>(OperatorWithdrawalsTotalCountDocument, options);
+        }
+export function useOperatorWithdrawalsTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OperatorWithdrawalsTotalCountQuery, OperatorWithdrawalsTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OperatorWithdrawalsTotalCountQuery, OperatorWithdrawalsTotalCountQueryVariables>(OperatorWithdrawalsTotalCountDocument, options);
+        }
+export type OperatorWithdrawalsTotalCountQueryHookResult = ReturnType<typeof useOperatorWithdrawalsTotalCountQuery>;
+export type OperatorWithdrawalsTotalCountLazyQueryHookResult = ReturnType<typeof useOperatorWithdrawalsTotalCountLazyQuery>;
+export type OperatorWithdrawalsTotalCountSuspenseQueryHookResult = ReturnType<typeof useOperatorWithdrawalsTotalCountSuspenseQuery>;
+export type OperatorWithdrawalsTotalCountQueryResult = Apollo.QueryResult<OperatorWithdrawalsTotalCountQuery, OperatorWithdrawalsTotalCountQueryVariables>;
+export const NominatorDepositsTotalCountDocument = gql`
+    query NominatorDepositsTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_nominator_deposits_total_counts_order_by!]!, $where: leaderboard_nominator_deposits_total_counts_bool_exp) {
+  leaderboard_nominator_deposits_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_nominator_deposits_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useNominatorDepositsTotalCountQuery__
+ *
+ * To run a query within a React component, call `useNominatorDepositsTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNominatorDepositsTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNominatorDepositsTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useNominatorDepositsTotalCountQuery(baseOptions: Apollo.QueryHookOptions<NominatorDepositsTotalCountQuery, NominatorDepositsTotalCountQueryVariables> & ({ variables: NominatorDepositsTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NominatorDepositsTotalCountQuery, NominatorDepositsTotalCountQueryVariables>(NominatorDepositsTotalCountDocument, options);
+      }
+export function useNominatorDepositsTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NominatorDepositsTotalCountQuery, NominatorDepositsTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NominatorDepositsTotalCountQuery, NominatorDepositsTotalCountQueryVariables>(NominatorDepositsTotalCountDocument, options);
+        }
+export function useNominatorDepositsTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<NominatorDepositsTotalCountQuery, NominatorDepositsTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<NominatorDepositsTotalCountQuery, NominatorDepositsTotalCountQueryVariables>(NominatorDepositsTotalCountDocument, options);
+        }
+export type NominatorDepositsTotalCountQueryHookResult = ReturnType<typeof useNominatorDepositsTotalCountQuery>;
+export type NominatorDepositsTotalCountLazyQueryHookResult = ReturnType<typeof useNominatorDepositsTotalCountLazyQuery>;
+export type NominatorDepositsTotalCountSuspenseQueryHookResult = ReturnType<typeof useNominatorDepositsTotalCountSuspenseQuery>;
+export type NominatorDepositsTotalCountQueryResult = Apollo.QueryResult<NominatorDepositsTotalCountQuery, NominatorDepositsTotalCountQueryVariables>;
+export const NominatorDepositsTotalValueDocument = gql`
+    query NominatorDepositsTotalValue($limit: Int!, $offset: Int, $orderBy: [leaderboard_nominator_deposits_total_values_order_by!]!, $where: leaderboard_nominator_deposits_total_values_bool_exp) {
+  leaderboard_nominator_deposits_total_values_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_nominator_deposits_total_values(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useNominatorDepositsTotalValueQuery__
+ *
+ * To run a query within a React component, call `useNominatorDepositsTotalValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNominatorDepositsTotalValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNominatorDepositsTotalValueQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useNominatorDepositsTotalValueQuery(baseOptions: Apollo.QueryHookOptions<NominatorDepositsTotalValueQuery, NominatorDepositsTotalValueQueryVariables> & ({ variables: NominatorDepositsTotalValueQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NominatorDepositsTotalValueQuery, NominatorDepositsTotalValueQueryVariables>(NominatorDepositsTotalValueDocument, options);
+      }
+export function useNominatorDepositsTotalValueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NominatorDepositsTotalValueQuery, NominatorDepositsTotalValueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NominatorDepositsTotalValueQuery, NominatorDepositsTotalValueQueryVariables>(NominatorDepositsTotalValueDocument, options);
+        }
+export function useNominatorDepositsTotalValueSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<NominatorDepositsTotalValueQuery, NominatorDepositsTotalValueQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<NominatorDepositsTotalValueQuery, NominatorDepositsTotalValueQueryVariables>(NominatorDepositsTotalValueDocument, options);
+        }
+export type NominatorDepositsTotalValueQueryHookResult = ReturnType<typeof useNominatorDepositsTotalValueQuery>;
+export type NominatorDepositsTotalValueLazyQueryHookResult = ReturnType<typeof useNominatorDepositsTotalValueLazyQuery>;
+export type NominatorDepositsTotalValueSuspenseQueryHookResult = ReturnType<typeof useNominatorDepositsTotalValueSuspenseQuery>;
+export type NominatorDepositsTotalValueQueryResult = Apollo.QueryResult<NominatorDepositsTotalValueQuery, NominatorDepositsTotalValueQueryVariables>;
+export const NominatorWithdrawalsTotalCountDocument = gql`
+    query NominatorWithdrawalsTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_nominator_withdrawals_total_counts_order_by!]!, $where: leaderboard_nominator_withdrawals_total_counts_bool_exp) {
+  leaderboard_nominator_withdrawals_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_nominator_withdrawals_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useNominatorWithdrawalsTotalCountQuery__
+ *
+ * To run a query within a React component, call `useNominatorWithdrawalsTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNominatorWithdrawalsTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNominatorWithdrawalsTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useNominatorWithdrawalsTotalCountQuery(baseOptions: Apollo.QueryHookOptions<NominatorWithdrawalsTotalCountQuery, NominatorWithdrawalsTotalCountQueryVariables> & ({ variables: NominatorWithdrawalsTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NominatorWithdrawalsTotalCountQuery, NominatorWithdrawalsTotalCountQueryVariables>(NominatorWithdrawalsTotalCountDocument, options);
+      }
+export function useNominatorWithdrawalsTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NominatorWithdrawalsTotalCountQuery, NominatorWithdrawalsTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NominatorWithdrawalsTotalCountQuery, NominatorWithdrawalsTotalCountQueryVariables>(NominatorWithdrawalsTotalCountDocument, options);
+        }
+export function useNominatorWithdrawalsTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<NominatorWithdrawalsTotalCountQuery, NominatorWithdrawalsTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<NominatorWithdrawalsTotalCountQuery, NominatorWithdrawalsTotalCountQueryVariables>(NominatorWithdrawalsTotalCountDocument, options);
+        }
+export type NominatorWithdrawalsTotalCountQueryHookResult = ReturnType<typeof useNominatorWithdrawalsTotalCountQuery>;
+export type NominatorWithdrawalsTotalCountLazyQueryHookResult = ReturnType<typeof useNominatorWithdrawalsTotalCountLazyQuery>;
+export type NominatorWithdrawalsTotalCountSuspenseQueryHookResult = ReturnType<typeof useNominatorWithdrawalsTotalCountSuspenseQuery>;
+export type NominatorWithdrawalsTotalCountQueryResult = Apollo.QueryResult<NominatorWithdrawalsTotalCountQuery, NominatorWithdrawalsTotalCountQueryVariables>;
+export const FarmerVoteAndBlockTotalCountDocument = gql`
+    query FarmerVoteAndBlockTotalCount($limit: Int!, $offset: Int, $orderBy: [leaderboard_farmer_vote_and_block_total_counts_order_by!]!, $where: leaderboard_farmer_vote_and_block_total_counts_bool_exp) {
+  leaderboard_farmer_vote_and_block_total_counts_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_farmer_vote_and_block_total_counts(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useFarmerVoteAndBlockTotalCountQuery__
+ *
+ * To run a query within a React component, call `useFarmerVoteAndBlockTotalCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFarmerVoteAndBlockTotalCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFarmerVoteAndBlockTotalCountQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFarmerVoteAndBlockTotalCountQuery(baseOptions: Apollo.QueryHookOptions<FarmerVoteAndBlockTotalCountQuery, FarmerVoteAndBlockTotalCountQueryVariables> & ({ variables: FarmerVoteAndBlockTotalCountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FarmerVoteAndBlockTotalCountQuery, FarmerVoteAndBlockTotalCountQueryVariables>(FarmerVoteAndBlockTotalCountDocument, options);
+      }
+export function useFarmerVoteAndBlockTotalCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FarmerVoteAndBlockTotalCountQuery, FarmerVoteAndBlockTotalCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FarmerVoteAndBlockTotalCountQuery, FarmerVoteAndBlockTotalCountQueryVariables>(FarmerVoteAndBlockTotalCountDocument, options);
+        }
+export function useFarmerVoteAndBlockTotalCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FarmerVoteAndBlockTotalCountQuery, FarmerVoteAndBlockTotalCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FarmerVoteAndBlockTotalCountQuery, FarmerVoteAndBlockTotalCountQueryVariables>(FarmerVoteAndBlockTotalCountDocument, options);
+        }
+export type FarmerVoteAndBlockTotalCountQueryHookResult = ReturnType<typeof useFarmerVoteAndBlockTotalCountQuery>;
+export type FarmerVoteAndBlockTotalCountLazyQueryHookResult = ReturnType<typeof useFarmerVoteAndBlockTotalCountLazyQuery>;
+export type FarmerVoteAndBlockTotalCountSuspenseQueryHookResult = ReturnType<typeof useFarmerVoteAndBlockTotalCountSuspenseQuery>;
+export type FarmerVoteAndBlockTotalCountQueryResult = Apollo.QueryResult<FarmerVoteAndBlockTotalCountQuery, FarmerVoteAndBlockTotalCountQueryVariables>;
+export const FarmerVoteAndBlockTotalValueDocument = gql`
+    query FarmerVoteAndBlockTotalValue($limit: Int!, $offset: Int, $orderBy: [leaderboard_farmer_vote_and_block_total_values_order_by!]!, $where: leaderboard_farmer_vote_and_block_total_values_bool_exp) {
+  leaderboard_farmer_vote_and_block_total_values_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  leaderboard_farmer_vote_and_block_total_values(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    rank
+    value
+    lastContributionAt: last_contribution_at
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useFarmerVoteAndBlockTotalValueQuery__
+ *
+ * To run a query within a React component, call `useFarmerVoteAndBlockTotalValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFarmerVoteAndBlockTotalValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFarmerVoteAndBlockTotalValueQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFarmerVoteAndBlockTotalValueQuery(baseOptions: Apollo.QueryHookOptions<FarmerVoteAndBlockTotalValueQuery, FarmerVoteAndBlockTotalValueQueryVariables> & ({ variables: FarmerVoteAndBlockTotalValueQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FarmerVoteAndBlockTotalValueQuery, FarmerVoteAndBlockTotalValueQueryVariables>(FarmerVoteAndBlockTotalValueDocument, options);
+      }
+export function useFarmerVoteAndBlockTotalValueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FarmerVoteAndBlockTotalValueQuery, FarmerVoteAndBlockTotalValueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FarmerVoteAndBlockTotalValueQuery, FarmerVoteAndBlockTotalValueQueryVariables>(FarmerVoteAndBlockTotalValueDocument, options);
+        }
+export function useFarmerVoteAndBlockTotalValueSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FarmerVoteAndBlockTotalValueQuery, FarmerVoteAndBlockTotalValueQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FarmerVoteAndBlockTotalValueQuery, FarmerVoteAndBlockTotalValueQueryVariables>(FarmerVoteAndBlockTotalValueDocument, options);
+        }
+export type FarmerVoteAndBlockTotalValueQueryHookResult = ReturnType<typeof useFarmerVoteAndBlockTotalValueQuery>;
+export type FarmerVoteAndBlockTotalValueLazyQueryHookResult = ReturnType<typeof useFarmerVoteAndBlockTotalValueLazyQuery>;
+export type FarmerVoteAndBlockTotalValueSuspenseQueryHookResult = ReturnType<typeof useFarmerVoteAndBlockTotalValueSuspenseQuery>;
+export type FarmerVoteAndBlockTotalValueQueryResult = Apollo.QueryResult<FarmerVoteAndBlockTotalValueQuery, FarmerVoteAndBlockTotalValueQueryVariables>;
+export const NominationsListDocument = gql`
+    query NominationsList($limit: Int!, $offset: Int, $orderBy: [staking_nominators_order_by!]!, $where: staking_nominators_bool_exp) {
+  staking_nominators_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_nominators(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    account_id
+    domain_id
+    domain {
+      id
+      name
+    }
+    operator_id
+    operator {
+      id
+      account_id
+      status
+      pending_action
+      current_total_shares
+    }
+    known_shares
+    known_storage_fee_deposit
+    pending_amount
+    pending_storage_fee_deposit
+    pending_effective_domain_epoch
+    total_withdrawal_amounts
+    total_storage_fee_refund
+    unlock_at_confirmed_domain_block_number
+    pending_shares
+    pending_storage_fee_refund
+    total_deposits
+    status
+    pending_action
+    created_at
+    updated_at
+    deposits {
+      id
+      amount
+      storage_fee_deposit
+      timestamp
+      extrinsic_hash
+      status
+      created_at
+      staked_at
+      updated_at
+    }
+    withdrawals {
+      id
+      shares
+      estimated_amount
+      unlocked_amount
+      unlocked_storage_fee
+      timestamp
+      withdraw_extrinsic_hash
+      unlock_extrinsic_hash
+      status
+      created_at
+      ready_at
+      unlocked_at
+      updated_at
+    }
+  }
+}
+    `;
+
+/**
+ * __useNominationsListQuery__
+ *
+ * To run a query within a React component, call `useNominationsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNominationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNominationsListQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useNominationsListQuery(baseOptions: Apollo.QueryHookOptions<NominationsListQuery, NominationsListQueryVariables> & ({ variables: NominationsListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NominationsListQuery, NominationsListQueryVariables>(NominationsListDocument, options);
+      }
+export function useNominationsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NominationsListQuery, NominationsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NominationsListQuery, NominationsListQueryVariables>(NominationsListDocument, options);
+        }
+export function useNominationsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<NominationsListQuery, NominationsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<NominationsListQuery, NominationsListQueryVariables>(NominationsListDocument, options);
+        }
+export type NominationsListQueryHookResult = ReturnType<typeof useNominationsListQuery>;
+export type NominationsListLazyQueryHookResult = ReturnType<typeof useNominationsListLazyQuery>;
+export type NominationsListSuspenseQueryHookResult = ReturnType<typeof useNominationsListSuspenseQuery>;
+export type NominationsListQueryResult = Apollo.QueryResult<NominationsListQuery, NominationsListQueryVariables>;
+export const OperatorsListDocument = gql`
+    query OperatorsList($limit: Int!, $offset: Int, $orderBy: [staking_operators_order_by!]!, $where: staking_operators_bool_exp) {
+  staking_operators_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_operators(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sortId: sort_id
+    accountId: account_id
+    domainId: domain_id
+    domain {
+      id
+      sort_id
+      last_domain_block_number
+    }
+    currentEpochRewards: current_epoch_rewards
+    currentTotalStake: current_total_stake
+    currentTotalShares: current_total_shares
+    currentSharePrice: current_share_price
+    currentStorageFeeDeposit: current_storage_fee_deposit
+    minimumNominatorStake: minimum_nominator_stake
+    nominationTax: nomination_tax
+    signingKey: signing_key
+    status
+    rawStatus: raw_status
+    pendingAction: pending_action
+    totalDeposits: total_deposits
+    totalEstimatedWithdrawals: total_estimated_withdrawals
+    totalWithdrawals: total_withdrawals
+    totalTaxCollected: total_tax_collected
+    totalRewardsCollected: total_rewards_collected
+    totalTransfersIn: total_transfers_in
+    transfersInCount: transfers_in_count
+    totalTransfersOut: total_transfers_out
+    transfersOutCount: transfers_out_count
+    totalRejectedTransfersClaimed: total_rejected_transfers_claimed
+    rejectedTransfersClaimedCount: rejected_transfers_claimed_count
+    totalTransfersRejected: total_transfers_rejected
+    transfersRejectedCount: transfers_rejected_count
+    totalVolume: total_volume
+    totalConsensusStorageFee: total_consensus_storage_fee
+    totalDomainExecutionFee: total_domain_execution_fee
+    totalBurnedBalance: total_burned_balance
+    accumulatedEpochShares: accumulated_epoch_shares
+    accumulatedEpochStorageFeeDeposit: accumulated_epoch_storage_fee_deposit
+    activeEpochCount: active_epoch_count
+    bundleCount: bundle_count
+    lastBundleAt: last_bundle_at
+    nominatorsAggregate: nominators_aggregate {
+      aggregate {
+        count
+      }
+    }
+    depositsAggregate: deposits_aggregate {
+      aggregate {
+        count
+      }
+    }
+    nominators(limit: 256) {
+      id
+      account_id
+      known_shares
+      unlock_at_confirmed_domain_block_number
+    }
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+    `;
+
+/**
+ * __useOperatorsListQuery__
+ *
+ * To run a query within a React component, call `useOperatorsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorsListQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useOperatorsListQuery(baseOptions: Apollo.QueryHookOptions<OperatorsListQuery, OperatorsListQueryVariables> & ({ variables: OperatorsListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorsListQuery, OperatorsListQueryVariables>(OperatorsListDocument, options);
+      }
+export function useOperatorsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorsListQuery, OperatorsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorsListQuery, OperatorsListQueryVariables>(OperatorsListDocument, options);
+        }
+export function useOperatorsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OperatorsListQuery, OperatorsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OperatorsListQuery, OperatorsListQueryVariables>(OperatorsListDocument, options);
+        }
+export type OperatorsListQueryHookResult = ReturnType<typeof useOperatorsListQuery>;
+export type OperatorsListLazyQueryHookResult = ReturnType<typeof useOperatorsListLazyQuery>;
+export type OperatorsListSuspenseQueryHookResult = ReturnType<typeof useOperatorsListSuspenseQuery>;
+export type OperatorsListQueryResult = Apollo.QueryResult<OperatorsListQuery, OperatorsListQueryVariables>;
+export const OperatorByIdDocument = gql`
+    query OperatorById($operatorId: String!) {
+  staking_operators_by_pk(id: $operatorId) {
+    id
+    account_id
+    domain_id
+    domain {
+      id
+      sort_id
+    }
+    bundle_count
+    current_epoch_rewards
+    current_total_stake
+    current_total_shares
+    current_share_price
+    current_storage_fee_deposit
+    minimum_nominator_stake
+    total_rewards_collected
+    total_consensus_storage_fee
+    total_domain_execution_fee
+    total_burned_balance
+    total_tax_collected
+    nomination_tax
+    signing_key
+    status
+    raw_status
+    pending_action
+    last_bundle_at
+    updated_at
+    nominators_aggregate {
+      aggregate {
+        count
+      }
+    }
+    deposits_aggregate {
+      aggregate {
+        count
+      }
+    }
+    withdrawals_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useOperatorByIdQuery__
+ *
+ * To run a query within a React component, call `useOperatorByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorByIdQuery({
+ *   variables: {
+ *      operatorId: // value for 'operatorId'
+ *   },
+ * });
+ */
+export function useOperatorByIdQuery(baseOptions: Apollo.QueryHookOptions<OperatorByIdQuery, OperatorByIdQueryVariables> & ({ variables: OperatorByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(OperatorByIdDocument, options);
+      }
+export function useOperatorByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorByIdQuery, OperatorByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(OperatorByIdDocument, options);
+        }
+export function useOperatorByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OperatorByIdQuery, OperatorByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(OperatorByIdDocument, options);
+        }
+export type OperatorByIdQueryHookResult = ReturnType<typeof useOperatorByIdQuery>;
+export type OperatorByIdLazyQueryHookResult = ReturnType<typeof useOperatorByIdLazyQuery>;
+export type OperatorByIdSuspenseQueryHookResult = ReturnType<typeof useOperatorByIdSuspenseQuery>;
+export type OperatorByIdQueryResult = Apollo.QueryResult<OperatorByIdQuery, OperatorByIdQueryVariables>;
+export const OperatorNominatorsByIdDocument = gql`
+    query OperatorNominatorsById($limit: Int!, $offset: Int, $orderBy: [staking_nominators_order_by!]!, $where: staking_nominators_bool_exp) {
+  staking_nominators_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_nominators(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    known_shares
+    account_id
+    domain_id
+  }
+}
+    `;
+
+/**
+ * __useOperatorNominatorsByIdQuery__
+ *
+ * To run a query within a React component, call `useOperatorNominatorsByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorNominatorsByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorNominatorsByIdQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useOperatorNominatorsByIdQuery(baseOptions: Apollo.QueryHookOptions<OperatorNominatorsByIdQuery, OperatorNominatorsByIdQueryVariables> & ({ variables: OperatorNominatorsByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorNominatorsByIdQuery, OperatorNominatorsByIdQueryVariables>(OperatorNominatorsByIdDocument, options);
+      }
+export function useOperatorNominatorsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorNominatorsByIdQuery, OperatorNominatorsByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorNominatorsByIdQuery, OperatorNominatorsByIdQueryVariables>(OperatorNominatorsByIdDocument, options);
+        }
+export function useOperatorNominatorsByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OperatorNominatorsByIdQuery, OperatorNominatorsByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OperatorNominatorsByIdQuery, OperatorNominatorsByIdQueryVariables>(OperatorNominatorsByIdDocument, options);
+        }
+export type OperatorNominatorsByIdQueryHookResult = ReturnType<typeof useOperatorNominatorsByIdQuery>;
+export type OperatorNominatorsByIdLazyQueryHookResult = ReturnType<typeof useOperatorNominatorsByIdLazyQuery>;
+export type OperatorNominatorsByIdSuspenseQueryHookResult = ReturnType<typeof useOperatorNominatorsByIdSuspenseQuery>;
+export type OperatorNominatorsByIdQueryResult = Apollo.QueryResult<OperatorNominatorsByIdQuery, OperatorNominatorsByIdQueryVariables>;
+export const NominatorsConnectionDocument = gql`
+    query NominatorsConnection($limit: Int!, $offset: Int, $orderBy: [staking_nominators_order_by!]!, $where: staking_nominators_bool_exp) {
+  staking_nominators_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_nominators(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    known_shares
+    account_id
+    domain_id
+    operator {
+      id
+      account_id
+      domain_id
+      current_epoch_rewards
+      current_total_stake
+      current_total_shares
+      current_share_price
+      minimum_nominator_stake
+      nomination_tax
+      signing_key
+      status
+      raw_status
+      pending_action
+      updated_at
+    }
+    updated_at
+  }
+}
+    `;
+
+/**
+ * __useNominatorsConnectionQuery__
+ *
+ * To run a query within a React component, call `useNominatorsConnectionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNominatorsConnectionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNominatorsConnectionQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useNominatorsConnectionQuery(baseOptions: Apollo.QueryHookOptions<NominatorsConnectionQuery, NominatorsConnectionQueryVariables> & ({ variables: NominatorsConnectionQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NominatorsConnectionQuery, NominatorsConnectionQueryVariables>(NominatorsConnectionDocument, options);
+      }
+export function useNominatorsConnectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NominatorsConnectionQuery, NominatorsConnectionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NominatorsConnectionQuery, NominatorsConnectionQueryVariables>(NominatorsConnectionDocument, options);
+        }
+export function useNominatorsConnectionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<NominatorsConnectionQuery, NominatorsConnectionQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<NominatorsConnectionQuery, NominatorsConnectionQueryVariables>(NominatorsConnectionDocument, options);
+        }
+export type NominatorsConnectionQueryHookResult = ReturnType<typeof useNominatorsConnectionQuery>;
+export type NominatorsConnectionLazyQueryHookResult = ReturnType<typeof useNominatorsConnectionLazyQuery>;
+export type NominatorsConnectionSuspenseQueryHookResult = ReturnType<typeof useNominatorsConnectionSuspenseQuery>;
+export type NominatorsConnectionQueryResult = Apollo.QueryResult<NominatorsConnectionQuery, NominatorsConnectionQueryVariables>;
+export const DomainsLastBlockDocument = gql`
+    query DomainsLastBlock {
+  staking_domains {
+    id
+    last_domain_block_number
+    completed_epoch
+  }
+}
+    `;
+
+/**
+ * __useDomainsLastBlockQuery__
+ *
+ * To run a query within a React component, call `useDomainsLastBlockQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDomainsLastBlockQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDomainsLastBlockQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDomainsLastBlockQuery(baseOptions?: Apollo.QueryHookOptions<DomainsLastBlockQuery, DomainsLastBlockQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DomainsLastBlockQuery, DomainsLastBlockQueryVariables>(DomainsLastBlockDocument, options);
+      }
+export function useDomainsLastBlockLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DomainsLastBlockQuery, DomainsLastBlockQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DomainsLastBlockQuery, DomainsLastBlockQueryVariables>(DomainsLastBlockDocument, options);
+        }
+export function useDomainsLastBlockSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DomainsLastBlockQuery, DomainsLastBlockQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<DomainsLastBlockQuery, DomainsLastBlockQueryVariables>(DomainsLastBlockDocument, options);
+        }
+export type DomainsLastBlockQueryHookResult = ReturnType<typeof useDomainsLastBlockQuery>;
+export type DomainsLastBlockLazyQueryHookResult = ReturnType<typeof useDomainsLastBlockLazyQuery>;
+export type DomainsLastBlockSuspenseQueryHookResult = ReturnType<typeof useDomainsLastBlockSuspenseQuery>;
+export type DomainsLastBlockQueryResult = Apollo.QueryResult<DomainsLastBlockQuery, DomainsLastBlockQueryVariables>;
+export const AccountsTopLeaderboardDocument = gql`
+    query AccountsTopLeaderboard($first: Int!) {
+  farmers: consensus_rewards(
+    order_by: {amount: desc}
+    limit: $first
+    where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}]}
+  ) {
+    id
+  }
+  operators: consensus_rewards(
+    order_by: {amount: desc}
+    limit: $first
+    where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}]}
+  ) {
+    id
+  }
+  nominators: consensus_rewards(
+    order_by: {amount: desc}
+    limit: $first
+    where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}]}
+  ) {
+    id
+  }
+}
+    `;
+
+/**
+ * __useAccountsTopLeaderboardQuery__
+ *
+ * To run a query within a React component, call `useAccountsTopLeaderboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountsTopLeaderboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountsTopLeaderboardQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *   },
+ * });
+ */
+export function useAccountsTopLeaderboardQuery(baseOptions: Apollo.QueryHookOptions<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables> & ({ variables: AccountsTopLeaderboardQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>(AccountsTopLeaderboardDocument, options);
+      }
+export function useAccountsTopLeaderboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>(AccountsTopLeaderboardDocument, options);
+        }
+export function useAccountsTopLeaderboardSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>(AccountsTopLeaderboardDocument, options);
+        }
+export type AccountsTopLeaderboardQueryHookResult = ReturnType<typeof useAccountsTopLeaderboardQuery>;
+export type AccountsTopLeaderboardLazyQueryHookResult = ReturnType<typeof useAccountsTopLeaderboardLazyQuery>;
+export type AccountsTopLeaderboardSuspenseQueryHookResult = ReturnType<typeof useAccountsTopLeaderboardSuspenseQuery>;
+export type AccountsTopLeaderboardQueryResult = Apollo.QueryResult<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>;
+export const PendingTransactionDocument = gql`
+    query PendingTransaction($subspaceAccount: String, $extrinsics: [String!]) {
+  consensus_accounts(where: {id: {_eq: $subspaceAccount}}) {
+    id
+    extrinsics(where: {hash: {_in: $extrinsics}}) {
+      hash
+      success
+      timestamp
+      name
+      events(limit: 1, order_by: {id: desc}) {
+        name
+      }
+      block {
+        hash
+        height
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __usePendingTransactionQuery__
+ *
+ * To run a query within a React component, call `usePendingTransactionQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePendingTransactionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePendingTransactionQuery({
+ *   variables: {
+ *      subspaceAccount: // value for 'subspaceAccount'
+ *      extrinsics: // value for 'extrinsics'
+ *   },
+ * });
+ */
+export function usePendingTransactionQuery(baseOptions?: Apollo.QueryHookOptions<PendingTransactionQuery, PendingTransactionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PendingTransactionQuery, PendingTransactionQueryVariables>(PendingTransactionDocument, options);
+      }
+export function usePendingTransactionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PendingTransactionQuery, PendingTransactionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PendingTransactionQuery, PendingTransactionQueryVariables>(PendingTransactionDocument, options);
+        }
+export function usePendingTransactionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<PendingTransactionQuery, PendingTransactionQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<PendingTransactionQuery, PendingTransactionQueryVariables>(PendingTransactionDocument, options);
+        }
+export type PendingTransactionQueryHookResult = ReturnType<typeof usePendingTransactionQuery>;
+export type PendingTransactionLazyQueryHookResult = ReturnType<typeof usePendingTransactionLazyQuery>;
+export type PendingTransactionSuspenseQueryHookResult = ReturnType<typeof usePendingTransactionSuspenseQuery>;
+export type PendingTransactionQueryResult = Apollo.QueryResult<PendingTransactionQuery, PendingTransactionQueryVariables>;
+export const ExtrinsicsSummaryDocument = gql`
+    query ExtrinsicsSummary($first: Int!, $subspaceAccount: String) {
+  consensus_extrinsics_aggregate(where: {signer: {_eq: $subspaceAccount}}) {
+    aggregate {
+      count
+    }
+  }
+  extrinsics: consensus_extrinsics(
+    order_by: {id: desc}
+    limit: $first
+    where: {signer: {_eq: $subspaceAccount}}
+  ) {
+    id
+    hash
+    success
+    timestamp
+    block_height
+    name
+  }
+}
+    `;
+
+/**
+ * __useExtrinsicsSummaryQuery__
+ *
+ * To run a query within a React component, call `useExtrinsicsSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtrinsicsSummaryQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      subspaceAccount: // value for 'subspaceAccount'
+ *   },
+ * });
+ */
+export function useExtrinsicsSummaryQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables> & ({ variables: ExtrinsicsSummaryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables>(ExtrinsicsSummaryDocument, options);
+      }
+export function useExtrinsicsSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables>(ExtrinsicsSummaryDocument, options);
+        }
+export function useExtrinsicsSummarySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables>(ExtrinsicsSummaryDocument, options);
+        }
+export type ExtrinsicsSummaryQueryHookResult = ReturnType<typeof useExtrinsicsSummaryQuery>;
+export type ExtrinsicsSummaryLazyQueryHookResult = ReturnType<typeof useExtrinsicsSummaryLazyQuery>;
+export type ExtrinsicsSummarySuspenseQueryHookResult = ReturnType<typeof useExtrinsicsSummarySuspenseQuery>;
+export type ExtrinsicsSummaryQueryResult = Apollo.QueryResult<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables>;
+export const CheckRoleDocument = gql`
+    query CheckRole($subspaceAccount: String!) {
+  isFarmer: consensus_rewards(
+    where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}}
+    limit: 1
+  ) {
+    account {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useCheckRoleQuery__
+ *
+ * To run a query within a React component, call `useCheckRoleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckRoleQuery({
+ *   variables: {
+ *      subspaceAccount: // value for 'subspaceAccount'
+ *   },
+ * });
+ */
+export function useCheckRoleQuery(baseOptions: Apollo.QueryHookOptions<CheckRoleQuery, CheckRoleQueryVariables> & ({ variables: CheckRoleQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckRoleQuery, CheckRoleQueryVariables>(CheckRoleDocument, options);
+      }
+export function useCheckRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckRoleQuery, CheckRoleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckRoleQuery, CheckRoleQueryVariables>(CheckRoleDocument, options);
+        }
+export function useCheckRoleSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CheckRoleQuery, CheckRoleQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CheckRoleQuery, CheckRoleQueryVariables>(CheckRoleDocument, options);
+        }
+export type CheckRoleQueryHookResult = ReturnType<typeof useCheckRoleQuery>;
+export type CheckRoleLazyQueryHookResult = ReturnType<typeof useCheckRoleLazyQuery>;
+export type CheckRoleSuspenseQueryHookResult = ReturnType<typeof useCheckRoleSuspenseQuery>;
+export type CheckRoleQueryResult = Apollo.QueryResult<CheckRoleQuery, CheckRoleQueryVariables>;
+export const StakingSummaryDocument = gql`
+    query StakingSummary($first: Int!, $subspaceAccount: String) {
+  staking_operators(
+    order_by: {id: asc}
+    limit: $first
+    where: {account_id: {_eq: $subspaceAccount}}
+  ) {
+    id
+    account_id
+    domain_id
+    current_total_stake
+    current_total_shares
+  }
+  staking_operators_aggregate(
+    order_by: {id: asc}
+    where: {account_id: {_eq: $subspaceAccount}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  staking_nominators(
+    order_by: {id: asc}
+    limit: $first
+    where: {account_id: {_eq: $subspaceAccount}}
+  ) {
+    id
+    known_shares
+    known_storage_fee_deposit
+    account {
+      id
+    }
+    operator {
+      id
+      account_id
+      domain_id
+      current_total_stake
+      current_total_shares
+    }
+  }
+  staking_nominators_aggregate(
+    order_by: {id: asc}
+    where: {account_id: {_eq: $subspaceAccount}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+
+/**
+ * __useStakingSummaryQuery__
+ *
+ * To run a query within a React component, call `useStakingSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStakingSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStakingSummaryQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      subspaceAccount: // value for 'subspaceAccount'
+ *   },
+ * });
+ */
+export function useStakingSummaryQuery(baseOptions: Apollo.QueryHookOptions<StakingSummaryQuery, StakingSummaryQueryVariables> & ({ variables: StakingSummaryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(StakingSummaryDocument, options);
+      }
+export function useStakingSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StakingSummaryQuery, StakingSummaryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(StakingSummaryDocument, options);
+        }
+export function useStakingSummarySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<StakingSummaryQuery, StakingSummaryQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(StakingSummaryDocument, options);
+        }
+export type StakingSummaryQueryHookResult = ReturnType<typeof useStakingSummaryQuery>;
+export type StakingSummaryLazyQueryHookResult = ReturnType<typeof useStakingSummaryLazyQuery>;
+export type StakingSummarySuspenseQueryHookResult = ReturnType<typeof useStakingSummarySuspenseQuery>;
+export type StakingSummaryQueryResult = Apollo.QueryResult<StakingSummaryQuery, StakingSummaryQueryVariables>;
+export const LastBlockDocument = gql`
+    query LastBlock {
+  lastBlock: consensus_blocks(limit: 1, order_by: {sort_id: desc}) {
+    height
+  }
+}
+    `;
+
+/**
+ * __useLastBlockQuery__
+ *
+ * To run a query within a React component, call `useLastBlockQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLastBlockQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLastBlockQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLastBlockQuery(baseOptions?: Apollo.QueryHookOptions<LastBlockQuery, LastBlockQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LastBlockQuery, LastBlockQueryVariables>(LastBlockDocument, options);
+      }
+export function useLastBlockLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LastBlockQuery, LastBlockQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LastBlockQuery, LastBlockQueryVariables>(LastBlockDocument, options);
+        }
+export function useLastBlockSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<LastBlockQuery, LastBlockQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LastBlockQuery, LastBlockQueryVariables>(LastBlockDocument, options);
+        }
+export type LastBlockQueryHookResult = ReturnType<typeof useLastBlockQuery>;
+export type LastBlockLazyQueryHookResult = ReturnType<typeof useLastBlockLazyQuery>;
+export type LastBlockSuspenseQueryHookResult = ReturnType<typeof useLastBlockSuspenseQuery>;
+export type LastBlockQueryResult = Apollo.QueryResult<LastBlockQuery, LastBlockQueryVariables>;

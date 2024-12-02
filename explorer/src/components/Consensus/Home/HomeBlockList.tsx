@@ -1,25 +1,31 @@
 'use client'
 
+import { Spinner } from '@/components/common/Spinner'
+import useMediaQuery from '@/hooks/useMediaQuery'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { HomeQueryQuery } from 'gql/graphql'
+import { HomeBlocksQueryQuery, useHomeBlocksQueryQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 
-interface HomeBlockListProps {
-  data: HomeQueryQuery
-}
+type Row = HomeBlocksQueryQuery['consensus_blocks'][number]
 
-type Row = HomeQueryQuery['consensus_blocks'][number]
-
-export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
+export const HomeBlockList: FC = () => {
   const { network, section } = useIndexers()
 
-  const blocks = useMemo(() => data.consensus_blocks, [data.consensus_blocks])
+  const isDesktop = useMediaQuery('(min-width: 640px)')
+  const PAGE_SIZE = useMemo(() => (isDesktop ? 10 : 3), [isDesktop])
+
+  const { data, loading } = useHomeBlocksQueryQuery({
+    variables: { limit: PAGE_SIZE, offset: 0 },
+    pollInterval: 6000,
+  })
+
+  const blocks = useMemo(() => data?.consensus_blocks, [data?.consensus_blocks])
 
   const columns = useMemo(
     () => [
@@ -77,13 +83,17 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
           <ArrowLongRightIcon stroke='#DE67E4' className='size-6' />
         </Link>
       </div>
-      <SortedTable
-        data={blocks}
-        columns={columns}
-        showNavigation={false}
-        pageCount={1}
-        filename='home-latest-blocks'
-      />
+      {loading || !blocks ? (
+        <Spinner isXSmall />
+      ) : (
+        <SortedTable
+          data={blocks}
+          columns={columns}
+          showNavigation={false}
+          pageCount={1}
+          filename='home-latest-blocks'
+        />
+      )}
     </div>
   )
 }
