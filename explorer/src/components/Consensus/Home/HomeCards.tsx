@@ -64,7 +64,6 @@ export const HomeCards: FC<Props> = ({
           title={title}
           value={value}
           icon={icon}
-          tooltip={tooltip}
           darkBgClass={darkBgClass}
         />
       ))}
