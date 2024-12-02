@@ -17894,7 +17894,7 @@ export type ExtrinsicsByHashQuery = { __typename?: 'query_root', consensus_extri
 export type HomeQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HomeQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', height: any }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
+export type HomeQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', height: any, timestamp: any, space_pledged: any, blockchain_size: any }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
 
 export type HomeSubscriptionBlocksListSubscriptionVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -19420,6 +19420,9 @@ export const HomeQueryDocument = gql`
     query HomeQuery {
   consensus_blocks(limit: 1, order_by: {sort_id: desc}) {
     height
+    timestamp
+    space_pledged
+    blockchain_size
   }
   consensus_accounts_aggregate {
     aggregate {

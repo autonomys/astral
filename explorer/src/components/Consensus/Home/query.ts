@@ -1,7 +1,28 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_HOME = gql`
-  query HomeQuery($limit: Int!, $offset: Int!) {
+  query HomeQuery {
+    consensus_blocks(limit: 1, order_by: { sort_id: desc }) {
+      height
+      timestamp
+      space_pledged
+      blockchain_size
+    }
+    consensus_accounts_aggregate {
+      aggregate {
+        count
+      }
+    }
+    consensus_extrinsics_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+`
+
+export const QUERY_HOME_BLOCKS_LIST = gql`
+  subscription HomeSubscriptionBlocksList($limit: Int!, $offset: Int!) {
     consensus_blocks(limit: $limit, offset: $offset, order_by: { sort_id: desc }) {
       id
       hash
@@ -13,6 +34,11 @@ export const QUERY_HOME = gql`
       extrinsics_count
       events_count
     }
+  }
+`
+
+export const QUERY_HOME_EXTRINSICS_LIST = gql`
+  subscription HomeSubscriptionExtrinsicsList($limit: Int!, $offset: Int!) {
     consensus_extrinsics(limit: $limit, offset: $offset, order_by: { timestamp: desc }) {
       hash
       id
@@ -21,32 +47,6 @@ export const QUERY_HOME = gql`
       timestamp
       block_height
       name
-    }
-    consensus_accounts_aggregate {
-      aggregate {
-        count
-      }
-    }
-    accountsWithBalanceCount: consensus_accounts_aggregate(where: { total: { _gt: 1 } }) {
-      aggregate {
-        count
-      }
-    }
-    consensus_extrinsics_aggregate {
-      aggregate {
-        count
-      }
-    }
-    signedExtrinsics: consensus_extrinsics_aggregate(
-      where: {
-        signature: {
-          _neq: "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-        }
-      }
-    ) {
-      aggregate {
-        count
-      }
     }
   }
 `
