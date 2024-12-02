@@ -27,23 +27,7 @@ export const QUERY_HOME = gql`
         count
       }
     }
-    accountsWithBalanceCount: consensus_accounts_aggregate(where: { total: { _gt: 1 } }) {
-      aggregate {
-        count
-      }
-    }
     consensus_extrinsics_aggregate {
-      aggregate {
-        count
-      }
-    }
-    signedExtrinsics: consensus_extrinsics_aggregate(
-      where: {
-        signature: {
-          _neq: "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-        }
-      }
-    ) {
       aggregate {
         count
       }

@@ -16166,7 +16166,7 @@ export type HomeQueryQueryVariables = Exact<{
 }>;
 
 
-export type HomeQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, hash: string, height: any, timestamp: any, state_root: string, blockchain_size: any, space_pledged: any, extrinsics_count: number, events_count: number }>, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, success: boolean, index_in_block: number, timestamp: any, block_height: any, name: string }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, accountsWithBalanceCount: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, signedExtrinsics: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
+export type HomeQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, hash: string, height: any, timestamp: any, state_root: string, blockchain_size: any, space_pledged: any, extrinsics_count: number, events_count: number }>, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, success: boolean, index_in_block: number, timestamp: any, block_height: any, name: string }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
 
 export type LogsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -17703,19 +17703,7 @@ export const HomeQueryDocument = gql`
       count
     }
   }
-  accountsWithBalanceCount: consensus_accounts_aggregate(where: {total: {_gt: 1}}) {
-    aggregate {
-      count
-    }
-  }
   consensus_extrinsics_aggregate {
-    aggregate {
-      count
-    }
-  }
-  signedExtrinsics: consensus_extrinsics_aggregate(
-    where: {signature: {_neq: "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"}}
-  ) {
     aggregate {
       count
     }

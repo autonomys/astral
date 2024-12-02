@@ -23,22 +23,16 @@ export const HomeChainInfo: FC<HomeChainInfo> = ({ data }) => {
   const accountsCount = numberWithCommas(
     Number(data.consensus_accounts_aggregate?.aggregate?.count),
   )
-  const accountsWithBalanceCount = numberWithCommas(
-    Number(data.accountsWithBalanceCount?.aggregate?.count),
-  )
   const extrinsicsCount = numberWithCommas(
     Number(data.consensus_extrinsics_aggregate?.aggregate?.count),
   )
-  const signedExtrinsicsCount = numberWithCommas(Number(data.signedExtrinsics?.aggregate?.count))
   const blocksCount = numberWithCommas(Number(block.height))
 
   return (
     <HomeCards
       blocksCount={blocksCount}
       extrinsicsCount={extrinsicsCount}
-      signedExtrinsicsCount={signedExtrinsicsCount}
       accountsCount={accountsCount}
-      accountsWithBalanceCount={accountsWithBalanceCount}
       spacePledged={spacePledged}
       spacePledgedBinary={spacePledgedBinary}
       historySize={historySize}
