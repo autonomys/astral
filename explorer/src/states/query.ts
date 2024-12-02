@@ -29,7 +29,7 @@ const initialized: Init = { initialized: true }
 
 interface ExplorerQueryState {
   [Routes.consensus]: {
-    home: QueryState<GqlT.HomeQueryQuery>
+    home: QueryState<GqlT.HomeCardsQueryQuery>
 
     accounts: QueryState<GqlT.AccountsQuery>
     blocks: QueryState<GqlT.BlocksQuery>

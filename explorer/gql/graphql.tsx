@@ -16160,13 +16160,26 @@ export type ExtrinsicsByHashQueryVariables = Exact<{
 
 export type ExtrinsicsByHashQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, index_in_block: number, success: boolean, name: string, nonce: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }> };
 
-export type HomeQueryQueryVariables = Exact<{
+export type HomeCardsQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HomeCardsQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', height: any, blockchain_size: any, space_pledged: any }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
+
+export type HomeBlocksQueryQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
 }>;
 
 
-export type HomeQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, hash: string, height: any, timestamp: any, state_root: string, blockchain_size: any, space_pledged: any, extrinsics_count: number, events_count: number }>, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, success: boolean, index_in_block: number, timestamp: any, block_height: any, name: string }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
+export type HomeBlocksQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, hash: string, height: any, timestamp: any, state_root: string, blockchain_size: any, space_pledged: any, extrinsics_count: number, events_count: number }> };
+
+export type HomeExtrinsicsQueryQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+}>;
+
+
+export type HomeExtrinsicsQueryQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, success: boolean, index_in_block: number, timestamp: any, block_height: any, name: string }> };
 
 export type LogsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -17672,31 +17685,12 @@ export type ExtrinsicsByHashQueryHookResult = ReturnType<typeof useExtrinsicsByH
 export type ExtrinsicsByHashLazyQueryHookResult = ReturnType<typeof useExtrinsicsByHashLazyQuery>;
 export type ExtrinsicsByHashSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByHashSuspenseQuery>;
 export type ExtrinsicsByHashQueryResult = Apollo.QueryResult<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>;
-export const HomeQueryDocument = gql`
-    query HomeQuery($limit: Int!, $offset: Int!) {
-  consensus_blocks(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {
-    id
-    hash
+export const HomeCardsQueryDocument = gql`
+    query HomeCardsQuery {
+  consensus_blocks(limit: 1, order_by: {sort_id: desc}) {
     height
-    timestamp
-    state_root
     blockchain_size
     space_pledged
-    extrinsics_count
-    events_count
-  }
-  consensus_extrinsics(
-    limit: $limit
-    offset: $offset
-    order_by: {timestamp: desc}
-  ) {
-    hash
-    id
-    success
-    index_in_block
-    timestamp
-    block_height
-    name
   }
   consensus_accounts_aggregate {
     aggregate {
@@ -17712,38 +17706,136 @@ export const HomeQueryDocument = gql`
     `;
 
 /**
- * __useHomeQueryQuery__
+ * __useHomeCardsQueryQuery__
  *
- * To run a query within a React component, call `useHomeQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useHomeQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHomeCardsQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeCardsQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHomeQueryQuery({
+ * const { data, loading, error } = useHomeCardsQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useHomeCardsQueryQuery(baseOptions?: Apollo.QueryHookOptions<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>(HomeCardsQueryDocument, options);
+      }
+export function useHomeCardsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>(HomeCardsQueryDocument, options);
+        }
+export function useHomeCardsQuerySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>(HomeCardsQueryDocument, options);
+        }
+export type HomeCardsQueryQueryHookResult = ReturnType<typeof useHomeCardsQueryQuery>;
+export type HomeCardsQueryLazyQueryHookResult = ReturnType<typeof useHomeCardsQueryLazyQuery>;
+export type HomeCardsQuerySuspenseQueryHookResult = ReturnType<typeof useHomeCardsQuerySuspenseQuery>;
+export type HomeCardsQueryQueryResult = Apollo.QueryResult<HomeCardsQueryQuery, HomeCardsQueryQueryVariables>;
+export const HomeBlocksQueryDocument = gql`
+    query HomeBlocksQuery($limit: Int!, $offset: Int!) {
+  consensus_blocks(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {
+    id
+    hash
+    height
+    timestamp
+    state_root
+    blockchain_size
+    space_pledged
+    extrinsics_count
+    events_count
+  }
+}
+    `;
+
+/**
+ * __useHomeBlocksQueryQuery__
+ *
+ * To run a query within a React component, call `useHomeBlocksQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeBlocksQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeBlocksQueryQuery({
  *   variables: {
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
  *   },
  * });
  */
-export function useHomeQueryQuery(baseOptions: Apollo.QueryHookOptions<HomeQueryQuery, HomeQueryQueryVariables> & ({ variables: HomeQueryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useHomeBlocksQueryQuery(baseOptions: Apollo.QueryHookOptions<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables> & ({ variables: HomeBlocksQueryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<HomeQueryQuery, HomeQueryQueryVariables>(HomeQueryDocument, options);
+        return Apollo.useQuery<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>(HomeBlocksQueryDocument, options);
       }
-export function useHomeQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeQueryQuery, HomeQueryQueryVariables>) {
+export function useHomeBlocksQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<HomeQueryQuery, HomeQueryQueryVariables>(HomeQueryDocument, options);
+          return Apollo.useLazyQuery<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>(HomeBlocksQueryDocument, options);
         }
-export function useHomeQuerySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<HomeQueryQuery, HomeQueryQueryVariables>) {
+export function useHomeBlocksQuerySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<HomeQueryQuery, HomeQueryQueryVariables>(HomeQueryDocument, options);
+          return Apollo.useSuspenseQuery<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>(HomeBlocksQueryDocument, options);
         }
-export type HomeQueryQueryHookResult = ReturnType<typeof useHomeQueryQuery>;
-export type HomeQueryLazyQueryHookResult = ReturnType<typeof useHomeQueryLazyQuery>;
-export type HomeQuerySuspenseQueryHookResult = ReturnType<typeof useHomeQuerySuspenseQuery>;
-export type HomeQueryQueryResult = Apollo.QueryResult<HomeQueryQuery, HomeQueryQueryVariables>;
+export type HomeBlocksQueryQueryHookResult = ReturnType<typeof useHomeBlocksQueryQuery>;
+export type HomeBlocksQueryLazyQueryHookResult = ReturnType<typeof useHomeBlocksQueryLazyQuery>;
+export type HomeBlocksQuerySuspenseQueryHookResult = ReturnType<typeof useHomeBlocksQuerySuspenseQuery>;
+export type HomeBlocksQueryQueryResult = Apollo.QueryResult<HomeBlocksQueryQuery, HomeBlocksQueryQueryVariables>;
+export const HomeExtrinsicsQueryDocument = gql`
+    query HomeExtrinsicsQuery($limit: Int!, $offset: Int!) {
+  consensus_extrinsics(
+    limit: $limit
+    offset: $offset
+    order_by: {timestamp: desc}
+  ) {
+    hash
+    id
+    success
+    index_in_block
+    timestamp
+    block_height
+    name
+  }
+}
+    `;
+
+/**
+ * __useHomeExtrinsicsQueryQuery__
+ *
+ * To run a query within a React component, call `useHomeExtrinsicsQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeExtrinsicsQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeExtrinsicsQueryQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *   },
+ * });
+ */
+export function useHomeExtrinsicsQueryQuery(baseOptions: Apollo.QueryHookOptions<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables> & ({ variables: HomeExtrinsicsQueryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>(HomeExtrinsicsQueryDocument, options);
+      }
+export function useHomeExtrinsicsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>(HomeExtrinsicsQueryDocument, options);
+        }
+export function useHomeExtrinsicsQuerySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>(HomeExtrinsicsQueryDocument, options);
+        }
+export type HomeExtrinsicsQueryQueryHookResult = ReturnType<typeof useHomeExtrinsicsQueryQuery>;
+export type HomeExtrinsicsQueryLazyQueryHookResult = ReturnType<typeof useHomeExtrinsicsQueryLazyQuery>;
+export type HomeExtrinsicsQuerySuspenseQueryHookResult = ReturnType<typeof useHomeExtrinsicsQuerySuspenseQuery>;
+export type HomeExtrinsicsQueryQueryResult = Apollo.QueryResult<HomeExtrinsicsQueryQuery, HomeExtrinsicsQueryQueryVariables>;
 export const LogsDocument = gql`
     query Logs($limit: Int!, $offset: Int, $orderBy: [consensus_logs_order_by!]!, $where: consensus_logs_bool_exp) {
   consensus_logs_aggregate(where: $where) {

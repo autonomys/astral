@@ -1,10 +1,10 @@
 /* eslint-disable react/no-unknown-property */
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { QUERY_HOME } from 'components/Consensus/Home/query'
+import { QUERY_HOME_CARDS } from 'components/Consensus/Home/query'
 import { ArchivedHistoryIcon, AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
-import { HomeQueryQuery } from 'gql/graphql'
+import { HomeCardsQueryQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -21,15 +21,15 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
   const {
     data,
   }: {
-    data: HomeQueryQuery
+    data: HomeCardsQueryQuery
   } = await fetch(chainMatch.indexer, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_HOME['loc']?.source.body,
-      variables: { limit: 1, offset: 0 },
+      query: QUERY_HOME_CARDS['loc']?.source.body,
+      variables: {},
     }),
   }).then((res) => res.json())
 
@@ -51,11 +51,10 @@ function Screen({
   data,
 }: {
   chainMatch: (typeof indexers)[number]
-  data: HomeQueryQuery
+  data: HomeCardsQueryQuery
 }) {
   const block = {
     height: data.consensus_blocks[0]?.height ?? '0',
-    timestamp: data.consensus_blocks[0]?.state_root ?? '0',
     extrinsicsCount: data.consensus_extrinsics_aggregate.aggregate?.count ?? 0,
     spacePledged: data.consensus_blocks[0]?.space_pledged ?? '',
     historySize: data.consensus_blocks[0]?.blockchain_size ?? '',
