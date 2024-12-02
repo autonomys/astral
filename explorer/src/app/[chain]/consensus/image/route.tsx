@@ -55,7 +55,7 @@ function Screen({
 }) {
   const block = {
     height: data.consensus_blocks[0]?.height ?? '0',
-    timestamp: data.consensus_blocks[0]?.state_root ?? '0',
+    timestamp: data.consensus_blocks[0]?.timestamp ?? '0',
     extrinsicsCount: data.consensus_extrinsics_aggregate.aggregate?.count ?? 0,
     spacePledged: data.consensus_blocks[0]?.space_pledged ?? '',
     historySize: data.consensus_blocks[0]?.blockchain_size ?? '',

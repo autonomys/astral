@@ -6,10 +6,10 @@ dotenv.config()
 
 const config: CodegenConfig = {
   generates: {
-    './gql/graphql.ts': {
+    './gql/graphql.tsx': {
       schema: defaultIndexer.indexer,
       documents: ['./src/**/query.ts'],
-      plugins: ['typescript', 'typescript-operations'],
+      plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
     },
   },
 }
