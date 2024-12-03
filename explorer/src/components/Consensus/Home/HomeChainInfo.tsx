@@ -15,7 +15,9 @@ export const HomeChainInfo: FC = () => {
   const [rawNodeCount, setRawNodeCount] = useState<number>(0)
 
   const getTelemetryData = useCallback(async () => {
-    const ws = new WebSocket('wss://telemetry.subspace.network/feed')
+    if (!process.env.NEXT_PUBLIC_TELEMETRY_URL) return
+
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_TELEMETRY_URL)
     ws.onopen = () => {
       console.log('Telemetry WebSocket connected')
       ws.send(JSON.stringify({ ping: 1 }))
