@@ -7,16 +7,6 @@ export const QUERY_HOME_CARDS = gql`
       blockchain_size
       space_pledged
     }
-    consensus_accounts_aggregate {
-      aggregate {
-        count
-      }
-    }
-    consensus_extrinsics_aggregate {
-      aggregate {
-        count
-      }
-    }
   }
 `
 
