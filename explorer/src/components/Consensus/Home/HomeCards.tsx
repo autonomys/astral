@@ -1,21 +1,19 @@
-import { ArchivedHistoryIcon, BlockIcon, PieChartIcon } from 'components/icons' // , WalletIcon, DocIcon
+import { ArchivedHistoryIcon, BlockIcon, PieChartIcon, WalletIcon } from 'components/icons'
 import { FC, useMemo } from 'react'
 import { HomeInfoCard } from './HomeInfoCard'
 
 type Props = {
   blocksCount?: string
   spacePledged?: string
-  spacePledgedBinary?: string
+  nodeCount?: string
   historySize?: string
-  historySizeBinary?: string
 }
 
 export const HomeCards: FC<Props> = ({
   blocksCount = '0',
   spacePledged = '0',
-  spacePledgedBinary = '0',
   historySize = '0',
-  historySizeBinary = '0',
+  nodeCount = '0',
 }) => {
   const listOfCards = useMemo(
     () => [
@@ -27,17 +25,11 @@ export const HomeCards: FC<Props> = ({
           'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-pastelPurple dark:to-pastelBlue',
       },
       {
-        title: 'Total Space Pledged',
-        icon: <PieChartIcon />,
-        value: spacePledgedBinary,
+        title: 'Total Nodes',
+        icon: <WalletIcon />,
+        value: nodeCount,
         darkBgClass:
           'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleShade dark:to-pastelPurple',
-      },
-      {
-        title: 'Archived History Size',
-        icon: <ArchivedHistoryIcon />,
-        value: historySizeBinary,
-        darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelBlue dark:to-pastelPink',
       },
       {
         title: 'Total Space Pledged',
@@ -53,7 +45,7 @@ export const HomeCards: FC<Props> = ({
         darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelBlue dark:to-pastelPink',
       },
     ],
-    [blocksCount, historySize, spacePledged, spacePledgedBinary, historySizeBinary],
+    [blocksCount, nodeCount, spacePledged, historySize],
   )
 
   return (
