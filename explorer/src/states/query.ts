@@ -29,8 +29,6 @@ const initialized: Init = { initialized: true }
 
 interface ExplorerQueryState {
   [Routes.consensus]: {
-    home: QueryState<GqlT.HomeCardsQueryQuery>
-
     accounts: QueryState<GqlT.AccountsQuery>
     blocks: QueryState<GqlT.BlocksQuery>
     extrinsics: QueryState<GqlT.ExtrinsicsQuery>
@@ -92,8 +90,6 @@ interface ExplorerQueryStateAndHelper extends ExplorerQueryState {
 
 const initialState: ExplorerQueryState = {
   consensus: {
-    home: initialized,
-
     accounts: initialized,
     blocks: initialized,
     extrinsics: initialized,

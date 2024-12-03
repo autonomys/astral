@@ -1,19 +1,21 @@
 import { Spinner } from '@/components/common/Spinner'
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { useHomeCardsQueryQuery } from 'gql/graphql'
+import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
 import { HomeCards } from './HomeCards'
 
 type TelemetryObject = [string, string, number, number]
 type TelemetryData = TelemetryObject[]
 
-export const HomeChainInfo: FC = () => {
-  const { ref, inView } = useInView()
+type Props = {
+  data: HomeQuery | undefined
+  loading: boolean
+}
+
+export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const { indexerSet } = useIndexers()
-  const { loading, data } = useHomeCardsQueryQuery({ skip: !inView })
   const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
 
   const getTelemetryData = useCallback(async () => {
@@ -71,7 +73,7 @@ export const HomeChainInfo: FC = () => {
   }, [])
 
   return (
-    <div ref={ref}>
+    <>
       {!data || loading ? (
         <Spinner isXSmall />
       ) : (
@@ -82,6 +84,6 @@ export const HomeChainInfo: FC = () => {
           historySize={historySize}
         />
       )}
-    </div>
+    </>
   )
 }
