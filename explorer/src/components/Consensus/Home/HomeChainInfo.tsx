@@ -1,7 +1,8 @@
 import { Spinner } from '@/components/common/Spinner'
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
 import { useHomeCardsQueryQuery } from 'gql/graphql'
-import { FC, useCallback, useEffect, useState } from 'react'
+import useIndexers from 'hooks/useIndexers'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
 import { HomeCards } from './HomeCards'
@@ -11,8 +12,9 @@ type TelemetryData = TelemetryObject[]
 
 export const HomeChainInfo: FC = () => {
   const { ref, inView } = useInView()
+  const { indexerSet } = useIndexers()
   const { loading, data } = useHomeCardsQueryQuery({ skip: !inView })
-  const [rawNodeCount, setRawNodeCount] = useState<number>(0)
+  const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
 
   const getTelemetryData = useCallback(async () => {
     if (!process.env.NEXT_PUBLIC_TELEMETRY_URL) return
@@ -27,14 +29,7 @@ export const HomeChainInfo: FC = () => {
       try {
         const text = await event.data.text()
         const jsonData: TelemetryData = JSON.parse(text)
-        const filterNetwork = jsonData.filter(
-          (item: TelemetryObject) => item[0] === 'Autonomys Mainnet',
-        )
-        const nodeCount = filterNetwork.reduce(
-          (max: number, current: TelemetryObject) => (current[2] > max ? current[2] : max),
-          filterNetwork[0][2],
-        )
-        setRawNodeCount(nodeCount)
+        setTelemetryData(jsonData)
       } catch (err) {
         console.error('Failed to parse Blob as JSON:', err)
       }
@@ -46,12 +41,29 @@ export const HomeChainInfo: FC = () => {
     return () => ws.close()
   }, [])
 
+  const nodeCount = useMemo(() => {
+    if (!telemetryData.length || !indexerSet.telemetryNetworkName) return '0'
+    try {
+      const filterNetwork = telemetryData.filter(
+        (item: TelemetryObject) => item[0] === indexerSet.telemetryNetworkName,
+      )
+      return numberWithCommas(
+        filterNetwork.reduce(
+          (max: number, current: TelemetryObject) => (current[2] > max ? current[2] : max),
+          filterNetwork[0][2],
+        ),
+      )
+    } catch (err) {
+      console.error('Failed to get node count:', err)
+      return '0'
+    }
+  }, [telemetryData, indexerSet.telemetryNetworkName])
+
   const spacePledgedVal = data ? Number(data.consensus_blocks[0].space_pledged) : 0
   const spacePledged = formatSpaceToDecimal(spacePledgedVal)
   const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
   const historySize = formatSpaceToDecimal(historySizeVal)
   const blocksCount = data ? numberWithCommas(Number(data.consensus_blocks[0].height)) : 'error'
-  const nodeCount = numberWithCommas(rawNodeCount)
 
   useEffect(() => {
     getTelemetryData()
