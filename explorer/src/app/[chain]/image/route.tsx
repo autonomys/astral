@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
 import { QUERY_HOME } from 'components/Consensus/Home/query'
-import { AutonomysSymbol, BlockIcon, LogoIcon, PieChartIcon } from 'components/icons'
+import { AutonomysSymbol, BlockIcon, LogoIcon, PieChartIcon, WalletIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import type { HomeQuery } from 'gql/graphql'
@@ -110,6 +110,32 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             background: 'linear-gradient(180deg, #AC70E1 0%, #E6ADDC 100%)',
           }}
         ></div>
+        <div
+          tw='absolute flex flex-row border-none rounded-[20px] ml-155 mt-65 mb-4 p-6 w-60 h-50'
+          style={{
+            background: 'linear-gradient(180deg, #AC70E1 0%, #E6ADDC 100%)',
+          }}
+        >
+          <div tw='absolute flex flex-row w-full m-6 justify-center'>
+            <WalletIcon />
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-md text-white mt-24 font-bold'
+            >
+              Qualified Reward Addresses
+            </span>
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-2xl text-white p-4 mt-28 font-bold'
+            >
+              {numberWithCommas(Number(data.consensus_accounts_aggregate.aggregate?.count))}
+            </span>
+          </div>
+        </div>
         <div
           tw='absolute flex flex-row border-none rounded-[20px] ml-225 mt-65 mb-4 p-6 w-60 h-50'
           style={{

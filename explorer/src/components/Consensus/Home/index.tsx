@@ -16,6 +16,7 @@ export const Home: FC = () => {
   const { loading, data } = useHomeQuery({
     variables: { limit: PAGE_SIZE, offset: 0 },
     skip: !inView,
+    pollInterval: 6000,
   })
 
   return (

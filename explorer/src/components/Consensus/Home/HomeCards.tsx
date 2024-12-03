@@ -7,6 +7,7 @@ type Props = {
   spacePledged?: string
   nodeCount?: string
   historySize?: string
+  accountsCount?: string
 }
 
 export const HomeCards: FC<Props> = ({
@@ -14,6 +15,7 @@ export const HomeCards: FC<Props> = ({
   spacePledged = '0',
   historySize = '0',
   nodeCount = '0',
+  accountsCount = '0',
 }) => {
   const listOfCards = useMemo(
     () => [
@@ -25,8 +27,14 @@ export const HomeCards: FC<Props> = ({
           'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-pastelPurple dark:to-pastelBlue',
       },
       {
-        title: 'Total Nodes',
+        title: 'Wallet addresses',
         icon: <WalletIcon />,
+        value: accountsCount,
+        darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelPurple dark:to-pastelPink',
+      },
+      {
+        title: 'Total Nodes',
+        icon: <BlockIcon />,
         value: nodeCount,
         darkBgClass:
           'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleShade dark:to-pastelPurple',
@@ -45,7 +53,7 @@ export const HomeCards: FC<Props> = ({
         darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelBlue dark:to-pastelPink',
       },
     ],
-    [blocksCount, nodeCount, spacePledged, historySize],
+    [blocksCount, nodeCount, spacePledged, historySize, accountsCount],
   )
 
   return (

@@ -1,7 +1,13 @@
 /* eslint-disable react/no-unknown-property */
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
 import { QUERY_HOME } from 'components/Consensus/Home/query'
-import { ArchivedHistoryIcon, AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
+import {
+  ArchivedHistoryIcon,
+  AutonomysSymbol,
+  BlockIcon,
+  DocIcon,
+  WalletIcon,
+} from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
 import type { HomeQuery } from 'gql/graphql'
@@ -49,7 +55,7 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
 function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; data: HomeQuery }) {
   const block = {
     height: data.consensus_blocks[0]?.height ?? '0',
-    extrinsicsCount: data.consensus_blocks[0]?.extrinsicsCount ?? 0,
+    accountsCount: data.consensus_accounts_aggregate.aggregate?.count ?? 0,
     spacePledged: data.consensus_blocks[0]?.space_pledged ?? '',
     historySize: data.consensus_blocks[0]?.blockchain_size ?? '',
   }
@@ -113,14 +119,14 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
           }}
         >
           <div tw='absolute flex flex-col w-100 m-6'>
-            <DocIcon />
+            <WalletIcon />
             <span
               style={{
                 fontFamily: 'Montserrat',
               }}
               tw='absolute text-2xl text-white p-4 ml-30 font-bold'
             >
-              Extrinsics {numberWithCommas(block.extrinsicsCount)}
+              Accounts {numberWithCommas(block.accountsCount)}
             </span>
           </div>
         </div>

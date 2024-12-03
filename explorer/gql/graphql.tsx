@@ -16166,7 +16166,7 @@ export type HomeQueryVariables = Exact<{
 }>;
 
 
-export type HomeQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, extrinsics_count: number, events_count: number, space_pledged: any, blockchain_size: any, extrinsicsCount: number, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, name: string, timestamp: any, success: boolean }> }> };
+export type HomeQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, extrinsics_count: number, events_count: number, space_pledged: any, blockchain_size: any, extrinsicsCount: number, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, name: string, timestamp: any, success: boolean }> }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null } };
 
 export type LogsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -17690,6 +17690,11 @@ export const HomeDocument = gql`
       name
       timestamp
       success
+    }
+  }
+  consensus_accounts_aggregate {
+    aggregate {
+      count
     }
   }
 }

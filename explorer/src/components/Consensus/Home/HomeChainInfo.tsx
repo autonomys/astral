@@ -66,6 +66,9 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
   const historySize = formatSpaceToDecimal(historySizeVal)
   const blocksCount = data ? numberWithCommas(Number(data.consensus_blocks[0].height)) : 'error'
+  const accountsCount = data
+    ? numberWithCommas(Number(data.consensus_accounts_aggregate?.aggregate?.count))
+    : 'error'
 
   useEffect(() => {
     getTelemetryData()
@@ -82,6 +85,7 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
           spacePledged={spacePledged}
           nodeCount={nodeCount}
           historySize={historySize}
+          accountsCount={accountsCount}
         />
       )}
     </>

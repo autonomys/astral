@@ -20,5 +20,10 @@ export const QUERY_HOME = gql`
         success
       }
     }
+    consensus_accounts_aggregate {
+      aggregate {
+        count
+      }
+    }
   }
 `
