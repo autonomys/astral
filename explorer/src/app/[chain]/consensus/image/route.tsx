@@ -1,10 +1,16 @@
 /* eslint-disable react/no-unknown-property */
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { QUERY_HOME_CARDS } from 'components/Consensus/Home/query'
-import { ArchivedHistoryIcon, AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
+import { QUERY_HOME } from 'components/Consensus/Home/query'
+import {
+  ArchivedHistoryIcon,
+  AutonomysSymbol,
+  BlockIcon,
+  DocIcon,
+  WalletIcon,
+} from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
-import { HomeCardsQueryQuery } from 'gql/graphql'
+import type { HomeQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -21,15 +27,15 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
   const {
     data,
   }: {
-    data: HomeCardsQueryQuery
+    data: HomeQuery
   } = await fetch(chainMatch.indexer, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_HOME_CARDS['loc']?.source.body,
-      variables: {},
+      query: QUERY_HOME['loc']?.source.body,
+      variables: { limit: 1, offset: 0 },
     }),
   }).then((res) => res.json())
 
@@ -46,16 +52,10 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
   }
 }
 
-function Screen({
-  chainMatch,
-  data,
-}: {
-  chainMatch: (typeof indexers)[number]
-  data: HomeCardsQueryQuery
-}) {
+function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; data: HomeQuery }) {
   const block = {
     height: data.consensus_blocks[0]?.height ?? '0',
-    extrinsicsCount: data.consensus_extrinsics_aggregate.aggregate?.count ?? 0,
+    accountsCount: data.consensus_accounts_aggregate.aggregate?.count ?? 0,
     spacePledged: data.consensus_blocks[0]?.space_pledged ?? '',
     historySize: data.consensus_blocks[0]?.blockchain_size ?? '',
   }
@@ -119,14 +119,14 @@ function Screen({
           }}
         >
           <div tw='absolute flex flex-col w-100 m-6'>
-            <DocIcon />
+            <WalletIcon />
             <span
               style={{
                 fontFamily: 'Montserrat',
               }}
               tw='absolute text-2xl text-white p-4 ml-30 font-bold'
             >
-              Extrinsics {numberWithCommas(block.extrinsicsCount)}
+              Accounts {numberWithCommas(block.accountsCount)}
             </span>
           </div>
         </div>

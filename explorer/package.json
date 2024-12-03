@@ -31,8 +31,8 @@
   "dependencies": {
     "@apollo/client": "^3.10.4",
     "@apollo/experimental-nextjs-app-support": "^0.11.6",
-    "@autonomys/auto-consensus": "^1.0.10",
-    "@autonomys/auto-utils": "^1.0.10",
+    "@autonomys/auto-consensus": "^1.0.12",
+    "@autonomys/auto-utils": "^1.0.12",
     "@headlessui/react": "^1.7.18",
     "@headlessui/tailwindcss": "^0.2.0",
     "@heroicons/react": "^2.1.1",

@@ -75,19 +75,21 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       const network = networks.find((network) => network.id === chain)
       if (!network) return
 
-      const novaRpc = network.domains.find((domain) => domain.runtime === DomainRuntime.NOVA)
+      const autoEvmRpc = network.domains.find((domain) => domain.runtime === DomainRuntime.AUTO_EVM)
         ?.rpcUrls[0]
       const autoIdRpc = network.domains.find((domain) => domain.runtime === DomainRuntime.AUTO_ID)
         ?.rpcUrls[0]
-      if (!novaRpc || !autoIdRpc) return
+      if (!autoEvmRpc || !autoIdRpc) return
 
       const domainsRpcs = network.domains.map((domain) =>
         domain.rpcUrls[0].replace('https://', 'wss://'),
       )
 
-      const [nova, autoId] = await Promise.all(domainsRpcs.flatMap((rpc) => createConnection(rpc)))
+      const [autoEvm, autoId] = await Promise.all(
+        domainsRpcs.flatMap((rpc) => createConnection(rpc)),
+      )
       return {
-        nova,
+        autoEvm,
         autoId,
       }
     } catch (error) {

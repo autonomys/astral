@@ -7,27 +7,30 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { HomeExtrinsicsQueryQuery, useHomeExtrinsicsQueryQuery } from 'gql/graphql'
+import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 
-type Row = HomeExtrinsicsQueryQuery['consensus_extrinsics'][number]
+type Row = HomeQuery['consensus_blocks'][number]['extrinsics'][number]
 
-export const HomeExtrinsicList: FC = () => {
+type Props = {
+  data: HomeQuery | undefined
+  loading: boolean
+}
+
+export const HomeExtrinsicList: FC<Props> = ({ data, loading }) => {
   const { network, section } = useIndexers()
 
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const PAGE_SIZE = useMemo(() => (isDesktop ? 10 : 3), [isDesktop])
 
-  const { data, loading } = useHomeExtrinsicsQueryQuery({
-    variables: { limit: PAGE_SIZE, offset: 0 },
-    pollInterval: 6000,
-  })
-
-  const extrinsics = useMemo(() => data?.consensus_extrinsics, [data?.consensus_extrinsics])
+  const extrinsics = useMemo(
+    () => data?.consensus_blocks?.flatMap((block) => block.extrinsics || []).slice(0, PAGE_SIZE),
+    [data?.consensus_blocks, PAGE_SIZE],
+  )
 
   const columns = useMemo(
     () => [

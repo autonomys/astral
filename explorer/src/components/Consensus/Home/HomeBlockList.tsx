@@ -1,29 +1,25 @@
 'use client'
 
 import { Spinner } from '@/components/common/Spinner'
-import useMediaQuery from '@/hooks/useMediaQuery'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { HomeBlocksQueryQuery, useHomeBlocksQueryQuery } from 'gql/graphql'
+import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 
-type Row = HomeBlocksQueryQuery['consensus_blocks'][number]
+type Row = HomeQuery['consensus_blocks'][number]
 
-export const HomeBlockList: FC = () => {
+type Props = {
+  data: HomeQuery | undefined
+  loading: boolean
+}
+
+export const HomeBlockList: FC<Props> = ({ data, loading }) => {
   const { network, section } = useIndexers()
-
-  const isDesktop = useMediaQuery('(min-width: 640px)')
-  const PAGE_SIZE = useMemo(() => (isDesktop ? 10 : 3), [isDesktop])
-
-  const { data, loading } = useHomeBlocksQueryQuery({
-    variables: { limit: PAGE_SIZE, offset: 0 },
-    pollInterval: 6000,
-  })
 
   const blocks = useMemo(() => data?.consensus_blocks, [data?.consensus_blocks])
 

@@ -1,17 +1,10 @@
 /* eslint-disable react/no-unknown-property */
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { QUERY_HOME_CARDS } from 'components/Consensus/Home/query'
-import {
-  AutonomysSymbol,
-  BlockIcon,
-  DocIcon,
-  LogoIcon,
-  PieChartIcon,
-  WalletIcon,
-} from 'components/icons'
+import { QUERY_HOME } from 'components/Consensus/Home/query'
+import { AutonomysSymbol, BlockIcon, LogoIcon, PieChartIcon, WalletIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { HomeCardsQueryQuery } from 'gql/graphql'
+import type { HomeQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -29,15 +22,15 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
   const {
     data,
   }: {
-    data: HomeCardsQueryQuery
+    data: HomeQuery
   } = await fetch(chainMatch.indexer, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_HOME_CARDS['loc']?.source.body,
-      variables: {},
+      query: QUERY_HOME['loc']?.source.body,
+      variables: { limit: 1, offset: 0 },
     }),
   }).then((res) => res.json())
 
@@ -54,13 +47,7 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
   }
 }
 
-function Screen({
-  chainMatch,
-  data,
-}: {
-  chainMatch: (typeof indexers)[number]
-  data: HomeCardsQueryQuery
-}) {
+function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; data: HomeQuery }) {
   return (
     <div
       tw='relative w-full h-full flex flex-col items-center justify-between'
@@ -118,31 +105,11 @@ function Screen({
           </div>
         </div>
         <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-85 mt-65 mb-4 p-6 w-60 h-50'
+          tw='absolute flex flex-row border-none rounded-[20px] ml-155 mt-65 mb-4 p-6 w-60 h-50'
           style={{
-            background: 'linear-gradient(180deg, #5649A3 0%, #8EABE4 100%)',
+            background: 'linear-gradient(180deg, #AC70E1 0%, #E6ADDC 100%)',
           }}
-        >
-          <div tw='absolute flex flex-row w-full m-6 justify-center'>
-            <DocIcon />
-            <span
-              style={{
-                fontFamily: 'Montserrat',
-              }}
-              tw='absolute text-md text-white mt-24 font-bold'
-            >
-              Signed Extrinsics
-            </span>
-            <span
-              style={{
-                fontFamily: 'Montserrat',
-              }}
-              tw='absolute text-2xl text-white p-4 mt-28 font-bold'
-            >
-              {numberWithCommas(Number(data.consensus_extrinsics_aggregate.aggregate?.count))}
-            </span>
-          </div>
-        </div>
+        ></div>
         <div
           tw='absolute flex flex-row border-none rounded-[20px] ml-155 mt-65 mb-4 p-6 w-60 h-50'
           style={{
@@ -165,7 +132,7 @@ function Screen({
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
-              {numberWithCommas(Number(data.consensus_extrinsics_aggregate.aggregate?.count))}
+              {numberWithCommas(Number(data.consensus_accounts_aggregate.aggregate?.count))}
             </span>
           </div>
         </div>
@@ -193,8 +160,8 @@ function Screen({
             >
               {formatSpaceToDecimal(
                 Number(
-                  (data.consensus_blocks[0] as HomeCardsQueryQuery['consensus_blocks'][0])
-                    ?.space_pledged || 0,
+                  (data.consensus_blocks[0] as HomeQuery['consensus_blocks'][0])?.space_pledged ||
+                    0,
                 ),
               )}
             </span>
