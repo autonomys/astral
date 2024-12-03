@@ -55,7 +55,7 @@ function Screen({
 }) {
   const block = {
     height: data.consensus_blocks[0]?.height ?? '0',
-    extrinsicsCount: data.consensus_extrinsics_aggregate.aggregate?.count ?? 0,
+    // extrinsicsCount: data.consensus_extrinsics_aggregate.aggregate?.count ?? 0,
     spacePledged: data.consensus_blocks[0]?.space_pledged ?? '',
     historySize: data.consensus_blocks[0]?.blockchain_size ?? '',
   }
@@ -118,7 +118,7 @@ function Screen({
             background: 'linear-gradient(180deg, #4141B3 0%, #6B5ACF 50%, #896BD2 100%)',
           }}
         >
-          <div tw='absolute flex flex-col w-100 m-6'>
+          {/* <div tw='absolute flex flex-col w-100 m-6'>
             <DocIcon />
             <span
               style={{
@@ -128,7 +128,7 @@ function Screen({
             >
               Extrinsics {numberWithCommas(block.extrinsicsCount)}
             </span>
-          </div>
+          </div> */}
         </div>
         <div
           tw='absolute flex flex-row border-none rounded-[20px] ml-140 mt-60 mb-4 p-6 w-130 h-30'

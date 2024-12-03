@@ -16163,7 +16163,7 @@ export type ExtrinsicsByHashQuery = { __typename?: 'query_root', consensus_extri
 export type HomeCardsQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HomeCardsQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', height: any, blockchain_size: any, space_pledged: any }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
+export type HomeCardsQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', height: any, blockchain_size: any, space_pledged: any }> };
 
 export type HomeBlocksQueryQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -17691,16 +17691,6 @@ export const HomeCardsQueryDocument = gql`
     height
     blockchain_size
     space_pledged
-  }
-  consensus_accounts_aggregate {
-    aggregate {
-      count
-    }
-  }
-  consensus_extrinsics_aggregate {
-    aggregate {
-      count
-    }
   }
 }
     `;

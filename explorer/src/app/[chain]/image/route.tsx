@@ -133,14 +133,14 @@ function Screen({
             >
               Signed Extrinsics
             </span>
-            <span
+            {/* <span
               style={{
                 fontFamily: 'Montserrat',
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
               {numberWithCommas(Number(data.consensus_extrinsics_aggregate.aggregate?.count))}
-            </span>
+            </span> */}
           </div>
         </div>
         <div
@@ -159,14 +159,14 @@ function Screen({
             >
               Qualified Reward Addresses
             </span>
-            <span
+            {/* <span
               style={{
                 fontFamily: 'Montserrat',
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
               {numberWithCommas(Number(data.consensus_extrinsics_aggregate.aggregate?.count))}
-            </span>
+            </span> */}
           </div>
         </div>
         <div

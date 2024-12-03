@@ -8,7 +8,6 @@ import { HomeCards } from './HomeCards'
 
 export const HomeChainInfo: FC = () => {
   const { ref, inView } = useInView()
-
   const { loading, data } = useHomeCardsQueryQuery({ skip: !inView })
 
   const spacePledgedVal = data ? Number(data.consensus_blocks[0].space_pledged) : 0
@@ -17,12 +16,6 @@ export const HomeChainInfo: FC = () => {
   const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
   const historySize = formatSpaceToDecimal(historySizeVal)
   const historySizeBinary = formatSpaceToBinary(historySizeVal)
-  const accountsCount = data
-    ? numberWithCommas(Number(data.consensus_accounts_aggregate?.aggregate?.count))
-    : 'error'
-  const extrinsicsCount = data
-    ? numberWithCommas(Number(data.consensus_extrinsics_aggregate?.aggregate?.count))
-    : 'error'
   const blocksCount = data ? numberWithCommas(Number(data.consensus_blocks[0].height)) : 'error'
 
   return (
@@ -32,8 +25,6 @@ export const HomeChainInfo: FC = () => {
       ) : (
         <HomeCards
           blocksCount={blocksCount}
-          extrinsicsCount={extrinsicsCount}
-          accountsCount={accountsCount}
           spacePledged={spacePledged}
           spacePledgedBinary={spacePledgedBinary}
           historySize={historySize}
