@@ -34,6 +34,11 @@ export const FileDetailsCard: FC<Props> = ({ file, isDesktop = false }) => {
             <div className='w-full md:flex-1'>
               <List>
                 <StyledListItem title='File Name'>{file.name}</StyledListItem>
+                <StyledListItem title='CID'>
+                  <CopyButton value={file.id ?? ''} message='CID copied'>
+                    {isDesktop ? file.id : shortString(file.id ?? '')}
+                  </CopyButton>
+                </StyledListItem>
                 <StyledListItem title='Timestamp'>
                   {utcToLocalTime(file.cid?.timestamp)}
                 </StyledListItem>

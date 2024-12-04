@@ -34,6 +34,11 @@ export const FolderDetailsCard: FC<Props> = ({ folder, isDesktop = false }) => {
             <div className='w-full md:flex-1'>
               <List>
                 <StyledListItem title='Folder Name'>{folder.name}</StyledListItem>
+                <StyledListItem title='CID'>
+                  <CopyButton value={folder.id ?? ''} message='CID copied'>
+                    {isDesktop ? folder.id : shortString(folder.id ?? '')}
+                  </CopyButton>
+                </StyledListItem>
                 <StyledListItem title='Timestamp'>
                   {utcToLocalTime(folder.cid?.timestamp)}
                 </StyledListItem>
