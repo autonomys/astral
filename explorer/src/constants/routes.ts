@@ -4,6 +4,7 @@ import { Route } from 'types/app'
 export enum Routes {
   consensus = 'consensus',
   farming = 'farming',
+  storage = 'permanent-storage',
   staking = 'staking',
   leaderboard = 'leaderboard',
   domains = 'domains',
@@ -20,6 +21,10 @@ export const ROUTES: Route[] = [
   {
     name: Routes.farming,
     title: 'Farming',
+  },
+  {
+    name: Routes.storage,
+    title: 'Permanent Storage',
   },
   {
     name: Routes.staking,
@@ -133,6 +138,22 @@ export const INTERNAL_ROUTES = {
         `/${chain}/${domain}/logs/${logId}`,
     },
     list: 'logs',
+  },
+  files: {
+    id: {
+      path: ':cid',
+      page: (chain: string, domain: string, cid: string): string =>
+        `/${chain}/${domain}/files/${cid}`,
+    },
+    list: 'files',
+  },
+  folders: {
+    id: {
+      path: ':cid',
+      page: (chain: string, domain: string, cid: string): string =>
+        `/${chain}/${domain}/folders/${cid}`,
+    },
+    list: 'folders',
   },
   operators: {
     id: {

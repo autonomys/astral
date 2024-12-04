@@ -86,6 +86,20 @@ export type LogsFilters = {
   kind: string
 }
 
+export type FilesFilters = {
+  cid: string
+  name: string
+  blockHeightMin: string
+  blockHeightMax: string
+}
+
+export type FoldersFilters = {
+  cid: string
+  name: string
+  blockHeightMin: string
+  blockHeightMax: string
+}
+
 export type DomainsFilters = {
   totalStakeMin: string
   totalStakeMax: string
