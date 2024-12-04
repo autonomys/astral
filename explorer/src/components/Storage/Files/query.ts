@@ -39,3 +39,38 @@ export const QUERY_FILE_BY_ID = gql`
     }
   }
 `
+
+export const QUERY_CID = gql`
+  query GetCID($cid: String!) {
+    files_metadata(where: { id: { _eq: $cid } }) {
+      chunk {
+        data
+      }
+      metadata_cids {
+        chunk {
+          data
+        }
+      }
+    }
+    files_folders(where: { id: { _eq: $cid } }) {
+      chunk {
+        data
+      }
+      folder_cids {
+        chunk {
+          data
+        }
+      }
+    }
+    files_files(where: { id: { _eq: $cid } }) {
+      chunk {
+        data
+      }
+      file_cids {
+        chunk {
+          data
+        }
+      }
+    }
+  }
+`
