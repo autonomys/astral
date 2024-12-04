@@ -3810,6 +3810,1245 @@ export type Dictionary_Spec_Versions_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** columns and relationships of "files.chunks" */
+export type Files_Chunks = {
+  __typename?: 'files_chunks';
+  _block_range: Scalars['int8range']['output'];
+  /** An object relationship */
+  cid?: Maybe<Files_Cids>;
+  data?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
+  link_depth: Scalars['Int']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  size?: Maybe<Scalars['numeric']['output']>;
+  type: Scalars['String']['output'];
+  upload_options?: Maybe<Scalars['String']['output']>;
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "files.chunks". All fields are combined with a logical 'AND'. */
+export type Files_Chunks_Bool_Exp = {
+  _and?: InputMaybe<Array<Files_Chunks_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Files_Chunks_Bool_Exp>;
+  _or?: InputMaybe<Array<Files_Chunks_Bool_Exp>>;
+  cid?: InputMaybe<Files_Cids_Bool_Exp>;
+  data?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  link_depth?: InputMaybe<Int_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  size?: InputMaybe<Numeric_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+  upload_options?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "files.chunks". */
+export type Files_Chunks_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  cid?: InputMaybe<Files_Cids_Order_By>;
+  data?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  link_depth?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  size?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  upload_options?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files.chunks" */
+export enum Files_Chunks_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  Data = 'data',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LinkDepth = 'link_depth',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Size = 'size',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  UploadOptions = 'upload_options',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "files_chunks" */
+export type Files_Chunks_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files_Chunks_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files_Chunks_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  data?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  link_depth?: InputMaybe<Scalars['Int']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  size?: InputMaybe<Scalars['numeric']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+  upload_options?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "files.cids" */
+export type Files_Cids = {
+  __typename?: 'files_cids';
+  _block_range: Scalars['int8range']['output'];
+  block_hash: Scalars['String']['output'];
+  block_height: Scalars['numeric']['output'];
+  /** An object relationship */
+  chunk?: Maybe<Files_Chunks>;
+  extrinsic_hash: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  index_in_block: Scalars['Int']['output'];
+  links: Scalars['jsonb']['output'];
+  timestamp: Scalars['timestamp']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+
+/** columns and relationships of "files.cids" */
+export type Files_CidsLinksArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregated selection of "files.cids" */
+export type Files_Cids_Aggregate = {
+  __typename?: 'files_cids_aggregate';
+  aggregate?: Maybe<Files_Cids_Aggregate_Fields>;
+  nodes: Array<Files_Cids>;
+};
+
+/** aggregate fields of "files.cids" */
+export type Files_Cids_Aggregate_Fields = {
+  __typename?: 'files_cids_aggregate_fields';
+  avg?: Maybe<Files_Cids_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Files_Cids_Max_Fields>;
+  min?: Maybe<Files_Cids_Min_Fields>;
+  stddev?: Maybe<Files_Cids_Stddev_Fields>;
+  stddev_pop?: Maybe<Files_Cids_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Files_Cids_Stddev_Samp_Fields>;
+  sum?: Maybe<Files_Cids_Sum_Fields>;
+  var_pop?: Maybe<Files_Cids_Var_Pop_Fields>;
+  var_samp?: Maybe<Files_Cids_Var_Samp_Fields>;
+  variance?: Maybe<Files_Cids_Variance_Fields>;
+};
+
+
+/** aggregate fields of "files.cids" */
+export type Files_Cids_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Files_Cids_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Files_Cids_Avg_Fields = {
+  __typename?: 'files_cids_avg_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "files.cids". All fields are combined with a logical 'AND'. */
+export type Files_Cids_Bool_Exp = {
+  _and?: InputMaybe<Array<Files_Cids_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Files_Cids_Bool_Exp>;
+  _or?: InputMaybe<Array<Files_Cids_Bool_Exp>>;
+  block_hash?: InputMaybe<String_Comparison_Exp>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
+  extrinsic_hash?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  index_in_block?: InputMaybe<Int_Comparison_Exp>;
+  links?: InputMaybe<Jsonb_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Files_Cids_Max_Fields = {
+  __typename?: 'files_cids_max_fields';
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['Int']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** aggregate min on columns */
+export type Files_Cids_Min_Fields = {
+  __typename?: 'files_cids_min_fields';
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['Int']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** Ordering options when selecting data from "files.cids". */
+export type Files_Cids_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  chunk?: InputMaybe<Files_Chunks_Order_By>;
+  extrinsic_hash?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  links?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files.cids" */
+export enum Files_Cids_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  BlockHash = 'block_hash',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  ExtrinsicHash = 'extrinsic_hash',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IndexInBlock = 'index_in_block',
+  /** column name */
+  Links = 'links',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** aggregate stddev on columns */
+export type Files_Cids_Stddev_Fields = {
+  __typename?: 'files_cids_stddev_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Files_Cids_Stddev_Pop_Fields = {
+  __typename?: 'files_cids_stddev_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Files_Cids_Stddev_Samp_Fields = {
+  __typename?: 'files_cids_stddev_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "files_cids" */
+export type Files_Cids_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files_Cids_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files_Cids_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  block_hash?: InputMaybe<Scalars['String']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  extrinsic_hash?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  index_in_block?: InputMaybe<Scalars['Int']['input']>;
+  links?: InputMaybe<Scalars['jsonb']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamp']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Files_Cids_Sum_Fields = {
+  __typename?: 'files_cids_sum_fields';
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  index_in_block?: Maybe<Scalars['Int']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Files_Cids_Var_Pop_Fields = {
+  __typename?: 'files_cids_var_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Files_Cids_Var_Samp_Fields = {
+  __typename?: 'files_cids_var_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Files_Cids_Variance_Fields = {
+  __typename?: 'files_cids_variance_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "files.file_cids" */
+export type Files_File_Cids = {
+  __typename?: 'files_file_cids';
+  _block_range: Scalars['int8range']['output'];
+  child_cid: Scalars['String']['output'];
+  /** An object relationship */
+  chunk?: Maybe<Files_Chunks>;
+  id: Scalars['String']['output'];
+  parent_cid: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** order by aggregate values of table "files.file_cids" */
+export type Files_File_Cids_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Files_File_Cids_Max_Order_By>;
+  min?: InputMaybe<Files_File_Cids_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "files.file_cids". All fields are combined with a logical 'AND'. */
+export type Files_File_Cids_Bool_Exp = {
+  _and?: InputMaybe<Array<Files_File_Cids_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Files_File_Cids_Bool_Exp>;
+  _or?: InputMaybe<Array<Files_File_Cids_Bool_Exp>>;
+  child_cid?: InputMaybe<String_Comparison_Exp>;
+  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  parent_cid?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "files.file_cids" */
+export type Files_File_Cids_Max_Order_By = {
+  child_cid?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  parent_cid?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "files.file_cids" */
+export type Files_File_Cids_Min_Order_By = {
+  child_cid?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  parent_cid?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "files.file_cids". */
+export type Files_File_Cids_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  child_cid?: InputMaybe<Order_By>;
+  chunk?: InputMaybe<Files_Chunks_Order_By>;
+  id?: InputMaybe<Order_By>;
+  parent_cid?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files.file_cids" */
+export enum Files_File_Cids_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  ChildCid = 'child_cid',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ParentCid = 'parent_cid',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "files_file_cids" */
+export type Files_File_Cids_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files_File_Cids_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files_File_Cids_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  child_cid?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  parent_cid?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "files.files" */
+export type Files_Files = {
+  __typename?: 'files_files';
+  _block_range: Scalars['int8range']['output'];
+  /** An object relationship */
+  chunk?: Maybe<Files_Chunks>;
+  /** An object relationship */
+  cid?: Maybe<Files_Cids>;
+  /** An array relationship */
+  file_cids: Array<Files_File_Cids>;
+  id: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  size: Scalars['numeric']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+
+/** columns and relationships of "files.files" */
+export type Files_FilesFile_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_File_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_File_Cids_Order_By>>;
+  where?: InputMaybe<Files_File_Cids_Bool_Exp>;
+};
+
+/** aggregated selection of "files.files" */
+export type Files_Files_Aggregate = {
+  __typename?: 'files_files_aggregate';
+  aggregate?: Maybe<Files_Files_Aggregate_Fields>;
+  nodes: Array<Files_Files>;
+};
+
+/** aggregate fields of "files.files" */
+export type Files_Files_Aggregate_Fields = {
+  __typename?: 'files_files_aggregate_fields';
+  avg?: Maybe<Files_Files_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Files_Files_Max_Fields>;
+  min?: Maybe<Files_Files_Min_Fields>;
+  stddev?: Maybe<Files_Files_Stddev_Fields>;
+  stddev_pop?: Maybe<Files_Files_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Files_Files_Stddev_Samp_Fields>;
+  sum?: Maybe<Files_Files_Sum_Fields>;
+  var_pop?: Maybe<Files_Files_Var_Pop_Fields>;
+  var_samp?: Maybe<Files_Files_Var_Samp_Fields>;
+  variance?: Maybe<Files_Files_Variance_Fields>;
+};
+
+
+/** aggregate fields of "files.files" */
+export type Files_Files_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Files_Files_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Files_Files_Avg_Fields = {
+  __typename?: 'files_files_avg_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "files.files". All fields are combined with a logical 'AND'. */
+export type Files_Files_Bool_Exp = {
+  _and?: InputMaybe<Array<Files_Files_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Files_Files_Bool_Exp>;
+  _or?: InputMaybe<Array<Files_Files_Bool_Exp>>;
+  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
+  cid?: InputMaybe<Files_Cids_Bool_Exp>;
+  file_cids?: InputMaybe<Files_File_Cids_Bool_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  size?: InputMaybe<Numeric_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Files_Files_Max_Fields = {
+  __typename?: 'files_files_max_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  size?: Maybe<Scalars['numeric']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** aggregate min on columns */
+export type Files_Files_Min_Fields = {
+  __typename?: 'files_files_min_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  size?: Maybe<Scalars['numeric']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** Ordering options when selecting data from "files.files". */
+export type Files_Files_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  chunk?: InputMaybe<Files_Chunks_Order_By>;
+  cid?: InputMaybe<Files_Cids_Order_By>;
+  file_cids_aggregate?: InputMaybe<Files_File_Cids_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  size?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files.files" */
+export enum Files_Files_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Size = 'size',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** aggregate stddev on columns */
+export type Files_Files_Stddev_Fields = {
+  __typename?: 'files_files_stddev_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Files_Files_Stddev_Pop_Fields = {
+  __typename?: 'files_files_stddev_pop_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Files_Files_Stddev_Samp_Fields = {
+  __typename?: 'files_files_stddev_samp_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "files_files" */
+export type Files_Files_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files_Files_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files_Files_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  size?: InputMaybe<Scalars['numeric']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Files_Files_Sum_Fields = {
+  __typename?: 'files_files_sum_fields';
+  size?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Files_Files_Var_Pop_Fields = {
+  __typename?: 'files_files_var_pop_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Files_Files_Var_Samp_Fields = {
+  __typename?: 'files_files_var_samp_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Files_Files_Variance_Fields = {
+  __typename?: 'files_files_variance_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "files.folder_cids" */
+export type Files_Folder_Cids = {
+  __typename?: 'files_folder_cids';
+  _block_range: Scalars['int8range']['output'];
+  child_cid: Scalars['String']['output'];
+  /** An object relationship */
+  chunk?: Maybe<Files_Chunks>;
+  id: Scalars['String']['output'];
+  parent_cid: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** aggregated selection of "files.folder_cids" */
+export type Files_Folder_Cids_Aggregate = {
+  __typename?: 'files_folder_cids_aggregate';
+  aggregate?: Maybe<Files_Folder_Cids_Aggregate_Fields>;
+  nodes: Array<Files_Folder_Cids>;
+};
+
+export type Files_Folder_Cids_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Files_Folder_Cids_Aggregate_Bool_Exp_Count>;
+};
+
+export type Files_Folder_Cids_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "files.folder_cids" */
+export type Files_Folder_Cids_Aggregate_Fields = {
+  __typename?: 'files_folder_cids_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Files_Folder_Cids_Max_Fields>;
+  min?: Maybe<Files_Folder_Cids_Min_Fields>;
+};
+
+
+/** aggregate fields of "files.folder_cids" */
+export type Files_Folder_Cids_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "files.folder_cids" */
+export type Files_Folder_Cids_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Files_Folder_Cids_Max_Order_By>;
+  min?: InputMaybe<Files_Folder_Cids_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "files.folder_cids". All fields are combined with a logical 'AND'. */
+export type Files_Folder_Cids_Bool_Exp = {
+  _and?: InputMaybe<Array<Files_Folder_Cids_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+  _or?: InputMaybe<Array<Files_Folder_Cids_Bool_Exp>>;
+  child_cid?: InputMaybe<String_Comparison_Exp>;
+  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  parent_cid?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Files_Folder_Cids_Max_Fields = {
+  __typename?: 'files_folder_cids_max_fields';
+  child_cid?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  parent_cid?: Maybe<Scalars['String']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by max() on columns of table "files.folder_cids" */
+export type Files_Folder_Cids_Max_Order_By = {
+  child_cid?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  parent_cid?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Files_Folder_Cids_Min_Fields = {
+  __typename?: 'files_folder_cids_min_fields';
+  child_cid?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  parent_cid?: Maybe<Scalars['String']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by min() on columns of table "files.folder_cids" */
+export type Files_Folder_Cids_Min_Order_By = {
+  child_cid?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  parent_cid?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "files.folder_cids". */
+export type Files_Folder_Cids_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  child_cid?: InputMaybe<Order_By>;
+  chunk?: InputMaybe<Files_Chunks_Order_By>;
+  id?: InputMaybe<Order_By>;
+  parent_cid?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files.folder_cids" */
+export enum Files_Folder_Cids_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  ChildCid = 'child_cid',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ParentCid = 'parent_cid',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "files_folder_cids" */
+export type Files_Folder_Cids_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files_Folder_Cids_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files_Folder_Cids_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  child_cid?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  parent_cid?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "files.folders" */
+export type Files_Folders = {
+  __typename?: 'files_folders';
+  _block_range: Scalars['int8range']['output'];
+  /** An object relationship */
+  chunk?: Maybe<Files_Chunks>;
+  /** An object relationship */
+  cid?: Maybe<Files_Cids>;
+  /** An array relationship */
+  folder_cids: Array<Files_Folder_Cids>;
+  /** An aggregate relationship */
+  folder_cids_aggregate: Files_Folder_Cids_Aggregate;
+  id: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  size: Scalars['numeric']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+
+/** columns and relationships of "files.folders" */
+export type Files_FoldersFolder_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
+  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+};
+
+
+/** columns and relationships of "files.folders" */
+export type Files_FoldersFolder_Cids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
+  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+};
+
+/** aggregated selection of "files.folders" */
+export type Files_Folders_Aggregate = {
+  __typename?: 'files_folders_aggregate';
+  aggregate?: Maybe<Files_Folders_Aggregate_Fields>;
+  nodes: Array<Files_Folders>;
+};
+
+/** aggregate fields of "files.folders" */
+export type Files_Folders_Aggregate_Fields = {
+  __typename?: 'files_folders_aggregate_fields';
+  avg?: Maybe<Files_Folders_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Files_Folders_Max_Fields>;
+  min?: Maybe<Files_Folders_Min_Fields>;
+  stddev?: Maybe<Files_Folders_Stddev_Fields>;
+  stddev_pop?: Maybe<Files_Folders_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Files_Folders_Stddev_Samp_Fields>;
+  sum?: Maybe<Files_Folders_Sum_Fields>;
+  var_pop?: Maybe<Files_Folders_Var_Pop_Fields>;
+  var_samp?: Maybe<Files_Folders_Var_Samp_Fields>;
+  variance?: Maybe<Files_Folders_Variance_Fields>;
+};
+
+
+/** aggregate fields of "files.folders" */
+export type Files_Folders_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Files_Folders_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Files_Folders_Avg_Fields = {
+  __typename?: 'files_folders_avg_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "files.folders". All fields are combined with a logical 'AND'. */
+export type Files_Folders_Bool_Exp = {
+  _and?: InputMaybe<Array<Files_Folders_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Files_Folders_Bool_Exp>;
+  _or?: InputMaybe<Array<Files_Folders_Bool_Exp>>;
+  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
+  cid?: InputMaybe<Files_Cids_Bool_Exp>;
+  folder_cids?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+  folder_cids_aggregate?: InputMaybe<Files_Folder_Cids_Aggregate_Bool_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  size?: InputMaybe<Numeric_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Files_Folders_Max_Fields = {
+  __typename?: 'files_folders_max_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  size?: Maybe<Scalars['numeric']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** aggregate min on columns */
+export type Files_Folders_Min_Fields = {
+  __typename?: 'files_folders_min_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  size?: Maybe<Scalars['numeric']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** Ordering options when selecting data from "files.folders". */
+export type Files_Folders_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  chunk?: InputMaybe<Files_Chunks_Order_By>;
+  cid?: InputMaybe<Files_Cids_Order_By>;
+  folder_cids_aggregate?: InputMaybe<Files_Folder_Cids_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  size?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files.folders" */
+export enum Files_Folders_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Size = 'size',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** aggregate stddev on columns */
+export type Files_Folders_Stddev_Fields = {
+  __typename?: 'files_folders_stddev_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Files_Folders_Stddev_Pop_Fields = {
+  __typename?: 'files_folders_stddev_pop_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Files_Folders_Stddev_Samp_Fields = {
+  __typename?: 'files_folders_stddev_samp_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "files_folders" */
+export type Files_Folders_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files_Folders_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files_Folders_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  size?: InputMaybe<Scalars['numeric']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Files_Folders_Sum_Fields = {
+  __typename?: 'files_folders_sum_fields';
+  size?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Files_Folders_Var_Pop_Fields = {
+  __typename?: 'files_folders_var_pop_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Files_Folders_Var_Samp_Fields = {
+  __typename?: 'files_folders_var_samp_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Files_Folders_Variance_Fields = {
+  __typename?: 'files_folders_variance_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "files.metadata" */
+export type Files_Metadata = {
+  __typename?: 'files_metadata';
+  _block_range: Scalars['int8range']['output'];
+  /** An object relationship */
+  chunk?: Maybe<Files_Chunks>;
+  /** An object relationship */
+  cid?: Maybe<Files_Cids>;
+  id: Scalars['String']['output'];
+  /** An array relationship */
+  metadata_cids: Array<Files_Metadata_Cids>;
+  /** An aggregate relationship */
+  metadata_cids_aggregate: Files_Metadata_Cids_Aggregate;
+  name?: Maybe<Scalars['String']['output']>;
+  size: Scalars['numeric']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+
+/** columns and relationships of "files.metadata" */
+export type Files_MetadataMetadata_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+};
+
+
+/** columns and relationships of "files.metadata" */
+export type Files_MetadataMetadata_Cids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+};
+
+/** aggregated selection of "files.metadata" */
+export type Files_Metadata_Aggregate = {
+  __typename?: 'files_metadata_aggregate';
+  aggregate?: Maybe<Files_Metadata_Aggregate_Fields>;
+  nodes: Array<Files_Metadata>;
+};
+
+/** aggregate fields of "files.metadata" */
+export type Files_Metadata_Aggregate_Fields = {
+  __typename?: 'files_metadata_aggregate_fields';
+  avg?: Maybe<Files_Metadata_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Files_Metadata_Max_Fields>;
+  min?: Maybe<Files_Metadata_Min_Fields>;
+  stddev?: Maybe<Files_Metadata_Stddev_Fields>;
+  stddev_pop?: Maybe<Files_Metadata_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Files_Metadata_Stddev_Samp_Fields>;
+  sum?: Maybe<Files_Metadata_Sum_Fields>;
+  var_pop?: Maybe<Files_Metadata_Var_Pop_Fields>;
+  var_samp?: Maybe<Files_Metadata_Var_Samp_Fields>;
+  variance?: Maybe<Files_Metadata_Variance_Fields>;
+};
+
+
+/** aggregate fields of "files.metadata" */
+export type Files_Metadata_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Files_Metadata_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Files_Metadata_Avg_Fields = {
+  __typename?: 'files_metadata_avg_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "files.metadata". All fields are combined with a logical 'AND'. */
+export type Files_Metadata_Bool_Exp = {
+  _and?: InputMaybe<Array<Files_Metadata_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Files_Metadata_Bool_Exp>;
+  _or?: InputMaybe<Array<Files_Metadata_Bool_Exp>>;
+  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
+  cid?: InputMaybe<Files_Cids_Bool_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  metadata_cids?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+  metadata_cids_aggregate?: InputMaybe<Files_Metadata_Cids_Aggregate_Bool_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  size?: InputMaybe<Numeric_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** columns and relationships of "files.metadata_cids" */
+export type Files_Metadata_Cids = {
+  __typename?: 'files_metadata_cids';
+  _block_range: Scalars['int8range']['output'];
+  child_cid: Scalars['String']['output'];
+  /** An object relationship */
+  chunk?: Maybe<Files_Chunks>;
+  id: Scalars['String']['output'];
+  parent_cid: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** aggregated selection of "files.metadata_cids" */
+export type Files_Metadata_Cids_Aggregate = {
+  __typename?: 'files_metadata_cids_aggregate';
+  aggregate?: Maybe<Files_Metadata_Cids_Aggregate_Fields>;
+  nodes: Array<Files_Metadata_Cids>;
+};
+
+export type Files_Metadata_Cids_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Files_Metadata_Cids_Aggregate_Bool_Exp_Count>;
+};
+
+export type Files_Metadata_Cids_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "files.metadata_cids" */
+export type Files_Metadata_Cids_Aggregate_Fields = {
+  __typename?: 'files_metadata_cids_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Files_Metadata_Cids_Max_Fields>;
+  min?: Maybe<Files_Metadata_Cids_Min_Fields>;
+};
+
+
+/** aggregate fields of "files.metadata_cids" */
+export type Files_Metadata_Cids_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "files.metadata_cids" */
+export type Files_Metadata_Cids_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Files_Metadata_Cids_Max_Order_By>;
+  min?: InputMaybe<Files_Metadata_Cids_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "files.metadata_cids". All fields are combined with a logical 'AND'. */
+export type Files_Metadata_Cids_Bool_Exp = {
+  _and?: InputMaybe<Array<Files_Metadata_Cids_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+  _or?: InputMaybe<Array<Files_Metadata_Cids_Bool_Exp>>;
+  child_cid?: InputMaybe<String_Comparison_Exp>;
+  chunk?: InputMaybe<Files_Chunks_Bool_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  parent_cid?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Files_Metadata_Cids_Max_Fields = {
+  __typename?: 'files_metadata_cids_max_fields';
+  child_cid?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  parent_cid?: Maybe<Scalars['String']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by max() on columns of table "files.metadata_cids" */
+export type Files_Metadata_Cids_Max_Order_By = {
+  child_cid?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  parent_cid?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Files_Metadata_Cids_Min_Fields = {
+  __typename?: 'files_metadata_cids_min_fields';
+  child_cid?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  parent_cid?: Maybe<Scalars['String']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by min() on columns of table "files.metadata_cids" */
+export type Files_Metadata_Cids_Min_Order_By = {
+  child_cid?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  parent_cid?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "files.metadata_cids". */
+export type Files_Metadata_Cids_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  child_cid?: InputMaybe<Order_By>;
+  chunk?: InputMaybe<Files_Chunks_Order_By>;
+  id?: InputMaybe<Order_By>;
+  parent_cid?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files.metadata_cids" */
+export enum Files_Metadata_Cids_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  ChildCid = 'child_cid',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ParentCid = 'parent_cid',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "files_metadata_cids" */
+export type Files_Metadata_Cids_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files_Metadata_Cids_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files_Metadata_Cids_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  child_cid?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  parent_cid?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate max on columns */
+export type Files_Metadata_Max_Fields = {
+  __typename?: 'files_metadata_max_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  size?: Maybe<Scalars['numeric']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** aggregate min on columns */
+export type Files_Metadata_Min_Fields = {
+  __typename?: 'files_metadata_min_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  size?: Maybe<Scalars['numeric']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** Ordering options when selecting data from "files.metadata". */
+export type Files_Metadata_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  chunk?: InputMaybe<Files_Chunks_Order_By>;
+  cid?: InputMaybe<Files_Cids_Order_By>;
+  id?: InputMaybe<Order_By>;
+  metadata_cids_aggregate?: InputMaybe<Files_Metadata_Cids_Aggregate_Order_By>;
+  name?: InputMaybe<Order_By>;
+  size?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files.metadata" */
+export enum Files_Metadata_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Size = 'size',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** aggregate stddev on columns */
+export type Files_Metadata_Stddev_Fields = {
+  __typename?: 'files_metadata_stddev_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Files_Metadata_Stddev_Pop_Fields = {
+  __typename?: 'files_metadata_stddev_pop_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Files_Metadata_Stddev_Samp_Fields = {
+  __typename?: 'files_metadata_stddev_samp_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "files_metadata" */
+export type Files_Metadata_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files_Metadata_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files_Metadata_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  size?: InputMaybe<Scalars['numeric']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Files_Metadata_Sum_Fields = {
+  __typename?: 'files_metadata_sum_fields';
+  size?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Files_Metadata_Var_Pop_Fields = {
+  __typename?: 'files_metadata_var_pop_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Files_Metadata_Var_Samp_Fields = {
+  __typename?: 'files_metadata_var_samp_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Files_Metadata_Variance_Fields = {
+  __typename?: 'files_metadata_variance_fields';
+  size?: Maybe<Scalars['Float']['output']>;
+};
+
 /** Boolean expression to compare columns of type "int8range". All fields are combined with logical 'AND'. */
 export type Int8range_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['int8range']['input']>;
@@ -8582,6 +9821,50 @@ export type Query_Root = {
   dictionary_spec_versions: Array<Dictionary_Spec_Versions>;
   /** fetch data from the table: "dictionary.spec_versions" using primary key columns */
   dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "files.chunks" */
+  files_chunks: Array<Files_Chunks>;
+  /** fetch data from the table: "files.chunks" using primary key columns */
+  files_chunks_by_pk?: Maybe<Files_Chunks>;
+  /** fetch data from the table: "files.cids" */
+  files_cids: Array<Files_Cids>;
+  /** fetch aggregated fields from the table: "files.cids" */
+  files_cids_aggregate: Files_Cids_Aggregate;
+  /** fetch data from the table: "files.cids" using primary key columns */
+  files_cids_by_pk?: Maybe<Files_Cids>;
+  /** fetch data from the table: "files.file_cids" */
+  files_file_cids: Array<Files_File_Cids>;
+  /** fetch data from the table: "files.file_cids" using primary key columns */
+  files_file_cids_by_pk?: Maybe<Files_File_Cids>;
+  /** fetch data from the table: "files.files" */
+  files_files: Array<Files_Files>;
+  /** fetch aggregated fields from the table: "files.files" */
+  files_files_aggregate: Files_Files_Aggregate;
+  /** fetch data from the table: "files.files" using primary key columns */
+  files_files_by_pk?: Maybe<Files_Files>;
+  /** fetch data from the table: "files.folder_cids" */
+  files_folder_cids: Array<Files_Folder_Cids>;
+  /** fetch aggregated fields from the table: "files.folder_cids" */
+  files_folder_cids_aggregate: Files_Folder_Cids_Aggregate;
+  /** fetch data from the table: "files.folder_cids" using primary key columns */
+  files_folder_cids_by_pk?: Maybe<Files_Folder_Cids>;
+  /** fetch data from the table: "files.folders" */
+  files_folders: Array<Files_Folders>;
+  /** fetch aggregated fields from the table: "files.folders" */
+  files_folders_aggregate: Files_Folders_Aggregate;
+  /** fetch data from the table: "files.folders" using primary key columns */
+  files_folders_by_pk?: Maybe<Files_Folders>;
+  /** fetch data from the table: "files.metadata" */
+  files_metadata: Array<Files_Metadata>;
+  /** fetch aggregated fields from the table: "files.metadata" */
+  files_metadata_aggregate: Files_Metadata_Aggregate;
+  /** fetch data from the table: "files.metadata" using primary key columns */
+  files_metadata_by_pk?: Maybe<Files_Metadata>;
+  /** fetch data from the table: "files.metadata_cids" */
+  files_metadata_cids: Array<Files_Metadata_Cids>;
+  /** fetch aggregated fields from the table: "files.metadata_cids" */
+  files_metadata_cids_aggregate: Files_Metadata_Cids_Aggregate;
+  /** fetch data from the table: "files.metadata_cids" using primary key columns */
+  files_metadata_cids_by_pk?: Maybe<Files_Metadata_Cids>;
   /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
   leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
   /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
@@ -9108,6 +10391,172 @@ export type Query_RootDictionary_Spec_VersionsArgs = {
 
 export type Query_RootDictionary_Spec_Versions_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type Query_RootFiles_ChunksArgs = {
+  distinct_on?: InputMaybe<Array<Files_Chunks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Chunks_Order_By>>;
+  where?: InputMaybe<Files_Chunks_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Chunks_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootFiles_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Cids_Order_By>>;
+  where?: InputMaybe<Files_Cids_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Cids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Cids_Order_By>>;
+  where?: InputMaybe<Files_Cids_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Cids_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootFiles_File_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_File_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_File_Cids_Order_By>>;
+  where?: InputMaybe<Files_File_Cids_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_File_Cids_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootFiles_FilesArgs = {
+  distinct_on?: InputMaybe<Array<Files_Files_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Files_Order_By>>;
+  where?: InputMaybe<Files_Files_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Files_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Files_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Files_Order_By>>;
+  where?: InputMaybe<Files_Files_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Files_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootFiles_Folder_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
+  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Folder_Cids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
+  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Folder_Cids_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootFiles_FoldersArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folders_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folders_Order_By>>;
+  where?: InputMaybe<Files_Folders_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Folders_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folders_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folders_Order_By>>;
+  where?: InputMaybe<Files_Folders_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Folders_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootFiles_MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Metadata_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Metadata_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootFiles_Metadata_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Metadata_Cids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+};
+
+
+export type Query_RootFiles_Metadata_Cids_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
 };
 
 
@@ -14359,6 +15808,66 @@ export type Subscription_Root = {
   dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
   /** fetch data from the table in a streaming manner: "dictionary.spec_versions" */
   dictionary_spec_versions_stream: Array<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "files.chunks" */
+  files_chunks: Array<Files_Chunks>;
+  /** fetch data from the table: "files.chunks" using primary key columns */
+  files_chunks_by_pk?: Maybe<Files_Chunks>;
+  /** fetch data from the table in a streaming manner: "files.chunks" */
+  files_chunks_stream: Array<Files_Chunks>;
+  /** fetch data from the table: "files.cids" */
+  files_cids: Array<Files_Cids>;
+  /** fetch aggregated fields from the table: "files.cids" */
+  files_cids_aggregate: Files_Cids_Aggregate;
+  /** fetch data from the table: "files.cids" using primary key columns */
+  files_cids_by_pk?: Maybe<Files_Cids>;
+  /** fetch data from the table in a streaming manner: "files.cids" */
+  files_cids_stream: Array<Files_Cids>;
+  /** fetch data from the table: "files.file_cids" */
+  files_file_cids: Array<Files_File_Cids>;
+  /** fetch data from the table: "files.file_cids" using primary key columns */
+  files_file_cids_by_pk?: Maybe<Files_File_Cids>;
+  /** fetch data from the table in a streaming manner: "files.file_cids" */
+  files_file_cids_stream: Array<Files_File_Cids>;
+  /** fetch data from the table: "files.files" */
+  files_files: Array<Files_Files>;
+  /** fetch aggregated fields from the table: "files.files" */
+  files_files_aggregate: Files_Files_Aggregate;
+  /** fetch data from the table: "files.files" using primary key columns */
+  files_files_by_pk?: Maybe<Files_Files>;
+  /** fetch data from the table in a streaming manner: "files.files" */
+  files_files_stream: Array<Files_Files>;
+  /** fetch data from the table: "files.folder_cids" */
+  files_folder_cids: Array<Files_Folder_Cids>;
+  /** fetch aggregated fields from the table: "files.folder_cids" */
+  files_folder_cids_aggregate: Files_Folder_Cids_Aggregate;
+  /** fetch data from the table: "files.folder_cids" using primary key columns */
+  files_folder_cids_by_pk?: Maybe<Files_Folder_Cids>;
+  /** fetch data from the table in a streaming manner: "files.folder_cids" */
+  files_folder_cids_stream: Array<Files_Folder_Cids>;
+  /** fetch data from the table: "files.folders" */
+  files_folders: Array<Files_Folders>;
+  /** fetch aggregated fields from the table: "files.folders" */
+  files_folders_aggregate: Files_Folders_Aggregate;
+  /** fetch data from the table: "files.folders" using primary key columns */
+  files_folders_by_pk?: Maybe<Files_Folders>;
+  /** fetch data from the table in a streaming manner: "files.folders" */
+  files_folders_stream: Array<Files_Folders>;
+  /** fetch data from the table: "files.metadata" */
+  files_metadata: Array<Files_Metadata>;
+  /** fetch aggregated fields from the table: "files.metadata" */
+  files_metadata_aggregate: Files_Metadata_Aggregate;
+  /** fetch data from the table: "files.metadata" using primary key columns */
+  files_metadata_by_pk?: Maybe<Files_Metadata>;
+  /** fetch data from the table: "files.metadata_cids" */
+  files_metadata_cids: Array<Files_Metadata_Cids>;
+  /** fetch aggregated fields from the table: "files.metadata_cids" */
+  files_metadata_cids_aggregate: Files_Metadata_Cids_Aggregate;
+  /** fetch data from the table: "files.metadata_cids" using primary key columns */
+  files_metadata_cids_by_pk?: Maybe<Files_Metadata_Cids>;
+  /** fetch data from the table in a streaming manner: "files.metadata_cids" */
+  files_metadata_cids_stream: Array<Files_Metadata_Cids>;
+  /** fetch data from the table in a streaming manner: "files.metadata" */
+  files_metadata_stream: Array<Files_Metadata>;
   /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
   leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
   /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
@@ -15064,6 +16573,228 @@ export type Subscription_RootDictionary_Spec_Versions_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Dictionary_Spec_Versions_Stream_Cursor_Input>>;
   where?: InputMaybe<Dictionary_Spec_Versions_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_ChunksArgs = {
+  distinct_on?: InputMaybe<Array<Files_Chunks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Chunks_Order_By>>;
+  where?: InputMaybe<Files_Chunks_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Chunks_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootFiles_Chunks_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files_Chunks_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files_Chunks_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Cids_Order_By>>;
+  where?: InputMaybe<Files_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Cids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Cids_Order_By>>;
+  where?: InputMaybe<Files_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Cids_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootFiles_Cids_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files_Cids_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_File_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_File_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_File_Cids_Order_By>>;
+  where?: InputMaybe<Files_File_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_File_Cids_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootFiles_File_Cids_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files_File_Cids_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files_File_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_FilesArgs = {
+  distinct_on?: InputMaybe<Array<Files_Files_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Files_Order_By>>;
+  where?: InputMaybe<Files_Files_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Files_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Files_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Files_Order_By>>;
+  where?: InputMaybe<Files_Files_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Files_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootFiles_Files_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files_Files_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files_Files_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Folder_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
+  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Folder_Cids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folder_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folder_Cids_Order_By>>;
+  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Folder_Cids_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootFiles_Folder_Cids_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files_Folder_Cids_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files_Folder_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_FoldersArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folders_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folders_Order_By>>;
+  where?: InputMaybe<Files_Folders_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Folders_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Folders_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Folders_Order_By>>;
+  where?: InputMaybe<Files_Folders_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Folders_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootFiles_Folders_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files_Folders_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files_Folders_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Metadata_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Metadata_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootFiles_Metadata_CidsArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Metadata_Cids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Metadata_Cids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files_Metadata_Cids_Order_By>>;
+  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Metadata_Cids_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootFiles_Metadata_Cids_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files_Metadata_Cids_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files_Metadata_Cids_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles_Metadata_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files_Metadata_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files_Metadata_Bool_Exp>;
 };
 
 
@@ -15992,6 +17723,13 @@ export type Uuid_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['uuid']['input']>>;
 };
 
+export type GetCidQueryVariables = Exact<{
+  cid: Scalars['String']['input'];
+}>;
+
+
+export type GetCidQuery = { __typename?: 'query_root', files_metadata: Array<{ __typename?: 'files_metadata', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, metadata_cids: Array<{ __typename?: 'files_metadata_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_folders: Array<{ __typename?: 'files_folders', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, folder_cids: Array<{ __typename?: 'files_folder_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_files: Array<{ __typename?: 'files_files', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, file_cids: Array<{ __typename?: 'files_file_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }> };
+
 export type AccountsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -16504,6 +18242,50 @@ export type DomainsLastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type DomainsLastBlockQuery = { __typename?: 'query_root', staking_domains: Array<{ __typename?: 'staking_domains', id: string, last_domain_block_number: any, completed_epoch: any }> };
 
+export type FilesQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Files_Files_Order_By> | Files_Files_Order_By;
+  where?: InputMaybe<Files_Files_Bool_Exp>;
+}>;
+
+
+export type FilesQuery = { __typename?: 'query_root', files_files_aggregate: { __typename?: 'files_files_aggregate', aggregate?: { __typename?: 'files_files_aggregate_fields', count: number } | null }, files_files: Array<{ __typename?: 'files_files', id: string, name?: string | null, cid?: { __typename?: 'files_cids', timestamp: any, blockHeight: any, extrinsicId: string } | null }> };
+
+export type FileByIdQueryVariables = Exact<{
+  cid: Scalars['String']['input'];
+}>;
+
+
+export type FileByIdQuery = { __typename?: 'query_root', files_files: Array<{ __typename?: 'files_files', id: string, name?: string | null, cid?: { __typename?: 'files_cids', timestamp: any, blockHeight: any, extrinsicId: string, blockHash: string, extrinsicHash: string } | null }> };
+
+export type FoldersQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Files_Folders_Order_By> | Files_Folders_Order_By;
+  where?: InputMaybe<Files_Folders_Bool_Exp>;
+}>;
+
+
+export type FoldersQuery = { __typename?: 'query_root', files_folders_aggregate: { __typename?: 'files_folders_aggregate', aggregate?: { __typename?: 'files_folders_aggregate_fields', count: number } | null }, files_folders: Array<{ __typename?: 'files_folders', id: string, name?: string | null, cid?: { __typename?: 'files_cids', timestamp: any, blockHeight: any, extrinsicId: string } | null }> };
+
+export type FolderByIdQueryVariables = Exact<{
+  cid: Scalars['String']['input'];
+}>;
+
+
+export type FolderByIdQuery = { __typename?: 'query_root', files_folders: Array<{ __typename?: 'files_folders', id: string, name?: string | null, cid?: { __typename?: 'files_cids', timestamp: any, blockHeight: any, extrinsicId: string, blockHash: string, extrinsicHash: string } | null, childCount: { __typename?: 'files_folder_cids_aggregate', aggregate?: { __typename?: 'files_folder_cids_aggregate_fields', count: number } | null } }> };
+
+export type FolderChildrenByIdQueryVariables = Exact<{
+  cid: Scalars['String']['input'];
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<Files_Folder_Cids_Order_By> | Files_Folder_Cids_Order_By>;
+}>;
+
+
+export type FolderChildrenByIdQuery = { __typename?: 'query_root', files_folder_cids_aggregate: { __typename?: 'files_folder_cids_aggregate', aggregate?: { __typename?: 'files_folder_cids_aggregate_fields', count: number } | null }, files_folder_cids: Array<{ __typename?: 'files_folder_cids', child_cid: string, chunk?: { __typename?: 'files_chunks', name?: string | null } | null }> };
+
 export type AccountsTopLeaderboardQueryVariables = Exact<{
   first: Scalars['Int']['input'];
 }>;
@@ -16548,6 +18330,73 @@ export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 export type LastBlockQuery = { __typename?: 'query_root', lastBlock: Array<{ __typename?: 'consensus_blocks', height: any }> };
 
 
+export const GetCidDocument = gql`
+    query GetCID($cid: String!) {
+  files_metadata(where: {id: {_eq: $cid}}) {
+    chunk {
+      data
+    }
+    metadata_cids {
+      chunk {
+        data
+      }
+    }
+  }
+  files_folders(where: {id: {_eq: $cid}}) {
+    chunk {
+      data
+    }
+    folder_cids {
+      chunk {
+        data
+      }
+    }
+  }
+  files_files(where: {id: {_eq: $cid}}) {
+    chunk {
+      data
+    }
+    file_cids {
+      chunk {
+        data
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCidQuery__
+ *
+ * To run a query within a React component, call `useGetCidQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCidQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCidQuery({
+ *   variables: {
+ *      cid: // value for 'cid'
+ *   },
+ * });
+ */
+export function useGetCidQuery(baseOptions: Apollo.QueryHookOptions<GetCidQuery, GetCidQueryVariables> & ({ variables: GetCidQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, options);
+      }
+export function useGetCidLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCidQuery, GetCidQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, options);
+        }
+export function useGetCidSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCidQuery, GetCidQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, options);
+        }
+export type GetCidQueryHookResult = ReturnType<typeof useGetCidQuery>;
+export type GetCidLazyQueryHookResult = ReturnType<typeof useGetCidLazyQuery>;
+export type GetCidSuspenseQueryHookResult = ReturnType<typeof useGetCidSuspenseQuery>;
+export type GetCidQueryResult = Apollo.QueryResult<GetCidQuery, GetCidQueryVariables>;
 export const AccountsDocument = gql`
     query Accounts($limit: Int!, $offset: Int, $orderBy: [consensus_accounts_order_by!]!, $where: consensus_accounts_bool_exp) {
   consensus_accounts_aggregate(where: $where) {
@@ -19977,6 +21826,273 @@ export type DomainsLastBlockQueryHookResult = ReturnType<typeof useDomainsLastBl
 export type DomainsLastBlockLazyQueryHookResult = ReturnType<typeof useDomainsLastBlockLazyQuery>;
 export type DomainsLastBlockSuspenseQueryHookResult = ReturnType<typeof useDomainsLastBlockSuspenseQuery>;
 export type DomainsLastBlockQueryResult = Apollo.QueryResult<DomainsLastBlockQuery, DomainsLastBlockQueryVariables>;
+export const FilesDocument = gql`
+    query Files($limit: Int!, $offset: Int, $orderBy: [files_files_order_by!]!, $where: files_files_bool_exp) {
+  files_files_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  files_files(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    name
+    cid {
+      blockHeight: block_height
+      extrinsicId: extrinsic_id
+      timestamp
+    }
+  }
+}
+    `;
+
+/**
+ * __useFilesQuery__
+ *
+ * To run a query within a React component, call `useFilesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFilesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFilesQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFilesQuery(baseOptions: Apollo.QueryHookOptions<FilesQuery, FilesQueryVariables> & ({ variables: FilesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FilesQuery, FilesQueryVariables>(FilesDocument, options);
+      }
+export function useFilesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FilesQuery, FilesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FilesQuery, FilesQueryVariables>(FilesDocument, options);
+        }
+export function useFilesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FilesQuery, FilesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FilesQuery, FilesQueryVariables>(FilesDocument, options);
+        }
+export type FilesQueryHookResult = ReturnType<typeof useFilesQuery>;
+export type FilesLazyQueryHookResult = ReturnType<typeof useFilesLazyQuery>;
+export type FilesSuspenseQueryHookResult = ReturnType<typeof useFilesSuspenseQuery>;
+export type FilesQueryResult = Apollo.QueryResult<FilesQuery, FilesQueryVariables>;
+export const FileByIdDocument = gql`
+    query FileById($cid: String!) {
+  files_files(where: {id: {_eq: $cid}}) {
+    id
+    name
+    cid {
+      blockHeight: block_height
+      extrinsicId: extrinsic_id
+      timestamp
+      blockHash: block_hash
+      extrinsicHash: extrinsic_hash
+    }
+  }
+}
+    `;
+
+/**
+ * __useFileByIdQuery__
+ *
+ * To run a query within a React component, call `useFileByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFileByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFileByIdQuery({
+ *   variables: {
+ *      cid: // value for 'cid'
+ *   },
+ * });
+ */
+export function useFileByIdQuery(baseOptions: Apollo.QueryHookOptions<FileByIdQuery, FileByIdQueryVariables> & ({ variables: FileByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FileByIdQuery, FileByIdQueryVariables>(FileByIdDocument, options);
+      }
+export function useFileByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FileByIdQuery, FileByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FileByIdQuery, FileByIdQueryVariables>(FileByIdDocument, options);
+        }
+export function useFileByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FileByIdQuery, FileByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FileByIdQuery, FileByIdQueryVariables>(FileByIdDocument, options);
+        }
+export type FileByIdQueryHookResult = ReturnType<typeof useFileByIdQuery>;
+export type FileByIdLazyQueryHookResult = ReturnType<typeof useFileByIdLazyQuery>;
+export type FileByIdSuspenseQueryHookResult = ReturnType<typeof useFileByIdSuspenseQuery>;
+export type FileByIdQueryResult = Apollo.QueryResult<FileByIdQuery, FileByIdQueryVariables>;
+export const FoldersDocument = gql`
+    query Folders($limit: Int!, $offset: Int, $orderBy: [files_folders_order_by!]!, $where: files_folders_bool_exp) {
+  files_folders_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  files_folders(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    name
+    cid {
+      blockHeight: block_height
+      extrinsicId: extrinsic_id
+      timestamp
+    }
+  }
+}
+    `;
+
+/**
+ * __useFoldersQuery__
+ *
+ * To run a query within a React component, call `useFoldersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFoldersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFoldersQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFoldersQuery(baseOptions: Apollo.QueryHookOptions<FoldersQuery, FoldersQueryVariables> & ({ variables: FoldersQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FoldersQuery, FoldersQueryVariables>(FoldersDocument, options);
+      }
+export function useFoldersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FoldersQuery, FoldersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FoldersQuery, FoldersQueryVariables>(FoldersDocument, options);
+        }
+export function useFoldersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FoldersQuery, FoldersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FoldersQuery, FoldersQueryVariables>(FoldersDocument, options);
+        }
+export type FoldersQueryHookResult = ReturnType<typeof useFoldersQuery>;
+export type FoldersLazyQueryHookResult = ReturnType<typeof useFoldersLazyQuery>;
+export type FoldersSuspenseQueryHookResult = ReturnType<typeof useFoldersSuspenseQuery>;
+export type FoldersQueryResult = Apollo.QueryResult<FoldersQuery, FoldersQueryVariables>;
+export const FolderByIdDocument = gql`
+    query FolderById($cid: String!) {
+  files_folders(where: {id: {_eq: $cid}}) {
+    id
+    name
+    cid {
+      blockHeight: block_height
+      extrinsicId: extrinsic_id
+      timestamp
+      blockHash: block_hash
+      extrinsicHash: extrinsic_hash
+    }
+    childCount: folder_cids_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFolderByIdQuery__
+ *
+ * To run a query within a React component, call `useFolderByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFolderByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFolderByIdQuery({
+ *   variables: {
+ *      cid: // value for 'cid'
+ *   },
+ * });
+ */
+export function useFolderByIdQuery(baseOptions: Apollo.QueryHookOptions<FolderByIdQuery, FolderByIdQueryVariables> & ({ variables: FolderByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FolderByIdQuery, FolderByIdQueryVariables>(FolderByIdDocument, options);
+      }
+export function useFolderByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FolderByIdQuery, FolderByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FolderByIdQuery, FolderByIdQueryVariables>(FolderByIdDocument, options);
+        }
+export function useFolderByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FolderByIdQuery, FolderByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FolderByIdQuery, FolderByIdQueryVariables>(FolderByIdDocument, options);
+        }
+export type FolderByIdQueryHookResult = ReturnType<typeof useFolderByIdQuery>;
+export type FolderByIdLazyQueryHookResult = ReturnType<typeof useFolderByIdLazyQuery>;
+export type FolderByIdSuspenseQueryHookResult = ReturnType<typeof useFolderByIdSuspenseQuery>;
+export type FolderByIdQueryResult = Apollo.QueryResult<FolderByIdQuery, FolderByIdQueryVariables>;
+export const FolderChildrenByIdDocument = gql`
+    query FolderChildrenById($cid: String!, $limit: Int!, $offset: Int, $orderBy: [files_folder_cids_order_by!]) {
+  files_folder_cids_aggregate(
+    where: {parent_cid: {_eq: $cid}, chunk: {type: {_eq: "File"}}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  files_folder_cids(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: {parent_cid: {_eq: $cid}, chunk: {type: {_eq: "File"}}}
+  ) {
+    child_cid
+    chunk {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useFolderChildrenByIdQuery__
+ *
+ * To run a query within a React component, call `useFolderChildrenByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFolderChildrenByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFolderChildrenByIdQuery({
+ *   variables: {
+ *      cid: // value for 'cid'
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useFolderChildrenByIdQuery(baseOptions: Apollo.QueryHookOptions<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables> & ({ variables: FolderChildrenByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>(FolderChildrenByIdDocument, options);
+      }
+export function useFolderChildrenByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>(FolderChildrenByIdDocument, options);
+        }
+export function useFolderChildrenByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>(FolderChildrenByIdDocument, options);
+        }
+export type FolderChildrenByIdQueryHookResult = ReturnType<typeof useFolderChildrenByIdQuery>;
+export type FolderChildrenByIdLazyQueryHookResult = ReturnType<typeof useFolderChildrenByIdLazyQuery>;
+export type FolderChildrenByIdSuspenseQueryHookResult = ReturnType<typeof useFolderChildrenByIdSuspenseQuery>;
+export type FolderChildrenByIdQueryResult = Apollo.QueryResult<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>;
 export const AccountsTopLeaderboardDocument = gql`
     query AccountsTopLeaderboard($first: Int!) {
   farmers: consensus_rewards(
