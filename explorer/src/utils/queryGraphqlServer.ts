@@ -1,20 +1,19 @@
 import { indexers } from 'constants/indexers'
 import { cookies, headers } from 'next/headers'
 
-export const queryGraphqlServer = async (query: string, variables: object) => {
+export const queryGraphqlServer = async (query: string, variables: object, network?: string) => {
   try {
     // Get the selected chain from the cookies
     const { get } = cookies()
     const headersList = headers()
     const referer = headersList.get('referer') || ''
-    const network = referer.split('/')[3]
-    const selectedNetwork = get('selected-network')
-    if (!selectedNetwork && !network) throw new Error('No selected network')
+    if (!network) network = referer.split('/')[3]
+    const cookieNetwork = get('selected-network')
+    if (!network && cookieNetwork) network = cookieNetwork.value
+    if (!network) throw new Error('No selected network')
 
     // Find the selected chain api
-    const api = indexers.find((indexer) =>
-      selectedNetwork ? indexer.network === selectedNetwork.value : indexer.network === network,
-    )
+    const api = indexers.find((indexer) => indexer.network === network)
     if (!api) throw new Error('No selected chain api')
 
     // Fetch the data from the api
