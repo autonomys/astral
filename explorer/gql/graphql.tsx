@@ -18252,6 +18252,13 @@ export type FileByIdQueryVariables = Exact<{
 
 export type FileByIdQuery = { __typename?: 'query_root', files_files: Array<{ __typename?: 'files_files', id: string, name?: string | null, cid?: { __typename?: 'files_cids', timestamp: any, blockHeight: any, extrinsicId: string, blockHash: string, extrinsicHash: string } | null }> };
 
+export type GetCidQueryVariables = Exact<{
+  cid: Scalars['String']['input'];
+}>;
+
+
+export type GetCidQuery = { __typename?: 'query_root', files_metadata: Array<{ __typename?: 'files_metadata', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, metadata_cids: Array<{ __typename?: 'files_metadata_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_folders: Array<{ __typename?: 'files_folders', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, folder_cids: Array<{ __typename?: 'files_folder_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_files: Array<{ __typename?: 'files_files', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, file_cids: Array<{ __typename?: 'files_file_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }> };
+
 export type FoldersQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -21854,6 +21861,73 @@ export type FileByIdQueryHookResult = ReturnType<typeof useFileByIdQuery>;
 export type FileByIdLazyQueryHookResult = ReturnType<typeof useFileByIdLazyQuery>;
 export type FileByIdSuspenseQueryHookResult = ReturnType<typeof useFileByIdSuspenseQuery>;
 export type FileByIdQueryResult = Apollo.QueryResult<FileByIdQuery, FileByIdQueryVariables>;
+export const GetCidDocument = gql`
+    query GetCID($cid: String!) {
+  files_metadata(where: {id: {_eq: $cid}}) {
+    chunk {
+      data
+    }
+    metadata_cids {
+      chunk {
+        data
+      }
+    }
+  }
+  files_folders(where: {id: {_eq: $cid}}) {
+    chunk {
+      data
+    }
+    folder_cids {
+      chunk {
+        data
+      }
+    }
+  }
+  files_files(where: {id: {_eq: $cid}}) {
+    chunk {
+      data
+    }
+    file_cids {
+      chunk {
+        data
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCidQuery__
+ *
+ * To run a query within a React component, call `useGetCidQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCidQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCidQuery({
+ *   variables: {
+ *      cid: // value for 'cid'
+ *   },
+ * });
+ */
+export function useGetCidQuery(baseOptions: Apollo.QueryHookOptions<GetCidQuery, GetCidQueryVariables> & ({ variables: GetCidQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, options);
+      }
+export function useGetCidLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCidQuery, GetCidQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, options);
+        }
+export function useGetCidSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCidQuery, GetCidQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, options);
+        }
+export type GetCidQueryHookResult = ReturnType<typeof useGetCidQuery>;
+export type GetCidLazyQueryHookResult = ReturnType<typeof useGetCidLazyQuery>;
+export type GetCidSuspenseQueryHookResult = ReturnType<typeof useGetCidSuspenseQuery>;
+export type GetCidQueryResult = Apollo.QueryResult<GetCidQuery, GetCidQueryVariables>;
 export const FoldersDocument = gql`
     query Folders($limit: Int!, $offset: Int, $orderBy: [files_folders_order_by!]!, $where: files_folders_bool_exp) {
   files_folders_aggregate(where: $where) {

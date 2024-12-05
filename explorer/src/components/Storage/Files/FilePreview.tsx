@@ -60,16 +60,6 @@ export const FilePreview: FC<Props> = ({ cid }) => {
     if (!imageSrc) return <></>
 
     switch (true) {
-      case rawData?.type.startsWith('image/svg') && rawData !== null:
-        return (
-          <Image
-            src={imageSrc}
-            alt='File Preview'
-            width={520}
-            height={520}
-            style={{ width: '50%', height: 'auto' }}
-          />
-        )
       case rawData?.type.startsWith('image'):
         return (
           <Image
@@ -83,7 +73,7 @@ export const FilePreview: FC<Props> = ({ cid }) => {
       case rawData?.type.startsWith('application/pdf'):
       case rawData?.type.startsWith('application/ai'):
         return (
-          <object data={imageSrc} type='application/pdf' width='100%' height='800px'>
+          <object data={imageSrc} type={rawData?.type} width='100%' height='800px'>
             <p>
               Alternative text - include a link <a href={imageSrc}>to the PDF!</a>
             </p>
