@@ -12,6 +12,15 @@ export enum Routes {
   testnetRewards = 'testnet-rewards',
 }
 
+export enum RoutesLeaderboard {
+  farmers = Routes.leaderboard + '/farmers',
+  accounts = Routes.leaderboard + '/accounts',
+  operators = Routes.leaderboard + '/operators',
+  nominators = Routes.leaderboard + '/nominators',
+}
+
+export type AnyRoutes = Routes | RoutesLeaderboard
+
 export const ROUTES: Route[] = [
   {
     name: Routes.consensus,
@@ -31,21 +40,21 @@ export const ROUTES: Route[] = [
     title: 'Leaderboard',
     children: [
       {
-        name: Routes.leaderboard + '/farmers',
+        name: RoutesLeaderboard.farmers,
         title: 'Top Farmers',
       },
       {
-        name: Routes.leaderboard + '/accounts',
+        name: RoutesLeaderboard.accounts,
         title: 'Top Accounts',
         networks: [NetworkId.TAURUS],
       },
       {
-        name: Routes.leaderboard + '/operators',
+        name: RoutesLeaderboard.operators,
         title: 'Top Operators',
         networks: [NetworkId.TAURUS],
       },
       {
-        name: Routes.leaderboard + '/nominators',
+        name: RoutesLeaderboard.nominators,
         title: 'Top Nominators',
         networks: [],
       },
