@@ -9,6 +9,15 @@ configuration:
     _id: uuid
   custom_root_fields: {}
 array_relationships:
+  - name: cids
+    using:
+      manual_configuration:
+        column_mapping:
+          height: block_height
+        insertion_order: null
+        remote_table:
+          name: cids
+          schema: files
   - name: events
     using:
       manual_configuration:
