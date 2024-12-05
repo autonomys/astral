@@ -1,5 +1,5 @@
 import { NetworkId } from '@autonomys/auto-utils'
-import { ROUTES, Routes } from 'constants/routes'
+import { Routes, ROUTES } from 'constants/routes'
 import { Route } from 'types/app'
 
 const findRoute = (route: Routes): Route | undefined => ROUTES.find((item) => item.name === route)
@@ -23,4 +23,16 @@ export const isRouteSupportingNetwork = (
   }
 
   return isRouteSupported(currentNetwork, routeFound)
+}
+
+export const getSupportedHeaderLinks = (currentNetwork: NetworkId, route: string) => {
+  const sectionChildren = ROUTES.find((item) => item.name === route)?.children
+  return sectionChildren
+    ? sectionChildren
+        .filter((item) => !item.networks || item.networks?.includes(currentNetwork))
+        .map((item) => ({
+          title: item.title,
+          link: `/${currentNetwork}/${item.name}`,
+        }))
+    : []
 }
