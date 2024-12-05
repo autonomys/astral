@@ -1,3 +1,4 @@
+import { RoutesConsensus } from '@/constants/routes'
 import { BlockList } from 'components/Consensus/Block/BlockList'
 import { Metadata } from 'next'
 import { FC } from 'react'
@@ -5,7 +6,7 @@ import type { ChainPageProps } from 'types/app'
 import { getMetadata } from 'utils/metadata/basic'
 
 export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadata =>
-  getMetadata(chain, 'Blocks', undefined, `${chain}/blocks`)
+  getMetadata(chain, 'Blocks', undefined, `${chain}/${RoutesConsensus.blocks}`)
 
 const Page: FC = () => <BlockList />
 

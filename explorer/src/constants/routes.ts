@@ -244,7 +244,7 @@ export const INTERNAL_ROUTES = {
         `/${chain}/${domain}/${domainId}`,
     },
     list: 'list',
-    nova: Routes.nova,
+    autoevm: Routes.autoevm,
     autoid: Routes.autoid,
   },
   search: {

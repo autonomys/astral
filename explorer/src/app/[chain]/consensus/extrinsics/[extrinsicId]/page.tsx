@@ -1,6 +1,6 @@
 import { shortString } from '@autonomys/auto-utils'
 import { Extrinsic } from 'components/Consensus/Extrinsic/Extrinsic'
-import { Routes } from 'constants/routes'
+import { RoutesConsensus } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { ChainPageProps, ExtrinsicIdPageProps } from 'types/app'
@@ -13,7 +13,7 @@ export const generateMetadata = ({
     chain,
     'Extrinsic',
     extrinsicId ? shortString(extrinsicId) : '',
-    `${chain}/${Routes.consensus}/extrinsics/${extrinsicId}`,
+    `${chain}/${RoutesConsensus.extrinsics}/${extrinsicId}`,
   )
 
 const Page: FC = () => <Extrinsic />

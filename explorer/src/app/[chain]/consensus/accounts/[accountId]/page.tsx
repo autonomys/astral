@@ -1,6 +1,6 @@
 import { shortString } from '@autonomys/auto-utils'
 import { Account } from 'components/Consensus/Account/Account'
-import { Routes } from 'constants/routes'
+import { RoutesConsensus } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { AccountIdPageProps, ChainPageProps } from 'types/app'
@@ -13,7 +13,7 @@ export const generateMetadata = ({
     chain,
     'Account',
     accountId ? shortString(accountId) : '',
-    `${chain}/${Routes.consensus}/accounts/${accountId}`,
+    `${chain}/${RoutesConsensus.accounts}/${accountId}`,
   )
 
 const Page: FC = () => <Account />
