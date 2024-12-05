@@ -29,6 +29,27 @@ export const ROUTES: Route[] = [
   {
     name: Routes.leaderboard,
     title: 'Leaderboard',
+    children: [
+      {
+        name: Routes.leaderboard + '/farmers',
+        title: 'Top Farmers',
+      },
+      {
+        name: Routes.leaderboard + '/accounts',
+        title: 'Top Accounts',
+        networks: [NetworkId.TAURUS],
+      },
+      {
+        name: Routes.leaderboard + '/operators',
+        title: 'Top Operators',
+        networks: [NetworkId.TAURUS],
+      },
+      {
+        name: Routes.leaderboard + '/nominators',
+        title: 'Top Nominators',
+        networks: [],
+      },
+    ],
   },
   {
     name: Routes.domains,
