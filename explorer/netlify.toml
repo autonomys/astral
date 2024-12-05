@@ -1,0 +1,13 @@
+[[edge_functions]]
+path = "/*"
+function = "blockBots"
+
+[[redirects]]
+from = "/wp-*"
+to = "/404"
+status = 403
+
+[[redirects]]
+from = "/xmlrpc.php"
+to = "/404"
+status = 403
