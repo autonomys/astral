@@ -1,6 +1,6 @@
 import { Domain } from 'components/Domain/Domain'
 import { NotFound } from 'components/layout/NotFound'
-import { Routes } from 'constants/routes'
+import { Routes, RoutesDomains } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { ChainPageProps, DomainIdPageProps } from 'types/app'
@@ -12,7 +12,15 @@ export const generateMetadata = ({
 }: ChainPageProps & DomainIdPageProps): Metadata =>
   getMetadata(chain, 'Domain', domainId, `${chain}/${Routes.domains}/${domainId}`)
 
-const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
-  isRouteSupportingNetwork(chain, Routes.domains) ? <Domain /> : <NotFound />
+const Page: FC<ChainPageProps & DomainIdPageProps> = ({ params: { chain, domainId } }) =>
+  isRouteSupportingNetwork(
+    chain,
+    Routes.domains,
+    (Routes.domains + '/' + domainId) as RoutesDomains,
+  ) ? (
+    <Domain />
+  ) : (
+    <NotFound />
+  )
 
 export default Page

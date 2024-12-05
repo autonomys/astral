@@ -1,12 +1,20 @@
-import { RoutesConsensus } from '@/constants/routes'
-import { getMetadata } from '@/utils/metadata/basic'
 import { LogList } from 'components/Consensus/Log/LogList'
+import { NotFound } from 'components/layout/NotFound'
+import { Routes, RoutesConsensus } from 'constants/routes'
 import { Metadata } from 'next'
+import { FC } from 'react'
 import type { ChainPageProps } from 'types/app'
+import { getMetadata } from 'utils/metadata/basic'
+import { isRouteSupportingNetwork } from 'utils/route'
 
 export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadata =>
   getMetadata(chain, 'Logs', undefined, `${chain}/${RoutesConsensus.logs}`)
 
-export default async function Page() {
-  return <LogList />
-}
+const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
+  isRouteSupportingNetwork(chain, Routes.consensus, RoutesConsensus.logs) ? (
+    <LogList />
+  ) : (
+    <NotFound />
+  )
+
+export default Page
