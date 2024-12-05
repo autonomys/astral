@@ -82,7 +82,7 @@ export const QUERY_REWARDS_LIST = gql`
     $accountId: String!
     $limit: Int!
     $offset: Int
-    $sortBy: [consensus_rewards_order_by!]!
+    $orderBy: [consensus_rewards_order_by!]!
   ) {
     consensus_rewards_aggregate(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }) {
       aggregate {
@@ -90,7 +90,7 @@ export const QUERY_REWARDS_LIST = gql`
       }
     }
     consensus_rewards(
-      order_by: $sortBy
+      order_by: $orderBy
       limit: $limit
       offset: $offset
       where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }
