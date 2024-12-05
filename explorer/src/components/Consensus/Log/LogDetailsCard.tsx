@@ -1,4 +1,3 @@
-import { shortString } from '@autonomys/auto-utils'
 import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
 import { LogByIdQuery } from 'gql/graphql'
