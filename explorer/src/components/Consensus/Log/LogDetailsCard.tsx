@@ -29,11 +29,10 @@ export const LogDetailsCard: FC<Props> = ({ log }) => {
               <List>
                 <StyledListItem title='Type'>{log.kind}</StyledListItem>
                 <StyledListItem title='Engine'>{value.engine}</StyledListItem>
-                <StyledListItem title='Data'>{shortString(value.data, 10, 550)}</StyledListItem>
               </List>
             </div>
             <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
-              <Arguments args={parseArgs(log.block?.events[0].args)} />
+              <Arguments args={parseArgs(log.value)} />
             </div>
           </div>
         </div>
