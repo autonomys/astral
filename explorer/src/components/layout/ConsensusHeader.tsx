@@ -2,13 +2,14 @@
 
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { Routes } from 'constants/routes'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC, useMemo, useState } from 'react'
+import { getSupportedHeaderLinks } from 'utils/route'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
@@ -19,31 +20,7 @@ export const ConsensusHeader: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { network, section } = useIndexers()
 
-  const menuList = useMemo(
-    () => [
-      {
-        title: 'Accounts',
-        link: `/${network}/${section}/${INTERNAL_ROUTES.accounts.list}`,
-      },
-      {
-        title: 'Blocks',
-        link: `/${network}/${section}/${INTERNAL_ROUTES.blocks.list}`,
-      },
-      {
-        title: 'Extrinsics',
-        link: `/${network}/${section}/${INTERNAL_ROUTES.extrinsics.list}`,
-      },
-      {
-        title: 'Events',
-        link: `/${network}/${section}/${INTERNAL_ROUTES.events.list}`,
-      },
-      {
-        title: 'Logs',
-        link: `/${network}/${section}/${INTERNAL_ROUTES.logs.list}`,
-      },
-    ],
-    [network, section],
-  )
+  const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.consensus), [network])
 
   return (
     <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">
