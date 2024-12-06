@@ -1,8 +1,9 @@
 'use client'
 
+import { getSupportedHeaderLinks } from '@/utils/route'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
-import { INTERNAL_ROUTES, ROUTES, Routes } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
@@ -19,23 +20,16 @@ export const DomainHeader = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { network } = useIndexers()
 
-  const menuList = useMemo(() => {
-    const domainsChildren = ROUTES.find((item) => item.name === Routes.domains)?.children
-    return [
+  const menuList = useMemo(
+    () => [
       {
         title: 'Domains',
         link: `/${network}/${Routes.domains}`,
       },
-      ...(domainsChildren
-        ? domainsChildren
-            .filter((item) => !item.networks || item.networks?.includes(network))
-            .map((item) => ({
-              title: item.title,
-              link: `/${network}/${item.name}`,
-            }))
-        : []),
-    ]
-  }, [network])
+      ...getSupportedHeaderLinks(network, Routes.domains),
+    ],
+    [network],
+  )
 
   return (
     <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">

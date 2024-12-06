@@ -17752,7 +17752,7 @@ export type RewardsListQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
-  sortBy: Array<Consensus_Rewards_Order_By> | Consensus_Rewards_Order_By;
+  orderBy: Array<Consensus_Rewards_Order_By> | Consensus_Rewards_Order_By;
 }>;
 
 
@@ -17914,7 +17914,7 @@ export type LogByIdQueryVariables = Exact<{
 }>;
 
 
-export type LogByIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, timestamp: any, block?: { __typename?: 'consensus_blocks', id: string, events: Array<{ __typename?: 'consensus_events', id: string, args: string, name: string, phase: string, timestamp: any, block_height: any, extrinsic_id: string }> } | null }> };
+export type LogByIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, timestamp: any }> };
 
 export type DomainsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -18504,7 +18504,7 @@ export type LatestRewardsWeekLazyQueryHookResult = ReturnType<typeof useLatestRe
 export type LatestRewardsWeekSuspenseQueryHookResult = ReturnType<typeof useLatestRewardsWeekSuspenseQuery>;
 export type LatestRewardsWeekQueryResult = Apollo.QueryResult<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>;
 export const RewardsListDocument = gql`
-    query RewardsList($accountId: String!, $limit: Int!, $offset: Int, $sortBy: [consensus_rewards_order_by!]!) {
+    query RewardsList($accountId: String!, $limit: Int!, $offset: Int, $orderBy: [consensus_rewards_order_by!]!) {
   consensus_rewards_aggregate(
     where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
   ) {
@@ -18513,7 +18513,7 @@ export const RewardsListDocument = gql`
     }
   }
   consensus_rewards(
-    order_by: $sortBy
+    order_by: $orderBy
     limit: $limit
     offset: $offset
     where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
@@ -18555,7 +18555,7 @@ export const RewardsListDocument = gql`
  *      accountId: // value for 'accountId'
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
- *      sortBy: // value for 'sortBy'
+ *      orderBy: // value for 'orderBy'
  *   },
  * });
  */
@@ -19582,18 +19582,6 @@ export const LogByIdDocument = gql`
     value
     block_height
     timestamp
-    block {
-      id
-      events(limit: 10, order_by: {sort_id: desc}) {
-        id
-        args
-        name
-        phase
-        timestamp
-        block_height
-        extrinsic_id
-      }
-    }
   }
 }
     `;

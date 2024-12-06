@@ -17,6 +17,8 @@ import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 're
 import { logError } from 'utils/log'
 import { getTokenDecimals, getTokenSymbol } from 'utils/network'
 
+const IGNORED_NETWORK_ERRORS = ['TypeError: NetworkError when attempting to fetch resource.']
+
 export type IndexersContextValue = {
   indexerSet: Indexer
   network: NetworkId
@@ -52,7 +54,7 @@ export const IndexersProvider: FC<Props> = ({ children }) => {
           `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, [Network]: ${indexerSet.network}, [Section]: ${section}`,
         ),
       )
-    if (networkError)
+    if (networkError && !IGNORED_NETWORK_ERRORS.includes(networkError.message))
       logError(
         pathname,
         `[Network error]: ${networkError}, [Network]: ${indexerSet.network}, [Section]: ${section}`,
