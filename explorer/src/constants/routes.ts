@@ -22,6 +22,11 @@ export enum RoutesConsensus {
   files = Routes.consensus + '/files',
 }
 
+export enum RoutesStorage {
+  files = Routes.storage + '/files',
+  folders = Routes.storage + '/folders',
+}
+
 export enum RoutesStaking {
   operators = Routes.staking + '/operators',
   register = Routes.staking + '/register',
@@ -40,7 +45,13 @@ export enum RoutesDomains {
   autoid = Routes.domains + '/auto-id',
 }
 
-export type AnyRoutes = Routes | RoutesConsensus | RoutesStaking | RoutesLeaderboard | RoutesDomains
+export type AnyRoutes =
+  | Routes
+  | RoutesConsensus
+  | RoutesStorage
+  | RoutesStaking
+  | RoutesLeaderboard
+  | RoutesDomains
 
 export const ROUTES: Route[] = [
   {
@@ -67,10 +78,6 @@ export const ROUTES: Route[] = [
         name: RoutesConsensus.logs,
         title: 'Logs',
       },
-      {
-        name: RoutesConsensus.files,
-        title: 'Files',
-      },
     ],
   },
   {
@@ -80,6 +87,16 @@ export const ROUTES: Route[] = [
   {
     name: Routes.storage,
     title: 'Permanent Storage',
+    children: [
+      {
+        name: RoutesStorage.files,
+        title: 'Files',
+      },
+      {
+        name: RoutesStorage.folders,
+        title: 'Folders',
+      },
+    ],
   },
   {
     name: Routes.staking,

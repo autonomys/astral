@@ -1,8 +1,9 @@
 'use client'
 
+import { getSupportedHeaderLinks } from '@/utils/route'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { Routes } from 'constants/routes'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
@@ -19,19 +20,7 @@ export const StorageHeader: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { network, section } = useIndexers()
 
-  const menuList = useMemo(
-    () => [
-      {
-        title: 'Files',
-        link: `/${network}/${section}/${INTERNAL_ROUTES.files.list}`,
-      },
-      {
-        title: 'Folders',
-        link: `/${network}/${section}/${INTERNAL_ROUTES.folders.list}`,
-      },
-    ],
-    [network, section],
-  )
+  const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.storage), [network])
 
   return (
     <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">
