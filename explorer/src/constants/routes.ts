@@ -7,15 +7,70 @@ export enum Routes {
   staking = 'staking',
   leaderboard = 'leaderboard',
   domains = 'domains',
-  nova = 'nova',
-  autoid = 'autoid',
+  autoevm = 'auto-evm',
+  autoid = 'auto-id',
   testnetRewards = 'testnet-rewards',
 }
+
+export enum RoutesConsensus {
+  accounts = Routes.consensus + '/accounts',
+  blocks = Routes.consensus + '/blocks',
+  extrinsics = Routes.consensus + '/extrinsics',
+  events = Routes.consensus + '/events',
+  logs = Routes.consensus + '/logs',
+  files = Routes.consensus + '/files',
+}
+
+export enum RoutesStaking {
+  operators = Routes.staking + '/operators',
+  register = Routes.staking + '/register',
+  nominations = Routes.staking + '/nominations',
+}
+
+export enum RoutesLeaderboard {
+  farmers = Routes.leaderboard + '/farmers',
+  accounts = Routes.leaderboard + '/accounts',
+  operators = Routes.leaderboard + '/operators',
+  nominators = Routes.leaderboard + '/nominators',
+}
+
+export enum RoutesDomains {
+  autoevm = Routes.domains + '/auto-evm',
+  autoid = Routes.domains + '/auto-id',
+}
+
+export type AnyRoutes = Routes | RoutesConsensus | RoutesStaking | RoutesLeaderboard | RoutesDomains
 
 export const ROUTES: Route[] = [
   {
     name: Routes.consensus,
     title: 'Consensus Chain',
+    children: [
+      {
+        name: RoutesConsensus.accounts,
+        title: 'Accounts',
+      },
+      {
+        name: RoutesConsensus.blocks,
+        title: 'Blocks',
+      },
+      {
+        name: RoutesConsensus.extrinsics,
+        title: 'Extrinsics',
+      },
+      {
+        name: RoutesConsensus.events,
+        title: 'Events',
+      },
+      {
+        name: RoutesConsensus.logs,
+        title: 'Logs',
+      },
+      {
+        name: RoutesConsensus.files,
+        title: 'Files',
+      },
+    ],
   },
   {
     name: Routes.farming,
@@ -25,27 +80,65 @@ export const ROUTES: Route[] = [
     name: Routes.staking,
     title: 'Staking',
     networks: [NetworkId.TAURUS],
+    children: [
+      {
+        name: RoutesStaking.operators,
+        title: 'Operators',
+        networks: [NetworkId.TAURUS],
+      },
+      {
+        name: RoutesStaking.register,
+        title: 'Register Operator',
+        networks: [NetworkId.TAURUS],
+      },
+      {
+        name: RoutesStaking.nominations,
+        title: 'Nominations',
+        networks: [],
+      },
+    ],
   },
   {
     name: Routes.leaderboard,
     title: 'Leaderboard',
+    children: [
+      {
+        name: RoutesLeaderboard.farmers,
+        title: 'Top Farmers',
+      },
+      {
+        name: RoutesLeaderboard.accounts,
+        title: 'Top Accounts',
+        networks: [NetworkId.TAURUS],
+      },
+      {
+        name: RoutesLeaderboard.operators,
+        title: 'Top Operators',
+        networks: [NetworkId.TAURUS],
+      },
+      {
+        name: RoutesLeaderboard.nominators,
+        title: 'Top Nominators',
+        networks: [],
+      },
+    ],
   },
   {
     name: Routes.domains,
     title: 'Domains',
+    networks: [NetworkId.TAURUS],
     children: [
       {
-        name: Routes.nova,
-        title: 'Nova',
-        networks: [NetworkId.GEMINI_3H],
+        name: RoutesDomains.autoevm,
+        title: 'Auto-EVM',
+        networks: [NetworkId.TAURUS],
       },
       {
-        name: Routes.autoid,
+        name: RoutesDomains.autoid,
         title: 'Auto-ID',
-        networks: [NetworkId.GEMINI_3H],
+        networks: [],
       },
     ],
-    networks: [NetworkId.GEMINI_3H],
   },
   {
     name: Routes.testnetRewards,
@@ -151,7 +244,7 @@ export const INTERNAL_ROUTES = {
         `/${chain}/${domain}/${domainId}`,
     },
     list: 'list',
-    nova: Routes.nova,
+    autoevm: Routes.autoevm,
     autoid: Routes.autoid,
   },
   search: {
