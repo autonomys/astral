@@ -18235,6 +18235,57 @@ export type DomainsLastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type DomainsLastBlockQuery = { __typename?: 'query_root', staking_domains: Array<{ __typename?: 'staking_domains', id: string, last_domain_block_number: any, completed_epoch: any }> };
 
+export type FilesQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Files_Files_Order_By> | Files_Files_Order_By;
+  where?: InputMaybe<Files_Files_Bool_Exp>;
+}>;
+
+
+export type FilesQuery = { __typename?: 'query_root', files_files_aggregate: { __typename?: 'files_files_aggregate', aggregate?: { __typename?: 'files_files_aggregate_fields', count: number } | null }, files_files: Array<{ __typename?: 'files_files', id: string, name?: string | null, cid?: { __typename?: 'files_cids', timestamp: any, blockHeight: any, extrinsicId: string } | null }> };
+
+export type FileByIdQueryVariables = Exact<{
+  cid: Scalars['String']['input'];
+}>;
+
+
+export type FileByIdQuery = { __typename?: 'query_root', files_files: Array<{ __typename?: 'files_files', id: string, name?: string | null, cid?: { __typename?: 'files_cids', timestamp: any, blockHeight: any, extrinsicId: string, blockHash: string, extrinsicHash: string } | null }> };
+
+export type GetCidQueryVariables = Exact<{
+  cid: Scalars['String']['input'];
+}>;
+
+
+export type GetCidQuery = { __typename?: 'query_root', files_metadata: Array<{ __typename?: 'files_metadata', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, metadata_cids: Array<{ __typename?: 'files_metadata_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_folders: Array<{ __typename?: 'files_folders', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, folder_cids: Array<{ __typename?: 'files_folder_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_files: Array<{ __typename?: 'files_files', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, file_cids: Array<{ __typename?: 'files_file_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }> };
+
+export type FoldersQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Files_Folders_Order_By> | Files_Folders_Order_By;
+  where?: InputMaybe<Files_Folders_Bool_Exp>;
+}>;
+
+
+export type FoldersQuery = { __typename?: 'query_root', files_folders_aggregate: { __typename?: 'files_folders_aggregate', aggregate?: { __typename?: 'files_folders_aggregate_fields', count: number } | null }, files_folders: Array<{ __typename?: 'files_folders', id: string, name?: string | null, cid?: { __typename?: 'files_cids', timestamp: any, blockHeight: any, extrinsicId: string } | null }> };
+
+export type FolderByIdQueryVariables = Exact<{
+  cid: Scalars['String']['input'];
+}>;
+
+
+export type FolderByIdQuery = { __typename?: 'query_root', files_folders: Array<{ __typename?: 'files_folders', id: string, name?: string | null, cid?: { __typename?: 'files_cids', timestamp: any, blockHeight: any, extrinsicId: string, blockHash: string, extrinsicHash: string } | null, childCount: { __typename?: 'files_folder_cids_aggregate', aggregate?: { __typename?: 'files_folder_cids_aggregate_fields', count: number } | null } }> };
+
+export type FolderChildrenByIdQueryVariables = Exact<{
+  cid: Scalars['String']['input'];
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<Files_Folder_Cids_Order_By> | Files_Folder_Cids_Order_By>;
+}>;
+
+
+export type FolderChildrenByIdQuery = { __typename?: 'query_root', files_folder_cids_aggregate: { __typename?: 'files_folder_cids_aggregate', aggregate?: { __typename?: 'files_folder_cids_aggregate_fields', count: number } | null }, files_folder_cids: Array<{ __typename?: 'files_folder_cids', child_cid: string, chunk?: { __typename?: 'files_chunks', name?: string | null } | null }> };
+
 export type AccountsTopLeaderboardQueryVariables = Exact<{
   first: Scalars['Int']['input'];
 }>;
@@ -21696,6 +21747,340 @@ export type DomainsLastBlockQueryHookResult = ReturnType<typeof useDomainsLastBl
 export type DomainsLastBlockLazyQueryHookResult = ReturnType<typeof useDomainsLastBlockLazyQuery>;
 export type DomainsLastBlockSuspenseQueryHookResult = ReturnType<typeof useDomainsLastBlockSuspenseQuery>;
 export type DomainsLastBlockQueryResult = Apollo.QueryResult<DomainsLastBlockQuery, DomainsLastBlockQueryVariables>;
+export const FilesDocument = gql`
+    query Files($limit: Int!, $offset: Int, $orderBy: [files_files_order_by!]!, $where: files_files_bool_exp) {
+  files_files_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  files_files(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    name
+    cid {
+      blockHeight: block_height
+      extrinsicId: extrinsic_id
+      timestamp
+    }
+  }
+}
+    `;
+
+/**
+ * __useFilesQuery__
+ *
+ * To run a query within a React component, call `useFilesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFilesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFilesQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFilesQuery(baseOptions: Apollo.QueryHookOptions<FilesQuery, FilesQueryVariables> & ({ variables: FilesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FilesQuery, FilesQueryVariables>(FilesDocument, options);
+      }
+export function useFilesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FilesQuery, FilesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FilesQuery, FilesQueryVariables>(FilesDocument, options);
+        }
+export function useFilesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FilesQuery, FilesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FilesQuery, FilesQueryVariables>(FilesDocument, options);
+        }
+export type FilesQueryHookResult = ReturnType<typeof useFilesQuery>;
+export type FilesLazyQueryHookResult = ReturnType<typeof useFilesLazyQuery>;
+export type FilesSuspenseQueryHookResult = ReturnType<typeof useFilesSuspenseQuery>;
+export type FilesQueryResult = Apollo.QueryResult<FilesQuery, FilesQueryVariables>;
+export const FileByIdDocument = gql`
+    query FileById($cid: String!) {
+  files_files(where: {id: {_eq: $cid}}) {
+    id
+    name
+    cid {
+      blockHeight: block_height
+      extrinsicId: extrinsic_id
+      timestamp
+      blockHash: block_hash
+      extrinsicHash: extrinsic_hash
+    }
+  }
+}
+    `;
+
+/**
+ * __useFileByIdQuery__
+ *
+ * To run a query within a React component, call `useFileByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFileByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFileByIdQuery({
+ *   variables: {
+ *      cid: // value for 'cid'
+ *   },
+ * });
+ */
+export function useFileByIdQuery(baseOptions: Apollo.QueryHookOptions<FileByIdQuery, FileByIdQueryVariables> & ({ variables: FileByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FileByIdQuery, FileByIdQueryVariables>(FileByIdDocument, options);
+      }
+export function useFileByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FileByIdQuery, FileByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FileByIdQuery, FileByIdQueryVariables>(FileByIdDocument, options);
+        }
+export function useFileByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FileByIdQuery, FileByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FileByIdQuery, FileByIdQueryVariables>(FileByIdDocument, options);
+        }
+export type FileByIdQueryHookResult = ReturnType<typeof useFileByIdQuery>;
+export type FileByIdLazyQueryHookResult = ReturnType<typeof useFileByIdLazyQuery>;
+export type FileByIdSuspenseQueryHookResult = ReturnType<typeof useFileByIdSuspenseQuery>;
+export type FileByIdQueryResult = Apollo.QueryResult<FileByIdQuery, FileByIdQueryVariables>;
+export const GetCidDocument = gql`
+    query GetCID($cid: String!) {
+  files_metadata(where: {id: {_eq: $cid}}) {
+    chunk {
+      data
+    }
+    metadata_cids {
+      chunk {
+        data
+      }
+    }
+  }
+  files_folders(where: {id: {_eq: $cid}}) {
+    chunk {
+      data
+    }
+    folder_cids {
+      chunk {
+        data
+      }
+    }
+  }
+  files_files(where: {id: {_eq: $cid}}) {
+    chunk {
+      data
+    }
+    file_cids {
+      chunk {
+        data
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCidQuery__
+ *
+ * To run a query within a React component, call `useGetCidQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCidQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCidQuery({
+ *   variables: {
+ *      cid: // value for 'cid'
+ *   },
+ * });
+ */
+export function useGetCidQuery(baseOptions: Apollo.QueryHookOptions<GetCidQuery, GetCidQueryVariables> & ({ variables: GetCidQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, options);
+      }
+export function useGetCidLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCidQuery, GetCidQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, options);
+        }
+export function useGetCidSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCidQuery, GetCidQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, options);
+        }
+export type GetCidQueryHookResult = ReturnType<typeof useGetCidQuery>;
+export type GetCidLazyQueryHookResult = ReturnType<typeof useGetCidLazyQuery>;
+export type GetCidSuspenseQueryHookResult = ReturnType<typeof useGetCidSuspenseQuery>;
+export type GetCidQueryResult = Apollo.QueryResult<GetCidQuery, GetCidQueryVariables>;
+export const FoldersDocument = gql`
+    query Folders($limit: Int!, $offset: Int, $orderBy: [files_folders_order_by!]!, $where: files_folders_bool_exp) {
+  files_folders_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  files_folders(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    name
+    cid {
+      blockHeight: block_height
+      extrinsicId: extrinsic_id
+      timestamp
+    }
+  }
+}
+    `;
+
+/**
+ * __useFoldersQuery__
+ *
+ * To run a query within a React component, call `useFoldersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFoldersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFoldersQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useFoldersQuery(baseOptions: Apollo.QueryHookOptions<FoldersQuery, FoldersQueryVariables> & ({ variables: FoldersQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FoldersQuery, FoldersQueryVariables>(FoldersDocument, options);
+      }
+export function useFoldersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FoldersQuery, FoldersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FoldersQuery, FoldersQueryVariables>(FoldersDocument, options);
+        }
+export function useFoldersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FoldersQuery, FoldersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FoldersQuery, FoldersQueryVariables>(FoldersDocument, options);
+        }
+export type FoldersQueryHookResult = ReturnType<typeof useFoldersQuery>;
+export type FoldersLazyQueryHookResult = ReturnType<typeof useFoldersLazyQuery>;
+export type FoldersSuspenseQueryHookResult = ReturnType<typeof useFoldersSuspenseQuery>;
+export type FoldersQueryResult = Apollo.QueryResult<FoldersQuery, FoldersQueryVariables>;
+export const FolderByIdDocument = gql`
+    query FolderById($cid: String!) {
+  files_folders(where: {id: {_eq: $cid}}) {
+    id
+    name
+    cid {
+      blockHeight: block_height
+      extrinsicId: extrinsic_id
+      timestamp
+      blockHash: block_hash
+      extrinsicHash: extrinsic_hash
+    }
+    childCount: folder_cids_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFolderByIdQuery__
+ *
+ * To run a query within a React component, call `useFolderByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFolderByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFolderByIdQuery({
+ *   variables: {
+ *      cid: // value for 'cid'
+ *   },
+ * });
+ */
+export function useFolderByIdQuery(baseOptions: Apollo.QueryHookOptions<FolderByIdQuery, FolderByIdQueryVariables> & ({ variables: FolderByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FolderByIdQuery, FolderByIdQueryVariables>(FolderByIdDocument, options);
+      }
+export function useFolderByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FolderByIdQuery, FolderByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FolderByIdQuery, FolderByIdQueryVariables>(FolderByIdDocument, options);
+        }
+export function useFolderByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FolderByIdQuery, FolderByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FolderByIdQuery, FolderByIdQueryVariables>(FolderByIdDocument, options);
+        }
+export type FolderByIdQueryHookResult = ReturnType<typeof useFolderByIdQuery>;
+export type FolderByIdLazyQueryHookResult = ReturnType<typeof useFolderByIdLazyQuery>;
+export type FolderByIdSuspenseQueryHookResult = ReturnType<typeof useFolderByIdSuspenseQuery>;
+export type FolderByIdQueryResult = Apollo.QueryResult<FolderByIdQuery, FolderByIdQueryVariables>;
+export const FolderChildrenByIdDocument = gql`
+    query FolderChildrenById($cid: String!, $limit: Int!, $offset: Int, $orderBy: [files_folder_cids_order_by!]) {
+  files_folder_cids_aggregate(
+    where: {parent_cid: {_eq: $cid}, chunk: {type: {_eq: "File"}}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  files_folder_cids(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: {parent_cid: {_eq: $cid}, chunk: {type: {_eq: "File"}}}
+  ) {
+    child_cid
+    chunk {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useFolderChildrenByIdQuery__
+ *
+ * To run a query within a React component, call `useFolderChildrenByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFolderChildrenByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFolderChildrenByIdQuery({
+ *   variables: {
+ *      cid: // value for 'cid'
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useFolderChildrenByIdQuery(baseOptions: Apollo.QueryHookOptions<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables> & ({ variables: FolderChildrenByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>(FolderChildrenByIdDocument, options);
+      }
+export function useFolderChildrenByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>(FolderChildrenByIdDocument, options);
+        }
+export function useFolderChildrenByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>(FolderChildrenByIdDocument, options);
+        }
+export type FolderChildrenByIdQueryHookResult = ReturnType<typeof useFolderChildrenByIdQuery>;
+export type FolderChildrenByIdLazyQueryHookResult = ReturnType<typeof useFolderChildrenByIdLazyQuery>;
+export type FolderChildrenByIdSuspenseQueryHookResult = ReturnType<typeof useFolderChildrenByIdSuspenseQuery>;
+export type FolderChildrenByIdQueryResult = Apollo.QueryResult<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>;
 export const AccountsTopLeaderboardDocument = gql`
     query AccountsTopLeaderboard($first: Int!) {
   farmers: consensus_rewards(

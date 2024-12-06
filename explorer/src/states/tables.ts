@@ -11,6 +11,8 @@ interface TableStates {
   extrinsics: Table
   events: Table
   logs: Table
+  files: Table
+  folders: Table
   domains: Table
   operators: Table
   leaderboard: Table
@@ -34,6 +36,8 @@ const initialState: TableStates = {
   extrinsics: INITIAL_TABLES.extrinsics,
   events: INITIAL_TABLES.events,
   logs: INITIAL_TABLES.logs,
+  files: INITIAL_TABLES.files,
+  folders: INITIAL_TABLES.folders,
   domains: INITIAL_TABLES.domains,
   operators: INITIAL_TABLES.operators,
   leaderboard: INITIAL_TABLES.leaderboard,
@@ -108,7 +112,7 @@ export const useTableStates = create<TableStatesAndFn>()(
     }),
     {
       name: 'table-storage',
-      version: 4,
+      version: 5,
       storage: createJSONStorage(() => localStorage),
       serialize: (state) => JSON.stringify(state, bigIntSerializer),
       deserialize: (str) => JSON.parse(str, bigIntDeserializer),

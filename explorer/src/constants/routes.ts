@@ -4,6 +4,7 @@ import { Route } from 'types/app'
 export enum Routes {
   consensus = 'consensus',
   farming = 'farming',
+  storage = 'permanent-storage',
   staking = 'staking',
   leaderboard = 'leaderboard',
   domains = 'domains',
@@ -19,6 +20,11 @@ export enum RoutesConsensus {
   events = Routes.consensus + '/events',
   logs = Routes.consensus + '/logs',
   files = Routes.consensus + '/files',
+}
+
+export enum RoutesStorage {
+  files = Routes.storage + '/files',
+  folders = Routes.storage + '/folders',
 }
 
 export enum RoutesStaking {
@@ -39,7 +45,13 @@ export enum RoutesDomains {
   autoid = Routes.domains + '/auto-id',
 }
 
-export type AnyRoutes = Routes | RoutesConsensus | RoutesStaking | RoutesLeaderboard | RoutesDomains
+export type AnyRoutes =
+  | Routes
+  | RoutesConsensus
+  | RoutesStorage
+  | RoutesStaking
+  | RoutesLeaderboard
+  | RoutesDomains
 
 export const ROUTES: Route[] = [
   {
@@ -66,15 +78,25 @@ export const ROUTES: Route[] = [
         name: RoutesConsensus.logs,
         title: 'Logs',
       },
-      {
-        name: RoutesConsensus.files,
-        title: 'Files',
-      },
     ],
   },
   {
     name: Routes.farming,
     title: 'Farming',
+  },
+  {
+    name: Routes.storage,
+    title: 'Permanent Storage',
+    children: [
+      {
+        name: RoutesStorage.files,
+        title: 'Files',
+      },
+      {
+        name: RoutesStorage.folders,
+        title: 'Folders',
+      },
+    ],
   },
   {
     name: Routes.staking,
@@ -226,6 +248,22 @@ export const INTERNAL_ROUTES = {
         `/${chain}/${domain}/logs/${logId}`,
     },
     list: 'logs',
+  },
+  files: {
+    id: {
+      path: ':cid',
+      page: (chain: string, domain: string, cid: string): string =>
+        `/${chain}/${domain}/files/${cid}`,
+    },
+    list: 'files',
+  },
+  folders: {
+    id: {
+      path: ':cid',
+      page: (chain: string, domain: string, cid: string): string =>
+        `/${chain}/${domain}/folders/${cid}`,
+    },
+    list: 'folders',
   },
   operators: {
     id: {

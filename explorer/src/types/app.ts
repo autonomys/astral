@@ -17,6 +17,8 @@ export type ExtrinsicIdParam = { extrinsicId?: string }
 export type EventIdParam = { eventId?: string }
 export type LogIdParam = { logId?: string }
 
+export type CIDParam = { cid?: string }
+
 export type DomainIdParam = { domainId?: string }
 
 export type OperatorIdParam = { operatorId?: string }
@@ -28,6 +30,8 @@ export type BlockIdPageProps = PageProps<BlockIdParam>
 export type ExtrinsicIdPageProps = PageProps<ExtrinsicIdParam>
 export type EventIdPageProps = PageProps<EventIdParam>
 export type LogIdPageProps = PageProps<LogIdParam>
+
+export type CIDPageProps = PageProps<CIDParam>
 
 export type DomainIdPageProps = PageProps<DomainIdParam>
 

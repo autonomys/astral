@@ -65,6 +65,44 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'kind', label: 'Kind', isSelected: true, searchable: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],
+  files: [
+    { name: 'id', label: 'CID', isSelected: true, searchable: true },
+    { name: 'name', label: 'File Name', isSelected: true, searchable: true },
+    {
+      name: 'blockHeight',
+      label: 'Block Height',
+      isSelected: true,
+      searchable: true,
+      accessorKey: 'cid.block_height',
+    },
+    {
+      name: 'extrinsicId',
+      label: 'Extrinsic Id',
+      isSelected: true,
+      searchable: true,
+      accessorKey: 'cid.extrinsic_id',
+    },
+    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: 'cid.timestamp' },
+  ],
+  folders: [
+    { name: 'id', label: 'CID', isSelected: true, searchable: true },
+    { name: 'name', label: 'Folder Name', isSelected: true, searchable: true },
+    {
+      name: 'blockHeight',
+      label: 'Block Height',
+      isSelected: true,
+      searchable: true,
+      accessorKey: 'cid.block_height',
+    },
+    {
+      name: 'extrinsicId',
+      label: 'Extrinsic Id',
+      isSelected: true,
+      searchable: true,
+      accessorKey: 'cid.extrinsic_id',
+    },
+    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: 'cid.timestamp' },
+  ],
   domains: [
     { name: 'id', label: 'Id', isSelected: true, searchable: true },
     { name: 'accountId', label: 'Owner', isSelected: true, searchable: true },
@@ -248,6 +286,16 @@ export const FILTERS_OPTIONS: FiltersOptions = {
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
     { type: 'text', label: 'Kind', key: 'kind' },
   ],
+  files: [
+    { type: 'text', label: 'CID', key: 'id' },
+    { type: 'text', label: 'File Name', key: 'name' },
+    { type: 'range', label: 'Block Height', key: 'blockHeight' },
+  ],
+  folders: [
+    { type: 'text', label: 'CID', key: 'id' },
+    { type: 'text', label: 'Folder Name', key: 'name' },
+    { type: 'range', label: 'Block Height', key: 'blockHeight' },
+  ],
   domains: [
     { type: 'range', label: 'Total Stake', key: 'totalStake' },
     { type: 'range', label: 'Total Deposits', key: 'totalDeposits' },
@@ -394,6 +442,48 @@ export const INITIAL_TABLES: InitialTables = {
     sorting: [
       {
         id: 'sort_id',
+        desc: true,
+      },
+    ],
+  },
+  files: {
+    ...INITIAL_TABLE_PROPERTIES,
+    name: 'files',
+    columns: AVAILABLE_COLUMNS.files,
+    selectedColumns: AVAILABLE_COLUMNS.files
+      .filter((column) => column.isSelected)
+      .map((column) => column.name),
+    filtersOptions: FILTERS_OPTIONS.files,
+    filters: {
+      cid: '',
+      name: '',
+      blockHeightMin: '',
+      blockHeightMax: '',
+    },
+    sorting: [
+      {
+        id: 'cid_timestamp',
+        desc: true,
+      },
+    ],
+  },
+  folders: {
+    ...INITIAL_TABLE_PROPERTIES,
+    name: 'folders',
+    columns: AVAILABLE_COLUMNS.folders,
+    selectedColumns: AVAILABLE_COLUMNS.folders
+      .filter((column) => column.isSelected)
+      .map((column) => column.name),
+    filtersOptions: FILTERS_OPTIONS.folders,
+    filters: {
+      cid: '',
+      name: '',
+      blockHeightMin: '',
+      blockHeightMax: '',
+    },
+    sorting: [
+      {
+        id: 'cid_timestamp',
         desc: true,
       },
     ],
