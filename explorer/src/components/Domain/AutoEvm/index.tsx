@@ -3,9 +3,9 @@
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import Link from 'next/link'
 import { FC } from 'react'
-import { EvmExplorerBanner } from '../common/EvmExplorerBanner'
+import { EvmExplorerBanner } from '../../common/EvmExplorerBanner'
 
-export const NovaPage: FC = () => (
+export const AutoEvmPage: FC = () => (
   <div className='flex w-full flex-col items-center space-y-4'>
     <EvmExplorerBanner />
     <div className='w-full max-w-4xl'>

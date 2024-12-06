@@ -1,5 +1,5 @@
+import { AutoEvmPage } from 'components/Domain/AutoEvm'
 import { NotFound } from 'components/layout/NotFound'
-import { NovaPage } from 'components/Nova'
 import { Routes, RoutesDomains } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
@@ -12,7 +12,7 @@ export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadat
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
   isRouteSupportingNetwork(chain, Routes.domains, RoutesDomains.autoevm) ? (
-    <NovaPage />
+    <AutoEvmPage />
   ) : (
     <NotFound />
   )

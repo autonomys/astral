@@ -1,4 +1,4 @@
-import { AutoIdPage } from 'components/AutoId'
+import { AutoIdPage } from 'components/Domain/AutoId'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes, RoutesDomains } from 'constants/routes'
 import { Metadata } from 'next'
