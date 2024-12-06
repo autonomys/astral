@@ -1,15 +1,22 @@
-import { getMetadata } from '@/utils/metadata/basic'
 import { Block } from 'components/Consensus/Block/Block'
-import { Routes } from 'constants/routes'
+import { NotFound } from 'components/layout/NotFound'
+import { Routes, RoutesConsensus } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { BlockIdPageProps, ChainPageProps } from 'types/app'
+import { getMetadata } from 'utils/metadata/basic'
+import { isRouteSupportingNetwork } from 'utils/route'
 
 export const generateMetadata = ({
   params: { chain, blockId },
 }: ChainPageProps & BlockIdPageProps): Metadata =>
-  getMetadata(chain, 'Block', blockId, `${chain}/${Routes.consensus}/blocks/${blockId}`)
+  getMetadata(chain, 'Block', blockId, `${chain}/${RoutesConsensus.blocks}/${blockId}`)
 
-const Page: FC = () => <Block />
+const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
+  isRouteSupportingNetwork(chain, Routes.consensus, RoutesConsensus.blocks) ? (
+    <Block />
+  ) : (
+    <NotFound />
+  )
 
 export default Page

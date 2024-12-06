@@ -29,7 +29,7 @@ const TABLE = 'logs'
 export const LogList: FC = () => {
   const { ref, inView } = useInView()
   const { network, section } = useIndexers()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,

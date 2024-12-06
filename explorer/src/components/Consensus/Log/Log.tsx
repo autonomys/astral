@@ -12,7 +12,6 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { LogIdParam } from 'types/app'
 import { LogDetailsCard } from './LogDetailsCard'
-import { LogDetailsTab } from './LogDetailsTab'
 import { QUERY_LOG_BY_ID } from './query'
 
 export const Log: FC = () => {
@@ -48,16 +47,7 @@ export const Log: FC = () => {
 
   return (
     <div className='w-full'>
-      <div ref={ref}>
-        {!loading && log ? (
-          <>
-            <LogDetailsCard log={log} />
-            <LogDetailsTab events={log.block?.events ?? []} />
-          </>
-        ) : (
-          noData
-        )}
-      </div>
+      <div ref={ref}>{!loading && log ? <LogDetailsCard log={log} /> : noData}</div>
     </div>
   )
 }

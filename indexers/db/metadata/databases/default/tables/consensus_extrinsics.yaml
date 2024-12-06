@@ -28,6 +28,15 @@ object_relationships:
           name: extrinsic_modules
           schema: consensus
 array_relationships:
+  - name: cids
+    using:
+      manual_configuration:
+        column_mapping:
+          cid: id
+        insertion_order: null
+        remote_table:
+          name: cids
+          schema: files
   - name: events
     using:
       manual_configuration:

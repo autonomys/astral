@@ -1,5 +1,6 @@
 'use client'
 
+import { getSupportedHeaderLinks } from '@/utils/route'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
@@ -19,23 +20,7 @@ export const StakingHeader = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { network } = useIndexers()
 
-  const menuList = useMemo(
-    () => [
-      {
-        title: 'Operators',
-        link: `/${network}/${Routes.staking}`,
-      },
-      {
-        title: 'Register Operator',
-        link: `/${network}/${Routes.staking}/${INTERNAL_ROUTES.operators.register}`,
-      },
-      {
-        title: 'Nominations',
-        link: `/${network}/${Routes.staking}/${INTERNAL_ROUTES.operators.nominations}`,
-      },
-    ],
-    [network],
-  )
+  const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.staking), [network])
 
   return (
     <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">

@@ -17914,7 +17914,7 @@ export type LogByIdQueryVariables = Exact<{
 }>;
 
 
-export type LogByIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, timestamp: any, block?: { __typename?: 'consensus_blocks', id: string, events: Array<{ __typename?: 'consensus_events', id: string, args: string, name: string, phase: string, timestamp: any, block_height: any, extrinsic_id: string }> } | null }> };
+export type LogByIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, timestamp: any }> };
 
 export type DomainsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -19531,18 +19531,6 @@ export const LogByIdDocument = gql`
     value
     block_height
     timestamp
-    block {
-      id
-      events(limit: 10, order_by: {sort_id: desc}) {
-        id
-        args
-        name
-        phase
-        timestamp
-        block_height
-        extrinsic_id
-      }
-    }
   }
 }
     `;
