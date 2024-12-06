@@ -157,7 +157,7 @@ export const ROUTES: Route[] = [
       },
       {
         name: RoutesDomains.autoid,
-        title: 'Auto-ID',
+        title: 'Auto ID',
         networks: [],
       },
     ],
