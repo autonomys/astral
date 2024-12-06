@@ -17752,7 +17752,7 @@ export type RewardsListQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
-  sortBy: Array<Consensus_Rewards_Order_By> | Consensus_Rewards_Order_By;
+  orderBy: Array<Consensus_Rewards_Order_By> | Consensus_Rewards_Order_By;
 }>;
 
 
@@ -18453,7 +18453,7 @@ export type LatestRewardsWeekLazyQueryHookResult = ReturnType<typeof useLatestRe
 export type LatestRewardsWeekSuspenseQueryHookResult = ReturnType<typeof useLatestRewardsWeekSuspenseQuery>;
 export type LatestRewardsWeekQueryResult = Apollo.QueryResult<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>;
 export const RewardsListDocument = gql`
-    query RewardsList($accountId: String!, $limit: Int!, $offset: Int, $sortBy: [consensus_rewards_order_by!]!) {
+    query RewardsList($accountId: String!, $limit: Int!, $offset: Int, $orderBy: [consensus_rewards_order_by!]!) {
   consensus_rewards_aggregate(
     where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
   ) {
@@ -18462,7 +18462,7 @@ export const RewardsListDocument = gql`
     }
   }
   consensus_rewards(
-    order_by: $sortBy
+    order_by: $orderBy
     limit: $limit
     offset: $offset
     where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
@@ -18504,7 +18504,7 @@ export const RewardsListDocument = gql`
  *      accountId: // value for 'accountId'
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
- *      sortBy: // value for 'sortBy'
+ *      orderBy: // value for 'orderBy'
  *   },
  * });
  */

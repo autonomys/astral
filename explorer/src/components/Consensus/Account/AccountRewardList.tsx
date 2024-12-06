@@ -49,17 +49,25 @@ export const AccountRewardList: FC = () => {
   const { accountId } = useParams<AccountIdParam>()
   const inFocus = useWindowFocus()
 
-  // eslint-disable-next-line camelcase
-  const sortBy = useMemo(() => ({ block_height: OrderBy.Desc }), [])
+  const orderBy = useMemo(
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : // eslint-disable-next-line camelcase
+          { block_height: OrderBy.Desc },
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
-      sortBy,
+      orderBy,
       accountId: accountId ?? '',
     }),
-    [pagination.pageSize, pagination.pageIndex, sortBy, accountId],
+    [pagination.pageSize, pagination.pageIndex, orderBy, accountId],
   )
 
   const { loading, setIsVisible } = useIndexersQuery<RewardsListQuery, RewardsListQueryVariables>(
@@ -100,7 +108,7 @@ export const AccountRewardList: FC = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'block.height',
+        accessorKey: 'block_height',
         header: 'Block Number',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
@@ -116,7 +124,7 @@ export const AccountRewardList: FC = () => {
         },
       },
       {
-        accessorKey: 'block.hash',
+        accessorKey: 'block_hash',
         header: 'Block Hash',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
@@ -142,7 +150,7 @@ export const AccountRewardList: FC = () => {
         ),
       },
       {
-        accessorKey: 'name',
+        accessorKey: 'reward_type',
         header: 'Type',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
