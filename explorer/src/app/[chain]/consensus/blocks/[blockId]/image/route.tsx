@@ -1,5 +1,4 @@
 /* eslint-disable react/no-unknown-property */
-import { utcToLocalRelativeTime } from '@/utils/time'
 import { shortString } from '@autonomys/auto-utils'
 import { QUERY_BLOCK_BY_ID } from 'components/Consensus/Block/query'
 import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
@@ -11,6 +10,7 @@ import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
 import { BlockIdPageProps, ChainPageProps } from 'types/app'
 import { numberWithCommas } from 'utils/number'
+import { utcToLocalRelativeTime } from 'utils/time'
 
 // export const runtime = 'edge'
 export async function GET(
