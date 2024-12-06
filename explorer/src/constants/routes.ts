@@ -152,7 +152,7 @@ export const ROUTES: Route[] = [
     children: [
       {
         name: RoutesDomains.autoevm,
-        title: 'Auto-EVM',
+        title: 'Auto EVM',
         networks: [NetworkId.TAURUS],
       },
       {
