@@ -41,7 +41,7 @@ export const SectionHeader: FC = () => {
         return <TrophyIcon className={className} />
       case Routes.domains:
         return <GlobeAltIcon className={className} />
-      case Routes.nova:
+      case Routes.autoevm:
         return <CodeBracketIcon className={className} />
       case Routes.autoid:
         return <IdentificationIcon className={className} />

@@ -1,32 +1,13 @@
-import { shortString } from '@autonomys/auto-utils'
 import { AccountRewardList } from 'components/Consensus/Account/AccountRewardList'
-import { indexers } from 'constants/indexers'
-import { metadata } from 'constants/metadata'
+import { RoutesConsensus } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
-import type { AccountIdPageProps, ChainPageProps } from 'types/app'
+import type { ChainPageProps } from 'types/app'
+import { getMetadata } from 'utils/metadata/basic'
 
-export async function generateMetadata({
-  params: { chain, accountId },
-}: ChainPageProps & AccountIdPageProps): Promise<Metadata> {
-  const chainTitle = indexers.find((c) => c.network === chain)?.title || 'Unknown chain'
-  const title = `${metadata.title} - ${chainTitle} - Account Rewards ${accountId ? shortString(accountId) : ''}`
-  return {
-    ...metadata,
-    title,
-    openGraph: {
-      ...metadata.openGraph,
-      title,
-    },
-    twitter: {
-      ...metadata.twitter,
-      title,
-    },
-  }
-}
+export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadata =>
+  getMetadata(chain, 'Account Rewards', undefined, `${chain}/${RoutesConsensus.accounts}`)
 
-const Page: FC = () => {
-  return <AccountRewardList />
-}
+const Page: FC = () => <AccountRewardList />
 
 export default Page
