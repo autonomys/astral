@@ -41,8 +41,8 @@ export enum RoutesLeaderboard {
 }
 
 export enum RoutesDomains {
-  autoevm = Routes.domains + '/auto-evm',
-  autoid = Routes.domains + '/auto-id',
+  autoevm = '/auto-evm',
+  autoid = '/auto-id',
 }
 
 export type AnyRoutes =
