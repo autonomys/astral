@@ -65,7 +65,7 @@ export const DomainProgress: FC = () => {
       const progress = Math.min(domain.last_domain_block_number % 100, 100)
       return {
         title: domain.name,
-        href: `/${network}/${domain.name === 'nova' ? Routes.nova : Routes.autoid}`,
+        href: `/${network}/${domain.name === 'nova' ? Routes.autoevm : Routes.autoid}`,
         currentEpoch: domain.completed_epoch,
         lastBlock: domain.last_domain_block_number,
         progress,
