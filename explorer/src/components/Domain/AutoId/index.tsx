@@ -11,19 +11,19 @@ export const AutoIdPage: FC = () => {
         <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
           <div className='mb-10 flex flex-col items-center justify-center'>
             <h1 className='mb-8 mt-6 text-center text-4xl font-bold text-gray-900 dark:text-white'>
-              Auto-ID
+              Auto ID
             </h1>
           </div>
           <div className='m-6 flow-root text-gray-900 dark:text-white'>
             <div className='mb-12 flex w-full flex-col items-center gap-5 overflow-x-auto'>
               <p className='text-center'>
-                Auto-ID is a revolutionary framework designed to enable identity infrastructure at
+                Auto ID is a revolutionary framework designed to enable identity infrastructure at
                 an unprecedented scale. It acts as a foundational layer for decentralized identity
                 solutions, providing a robust and scalable system for managing digital identities
                 across diverse applications and platforms.
               </p>
               <p className='text-center'>
-                With Auto-ID, we address the urgent need for secure, user-centric identity
+                With Auto ID, we address the urgent need for secure, user-centric identity
                 management in the decentralized web. This solution offers a seamless approach to
                 creating, managing, and verifying digital identities while prioritizing user privacy
                 and data sovereignty.
@@ -35,7 +35,7 @@ export const AutoIdPage: FC = () => {
           <div className='m-6 flow-root text-gray-900 dark:text-white'>
             <div className='mb-12 flex w-full flex-row items-start justify-between gap-5 overflow-x-auto'>
               <div className='w-1/2 pr-4'>
-                <p className='text-center'>Key features of Auto-ID include:</p>
+                <p className='text-center'>Key features of Auto ID include:</p>
                 <ul className='list-disc pl-6'>
                   <li>Decentralized identity creation and management</li>
                   <li>Scalable infrastructure capable of supporting millions of users</li>
@@ -46,7 +46,7 @@ export const AutoIdPage: FC = () => {
               </div>
               <div className='w-1/2 pl-4'>
                 <p className='text-center'>
-                  We are thrilled about the potential of Auto-ID to transform digital identity
+                  We are thrilled about the potential of Auto ID to transform digital identity
                   management. While comprehensive documentation is still in progress, you can
                   explore our approach to decentralized identity solutions in our
                   <Link
@@ -55,7 +55,7 @@ export const AutoIdPage: FC = () => {
                     rel='noopener noreferrer'
                     className='ml-1 text-blue-500 hover:text-blue-700'
                   >
-                    Academy section on Auto-ID
+                    Academy section on Auto ID
                   </Link>
                   .
                 </p>

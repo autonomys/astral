@@ -1,5 +1,5 @@
+import { AutoIdPage } from 'components/Domain/AutoId'
 import { NotFound } from 'components/layout/NotFound'
-import { NovaPage } from 'components/Nova'
 import { Routes, RoutesDomains } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
@@ -8,13 +8,9 @@ import { getMetadata } from 'utils/metadata/basic'
 import { isRouteSupportingNetwork } from 'utils/route'
 
 export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadata =>
-  getMetadata(chain, 'Auto-EVM', undefined)
+  getMetadata(chain, 'Auto ID', undefined, `${chain}/${RoutesDomains.autoid}`)
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
-  isRouteSupportingNetwork(chain, Routes.domains, RoutesDomains.autoevm) ? (
-    <NovaPage />
-  ) : (
-    <NotFound />
-  )
+  isRouteSupportingNetwork(chain, Routes.domains, Routes.autoid) ? <AutoIdPage /> : <NotFound />
 
 export default Page
