@@ -38,11 +38,19 @@ export const parseDataToCid = (data: string): ParsedArgs => {
   let modifiedArgs: ModifiedArgs = undefined;
   try {
     const buffer = Buffer.from(data, "hex");
-    const [length, bytes] = compactStripLength(buffer);
-    const isValidLength = length === bytes.length;
-    const encoded = isValidLength ? Bytes.from(buffer) : hexToUint8Array(data);
-    const node = decodeNode(encoded);
-    cid = cidToString(cidOfNode(node));
+    try {
+      const [length, bytes] = compactStripLength(buffer);
+      const isValidLength = length === bytes.length;
+      const encoded = isValidLength
+        ? Bytes.from(buffer)
+        : hexToUint8Array(data);
+      const node = decodeNode(encoded);
+      cid = cidToString(cidOfNode(node));
+    } catch (error) {
+      const encoded = Bytes.from(buffer);
+      const node = decodeNode(encoded);
+      cid = cidToString(cidOfNode(node));
+    }
     modifiedArgs = stringify({ cid });
   } catch (error) {
     logger.error("Error decoding remark or seedHistory extrinsic");
