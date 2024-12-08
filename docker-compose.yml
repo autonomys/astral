@@ -226,6 +226,7 @@ services:
       - --workers=4
       - --unsafe
       - --batch-size=250
+      - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3001
@@ -262,7 +263,8 @@ services:
       - -f=/${NETWORK_ID}/leaderboard
       - --db-schema=leaderboard
       - --workers=1
-      - --batch-size=15
+      - --batch-size=100
+      - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3002
@@ -300,7 +302,8 @@ services:
       - --db-schema=staking
       - --workers=1
       - --unsafe
-      - --batch-size=15
+      - --batch-size=100
+      - --scale-batch-size
       - --disable-historical=true
       - --port 3003
     healthcheck:
@@ -334,7 +337,8 @@ services:
       - --db-schema=files
       - --workers=1
       - --unsafe
-      - --batch-size=15
+      - --batch-size=25
+      - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3004
