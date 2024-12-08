@@ -230,6 +230,7 @@ services:
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3001
+      #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://consensus_subquery_node:3001/ready"]
       interval: 3s
@@ -268,6 +269,7 @@ services:
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3002
+      #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://leaderboard_subquery_node:3002/ready"]
       interval: 3s
@@ -306,6 +308,7 @@ services:
       - --scale-batch-size
       - --disable-historical=true
       - --port 3003
+      #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://staking_subquery_node:3003/ready"]
       interval: 3s
@@ -342,6 +345,7 @@ services:
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3004
+      #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://files_subquery_node:3004/ready"]
       interval: 3s
