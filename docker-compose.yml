@@ -226,9 +226,11 @@ services:
       - --workers=4
       - --unsafe
       - --batch-size=250
+      - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3001
+      #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://consensus_subquery_node:3001/ready"]
       interval: 3s
@@ -262,10 +264,12 @@ services:
       - -f=/${NETWORK_ID}/leaderboard
       - --db-schema=leaderboard
       - --workers=1
-      - --batch-size=15
+      - --batch-size=100
+      - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3002
+      #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://leaderboard_subquery_node:3002/ready"]
       interval: 3s
@@ -300,9 +304,11 @@ services:
       - --db-schema=staking
       - --workers=1
       - --unsafe
-      - --batch-size=15
+      - --batch-size=100
+      - --scale-batch-size
       - --disable-historical=true
       - --port 3003
+      #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://staking_subquery_node:3003/ready"]
       interval: 3s
@@ -334,10 +340,12 @@ services:
       - --db-schema=files
       - --workers=1
       - --unsafe
-      - --batch-size=15
+      - --batch-size=25
+      - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3004
+      #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://files_subquery_node:3004/ready"]
       interval: 3s
