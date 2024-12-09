@@ -79,13 +79,15 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
 
       if (node.Data) {
         const nodeData = IPLDNodeData.decode(node.Data);
+        const data = JSON.parse(stringify(nodeData.data)).data;
+        const dataAsArrayBuffer = new Uint8Array(data);
         await createAndSaveChunk(
           cid,
           nodeData.type,
           nodeData.linkDepth,
           nodeData.size,
           nodeData.name,
-          stringify(nodeData.data),
+          stringify(dataAsArrayBuffer),
           stringify(nodeData.uploadOptions)
         );
 
