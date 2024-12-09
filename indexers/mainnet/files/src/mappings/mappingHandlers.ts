@@ -1,5 +1,6 @@
 global.TextEncoder = require("util").TextEncoder;
 global.TextDecoder = require("util").TextDecoder;
+global.Buffer = require("buffer/").Buffer;
 
 import {
   cidOfNode,
@@ -48,7 +49,8 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
   const methodToPrimitive = method.toPrimitive() as ExtrinsicPrimitive;
   try {
     const data = methodToPrimitive.args.remark;
-    const buffer = Buffer.from(data, "hex");
+    const hexString = data.startsWith("0x") ? data.slice(2) : data;
+    const buffer = Buffer.from(hexString, "hex");
     const [length, bytes] = compactStripLength(buffer);
     const isValidLength = length === bytes.length;
     let node: PBNode | null = null;
@@ -59,8 +61,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
         : hexToUint8Array(data);
       node = decodeNode(encoded);
     } catch (error) {
-      const encoded = Bytes.from(buffer);
-      node = decodeNode(encoded);
+      node = decodeNode(buffer);
     }
     const cid = cidToString(cidOfNode(node));
     const links = node.Links.map((l) => cidToString(l.Hash));
