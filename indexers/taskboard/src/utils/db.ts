@@ -27,12 +27,14 @@ const consensusAccountsQuery = `
     INSERT INTO consensus.accounts (id, account_id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
     SELECT DISTINCT ON (id) 
       id,
+      is as account_id,
       gen_random_uuid() as _id,
       nonce,
       free,
       reserved,
       total,
       created_at,
+      created_at as updated_at,
       int8range($1::int8, $2::int8) as _block_range
     FROM consensus.account_histories
     WHERE _block_range && int8range($1::int8, $2::int8)
