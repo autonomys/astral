@@ -27,7 +27,7 @@ const consensusAccountsQuery = `
     INSERT INTO consensus.accounts (id, account_id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
     SELECT DISTINCT ON (id) 
       id,
-      is as account_id,
+      id as account_id,
       gen_random_uuid() as _id,
       nonce,
       free,
