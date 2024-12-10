@@ -23,8 +23,9 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - id
         - _id
+        - id
+        - kind
       filter: {}
       allow_aggregations: true
     comment: ""

@@ -60,6 +60,7 @@ select_permissions:
         - tip
         - args
         - block_hash
+        - cid
         - error
         - hash
         - id

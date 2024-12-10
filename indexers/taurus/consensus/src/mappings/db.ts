@@ -1,10 +1,15 @@
 import {
+  Account,
   AccountHistory,
   Block,
   Event,
+  EventModule,
   Extrinsic,
+  ExtrinsicModule,
   Log,
+  LogKind,
   Reward,
+  Section,
   Transfer,
 } from "../types";
 import { dateEntry, getSortId, moduleName } from "./utils";
@@ -23,10 +28,67 @@ export async function createAndSaveBlock(
   blockchainSize: bigint,
   extrinsicsCount: number,
   eventsCount: number,
+  accountsCount: number,
+  transfersCount: number,
+  rewardsCount: number,
+  blockRewardsCount: number,
+  voteRewardsCount: number,
+  transferValue: bigint,
+  rewardValue: bigint,
+  blockRewardValue: bigint,
+  voteRewardValue: bigint,
   authorId: string
 ): Promise<Block> {
   const id = height.toString();
   const sortId = getSortId(height);
+  const previousBlock = await Block.getByHeight(height - BigInt(1), {
+    limit: 1,
+  });
+  const cumulativeExtrinsicsCount =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeExtrinsicsCount + BigInt(extrinsicsCount)
+      : BigInt(extrinsicsCount);
+  const cumulativeEventsCount =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeEventsCount + BigInt(eventsCount)
+      : BigInt(eventsCount);
+  const cumulativeAccountsCount =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeAccountsCount + BigInt(accountsCount)
+      : BigInt(accountsCount);
+  const cumulativeTransfersCount =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeTransfersCount + BigInt(transfersCount)
+      : BigInt(transfersCount);
+  const cumulativeRewardsCount =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeRewardsCount + BigInt(rewardsCount)
+      : BigInt(rewardsCount);
+  const cumulativeBlockRewardsCount =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeBlockRewardsCount + BigInt(blockRewardsCount)
+      : BigInt(blockRewardsCount);
+  const cumulativeVoteRewardsCount =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeVoteRewardsCount + BigInt(voteRewardsCount)
+      : BigInt(voteRewardsCount);
+  const cumulativeTransferValue =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeTransferValue + transferValue
+      : transferValue;
+  const cumulativeRewardValue =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeRewardValue + rewardValue
+      : rewardValue;
+  const cumulativeBlockRewardValue =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeBlockRewardValue + blockRewardValue
+      : blockRewardValue;
+  const cumulativeVoteRewardValue =
+    previousBlock.length > 0
+      ? previousBlock[0].cumulativeVoteRewardValue + voteRewardValue
+      : voteRewardValue;
+
   const block = Block.create({
     id,
     sortId,
@@ -41,6 +103,26 @@ export async function createAndSaveBlock(
     blockchainSize,
     extrinsicsCount,
     eventsCount,
+    accountsCount,
+    transfersCount,
+    rewardsCount,
+    blockRewardsCount,
+    voteRewardsCount,
+    transferValue,
+    rewardValue,
+    blockRewardValue,
+    voteRewardValue,
+    cumulativeExtrinsicsCount,
+    cumulativeEventsCount,
+    cumulativeAccountsCount,
+    cumulativeTransfersCount,
+    cumulativeRewardsCount,
+    cumulativeBlockRewardsCount,
+    cumulativeVoteRewardsCount,
+    cumulativeTransferValue,
+    cumulativeRewardValue,
+    cumulativeBlockRewardValue,
+    cumulativeVoteRewardValue,
     authorId,
   });
   await block.save();
@@ -75,7 +157,7 @@ export async function saveLog(logs: Log[]): Promise<void> {
   await Promise.all(logs.map((log) => log.save()));
 }
 
-export async function createAndSaveExtrinsic(
+export function createExtrinsic(
   hash: string,
   blockHeight: bigint,
   blockHash: string,
@@ -93,10 +175,10 @@ export async function createAndSaveExtrinsic(
   fee: bigint,
   pos: number,
   cid?: string
-): Promise<Extrinsic> {
+): Extrinsic {
   const extrinsicId = `${blockHeight}-${indexInBlock}`;
   const sortId = getSortId(blockHeight, BigInt(indexInBlock));
-  const extrinsic = Extrinsic.create({
+  return Extrinsic.create({
     id: extrinsicId,
     sortId,
     hash,
@@ -118,11 +200,13 @@ export async function createAndSaveExtrinsic(
     pos,
     cid,
   });
-  await extrinsic.save();
-  return extrinsic;
 }
 
-export async function createAndSaveEvent(
+export async function saveExtrinsics(extrinsics: Extrinsic[]): Promise<void> {
+  await Promise.all(extrinsics.map((extrinsic) => extrinsic.save()));
+}
+
+export function createEvent(
   blockHeight: bigint,
   blockHash: string,
   indexInBlock: bigint,
@@ -135,10 +219,10 @@ export async function createAndSaveEvent(
   pos: number,
   args: string,
   cid?: string
-): Promise<Event> {
+): Event {
   const id = `${blockHeight}-${indexInBlock.toString()}`;
   const sortId = getSortId(blockHeight, BigInt(indexInBlock));
-  const event = Event.create({
+  return Event.create({
     id,
     sortId,
     blockHeight,
@@ -155,8 +239,96 @@ export async function createAndSaveEvent(
     args,
     cid,
   });
-  await event.save();
-  return event;
+}
+
+export async function saveEvents(events: Event[]): Promise<void> {
+  await Promise.all(events.map((event) => event.save()));
+}
+
+export async function createSection(id: string): Promise<Section | null> {
+  const existingSection = await Section.getBySection(id, {
+    limit: 1,
+  });
+  const doesSectionExist = existingSection.length > 0;
+  if (!doesSectionExist)
+    return Section.create({
+      id,
+      section: id,
+    });
+  return null;
+}
+
+export async function saveSections(sections: Section[]): Promise<void> {
+  await Promise.all(sections.map((section) => section.save()));
+}
+
+export async function createExtrinsicModule(
+  section: string,
+  method: string
+): Promise<ExtrinsicModule | null> {
+  const name = moduleName(section, method);
+  const existingExtrinsicModule = await ExtrinsicModule.getByName(name, {
+    limit: 1,
+  });
+  const doesExtrinsicModuleExist = existingExtrinsicModule.length > 0;
+  if (!doesExtrinsicModuleExist)
+    return ExtrinsicModule.create({
+      id: name,
+      section,
+      method,
+      name,
+    });
+  return null;
+}
+
+export async function saveExtrinsicModules(
+  extrinsicModules: ExtrinsicModule[]
+): Promise<void> {
+  await Promise.all(
+    extrinsicModules.map((extrinsicModule) => extrinsicModule.save())
+  );
+}
+
+export async function createEventModule(
+  section: string,
+  method: string
+): Promise<EventModule | null> {
+  const name = moduleName(section, method);
+  const existingEventModule = await EventModule.getByName(name, {
+    limit: 1,
+  });
+  const doesEventModuleExist = existingEventModule.length > 0;
+  if (!doesEventModuleExist)
+    return EventModule.create({
+      id: name,
+      section,
+      method,
+      name,
+    });
+  return null;
+}
+
+export async function saveEventModules(
+  eventModules: EventModule[]
+): Promise<void> {
+  await Promise.all(eventModules.map((eventModule) => eventModule.save()));
+}
+
+export async function createLogKind(id: string): Promise<LogKind | null> {
+  const existingLogKind = await LogKind.getByKind(id, {
+    limit: 1,
+  });
+  const doesLogKindExist = existingLogKind.length > 0;
+  if (!doesLogKindExist)
+    return LogKind.create({
+      id,
+      kind: id,
+    });
+  return null;
+}
+
+export async function saveLogKinds(logKinds: LogKind[]): Promise<void> {
+  await Promise.all(logKinds.map((logKind) => logKind.save()));
 }
 
 // Accounts DB Functions
@@ -168,7 +340,24 @@ export async function createAndSaveAccountHistory(
   free: bigint,
   reserved: bigint,
   total: bigint
-): Promise<AccountHistory> {
+): Promise<boolean> {
+  const existingAccount = await Account.getByAccountId(id, {
+    limit: 1,
+  });
+  const doesAccountExist = existingAccount.length > 0;
+  if (!doesAccountExist) {
+    const account = Account.create({
+      id,
+      accountId: id,
+      nonce,
+      free,
+      reserved,
+      total,
+      ...dateEntry(blockNumber),
+    });
+    await account.save();
+  }
+
   const accountHistory = AccountHistory.create({
     id,
     nonce,
@@ -178,11 +367,12 @@ export async function createAndSaveAccountHistory(
     ...dateEntry(blockNumber),
   });
   await accountHistory.save();
-  return accountHistory;
+  return doesAccountExist;
 }
 
-export async function createAndSaveTransfer(
-  blockNumber: bigint,
+export function createTransfer(
+  blockHeight: bigint,
+  blockHash: string,
   extrinsicId: string,
   eventId: string,
   from: string,
@@ -190,12 +380,13 @@ export async function createAndSaveTransfer(
   value: bigint,
   fee: bigint,
   success: boolean,
-  timestamp: bigint,
-  date: Date
-): Promise<Transfer> {
+  timestamp: Date
+): Transfer {
   const id = extrinsicId + "-" + eventId;
-  const transfer = Transfer.create({
+  return Transfer.create({
     id,
+    blockHeight,
+    blockHash,
     extrinsicId,
     eventId,
     from,
@@ -204,34 +395,37 @@ export async function createAndSaveTransfer(
     fee,
     success,
     timestamp,
-    date,
-    createdAt: blockNumber,
   });
-  await transfer.save();
-  return transfer;
 }
 
-export async function createAndSaveReward(
+export async function saveTransfers(transfers: Transfer[]): Promise<void> {
+  await Promise.all(transfers.map((transfer) => transfer.save()));
+}
+
+export function createReward(
   blockHeight: bigint,
   blockHash: string,
+  extrinsicId: string,
+  eventId: string,
   accountId: string,
-  indexInBlock: bigint,
   rewardType: string,
   amount: bigint,
   timestamp: Date
-): Promise<Reward> {
-  const id =
-    accountId + "-" + blockHeight.toString() + "-" + indexInBlock.toString();
-  const reward = Reward.create({
+): Reward {
+  const id = accountId + "-" + eventId;
+  return Reward.create({
     id,
     blockHeight,
     blockHash,
+    extrinsicId,
+    eventId,
     accountId,
-    indexInBlock,
     rewardType,
     amount,
     timestamp,
   });
-  await reward.save();
-  return reward;
+}
+
+export async function saveRewards(rewards: Reward[]): Promise<void> {
+  await Promise.all(rewards.map((reward) => reward.save()));
 }

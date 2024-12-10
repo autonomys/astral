@@ -46,6 +46,7 @@ select_permissions:
         - index_in_block
         - args
         - block_hash
+        - cid
         - extrinsic_hash
         - extrinsic_id
         - id

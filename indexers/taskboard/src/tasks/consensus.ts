@@ -54,35 +54,7 @@ export const consensusUniqueRowsMapping =
 
         await client.query("BEGIN");
 
-        // Execute queries sequentially to reduce load
-        const sectionsResult = await client.query(
-          queries.consensusSectionsQuery,
-          [startBlockNumber, endBlockNumber]
-        );
-        if (sectionsResult.rows.length > 0)
-          result.updatedTables.push("consensus_sections");
-
-        const extrinsicModuleResult = await client.query(
-          queries.consensusExtrinsicModulesQuery,
-          [startBlockNumber, endBlockNumber]
-        );
-        if (extrinsicModuleResult.rows.length > 0)
-          result.updatedTables.push("consensus_extrinsic_module");
-
-        const eventModuleResult = await client.query(
-          queries.consensusEventModulesQuery,
-          [startBlockNumber, endBlockNumber]
-        );
-        if (eventModuleResult.rows.length > 0)
-          result.updatedTables.push("consensus_event_module");
-
-        const logResult = await client.query(queries.consensusLogKindsQuery, [
-          startBlockNumber,
-          endBlockNumber,
-        ]);
-        if (logResult.rows.length > 0)
-          result.updatedTables.push("consensus_log_kinds");
-
+        // Execute queries
         const accountResult = await client.query(
           queries.consensusAccountsQuery,
           [startBlockNumber, endBlockNumber]
