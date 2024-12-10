@@ -22,60 +22,6 @@ export const entryTypeToTable = (entryType: string): string =>
     .toLowerCase()
     .replace(/^_/, "") + "s";
 
-const consensusSectionsQuery = `
-    INSERT INTO consensus.sections (id, _id, _block_range)
-    SELECT DISTINCT section as id, 
-      gen_random_uuid() as _id,
-      int8range($1::int8, $2::int8) as _block_range
-    FROM (
-      SELECT section FROM consensus.extrinsics 
-      WHERE _block_range && int8range($1::int8, $2::int8)
-      UNION
-      SELECT section FROM consensus.events 
-      WHERE _block_range && int8range($1::int8, $2::int8)
-    ) combined_sections
-    ON CONFLICT (id) DO NOTHING
-    RETURNING *`;
-
-// Get unique extrinsic modules
-const consensusExtrinsicModulesQuery = `
-    INSERT INTO consensus.extrinsic_modules (id, _id, section, method, _block_range)
-    SELECT DISTINCT 
-      LOWER(name) as id,
-      gen_random_uuid() as _id,
-      section,
-      module as method,
-      int8range($1::int8, $2::int8) as _block_range
-    FROM consensus.extrinsics 
-    WHERE _block_range && int8range($1::int8, $2::int8)
-    ON CONFLICT (id) DO NOTHING
-    RETURNING *`;
-
-// Get unique event modules
-const consensusEventModulesQuery = `
-    INSERT INTO consensus.event_modules (id, _id, section, method, _block_range)
-    SELECT DISTINCT 
-      LOWER(name) as id,
-      gen_random_uuid() as _id,
-      section,
-      module as method,
-      int8range($1::int8, $2::int8) as _block_range
-    FROM consensus.events 
-    WHERE _block_range && int8range($1::int8, $2::int8)
-    ON CONFLICT (id) DO NOTHING
-    RETURNING *`;
-
-// Get unique log kinds
-const consensusLogKindsQuery = `
-    INSERT INTO consensus.log_kinds (id, _id, _block_range)
-    SELECT DISTINCT kind as id, 
-      gen_random_uuid() as _id,
-      int8range($1::int8, $2::int8) as _block_range
-    FROM consensus.logs 
-    WHERE _block_range && int8range($1::int8, $2::int8)
-    ON CONFLICT (id) DO NOTHING
-    RETURNING *`;
-
 // Update or insert accounts
 const consensusAccountsQuery = `
     INSERT INTO consensus.accounts (id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
@@ -140,10 +86,6 @@ const consensusUpsertAccountQuery = `
     RETURNING *`;
 
 interface Queries {
-  consensusSectionsQuery: string;
-  consensusExtrinsicModulesQuery: string;
-  consensusEventModulesQuery: string;
-  consensusLogKindsQuery: string;
   consensusAccountsQuery: string;
   updateLeaderboardRanking: (
     sourceTable: string,
@@ -153,10 +95,6 @@ interface Queries {
 }
 
 export const queries: Queries = {
-  consensusSectionsQuery,
-  consensusExtrinsicModulesQuery,
-  consensusEventModulesQuery,
-  consensusLogKindsQuery,
   consensusAccountsQuery,
   updateLeaderboardRanking,
   consensusUpsertAccountQuery,
