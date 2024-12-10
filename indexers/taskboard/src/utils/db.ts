@@ -38,13 +38,13 @@ const consensusAccountsQuery = `
     WHERE _block_range && int8range($1::int8, $2::int8)
     ON CONFLICT (id) 
     DO UPDATE SET
-      account_id = EXCLUDED.account_id,
+      account_id = EXCLUDED.id,
       nonce = EXCLUDED.nonce,
       free = EXCLUDED.free,
       reserved = EXCLUDED.reserved,
       total = EXCLUDED.total,
       created_at = EXCLUDED.created_at,
-      updated_at = EXCLUDED.updated_at
+      updated_at = EXCLUDED.created_at
     RETURNING *`;
 
 // Get unique sections from both extrinsics and events
