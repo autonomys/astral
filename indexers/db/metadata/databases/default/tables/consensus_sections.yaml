@@ -33,6 +33,7 @@ select_permissions:
       columns:
         - _block_range
         - id
+        - section
         - _id
       filter: {}
       allow_aggregations: true
