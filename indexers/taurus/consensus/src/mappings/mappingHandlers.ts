@@ -1,5 +1,6 @@
 global.TextEncoder = require("util").TextEncoder;
 global.TextDecoder = require("util").TextDecoder;
+global.Buffer = require("buffer/").Buffer;
 
 import { blockchainSize, spacePledge } from "@autonomys/auto-consensus";
 import type { ApiAtBlockHash } from "@autonomys/auto-utils";
