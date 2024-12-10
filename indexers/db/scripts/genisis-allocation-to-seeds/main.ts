@@ -39,12 +39,12 @@ for (const entry of data) {
 
   await accountsFile.write(
     new TextEncoder().encode(
-      `INSERT INTO consensus.accounts (id, nonce, free, reserved, total, created_at, updated_at, _id, _block_range) VALUES ('${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, ${updatedAt}, '${_id}', '${_blockRange}');\n`
+      `INSERT INTO consensus.accounts (id, account_id, nonce, free, reserved, total, created_at, updated_at, _id, _block_range) VALUES ('${accountId}', '${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, ${updatedAt}, '${_id}', '${_blockRange}');\n`
     )
   );
   await accountHistoriesFile.write(
     new TextEncoder().encode(
-      `INSERT INTO consensus.account_histories (id, nonce, free, reserved, total, created_at, updated_at, _id, _block_range) VALUES ('${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, ${updatedAt}, '${_id}', '${_blockRange}');\n`
+      `INSERT INTO consensus.account_histories (id, nonce, free, reserved, total, created_at, _id, _block_range) VALUES ('${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, '${_id}', '${_blockRange}');\n`
     )
   );
 }
