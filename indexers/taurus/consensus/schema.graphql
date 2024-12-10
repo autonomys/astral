@@ -14,6 +14,26 @@ type Block @entity {
   blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
+  accountsCount: Int!
+  transfersCount: Int!
+  rewardsCount: Int!
+  blockRewardsCount: Int!
+  voteRewardsCount: Int!
+  transferValue: BigInt!
+  rewardValue: BigInt!
+  blockRewardValue: BigInt!
+  voteRewardValue: BigInt!
+  cumulativeExtrinsicsCount: BigInt!
+  cumulativeEventsCount: BigInt!
+  cumulativeAccountsCount: BigInt!
+  cumulativeTransfersCount: BigInt!
+  cumulativeRewardsCount: BigInt!
+  cumulativeBlockRewardsCount: BigInt!
+  cumulativeVoteRewardsCount: BigInt!
+  cumulativeTransferValue: BigInt!
+  cumulativeRewardValue: BigInt!
+  cumulativeBlockRewardValue: BigInt!
+  cumulativeVoteRewardValue: BigInt!
   authorId: String! @index
 }
 
@@ -69,10 +89,35 @@ type Event @entity {
   cid: String @index
 }
 
+type Section @entity {
+  id: ID!
+  section: String! @index
+}
+
+type ExtrinsicModule @entity {
+  id: ID!
+  section: String! @index
+  method: String! @index
+  name: String! @index
+}
+
+type EventModule @entity {
+  id: ID!
+  section: String! @index
+  method: String! @index
+  name: String! @index
+}
+
+type LogKind @entity {
+  id: ID!
+  kind: String! @index
+}
+
 # Accounts Entities
 
-type AccountHistory @entity {
+type Account @entity {
   id: ID!
+  accountId: String! @index
   nonce: BigInt!
   free: BigInt!
   reserved: BigInt!
@@ -81,8 +126,19 @@ type AccountHistory @entity {
   updatedAt: BigInt! @index
 }
 
+type AccountHistory @entity {
+  id: ID!
+  nonce: BigInt!
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt @index
+  createdAt: BigInt! @index
+}
+
 type Transfer @entity {
   id: ID!
+  blockHeight: BigInt! @index
+  blockHash: String! @index
   extrinsicId: String! @index
   eventId: String! @index
   from: String! @index
@@ -90,17 +146,16 @@ type Transfer @entity {
   value: BigInt!
   fee: BigInt!
   success: Boolean!
-  timestamp: BigInt! @index
-  date: Date! @index
-  createdAt: BigInt! @index
+  timestamp: Date! @index
 }
 
 type Reward @entity {
   id: ID!
   blockHeight: BigInt! @index
   blockHash: String! @index
+  extrinsicId: String! @index
+  eventId: String! @index
   accountId: String! @index
-  indexInBlock: BigInt!
   rewardType: String! @index
   amount: BigInt!
   timestamp: Date! @index
