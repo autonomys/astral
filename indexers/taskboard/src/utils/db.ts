@@ -24,7 +24,7 @@ export const entryTypeToTable = (entryType: string): string =>
 
 // Update or insert accounts
 const consensusAccountsQuery = `
-    INSERT INTO consensus.accounts (id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
+    INSERT INTO consensus.accounts (id, account_id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
     SELECT DISTINCT ON (id) 
       id,
       gen_random_uuid() as _id,
@@ -33,12 +33,12 @@ const consensusAccountsQuery = `
       reserved,
       total,
       created_at,
-      updated_at,
       int8range($1::int8, $2::int8) as _block_range
     FROM consensus.account_histories
     WHERE _block_range && int8range($1::int8, $2::int8)
     ON CONFLICT (id) 
     DO UPDATE SET
+      account_id = EXCLUDED.account_id,
       nonce = EXCLUDED.nonce,
       free = EXCLUDED.free,
       reserved = EXCLUDED.reserved,
@@ -74,8 +74,8 @@ const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
   `;
 
 const consensusUpsertAccountQuery = `
-    INSERT INTO consensus.accounts (id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
-    VALUES ($1, gen_random_uuid(), $2, $3, $4, $5, $6, $6, int8range($7::int8, $7::int8))
+    INSERT INTO consensus.accounts (id, account_id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
+    VALUES ($1, $1, gen_random_uuid(), $2, $3, $4, $5, $6, $6, int8range($7::int8, $7::int8))
     ON CONFLICT (id) 
     DO UPDATE SET
       nonce = $2,
