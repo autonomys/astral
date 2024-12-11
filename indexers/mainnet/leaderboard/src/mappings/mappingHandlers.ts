@@ -1,6 +1,15 @@
 import { SubstrateEvent } from "@subql/types";
 import * as db from "./db";
 
+const getEventInfo = (event: SubstrateEvent) => {
+  const { extrinsic } = event;
+  const blockHeight = BigInt(event.block.block.header.number.toString());
+  const timestamp = event.block.timestamp ?? new Date(0);
+  const extrinsicId = `${blockHeight}-${extrinsic ? extrinsic.idx : "system"}`;
+  const eventId = `${blockHeight}-${event.event.index}`;
+  return { blockHeight, timestamp, extrinsicId, eventId };
+};
+
 export async function handleTransferEvent(
   event: SubstrateEvent
 ): Promise<void> {
@@ -12,52 +21,60 @@ export async function handleTransferEvent(
   const from = _from.toString();
   const to = _to.toString();
   const amount = BigInt(_amount.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetAccountTransferSenderTotalCount(
+  await db.createAndSaveAccountTransferSenderTotalCount(
     from,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetAccountTransferSenderTotalValue(
+  await db.createAndSaveAccountTransferSenderTotalValue(
     from,
     amount,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 
-  await db.checkAndGetAccountTransferReceiverTotalCount(
+  await db.createAndSaveAccountTransferReceiverTotalCount(
     to,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetAccountTransferReceiverTotalValue(
+  await db.createAndSaveAccountTransferReceiverTotalValue(
     to,
     amount,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
 export async function handleRemarkEvent(event: SubstrateEvent): Promise<void> {
   const {
+    extrinsic,
     event: { index },
   } = event;
+  if (!extrinsic) return;
 
-  const extrinsicIndex = Number(index);
-  const extrinsic = event.block.block.extrinsics[extrinsicIndex];
-  const accountId = extrinsic.signer.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const accountId = extrinsic.extrinsic.signer.toString();
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetAccountRemarkCount(
+  await db.createAndSaveAccountRemarkCount(
     accountId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -65,26 +82,29 @@ export async function handleExtrinsicSuccessEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: { index },
   } = event;
+  if (!extrinsic) return;
 
-  const extrinsicIndex = Number(index);
-  const extrinsic = event.block.block.extrinsics[extrinsicIndex];
-  const accountId = extrinsic.signer.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const accountId = extrinsic.extrinsic.signer.toString();
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetAccountExtrinsicTotalCount(
+  await db.createAndSaveAccountExtrinsicTotalCount(
     accountId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetAccountExtrinsicSuccessTotalCount(
+  await db.createAndSaveAccountExtrinsicSuccessTotalCount(
     accountId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -92,25 +112,29 @@ export async function handleExtrinsicFailedEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: { index },
   } = event;
-  const extrinsicIndex = Number(index);
-  const extrinsic = event.block.block.extrinsics[extrinsicIndex];
-  const accountId = extrinsic.signer.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  if (!extrinsic) return;
 
-  await db.checkAndGetAccountExtrinsicTotalCount(
+  const accountId = extrinsic.extrinsic.signer.toString();
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
+
+  await db.createAndSaveAccountExtrinsicTotalCount(
     accountId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetAccountExtrinsicFailedTotalCount(
+  await db.createAndSaveAccountExtrinsicFailedTotalCount(
     accountId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -118,7 +142,9 @@ export async function handleTransactionFeePaidEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: {
+      index,
       data: [_who, _actualFee, _tip],
     },
   } = event;
@@ -126,14 +152,15 @@ export async function handleTransactionFeePaidEvent(
   const actualFee = BigInt(_actualFee.toString());
   const tip = BigInt(_tip.toString());
   const totalFeePaid = actualFee + tip;
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetAccountTransactionFeePaidTotalValue(
+  await db.createAndSaveAccountTransactionFeePaidTotalValue(
     who,
     totalFeePaid,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -141,39 +168,50 @@ export async function handleFarmerVoteRewardEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: {
+      index,
       data: [_voter, _reward],
     },
   } = event;
+  if (!extrinsic) return;
+
   const voter = _voter.toString();
   const reward = BigInt(_reward.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetFarmerVoteTotalCount(
+  await db.createAndSaveFarmerVoteTotalCount(
     voter,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetFarmerVoteTotalValue(
+  await db.createAndSaveFarmerVoteTotalValue(
     voter,
     reward,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 
-  await db.checkAndGetFarmerVoteAndBlockTotalCount(
+  await db.createAndSaveFarmerVoteAndBlockTotalCount(
     voter,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetFarmerVoteAndBlockTotalValue(
+  await db.createAndSaveFarmerVoteAndBlockTotalValue(
     voter,
     reward,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -181,39 +219,48 @@ export async function handleFarmerBlockRewardEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: {
+      index,
       data: [_blockAuthor, _reward],
     },
   } = event;
   const blockAuthor = _blockAuthor.toString();
   const reward = BigInt(_reward.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetFarmerBlockTotalCount(
+  await db.createAndSaveFarmerBlockTotalCount(
     blockAuthor,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetFarmerBlockTotalValue(
+  await db.createAndSaveFarmerBlockTotalValue(
     blockAuthor,
     reward,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 
-  await db.checkAndGetFarmerVoteAndBlockTotalCount(
+  await db.createAndSaveFarmerVoteAndBlockTotalCount(
     blockAuthor,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetFarmerVoteAndBlockTotalValue(
+  await db.createAndSaveFarmerVoteAndBlockTotalValue(
     blockAuthor,
     reward,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -221,22 +268,25 @@ export async function handleOperatorRewardedEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: {
+      index,
       data: [_operatorId, _reward],
     },
   } = event;
   const operatorId = _operatorId.toString();
   const reward = BigInt(_reward.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
   if (reward === BigInt(0)) return;
 
-  await db.checkAndGetOperatorTotalRewardsCollected(
+  await db.createAndSaveOperatorTotalRewardsCollected(
     operatorId,
     reward,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -244,20 +294,23 @@ export async function handleOperatorTaxCollectedEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: {
+      index,
       data: [_operatorId, _tax],
     },
   } = event;
   const operatorId = _operatorId.toString();
   const tax = BigInt(_tax.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetOperatorTotalTaxCollected(
+  await db.createAndSaveOperatorTotalTaxCollected(
     operatorId,
     tax,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -265,19 +318,22 @@ export async function handleBundleStoredEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: {
+      index,
       data: [_bundleAuthor],
     },
   } = event;
   const operatorId = _bundleAuthor.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetOperatorBundleTotalCount(
+  await db.createAndSaveOperatorBundleTotalCount(
     operatorId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -285,20 +341,23 @@ export async function handleOperatorRegisteredEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: {
+      index,
       data: [_operatorId, _reward],
     },
   } = event;
   const operatorId = _operatorId.toString();
   const reward = BigInt(_reward.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetOperatorTotalRewardsCollected(
+  await db.createAndSaveOperatorTotalRewardsCollected(
     operatorId,
     reward,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -306,40 +365,49 @@ export async function handleOperatorNominatedEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: {
+      index,
       data: [_operatorId, _nominatorId, _amount],
     },
   } = event;
   const operatorId = _operatorId.toString();
   const nominatorId = _nominatorId.toString();
   const amount = BigInt(_amount.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetOperatorDepositsTotalCount(
+  await db.createAndSaveOperatorDepositsTotalCount(
     operatorId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetOperatorDepositsTotalValue(
+  await db.createAndSaveOperatorDepositsTotalValue(
     operatorId,
     amount,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 
-  await db.checkAndGetNominatorDepositsTotalCount(
+  await db.createAndSaveNominatorDepositsTotalCount(
     nominatorId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetNominatorDepositsTotalValue(
+  await db.createAndSaveNominatorDepositsTotalValue(
     nominatorId,
     amount,
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
 
@@ -347,25 +415,30 @@ export async function handleWithdrewStakeEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    extrinsic,
     event: {
+      index,
       data: [_operatorId, _nominatorId],
     },
   } = event;
   const operatorId = _operatorId.toString();
   const nominatorId = _nominatorId.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  const { blockHeight, timestamp, extrinsicId, eventId } = getEventInfo(event);
 
-  await db.checkAndGetOperatorWithdrawalsTotalCount(
+  await db.createAndSaveOperatorWithdrawalsTotalCount(
     operatorId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
-  await db.checkAndGetNominatorWithdrawalsTotalCount(
+  await db.createAndSaveNominatorWithdrawalsTotalCount(
     nominatorId,
     BigInt(1),
-    blockNumber,
-    timestamp
+    blockHeight,
+    timestamp,
+    extrinsicId,
+    eventId
   );
 }
