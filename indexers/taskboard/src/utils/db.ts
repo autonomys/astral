@@ -55,8 +55,8 @@ const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
     SELECT id, 
            SUM(value) AS total_value,
            MAX(last_contribution_at) AS last_contribution_at,
-           block_height AS created_at,
-           block_height AS updated_at
+           MIN(block_height) AS created_at,
+           MAX(block_height) AS updated_at
     FROM leaderboard.${sourceTable}
     GROUP BY id
   ),
@@ -72,7 +72,7 @@ const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
   INSERT INTO leaderboard.${targetTable} (id, rank, value, last_contribution_at, created_at, updated_at)
   SELECT id, new_rank, total_value, last_contribution_at, created_at, updated_at FROM ranked_entries
   ON CONFLICT (id) 
-  DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, created_at = EXCLUDED.created_at, updated_at = EXCLUDED.updated_at;
+  DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, updated_at = EXCLUDED.updated_at;
   `;
 
 const consensusUpsertAccountQuery = `
