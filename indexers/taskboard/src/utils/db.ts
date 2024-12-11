@@ -55,8 +55,8 @@ const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
     SELECT id, 
            SUM(value) AS total_value,
            MAX(last_contribution_at) AS last_contribution_at,
-           MIN(created_at) AS created_at,
-           MAX(updated_at) AS updated_at
+           block_height AS created_at,
+           block_height AS updated_at
     FROM leaderboard.${sourceTable}
     GROUP BY id
   ),
