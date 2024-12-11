@@ -25,436 +25,484 @@ import {
   OperatorWithdrawalsTotalCountHistory,
 } from "../types";
 
-export async function checkAndGetAccountTransferSenderTotalCount(
+export async function createAndSaveAccountTransferSenderTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<AccountTransferSenderTotalCountHistory> {
   const account = AccountTransferSenderTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetAccountTransferSenderTotalValue(
+export async function createAndSaveAccountTransferSenderTotalValue(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<AccountTransferSenderTotalValueHistory> {
   const account = AccountTransferSenderTotalValueHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetAccountTransferReceiverTotalCount(
+export async function createAndSaveAccountTransferReceiverTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<AccountTransferReceiverTotalCountHistory> {
   const account = AccountTransferReceiverTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetAccountTransferReceiverTotalValue(
+export async function createAndSaveAccountTransferReceiverTotalValue(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<AccountTransferReceiverTotalValueHistory> {
   const account = AccountTransferReceiverTotalValueHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetAccountRemarkCount(
+export async function createAndSaveAccountRemarkCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<AccountRemarkCountHistory> {
   const account = AccountRemarkCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetAccountExtrinsicTotalCount(
+export async function createAndSaveAccountExtrinsicTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<AccountExtrinsicTotalCountHistory> {
   const account = AccountExtrinsicTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetAccountExtrinsicSuccessTotalCount(
+export async function createAndSaveAccountExtrinsicSuccessTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<AccountExtrinsicSuccessTotalCountHistory> {
   const account = AccountExtrinsicSuccessTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetAccountExtrinsicFailedTotalCount(
+export async function createAndSaveAccountExtrinsicFailedTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<AccountExtrinsicFailedTotalCountHistory> {
   const account = AccountExtrinsicFailedTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetAccountTransactionFeePaidTotalValue(
+export async function createAndSaveAccountTransactionFeePaidTotalValue(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<AccountTransactionFeePaidTotalValueHistory> {
   const account = AccountTransactionFeePaidTotalValueHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
 // Farmer entities
-export async function checkAndGetFarmerVoteTotalCount(
+export async function createAndSaveFarmerVoteTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<FarmerVoteTotalCountHistory> {
   const account = FarmerVoteTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetFarmerVoteTotalValue(
+export async function createAndSaveFarmerVoteTotalValue(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<FarmerVoteTotalValueHistory> {
   const account = FarmerVoteTotalValueHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetFarmerBlockTotalCount(
+export async function createAndSaveFarmerBlockTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<FarmerBlockTotalCountHistory> {
   const account = FarmerBlockTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetFarmerBlockTotalValue(
+export async function createAndSaveFarmerBlockTotalValue(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<FarmerBlockTotalValueHistory> {
   const account = FarmerBlockTotalValueHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetFarmerVoteAndBlockTotalCount(
+export async function createAndSaveFarmerVoteAndBlockTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<FarmerVoteAndBlockTotalCountHistory> {
   const account = FarmerVoteAndBlockTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetFarmerVoteAndBlockTotalValue(
+export async function createAndSaveFarmerVoteAndBlockTotalValue(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<FarmerVoteAndBlockTotalValueHistory> {
   const account = FarmerVoteAndBlockTotalValueHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
 // Operator entities
-export async function checkAndGetOperatorTotalRewardsCollected(
+export async function createAndSaveOperatorTotalRewardsCollected(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<OperatorTotalRewardsCollectedHistory> {
   const account = OperatorTotalRewardsCollectedHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetOperatorTotalTaxCollected(
+export async function createAndSaveOperatorTotalTaxCollected(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<OperatorTotalTaxCollectedHistory> {
   const account = OperatorTotalTaxCollectedHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetOperatorBundleTotalCount(
+export async function createAndSaveOperatorBundleTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<OperatorBundleTotalCountHistory> {
   const account = OperatorBundleTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetOperatorDepositsTotalCount(
+export async function createAndSaveOperatorDepositsTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<OperatorDepositsTotalCountHistory> {
   const account = OperatorDepositsTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetOperatorDepositsTotalValue(
+export async function createAndSaveOperatorDepositsTotalValue(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<OperatorDepositsTotalValueHistory> {
   const account = OperatorDepositsTotalValueHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetOperatorWithdrawalsTotalCount(
+export async function createAndSaveOperatorWithdrawalsTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<OperatorWithdrawalsTotalCountHistory> {
   const account = OperatorWithdrawalsTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
 // Nominator entities
-export async function checkAndGetNominatorDepositsTotalCount(
+export async function createAndSaveNominatorDepositsTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<NominatorDepositsTotalCountHistory> {
   const account = NominatorDepositsTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetNominatorDepositsTotalValue(
+export async function createAndSaveNominatorDepositsTotalValue(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<NominatorDepositsTotalValueHistory> {
   const account = NominatorDepositsTotalValueHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
 }
 
-export async function checkAndGetNominatorWithdrawalsTotalCount(
+export async function createAndSaveNominatorWithdrawalsTotalCount(
   id: string,
   value: bigint,
-  blockNumber: number,
-  lastContributionAt: Date = new Date()
+  blockHeight: bigint,
+  lastContributionAt: Date = new Date(),
+  extrinsicId: string,
+  eventId: string
 ): Promise<NominatorWithdrawalsTotalCountHistory> {
   const account = NominatorWithdrawalsTotalCountHistory.create({
     id,
-    rank: 0,
     value,
     lastContributionAt,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
   await account.save();
   return account;
