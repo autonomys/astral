@@ -83,7 +83,10 @@ export const FilePreview: FC<Props> = ({ cid }) => {
         try {
           return (
             <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10'>
-              <Arguments args={JSON.parse(Buffer.from(rawData.data).toString('utf-8'))} />
+              <Arguments
+                args={JSON.parse(Buffer.from(rawData.data).toString('utf-8'))}
+                collapseAtEntry={25}
+              />
             </div>
           )
         } catch {

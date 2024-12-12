@@ -4,6 +4,7 @@ import ReactJson from 'react-json-view'
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: any
+  collapseAtEntry?: number
 }
 
 const theme = {
@@ -25,7 +26,7 @@ const theme = {
   base0F: 'inherit',
 }
 
-export const Arguments: FC<Props> = ({ args }) => {
+export const Arguments: FC<Props> = ({ args, collapseAtEntry = 5 }) => {
   return (
     <div data-testid='testJsonDisplay' className='text-grayDark dark:text-white'>
       <ReactJson
@@ -34,7 +35,9 @@ export const Arguments: FC<Props> = ({ args }) => {
         theme={theme}
         collapseStringsAfterLength={100}
         shouldCollapse={(field) => {
-          return field.type === 'object' && Object.entries(field.src).length > 5 ? true : false
+          return field.type === 'object' && Object.entries(field.src).length > collapseAtEntry
+            ? true
+            : false
         }}
       />
     </div>
