@@ -45,6 +45,7 @@ export const QUERY_CID = gql`
     files_metadata(where: { id: { _eq: $cid } }) {
       chunk {
         data
+        uploadOptions: upload_options
       }
       metadata_cids {
         chunk {
@@ -55,6 +56,7 @@ export const QUERY_CID = gql`
     files_folders(where: { id: { _eq: $cid } }) {
       chunk {
         data
+        uploadOptions: upload_options
       }
       folder_cids {
         chunk {
@@ -65,6 +67,7 @@ export const QUERY_CID = gql`
     files_files(where: { id: { _eq: $cid } }) {
       chunk {
         data
+        uploadOptions: upload_options
       }
       file_cids {
         chunk {

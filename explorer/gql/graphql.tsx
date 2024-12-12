@@ -18257,7 +18257,7 @@ export type GetCidQueryVariables = Exact<{
 }>;
 
 
-export type GetCidQuery = { __typename?: 'query_root', files_metadata: Array<{ __typename?: 'files_metadata', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, metadata_cids: Array<{ __typename?: 'files_metadata_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_folders: Array<{ __typename?: 'files_folders', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, folder_cids: Array<{ __typename?: 'files_folder_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_files: Array<{ __typename?: 'files_files', chunk?: { __typename?: 'files_chunks', data?: string | null } | null, file_cids: Array<{ __typename?: 'files_file_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }> };
+export type GetCidQuery = { __typename?: 'query_root', files_metadata: Array<{ __typename?: 'files_metadata', chunk?: { __typename?: 'files_chunks', data?: string | null, uploadOptions?: string | null } | null, metadata_cids: Array<{ __typename?: 'files_metadata_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_folders: Array<{ __typename?: 'files_folders', chunk?: { __typename?: 'files_chunks', data?: string | null, uploadOptions?: string | null } | null, folder_cids: Array<{ __typename?: 'files_folder_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }>, files_files: Array<{ __typename?: 'files_files', chunk?: { __typename?: 'files_chunks', data?: string | null, uploadOptions?: string | null } | null, file_cids: Array<{ __typename?: 'files_file_cids', chunk?: { __typename?: 'files_chunks', data?: string | null } | null }> }> };
 
 export type FoldersQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -21854,6 +21854,7 @@ export const GetCidDocument = gql`
   files_metadata(where: {id: {_eq: $cid}}) {
     chunk {
       data
+      uploadOptions: upload_options
     }
     metadata_cids {
       chunk {
@@ -21864,6 +21865,7 @@ export const GetCidDocument = gql`
   files_folders(where: {id: {_eq: $cid}}) {
     chunk {
       data
+      uploadOptions: upload_options
     }
     folder_cids {
       chunk {
@@ -21874,6 +21876,7 @@ export const GetCidDocument = gql`
   files_files(where: {id: {_eq: $cid}}) {
     chunk {
       data
+      uploadOptions: upload_options
     }
     file_cids {
       chunk {
