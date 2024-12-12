@@ -1,3 +1,6 @@
+import { GetCidQuery } from 'gql/graphql'
+import { Zlib } from 'zlibjs/bin/zlib_and_gzip.min.js'
+
 export const detectFileType = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   const bytes = [...new Uint8Array(arrayBuffer.slice(0, 4))]
     .map((byte) => byte.toString(16).padStart(2, '0'))
@@ -88,11 +91,28 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') 
       index++
     }
   }
+  try {
+    if (data['files_' + type + 's'][0].chunk?.uploadOptions) {
+      const options = JSON.parse(data['files_' + type + 's'][0].chunk?.uploadOptions)
+      if (options.compression.algorithm === 'ZLIB') {
+        const inflate = new Zlib.Inflate(new Uint8Array(dataArrayBuffer), {
+          index: 0,
+          bufferSize: 1024,
+          bufferType: Zlib.Inflate.BufferType.BLOCK,
+          resize: true,
+          verify: true,
+        })
+        dataArrayBuffer = inflate.decompress()
+      }
+    }
+  } catch (error) {
+    console.error('Error decompressing data:', error)
+  }
   return { rawData, dataArrayBuffer }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const extractFileData = (data: any) => {
+export const extractFileData = (data: GetCidQuery) => {
   if (data.files_files.length > 0) return extractFileDataByType(data, 'file')
   else if (data.files_folders.length > 0) return extractFileDataByType(data, 'folder')
   return extractFileDataByType(data, 'metadata')
