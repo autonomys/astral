@@ -68,32 +68,6 @@ const project: SubstrateProject = {
         ],
       },
     },
-    {
-      kind: SubstrateDatasourceKind.Runtime,
-      startBlock: 1,
-      mapping: {
-        file: "./dist/index.js",
-        handlers: [
-          {
-            kind: SubstrateHandlerKind.Call,
-            handler: "handleCall",
-          },
-        ],
-      },
-    },
-    {
-      kind: SubstrateDatasourceKind.Runtime,
-      startBlock: 1,
-      mapping: {
-        file: "./dist/index.js",
-        handlers: [
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleEvent",
-          },
-        ],
-      },
-    },
   ],
 };
 

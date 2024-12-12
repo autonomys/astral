@@ -36,6 +36,7 @@
     "@headlessui/react": "^1.7.18",
     "@headlessui/tailwindcss": "^0.2.0",
     "@heroicons/react": "^2.1.1",
+    "@netlify/edge-functions": "^2.11.1",
     "@next/third-parties": "^14.2.3",
     "@nivo/core": "^0.84.0",
     "@nivo/line": "^0.84.0",
@@ -79,6 +80,7 @@
     "web-vitals": "^3.5.2",
     "xlsx": "^0.18.5",
     "yup": "^0.32.11",
+    "zlibjs": "^0.3.1",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"
   },

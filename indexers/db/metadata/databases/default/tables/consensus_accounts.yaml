@@ -42,14 +42,15 @@ select_permissions:
     permission:
       columns:
         - _block_range
+        - _id
+        - account_id
         - created_at
         - free
+        - id
         - nonce
         - reserved
         - total
         - updated_at
-        - id
-        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

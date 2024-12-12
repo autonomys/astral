@@ -12,19 +12,19 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - success
         - _block_range
-        - _id
-        - created_at
-        - date
+        - block_height
+        - fee
+        - value
+        - block_hash
         - event_id
         - extrinsic_id
-        - fee
         - from
         - id
-        - success
-        - timestamp
         - to
-        - value
+        - timestamp
+        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

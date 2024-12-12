@@ -32,18 +32,6 @@ export const QUERY_LOG_BY_ID = gql`
       value
       block_height
       timestamp
-      block {
-        id
-        events(limit: 10, order_by: { sort_id: desc }) {
-          id
-          args
-          name
-          phase
-          timestamp
-          block_height
-          extrinsic_id
-        }
-      }
     }
   }
 `

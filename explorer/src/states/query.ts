@@ -53,6 +53,15 @@ interface ExplorerQueryState {
 
     extrinsicDetailsEvent: QueryState<GqlT.EventsByExtrinsicIdQuery>
   }
+  [Routes.storage]: {
+    files: QueryState<GqlT.FilesQuery>
+    folders: QueryState<GqlT.FoldersQuery>
+
+    file: QueryState<GqlT.FileByIdQuery>
+    folder: QueryState<GqlT.FolderByIdQuery>
+
+    folderChildren: QueryState<GqlT.FolderChildrenByIdQuery>
+  }
   [Routes.staking]: {
     operators: QueryState<GqlT.OperatorsListQuery>
     operator: QueryState<GqlT.OperatorByIdQuery>
@@ -77,6 +86,7 @@ export type ExplorerSection = keyof ExplorerQueryState
 
 export type Components =
   | keyof ExplorerQueryState[Routes.consensus]
+  | keyof ExplorerQueryState[Routes.storage]
   | keyof ExplorerQueryState[Routes.staking]
   | keyof ExplorerQueryState[Routes.domains]
   | keyof ExplorerQueryState[ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]
@@ -113,6 +123,15 @@ const initialState: ExplorerQueryState = {
     blockDetailsEvent: initialized,
 
     extrinsicDetailsEvent: initialized,
+  },
+  [Routes.storage]: {
+    files: initialized,
+    folders: initialized,
+
+    file: initialized,
+    folder: initialized,
+
+    folderChildren: initialized,
   },
   staking: {
     operators: initialized,
