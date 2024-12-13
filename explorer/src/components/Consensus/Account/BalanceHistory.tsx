@@ -37,7 +37,7 @@ type Row = BalanceHistoryByAccountIdQuery['consensus_account_histories'][0]
 export const BalanceHistory: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([
-    { id: TransferColumn.CreatedAt, desc: true },
+    { id: TransferColumn.BlockHeight, desc: true },
   ])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -53,7 +53,7 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
         ? sorting[0].id.endsWith('aggregate')
           ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
           : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
-        : { id: OrderBy.Asc },
+        : { [TransferColumn.BlockHeight]: OrderBy.Asc },
     [sorting],
   )
 

@@ -18290,7 +18290,7 @@ export type TransfersByAccountIdQueryVariables = Exact<{
 }>;
 
 
-export type TransfersByAccountIdQuery = { __typename?: 'query_root', consensus_transfers_aggregate: { __typename?: 'consensus_transfers_aggregate', aggregate?: { __typename?: 'consensus_transfers_aggregate_fields', count: number } | null }, consensus_transfers: Array<{ __typename?: 'consensus_transfers', id: string, extrinsic_id: string, event_id: string, from: string, to: string, value: any, fee: any, success: boolean, timestamp: any }> };
+export type TransfersByAccountIdQuery = { __typename?: 'query_root', consensus_transfers_aggregate: { __typename?: 'consensus_transfers_aggregate', aggregate?: { __typename?: 'consensus_transfers_aggregate_fields', count: number } | null }, consensus_transfers: Array<{ __typename?: 'consensus_transfers', id: string, block_height: any, extrinsic_id: string, event_id: string, from: string, to: string, value: any, fee: any, success: boolean, timestamp: any }> };
 
 export type BalanceHistoryByAccountIdQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -19165,6 +19165,7 @@ export const TransfersByAccountIdDocument = gql`
     where: $where
   ) {
     id
+    block_height
     extrinsic_id
     event_id
     from

@@ -158,6 +158,7 @@ export const QUERY_ACCOUNT_TRANSFERS = gql`
     }
     consensus_transfers(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
+      block_height
       extrinsic_id
       event_id
       from

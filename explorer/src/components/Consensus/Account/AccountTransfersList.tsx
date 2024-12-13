@@ -29,6 +29,7 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
 import { formatExtrinsicId } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { QUERY_ACCOUNT_TRANSFERS } from './query'
 
 type Props = {
@@ -40,7 +41,7 @@ type Row = TransfersByAccountIdQuery['consensus_transfers'][0]
 export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([
-    { id: TransferColumn.CreatedAt, desc: true },
+    { id: TransferColumn.BlockHeight, desc: true },
   ])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -117,7 +118,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'created_at',
+        accessorKey: 'block_height',
         header: 'Block',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
@@ -127,11 +128,11 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
               href={INTERNAL_ROUTES.blocks.id.page(
                 network,
                 Routes.consensus,
-                row.original.created_at,
+                row.original.block_height,
               )}
               className='hover:text-primaryAccent'
             >
-              <div>{row.original.created_at}</div>
+              <div>{row.original.block_height}</div>
             </Link>
           </div>
         ),
@@ -236,7 +237,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-created_at-${row.index}`}>
-            {row.original.timestamp(row.original.date)}
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },
