@@ -53,7 +53,7 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
         ? sorting[0].id.endsWith('aggregate')
           ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
           : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
-        : { [TransferColumn.BlockHeight]: OrderBy.Asc },
+        : { id: OrderBy.Asc },
     [sorting],
   )
 
