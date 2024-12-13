@@ -69,7 +69,8 @@ export const QUERY_LAST_WEEK_REWARDS = gql`
     ) {
       id
       block_height
-      index_in_block
+      extrinsic_id
+      event_id
       reward_type
       amount
       timestamp
@@ -97,7 +98,8 @@ export const QUERY_REWARDS_LIST = gql`
     ) {
       id
       block_height
-      index_in_block
+      extrinsic_id
+      event_id
       reward_type
       amount
       timestamp
@@ -164,8 +166,6 @@ export const QUERY_ACCOUNT_TRANSFERS = gql`
       fee
       success
       timestamp
-      date
-      created_at
     }
   }
 `
@@ -189,7 +189,6 @@ export const QUERY_ACCOUNT_BALANCE_HISTORY = gql`
       nonce
       free
       created_at
-      updated_at
       _block_range
     }
   }
@@ -200,7 +199,8 @@ export const QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID = gql`
     consensus_rewards(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }, limit: 1) {
       id
       block_height
-      index_in_block
+      extrinsic_id
+      event_id
       reward_type
       amount
       timestamp
