@@ -174,8 +174,9 @@ export const AccountRewardList: FC = () => {
         ),
       },
       {
+        accessorKey: 'block_height',
         header: 'Confirmation',
-        enableSorting: false,
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
           const confirmations = lastBlockNumber
             ? Math.max(0, lastBlockNumber - row.original.block_height)
