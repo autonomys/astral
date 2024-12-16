@@ -1,5 +1,6 @@
 'use client'
 
+import { StatusIcon } from '@/components/common/StatusIcon'
 import { useApolloClient } from '@apollo/client'
 import { shortString } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
@@ -22,6 +23,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useConsensusStates } from 'states/consensus'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { AccountIdParam } from 'types/app'
 import type { Cell } from 'types/table'
@@ -48,7 +50,7 @@ export const AccountRewardList: FC = () => {
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const { accountId } = useParams<AccountIdParam>()
   const inFocus = useWindowFocus()
-
+  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
   const orderBy = useMemo(
     () =>
       sorting && sorting.length > 0
@@ -171,8 +173,28 @@ export const AccountRewardList: FC = () => {
           </div>
         ),
       },
+      {
+        header: 'Confirmation',
+        enableSorting: false,
+        cell: ({ row }: Cell<Row>) => {
+          const confirmations = lastBlockNumber
+            ? Math.max(0, lastBlockNumber - row.original.block_height)
+            : 0
+          return (
+            <div
+              key={`${row.original.id}-account-confirmation`}
+              className='flex items-center gap-2'
+            >
+              <StatusIcon status={confirmations >= 10} isPending={confirmations < 10} />
+              <span className={confirmations < 10 ? 'text-orange-500' : 'text-green-500'}>
+                {confirmations}
+              </span>
+            </div>
+          )
+        },
+      },
     ],
-    [network, section, isLargeLaptop, tokenSymbol],
+    [network, section, isLargeLaptop, tokenSymbol, lastBlockNumber],
   )
 
   const pageCount = useMemo(
