@@ -1,13 +1,16 @@
 import { useQuery } from '@apollo/client'
+import { blockNumber } from '@autonomys/auto-consensus'
 import { activate, NetworkId } from '@autonomys/auto-utils'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { LastBlockQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo } from 'react'
+import { useConsensusStates } from 'states/consensus'
 import { LAST_BLOCK } from './query'
 
 const NORMAL_BLOCKS_DIVERGENCE = 120
+const POLL_INTERVAL = 12000
 
 const OutOfSyncBanner: FC = () => {
   const { network } = useIndexers()
@@ -47,19 +50,23 @@ const OutOfSyncBanner: FC = () => {
 
 export const useOutOfSyncBanner = () => {
   const { network } = useIndexers()
-  const [lastChainBlock, setLastChainBlock] = useState<number | null>(null)
+
+  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
+  const setLastBlockNumber = useConsensusStates((state) => state.setLastBlockNumber)
 
   const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
-    pollInterval: 30000,
+    pollInterval: POLL_INTERVAL,
   })
 
   const getChainLastBlock = useCallback(async () => {
-    const api = await activate({ networkId: network })
-
-    const block = await api.rpc.chain.getBlock()
-
-    setLastChainBlock(block.block.header.number.toNumber())
-  }, [network])
+    try {
+      const api = await activate({ networkId: network })
+      setLastBlockNumber(await blockNumber(api))
+      await api.disconnect()
+    } catch (error) {
+      console.error('Error getting chain last block', error)
+    }
+  }, [network, setLastBlockNumber])
 
   const lastBlock = useMemo(() => data && parseInt(data.lastBlock[0].height), [data])
 
@@ -67,15 +74,20 @@ export const useOutOfSyncBanner = () => {
     () =>
       data &&
       lastBlock &&
-      lastChainBlock !== null &&
-      lastBlock + NORMAL_BLOCKS_DIVERGENCE < lastChainBlock ? (
+      lastBlockNumber !== null &&
+      lastBlock + NORMAL_BLOCKS_DIVERGENCE < lastBlockNumber ? (
         <OutOfSyncBanner />
       ) : null,
-    [data, lastBlock, lastChainBlock],
+    [data, lastBlock, lastBlockNumber],
   )
 
   useEffect(() => {
     getChainLastBlock()
+    const interval = setInterval(() => {
+      getChainLastBlock()
+    }, POLL_INTERVAL)
+
+    return () => clearInterval(interval)
   }, [getChainLastBlock])
 
   return outOfSyncBanner
