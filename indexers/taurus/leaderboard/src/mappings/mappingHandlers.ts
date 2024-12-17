@@ -1,371 +1,423 @@
-import { SubstrateEvent } from "@subql/types";
+import { SubstrateBlock } from "@subql/types";
 import * as db from "./db";
 
-export async function handleTransferEvent(
-  event: SubstrateEvent
-): Promise<void> {
+export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
-    event: {
-      data: [_from, _to, _amount],
+    block: {
+      header: { number },
+      extrinsics,
     },
-  } = event;
-  const from = _from.toString();
-  const to = _to.toString();
-  const amount = BigInt(_amount.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+    timestamp,
+    events,
+  } = _block;
+  const height = BigInt(number.toString());
 
-  await db.checkAndGetAccountTransferSenderTotalCount(
-    from,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetAccountTransferSenderTotalValue(
-    from,
-    amount,
-    blockNumber,
-    timestamp
-  );
+  let cache = db.initializeCache();
+  let eventIndex = 0;
 
-  await db.checkAndGetAccountTransferReceiverTotalCount(
-    to,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetAccountTransferReceiverTotalValue(
-    to,
-    amount,
-    blockNumber,
-    timestamp
-  );
-}
+  // Process extrinsics
+  extrinsics.forEach((extrinsic, extrinsicIdx) => {
+    const extrinsicEvents = events.filter(
+      (e) =>
+        e.phase.isApplyExtrinsic &&
+        e.phase.asApplyExtrinsic.toNumber() === extrinsicIdx
+    );
+    const successEvent = events.find(
+      (e) =>
+        e.event.section === "system" && e.event.method === "ExtrinsicSuccess"
+    );
+    const successEventId = events.findIndex(
+      (e) =>
+        e.event.section === "system" && e.event.method === "ExtrinsicSuccess"
+    );
+    const extrinsicId = extrinsic ? height + "-" + extrinsicIdx.toString() : "";
+    const extrinsicSigner = extrinsic.signer.toString();
 
-export async function handleRemarkEvent(event: SubstrateEvent): Promise<void> {
-  const {
-    event: { index },
-  } = event;
+    cache.accountExtrinsicTotalCountHistory.push(
+      db.createAccountExtrinsicTotalCount(
+        extrinsicSigner,
+        BigInt(1),
+        height,
+        extrinsicId,
+        height + "-" + successEventId.toString(),
+        timestamp
+      )
+    );
+    if (successEvent) {
+      cache.accountExtrinsicSuccessTotalCountHistory.push(
+        db.createAccountExtrinsicSuccessTotalCount(
+          extrinsicSigner,
+          BigInt(1),
+          height,
+          extrinsicId,
+          height + "-" + successEventId.toString(),
+          timestamp
+        )
+      );
 
-  const extrinsicIndex = Number(index);
-  const extrinsic = event.block.block.extrinsics[extrinsicIndex];
-  const accountId = extrinsic.signer.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+      // Process specific extrinsic
+      switch (`${extrinsic.method.section}.${extrinsic.method.method}`) {
+        case "system.remark":
+        case "system.remarkWithEvent": {
+          cache.accountRemarkCountHistory.push(
+            db.createAccountRemarkCount(
+              extrinsicSigner,
+              BigInt(1),
+              height,
+              extrinsicId,
+              "",
+              timestamp
+            )
+          );
+          break;
+        }
+      }
 
-  await db.checkAndGetAccountRemarkCount(
-    accountId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-}
+      // Process extrinsic events
+      extrinsicEvents.forEach((event, eventIdx) => {
+        const eventId = height + "-" + eventIndex;
 
-export async function handleExtrinsicSuccessEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: { index },
-  } = event;
+        // Process specific events
+        switch (`${event.event.section}.${event.event.method}`) {
+          case "balances.Transfer": {
+            const from = event.event.data[0].toString();
+            const to = event.event.data[1].toString();
+            const amount = BigInt(event.event.data[2].toString());
 
-  const extrinsicIndex = Number(index);
-  const extrinsic = event.block.block.extrinsics[extrinsicIndex];
-  const accountId = extrinsic.signer.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+            cache.accountTransferSenderTotalCountHistory.push(
+              db.createAccountTransferSenderTotalCount(
+                from,
+                BigInt(1),
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            cache.accountTransferSenderTotalValueHistory.push(
+              db.createAccountTransferSenderTotalValue(
+                from,
+                amount,
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
 
-  await db.checkAndGetAccountExtrinsicTotalCount(
-    accountId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetAccountExtrinsicSuccessTotalCount(
-    accountId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-}
+            cache.accountTransferReceiverTotalCountHistory.push(
+              db.createAccountTransferReceiverTotalCount(
+                to,
+                BigInt(1),
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            cache.accountTransferReceiverTotalValueHistory.push(
+              db.createAccountTransferReceiverTotalValue(
+                to,
+                amount,
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            break;
+          }
+          case "transactionPayment.TransactionFeePaid": {
+            const who = event.event.data[0].toString();
+            const actualFee = BigInt(event.event.data[1].toString());
+            const tip = BigInt(event.event.data[2].toString());
 
-export async function handleExtrinsicFailedEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: { index },
-  } = event;
-  const extrinsicIndex = Number(index);
-  const extrinsic = event.block.block.extrinsics[extrinsicIndex];
-  const accountId = extrinsic.signer.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+            cache.accountTransactionFeePaidTotalValueHistory.push(
+              db.createAccountTransactionFeePaidTotalValue(
+                who,
+                actualFee + tip,
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            break;
+          }
+          case "domains.OperatorRewarded": {
+            const operatorId = event.event.data[0].toString();
+            const reward = BigInt(event.event.data[1].toString());
+            if (reward === BigInt(0)) break;
 
-  await db.checkAndGetAccountExtrinsicTotalCount(
-    accountId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetAccountExtrinsicFailedTotalCount(
-    accountId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-}
+            cache.operatorTotalRewardsCollectedHistory.push(
+              db.createOperatorTotalRewardsCollected(
+                operatorId,
+                reward,
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            break;
+          }
+          case "domains.OperatorTaxCollected": {
+            const operatorId = event.event.data[0].toString();
+            const tax = BigInt(event.event.data[1].toString());
 
-export async function handleTransactionFeePaidEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: {
-      data: [_who, _actualFee, _tip],
-    },
-  } = event;
-  const who = _who.toString();
-  const actualFee = BigInt(_actualFee.toString());
-  const tip = BigInt(_tip.toString());
-  const totalFeePaid = actualFee + tip;
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+            cache.operatorTotalTaxCollectedHistory.push(
+              db.createOperatorTotalTaxCollected(
+                operatorId,
+                tax,
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            break;
+            break;
+          }
+          case "domains.BundleStored": {
+            const bundleAuthor = event.event.data[0].toString();
 
-  await db.checkAndGetAccountTransactionFeePaidTotalValue(
-    who,
-    totalFeePaid,
-    blockNumber,
-    timestamp
-  );
-}
+            cache.operatorBundleTotalCountHistory.push(
+              db.createOperatorBundleTotalCount(
+                bundleAuthor,
+                BigInt(1),
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            break;
+          }
+          case "domains.OperatorRegistered": {
+            const operatorId = event.event.data[0].toString();
+            const reward = BigInt(event.event.data[1].toString());
 
-export async function handleFarmerVoteRewardEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: {
-      data: [_voter, _reward],
-    },
-  } = event;
-  const voter = _voter.toString();
-  const reward = BigInt(_reward.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+            cache.operatorTotalRewardsCollectedHistory.push(
+              db.createOperatorTotalRewardsCollected(
+                operatorId,
+                reward,
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            break;
+          }
+          case "domains.OperatorNominated": {
+            const operatorId = event.event.data[0].toString();
+            const nominatorId = event.event.data[1].toString();
+            const amount = BigInt(event.event.data[2].toString());
 
-  await db.checkAndGetFarmerVoteTotalCount(
-    voter,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetFarmerVoteTotalValue(
-    voter,
-    reward,
-    blockNumber,
-    timestamp
-  );
+            cache.operatorDepositsTotalCountHistory.push(
+              db.createOperatorDepositsTotalCount(
+                operatorId,
+                BigInt(1),
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            cache.operatorDepositsTotalValueHistory.push(
+              db.createOperatorDepositsTotalValue(
+                operatorId,
+                amount,
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
 
-  await db.checkAndGetFarmerVoteAndBlockTotalCount(
-    voter,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetFarmerVoteAndBlockTotalValue(
-    voter,
-    reward,
-    blockNumber,
-    timestamp
-  );
-}
+            cache.nominatorDepositsTotalCountHistory.push(
+              db.createNominatorDepositsTotalCount(
+                nominatorId,
+                BigInt(1),
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            cache.nominatorDepositsTotalValueHistory.push(
+              db.createNominatorDepositsTotalValue(
+                nominatorId,
+                amount,
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            break;
+          }
+          case "domains.WithdrewStake": {
+            const operatorId = event.event.data[0].toString();
+            const nominatorId = event.event.data[1].toString();
 
-export async function handleFarmerBlockRewardEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: {
-      data: [_blockAuthor, _reward],
-    },
-  } = event;
-  const blockAuthor = _blockAuthor.toString();
-  const reward = BigInt(_reward.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+            cache.operatorWithdrawalsTotalCountHistory.push(
+              db.createOperatorWithdrawalsTotalCount(
+                operatorId,
+                BigInt(1),
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            cache.nominatorWithdrawalsTotalCountHistory.push(
+              db.createNominatorWithdrawalsTotalCount(
+                nominatorId,
+                BigInt(1),
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            break;
+          }
+          default:
+            break;
+        }
 
-  await db.checkAndGetFarmerBlockTotalCount(
-    blockAuthor,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetFarmerBlockTotalValue(
-    blockAuthor,
-    reward,
-    blockNumber,
-    timestamp
-  );
+        // Increment event index
+        eventIndex++;
+      });
+    } else {
+      // Process fail extrinsic
+      cache.accountExtrinsicFailedTotalCountHistory.push(
+        db.createAccountExtrinsicFailedTotalCount(
+          extrinsicSigner,
+          BigInt(1),
+          height,
+          extrinsicId,
+          height + "-" + successEventId.toString(),
+          timestamp
+        )
+      );
+    }
+  });
 
-  await db.checkAndGetFarmerVoteAndBlockTotalCount(
-    blockAuthor,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetFarmerVoteAndBlockTotalValue(
-    blockAuthor,
-    reward,
-    blockNumber,
-    timestamp
-  );
-}
+  const finalizationEvents = events.filter((e) => e.phase.isFinalization);
 
-export async function handleOperatorRewardedEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: {
-      data: [_operatorId, _reward],
-    },
-  } = event;
-  const operatorId = _operatorId.toString();
-  const reward = BigInt(_reward.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+  // Process finalization events
+  finalizationEvents.forEach((event) => {
+    const extrinsicId = height + "-" + event.phase.type; // AKA (blockHeight-Finalization)
+    const eventId = height + "-" + eventIndex;
 
-  if (reward === BigInt(0)) return;
+    // Process specific events
+    switch (`${event.event.section}.${event.event.method}`) {
+      case "rewards.VoteReward": {
+        const voter = event.event.data[0].toString();
+        const reward = BigInt(event.event.data[1].toString());
 
-  await db.checkAndGetOperatorTotalRewardsCollected(
-    operatorId,
-    reward,
-    blockNumber,
-    timestamp
-  );
-}
+        cache.farmerVoteTotalCountHistory.push(
+          db.createFarmerVoteTotalCount(
+            voter,
+            BigInt(1),
+            height,
+            extrinsicId,
+            eventId,
+            timestamp
+          )
+        );
+        cache.farmerVoteTotalValueHistory.push(
+          db.createFarmerVoteTotalValue(
+            voter,
+            reward,
+            height,
+            extrinsicId,
+            eventId,
+            timestamp
+          )
+        );
 
-export async function handleOperatorTaxCollectedEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: {
-      data: [_operatorId, _tax],
-    },
-  } = event;
-  const operatorId = _operatorId.toString();
-  const tax = BigInt(_tax.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+        cache.farmerVoteAndBlockTotalCountHistory.push(
+          db.createFarmerVoteAndBlockTotalCount(
+            voter,
+            BigInt(1),
+            height,
+            extrinsicId,
+            eventId,
+            timestamp
+          )
+        );
+        cache.farmerVoteAndBlockTotalValueHistory.push(
+          db.createFarmerVoteAndBlockTotalValue(
+            voter,
+            reward,
+            height,
+            extrinsicId,
+            eventId,
+            timestamp
+          )
+        );
 
-  await db.checkAndGetOperatorTotalTaxCollected(
-    operatorId,
-    tax,
-    blockNumber,
-    timestamp
-  );
-}
+        break;
+      }
+      case "rewards.BlockReward": {
+        const blockAuthor = event.event.data[0].toString();
+        const reward = BigInt(event.event.data[1].toString());
 
-export async function handleBundleStoredEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: {
-      data: [_bundleAuthor],
-    },
-  } = event;
-  const operatorId = _bundleAuthor.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+        cache.farmerBlockTotalCountHistory.push(
+          db.createFarmerBlockTotalCount(
+            blockAuthor,
+            BigInt(1),
+            height,
+            extrinsicId,
+            eventId,
+            timestamp
+          )
+        );
+        cache.farmerBlockTotalValueHistory.push(
+          db.createFarmerBlockTotalValue(
+            blockAuthor,
+            reward,
+            height,
+            extrinsicId,
+            eventId,
+            timestamp
+          )
+        );
 
-  await db.checkAndGetOperatorBundleTotalCount(
-    operatorId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-}
+        cache.farmerVoteAndBlockTotalCountHistory.push(
+          db.createFarmerVoteAndBlockTotalCount(
+            blockAuthor,
+            BigInt(1),
+            height,
+            extrinsicId,
+            eventId,
+            timestamp
+          )
+        );
+        cache.farmerVoteAndBlockTotalValueHistory.push(
+          db.createFarmerVoteAndBlockTotalValue(
+            blockAuthor,
+            reward,
+            height,
+            extrinsicId,
+            eventId,
+            timestamp
+          )
+        );
 
-export async function handleOperatorRegisteredEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: {
-      data: [_operatorId, _reward],
-    },
-  } = event;
-  const operatorId = _operatorId.toString();
-  const reward = BigInt(_reward.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
+        break;
+      }
+      default:
+        break;
+    }
 
-  await db.checkAndGetOperatorTotalRewardsCollected(
-    operatorId,
-    reward,
-    blockNumber,
-    timestamp
-  );
-}
+    // Increment event index
+    eventIndex++;
+  });
 
-export async function handleOperatorNominatedEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: {
-      data: [_operatorId, _nominatorId, _amount],
-    },
-  } = event;
-  const operatorId = _operatorId.toString();
-  const nominatorId = _nominatorId.toString();
-  const amount = BigInt(_amount.toString());
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
-
-  await db.checkAndGetOperatorDepositsTotalCount(
-    operatorId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetOperatorDepositsTotalValue(
-    operatorId,
-    amount,
-    blockNumber,
-    timestamp
-  );
-
-  await db.checkAndGetNominatorDepositsTotalCount(
-    nominatorId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetNominatorDepositsTotalValue(
-    nominatorId,
-    amount,
-    blockNumber,
-    timestamp
-  );
-}
-
-export async function handleWithdrewStakeEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  const {
-    event: {
-      data: [_operatorId, _nominatorId],
-    },
-  } = event;
-  const operatorId = _operatorId.toString();
-  const nominatorId = _nominatorId.toString();
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = event.block.timestamp ?? new Date(0);
-
-  await db.checkAndGetOperatorWithdrawalsTotalCount(
-    operatorId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
-  await db.checkAndGetNominatorWithdrawalsTotalCount(
-    nominatorId,
-    BigInt(1),
-    blockNumber,
-    timestamp
-  );
+  // Save cache
+  await db.saveCache(cache);
 }
