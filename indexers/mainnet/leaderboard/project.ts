@@ -45,116 +45,13 @@ const project: SubstrateProject = {
   dataSources: [
     {
       kind: SubstrateDatasourceKind.Runtime,
-      startBlock: 1,
+      startBlock: 562800,
       mapping: {
         file: "./dist/index.js",
         handlers: [
-          // accounts
           {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleTransferEvent",
-            filter: {
-              module: "balances",
-              method: "Transfer",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleRemarkEvent",
-            filter: {
-              module: "system",
-              method: "Remarked",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleExtrinsicSuccessEvent",
-            filter: {
-              module: "system",
-              method: "ExtrinsicSuccess",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleExtrinsicFailedEvent",
-            filter: {
-              module: "system",
-              method: "ExtrinsicFailed",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleTransactionFeePaidEvent",
-            filter: {
-              module: "transactionPayment",
-              method: "TransactionFeePaid",
-            },
-          },
-          // farmers
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleFarmerVoteRewardEvent",
-            filter: {
-              module: "rewards",
-              method: "VoteReward",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleFarmerBlockRewardEvent",
-            filter: {
-              module: "rewards",
-              method: "BlockReward",
-            },
-          },
-          // operators & nominators
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorRewardedEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorRewarded",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorTaxCollectedEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorTaxCollected",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleBundleStoredEvent",
-            filter: {
-              module: "domains",
-              method: "BundleStored",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorRegisteredEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorRegistered",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorNominatedEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorNominated",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleWithdrewStakeEvent",
-            filter: {
-              module: "domains",
-              method: "WithdrewStake",
-            },
+            kind: SubstrateHandlerKind.Block,
+            handler: "handleBlock",
           },
         ],
       },
