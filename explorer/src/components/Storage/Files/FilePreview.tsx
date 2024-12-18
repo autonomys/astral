@@ -1,3 +1,4 @@
+import { LockClosedIcon } from '@heroicons/react/24/outline'
 import { Arguments } from 'components/common/Arguments'
 import { Spinner } from 'components/common/Spinner'
 import { GetCidQuery, GetCidQueryVariables } from 'gql/graphql'
@@ -16,6 +17,9 @@ type Props = {
 type PreviewData = {
   type: string
   data: ArrayBuffer
+  isEncrypted: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  uploadOptions: any
 }
 
 export const FilePreview: FC<Props> = ({ cid }) => {
@@ -31,11 +35,13 @@ export const FilePreview: FC<Props> = ({ cid }) => {
 
   const fetchData = useCallback(async () => {
     if (data) {
-      const { dataArrayBuffer } = extractFileData(data)
+      const { dataArrayBuffer, isEncrypted, uploadOptions } = extractFileData(data)
       const fileType = await detectFileType(dataArrayBuffer)
       setRawData({
         type: fileType,
         data: dataArrayBuffer,
+        isEncrypted,
+        uploadOptions,
       })
     }
   }, [data])
@@ -60,6 +66,15 @@ export const FilePreview: FC<Props> = ({ cid }) => {
     if (!imageSrc) return <></>
 
     switch (true) {
+      case rawData?.isEncrypted:
+        return (
+          <div className='flex items-center'>
+            <LockClosedIcon className={'ml-2 size-6 shrink-0'} stroke='#DE67E4' />
+            <p className='text-sm font-medium text-grayDarker dark:text-white md:text-xl'>
+              No preview available for encrypted files
+            </p>
+          </div>
+        )
       case rawData?.type.startsWith('image'):
         return (
           <Image

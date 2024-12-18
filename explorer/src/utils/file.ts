@@ -74,6 +74,19 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') 
   let rawData: string = ''
   let dataArrayBuffer: ArrayBuffer = new ArrayBuffer(0)
   let depth = 0
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let uploadOptions: any
+
+  try {
+    if (data['files_' + type + 's'][0].chunk?.uploadOptions) {
+      uploadOptions = JSON.parse(data['files_' + type + 's'][0].chunk?.uploadOptions)
+      if (uploadOptions.encryption.algorithm)
+        return { rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
+    }
+  } catch (error) {
+    console.error('Error checking uploadOptions:', error)
+  }
+
   if (data['files_' + type + 's'][0][type + '_cids'].length === 0) {
     rawData = data['files_' + type + 's'][0].chunk?.data ?? ''
     dataArrayBuffer = Object.values(JSON.parse(rawData)) as unknown as ArrayBuffer
@@ -92,23 +105,20 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') 
     }
   }
   try {
-    if (data['files_' + type + 's'][0].chunk?.uploadOptions) {
-      const options = JSON.parse(data['files_' + type + 's'][0].chunk?.uploadOptions)
-      if (options.compression.algorithm === 'ZLIB') {
-        const inflate = new Zlib.Inflate(new Uint8Array(dataArrayBuffer), {
-          index: 0,
-          bufferSize: 1024,
-          bufferType: Zlib.Inflate.BufferType.BLOCK,
-          resize: true,
-          verify: true,
-        })
-        dataArrayBuffer = inflate.decompress()
-      }
+    if (uploadOptions.compression.algorithm === 'ZLIB') {
+      const inflate = new Zlib.Inflate(new Uint8Array(dataArrayBuffer), {
+        index: 0,
+        bufferSize: 1024,
+        bufferType: Zlib.Inflate.BufferType.BLOCK,
+        resize: true,
+        verify: true,
+      })
+      dataArrayBuffer = inflate.decompress()
     }
   } catch (error) {
     console.error('Error decompressing data:', error)
   }
-  return { rawData, dataArrayBuffer }
+  return { rawData, dataArrayBuffer, isEncrypted: false, uploadOptions }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
