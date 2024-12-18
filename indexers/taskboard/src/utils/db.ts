@@ -52,28 +52,28 @@ const consensusAccountsQuery = `
 // Get unique sections from both extrinsics and events
 const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
   WITH aggregated_entries AS (
-    SELECT id, 
-           SUM(value) AS total_value,
-           MAX(last_contribution_at) AS last_contribution_at,
-           MIN(created_at) AS created_at,
-           MAX(updated_at) AS updated_at
+    SELECT account_id, 
+          SUM(value) AS total_value,
+          MAX(last_contribution_at) AS last_contribution_at,
+          MIN(block_height) AS created_at,
+          MAX(block_height) AS updated_at
     FROM leaderboard.${sourceTable}
-    GROUP BY id
+    GROUP BY account_id
   ),
   ranked_entries AS (
-    SELECT id, 
-           ROW_NUMBER() OVER (ORDER BY total_value DESC, id) AS new_rank,
-           total_value,
-           last_contribution_at,
-           created_at,
-           updated_at
+    SELECT account_id as id, 
+          ROW_NUMBER() OVER (ORDER BY total_value DESC, account_id) AS new_rank,
+          total_value,
+          last_contribution_at,
+          created_at,
+          updated_at
     FROM aggregated_entries
   )
   INSERT INTO leaderboard.${targetTable} (id, rank, value, last_contribution_at, created_at, updated_at)
   SELECT id, new_rank, total_value, last_contribution_at, created_at, updated_at FROM ranked_entries
   ON CONFLICT (id) 
-  DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, created_at = EXCLUDED.created_at, updated_at = EXCLUDED.updated_at;
-  `;
+  DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, updated_at = EXCLUDED.updated_at;
+`;
 
 const consensusUpsertAccountQuery = `
     INSERT INTO consensus.accounts (id, account_id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)

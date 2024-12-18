@@ -63,6 +63,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const logKindsToUpdate: string[] = [];
   const addressToUpdate: string[] = [];
 
+  let eventIndex = 0;
   let totalBlockRewardsCount = 0;
   let totalVoteRewardsCount = 0;
   let totalTransferValue = BigInt(0);
@@ -155,7 +156,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     addressToUpdate.push(extrinsicSigner);
 
     // Process extrinsic events
-    extrinsicEvents.forEach((event, eventIdx) => {
+    extrinsicEvents.forEach((event) => {
       const extrinsicId = extrinsic
         ? height + "-" + extrinsicIdx.toString()
         : "";
@@ -177,7 +178,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         createEvent(
           height,
           blockHash,
-          BigInt(eventIdx),
+          BigInt(eventIndex),
           extrinsicId,
           extrinsic.hash.toString(),
           event.event.section,
@@ -206,7 +207,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
             height,
             blockHash,
             extrinsicId,
-            height + "-" + eventIdx.toString(),
+            height + "-" + eventIndex,
             from,
             to,
             amount,
@@ -218,6 +219,39 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
           break;
         }
+        default:
+          break;
+      }
+
+      // Increment event index
+      eventIndex++;
+    });
+
+    // Get finalization events
+    const finalizationEvents = events.filter((e) => e.phase.isFinalization);
+
+    // Process finalization events
+    finalizationEvents.forEach(async (event) => {
+      newEvents.push(
+        createEvent(
+          height,
+          blockHash,
+          BigInt(eventIndex),
+          height + "-" + event.phase.type,
+          extrinsic.hash.toString(),
+          event.event.section,
+          event.event.method,
+          timestamp ? timestamp : new Date(0),
+          event.phase.type,
+          pos,
+          args,
+          cid
+        )
+      );
+      eventMethodsToUpdate.push([event.event.section, event.event.method]);
+
+      // Process specific events
+      switch (`${event.event.section}.${event.event.method}`) {
         case "rewards.VoteReward": {
           const voter = event.event.data[0].toString();
           const reward = BigInt(event.event.data[1].toString());
@@ -231,8 +265,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           const newReward = createReward(
             height,
             blockHash,
-            extrinsicId,
-            height + "-" + eventIdx.toString(),
+            height + "-" + event.phase.type,
+            height + "-" + eventIndex,
             voter,
             "rewards.VoteReward",
             reward,
@@ -255,8 +289,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           const newReward = createReward(
             height,
             blockHash,
-            extrinsicId,
-            height + "-" + eventIdx.toString(),
+            height + "-" + event.phase.type,
+            height + "-" + eventIndex,
             blockAuthor,
             "rewards.BlockReward",
             reward,
@@ -269,6 +303,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         default:
           break;
       }
+
+      // Increment event index
+      eventIndex++;
     });
   });
 
