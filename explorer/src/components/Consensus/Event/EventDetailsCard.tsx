@@ -20,12 +20,12 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
   return (
     <div className='w-full'>
       <div className='flex'>
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
+        <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none sm:p-6'>
           <div className='mb-10 flex items-center justify-between'>
             <h3 className='text-sm font-medium text-grayDarker dark:text-white md:text-2xl'>
               Event #{event.id}
             </h3>
-            <div className='block rounded-full bg-grayDarker px-5 py-3 text-xs font-semibold leading-normal text-white'>
+            <div className='bg-buttonDarkTo block rounded-full px-5 py-3 text-xs font-semibold leading-normal text-white'>
               <Link
                 className='flex gap-1'
                 href={INTERNAL_ROUTES.blocks.id.page(network, section, event.block?.height)}
@@ -60,7 +60,7 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
                 <StyledListItem title='Call'>{event.name.split('.')[1]}</StyledListItem>
               </List>
             </div>
-            <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
+            <div className='border-blueLight bg-blueLight mb-4 w-full break-all rounded-lg border p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
               <Arguments args={parseArgs(event.args)} />
             </div>
           </div>

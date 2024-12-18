@@ -63,7 +63,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
                 <span className='ml-2 hidden w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white sm:block md:w-full'>
                   {actingAccountName}{' '}
                   {enableDevMode && (
-                    <span className='ml-2 rounded-full bg-purpleLighterAccent p-2 text-white'>
+                    <span className='bg-blueLighterAccent ml-2 rounded-full p-2 text-white'>
                       <code>[Dev Mode]</code>
                     </span>
                   )}

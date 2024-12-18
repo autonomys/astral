@@ -82,7 +82,7 @@ export const RewardHistory: FC = () => {
 
   return (
     <div className='w-full max-w-xl'>
-      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
+      <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none sm:p-6'>
         <div className='mb-6 flex flex-col items-center justify-center'>
           <h1 className='mb-2 text-center text-2xl font-bold text-gray-900 dark:text-white'>
             Reward History

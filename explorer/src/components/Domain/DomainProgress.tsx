@@ -103,9 +103,9 @@ export const DomainProgress: FC = () => {
                     {progress}%
                   </span>
                 </div>
-                <div className='mt-1 h-1.5 w-full rounded-full bg-grayLight dark:bg-purpleUndertone sm:mt-2 sm:h-2'>
+                <div className='dark:bg-blueUndertone mt-1 h-1.5 w-full rounded-full bg-grayLight sm:mt-2 sm:h-2'>
                   <div
-                    className='h-full rounded-full bg-gradient-to-r from-purpleLighterAccent to-pastelPink dark:from-primaryAccent dark:to-pastelBlue'
+                    className='from-blueLighterAccent h-full rounded-full bg-gradient-to-r to-pastelPink dark:from-primaryAccent dark:to-pastelBlue'
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>

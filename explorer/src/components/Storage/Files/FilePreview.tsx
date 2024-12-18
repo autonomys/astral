@@ -82,7 +82,7 @@ export const FilePreview: FC<Props> = ({ cid }) => {
       case rawData?.type && rawData !== null: {
         try {
           return (
-            <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10'>
+            <div className='border-blueLight bg-blueLight mb-4 w-full break-all rounded-lg border p-4 shadow dark:border-none dark:bg-white/10'>
               <Arguments
                 args={JSON.parse(Buffer.from(rawData.data).toString('utf-8'))}
                 collapseAtEntry={25}

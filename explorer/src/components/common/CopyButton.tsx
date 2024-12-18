@@ -31,7 +31,7 @@ export const CopyButton: FC<Props> = ({
   return (
     <button className={`flex gap-2 ${buttonClass}`} onClick={handleCopyClick} {...rest}>
       {children}
-      <Square2StackIcon className={iconClass} stroke='#DE67E4' />
+      <Square2StackIcon className={iconClass} stroke='#1949D2' />
     </button>
   )
 }

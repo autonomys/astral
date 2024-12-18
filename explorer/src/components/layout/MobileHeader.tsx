@@ -62,7 +62,7 @@ const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
             <div className='flex items-center gap-3'>
               <button
                 onClick={toggleTheme}
-                className='items-center rounded-full bg-grayDarker p-2 hover:bg-gray-200 focus:outline-none dark:bg-white'
+                className='bg-buttonLightFrom items-center rounded-full p-2 hover:bg-gray-200 focus:outline-none dark:bg-white'
               >
                 {isDark ? (
                   <SunIcon

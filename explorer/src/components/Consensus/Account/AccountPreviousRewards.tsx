@@ -67,7 +67,7 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
 
   return (
     <div
-      className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'
+      className='flex w-full flex-col rounded-[20px] border border-gray-200 p-4 dark:border-none'
       ref={ref}
     >
       {!isLoaded || !isAggregated ? (
@@ -75,21 +75,21 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
       ) : (
         <div className='flex w-full flex-col gap-6 py-4 pl-4'>
           <div className='grid w-full grid-cols-4 gap-8 xl:gap-8'>
-            <div className='col-span-1 text-[13px] font-normal text-purpleShade dark:text-white/75'>
+            <div className='text-blueShade col-span-1 text-[13px] font-normal dark:text-white/75'>
               Testnet
             </div>
-            <div className='col-span-1 text-[13px] font-normal text-purpleShade dark:text-white/75'>
+            <div className='text-blueShade col-span-1 text-[13px] font-normal dark:text-white/75'>
               Localized {TESTNET_TOKEN.symbol}
             </div>
-            <div className='col-span-1 text-[13px] font-normal text-purpleShade dark:text-white/75'>
+            <div className='text-blueShade col-span-1 text-[13px] font-normal dark:text-white/75'>
               Mainnet allocation %
             </div>
-            <div className='col-span-1 text-[13px] font-normal text-purpleShade dark:text-white/75'>
+            <div className='text-blueShade col-span-1 text-[13px] font-normal dark:text-white/75'>
               Mainnet allocation {DEFAULT_TOKEN_SYMBOL}
             </div>
           </div>
           <div className='w-full'>
-            <ol className='relative border-l border-purpleLight dark:border-purpleLighterAccent'>
+            <ol className='border-buttonLightFrom dark:border-buttonDarkFrom relative border-l'>
               {Object.values(CAMPAIGNS).map((phase, index) => (
                 <li
                   key={`${index}-account-rewards-block`}
@@ -101,8 +101,8 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
                     <div
                       className={`absolute -left-1.5 size-3 rounded-full ${
                         index === 0
-                          ? 'bg-primaryAccent dark:bg-primaryAccent'
-                          : 'bg-purpleLight dark:bg-purpleLighterAccent'
+                          ? 'bg-buttonLightFrom dark:bg-buttonDarkFrom'
+                          : 'bg-buttonLightTo dark:bg-buttonDarkTo'
                       }`}
                     ></div>
                     <div className='-mt-1 ml-4 text-[13px] font-normal text-grayDark dark:text-white '>

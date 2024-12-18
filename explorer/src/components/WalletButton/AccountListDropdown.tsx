@@ -85,9 +85,9 @@ function AccountListDropdown() {
         <Listbox.Button
           className={`relative w-full cursor-default font-["Montserrat"] ${
             isDesktop
-              ? 'rounded-full from-primaryAccent to-purpleUndertone pr-10 dark:bg-gradient-to-r'
+              ? 'dark:bg-buttonLightTo rounded-full pr-10'
               : 'rounded-l-full pr-6 dark:bg-primaryAccent'
-          } bg-white py-2 pl-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:text-white sm:text-sm`}
+          } bg-white py-2 pl-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:text-white sm:text-sm md:mt-3`}
         >
           <div className='flex items-center justify-center'>
             {extensionIcon}

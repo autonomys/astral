@@ -14,7 +14,7 @@ const OutOfSyncBanner: FC = () => {
   return (
     <div className="container mx-auto mb-4 flex grow justify-center px-5 font-['Montserrat'] md:px-[25px] 2xl:px-0">
       <div className='sticky top-0 z-50 w-full'>
-        <div className='w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+        <div className='dark:bg-boxDark w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none'>
           <div className='flex flex-col gap-4'>
             <div className='text-[20px] font-bold text-[#282929] dark:text-white'>
               Indexer Currently Out of Sync

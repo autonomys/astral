@@ -55,7 +55,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
       }
     >
       <div className='relative'>
-        <Listbox.Button className='relative w-full cursor-default rounded-full bg-primaryAccent from-primaryAccent to-purpleUndertone py-[10px] pl-3 pr-16 text-left font-["Montserrat"] text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
+        <Listbox.Button className='to-blueUndertone relative w-full cursor-default rounded-full bg-primaryAccent from-primaryAccent py-[10px] pl-3 pr-16 text-left font-["Montserrat"] text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
           <div className='flex items-center justify-center'>
             <span className='ml-2 w-28 text-center text-sm'>Actions</span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>

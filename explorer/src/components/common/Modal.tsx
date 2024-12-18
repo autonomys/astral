@@ -20,7 +20,7 @@ export const Modal: FC<Props> = ({ title = '', isOpen, onClose, children }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`rounded-xl bg-white p-6 shadow transition-all dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo ${
+        className={`dark:bg-boxDark rounded-xl bg-white p-6 shadow transition-all ${
           isOpen ? 'scale-100 opacity-100' : 'scale-125 opacity-0'
         }`}
       >
