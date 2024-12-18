@@ -1,6 +1,7 @@
 import {
   Chunk,
   Cid,
+  Error,
   File,
   FileCid,
   Folder,
@@ -119,4 +120,27 @@ export async function createAndSaveFile(
     await Promise.all(relations.map((relation) => relation.save()));
   }
   return file;
+}
+
+export async function createAndSaveError(
+  blockHeight: bigint,
+  blockHash: string,
+  extrinsicId: string,
+  extrinsicHash: string,
+  indexInBlock: number,
+  error: string,
+  timestamp: Date
+): Promise<Error> {
+  const _error = Error.create({
+    id: extrinsicId,
+    blockHeight,
+    blockHash,
+    extrinsicId,
+    extrinsicHash,
+    indexInBlock,
+    error,
+    timestamp,
+  });
+  await _error.save();
+  return _error;
 }
