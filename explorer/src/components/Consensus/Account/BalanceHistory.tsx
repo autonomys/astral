@@ -11,9 +11,9 @@ import { formatUnits } from 'ethers'
 import {
   BalanceHistoryByAccountIdQuery,
   BalanceHistoryByAccountIdQueryVariables,
+  Consensus_Account_Histories_Select_Column as BalanceHistoryColumn,
+  Consensus_Account_Histories_Bool_Exp as BalanceHistoryWhere,
   Order_By as OrderBy,
-  Consensus_Transfers_Select_Column as TransferColumn,
-  Consensus_Transfers_Bool_Exp as TransferWhere,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
@@ -37,7 +37,7 @@ type Row = BalanceHistoryByAccountIdQuery['consensus_account_histories'][0]
 export const BalanceHistory: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([
-    { id: TransferColumn.CreatedAt, desc: true },
+    { id: BalanceHistoryColumn.CreatedAt, desc: true },
   ])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -57,7 +57,7 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     [sorting],
   )
 
-  const where: TransferWhere = useMemo(() => ({ id: { _eq: accountId } }), [accountId])
+  const where: BalanceHistoryWhere = useMemo(() => ({ id: { _eq: accountId } }), [accountId])
 
   const variables = useMemo(() => {
     return {
