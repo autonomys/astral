@@ -9,7 +9,7 @@ import {
   WalletIcon,
 } from 'components/icons'
 import { indexers } from 'constants/indexers'
-import { metadata, url } from 'constants/metadata'
+import { metadata } from 'constants/metadata'
 import type { HomeQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'

@@ -2,7 +2,7 @@
 import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
 import { AutonomysSymbol, DocIcon, WalletIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
-import { metadata, url } from 'constants/metadata'
+import { metadata } from 'constants/metadata'
 import { AccountByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
