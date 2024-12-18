@@ -27,7 +27,7 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
 
   return (
     <div className="from-backgroundLight to-backgroundDark dark:from-backgroundDarker dark:to-backgroundDarkest dark:bg-boxDark relative flex min-h-screen w-full flex-col bg-gradient-to-b font-['Montserrat']">
-      <div className="relative flex min-h-screen w-full flex-col bg-[url('/images/backgroundColor.svg')] bg-cover font-['Montserrat']">
+      <div className="relative flex min-h-screen w-full flex-col font-['Montserrat']">
         {outOfSync}
         <SectionHeader />
         {subHeader}
