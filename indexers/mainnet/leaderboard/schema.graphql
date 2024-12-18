@@ -5,219 +5,243 @@
 # account
 type AccountTransferSenderTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type AccountTransferSenderTotalValueHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type AccountTransferReceiverTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type AccountTransferReceiverTotalValueHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type AccountRemarkCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type AccountExtrinsicTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type AccountExtrinsicSuccessTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type AccountExtrinsicFailedTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type AccountTransactionFeePaidTotalValueHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 # farmer
 type FarmerVoteTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type FarmerVoteTotalValueHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type FarmerBlockTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type FarmerBlockTotalValueHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type FarmerVoteAndBlockTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type FarmerVoteAndBlockTotalValueHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 # operator
 type OperatorTotalRewardsCollectedHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type OperatorTotalTaxCollectedHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type OperatorBundleTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type OperatorDepositsTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type OperatorDepositsTotalValueHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type OperatorWithdrawalsTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 # nominator/account
 type NominatorDepositsTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type NominatorDepositsTotalValueHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }
 
 type NominatorWithdrawalsTotalCountHistory @entity {
   id: ID!
-  rank: Int! @index
+  accountId: String! @index
   value: BigInt! @index
   lastContributionAt: Date!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  blockHeight: BigInt! @index
+  extrinsicId: String!
+  eventId: String!
 }

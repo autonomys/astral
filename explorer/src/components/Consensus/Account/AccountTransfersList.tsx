@@ -40,7 +40,7 @@ type Row = TransfersByAccountIdQuery['consensus_transfers'][0]
 export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([
-    { id: TransferColumn.CreatedAt, desc: true },
+    { id: TransferColumn.BlockHeight, desc: true },
   ])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -121,17 +121,17 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         header: 'Block',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`created_at-${row.original.id}`} className='row flex items-center gap-3'>
+          <div key={`block_height-${row.original.id}`} className='row flex items-center gap-3'>
             <Link
-              data-testid={`transfer-created_at-${row.index}`}
+              data-testid={`transfer-block_height-${row.index}`}
               href={INTERNAL_ROUTES.blocks.id.page(
                 network,
                 Routes.consensus,
-                row.original.created_at,
+                row.original.block_height,
               )}
               className='hover:text-primaryAccent'
             >
-              <div>{row.original.created_at}</div>
+              <div>{row.original.block_height}</div>
             </Link>
           </div>
         ),
@@ -236,7 +236,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-created_at-${row.index}`}>
-            {row.original.timestamp(row.original.date)}
+            {row.original.timestamp(row.original.timestamp)}
           </div>
         ),
       },
