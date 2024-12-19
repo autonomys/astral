@@ -70,7 +70,7 @@ services:
 
 # PGCat Proxy
   pgcat:
-    image: ghcr.io/postgresml/pgcat:e1e4929d439313d987c352b4517a6d99627f3e9c
+    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
     command:
       - "pgcat"
       - "/etc/pgcat/pgcat.toml"
