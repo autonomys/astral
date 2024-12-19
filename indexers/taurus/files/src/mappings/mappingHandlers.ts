@@ -17,6 +17,7 @@ import { SubstrateExtrinsic } from "@subql/types";
 import {
   createAndSaveChunk,
   createAndSaveCid,
+  createAndSaveError,
   createAndSaveFile,
   createAndSaveFolder,
   createAndSaveMetadata,
@@ -120,8 +121,17 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
         }
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     logger.error("Error decoding remark or seedHistory extrinsic");
     logger.error(error);
+    await createAndSaveError(
+      BigInt(number.toString()),
+      blockHash.toString(),
+      `${number}-${idx}`,
+      hash.toString(),
+      idx,
+      stringify(error),
+      timestamp ? timestamp : new Date(0)
+    );
   }
 }
