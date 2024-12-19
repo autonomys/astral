@@ -52,15 +52,9 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
     <div
       tw='relative w-full h-full flex flex-col items-center justify-between'
       style={{
-        background: 'linear-gradient(180deg, #0B050F 0%, #4D2F92 50%, #BC8EDA 100%)',
+        background: 'linear-gradient(180deg, #050D26 0%, #27355D 100%)',
       }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={'http://localhost:3000//images/backgroundColor.svg'}
-        tw='w-[1200px] h-[630px]'
-        alt={'Background Color'}
-      />
       <div tw='absolute flex flex-row border-none w-full h-full'>
         <div tw='flex flex-col w-full justify ml-15'>
           <LogoIcon />
@@ -107,13 +101,13 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
         <div
           tw='absolute flex flex-row border-none rounded-[20px] ml-155 mt-65 mb-4 p-6 w-60 h-50'
           style={{
-            background: 'linear-gradient(180deg, #AC70E1 0%, #E6ADDC 100%)',
+            background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}
         ></div>
         <div
           tw='absolute flex flex-row border-none rounded-[20px] ml-155 mt-65 mb-4 p-6 w-60 h-50'
           style={{
-            background: 'linear-gradient(180deg, #AC70E1 0%, #E6ADDC 100%)',
+            background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}
         >
           <div tw='absolute flex flex-row w-full m-6 justify-center'>
@@ -139,7 +133,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
         <div
           tw='absolute flex flex-row border-none rounded-[20px] ml-225 mt-65 mb-4 p-6 w-60 h-50'
           style={{
-            background: 'linear-gradient(180deg, #6E6ECD 0%, #A196E1 50%, #C2B0EE 100%)',
+            background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}
         >
           <div tw='absolute flex flex-row w-full m-6 justify-center'>

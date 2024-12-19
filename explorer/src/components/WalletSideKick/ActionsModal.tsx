@@ -374,7 +374,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                  className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -525,7 +525,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                             }`}
                           />
                           <button
-                            className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className='bg-buttonLightFrom dark:bg-buttonDarkFrom absolute flex items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                             type='button'
                             style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                             onClick={() => setFieldValue('amount', maxAmount)}
@@ -586,7 +586,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                        className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -621,7 +621,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                  className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -713,7 +713,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                        className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -771,7 +771,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                  className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -851,7 +851,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     )}
                     {selectedCategory && selectedMethod && (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                        className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(selectedMethod)}
@@ -914,7 +914,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
         </div>
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
+          className='bg-buttonLightTo dark:bg-buttonDarkTo flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
           onClick={handleClose}
         >
           Close

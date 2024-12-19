@@ -18,9 +18,7 @@ export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) =
   const reservedPercent = accountTotal ? (100 * accountReserved) / accountTotal : 0
   const { tokenSymbol } = useIndexers()
 
-  const backgroundStyle = !isDesktop
-    ? 'dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo rounded-[20px]'
-    : ''
+  const backgroundStyle = !isDesktop ? 'rounded-[20px]' : ''
 
   return (
     <div

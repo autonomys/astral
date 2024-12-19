@@ -3,7 +3,7 @@ import { shortString } from '@autonomys/auto-utils'
 import { QUERY_BLOCK_BY_ID } from 'components/Consensus/Block/query'
 import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
-import { metadata, url } from 'constants/metadata'
+import { metadata } from 'constants/metadata'
 import { BlockByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
@@ -77,19 +77,13 @@ function Screen({
     <div
       tw='relative w-full h-full flex flex-col items-center justify-between'
       style={{
-        background: 'linear-gradient(180deg, #0B050F 0%, #4D2F92 50%, #BC8EDA 100%)',
+        background: 'linear-gradient(180deg, #050D26 0%, #27355D 100%)',
       }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={url + '/images/backgroundColor.svg'}
-        tw='w-[1200px] h-[630px]'
-        alt={'Background Color'}
-      />
       <div
         tw='absolute flex flex-row border-none rounded-[20px] p-4 w-240 h-40'
         style={{
-          background: 'linear-gradient(180deg, #4141B3 0%, #6B5ACF 50%, #896BD2 100%)',
+          background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
         }}
       >
         <h2
@@ -117,7 +111,7 @@ function Screen({
         <div
           tw='absolute flex flex-row border-none rounded-[20px] ml-30 mt-70 mb-4 p-6 w-100 h-40'
           style={{
-            background: 'linear-gradient(180deg, #4141B3 0%, #6B5ACF 50%, #896BD2 100%)',
+            background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}
         >
           <div tw='absolute flex flex-col w-100 m-6'>
@@ -151,7 +145,7 @@ function Screen({
         <div
           tw='absolute flex flex-row border-none rounded-[20px] ml-140 mt-70 mb-4 p-6 w-130 h-40'
           style={{
-            background: 'linear-gradient(180deg, #4141B3 0%, #6B5ACF 50%, #896BD2 100%)',
+            background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}
         >
           <div tw='absolute flex flex-col w-130 m-6'>

@@ -22,21 +22,21 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
   const { push } = useRouter()
 
   return (
-    <div className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white px-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
+    <div className='flex w-full flex-col rounded-[20px] border border-gray-200 px-4 dark:border-none'>
       <div className='flex w-full flex-col gap-6 pl-4'>
         <div className='flex w-full justify-between'>
-          <div className='flex-1 grow text-[13px] font-normal text-purpleShade dark:text-white/75'>
+          <div className='text-blueShade flex-1 grow text-[13px] font-normal dark:text-white/75'>
             Block Number
           </div>
-          <div className='flex-1 grow text-center text-[13px] font-normal text-purpleShade dark:text-white/75'>
+          <div className='text-blueShade flex-1 grow text-center text-[13px] font-normal dark:text-white/75'>
             Type
           </div>
-          <div className='flex-1 grow text-end text-[13px] font-normal text-purpleShade dark:text-white/75'>
+          <div className='text-blueShade flex-1 grow text-end text-[13px] font-normal dark:text-white/75'>
             Amount
           </div>
         </div>
         <div className='w-full'>
-          <ol className='relative w-full border-l border-purpleLight dark:border-purpleLighterAccent'>
+          <ol className='dark:border-buttonDarkFrom border-buttonLightFrom relative w-full border-l'>
             {rewards.map(({ id, rewardType, blockHeight, amount }, index) => {
               const confirmations = lastBlockNumber ? Math.max(0, lastBlockNumber - blockHeight) : 0
               return (
@@ -51,10 +51,10 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
                       className={`absolute -left-1.5 size-3 rounded-full ${
                         index === 0
                           ? 'bg-primaryAccent dark:bg-primaryAccent'
-                          : 'bg-purpleLight dark:bg-purpleLighterAccent'
+                          : 'bg-buttonDarkFrom dark:bg-buttonDarkTo'
                       }`}
                     ></div>
-                    <div className='-mt-1 ml-4 flex flex-1 grow items-center gap-2 text-[13px] font-normal text-grayDark dark:text-white'>
+                    <div className='-mt-1 ml-4 flex-1 grow text-[13px] font-normal text-grayDark dark:text-white '>
                       <Link
                         key={`${id}-account-index`}
                         className='hover:text-primaryAccent'
@@ -71,15 +71,15 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
                         <StatusIcon status={confirmations >= 10} isPending={confirmations < 10} />
                       </Tooltip>
                     </div>
-                  </div>
-                  <div className='-mt-1 w-full flex-1 grow text-center text-[13px] font-normal text-grayDark dark:text-white'>
-                    {rewardType
-                      .split('.')[1]
-                      .split(/(?=[A-Z])/)
-                      .join(' ')}
-                  </div>
-                  <div className='-mt-1 w-full flex-1 grow text-end text-[13px] font-normal text-grayDark dark:text-white'>
-                    {bigNumberToNumber(amount)} {tokenSymbol}
+                    <div className='-mt-1 w-full flex-1 grow text-center text-[13px] font-normal text-grayDark dark:text-white'>
+                      {rewardType
+                        .split('.')[1]
+                        .split(/(?=[A-Z])/)
+                        .join(' ')}
+                    </div>
+                    <div className='-mt-1 w-full flex-1 grow text-end text-[13px] font-normal text-grayDark dark:text-white'>
+                      {bigNumberToNumber(amount)} {tokenSymbol}
+                    </div>
                   </div>
                 </li>
               )
@@ -92,7 +92,7 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
           onClick={() =>
             push(INTERNAL_ROUTES.accounts.rewards.page(network, section, accountId || ''))
           }
-          className='mt-4 w-full rounded-[20px] bg-purpleLight py-4 dark:bg-whiteTransparent dark:text-white'
+          className='bg-blueLight mt-4 w-full rounded-[20px] py-4 dark:bg-whiteTransparent dark:text-white'
         >
           See All Rewards
         </button>

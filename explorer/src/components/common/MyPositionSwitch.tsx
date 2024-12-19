@@ -36,7 +36,7 @@ export const MyPositionSwitch: FC<MyPositionSwitchProps> = ({
         <span
           className={`${
             myPositionOnly ? 'translate-x-10' : 'translate-x-1'
-          } inline-block h-4 w-4 transform rounded-full bg-grayDark transition-transform dark:bg-purpleLight`}
+          } dark:bg-blueLight inline-block h-4 w-4 transform rounded-full bg-grayDark transition-transform`}
         />
         <span className='sr-only'>{label}</span>
       </button>

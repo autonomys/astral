@@ -22,13 +22,13 @@ export const AccountBalancePieChart: FC<Props> = ({ account }) => {
       id: 'other',
       label: 'Other',
       value: other,
-      color: '#D9F0FC',
+      color: '#EBEFFC',
     },
     {
       id: 'transferable',
       label: 'Transferable',
       value: transferable,
-      color: '#E970F8',
+      color: '#1949D2',
     },
     {
       id: 'staking',

@@ -121,7 +121,7 @@ export const SearchBar: FC<SearchBarProps> = ({ fixSearchType }) => {
                       <SearchSpinner />
                     </div>
                   ) : (
-                    <ArrowLongRightIcon stroke='#DE67E4' className='size-6' />
+                    <ArrowLongRightIcon stroke='#1949D2' className='size-6' />
                   )}
                 </button>
               </div>

@@ -9,7 +9,7 @@ export const EvmExplorerBanner: FC<{ path?: string }> = ({ path }) => {
   )
   return (
     <div className='w-full'>
-      <div className='w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+      <div className='dark:bg-boxDark w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none'>
         <div className='flex flex-col gap-4'>
           <div className='text-[20px] font-bold text-[#282929] dark:text-white'>
             Explore Auto EVM with Blockscout

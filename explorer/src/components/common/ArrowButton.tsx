@@ -13,7 +13,7 @@ export const ArrowButton: FC<Props> = ({ children, ...rest }) => (
   >
     <div className='flex items-center gap-x-5'>
       {children}
-      <ArrowLongRightIcon stroke='#DE67E4' className='size-6' />
+      <ArrowLongRightIcon stroke='#1949D2' className='size-6' />
     </div>
   </button>
 )

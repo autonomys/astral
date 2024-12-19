@@ -42,7 +42,7 @@ export const Accordion: FC<Props> = ({
             ) : (
               <ChevronDownIcon
                 className={isActive ? 'ml-2 size-6 shrink-0 rotate-180' : 'ml-2 size-6 shrink-0'}
-                stroke='#DE67E4'
+                stroke='#1949D2'
               />
             )}
           </div>

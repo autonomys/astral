@@ -10,14 +10,14 @@ export const AccountRewardsTabs: FC<Props> = ({ children, isDesktop = false }) =
   const [selectedTab, setSelectedTab] = useState(0)
 
   const tabStyle = isDesktop
-    ? 'bg-white border border-slate-100 shadow rounded-[20px] p-4 dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo dark:border-none'
+    ? 'bg-white border border-slate-100 shadow rounded-[20px] p-4 dark:bg-boxDark dark:border-none'
     : ''
 
   const tabTitleStyle = !isDesktop
     ? 'bg-white rounded-full mb-5 px-5 dark:bg-blueAccent dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo justify-center items-center'
     : ''
 
-  const activePillStyle = 'dark:text-white text-white bg-grayDarker dark:bg-blueAccent'
+  const activePillStyle = 'dark:text-white text-white bg-buttonLightFrom dark:bg-buttonDarkFrom'
 
   return (
     <div className={`flex w-full flex-wrap ${tabStyle}`}>

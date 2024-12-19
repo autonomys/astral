@@ -9,8 +9,8 @@ interface TableProps<T extends object> {
 
 export const DesktopTable = <T extends object>({ table, emptyMessage }: TableProps<T>) => (
   <div className='overflow-x-auto'>
-    <table className="w-full min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo">
-      <thead className='border-b border-gray-200 text-sm text-purpleShade dark:text-white/75'>
+    <table className="dark:bg-boxDark w-full min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none">
+      <thead className='text-blueShade border-b border-gray-200 text-sm dark:text-white/75'>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header, index) => (
@@ -25,7 +25,7 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
                       ? 'rounded-tl-[20px]'
                       : 'rounded-tr-[20px]'
                     : 'rounded-[20px]'
-                } px-3 py-4 text-start text-sm font-normal ${index === 0 ? 'sticky left-0 bg-white dark:bg-gradientFrom' : ''} ${index === headerGroup.headers.length - 1 ? 'sticky right-0 bg-white dark:bg-gradientTo' : ''}`}
+                } px-3 py-4 text-start text-sm font-normal ${index === 0 ? 'dark:bg-boxDark sticky left-0 bg-white' : ''} ${index === headerGroup.headers.length - 1 ? 'dark:bg-boxDark sticky right-0 bg-white' : ''}`}
               >
                 <div className='flex justify-items-center gap-1 align-middle'>
                   {header.isPlaceholder
@@ -69,10 +69,10 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
               {row.getVisibleCells().map((cell, cellIndex) => (
                 <td
                   className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                    cellIndex === 0 ? 'sticky left-0 bg-white dark:bg-gradientFrom' : ''
+                    cellIndex === 0 ? 'dark:bg-boxDark sticky left-0 bg-white' : ''
                   } ${
                     cellIndex === row.getVisibleCells().length - 1
-                      ? 'sticky right-0 bg-white dark:bg-gradientTo'
+                      ? 'dark:bg-boxDark sticky right-0 bg-white'
                       : ''
                   } ${
                     rowIndex === table.getRowModel().rows.length - 1 && cellIndex === 0
@@ -94,7 +94,7 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
         ) : (
           <tr>
             <td colSpan={table.getAllColumns().length} className='p-6 text-center'>
-              <div className='text-sm text-purpleShade dark:text-white/75'>
+              <div className='text-blueShade text-sm dark:text-white/75'>
                 {emptyMessage || 'No entries to show'}
               </div>
             </td>

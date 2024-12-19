@@ -51,8 +51,8 @@ export const DomainCards: FC = () => {
       icon: domain.name === 'nova' ? <BlockIcon /> : <DocIcon />,
       darkBgClass:
         domain.name === 'nova'
-          ? 'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleShade dark:to-pastelPurple'
-          : 'dark:bg-gradient-to-b dark:from-purpleUndertone dark:to-pastelBlue',
+          ? 'dark:bg-gradient-to-b dark:from-blueLighterAccent dark:via-blueShade dark:to-pastelPurple'
+          : 'dark:bg-gradient-to-b dark:from-blueUndertone dark:to-pastelBlue',
       currentEpoch: domain.completed_epoch,
       progress: Math.min(domain.last_domain_block_number % 100, 100),
     }))
@@ -99,7 +99,7 @@ export const DomainCards: FC = () => {
                       </div>
                       <div className='mt-2 h-2 w-full rounded-full bg-grayLight dark:bg-grayDarker'>
                         <div
-                          className='h-2 rounded-full bg-gradient-to-r from-primaryAccent to-purpleUndertone dark:from-primaryAccent dark:to-pastelBlue'
+                          className='to-blueUndertone h-2 rounded-full bg-gradient-to-r from-primaryAccent dark:from-primaryAccent dark:to-pastelBlue'
                           style={{ width: `${progress}%` }}
                         ></div>
                       </div>

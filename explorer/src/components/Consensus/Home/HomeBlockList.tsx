@@ -66,7 +66,7 @@ export const HomeBlockList: FC<Props> = ({ data, loading }) => {
   )
 
   return (
-    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
+    <div className='dark:bg-boxDark w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none'>
       <div className='mb-6 inline-flex w-full items-center justify-between align-middle'>
         <div className='text-md uppercase leading-normal text-gray-600 dark:text-white'>
           Latest Blocks
@@ -76,7 +76,7 @@ export const HomeBlockList: FC<Props> = ({ data, loading }) => {
           data-testid='testLinkBlocks'
           className='p-2 transition duration-150 ease-in-out'
         >
-          <ArrowLongRightIcon stroke='#DE67E4' className='size-6' />
+          <ArrowLongRightIcon stroke='#1949D2' className='size-6' />
         </Link>
       </div>
       {loading || !blocks ? (

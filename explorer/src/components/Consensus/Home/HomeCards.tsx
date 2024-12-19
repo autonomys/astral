@@ -23,34 +23,31 @@ export const HomeCards: FC<Props> = ({
         title: 'Processed Blocks',
         icon: <BlockIcon />,
         value: blocksCount,
-        darkBgClass:
-          'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-pastelPurple dark:to-pastelBlue',
+        darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Wallet addresses',
         icon: <WalletIcon />,
         value: accountsCount,
-        darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelPurple dark:to-pastelPink',
+        darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Nodes',
         icon: <BlockIcon />,
         value: nodeCount,
-        darkBgClass:
-          'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleShade dark:to-pastelPurple',
+        darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Space Pledged',
         icon: <PieChartIcon />,
         value: spacePledged,
-        darkBgClass:
-          'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleShade dark:to-pastelPurple',
+        darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Archived History Size',
         icon: <ArchivedHistoryIcon />,
         value: historySize,
-        darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelBlue dark:to-pastelPink',
+        darkBgClass: 'dark:bg-boxDark',
       },
     ],
     [blocksCount, nodeCount, spacePledged, historySize, accountsCount],
