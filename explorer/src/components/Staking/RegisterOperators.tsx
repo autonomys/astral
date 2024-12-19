@@ -151,7 +151,7 @@ export const RegisterOperators = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='mt-5 flex w-full flex-col pt-20 sm:mt-0'>
-        <div className="dark:bg-boxDark w-full rounded-[20px] bg-white font-['Montserrat'] dark:border-none">
+        <div className='dark:bg-boxDark w-full rounded-[20px] bg-white dark:border-none'>
           <div className='m-10'>
             <div className='flex items-center'>
               <WalletIcon width='44' height='48' />

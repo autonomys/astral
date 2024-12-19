@@ -12,7 +12,7 @@ export const ListCard = <T extends object>({ table, emptyMessage }: ListCardProp
         table.getRowModel().rows.map((row, index) => (
           <div
             key={`row-${index}`}
-            className="dark:bg-boxDark mb-4 w-full rounded-lg bg-white px-4 py-2 font-['Montserrat']"
+            className='dark:bg-boxDark mb-4 w-full rounded-lg bg-white px-4 py-2'
           >
             {row.getVisibleCells().map((cell, index) => {
               const header = table.getHeaderGroups()[0].headers[index]
@@ -32,7 +32,7 @@ export const ListCard = <T extends object>({ table, emptyMessage }: ListCardProp
           </div>
         ))
       ) : (
-        <div className="dark:bg-boxDark w-full rounded-lg bg-white px-4 py-4 font-['Montserrat']">
+        <div className='dark:bg-boxDark w-full rounded-lg bg-white px-4 py-4'>
           <div className='flex w-full justify-center'>
             <div className='text-blueShade text-sm dark:text-white/75'>
               {emptyMessage || 'No entries to show'}
