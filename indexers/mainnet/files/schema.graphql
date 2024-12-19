@@ -54,3 +54,14 @@ type FileCid @entity {
   parentCid: String! @index
   childCid: String! @index
 }
+
+type Error @entity {
+  id: ID!
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  extrinsicId: String! @index
+  extrinsicHash: String! @index
+  indexInBlock: Int! @index
+  error: String!
+  timestamp: Date! @index
+}
