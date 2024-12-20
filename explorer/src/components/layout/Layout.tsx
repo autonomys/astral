@@ -26,8 +26,8 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
   }, [pathname])
 
   return (
-    <div className="from-backgroundLight to-backgroundDark dark:from-backgroundDarker dark:to-backgroundDarkest dark:bg-boxDark relative flex min-h-screen w-full flex-col bg-gradient-to-b font-['Montserrat']">
-      <div className="relative flex min-h-screen w-full flex-col font-['Montserrat']">
+    <div className='from-backgroundLight to-backgroundDark dark:from-backgroundDarker dark:to-backgroundDarkest dark:bg-boxDark relative flex min-h-screen w-full flex-col bg-gradient-to-b'>
+      <div className='relative flex min-h-screen w-full flex-col'>
         {outOfSync}
         <SectionHeader />
         {subHeader}

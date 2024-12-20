@@ -25,9 +25,7 @@ export const HomeInfoCard: FC<Props> = ({
     [value],
   )
   return (
-    <div
-      className={`h-[216px] w-1/5 min-w-[200px] grow font-['Montserrat'] md:min-w-[228px] ${additionalClass}`}
-    >
+    <div className={`h-[216px] w-1/5 min-w-[200px] grow md:min-w-[228px] ${additionalClass}`}>
       <div className={`flex h-full flex-col justify-center rounded-[20px] bg-white ${darkBgClass}`}>
         <div className='mb-6 flex w-full items-center justify-center align-middle'>{icon}</div>
         <div className='flex w-full flex-col  items-center justify-center align-middle'>

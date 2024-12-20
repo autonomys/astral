@@ -9,7 +9,7 @@ interface TableProps<T extends object> {
 
 export const DesktopTable = <T extends object>({ table, emptyMessage }: TableProps<T>) => (
   <div className='overflow-x-auto'>
-    <table className="dark:bg-boxDark w-full min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none">
+    <table className='dark:bg-boxDark w-full min-w-max table-auto rounded-[20px] bg-white dark:border-none'>
       <thead className='text-blueShade border-b border-gray-200 text-sm dark:text-white/75'>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>

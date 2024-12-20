@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-import defaultTheme from 'tailwindcss/defaultTheme'
+import plugin from 'tailwindcss/plugin'
 
 const config: Config = {
   content: [
@@ -19,7 +19,6 @@ const config: Config = {
         light: 'linear-gradient(180deg, #EBEFFC 0%, #3654A6 100%)',
       },
       colors: {
-        // Common Gradient
         // Gradients
         gradientFrom: '#032372',
         gradientVia: '#1949D2',
@@ -79,16 +78,116 @@ const config: Config = {
         footerLight: '#032372',
         footerDark: '#08183E',
       },
-    },
-    fontFamily: {
-      montserrat: ['Montserrat'],
-    },
-    theme: {
+
       fontFamily: {
-        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+        display: ['var(--font-roboto-serif)', 'serif'],
+        body: ['var(--font-libre-franklin)', 'sans-serif'],
       },
       fontSize: {
-        xs: ['13px', '16px'],
+        'display-lg': [
+          '4.75rem',
+          {
+            lineHeight: '100%',
+            letterSpacing: '-0.04em',
+            fontWeight: '300',
+          },
+        ],
+        'display-md': [
+          '3.75rem',
+          {
+            lineHeight: '100%',
+            letterSpacing: '-0.04em',
+            fontWeight: '300',
+          },
+        ],
+        'display-sm': [
+          '3rem',
+          {
+            lineHeight: '100%',
+            letterSpacing: '-0.04em',
+            fontWeight: '300',
+          },
+        ],
+        'title-1': [
+          '3.313rem',
+          {
+            lineHeight: '100%',
+            letterSpacing: '-0.02em',
+            fontWeight: '300',
+          },
+        ],
+        'title-2': [
+          '2.938rem',
+          {
+            lineHeight: '120%',
+            letterSpacing: '-0.02em',
+            fontWeight: '300',
+          },
+        ],
+        'title-3': [
+          '2.5rem',
+          {
+            lineHeight: '120%',
+            letterSpacing: '-0.02em',
+            fontWeight: '300',
+          },
+        ],
+        'body-lg': [
+          '2rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0.02em',
+            fontWeight: '400',
+          },
+        ],
+        'body-md': [
+          '1.688rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0.02em',
+            fontWeight: '400',
+          },
+        ],
+        'body-sm': [
+          '1.313rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0.02em',
+            fontWeight: '400',
+          },
+        ],
+        'button-lg': [
+          '1.188rem',
+          {
+            lineHeight: '20px',
+            letterSpacing: '0',
+            fontWeight: '500',
+          },
+        ],
+        'button-md': [
+          '1rem',
+          {
+            lineHeight: '20px',
+            letterSpacing: '0',
+            fontWeight: '500',
+          },
+        ],
+        'pre-title': [
+          '1.188rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0.02em',
+            fontWeight: '400',
+          },
+        ],
+        detail: [
+          '1.188rem',
+          {
+            lineHeight: '120%',
+            letterSpacing: '-0.02em',
+            fontWeight: '600',
+          },
+        ],
       },
       spacing: {
         13: '3.125rem',
@@ -100,7 +199,94 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('@headlessui/tailwindcss'), require('@tailwindcss/forms')],
+  plugins: [
+    require('@headlessui/tailwindcss'),
+    require('@tailwindcss/forms'),
+    plugin(function ({ addBase }) {
+      addBase({
+        'h1.display-large': {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '4.75rem',
+          lineHeight: '100%',
+          letterSpacing: '-0.04em',
+          fontWeight: '300',
+        },
+        'h1.display-medium': {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '3.75rem',
+          lineHeight: '100%',
+          letterSpacing: '-0.04em',
+          fontWeight: '300',
+        },
+        'h2.display-small': {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '3rem',
+          lineHeight: '100%',
+          letterSpacing: '-0.04em',
+          fontWeight: '300',
+        },
+        h1: {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '3.313rem',
+          lineHeight: '100%',
+          letterSpacing: '-0.02em',
+          fontWeight: '300',
+        },
+        h2: {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '2.938rem',
+          lineHeight: '120%',
+          letterSpacing: '-0.02em',
+          fontWeight: '300',
+        },
+        h3: {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '2.5rem',
+          lineHeight: '120%',
+          letterSpacing: '-0.02em',
+          fontWeight: '300',
+        },
+        p: {
+          fontFamily: 'var(--font-libre-franklin), sans-serif',
+          fontSize: '1.313rem',
+          lineHeight: '150%',
+          letterSpacing: '0.02em',
+          fontWeight: '400',
+        },
+        'p.body-large': {
+          fontSize: '2rem',
+        },
+        'p.body-medium': {
+          fontSize: '1.688rem',
+        },
+        button: {
+          fontFamily: 'var(--font-libre-franklin), sans-serif',
+          fontSize: '1rem',
+          lineHeight: '20px',
+          letterSpacing: '0',
+          fontWeight: '500',
+        },
+        'button.button-large': {
+          fontSize: '1.188rem',
+        },
+        '.pre-title': {
+          fontFamily: 'var(--font-libre-franklin), sans-serif',
+          fontSize: '1.188rem',
+          lineHeight: '150%',
+          letterSpacing: '0.02em',
+          fontWeight: '400',
+          textTransform: 'uppercase',
+        },
+        '.detail': {
+          fontFamily: 'var(--font-libre-franklin), sans-serif',
+          fontSize: '1.188rem',
+          lineHeight: '120%',
+          letterSpacing: '-0.02em',
+          fontWeight: '600',
+        },
+      })
+    }),
+  ],
 }
 
 export default config

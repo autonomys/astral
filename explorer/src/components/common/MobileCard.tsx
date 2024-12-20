@@ -14,7 +14,7 @@ type Row = {
 
 export const MobileCard: FC<Props> = ({ header, body, id, children }) => {
   return (
-    <div className="dark:bg-boxDark mb-6 w-full rounded-lg bg-white px-4 py-7 font-['Montserrat'] dark:to-gradientTo">
+    <div className='dark:bg-boxDark mb-6 w-full rounded-lg bg-white px-4 py-7 dark:to-gradientTo'>
       <div className='mb-2 flex items-center gap-2'>{header}</div>
       <div className='w-full divide-y divide-gray-200 dark:divide-white/20'>
         {body.map(({ name, value }, index) => (

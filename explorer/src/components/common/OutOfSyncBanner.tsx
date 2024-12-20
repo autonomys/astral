@@ -15,7 +15,7 @@ const POLL_INTERVAL = 12000
 const OutOfSyncBanner: FC = () => {
   const { network } = useIndexers()
   return (
-    <div className="container mx-auto mb-4 flex grow justify-center px-5 font-['Montserrat'] md:px-[25px] 2xl:px-0">
+    <div className='container mx-auto mb-4 flex grow justify-center px-5 md:px-[25px] 2xl:px-0'>
       <div className='sticky top-0 z-50 w-full'>
         <div className='dark:bg-boxDark w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none'>
           <div className='flex flex-col gap-4'>
