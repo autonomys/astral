@@ -87,8 +87,8 @@ export const DownloadPage: FC = () => {
             <h2 className='text-2xl font-bold'>Download Space Acres for Windows</h2>
             <p>Minimum Requirements:</p>
             <ul className='list-inside list-disc'>
-              <li>OS: Windows 10 or higher</li>
-              <li>CPU: 4 Core </li>
+              <li>OS: Windows 11 or later</li>
+              <li>CPU: 4 Cores+</li>
               <li>RAM: 8 GB</li>
               <li>Disk Space: 100 GB</li>
             </ul>
@@ -106,10 +106,10 @@ export const DownloadPage: FC = () => {
             <h2 className='text-2xl font-bold'>Download Space Acres for macOS</h2>
             <p>Minimum Requirements:</p>
             <ul className='list-inside list-disc'>
-              <li>OS: macOS 10.14 or higher</li>
-              <li>Processor: Intel Core i3 or equivalent</li>
-              <li>RAM: 4 GB</li>
-              <li>Disk Space: 500 MB</li>
+              <li>OS: macOS 14 (Sonoma)</li>
+              <li>Processor: 4 Cores+</li>
+              <li>RAM: 8 GB</li>
+              <li>Disk Space: 100 GB</li>
             </ul>
             <h3 className='mt-6 text-xl font-semibold'>Installation Instructions:</h3>
             <ol className='list-inside list-decimal text-left'>
@@ -125,10 +125,10 @@ export const DownloadPage: FC = () => {
             <h2 className='text-2xl font-bold'>Download Space Acres for Linux</h2>
             <p>Minimum Requirements:</p>
             <ul className='list-inside list-disc'>
-              <li>OS: Ubuntu 18.04 or higher</li>
-              <li>Processor: Intel Core i3 or equivalent</li>
-              <li>RAM: 4 GB</li>
-              <li>Disk Space: 500 MB</li>
+              <li>OS: Ubuntu 24.04 or later</li>
+              <li>Processor: 4 Cores+</li>
+              <li>RAM: 8 GB</li>
+              <li>Disk Space: 100 GB</li>
             </ul>
             <h3 className='mt-6 text-xl font-semibold'>Installation Instructions:</h3>
             <ol className='list-inside list-decimal text-left'>
@@ -216,7 +216,7 @@ export const DownloadPage: FC = () => {
                 For more detailed instructions, troubleshooting, and advanced usage, please refer to
                 the{' '}
                 <a
-                  href={`${EXTERNAL_ROUTES.docs}docs/farming-&-staking/farming/space-acres/space-acres-install`}
+                  href={`${EXTERNAL_ROUTES.docs}farming/space-acres/install`}
                   className='text-blue-500 underline dark:text-blue-300'
                 >
                   Space Acres documentation
