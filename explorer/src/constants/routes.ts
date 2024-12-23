@@ -48,7 +48,7 @@ export enum RoutesDomains {
 
 export enum RoutesProfile {
   profile = '/profile',
-  api = '/api',
+  apiKeys = Routes.profile + '/api-keys',
 }
 
 export type AnyRoutes =
@@ -58,6 +58,7 @@ export type AnyRoutes =
   | RoutesStaking
   | RoutesLeaderboard
   | RoutesDomains
+  | RoutesProfile
 
 export const ROUTES: Route[] = [
   {
@@ -183,8 +184,8 @@ export const ROUTES: Route[] = [
         connectWallet: true,
       },
       {
-        name: RoutesProfile.api,
-        title: 'API',
+        name: RoutesProfile.apiKeys,
+        title: 'API Keys',
         connectWallet: true,
       },
     ],
