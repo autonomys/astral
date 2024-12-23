@@ -101,17 +101,17 @@ export const ROUTES: Route[] = [
   {
     name: Routes.staking,
     title: 'Staking',
-    networks: [NetworkId.TAURUS],
+    networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
     children: [
       {
         name: RoutesStaking.operators,
         title: 'Operators',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesStaking.register,
         title: 'Register Operator',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesStaking.nominations,
@@ -131,12 +131,12 @@ export const ROUTES: Route[] = [
       {
         name: RoutesLeaderboard.accounts,
         title: 'Top Accounts',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesLeaderboard.operators,
         title: 'Top Operators',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesLeaderboard.nominators,
@@ -148,12 +148,12 @@ export const ROUTES: Route[] = [
   {
     name: Routes.domains,
     title: 'Domains',
-    networks: [NetworkId.TAURUS],
+    networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
     children: [
       {
         name: RoutesDomains.autoevm,
         title: 'Auto EVM',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesDomains.autoid,
