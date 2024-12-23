@@ -11,6 +11,7 @@ export enum Routes {
   autoevm = 'auto-evm',
   autoid = 'auto-id',
   testnetRewards = 'testnet-rewards',
+  profile = 'profile',
 }
 
 export enum RoutesConsensus {
@@ -43,6 +44,11 @@ export enum RoutesLeaderboard {
 export enum RoutesDomains {
   autoevm = '/auto-evm',
   autoid = '/auto-id',
+}
+
+export enum RoutesProfile {
+  profile = '/profile',
+  api = '/api',
 }
 
 export type AnyRoutes =
@@ -165,6 +171,23 @@ export const ROUTES: Route[] = [
   {
     name: Routes.testnetRewards,
     title: 'Testnet Rewards',
+  },
+  {
+    name: Routes.profile,
+    title: 'Profile',
+    connectWallet: true,
+    children: [
+      {
+        name: RoutesProfile.profile,
+        title: 'Profile',
+        connectWallet: true,
+      },
+      {
+        name: RoutesProfile.api,
+        title: 'API',
+        connectWallet: true,
+      },
+    ],
   },
 ]
 
