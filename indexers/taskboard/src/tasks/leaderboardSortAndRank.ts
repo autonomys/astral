@@ -1,6 +1,10 @@
 import { Pool, PoolClient } from "pg";
 import { LEADERBOARD_ENTRY_TYPE } from "../constants";
-import { connectToDB, entryTypeToTable, queries } from "../utils/db";
+import {
+  connectToDB,
+  entryTypeToTable,
+  updateLeaderboardRanking,
+} from "../utils/db";
 
 interface UpdatedTable {
   table: string;
@@ -35,10 +39,7 @@ export const leaderboardSortAndRank = async (): Promise<LeaderboardResult> => {
           LEADERBOARD_ENTRY_TYPE[key] + "Historie"
         );
         const targetTable = entryTypeToTable(LEADERBOARD_ENTRY_TYPE[key]);
-        const rankingQuery = queries.updateLeaderboardRanking(
-          sourceTable,
-          targetTable
-        );
+        const rankingQuery = updateLeaderboardRanking(sourceTable, targetTable);
         return client.query(rankingQuery).then((queryResult) => {
           result.query.push(rankingQuery);
           return {
