@@ -12,24 +12,17 @@ import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { Event, Extrinsic, Reward, Transfer } from "../types";
 import {
-  createAndSaveAccountHistory,
+  createAccountHistory,
   createAndSaveBlock,
   createAndSaveLog,
   createEvent,
-  createEventModule,
   createExtrinsic,
-  createExtrinsicModule,
-  createLogKind,
   createReward,
-  createSection,
   createTransfer,
-  saveEventModules,
+  saveAccountHistories,
   saveEvents,
-  saveExtrinsicModules,
   saveExtrinsics,
-  saveLogKinds,
   saveRewards,
-  saveSections,
   saveTransfers,
 } from "./db";
 import { getBlockAuthor, parseDataToCid } from "./helper";
@@ -352,9 +345,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     uniqueAddresses.map((address) => account(api as any, address))
   );
   // Create and save accounts
-  const isExistingAccounts = await Promise.all(
+  const accountHistories = await Promise.all(
     accounts.map((account, i) =>
-      createAndSaveAccountHistory(
+      createAccountHistory(
         uniqueAddresses[i],
         height,
         BigInt(account.nonce.toString()),
@@ -365,47 +358,18 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     )
   );
 
-  // Create sections if not exist
-  const potentiallyNewSections = await Promise.all(
-    uniqueSections.map((section) => createSection(section))
-  );
-  const nonNullSections = potentiallyNewSections.filter(
-    (section) => section !== null
-  );
-  const newSections = [...new Set(nonNullSections)];
+  // Save many entities in parallel
+  await Promise.all([
+    // Save extrinsic and events
+    saveExtrinsics(newExtrinsics),
+    saveEvents(newEvents),
 
-  // Create extrinsic modules if not exist
-  const potentiallyNewExtrinsicModules = await Promise.all(
-    uniqueExtrinsicMethods.map((method) =>
-      createExtrinsicModule(method[0], method[1])
-    )
-  );
-  const nonNullExtrinsicModules = potentiallyNewExtrinsicModules.filter(
-    (extrinsicModule) => extrinsicModule !== null
-  );
-  const newExtrinsicModules = [...new Set(nonNullExtrinsicModules)];
-
-  // Create event modules if not exist
-  const potentiallyNewEventModules = await Promise.all(
-    uniqueEventMethods.map((method) => createEventModule(method[0], method[1]))
-  );
-  const nonNullEventModules = potentiallyNewEventModules.filter(
-    (eventModule) => eventModule !== null
-  );
-  const newEventModules = [...new Set(nonNullEventModules)];
-
-  // Create log kinds if not exist
-  const potentiallyNewLogKind = await Promise.all(
-    uniqueLogKinds.map((kind) => createLogKind(kind))
-  );
-  const nonNullLogKinds = potentiallyNewLogKind.filter(
-    (logKind) => logKind !== null
-  );
-  const newLogKinds = [...new Set(nonNullLogKinds)];
-
-  const newAccountsCount = isExistingAccounts.filter(
-    (existingAccount) => !existingAccount
-  ).length;
+    // Save transfers and rewards
+    saveTransfers(newTransfers),
+    saveRewards(newRewards),
+    // Save account
+    saveAccountHistories(accountHistories),
+  ]);
 
   // Create block
   await createAndSaveBlock(
@@ -420,7 +384,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     _blockchainSize,
     extrinsicsCount,
     eventsCount,
-    newAccountsCount,
     newTransfers.length,
     newRewards.length,
     totalBlockRewardsCount,
@@ -431,18 +394,4 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     totalVoteRewardValue,
     authorId
   );
-
-  // Save extrinsic and events
-  await saveExtrinsics(newExtrinsics);
-  await saveEvents(newEvents);
-
-  // Save section, extrinsic module, event module, log kind
-  await saveSections(newSections);
-  await saveExtrinsicModules(newExtrinsicModules);
-  await saveEventModules(newEventModules);
-  await saveLogKinds(newLogKinds);
-
-  // Save transfers and rewards
-  await saveTransfers(newTransfers);
-  await saveRewards(newRewards);
 }
