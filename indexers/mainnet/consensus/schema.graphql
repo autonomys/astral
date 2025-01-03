@@ -14,7 +14,6 @@ type Block @entity {
   blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
-  accountsCount: Int!
   transfersCount: Int!
   rewardsCount: Int!
   blockRewardsCount: Int!
@@ -25,7 +24,6 @@ type Block @entity {
   voteRewardValue: BigInt!
   cumulativeExtrinsicsCount: BigInt!
   cumulativeEventsCount: BigInt!
-  cumulativeAccountsCount: BigInt!
   cumulativeTransfersCount: BigInt!
   cumulativeRewardsCount: BigInt!
   cumulativeBlockRewardsCount: BigInt!
@@ -89,42 +87,7 @@ type Event @entity {
   cid: String @index
 }
 
-type Section @entity {
-  id: ID!
-  section: String! @index
-}
-
-type ExtrinsicModule @entity {
-  id: ID!
-  section: String! @index
-  method: String! @index
-  name: String! @index
-}
-
-type EventModule @entity {
-  id: ID!
-  section: String! @index
-  method: String! @index
-  name: String! @index
-}
-
-type LogKind @entity {
-  id: ID!
-  kind: String! @index
-}
-
 # Accounts Entities
-
-type Account @entity {
-  id: ID!
-  accountId: String! @index
-  nonce: BigInt!
-  free: BigInt!
-  reserved: BigInt!
-  total: BigInt @index
-  createdAt: BigInt! @index
-  updatedAt: BigInt! @index
-}
 
 type AccountHistory @entity {
   id: ID!
