@@ -1,15 +1,10 @@
 import {
-  Account,
   AccountHistory,
   Block,
   Event,
-  EventModule,
   Extrinsic,
-  ExtrinsicModule,
   Log,
-  LogKind,
   Reward,
-  Section,
   Transfer,
 } from "../types";
 import { dateEntry, getSortId, moduleName } from "./utils";
@@ -28,7 +23,6 @@ export async function createAndSaveBlock(
   blockchainSize: bigint,
   extrinsicsCount: number,
   eventsCount: number,
-  accountsCount: number,
   transfersCount: number,
   rewardsCount: number,
   blockRewardsCount: number,
@@ -52,10 +46,6 @@ export async function createAndSaveBlock(
     previousBlock.length > 0
       ? previousBlock[0].cumulativeEventsCount + BigInt(eventsCount)
       : BigInt(eventsCount);
-  const cumulativeAccountsCount =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeAccountsCount + BigInt(accountsCount)
-      : BigInt(accountsCount);
   const cumulativeTransfersCount =
     previousBlock.length > 0
       ? previousBlock[0].cumulativeTransfersCount + BigInt(transfersCount)
@@ -103,7 +93,6 @@ export async function createAndSaveBlock(
     blockchainSize,
     extrinsicsCount,
     eventsCount,
-    accountsCount,
     transfersCount,
     rewardsCount,
     blockRewardsCount,
@@ -114,7 +103,6 @@ export async function createAndSaveBlock(
     voteRewardValue,
     cumulativeExtrinsicsCount,
     cumulativeEventsCount,
-    cumulativeAccountsCount,
     cumulativeTransfersCount,
     cumulativeRewardsCount,
     cumulativeBlockRewardsCount,
@@ -245,119 +233,16 @@ export async function saveEvents(events: Event[]): Promise<void> {
   await Promise.all(events.map((event) => event.save()));
 }
 
-export async function createSection(id: string): Promise<Section | null> {
-  const existingSection = await Section.getBySection(id, {
-    limit: 1,
-  });
-  const doesSectionExist = existingSection.length > 0;
-  if (!doesSectionExist)
-    return Section.create({
-      id,
-      section: id,
-    });
-  return null;
-}
-
-export async function saveSections(sections: Section[]): Promise<void> {
-  await Promise.all(sections.map((section) => section.save()));
-}
-
-export async function createExtrinsicModule(
-  section: string,
-  method: string
-): Promise<ExtrinsicModule | null> {
-  const name = moduleName(section, method);
-  const existingExtrinsicModule = await ExtrinsicModule.getByName(name, {
-    limit: 1,
-  });
-  const doesExtrinsicModuleExist = existingExtrinsicModule.length > 0;
-  if (!doesExtrinsicModuleExist)
-    return ExtrinsicModule.create({
-      id: name,
-      section,
-      method,
-      name,
-    });
-  return null;
-}
-
-export async function saveExtrinsicModules(
-  extrinsicModules: ExtrinsicModule[]
-): Promise<void> {
-  await Promise.all(
-    extrinsicModules.map((extrinsicModule) => extrinsicModule.save())
-  );
-}
-
-export async function createEventModule(
-  section: string,
-  method: string
-): Promise<EventModule | null> {
-  const name = moduleName(section, method);
-  const existingEventModule = await EventModule.getByName(name, {
-    limit: 1,
-  });
-  const doesEventModuleExist = existingEventModule.length > 0;
-  if (!doesEventModuleExist)
-    return EventModule.create({
-      id: name,
-      section,
-      method,
-      name,
-    });
-  return null;
-}
-
-export async function saveEventModules(
-  eventModules: EventModule[]
-): Promise<void> {
-  await Promise.all(eventModules.map((eventModule) => eventModule.save()));
-}
-
-export async function createLogKind(id: string): Promise<LogKind | null> {
-  const existingLogKind = await LogKind.getByKind(id, {
-    limit: 1,
-  });
-  const doesLogKindExist = existingLogKind.length > 0;
-  if (!doesLogKindExist)
-    return LogKind.create({
-      id,
-      kind: id,
-    });
-  return null;
-}
-
-export async function saveLogKinds(logKinds: LogKind[]): Promise<void> {
-  await Promise.all(logKinds.map((logKind) => logKind.save()));
-}
-
 // Accounts DB Functions
 
-export async function createAndSaveAccountHistory(
+export function createAccountHistory(
   id: string,
   blockNumber: bigint,
   nonce: bigint,
   free: bigint,
   reserved: bigint,
   total: bigint
-): Promise<boolean> {
-  const existingAccount = await Account.getByAccountId(id, {
-    limit: 1,
-  });
-  const doesAccountExist = existingAccount.length > 0;
-  if (!doesAccountExist) {
-    const account = Account.create({
-      id,
-      accountId: id,
-      nonce,
-      free,
-      reserved,
-      total,
-      ...dateEntry(blockNumber),
-    });
-    await account.save();
-  }
-
+): AccountHistory {
   const accountHistory = AccountHistory.create({
     id,
     nonce,
@@ -366,8 +251,15 @@ export async function createAndSaveAccountHistory(
     total,
     ...dateEntry(blockNumber),
   });
-  await accountHistory.save();
-  return doesAccountExist;
+  return accountHistory;
+}
+
+export async function saveAccountHistories(
+  accountHistories: AccountHistory[]
+): Promise<void> {
+  await Promise.all(
+    accountHistories.map((accountHistory) => accountHistory.save())
+  );
 }
 
 export function createTransfer(

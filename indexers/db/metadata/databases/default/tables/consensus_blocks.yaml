@@ -50,7 +50,6 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - accounts_count
         - block_rewards_count
         - events_count
         - extrinsics_count
@@ -59,7 +58,6 @@ select_permissions:
         - vote_rewards_count
         - block_reward_value
         - blockchain_size
-        - cumulative_accounts_count
         - cumulative_block_reward_value
         - cumulative_block_rewards_count
         - cumulative_events_count
