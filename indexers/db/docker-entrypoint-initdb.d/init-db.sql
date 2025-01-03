@@ -1072,7 +1072,6 @@ ALTER TABLE ONLY leaderboard.operator_withdrawals_total_counts
 
 CREATE INDEX "0x08aa840e441d13bb" ON consensus.blocks USING gist (height, _block_range);
 CREATE INDEX "0x09a98aa53fa2c2e3" ON consensus.logs USING btree (id);
-CREATE INDEX "0x0d1bd9e945ce43a3" ON consensus.event_modules USING gist (method, _block_range);
 CREATE INDEX "0x12b6c780263a8815" ON consensus.transfers USING gist (block_height, _block_range);
 CREATE INDEX "0x1532f5e4701949a5" ON consensus.extrinsics USING gist (hash, _block_range);
 CREATE INDEX "0x1e967733a0d5db15" ON consensus.rewards USING btree (id);
@@ -1399,8 +1398,13 @@ CREATE FUNCTION consensus.insert_section() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.insert_section() OWNER TO postgres;
 
-CREATE TRIGGER ensure_section
-    BEFORE INSERT ON consensus.extrinsics OR consensus.events
+CREATE TRIGGER ensure_extrinsic_section
+    BEFORE INSERT ON consensus.extrinsics
+    FOR EACH ROW
+    EXECUTE FUNCTION consensus.insert_section();
+
+CREATE TRIGGER ensure_event_section
+    BEFORE INSERT ON consensus.events
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_section();
 
