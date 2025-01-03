@@ -95,28 +95,6 @@ CREATE TABLE consensus.account_histories (
 );
 ALTER TABLE consensus.account_histories OWNER TO postgres;
 
-CREATE TABLE consensus.account_profiles (
-    id text NOT NULL,
-    name text NOT NULL,
-    description text NOT NULL,
-    icon text NOT NULL,
-    banner text NOT NULL,
-    website text NOT NULL,
-    website_verified boolean NOT NULL,
-    email text NOT NULL,
-    email_verified boolean NOT NULL,
-    discord text NOT NULL,
-    github text NOT NULL,
-    twitter text NOT NULL,
-    proof_message text NOT NULL,
-    proof_signature text NOT NULL,
-    created_at numeric NOT NULL,
-    updated_at numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE consensus.account_profiles OWNER TO postgres;
-
 CREATE TABLE consensus.account_rewards (
     id text NOT NULL,
     total_rewards_value numeric,
@@ -136,15 +114,12 @@ ALTER TABLE consensus.account_rewards OWNER TO postgres;
 
 CREATE TABLE consensus.accounts (
     id text NOT NULL,
-    account_id text NOT NULL,
     nonce numeric NOT NULL,
     free numeric NOT NULL,
     reserved numeric NOT NULL,
     total numeric,
     created_at numeric NOT NULL,
-    updated_at numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    updated_at numeric NOT NULL
 );
 ALTER TABLE consensus.accounts OWNER TO postgres;
 
@@ -162,7 +137,6 @@ CREATE TABLE consensus.blocks (
     blockchain_size numeric NOT NULL,
     extrinsics_count integer NOT NULL,
     events_count integer NOT NULL,
-    accounts_count integer NOT NULL,
     transfers_count integer NOT NULL,
     rewards_count integer NOT NULL,
     block_rewards_count integer NOT NULL,
@@ -173,7 +147,6 @@ CREATE TABLE consensus.blocks (
     vote_reward_value numeric NOT NULL,
     cumulative_extrinsics_count numeric NOT NULL,
     cumulative_events_count numeric NOT NULL,
-    cumulative_accounts_count numeric NOT NULL,
     cumulative_transfers_count numeric NOT NULL,
     cumulative_rewards_count numeric NOT NULL,
     cumulative_block_rewards_count numeric NOT NULL,
@@ -191,10 +164,7 @@ ALTER TABLE consensus.blocks OWNER TO postgres;
 CREATE TABLE consensus.event_modules (
     id text NOT NULL,
     section text NOT NULL,
-    method text NOT NULL,
-    name text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    method text NOT NULL
 );
 ALTER TABLE consensus.event_modules OWNER TO postgres;
 
@@ -222,10 +192,7 @@ ALTER TABLE consensus.events OWNER TO postgres;
 CREATE TABLE consensus.extrinsic_modules (
     id text NOT NULL,
     section text NOT NULL,
-    method text NOT NULL,
-    name text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    method text NOT NULL
 );
 ALTER TABLE consensus.extrinsic_modules OWNER TO postgres;
 
@@ -257,9 +224,7 @@ ALTER TABLE consensus.extrinsics OWNER TO postgres;
 
 CREATE TABLE consensus.log_kinds (
     id text NOT NULL,
-    kind text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    kind text NOT NULL
 );
 ALTER TABLE consensus.log_kinds OWNER TO postgres;
 
@@ -294,9 +259,7 @@ ALTER TABLE consensus.rewards OWNER TO postgres;
 
 CREATE TABLE consensus.sections (
     id text NOT NULL,
-    section text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    section text NOT NULL
 );
 ALTER TABLE consensus.sections OWNER TO postgres;
 
@@ -908,12 +871,6 @@ ALTER TABLE ONLY consensus._metadata
 ALTER TABLE ONLY consensus.account_histories
     ADD CONSTRAINT account_histories_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY consensus.account_profiles
-    ADD CONSTRAINT account_profiles_id_key UNIQUE (id);
-
-ALTER TABLE ONLY consensus.account_profiles
-    ADD CONSTRAINT account_profiles_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY consensus.account_rewards
     ADD CONSTRAINT account_rewards_id_key UNIQUE (id);
 
@@ -921,37 +878,25 @@ ALTER TABLE ONLY consensus.account_rewards
     ADD CONSTRAINT account_rewards_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY consensus.accounts
-    ADD CONSTRAINT accounts_id_key UNIQUE (id);
-
-ALTER TABLE ONLY consensus.accounts
-    ADD CONSTRAINT accounts_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT accounts_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY consensus.blocks
     ADD CONSTRAINT blocks_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY consensus.event_modules
-    ADD CONSTRAINT event_modules_id_key UNIQUE (id);
-
-ALTER TABLE ONLY consensus.event_modules
-    ADD CONSTRAINT event_modules_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT event_modules_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY consensus.events
     ADD CONSTRAINT events_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY consensus.extrinsic_modules
-    ADD CONSTRAINT extrinsic_modules_id_key UNIQUE (id);
-
-ALTER TABLE ONLY consensus.extrinsic_modules
-    ADD CONSTRAINT extrinsic_modules_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT extrinsic_modules_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY consensus.extrinsics
     ADD CONSTRAINT extrinsics_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY consensus.log_kinds
-    ADD CONSTRAINT log_kinds_id_key UNIQUE (id);
-
-ALTER TABLE ONLY consensus.log_kinds
-    ADD CONSTRAINT log_kinds_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT log_kinds_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY consensus.logs
     ADD CONSTRAINT logs_pkey PRIMARY KEY (_id);
@@ -960,10 +905,7 @@ ALTER TABLE ONLY consensus.rewards
     ADD CONSTRAINT rewards_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY consensus.sections
-    ADD CONSTRAINT sections_id_key UNIQUE (id);
-
-ALTER TABLE ONLY consensus.sections
-    ADD CONSTRAINT sections_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT sections_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY consensus.transfers
     ADD CONSTRAINT transfers_pkey PRIMARY KEY (_id);
@@ -1133,9 +1075,6 @@ CREATE INDEX "0x09a98aa53fa2c2e3" ON consensus.logs USING btree (id);
 CREATE INDEX "0x0d1bd9e945ce43a3" ON consensus.event_modules USING gist (method, _block_range);
 CREATE INDEX "0x12b6c780263a8815" ON consensus.transfers USING gist (block_height, _block_range);
 CREATE INDEX "0x1532f5e4701949a5" ON consensus.extrinsics USING gist (hash, _block_range);
-CREATE INDEX "0x1762232b2820e83d" ON consensus.extrinsic_modules USING gist (section, _block_range);
-CREATE INDEX "0x19dcea041a0703f4" ON consensus.accounts USING gist (account_id, _block_range);
-CREATE INDEX "0x1dd72f018721e423" ON consensus.extrinsic_modules USING gist (name, _block_range);
 CREATE INDEX "0x1e967733a0d5db15" ON consensus.rewards USING btree (id);
 CREATE INDEX "0x2481c1ffa5112599" ON consensus.logs USING gist (block_hash, _block_range);
 CREATE INDEX "0x26e9de0ee335659c" ON consensus.extrinsic_modules USING btree (id);
@@ -1143,7 +1082,6 @@ CREATE INDEX "0x2a038c9edc202d38" ON consensus.transfers USING gist (event_id, _
 CREATE INDEX "0x2c6d435d5ab69412" ON consensus.extrinsics USING gist (sort_id, _block_range);
 CREATE INDEX "0x2cbe628ebc830c12" ON consensus.logs USING gist (sort_id, _block_range);
 CREATE INDEX "0x30b779cc3aeeeec6" ON consensus.events USING gist (extrinsic_id, _block_range);
-CREATE INDEX "0x358cafe370ac92ef" ON consensus.accounts USING gist (total, _block_range);
 CREATE INDEX "0x3ae5d1670e99e612" ON consensus.transfers USING gist ("timestamp", _block_range);
 CREATE INDEX "0x3d8ee08d232943ea" ON consensus.sections USING btree (id);
 CREATE INDEX "0x444de3b3611c1fcd" ON consensus.account_histories USING gist (created_at, _block_range);
@@ -1156,22 +1094,17 @@ CREATE INDEX "0x57fc196dcc99a091" ON consensus.events USING gist (block_height, 
 CREATE INDEX "0x59386a58438fa05a" ON consensus.extrinsics USING gist (section, _block_range);
 CREATE INDEX "0x59f75d2bc1e6a0bc" ON consensus.blocks USING gist ("timestamp", _block_range);
 CREATE INDEX "0x5b5ab04a8ff6f214" ON consensus.events USING gist (cid, _block_range);
-CREATE INDEX "0x5c04eee35ba10ef1" ON consensus.extrinsic_modules USING gist (method, _block_range);
-CREATE INDEX "0x5cfbdda34ba486b0" ON consensus.event_modules USING gist (name, _block_range);
 CREATE INDEX "0x5eb8e024a00f2132" ON consensus.rewards USING gist (extrinsic_id, _block_range);
 CREATE INDEX "0x6008270492da5713" ON consensus.events USING gist ("timestamp", _block_range);
 CREATE INDEX "0x6131d72d57f2a188" ON consensus.blocks USING gist (hash, _block_range);
 CREATE INDEX "0x61510445e44f4f2f" ON consensus.logs USING gist (index_in_block, _block_range);
 CREATE INDEX "0x64128774d8de590c" ON consensus.log_kinds USING btree (id);
 CREATE INDEX "0x6f53f38c566a1b3a" ON consensus.extrinsics USING gist (module, _block_range);
-CREATE INDEX "0x6ffa574597ba780e" ON consensus.event_modules USING gist (section, _block_range);
 CREATE INDEX "0x73cd163028b0b898" ON consensus.rewards USING gist (account_id, _block_range);
 CREATE INDEX "0x73d8b9e481a083a2" ON consensus.transfers USING gist (block_hash, _block_range);
 CREATE INDEX "0x774ec1c372b71838" ON consensus.events USING gist (sort_id, _block_range);
 CREATE INDEX "0x79131319c12e8920" ON consensus.transfers USING gist ("from", _block_range);
 CREATE INDEX "0x79ff6a28c8a013aa" ON consensus.logs USING gist ("timestamp", _block_range);
-CREATE INDEX "0x7b661a36dc0847a1" ON consensus.accounts USING gist (updated_at, _block_range);
-CREATE INDEX "0x7ffad162028c7729" ON consensus.log_kinds USING gist (kind, _block_range);
 CREATE INDEX "0x889e9f7e5a64267c" ON consensus.extrinsics USING gist (block_height, _block_range);
 CREATE INDEX "0x946898e0d99da99d" ON consensus.blocks USING gist (sort_id, _block_range);
 CREATE INDEX "0x9dc19a4dda2286f4" ON consensus.events USING gist (section, _block_range);
@@ -1181,7 +1114,6 @@ CREATE INDEX "0xb3d3d7d2b08d4e7e" ON consensus.rewards USING gist (block_hash, _
 CREATE INDEX "0xb7bb46c9ebdd7fe1" ON consensus.transfers USING gist (extrinsic_id, _block_range);
 CREATE INDEX "0xb91efc8ed4021e6e" ON consensus.transfers USING btree (id);
 CREATE INDEX "0xbbc46ed346025b1f" ON consensus.account_histories USING gist (total, _block_range);
-CREATE INDEX "0xbd56d62e78bc4a0d" ON consensus.accounts USING gist (created_at, _block_range);
 CREATE INDEX "0xc0683fc6175b395a" ON consensus.events USING gist (extrinsic_hash, _block_range);
 CREATE INDEX "0xc7a7467355cf8dbb" ON consensus.extrinsics USING gist ("timestamp", _block_range);
 CREATE INDEX "0xccedb032815757ed" ON consensus.blocks USING btree (id);
@@ -1191,7 +1123,6 @@ CREATE INDEX "0xe2d1f5b9c21b141e" ON consensus.extrinsics USING gist (signer, _b
 CREATE INDEX "0xe56a7291c224fff9" ON consensus.transfers USING gist ("to", _block_range);
 CREATE INDEX "0xe5bf5858bd35a276" ON consensus.events USING btree (id);
 CREATE INDEX "0xf095c4017bdfed7d" ON consensus.rewards USING gist (block_height, _block_range);
-CREATE INDEX "0xf167d3b68efcf448" ON consensus.sections USING gist (section, _block_range);
 CREATE INDEX "0xf20fbf5a3f59a046" ON consensus.extrinsics USING gist (success, _block_range);
 CREATE INDEX "0xf303d79993939441" ON consensus.rewards USING gist (reward_type, _block_range);
 CREATE INDEX "0xf6317466d2b3ee74" ON consensus.logs USING gist (block_height, _block_range);
@@ -1400,3 +1331,114 @@ CREATE INDEX "0xfe4c85f6ab059ff1" ON leaderboard.account_transfer_sender_total_v
 
 CREATE TRIGGER "0x648269cc35867c16" AFTER UPDATE ON consensus._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION consensus.schema_notification();
 CREATE TRIGGER "0xf3241711d3af6c36" AFTER UPDATE ON leaderboard._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION leaderboard.schema_notification();
+
+CREATE FUNCTION consensus.insert_log_kind() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO consensus.log_kinds (id, kind)
+    VALUES (NEW.kind, NEW.kind)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION consensus.insert_log_kind() OWNER TO postgres;
+
+CREATE TRIGGER ensure_log_kind
+    BEFORE INSERT ON consensus.logs
+    FOR EACH ROW
+    EXECUTE FUNCTION consensus.insert_log_kind();
+
+CREATE FUNCTION consensus.insert_event_module() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO consensus.event_modules (id, section, method)
+    VALUES (NEW.name, NEW.section, NEW.module)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION consensus.insert_event_module() OWNER TO postgres;
+
+CREATE TRIGGER ensure_event_module
+    BEFORE INSERT ON consensus.events
+    FOR EACH ROW
+    EXECUTE FUNCTION consensus.insert_event_module();
+
+CREATE FUNCTION consensus.insert_extrinsic_module() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO consensus.extrinsic_modules (id, section, method)
+    VALUES (NEW.name, NEW.section, NEW.name)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION consensus.insert_extrinsic_module() OWNER TO postgres;
+
+CREATE TRIGGER ensure_extrinsic_module
+    BEFORE INSERT ON consensus.extrinsics
+    FOR EACH ROW
+    EXECUTE FUNCTION consensus.insert_extrinsic_module();
+
+CREATE FUNCTION consensus.insert_section() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO consensus.sections (id, section)
+    VALUES (NEW.section, NEW.section)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION consensus.insert_section() OWNER TO postgres;
+
+CREATE TRIGGER ensure_section
+    BEFORE INSERT ON consensus.extrinsics OR consensus.events
+    FOR EACH ROW
+    EXECUTE FUNCTION consensus.insert_section();
+
+CREATE FUNCTION consensus.update_account() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO consensus.accounts (
+      id,
+      nonce,
+      free,
+      reserved,
+      total,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      NEW.id,
+      NEW.nonce,
+      NEW.free,
+      NEW.reserved,
+      NEW.total,
+      NEW.created_at,
+      EXTRACT(EPOCH FROM NOW())
+    )
+    ON CONFLICT (id) DO UPDATE SET
+      nonce = EXCLUDED.nonce,
+      free = EXCLUDED.free,
+      reserved = EXCLUDED.reserved,
+      total = EXCLUDED.total,
+      updated_at = EXTRACT(EPOCH FROM NOW());
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION consensus.update_account() OWNER TO postgres;
+
+CREATE TRIGGER ensure_account_updated
+    BEFORE INSERT ON consensus.account_histories
+    FOR EACH ROW
+    EXECUTE FUNCTION consensus.update_account();
