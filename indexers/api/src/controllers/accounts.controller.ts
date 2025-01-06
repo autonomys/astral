@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Accounts } from '../entities/consensus/accounts.entity';
 
-@ApiTags('accounts')
+@ApiTags('Accounts')
 @Controller('accounts')
 export class AccountsController {
   constructor(
@@ -13,7 +13,10 @@ export class AccountsController {
   ) {}
 
   @Get(':accountId')
-  @ApiOperation({ summary: 'Get account details by ID' })
+  @ApiOperation({
+    operationId: 'getAccountById',
+    summary: 'Get account details by ID',
+  })
   @ApiParam({ name: 'accountId', description: 'Account ID or address' })
   @ApiResponse({
     status: 200,
