@@ -18,7 +18,7 @@
     "build-dictionary:taurus": "cd dictionary/autonomys-taurus && yarn && yarn codegen && yarn build && cd -",
     "build-dictionary:gemini-3h": "cd dictionary/autonomys-gemini-3h && yarn && yarn codegen && yarn build && cd -",
     "build-dictionary": "yarn build-dictionary:mainnet && yarn build-dictionary:taurus && yarn build-dictionary:gemini-3h",
-    "docker:dev:up": "docker compose -p dev-astral-indexers -f ../docker-compose.yml --profile dictionary --profile task --profile indexers up --remove-orphans",
+    "docker:dev:up": "docker compose -p dev-astral-indexers -f ../docker-compose.yml up --remove-orphans",
     "docker:prod:up": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml --profile dictionary --profile task --profile indexers up --remove-orphans",
     "docker:dev:down": "docker compose -p dev-astral-indexers -f ../docker-compose.yml down",
     "docker:prod:down": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml down",
