@@ -4,9 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ApiKeyStrategy } from './auth/api-key.strategy';
+import { AccountsController } from './controllers/accounts.controller';
 import { BlocksController } from './controllers/blocks.controller';
 import { ExtrinsicsController } from './controllers/extrinsics.controller';
 import { ApiKeysDailyUsage, ApiKeysMonthlyUsage } from './entities';
+import { Accounts } from './entities/consensus/accounts.entity';
 import { Blocks } from './entities/consensus/blocks.entity';
 import { Extrinsics } from './entities/consensus/extrinsics.entity';
 import { ApiDailyUsage } from './entities/users/api-daily-usage.entity';
@@ -34,6 +36,7 @@ import { ExtrinsicsService } from './services/extrinsics.service';
         ApiMonthlyUsage,
         ApiKeysDailyUsage,
         ApiKeysMonthlyUsage,
+        Accounts,
       ],
       synchronize: false,
     }),
@@ -46,10 +49,16 @@ import { ExtrinsicsService } from './services/extrinsics.service';
       ApiMonthlyUsage,
       ApiKeysDailyUsage,
       ApiKeysMonthlyUsage,
+      Accounts,
     ]),
     PassportModule.register({ defaultStrategy: 'api-key' }),
   ],
-  controllers: [AppController, BlocksController, ExtrinsicsController],
+  controllers: [
+    AppController,
+    BlocksController,
+    ExtrinsicsController,
+    AccountsController,
+  ],
   providers: [AppService, BlocksService, ExtrinsicsService, ApiKeyStrategy],
 })
 export class AppModule {}
