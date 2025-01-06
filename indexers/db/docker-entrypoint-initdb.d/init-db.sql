@@ -111,7 +111,8 @@ CREATE TABLE users.profiles (
     proof_message text NOT NULL,
     proof_signature text NOT NULL,
     api_total_requests numeric NOT NULL,
-    api_total_requests_remaining numeric NOT NULL,
+    api_daily_requests_limit numeric NOT NULL,
+    api_monthly_requests_limit numeric NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     deleted_at timestamp with time zone
