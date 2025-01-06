@@ -415,13 +415,14 @@ services:
     build:
       context: ./indexers/api
       dockerfile: Dockerfile
-    ports:
-      - "${API_PORT}:3000"
     depends_on:
       postgres:
         condition: service_healthy
       hasura:
         condition: service_started
+    restart: unless-stopped
+    ports:
+      - "${API_PORT}:3000"
     environment:
       NODE_ENV: ${NODE_ENV}
       DB_HOST: ${DB_HOST}
@@ -429,7 +430,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
+    hostname: api
     volumes:
       - ./indexers/api:/app
       - /app/node_modules
-    restart: unless-stopped
