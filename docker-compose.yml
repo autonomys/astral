@@ -409,3 +409,27 @@ services:
 
       SLACK_TOKEN: ${SLACK_TOKEN}
       SLACK_CONVERSATION_ID: ${SLACK_CONVERSATION_ID}
+
+  # NestJS API Service
+  api:
+    build:
+      context: ./indexers/api
+      dockerfile: Dockerfile
+    ports:
+      - "${API_PORT}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      hasura:
+        condition: service_started
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+    volumes:
+      - ./indexers/api:/app
+      - /app/node_modules
+    restart: unless-stopped
