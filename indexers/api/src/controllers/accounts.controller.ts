@@ -21,6 +21,7 @@ export class AccountsController {
   @ApiResponse({
     status: 200,
     description: 'Account details retrieved successfully',
+    type: Accounts,
   })
   @ApiResponse({ status: 404, description: 'Account not found' })
   async getAccountById(@Param('accountId') accountId: string) {
@@ -28,9 +29,8 @@ export class AccountsController {
       where: { id: accountId },
     });
 
-    if (!account) {
+    if (!account)
       throw new NotFoundException(`Account with ID ${accountId} not found`);
-    }
 
     return account;
   }

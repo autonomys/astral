@@ -1,12 +1,16 @@
 import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Blocks } from '../entities/consensus/blocks.entity';
-import { BlocksService } from '../services/blocks.service';
 
 @ApiTags('Blocks')
 @Controller('blocks')
 export class BlocksController {
-  constructor(private readonly blocksService: BlocksService) {}
+  constructor(
+    @InjectRepository(Blocks)
+    private blocksRepository: Repository<Blocks>,
+  ) {}
 
   @Get('latest')
   @ApiOperation({
@@ -20,7 +24,10 @@ export class BlocksController {
   })
   @ApiResponse({ status: 404, description: 'No blocks found' })
   async getLatestBlock(): Promise<Blocks> {
-    return this.blocksService.findLatest();
+    return this.blocksRepository
+      .createQueryBuilder('blocks')
+      .orderBy('blocks.height', 'DESC')
+      .getOne();
   }
 
   @Get(':height')
@@ -36,11 +43,12 @@ export class BlocksController {
   })
   @ApiResponse({ status: 404, description: 'Block not found' })
   async getBlockByHeight(@Param('height') height: string) {
-    const block = await this.blocksService.findByHeight(Number(height));
+    const block = await this.blocksRepository.findOne({
+      where: { height: Number(height) },
+    });
 
-    if (!block) {
+    if (!block)
       throw new NotFoundException(`Block with height ${height} not found`);
-    }
 
     return block;
   }

@@ -15,8 +15,6 @@ import { ApiDailyUsage } from './entities/users/api-daily-usage.entity';
 import { ApiKey } from './entities/users/api-key.entity';
 import { ApiMonthlyUsage } from './entities/users/api-monthly-usage.entity';
 import { Profile } from './entities/users/profile.entity';
-import { BlocksService } from './services/blocks.service';
-import { ExtrinsicsService } from './services/extrinsics.service';
 
 @Module({
   imports: [
@@ -59,6 +57,6 @@ import { ExtrinsicsService } from './services/extrinsics.service';
     ExtrinsicsController,
     AccountsController,
   ],
-  providers: [AppService, BlocksService, ExtrinsicsService, ApiKeyStrategy],
+  providers: [AppService, ApiKeyStrategy],
 })
 export class AppModule {}

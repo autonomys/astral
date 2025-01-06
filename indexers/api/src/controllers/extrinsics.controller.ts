@@ -1,20 +1,30 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { ApiKeyGuard } from '../auth/api-key.guard';
 import { Extrinsics } from '../entities/consensus/extrinsics.entity';
-import { ExtrinsicsService } from '../services/extrinsics.service';
 
 @ApiTags('Extrinsics')
 @Controller('extrinsics')
 @UseGuards(ApiKeyGuard)
 @ApiSecurity('X-API-KEY')
 export class ExtrinsicsController {
-  constructor(private readonly extrinsicsService: ExtrinsicsService) {}
+  constructor(
+    @InjectRepository(Extrinsics)
+    private extrinsicsRepository: Repository<Extrinsics>,
+  ) {}
 
   @Get(':hash')
   @ApiOperation({ summary: 'Get extrinsic by hash' })
@@ -25,6 +35,13 @@ export class ExtrinsicsController {
   })
   @ApiResponse({ status: 404, description: 'Extrinsic not found' })
   async findByHash(@Param('hash') hash: string): Promise<Extrinsics> {
-    return this.extrinsicsService.findByHash(hash);
+    const extrinsic = await this.extrinsicsRepository.findOne({
+      where: { hash },
+    });
+
+    if (!extrinsic)
+      throw new NotFoundException(`Extrinsic with hash ${hash} not found`);
+
+    return extrinsic;
   }
 }
