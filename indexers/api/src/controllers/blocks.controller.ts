@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Blocks } from '../entities/consensus/blocks.entity';
 import { BlocksService } from '../services/blocks.service';
@@ -17,5 +17,16 @@ export class BlocksController {
   })
   async getLatestBlock(): Promise<Blocks> {
     return this.blocksService.findLatest();
+  }
+
+  @Get(':height')
+  async getBlockByHeight(@Param('height') height: string) {
+    const block = await this.blocksService.findByHeight(Number(height));
+
+    if (!block) {
+      throw new NotFoundException(`Block with height ${height} not found`);
+    }
+
+    return block;
   }
 }

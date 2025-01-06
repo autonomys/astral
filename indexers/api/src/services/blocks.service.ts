@@ -7,7 +7,7 @@ import { Blocks } from '../entities/consensus/blocks.entity';
 export class BlocksService {
   constructor(
     @InjectRepository(Blocks)
-    private readonly blocksRepository: Repository<Blocks>,
+    private blocksRepository: Repository<Blocks>,
   ) {}
 
   async findLatest(): Promise<Blocks> {
@@ -15,5 +15,11 @@ export class BlocksService {
       .createQueryBuilder('blocks')
       .orderBy('blocks.height', 'DESC')
       .getOne();
+  }
+
+  async findByHeight(height: number): Promise<Blocks> {
+    return this.blocksRepository.findOne({
+      where: { height },
+    });
   }
 }
