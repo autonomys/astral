@@ -86,7 +86,6 @@ CREATE TABLE leaderboard._metadata (
 );
 ALTER TABLE leaderboard._metadata OWNER TO postgres;
 
-
 CREATE TABLE users.profiles (
     id uuid NOT NULL,
     account_id text NOT NULL,
@@ -118,6 +117,7 @@ CREATE TABLE users.profiles (
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.profiles OWNER TO postgres;
+ALTER TABLE ONLY users.profiles ADD CONSTRAINT profiles_pkey PRIMARY KEY (id);
 ALTER TABLE users.profiles ALTER COLUMN id SET DEFAULT gen_random_uuid();
 ALTER TABLE users.profiles ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.profiles ALTER COLUMN updated_at SET DEFAULT now();
@@ -133,6 +133,7 @@ CREATE TABLE users.api_keys (
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.api_keys OWNER TO postgres;
+ALTER TABLE ONLY users.api_keys ADD CONSTRAINT api_keys_pkey PRIMARY KEY (id);
 ALTER TABLE users.api_keys ALTER COLUMN id SET DEFAULT gen_random_uuid();
 ALTER TABLE users.api_keys ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.api_keys ALTER COLUMN updated_at SET DEFAULT now();
@@ -147,6 +148,7 @@ CREATE TABLE users.api_keys_daily_usage (
 );
 
 ALTER TABLE users.api_keys_daily_usage OWNER TO postgres;
+ALTER TABLE ONLY users.api_keys_daily_usage ADD CONSTRAINT api_keys_daily_usage_pkey PRIMARY KEY (id);
 ALTER TABLE users.api_keys_daily_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
 ALTER TABLE users.api_keys_daily_usage ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.api_keys_daily_usage ALTER COLUMN updated_at SET DEFAULT now();
@@ -160,6 +162,7 @@ CREATE TABLE users.api_keys_monthly_usage (
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.api_keys_monthly_usage OWNER TO postgres;
+ALTER TABLE ONLY users.api_keys_monthly_usage ADD CONSTRAINT api_keys_monthly_usage_pkey PRIMARY KEY (id);
 ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
 ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN updated_at SET DEFAULT now();
@@ -174,6 +177,7 @@ CREATE TABLE users.api_daily_usage (
 );
 
 ALTER TABLE users.api_daily_usage OWNER TO postgres;
+ALTER TABLE ONLY users.api_daily_usage ADD CONSTRAINT api_daily_usage_pkey PRIMARY KEY (id);
 ALTER TABLE users.api_daily_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
 ALTER TABLE users.api_daily_usage ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.api_daily_usage ALTER COLUMN updated_at SET DEFAULT now();
@@ -188,6 +192,7 @@ CREATE TABLE users.api_monthly_usage (
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.api_monthly_usage OWNER TO postgres;
+ALTER TABLE ONLY users.api_monthly_usage ADD CONSTRAINT api_monthly_usage_pkey PRIMARY KEY (id);
 ALTER TABLE users.api_monthly_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
 ALTER TABLE users.api_monthly_usage ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.api_monthly_usage ALTER COLUMN updated_at SET DEFAULT now();
@@ -202,6 +207,7 @@ CREATE TABLE users.wallets (
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.wallets OWNER TO postgres;
+ALTER TABLE ONLY users.wallets ADD CONSTRAINT wallets_pkey PRIMARY KEY (id);
 ALTER TABLE users.wallets ALTER COLUMN id SET DEFAULT gen_random_uuid();
 ALTER TABLE users.wallets ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.wallets ALTER COLUMN updated_at SET DEFAULT now();
