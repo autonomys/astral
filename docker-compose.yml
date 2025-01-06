@@ -251,7 +251,7 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://localhost:3000
+      DICTIONARY: ${DICTIONARY_URL}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -290,7 +290,7 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://localhost:3000
+      DICTIONARY: ${DICTIONARY_URL}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
