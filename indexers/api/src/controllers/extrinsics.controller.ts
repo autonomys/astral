@@ -27,7 +27,10 @@ export class ExtrinsicsController {
   ) {}
 
   @Get(':hash')
-  @ApiOperation({ summary: 'Get extrinsic by hash' })
+  @ApiOperation({
+    operationId: 'getExtrinsicByHash',
+    summary: 'Get extrinsic by hash',
+  })
   @ApiResponse({
     status: 200,
     description: 'Returns the extrinsic details',

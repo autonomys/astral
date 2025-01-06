@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HeaderAPIKeyStrategy } from 'passport-headerapikey';
 import { Repository } from 'typeorm';
 import { ApiKey } from '../entities/users/api-key.entity';
+import { ApiUsageService } from '../services/api-usage.service';
 
 @Injectable()
 export class ApiKeyStrategy extends PassportStrategy(
@@ -13,10 +14,9 @@ export class ApiKeyStrategy extends PassportStrategy(
   constructor(
     @InjectRepository(ApiKey)
     private apiKeyRepository: Repository<ApiKey>,
+    private apiUsageService: ApiUsageService,
   ) {
     super({ header: 'X-API-KEY', prefix: '' }, true, async (apiKey, done) => {
-      console.log('apiKey', apiKey);
-      console.log('done', done);
       return this.validate(apiKey, done);
     });
   }
@@ -25,10 +25,7 @@ export class ApiKeyStrategy extends PassportStrategy(
     apiKey: string,
     done: (error: Error | null, data: ApiKey | boolean) => void,
   ) {
-    console.log('Received API Key:', apiKey);
-
     if (!apiKey) {
-      console.log('No API Key provided');
       return done(new UnauthorizedException('Missing API Key'), false);
     }
 
@@ -37,16 +34,15 @@ export class ApiKeyStrategy extends PassportStrategy(
         where: { id: apiKey },
       });
 
-      console.log('Database query result:', key);
-
       if (!key || key.total_requests_remaining <= 0) {
-        console.log('Invalid or expired API Key');
         return done(new UnauthorizedException('Invalid API Key'), false);
       }
 
+      // Track API usage after successful validation
+      await this.apiUsageService.trackUsage(apiKey);
+
       return done(null, key);
     } catch (error) {
-      console.log('Error during validation:', error);
       return done(new UnauthorizedException('Invalid API Key'), false);
     }
   }
