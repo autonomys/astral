@@ -6,11 +6,26 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    origin: true, // or specify origins like ['http://localhost:3000']
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Content-Type', 'Accept', 'X-API-KEY'],
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Autonomys Astral API')
     .setDescription('Autonomys Astral API documentation')
     .setVersion('0.0.1')
-    .addApiKey({ type: 'apiKey', name: 'X-API-KEY', in: 'header' }, 'X-API-KEY')
+    .addApiKey(
+      {
+        type: 'apiKey',
+        name: 'X-API-KEY',
+        in: 'header',
+        description: 'Enter your API key',
+      },
+      'X-API-KEY',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -66,6 +81,14 @@ async function bootstrap() {
       displayRequestDuration: true,
       defaultModelsExpandDepth: 3,
       defaultModelExpandDepth: 3,
+      security: [{ 'X-API-KEY': [] }],
+      securityDefinitions: {
+        'X-API-KEY': {
+          type: 'apiKey',
+          name: 'X-API-KEY',
+          in: 'header',
+        },
+      },
     },
   });
 
