@@ -35,10 +35,4 @@ export class AccountRewards extends BaseEntity {
 
   @Column('numeric')
   updated_at: number;
-
-  @Column('uuid')
-  _id: string;
-
-  @Column('int8range')
-  _block_range: string;
 }

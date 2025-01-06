@@ -62,10 +62,4 @@ export class Extrinsics extends BaseEntity {
 
   @Column('text', { nullable: true })
   cid: string;
-
-  @Column('uuid')
-  _id: string;
-
-  @Column('int8range')
-  _block_range: string;
 }

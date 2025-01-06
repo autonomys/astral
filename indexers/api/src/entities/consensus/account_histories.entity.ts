@@ -20,10 +20,4 @@ export class AccountHistories extends BaseEntity {
 
   @Column('numeric')
   created_at: number;
-
-  @Column('uuid')
-  _id: string;
-
-  @Column('int8range')
-  _block_range: string;
 }

@@ -26,10 +26,4 @@ export class Logs extends BaseEntity {
 
   @Column('timestamp without time zone')
   timestamp: Date;
-
-  @Column('uuid')
-  _id: string;
-
-  @Column('int8range')
-  _block_range: string;
 }

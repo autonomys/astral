@@ -68,10 +68,4 @@ export class Blocks extends BaseEntity {
 
   @Column('text')
   author_id: string;
-
-  @Column('uuid')
-  _id: string;
-
-  @Column('int8range')
-  _block_range: string;
 }
