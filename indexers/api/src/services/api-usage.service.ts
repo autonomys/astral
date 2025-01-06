@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ApiDailyUsage } from '../entities/api-daily-usage.entity';
-import { ApiKey } from '../entities/api-key.entity';
-import { ApiMonthlyUsage } from '../entities/api-monthly-usage.entity';
+import { ApiDailyUsage } from '../entities/users/api-daily-usage.entity';
+import { ApiKey } from '../entities/users/api-key.entity';
+import { ApiMonthlyUsage } from '../entities/users/api-monthly-usage.entity';
 
 @Injectable()
 export class ApiUsageService {
