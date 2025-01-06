@@ -1,9 +1,9 @@
-export * from './api-daily-usage.entity';
-export * from './api-key.entity';
-export * from './api-keys-daily-usage.entity';
-export * from './api-keys-monthly-usage.entity';
-export * from './api-monthly-usage.entity';
-export * from './profile.entity';
+export * from './users/api-daily-usage.entity';
+export * from './users/api-key.entity';
+export * from './users/api-keys-daily-usage.entity';
+export * from './users/api-keys-monthly-usage.entity';
+export * from './users/api-monthly-usage.entity';
+export * from './users/profile.entity';
 
 // Consensus Entities
 export * from './consensus/account_histories.entity';

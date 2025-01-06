@@ -1,15 +1,9 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiHeader,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApiKeyGuard } from '../auth/api-key.guard';
-import { Profile } from '../entities/profile.entity';
+import { Profile } from '../entities/users/profile.entity';
 
 @ApiTags('profiles')
 @Controller('profiles')
