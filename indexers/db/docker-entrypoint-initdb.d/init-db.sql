@@ -137,20 +137,60 @@ ALTER TABLE users.api_keys ALTER COLUMN id SET DEFAULT gen_random_uuid();
 ALTER TABLE users.api_keys ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.api_keys ALTER COLUMN updated_at SET DEFAULT now();
 
+CREATE TABLE users.api_keys_daily_usage (
+    id uuid NOT NULL,
+    api_key_id uuid NOT NULL,
+    total_requests numeric NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+
+ALTER TABLE users.api_keys_daily_usage OWNER TO postgres;
+ALTER TABLE users.api_keys_daily_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_keys_daily_usage ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.api_keys_daily_usage ALTER COLUMN updated_at SET DEFAULT now();
+
+CREATE TABLE users.api_keys_monthly_usage (
+    id uuid NOT NULL,
+    api_key_id uuid NOT NULL,
+    total_requests numeric NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+ALTER TABLE users.api_keys_monthly_usage OWNER TO postgres;
+ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN updated_at SET DEFAULT now();
 
 CREATE TABLE users.api_daily_usage (
     id uuid NOT NULL,
-    api_key_id uuid NOT NULL,
+    profile_id uuid NOT NULL,
+    total_requests numeric NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+
+ALTER TABLE users.api_daily_usage OWNER TO postgres;
+ALTER TABLE users.api_daily_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_daily_usage ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.api_daily_usage ALTER COLUMN updated_at SET DEFAULT now();
+
+CREATE TABLE users.api_monthly_usage (
+    id uuid NOT NULL,
+    profile_id uuid NOT NULL,
     total_requests numeric NOT NULL,
     total_requests_remaining numeric NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     deleted_at timestamp with time zone
 );
-ALTER TABLE users.api_daily_usage OWNER TO postgres;
-ALTER TABLE users.api_daily_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
-ALTER TABLE users.api_daily_usage ALTER COLUMN created_at SET DEFAULT now();
-ALTER TABLE users.api_daily_usage ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE users.api_monthly_usage OWNER TO postgres;
+ALTER TABLE users.api_monthly_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_monthly_usage ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.api_monthly_usage ALTER COLUMN updated_at SET DEFAULT now();
 
 CREATE TABLE users.wallets (
     id uuid NOT NULL,
