@@ -22,16 +22,6 @@ type Block @entity {
   rewardValue: BigInt!
   blockRewardValue: BigInt!
   voteRewardValue: BigInt!
-  cumulativeExtrinsicsCount: BigInt!
-  cumulativeEventsCount: BigInt!
-  cumulativeTransfersCount: BigInt!
-  cumulativeRewardsCount: BigInt!
-  cumulativeBlockRewardsCount: BigInt!
-  cumulativeVoteRewardsCount: BigInt!
-  cumulativeTransferValue: BigInt!
-  cumulativeRewardValue: BigInt!
-  cumulativeBlockRewardValue: BigInt!
-  cumulativeVoteRewardValue: BigInt!
   authorId: String! @index
 }
 

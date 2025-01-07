@@ -35,50 +35,6 @@ export async function createAndSaveBlock(
 ): Promise<Block> {
   const id = height.toString();
   const sortId = getSortId(height);
-  const previousBlock = await Block.getByHeight(height - BigInt(1), {
-    limit: 1,
-  });
-  const cumulativeExtrinsicsCount =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeExtrinsicsCount + BigInt(extrinsicsCount)
-      : BigInt(extrinsicsCount);
-  const cumulativeEventsCount =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeEventsCount + BigInt(eventsCount)
-      : BigInt(eventsCount);
-  const cumulativeTransfersCount =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeTransfersCount + BigInt(transfersCount)
-      : BigInt(transfersCount);
-  const cumulativeRewardsCount =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeRewardsCount + BigInt(rewardsCount)
-      : BigInt(rewardsCount);
-  const cumulativeBlockRewardsCount =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeBlockRewardsCount + BigInt(blockRewardsCount)
-      : BigInt(blockRewardsCount);
-  const cumulativeVoteRewardsCount =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeVoteRewardsCount + BigInt(voteRewardsCount)
-      : BigInt(voteRewardsCount);
-  const cumulativeTransferValue =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeTransferValue + transferValue
-      : transferValue;
-  const cumulativeRewardValue =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeRewardValue + rewardValue
-      : rewardValue;
-  const cumulativeBlockRewardValue =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeBlockRewardValue + blockRewardValue
-      : blockRewardValue;
-  const cumulativeVoteRewardValue =
-    previousBlock.length > 0
-      ? previousBlock[0].cumulativeVoteRewardValue + voteRewardValue
-      : voteRewardValue;
-
   const block = Block.create({
     id,
     sortId,
@@ -101,16 +57,6 @@ export async function createAndSaveBlock(
     rewardValue,
     blockRewardValue,
     voteRewardValue,
-    cumulativeExtrinsicsCount,
-    cumulativeEventsCount,
-    cumulativeTransfersCount,
-    cumulativeRewardsCount,
-    cumulativeBlockRewardsCount,
-    cumulativeVoteRewardsCount,
-    cumulativeTransferValue,
-    cumulativeRewardValue,
-    cumulativeBlockRewardValue,
-    cumulativeVoteRewardValue,
     authorId,
   });
   await block.save();

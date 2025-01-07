@@ -2,6 +2,7 @@
 - "!include consensus_account_rewards.yaml"
 - "!include consensus_accounts.yaml"
 - "!include consensus_blocks.yaml"
+- "!include consensus_cumulative_blocks.yaml"
 - "!include consensus_event_modules.yaml"
 - "!include consensus_events.yaml"
 - "!include consensus_extrinsic_modules.yaml"
