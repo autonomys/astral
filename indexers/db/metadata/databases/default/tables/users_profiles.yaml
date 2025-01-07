@@ -1,0 +1,137 @@
+table:
+  name: profiles
+  schema: users
+object_relationships:
+  - name: api_keys
+    using:
+      manual_configuration:
+        column_mapping:
+          id: profile_id
+        insertion_order: null
+        remote_table:
+          name: api_keys
+          schema: users
+array_relationships:
+  - name: api_daily_usage
+    using:
+      manual_configuration:
+        column_mapping:
+          id: profile_id
+        insertion_order: null
+        remote_table:
+          name: api_daily_usage
+          schema: users
+  - name: api_monthly_usage
+    using:
+      manual_configuration:
+        column_mapping:
+          id: profile_id
+        insertion_order: null
+        remote_table:
+          name: api_monthly_usage
+          schema: users
+  - name: wallets
+    using:
+      manual_configuration:
+        column_mapping:
+          id: profile_id
+        insertion_order: null
+        remote_table:
+          name: wallets
+          schema: users
+insert_permissions:
+  - role: astral-api
+    permission:
+      check: {}
+      columns:
+        - account_id
+        - api_total_requests
+        - api_total_requests_remaining
+        - avatar_url
+        - banner_url
+        - description
+        - discord
+        - discord_is_public
+        - discord_is_verified
+        - email
+        - email_is_public
+        - email_is_verified
+        - github
+        - github_is_public
+        - github_is_verified
+        - name
+        - proof_message
+        - proof_signature
+        - twitter
+        - twitter_is_public
+        - twitter_is_verified
+        - website
+        - website_is_public
+        - website_is_verified
+    comment: ""
+select_permissions:
+  - role: astral-api
+    permission:
+      columns:
+        - discord_is_public
+        - discord_is_verified
+        - email_is_public
+        - email_is_verified
+        - github_is_public
+        - github_is_verified
+        - twitter_is_public
+        - twitter_is_verified
+        - website_is_public
+        - website_is_verified
+        - api_total_requests
+        - api_total_requests_remaining
+        - account_id
+        - avatar_url
+        - banner_url
+        - description
+        - discord
+        - email
+        - github
+        - name
+        - proof_message
+        - proof_signature
+        - twitter
+        - website
+        - created_at
+        - deleted_at
+        - updated_at
+        - id
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: astral-api
+    permission:
+      columns:
+        - account_id
+        - api_total_requests
+        - api_total_requests_remaining
+        - avatar_url
+        - banner_url
+        - deleted_at
+        - description
+        - discord
+        - discord_is_public
+        - discord_is_verified
+        - email
+        - email_is_public
+        - email_is_verified
+        - github
+        - github_is_public
+        - github_is_verified
+        - name
+        - proof_message
+        - proof_signature
+        - twitter
+        - twitter_is_public
+        - twitter_is_verified
+        - website
+        - website_is_public
+        - website_is_verified
+      filter: {}
+      check: null
+    comment: ""

@@ -21,6 +21,9 @@ ALTER SCHEMA dictionary OWNER TO postgres;
 CREATE SCHEMA leaderboard;
 ALTER SCHEMA leaderboard OWNER TO postgres;
 
+CREATE SCHEMA users;
+ALTER SCHEMA users OWNER TO postgres;
+
 CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
 COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiST';
 
@@ -82,6 +85,126 @@ CREATE TABLE leaderboard._metadata (
     "updatedAt" timestamp with time zone NOT NULL
 );
 ALTER TABLE leaderboard._metadata OWNER TO postgres;
+
+
+CREATE TABLE users.profiles (
+    id uuid NOT NULL,
+    account_id text NOT NULL,
+    name text NOT NULL,
+    description text NOT NULL,
+    avatar_url text NOT NULL,
+    banner_url text NOT NULL,
+    email text NOT NULL,
+    email_is_verified boolean NOT NULL,
+    email_is_public boolean NOT NULL,
+    website text NOT NULL,
+    website_is_verified boolean NOT NULL,
+    website_is_public boolean NOT NULL,
+    discord text NOT NULL,
+    discord_is_verified boolean NOT NULL,
+    discord_is_public boolean NOT NULL,
+    github text NOT NULL,
+    github_is_verified boolean NOT NULL,
+    github_is_public boolean NOT NULL,
+    twitter text NOT NULL,
+    twitter_is_verified boolean NOT NULL,
+    twitter_is_public boolean NOT NULL,
+    proof_message text NOT NULL,
+    proof_signature text NOT NULL,
+    api_total_requests numeric NOT NULL,
+    api_total_requests_remaining numeric NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+ALTER TABLE users.profiles OWNER TO postgres;
+ALTER TABLE users.profiles ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.profiles ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.profiles ALTER COLUMN updated_at SET DEFAULT now();
+
+CREATE TABLE users.api_keys (
+    id uuid NOT NULL,
+    profile_id uuid NOT NULL,
+    description text NOT NULL,
+    total_requests numeric NOT NULL,
+    total_requests_remaining numeric NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+ALTER TABLE users.api_keys OWNER TO postgres;
+ALTER TABLE users.api_keys ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_keys ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.api_keys ALTER COLUMN updated_at SET DEFAULT now();
+
+CREATE TABLE users.api_keys_daily_usage (
+    id uuid NOT NULL,
+    api_key_id uuid NOT NULL,
+    total_requests numeric NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+
+ALTER TABLE users.api_keys_daily_usage OWNER TO postgres;
+ALTER TABLE users.api_keys_daily_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_keys_daily_usage ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.api_keys_daily_usage ALTER COLUMN updated_at SET DEFAULT now();
+
+CREATE TABLE users.api_keys_monthly_usage (
+    id uuid NOT NULL,
+    api_key_id uuid NOT NULL,
+    total_requests numeric NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+ALTER TABLE users.api_keys_monthly_usage OWNER TO postgres;
+ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN updated_at SET DEFAULT now();
+
+CREATE TABLE users.api_daily_usage (
+    id uuid NOT NULL,
+    profile_id uuid NOT NULL,
+    total_requests numeric NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+
+ALTER TABLE users.api_daily_usage OWNER TO postgres;
+ALTER TABLE users.api_daily_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_daily_usage ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.api_daily_usage ALTER COLUMN updated_at SET DEFAULT now();
+
+CREATE TABLE users.api_monthly_usage (
+    id uuid NOT NULL,
+    profile_id uuid NOT NULL,
+    total_requests numeric NOT NULL,
+    total_requests_remaining numeric NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+ALTER TABLE users.api_monthly_usage OWNER TO postgres;
+ALTER TABLE users.api_monthly_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_monthly_usage ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.api_monthly_usage ALTER COLUMN updated_at SET DEFAULT now();
+
+CREATE TABLE users.wallets (
+    id uuid NOT NULL,
+    profile_id uuid NOT NULL,
+    wallet_address text NOT NULL,
+    type text NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
+);
+ALTER TABLE users.wallets OWNER TO postgres;
+ALTER TABLE users.wallets ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.wallets ALTER COLUMN created_at SET DEFAULT now();
+ALTER TABLE users.wallets ALTER COLUMN updated_at SET DEFAULT now();
 
 CREATE TABLE consensus.account_histories (
     id text NOT NULL,
