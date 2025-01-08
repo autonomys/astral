@@ -127,6 +127,7 @@ CREATE TABLE users.api_keys (
     id uuid NOT NULL,
     profile_id uuid NOT NULL,
     description text NOT NULL,
+    key uuid NOT NULL,
     total_requests numeric NOT NULL,
     total_requests_remaining numeric NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -134,8 +135,10 @@ CREATE TABLE users.api_keys (
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.api_keys OWNER TO postgres;
-ALTER TABLE ONLY users.api_keys ADD CONSTRAINT api_keys_pkey PRIMARY KEY (id);
 ALTER TABLE users.api_keys ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE users.api_keys ALTER COLUMN key SET DEFAULT gen_random_uuid();
+ALTER TABLE ONLY users.api_keys ADD CONSTRAINT api_keys_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY users.api_keys ADD CONSTRAINT api_keys_key_unique UNIQUE (key);
 ALTER TABLE users.api_keys ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.api_keys ALTER COLUMN updated_at SET DEFAULT now();
 
