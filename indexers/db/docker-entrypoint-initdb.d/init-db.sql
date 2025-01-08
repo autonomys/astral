@@ -204,7 +204,7 @@ ALTER TABLE users.api_monthly_usage ALTER COLUMN updated_at SET DEFAULT now();
 CREATE TABLE users.wallets (
     id uuid NOT NULL,
     profile_id uuid NOT NULL,
-    wallet_address text NOT NULL,
+    address text NOT NULL,
     type text NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -212,6 +212,7 @@ CREATE TABLE users.wallets (
 );
 ALTER TABLE users.wallets OWNER TO postgres;
 ALTER TABLE ONLY users.wallets ADD CONSTRAINT wallets_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY users.wallets ADD CONSTRAINT wallets_profile_id_address_key UNIQUE ("profile_id", "address");
 ALTER TABLE users.wallets ALTER COLUMN id SET DEFAULT gen_random_uuid();
 ALTER TABLE users.wallets ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.wallets ALTER COLUMN updated_at SET DEFAULT now();
