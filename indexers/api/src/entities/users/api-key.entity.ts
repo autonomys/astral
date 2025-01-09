@@ -9,14 +9,14 @@ export class ApiKey extends BaseEntity {
   @Column('uuid')
   profile_id: string;
 
+  @Column('uuid')
+  key: string;
+
   @Column()
   description: string;
 
   @Column('numeric')
   total_requests: number;
-
-  @Column('numeric')
-  total_requests_remaining: number;
 
   @ManyToOne(() => Profile, (profile) => profile.apiKeys)
   @JoinColumn({ name: 'profile_id' })

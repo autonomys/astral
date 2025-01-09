@@ -18,7 +18,13 @@ export class ProfileController {
   @ApiResponse({ status: 200, description: 'List of public profiles' })
   async getPublicProfiles() {
     return this.profileRepository.find({
-      select: ['id', 'name', 'account_id'],
+      select: [
+        'id',
+        'name',
+        'api_total_requests',
+        'api_daily_requests_limit',
+        'api_monthly_requests_limit',
+      ],
     });
   }
 

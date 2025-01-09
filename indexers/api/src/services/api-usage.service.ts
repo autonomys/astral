@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ApiDailyUsage } from '../entities/users/api-daily-usage.entity';
-import { ApiKey } from '../entities/users/api-key.entity';
-import { ApiMonthlyUsage } from '../entities/users/api-monthly-usage.entity';
+import {
+  ApiDailyUsage,
+  ApiKey,
+  ApiKeysDailyUsage,
+  ApiKeysMonthlyUsage,
+  ApiMonthlyUsage,
+  Profile,
+} from '../entities';
+import { ApiUsageLimitException } from '../exceptions/api-usage-limit.exception';
 
 @Injectable()
 export class ApiUsageService {
@@ -14,90 +20,171 @@ export class ApiUsageService {
     private apiDailyUsageRepository: Repository<ApiDailyUsage>,
     @InjectRepository(ApiMonthlyUsage)
     private apiMonthlyUsageRepository: Repository<ApiMonthlyUsage>,
+    @InjectRepository(ApiKeysDailyUsage)
+    private apiKeysDailyUsageRepository: Repository<ApiKeysDailyUsage>,
+    @InjectRepository(ApiKeysMonthlyUsage)
+    private apiKeysMonthlyUsageRepository: Repository<ApiKeysMonthlyUsage>,
   ) {}
 
   async trackUsage(apiKeyId: string) {
-    // Start transaction
     await this.apiKeyRepository.manager.transaction(
       async (transactionalEntityManager) => {
-        // Update API key usage
         await transactionalEntityManager
           .createQueryBuilder()
           .update(ApiKey)
           .set({
             total_requests: () => '"total_requests" + 1',
-            total_requests_remaining: () => '"total_requests_remaining" - 1',
           })
-          .where('id = :id', { id: apiKeyId })
+          .where('key = :key', { key: apiKeyId })
           .execute();
 
-        // Get API key with profile
         const apiKey = await transactionalEntityManager
           .createQueryBuilder(ApiKey, 'ak')
-          .where('ak.id = :id', { id: apiKeyId })
+          .where('ak.key = :key', { key: apiKeyId })
           .getOne();
 
-        // Update or create daily usage
+        const profile = await transactionalEntityManager
+          .createQueryBuilder(Profile, 'p')
+          .where('p.id = :id', { id: apiKey.profile_id })
+          .getOne();
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
+        const thisMonth = new Date();
+        thisMonth.setDate(1);
+        thisMonth.setHours(0, 0, 0, 0);
+
+        const apiDailyUsage = await transactionalEntityManager
+          .createQueryBuilder(ApiDailyUsage, 'ad')
+          .where('profile_id = :profileId AND date = :date', {
+            profileId: apiKey.profile_id,
+            date: today,
+          })
+          .getOne();
+
+        if (
+          profile.api_daily_requests_limit <=
+          (apiDailyUsage?.total_requests || 0) + 1
+        )
+          throw new ApiUsageLimitException('Daily requests limit exceeded');
+
+        const apiMonthlyUsage = await transactionalEntityManager
+          .createQueryBuilder(ApiMonthlyUsage, 'am')
+          .where('profile_id = :profileId AND date = :date', {
+            profileId: apiKey.profile_id,
+            date: thisMonth,
+          })
+          .getOne();
+
+        if (
+          profile.api_monthly_requests_limit <=
+          (apiMonthlyUsage?.total_requests || 0) + 1
+        )
+          throw new ApiUsageLimitException('Monthly requests limit exceeded');
 
         await transactionalEntityManager
           .createQueryBuilder()
-          .insert()
-          .into(ApiDailyUsage)
-          .values({
-            profile_id: apiKey.profile_id,
-            total_requests: 1,
-            created_at: today,
+          .update(Profile)
+          .set({
+            api_total_requests: () => '"api_total_requests" + 1',
           })
-          .orIgnore()
+          .where('id = :id', { id: apiKey.profile_id })
           .execute();
 
-        await transactionalEntityManager
+        const updateDailyResult = await transactionalEntityManager
           .createQueryBuilder()
           .update(ApiDailyUsage)
           .set({
             total_requests: () => '"total_requests" + 1',
           })
-          .where('profile_id = :profileId AND DATE(created_at) = :date', {
+          .where('profile_id = :profileId AND date = :date', {
             profileId: apiKey.profile_id,
             date: today,
           })
           .execute();
 
-        // Update or create monthly usage
-        const firstDayOfMonth = new Date();
-        firstDayOfMonth.setDate(1);
-        firstDayOfMonth.setHours(0, 0, 0, 0);
+        if (updateDailyResult.affected === 0)
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .insert()
+            .into(ApiDailyUsage)
+            .values({
+              profile_id: apiKey.profile_id,
+              total_requests: 1,
+            })
+            .execute();
 
-        await transactionalEntityManager
-          .createQueryBuilder()
-          .insert()
-          .into(ApiMonthlyUsage)
-          .values({
-            profile_id: apiKey.profile_id,
-            total_requests: 1,
-            total_requests_remaining: 999999, // Set your monthly limit
-            created_at: firstDayOfMonth,
-          })
-          .orIgnore()
-          .execute();
-
-        await transactionalEntityManager
+        const updateMonthlyResult = await transactionalEntityManager
           .createQueryBuilder()
           .update(ApiMonthlyUsage)
           .set({
             total_requests: () => '"total_requests" + 1',
-            total_requests_remaining: () => '"total_requests_remaining" - 1',
           })
-          .where(
-            "profile_id = :profileId AND DATE_TRUNC('month', created_at) = :month",
-            {
-              profileId: apiKey.profile_id,
-              month: firstDayOfMonth,
-            },
-          )
+          .where('profile_id = :profileId AND date = :date', {
+            profileId: apiKey.profile_id,
+            date: thisMonth,
+          })
           .execute();
+
+        if (updateMonthlyResult.affected === 0)
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .insert()
+            .into(ApiMonthlyUsage)
+            .values({
+              profile_id: apiKey.profile_id,
+              total_requests: 1,
+            })
+            .orIgnore()
+            .execute();
+
+        const updateApiKeysDailyResult = await transactionalEntityManager
+          .createQueryBuilder()
+          .update(ApiKeysDailyUsage)
+          .set({
+            total_requests: () => '"total_requests" + 1',
+          })
+          .where('api_key_id = :apiKeyId AND date = :date', {
+            apiKeyId: apiKeyId,
+            date: today,
+          })
+          .execute();
+
+        if (updateApiKeysDailyResult.affected === 0)
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .insert()
+            .into(ApiKeysDailyUsage)
+            .values({
+              api_key_id: apiKeyId,
+              total_requests: 1,
+            })
+            .orIgnore()
+            .execute();
+
+        const updateApiKeysMonthlyResult = await transactionalEntityManager
+          .createQueryBuilder()
+          .update(ApiKeysMonthlyUsage)
+          .set({
+            total_requests: () => '"total_requests" + 1',
+          })
+          .where('api_key_id = :apiKeyId AND date = :date', {
+            apiKeyId: apiKeyId,
+            date: thisMonth,
+          })
+          .execute();
+
+        if (updateApiKeysMonthlyResult.affected === 0)
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .insert()
+            .into(ApiKeysMonthlyUsage)
+            .values({
+              api_key_id: apiKeyId,
+              total_requests: 1,
+            })
+            .orIgnore()
+            .execute();
       },
     );
   }

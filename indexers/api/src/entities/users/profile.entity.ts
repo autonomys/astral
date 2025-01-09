@@ -7,9 +7,6 @@ import { BaseEntity } from './base.entity';
 @Entity('profiles', { schema: 'users' })
 export class Profile extends BaseEntity {
   @Column()
-  account_id: string;
-
-  @Column()
   name: string;
 
   @Column()
@@ -76,7 +73,19 @@ export class Profile extends BaseEntity {
   api_total_requests: number;
 
   @Column('numeric')
-  api_total_requests_remaining: number;
+  api_daily_requests_limit: number;
+
+  @Column('numeric')
+  api_monthly_requests_limit: number;
+
+  @Column({ type: 'timestamp with time zone' })
+  created_at: Date;
+
+  @Column({ type: 'timestamp with time zone' })
+  updated_at: Date;
+
+  @Column({ type: 'timestamp with time zone', nullable: true })
+  deleted_at: Date | null;
 
   @OneToMany(() => ApiKey, (apiKey) => apiKey.profile)
   apiKeys: ApiKey[];
