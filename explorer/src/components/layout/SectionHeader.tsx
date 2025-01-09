@@ -54,35 +54,35 @@ export const SectionHeader: FC = () => {
 
   const domainsOptions = useMemo(
     () =>
-      ROUTES.filter((item) => !item.networks || (chain && item.networks?.includes(chain))).map(
-        (item, index) => {
-          const isActive = pathname.includes(`${chain}/${item.name}`)
-          return (
-            <div className='flex items-center text-[13px] font-semibold' key={`${item}-${index}`}>
-              <Link
-                href={`/${chain}/${item.name}`}
-                className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
+      ROUTES.filter(
+        (item) => (!item.networks || (chain && item.networks?.includes(chain))) && !item.hidden,
+      ).map((item, index) => {
+        const isActive = pathname.includes(`${chain}/${item.name}`)
+        return (
+          <div className='flex items-center text-[13px] font-semibold' key={`${item}-${index}`}>
+            <Link
+              href={`/${chain}/${item.name}`}
+              className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
+            >
+              <button
+                className={
+                  isActive
+                    ? 'rounded-full bg-buttonLightFrom px-4 py-2 text-white dark:bg-primaryAccent'
+                    : 'text-grayDark dark:text-white'
+                }
               >
-                <button
-                  className={
-                    isActive
-                      ? 'bg-buttonLightFrom rounded-full px-4 py-2 text-white dark:bg-primaryAccent'
-                      : 'text-grayDark dark:text-white'
-                  }
-                >
-                  {isDesktop ? item.title : domainIcon(item, isActive)}
-                </button>
-              </Link>
-            </div>
-          )
-        },
-      ),
+                {isDesktop ? item.title : domainIcon(item, isActive)}
+              </button>
+            </Link>
+          </div>
+        )
+      }),
     [isDesktop, pathname, chain, domainIcon],
   )
 
   return (
     <div
-      className='bg-headerLight dark:bg-headerDark z-10 h-[60px] w-full'
+      className='z-10 h-[60px] w-full bg-headerLight dark:bg-headerDark'
       id='accordion-open'
       data-accordion='open'
     >

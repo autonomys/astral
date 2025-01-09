@@ -48,6 +48,7 @@ export enum RoutesDomains {
 
 export enum RoutesProfile {
   profile = '/profile',
+  wallets = Routes.profile + '/wallets',
   apiKeys = Routes.profile + '/api-keys',
 }
 
@@ -176,17 +177,19 @@ export const ROUTES: Route[] = [
   {
     name: Routes.profile,
     title: 'Profile',
-    connectWallet: true,
+    hidden: true,
     children: [
       {
         name: RoutesProfile.profile,
         title: 'Profile',
-        connectWallet: true,
+      },
+      {
+        name: RoutesProfile.wallets,
+        title: 'Wallets',
       },
       {
         name: RoutesProfile.apiKeys,
         title: 'API Keys',
-        connectWallet: true,
       },
     ],
   },

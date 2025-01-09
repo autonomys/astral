@@ -1,5 +1,5 @@
 import { NotFound } from 'components/layout/NotFound'
-import { ProfilePage } from 'components/Profile'
+import { ApiKeysPage } from 'components/Profile/ApiKeys'
 import { Routes, RoutesProfile } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
@@ -12,7 +12,7 @@ export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadat
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
   isRouteSupportingNetwork(chain, Routes.profile, RoutesProfile.apiKeys) ? (
-    <ProfilePage />
+    <ApiKeysPage />
   ) : (
     <NotFound />
   )
