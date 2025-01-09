@@ -1,7 +1,12 @@
 import { indexers } from 'constants/indexers'
 import { cookies, headers } from 'next/headers'
 
-export const queryGraphqlServer = async (query: string, variables: object, network?: string) => {
+export const queryGraphqlServer = async (
+  query: string,
+  variables: object,
+  network?: string,
+  header?: object,
+) => {
   try {
     // Get the selected chain from the cookies
     const { get } = cookies()
@@ -21,6 +26,7 @@ export const queryGraphqlServer = async (query: string, variables: object, netwo
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...header,
       },
       body: JSON.stringify({
         query,
