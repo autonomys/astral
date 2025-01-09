@@ -31,3 +31,12 @@ select_permissions:
         - id
       filter: {}
     comment: ""
+update_permissions:
+  - role: indexers-api
+    permission:
+      columns:
+        - total_requests
+        - updated_at
+      filter: {}
+      check: null
+    comment: ""
