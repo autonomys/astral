@@ -20,13 +20,14 @@ import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { FC, useCallback, useMemo } from 'react'
 import type { ChainParam } from 'types/app'
+import { ProfileButton } from '../Profile/ProfileButton'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
 
 export const SectionHeader: FC = () => {
   const { chain } = useParams<ChainParam>()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const pathname = usePathname()
-  const { actingAccount } = useWallet()
+  const { actingAccount, sessionSubspaceAccount } = useWallet()
 
   const domainIcon = useCallback((domain: (typeof ROUTES)[0], isActive: boolean) => {
     const className = `w-6 h-6 ${isActive ? 'text-white' : 'text-grayDark'} dark:text-white`
@@ -94,6 +95,7 @@ export const SectionHeader: FC = () => {
           ) : (
             <div className='flex'>
               <AccountListDropdown />
+              {sessionSubspaceAccount && <ProfileButton />}
               <WalletSidekick />
             </div>
           )}

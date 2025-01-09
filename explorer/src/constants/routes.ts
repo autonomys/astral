@@ -326,6 +326,9 @@ export const INTERNAL_ROUTES = {
     operators: 'operators',
     nominators: 'nominators',
   },
+  profile: {
+    page: '/profile',
+  },
   notFound: '/error/404',
   catchAll: '*',
 }
