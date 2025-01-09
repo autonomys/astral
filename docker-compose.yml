@@ -4,7 +4,6 @@ volumes:
   redis_db: {}
   caddy_config: {}
   caddy_data: {}
-  api_data: {}
 
 services:
   # Caddy Reverse Proxy with CORS enabled
@@ -433,5 +432,5 @@ services:
       DB_DATABASE: ${DB_DATABASE}
     hostname: api
     volumes:
-      - api_data:/app
       - ./indexers/api:/app
+      - /app/node_modules
