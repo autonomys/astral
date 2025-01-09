@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ApiKeyStrategy } from './auth/api-key.strategy';
 import { AccountsController } from './controllers/accounts.controller';
+import { AppController } from './controllers/app.controller';
 import { BlocksController } from './controllers/blocks.controller';
 import { ExtrinsicsController } from './controllers/extrinsics.controller';
 import { ApiKeysDailyUsage, ApiKeysMonthlyUsage } from './entities';
@@ -58,6 +57,6 @@ import { ApiUsageService } from './services/api-usage.service';
     ExtrinsicsController,
     AccountsController,
   ],
-  providers: [AppService, ApiKeyStrategy, ApiUsageService],
+  providers: [ApiKeyStrategy, ApiUsageService],
 })
 export class AppModule {}
