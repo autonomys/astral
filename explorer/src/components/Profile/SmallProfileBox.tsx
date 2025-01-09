@@ -1,11 +1,12 @@
 import { useSession } from 'next-auth/react'
 import { FC, useCallback, useEffect } from 'react'
 import { useProfileStates } from 'states/profile'
+
 interface SmallProfileBoxProps {
   showPrivateDetails?: boolean
 }
 
-const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }) => {
+export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }) => {
   const { data: session } = useSession()
 
   const profile = useProfileStates((state) => state.profile)
@@ -101,5 +102,3 @@ const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }) => {
     </div>
   )
 }
-
-export default SmallProfileBox

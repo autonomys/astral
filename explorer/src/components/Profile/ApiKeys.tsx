@@ -9,7 +9,7 @@ import * as Yup from 'yup'
 import { CopyButton } from '../common/CopyButton'
 import { WalletButton } from '../WalletButton'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
-import SmallProfileBox from './SmallProfileBox'
+import { SmallProfileBox } from './SmallProfileBox'
 
 export const ApiKeysPage: FC = () => {
   const { actingAccount, subspaceAccount, injector } = useWallet()
@@ -23,7 +23,6 @@ export const ApiKeysPage: FC = () => {
   // Function to create a new API key with error handling
   const createApiKey = useCallback(
     async (_values: typeof initialValues) => {
-      console.log('values', _values)
       if (!injector || !actingAccount || !subspaceAccount) return
 
       const values = {

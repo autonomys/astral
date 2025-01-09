@@ -11,7 +11,7 @@ import { useSession } from 'next-auth/react'
 import { FC, useEffect, useMemo } from 'react'
 import { WalletButton } from '../WalletButton'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
-import SmallProfileBox from './SmallProfileBox'
+import { SmallProfileBox } from './SmallProfileBox'
 
 export const WalletsPage: FC = () => {
   const { accounts, actingAccount, sessionSubspaceAccount } = useWallet()

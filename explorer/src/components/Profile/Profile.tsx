@@ -8,7 +8,7 @@ import { FC, useCallback, useEffect } from 'react'
 import * as Yup from 'yup'
 import { WalletButton } from '../WalletButton'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
-import SmallProfileBox from './SmallProfileBox'
+import { SmallProfileBox } from './SmallProfileBox'
 
 export const ProfilePage: FC = () => {
   const { actingAccount, subspaceAccount, injector } = useWallet()
