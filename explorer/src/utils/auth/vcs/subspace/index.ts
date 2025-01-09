@@ -10,12 +10,16 @@ export const verifySubspaceAccountRoles = async (subspaceAccount: string) => {
     })
 
     return {
-      farmer: data.farmer.length > 0,
-      operator: data.operator.totalCount > 0,
-      nominator: data.nominator.totalCount > 0,
+      farmer: data.isFarmer.length > 0,
+      operator: data.isOperator.length > 0,
+      nominator: data.isNominator.length > 0,
     }
   } catch (error) {
     console.error('Failed to fetch if user has any related events:', error)
-    throw new Error('Failed to fetch if user has any related events')
+    return {
+      farmer: false,
+      operator: false,
+      nominator: false,
+    }
   }
 }

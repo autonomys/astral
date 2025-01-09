@@ -103,21 +103,28 @@ export const QUERY_CHECK_ROLES = gql`
         id
       }
     }
-    # TODO: fix this
-    #  operator: consensus_rewards(
-    #    first: 1
-    #    where: { operatorOwner_eq: $subspaceAccount }
-    #    orderBy: id_ASC
-    #  ) {
-    #    totalCount
-    #  }
-    #  nominator: consensus_rewards(
-    #    first: 1
-    #    where: { account: { id_eq: $subspaceAccount } }
-    #    orderBy: id_ASC
-    #  ) {
-    #    totalCount
-    #  }
+    isOperator: consensus_rewards(
+      where: {
+        reward_type: { _eq: "Domains.OperatorRegistered" }
+        account_id: { _eq: $subspaceAccount }
+      }
+      limit: 1
+    ) {
+      account {
+        id
+      }
+    }
+    isNominator: consensus_rewards(
+      where: {
+        reward_type: { _eq: "Domains.NominatedOperator" }
+        account_id: { _eq: $subspaceAccount }
+      }
+      limit: 1
+    ) {
+      account {
+        id
+      }
+    }
   }
 `
 
