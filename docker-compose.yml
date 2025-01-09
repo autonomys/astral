@@ -251,7 +251,7 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://localhost:3000
+      DICTIONARY: ${DICTIONARY_URL}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -290,7 +290,7 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://localhost:3000
+      DICTIONARY: ${DICTIONARY_URL}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -409,3 +409,28 @@ services:
 
       SLACK_TOKEN: ${SLACK_TOKEN}
       SLACK_CONVERSATION_ID: ${SLACK_CONVERSATION_ID}
+
+  # NestJS API Service
+  api:
+    build:
+      context: ./indexers/api
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      hasura:
+        condition: service_started
+    restart: unless-stopped
+    ports:
+      - "${API_PORT}:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+    hostname: api
+    volumes:
+      - ./indexers/api:/app
+      - /app/node_modules

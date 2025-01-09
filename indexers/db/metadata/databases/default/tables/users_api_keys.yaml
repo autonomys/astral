@@ -19,7 +19,7 @@ array_relationships:
           id: api_key_id
         insertion_order: null
         remote_table:
-          name: api_daily_usage
+          name: api_keys_daily_usage
           schema: users
   - name: monthly_usage
     using:
@@ -28,7 +28,7 @@ array_relationships:
           id: api_key_id
         insertion_order: null
         remote_table:
-          name: api_monthly_usage
+          name: api_keys_monthly_usage
           schema: users
 insert_permissions:
   - role: astral-api
@@ -42,14 +42,14 @@ select_permissions:
   - role: astral-api
     permission:
       columns:
-        - total_requests
-        - total_requests_remaining
-        - description
         - created_at
         - deleted_at
-        - updated_at
+        - description
         - id
+        - key
         - profile_id
+        - total_requests
+        - updated_at
       filter: {}
     comment: ""
 update_permissions:

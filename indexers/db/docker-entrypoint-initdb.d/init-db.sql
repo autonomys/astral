@@ -86,10 +86,8 @@ CREATE TABLE leaderboard._metadata (
 );
 ALTER TABLE leaderboard._metadata OWNER TO postgres;
 
-
 CREATE TABLE users.profiles (
-    id uuid NOT NULL,
-    account_id text NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     name text NOT NULL,
     description text NOT NULL,
     avatar_url text NOT NULL,
@@ -112,99 +110,93 @@ CREATE TABLE users.profiles (
     proof_message text NOT NULL,
     proof_signature text NOT NULL,
     api_total_requests numeric NOT NULL,
-    api_total_requests_remaining numeric NOT NULL,
+    api_daily_requests_limit numeric NOT NULL,
+    api_monthly_requests_limit numeric NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.profiles OWNER TO postgres;
-ALTER TABLE users.profiles ALTER COLUMN id SET DEFAULT gen_random_uuid();
+ALTER TABLE ONLY users.profiles ADD CONSTRAINT profiles_pkey PRIMARY KEY (id);
 ALTER TABLE users.profiles ALTER COLUMN created_at SET DEFAULT now();
 ALTER TABLE users.profiles ALTER COLUMN updated_at SET DEFAULT now();
 
 CREATE TABLE users.api_keys (
-    id uuid NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     profile_id uuid NOT NULL,
     description text NOT NULL,
+    key uuid DEFAULT gen_random_uuid() NOT NULL,
     total_requests numeric NOT NULL,
-    total_requests_remaining numeric NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.api_keys OWNER TO postgres;
-ALTER TABLE users.api_keys ALTER COLUMN id SET DEFAULT gen_random_uuid();
-ALTER TABLE users.api_keys ALTER COLUMN created_at SET DEFAULT now();
-ALTER TABLE users.api_keys ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE ONLY users.api_keys ADD CONSTRAINT api_keys_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY users.api_keys ADD CONSTRAINT api_keys_key_unique UNIQUE (key);
 
 CREATE TABLE users.api_keys_daily_usage (
-    id uuid NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     api_key_id uuid NOT NULL,
     total_requests numeric NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
+    date DATE DEFAULT CURRENT_DATE NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone
 );
 
 ALTER TABLE users.api_keys_daily_usage OWNER TO postgres;
-ALTER TABLE users.api_keys_daily_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
-ALTER TABLE users.api_keys_daily_usage ALTER COLUMN created_at SET DEFAULT now();
-ALTER TABLE users.api_keys_daily_usage ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE ONLY users.api_keys_daily_usage ADD CONSTRAINT api_keys_daily_usage_pkey PRIMARY KEY (id);
 
 CREATE TABLE users.api_keys_monthly_usage (
-    id uuid NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     api_key_id uuid NOT NULL,
     total_requests numeric NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
+    date DATE DEFAULT date_trunc('month', CURRENT_DATE) NOT NULL CHECK (date_trunc('month', date) = date),
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.api_keys_monthly_usage OWNER TO postgres;
-ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
-ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN created_at SET DEFAULT now();
-ALTER TABLE users.api_keys_monthly_usage ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE ONLY users.api_keys_monthly_usage ADD CONSTRAINT api_keys_monthly_usage_pkey PRIMARY KEY (id);
 
 CREATE TABLE users.api_daily_usage (
-    id uuid NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     profile_id uuid NOT NULL,
     total_requests numeric NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
+    date DATE DEFAULT CURRENT_DATE NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone
 );
 
 ALTER TABLE users.api_daily_usage OWNER TO postgres;
-ALTER TABLE users.api_daily_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
-ALTER TABLE users.api_daily_usage ALTER COLUMN created_at SET DEFAULT now();
-ALTER TABLE users.api_daily_usage ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE ONLY users.api_daily_usage ADD CONSTRAINT api_daily_usage_pkey PRIMARY KEY (id);
 
 CREATE TABLE users.api_monthly_usage (
-    id uuid NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     profile_id uuid NOT NULL,
     total_requests numeric NOT NULL,
-    total_requests_remaining numeric NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
+    date DATE DEFAULT date_trunc('month', CURRENT_DATE) NOT NULL CHECK (date_trunc('month', date) = date),
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.api_monthly_usage OWNER TO postgres;
-ALTER TABLE users.api_monthly_usage ALTER COLUMN id SET DEFAULT gen_random_uuid();
-ALTER TABLE users.api_monthly_usage ALTER COLUMN created_at SET DEFAULT now();
-ALTER TABLE users.api_monthly_usage ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE ONLY users.api_monthly_usage ADD CONSTRAINT api_monthly_usage_pkey PRIMARY KEY (id);
 
 CREATE TABLE users.wallets (
-    id uuid NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     profile_id uuid NOT NULL,
-    wallet_address text NOT NULL,
+    address text NOT NULL,
     type text NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone
 );
 ALTER TABLE users.wallets OWNER TO postgres;
-ALTER TABLE users.wallets ALTER COLUMN id SET DEFAULT gen_random_uuid();
-ALTER TABLE users.wallets ALTER COLUMN created_at SET DEFAULT now();
-ALTER TABLE users.wallets ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE ONLY users.wallets ADD CONSTRAINT wallets_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY users.wallets ADD CONSTRAINT address_key UNIQUE (address);
 
 CREATE TABLE consensus.account_histories (
     id text NOT NULL,
