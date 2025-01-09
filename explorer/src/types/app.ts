@@ -42,5 +42,5 @@ export type Route = {
   title: string
   networks?: NetworkId[]
   children?: Route[]
-  connectWallet?: boolean
+  hidden?: boolean
 }
