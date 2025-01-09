@@ -52,7 +52,7 @@ const PendingTransactionsLabel: FC = () => {
       className={
         !isDesktop
           ? 'inline-flex items-center bg-primaryAccent p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
-          : 'dark:bg-boxDark to-blueUndertone ml-4 rounded-full from-primaryAccent p-2 pl-4 pr-4 shadow-md dark:text-white'
+          : 'ml-4 rounded-full from-primaryAccent to-blueUndertone p-2 pl-4 pr-4 shadow-md dark:bg-boxDark dark:text-white'
       }
     >
       <Link href={`?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN}`}>
@@ -104,7 +104,7 @@ export const WalletSidekick: FC = () => {
         onClick={onClick}
         className={`inline-flex items-center bg-white p-2 text-base hover:bg-gray-200 focus:outline-none ${
           isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
-        } dark:bg-buttonLightTo shadow-md md:mt-3`}
+        } shadow-md dark:bg-buttonLightTo md:mt-3`}
       >
         <WalletIcon width='24' height='24' />
       </button>
@@ -116,7 +116,7 @@ export const WalletSidekick: FC = () => {
 const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   const { push } = useRouter()
   const { network, section } = useIndexers()
-  const { api, actingAccount, subspaceAccount } = useWallet()
+  const { api, actingAccount, sessionSubspaceAccount } = useWallet()
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
 
@@ -152,10 +152,10 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     loadWalletBalance()
-  }, [api, actingAccount, loadWalletBalance])
+  }, [api, sessionSubspaceAccount, loadWalletBalance])
 
   if (!isOpen) return null
-  if (!actingAccount) return null
+  if (!sessionSubspaceAccount) return null
 
   return (
     // backdrop
@@ -194,19 +194,22 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
             <AccountHeader walletBalance={walletBalance} tokenSymbol={tokenSymbol} />
-            {subspaceAccount && (
+            {sessionSubspaceAccount && (
               <>
                 <AccountSummary
-                  subspaceAccount={subspaceAccount}
-                  actingAccountName={actingAccount.name}
+                  subspaceAccount={sessionSubspaceAccount}
+                  actingAccountName={actingAccount?.name}
                   walletBalance={walletBalance}
                   tokenSymbol={tokenSymbol}
                 />
-                <PendingTransactions subspaceAccount={subspaceAccount} />
+                <PendingTransactions subspaceAccount={sessionSubspaceAccount} />
                 <GetDiscordRoles />
-                <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
-                <LastExtrinsics subspaceAccount={subspaceAccount} />
-                <Leaderboard subspaceAccount={subspaceAccount} />
+                <StakingSummary
+                  subspaceAccount={sessionSubspaceAccount}
+                  tokenSymbol={tokenSymbol}
+                />
+                <LastExtrinsics subspaceAccount={sessionSubspaceAccount} />
+                <Leaderboard subspaceAccount={sessionSubspaceAccount} />
               </>
             )}
             <div className='flex'>
