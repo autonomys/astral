@@ -17,6 +17,7 @@
 - "!include dictionary_spec_versions.yaml"
 - "!include files_chunks.yaml"
 - "!include files_cids.yaml"
+- "!include files_errors.yaml"
 - "!include files_file_cids.yaml"
 - "!include files_files.yaml"
 - "!include files_folder_cids.yaml"
