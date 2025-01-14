@@ -188,8 +188,8 @@ ALTER TABLE ONLY users.api_monthly_usage ADD CONSTRAINT api_monthly_usage_pkey P
 CREATE TABLE users.wallets (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     profile_id uuid NOT NULL,
-    address text NOT NULL,
-    type text NOT NULL,
+    address VARCHAR(50) NOT NULL,
+    type VARCHAR(20) NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone
@@ -199,204 +199,204 @@ ALTER TABLE ONLY users.wallets ADD CONSTRAINT wallets_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY users.wallets ADD CONSTRAINT address_key UNIQUE (address);
 
 CREATE TABLE consensus.account_histories (
-    id text NOT NULL,
-    nonce numeric NOT NULL,
-    free numeric NOT NULL,
-    reserved numeric NOT NULL,
-    total numeric,
-    created_at numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(50) NOT NULL,
+    nonce NUMERIC NOT NULL,
+    free NUMERIC NOT NULL,
+    reserved NUMERIC NOT NULL,
+    total NUMERIC,
+    created_at NUMERIC NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE consensus.account_histories OWNER TO postgres;
 
 CREATE TABLE consensus.account_rewards (
-    id text NOT NULL,
-    total_rewards_value numeric,
-    total_rewards_counts numeric,
-    block_rewards_value numeric,
-    block_rewards_counts numeric,
-    vote_rewards_value numeric,
-    vote_rewards_counts numeric,
-    estimated_staking_rewards_value numeric,
-    estimated_staking_rewards_counts numeric,
-    created_at numeric NOT NULL,
-    updated_at numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(50) NOT NULL,
+    total_rewards_value NUMERIC,
+    total_rewards_counts NUMERIC,
+    block_rewards_value NUMERIC,
+    block_rewards_counts NUMERIC,
+    vote_rewards_value NUMERIC,
+    vote_rewards_counts NUMERIC,
+    estimated_staking_rewards_value NUMERIC,
+    estimated_staking_rewards_counts NUMERIC,
+    created_at NUMERIC NOT NULL,
+    updated_at NUMERIC NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE consensus.account_rewards OWNER TO postgres;
 
 CREATE TABLE consensus.accounts (
-    id text NOT NULL,
-    nonce numeric NOT NULL,
-    free numeric NOT NULL,
-    reserved numeric NOT NULL,
-    total numeric,
-    created_at numeric NOT NULL,
-    updated_at numeric NOT NULL
+    id VARCHAR(50) NOT NULL,
+    nonce NUMERIC NOT NULL,
+    free NUMERIC NOT NULL,
+    reserved NUMERIC NOT NULL,
+    total NUMERIC,
+    created_at NUMERIC NOT NULL,
+    updated_at NUMERIC NOT NULL
 );
 ALTER TABLE consensus.accounts OWNER TO postgres;
 
 CREATE TABLE consensus.blocks (
-    id text NOT NULL,
-    sort_id text NOT NULL,
-    height numeric NOT NULL,
-    hash text NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    parent_hash text NOT NULL,
-    spec_id text NOT NULL,
-    state_root text NOT NULL,
-    extrinsics_root text NOT NULL,
-    space_pledged numeric NOT NULL,
-    blockchain_size numeric NOT NULL,
-    extrinsics_count integer NOT NULL,
-    events_count integer NOT NULL,
-    transfers_count integer NOT NULL,
-    rewards_count integer NOT NULL,
-    block_rewards_count integer NOT NULL,
-    vote_rewards_count integer NOT NULL,
-    transfer_value numeric NOT NULL,
-    reward_value numeric NOT NULL,
-    block_reward_value numeric NOT NULL,
-    vote_reward_value numeric NOT NULL,
-    author_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(32) NOT NULL,
+    sort_id VARCHAR(32) NOT NULL,
+    height NUMERIC NOT NULL,
+    hash VARCHAR(66) NOT NULL,
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    parent_hash VARCHAR(66) NOT NULL,
+    spec_id VARCHAR(32) NOT NULL,
+    state_root VARCHAR(66) NOT NULL,
+    extrinsics_root VARCHAR(66) NOT NULL,
+    space_pledged NUMERIC NOT NULL,
+    blockchain_size NUMERIC NOT NULL,
+    extrinsics_count INTEGER NOT NULL,
+    events_count INTEGER NOT NULL,
+    transfers_count INTEGER NOT NULL,
+    rewards_count INTEGER NOT NULL,
+    block_rewards_count INTEGER NOT NULL,
+    vote_rewards_count INTEGER NOT NULL,
+    transfer_value NUMERIC NOT NULL,
+    reward_value NUMERIC NOT NULL,
+    block_reward_value NUMERIC NOT NULL,
+    vote_reward_value NUMERIC NOT NULL,
+    author_id VARCHAR(50) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE consensus.blocks OWNER TO postgres;
 
 CREATE TABLE consensus.cumulative_blocks (
-    id text NOT NULL,
-    cumulative_extrinsics_count numeric NOT NULL,
-    cumulative_events_count numeric NOT NULL,
-    cumulative_transfers_count numeric NOT NULL,
-    cumulative_rewards_count numeric NOT NULL,
-    cumulative_block_rewards_count numeric NOT NULL,
-    cumulative_vote_rewards_count numeric NOT NULL,
-    cumulative_transfer_value numeric NOT NULL,
-    cumulative_reward_value numeric NOT NULL,
-    cumulative_block_reward_value numeric NOT NULL,
-    cumulative_vote_reward_value numeric NOT NULL
+    id VARCHAR(32) NOT NULL,
+    cumulative_extrinsics_count NUMERIC NOT NULL,
+    cumulative_events_count NUMERIC NOT NULL,
+    cumulative_transfers_count NUMERIC NOT NULL,
+    cumulative_rewards_count NUMERIC NOT NULL,
+    cumulative_block_rewards_count NUMERIC NOT NULL,
+    cumulative_vote_rewards_count NUMERIC NOT NULL,
+    cumulative_transfer_value NUMERIC NOT NULL,
+    cumulative_reward_value NUMERIC NOT NULL,
+    cumulative_block_reward_value NUMERIC NOT NULL,
+    cumulative_vote_reward_value NUMERIC NOT NULL
 );
 ALTER TABLE consensus.cumulative_blocks OWNER TO postgres;
 
 CREATE TABLE consensus.event_modules (
-    id text NOT NULL,
-    section text NOT NULL,
-    method text NOT NULL
+    id VARCHAR(65) NOT NULL,
+    section VARCHAR(32) NOT NULL,
+    method VARCHAR(32) NOT NULL
 );
 ALTER TABLE consensus.event_modules OWNER TO postgres;
 
 CREATE TABLE consensus.events (
-    id text NOT NULL,
-    sort_id text NOT NULL,
-    block_height numeric NOT NULL,
-    block_hash text NOT NULL,
-    extrinsic_id text NOT NULL,
-    extrinsic_hash text NOT NULL,
-    section text NOT NULL,
-    module text NOT NULL,
-    name text NOT NULL,
-    index_in_block numeric NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    phase text NOT NULL,
-    pos integer NOT NULL,
-    args text NOT NULL,
-    cid text,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(65) NOT NULL,
+    sort_id VARCHAR(65) NOT NULL,
+    block_height NUMERIC NOT NULL,
+    block_hash VARCHAR(66) NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    extrinsic_hash VARCHAR(66) NOT NULL,
+    section VARCHAR(32) NOT NULL,
+    module VARCHAR(32) NOT NULL,
+    name VARCHAR(65) NOT NULL,
+    index_in_block NUMERIC NOT NULL,
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    phase VARCHAR(32) NOT NULL,
+    pos INTEGER NOT NULL,
+    args JSONB NOT NULL,
+    cid VARCHAR(120),
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE consensus.events OWNER TO postgres;
 
 CREATE TABLE consensus.extrinsic_modules (
-    id text NOT NULL,
-    section text NOT NULL,
-    method text NOT NULL
+    id VARCHAR(65) NOT NULL,
+    section VARCHAR(32) NOT NULL,
+    method VARCHAR(32) NOT NULL
 );
 ALTER TABLE consensus.extrinsic_modules OWNER TO postgres;
 
 CREATE TABLE consensus.extrinsics (
-    id text NOT NULL,
-    sort_id text NOT NULL,
-    hash text NOT NULL,
+    id VARCHAR(65) NOT NULL,
+    sort_id VARCHAR(65) NOT NULL,
+    hash VARCHAR(66) NOT NULL,
     block_height numeric NOT NULL,
-    block_hash text NOT NULL,
-    section text NOT NULL,
-    module text NOT NULL,
-    name text NOT NULL,
-    index_in_block integer NOT NULL,
-    success boolean NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    nonce numeric NOT NULL,
-    signer text NOT NULL,
-    signature text NOT NULL,
-    args text NOT NULL,
-    error text NOT NULL,
-    tip numeric NOT NULL,
-    fee numeric NOT NULL,
-    pos integer NOT NULL,
-    cid text,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    block_hash VARCHAR(66) NOT NULL,
+    section VARCHAR(32) NOT NULL,
+    module VARCHAR(32) NOT NULL,
+    name VARCHAR(65) NOT NULL,
+    index_in_block INTEGER NOT NULL,
+    success BOOLEAN NOT NULL,
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    nonce NUMERIC NOT NULL,
+    signer VARCHAR(50) NOT NULL,
+    signature VARCHAR(132) NOT NULL,
+    args JSONB NOT NULL,
+    error VARCHAR(255) NOT NULL,
+    tip NUMERIC NOT NULL,
+    fee NUMERIC NOT NULL,
+    pos INTEGER NOT NULL,
+    cid VARCHAR(120),
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE consensus.extrinsics OWNER TO postgres;
 
 CREATE TABLE consensus.log_kinds (
-    id text NOT NULL,
-    kind text NOT NULL
+    id VARCHAR(32) NOT NULL,
+    kind VARCHAR(32) NOT NULL
 );
 ALTER TABLE consensus.log_kinds OWNER TO postgres;
 
 CREATE TABLE consensus.logs (
-    id text NOT NULL,
-    sort_id text NOT NULL,
-    block_height numeric NOT NULL,
-    block_hash text NOT NULL,
-    index_in_block integer NOT NULL,
-    kind text NOT NULL,
-    value text,
-    "timestamp" timestamp without time zone NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(65) NOT NULL,
+    sort_id VARCHAR(65) NOT NULL,
+    block_height NUMERIC NOT NULL,
+    block_hash VARCHAR(66) NOT NULL,
+    index_in_block INTEGER NOT NULL,
+    kind VARCHAR(32) NOT NULL,
+    value JSONB,
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE consensus.logs OWNER TO postgres;
 
 CREATE TABLE consensus.rewards (
-    id text NOT NULL,
-    block_height numeric NOT NULL,
-    block_hash text NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    account_id text NOT NULL,
-    reward_type text NOT NULL,
-    amount numeric NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(120) NOT NULL,
+    block_height NUMERIC NOT NULL,
+    block_hash VARCHAR(66) NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    reward_type VARCHAR(32) NOT NULL,
+    amount NUMERIC NOT NULL,
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE consensus.rewards OWNER TO postgres;
 
 CREATE TABLE consensus.sections (
-    id text NOT NULL,
-    section text NOT NULL
+    id VARCHAR(32) NOT NULL,
+    section VARCHAR(32) NOT NULL
 );
 ALTER TABLE consensus.sections OWNER TO postgres;
 
 CREATE TABLE consensus.transfers (
-    id text NOT NULL,
-    block_height numeric NOT NULL,
-    block_hash text NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    "from" text NOT NULL,
-    "to" text NOT NULL,
-    value numeric NOT NULL,
-    fee numeric NOT NULL,
-    success boolean NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(132) NOT NULL,
+    block_height NUMERIC NOT NULL,
+    block_hash VARCHAR(66) NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    "from" VARCHAR(50) NOT NULL,
+    "to" VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    fee NUMERIC NOT NULL,
+    success BOOLEAN NOT NULL,
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE consensus.transfers OWNER TO postgres;
 
@@ -409,579 +409,579 @@ CREATE TABLE dictionary._metadata (
 ALTER TABLE dictionary._metadata OWNER TO postgres;
 
 CREATE TABLE dictionary.events (
-    id text NOT NULL,
-    module text NOT NULL,
-    event text NOT NULL,
-    block_height numeric NOT NULL
+    id VARCHAR(65) NOT NULL,
+    module VARCHAR(32) NOT NULL,
+    event VARCHAR(32) NOT NULL,
+    block_height NUMERIC NOT NULL
 );
 ALTER TABLE dictionary.events OWNER TO postgres;
 
 CREATE TABLE dictionary.extrinsics (
-    id text NOT NULL,
-    tx_hash text NOT NULL,
-    module text NOT NULL,
-    call text NOT NULL,
-    block_height numeric NOT NULL,
-    success boolean NOT NULL,
-    is_signed boolean NOT NULL
+    id VARCHAR(65) NOT NULL,
+    tx_hash VARCHAR(66) NOT NULL,
+    module VARCHAR(32) NOT NULL,
+    call VARCHAR(32) NOT NULL,
+    block_height NUMERIC NOT NULL,
+    success BOOLEAN NOT NULL,
+    is_signed BOOLEAN NOT NULL
 );
 ALTER TABLE dictionary.extrinsics OWNER TO postgres;
 
 CREATE TABLE dictionary.spec_versions (
-    id text NOT NULL,
-    block_height numeric NOT NULL
+    id VARCHAR(32) NOT NULL,
+    block_height NUMERIC NOT NULL
 );
 ALTER TABLE dictionary.spec_versions OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_extrinsic_failed_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.account_extrinsic_failed_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_extrinsic_failed_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.account_extrinsic_failed_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_extrinsic_success_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.account_extrinsic_success_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_extrinsic_success_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.account_extrinsic_success_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_extrinsic_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.account_extrinsic_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_extrinsic_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.account_extrinsic_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_remark_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.account_remark_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_remark_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.account_remark_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transaction_fee_paid_total_value_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.account_transaction_fee_paid_total_value_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transaction_fee_paid_total_values (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.account_transaction_fee_paid_total_values OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transfer_receiver_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.account_transfer_receiver_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transfer_receiver_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.account_transfer_receiver_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transfer_receiver_total_value_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.account_transfer_receiver_total_value_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transfer_receiver_total_values (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.account_transfer_receiver_total_values OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transfer_sender_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.account_transfer_sender_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transfer_sender_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.account_transfer_sender_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transfer_sender_total_value_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.account_transfer_sender_total_value_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.account_transfer_sender_total_values (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.account_transfer_sender_total_values OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_block_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.farmer_block_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_block_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.farmer_block_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_block_total_value_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.farmer_block_total_value_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_block_total_values (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.farmer_block_total_values OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_vote_and_block_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.farmer_vote_and_block_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_vote_and_block_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.farmer_vote_and_block_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_vote_and_block_total_value_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.farmer_vote_and_block_total_value_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_vote_and_block_total_values (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.farmer_vote_and_block_total_values OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_vote_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.farmer_vote_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_vote_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.farmer_vote_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_vote_total_value_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.farmer_vote_total_value_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.farmer_vote_total_values (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.farmer_vote_total_values OWNER TO postgres;
 
 CREATE TABLE leaderboard.nominator_deposits_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.nominator_deposits_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.nominator_deposits_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.nominator_deposits_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.nominator_deposits_total_value_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.nominator_deposits_total_value_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.nominator_deposits_total_values (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.nominator_deposits_total_values OWNER TO postgres;
 
 CREATE TABLE leaderboard.nominator_withdrawals_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.nominator_withdrawals_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.nominator_withdrawals_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.nominator_withdrawals_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_bundle_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.operator_bundle_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_bundle_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.operator_bundle_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_deposits_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.operator_deposits_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_deposits_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.operator_deposits_total_counts OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_deposits_total_value_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.operator_deposits_total_value_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_deposits_total_values (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.operator_deposits_total_values OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_total_rewards_collected_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.operator_total_rewards_collected_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_total_rewards_collecteds (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.operator_total_rewards_collecteds OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_total_tax_collected_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.operator_total_tax_collected_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_total_tax_collecteds (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.operator_total_tax_collecteds OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_withdrawals_total_count_histories (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(182) NOT NULL,
+    account_id VARCHAR(50) NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    event_id VARCHAR(65) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE leaderboard.operator_withdrawals_total_count_histories OWNER TO postgres;
 
 CREATE TABLE leaderboard.operator_withdrawals_total_counts (
-    id text NOT NULL,
-    rank integer NOT NULL,
-    value numeric NOT NULL,
-    last_contribution_at timestamp without time zone NOT NULL,
-    created_at integer NOT NULL,
-    updated_at integer NOT NULL
+    id VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.operator_withdrawals_total_counts OWNER TO postgres;
 
