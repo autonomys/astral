@@ -21,6 +21,9 @@ ALTER SCHEMA dictionary OWNER TO postgres;
 CREATE SCHEMA leaderboard;
 ALTER SCHEMA leaderboard OWNER TO postgres;
 
+CREATE SCHEMA files;
+ALTER SCHEMA files OWNER TO postgres;
+
 CREATE SCHEMA users;
 ALTER SCHEMA users OWNER TO postgres;
 
@@ -66,6 +69,18 @@ CREATE FUNCTION leaderboard.schema_notification() RETURNS trigger
   $$;
 ALTER FUNCTION leaderboard.schema_notification() OWNER TO postgres;
 
+CREATE FUNCTION files.schema_notification() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    PERFORM pg_notify(
+            '0xb1598cb16f4da9c8',
+            'schema_updated');
+    RETURN NULL;
+  END;
+  $$;
+ALTER FUNCTION files.schema_notification() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -78,6 +93,14 @@ CREATE TABLE consensus._metadata (
 );
 ALTER TABLE consensus._metadata OWNER TO postgres;
 
+CREATE TABLE dictionary._metadata (
+    key character varying(255) NOT NULL,
+    value jsonb,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
+ALTER TABLE dictionary._metadata OWNER TO postgres;
+
 CREATE TABLE leaderboard._metadata (
     key character varying(255) NOT NULL,
     value jsonb,
@@ -85,6 +108,14 @@ CREATE TABLE leaderboard._metadata (
     "updatedAt" timestamp with time zone NOT NULL
 );
 ALTER TABLE leaderboard._metadata OWNER TO postgres;
+
+CREATE TABLE files._metadata (
+    key character varying(255) NOT NULL,
+    value jsonb,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
+ALTER TABLE files._metadata OWNER TO postgres;
 
 CREATE TABLE users.profiles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -399,14 +430,6 @@ CREATE TABLE consensus.transfers (
     _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE consensus.transfers OWNER TO postgres;
-
-CREATE TABLE dictionary._metadata (
-    key character varying(255) NOT NULL,
-    value jsonb,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-ALTER TABLE dictionary._metadata OWNER TO postgres;
 
 CREATE TABLE dictionary.events (
     id VARCHAR(65) NOT NULL,
@@ -985,6 +1008,101 @@ CREATE TABLE leaderboard.operator_withdrawals_total_counts (
 );
 ALTER TABLE leaderboard.operator_withdrawals_total_counts OWNER TO postgres;
 
+CREATE TABLE files.chunks (
+    id text NOT NULL,
+    type text NOT NULL,
+    link_depth integer NOT NULL,
+    size numeric,
+    name text,
+    data text,
+    upload_options text,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE files.chunks OWNER TO postgres;
+
+CREATE TABLE files.cids (
+    id text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    extrinsic_id text NOT NULL,
+    extrinsic_hash text NOT NULL,
+    index_in_block integer NOT NULL,
+    links jsonb NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE files.cids OWNER TO postgres;
+
+CREATE TABLE files.errors (
+    id text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    extrinsic_id text NOT NULL,
+    extrinsic_hash text NOT NULL,
+    index_in_block integer NOT NULL,
+    error text NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE files.errors OWNER TO postgres;
+
+CREATE TABLE files.file_cids (
+    id text NOT NULL,
+    parent_cid text NOT NULL,
+    child_cid text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE files.file_cids OWNER TO postgres;
+
+CREATE TABLE files.files (
+    id text NOT NULL,
+    size numeric NOT NULL,
+    name text,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE files.files OWNER TO postgres;
+
+CREATE TABLE files.folder_cids (
+    id text NOT NULL,
+    parent_cid text NOT NULL,
+    child_cid text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE files.folder_cids OWNER TO postgres;
+
+CREATE TABLE files.folders (
+    id text NOT NULL,
+    size numeric NOT NULL,
+    name text,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE files.folders OWNER TO postgres;
+
+CREATE TABLE files.metadata (
+    id text NOT NULL,
+    size numeric NOT NULL,
+    name text,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE files.metadata OWNER TO postgres;
+
+CREATE TABLE files.metadata_cids (
+    id text NOT NULL,
+    parent_cid text NOT NULL,
+    child_cid text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE files.metadata_cids OWNER TO postgres;
+
 ALTER TABLE ONLY consensus._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
 
@@ -1192,6 +1310,36 @@ ALTER TABLE ONLY leaderboard.operator_withdrawals_total_count_histories
 
 ALTER TABLE ONLY leaderboard.operator_withdrawals_total_counts
     ADD CONSTRAINT operator_withdrawals_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY files._metadata
+    ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
+
+ALTER TABLE ONLY files.chunks
+    ADD CONSTRAINT chunks_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY files.cids
+    ADD CONSTRAINT cids_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY files.errors
+    ADD CONSTRAINT errors_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY files.file_cids
+    ADD CONSTRAINT file_cids_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY files.files
+    ADD CONSTRAINT files_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY files.folder_cids
+    ADD CONSTRAINT folder_cids_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY files.folders
+    ADD CONSTRAINT folders_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY files.metadata_cids
+    ADD CONSTRAINT metadata_cids_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY files.metadata
+    ADD CONSTRAINT metadata_pkey PRIMARY KEY (_id);
 
 CREATE INDEX "0x08aa840e441d13bb" ON consensus.blocks USING gist (height, _block_range);
 CREATE INDEX "0x09a98aa53fa2c2e3" ON consensus.logs USING btree (id);
@@ -1451,8 +1599,48 @@ CREATE INDEX "0xf8f1f913b372d0d0" ON leaderboard.operator_bundle_total_count_his
 CREATE INDEX "0xfb5c0413cc0c1767" ON leaderboard.account_transaction_fee_paid_total_value_histories USING gist (value, _block_range);
 CREATE INDEX "0xfe4c85f6ab059ff1" ON leaderboard.account_transfer_sender_total_values USING btree (updated_at);
 
+
+CREATE INDEX "0x00f6efe66d5d9d4b" ON files.folder_cids USING gist (parent_cid, _block_range);
+CREATE INDEX "0x1186578888875727" ON files.folders USING btree (id);
+CREATE INDEX "0x185e07c7841a6dec" ON files.cids USING gist (index_in_block, _block_range);
+CREATE INDEX "0x26cca3ab330636d4" ON files.errors USING gist (extrinsic_id, _block_range);
+CREATE INDEX "0x2fa5ea8997a9cfbb" ON files.folders USING gist (size, _block_range);
+CREATE INDEX "0x4147f581f3ac3528" ON files.errors USING gist (block_height, _block_range);
+CREATE INDEX "0x502ec8806f8b7919" ON files.metadata_cids USING gist (child_cid, _block_range);
+CREATE INDEX "0x5b859e4ba2caa1d1" ON files.errors USING gist (block_hash, _block_range);
+CREATE INDEX "0x5b8e8c6c7142b6fe" ON files.folders USING gist (name, _block_range);
+CREATE INDEX "0x629ecee3da47a1a9" ON files.files USING gist (name, _block_range);
+CREATE INDEX "0x6686ba2951b7a1f6" ON files.chunks USING gist (type, _block_range);
+CREATE INDEX "0x68de2b24ed2b1879" ON files.errors USING btree (id);
+CREATE INDEX "0x819c48bfe0942f4e" ON files.folder_cids USING gist (child_cid, _block_range);
+CREATE INDEX "0x83c5e6b85c04a30c" ON files.metadata USING gist (size, _block_range);
+CREATE INDEX "0x96d565fe5d3542a2" ON files.files USING gist (size, _block_range);
+CREATE INDEX "0x9831414911f0da25" ON files.files USING btree (id);
+CREATE INDEX "0x9c61d5e7fb607d2e" ON files.chunks USING gist (link_depth, _block_range);
+CREATE INDEX "0xa00ebe7be447c522" ON files.metadata USING btree (id);
+CREATE INDEX "0xa3797e4a72bc856b" ON files.errors USING gist (index_in_block, _block_range);
+CREATE INDEX "0xb9cc03b31f220c6d" ON files.metadata USING gist (name, _block_range);
+CREATE INDEX "0xbc15364ae9a53d9c" ON files.file_cids USING gist (parent_cid, _block_range);
+CREATE INDEX "0xbe263939d485aba8" ON files.cids USING gist (extrinsic_hash, _block_range);
+CREATE INDEX "0xc48b083269566769" ON files.file_cids USING btree (id);
+CREATE INDEX "0xc5d1e5c6e0051575" ON files.cids USING gist (block_hash, _block_range);
+CREATE INDEX "0xc822e1f44430d2bc" ON files.metadata_cids USING btree (id);
+CREATE INDEX "0xccac01036eaae648" ON files.file_cids USING gist (child_cid, _block_range);
+CREATE INDEX "0xd098303e427172ef" ON files.cids USING btree (id);
+CREATE INDEX "0xd1b1af4da1d132b6" ON files.cids USING gist (extrinsic_id, _block_range);
+CREATE INDEX "0xd3342c3c09c7b166" ON files.cids USING gist ("timestamp", _block_range);
+CREATE INDEX "0xd5509466634aea27" ON files.chunks USING btree (id);
+CREATE INDEX "0xd9be8718ef6c7984" ON files.folder_cids USING btree (id);
+CREATE INDEX "0xe5ab49f2f0feaea4" ON files.metadata_cids USING gist (parent_cid, _block_range);
+CREATE INDEX "0xf35ca9af71dbb0c3" ON files.errors USING gist ("timestamp", _block_range);
+CREATE INDEX "0xfb3d6c3cc6f62464" ON files.errors USING gist (extrinsic_hash, _block_range);
+CREATE INDEX "0xfd58bdf5823b2229" ON files.cids USING gist (block_height, _block_range);
+
+
 CREATE TRIGGER "0x648269cc35867c16" AFTER UPDATE ON consensus._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION consensus.schema_notification();
+CREATE TRIGGER "0xda8a29b0fa478533" AFTER UPDATE ON dictionary._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION dictionary.schema_notification();
 CREATE TRIGGER "0xf3241711d3af6c36" AFTER UPDATE ON leaderboard._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION leaderboard.schema_notification();
+CREATE TRIGGER "0x22152f0c663c5f9e" AFTER UPDATE ON files._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION files.schema_notification();
 
 CREATE FUNCTION consensus.insert_log_kind() RETURNS trigger
     LANGUAGE plpgsql
