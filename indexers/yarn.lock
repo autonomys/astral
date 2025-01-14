@@ -22,17 +22,17 @@
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
 
-"@autonomys/auto-consensus@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.0.12.tgz#161866b6e11f586b49846c9387372baeaea3ef0e"
-  integrity sha512-369FyXi5uxKvciEnkPPkBrQhKAK7n8m3EFG3gQBahK36+oRDIP7Dk7DwpRCVnEMIXEIuEEddpEB3cWzWB+V3Rw==
+"@autonomys/auto-consensus@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.2.1.tgz#2325f1cf9348fe03e08d052e4c3677a34a0d1864"
+  integrity sha512-F7MvI8S2oq/CPCgCRWs0aaIvA1ohmNeOuvKWXG/6s5gUyQY8pPEBfhbY5gZWYOylRHUFUCeYeapRQpPSgpj0Fw==
   dependencies:
-    "@autonomys/auto-utils" "^1.0.12"
+    "@autonomys/auto-utils" "^1.2.1"
 
-"@autonomys/auto-dag-data@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.0.12.tgz#281ad1ea28fba2071f17dbf1c3fabb39e7f21642"
-  integrity sha512-KeIypZ9OWJxNpLbrmPiI3S3HR8xpHRID3L5FhquFa+pxcmtjTMJOgxqOUQ2IHQOoRcrU6DRfgGplv5gT6rO4Sw==
+"@autonomys/auto-dag-data@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.2.1.tgz#45042895f4e4083486e94de80f2025ee95ec800e"
+  integrity sha512-I9jzvsOX1yB2I+YcdOSllSedfQbbeyL1TldnTCqx1Itp54KdfYcc4MrQwAGut0otcvKcIUEtzYpSK5z6ATeFOQ==
   dependencies:
     "@ipld/dag-pb" "^4.1.2"
     "@peculiar/webcrypto" "^1.5.0"
@@ -45,10 +45,10 @@
     protons "^7.6.0"
     protons-runtime "^5.5.0"
 
-"@autonomys/auto-utils@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.0.12.tgz#f720eb876df7240a3fa289e6ad6511d468146364"
-  integrity sha512-5vCv37UyjhKExERucnq9epGrQx+K6eqzzglkVUgA9/H7N4J4mXfrRkvES4Ft0ecIukRKxTfjeUEl/mqhZPWhcQ==
+"@autonomys/auto-utils@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.2.1.tgz#f12561d4380d798b4a1706a35605a8f8bf9996f4"
+  integrity sha512-g5TQqq3dLEC25lXD8IzHEUCRfQ8k5j84PX7t9JwPKp+M/tmJEGHdLeIk/FUv6h3IUMQWctynZgfMcA5G0XDIeQ==
   dependencies:
     "@polkadot/api" "^14.3.1"
     "@polkadot/extension-dapp" "^0.56.2"
