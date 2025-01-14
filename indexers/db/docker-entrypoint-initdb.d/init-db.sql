@@ -334,7 +334,7 @@ CREATE TABLE consensus.events (
     phase VARCHAR(32) NOT NULL,
     pos INTEGER NOT NULL,
     args JSONB NOT NULL,
-    cid VARCHAR(120),
+    cid VARCHAR(80),
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
 );
@@ -367,7 +367,7 @@ CREATE TABLE consensus.extrinsics (
     tip NUMERIC NOT NULL,
     fee NUMERIC NOT NULL,
     pos INTEGER NOT NULL,
-    cid VARCHAR(120),
+    cid VARCHAR(80),
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
 );
@@ -1009,97 +1009,97 @@ CREATE TABLE leaderboard.operator_withdrawals_total_counts (
 ALTER TABLE leaderboard.operator_withdrawals_total_counts OWNER TO postgres;
 
 CREATE TABLE files.chunks (
-    id text NOT NULL,
-    type text NOT NULL,
-    link_depth integer NOT NULL,
-    size numeric,
-    name text,
-    data text,
-    upload_options text,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(80) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    link_depth INTEGER NOT NULL,
+    size NUMERIC,
+    name VARCHAR(255),
+    data TEXT,
+    upload_options TEXT,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.chunks OWNER TO postgres;
 
 CREATE TABLE files.cids (
-    id text NOT NULL,
-    block_height numeric NOT NULL,
-    block_hash text NOT NULL,
-    extrinsic_id text NOT NULL,
-    extrinsic_hash text NOT NULL,
-    index_in_block integer NOT NULL,
-    links jsonb NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(80) NOT NULL,
+    block_height NUMERIC NOT NULL,
+    block_hash VARCHAR(66) NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    extrinsic_hash VARCHAR(66) NOT NULL,
+    index_in_block INTEGER NOT NULL,
+    links JSONB NOT NULL,
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.cids OWNER TO postgres;
 
 CREATE TABLE files.errors (
-    id text NOT NULL,
-    block_height numeric NOT NULL,
-    block_hash text NOT NULL,
-    extrinsic_id text NOT NULL,
-    extrinsic_hash text NOT NULL,
-    index_in_block integer NOT NULL,
-    error text NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(65) NOT NULL,
+    block_height NUMERIC NOT NULL,
+    block_hash VARCHAR(66) NOT NULL,
+    extrinsic_id VARCHAR(65) NOT NULL,
+    extrinsic_hash VARCHAR(66) NOT NULL,
+    index_in_block INTEGER NOT NULL,
+    error TEXT NOT NULL,
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.errors OWNER TO postgres;
 
 CREATE TABLE files.file_cids (
-    id text NOT NULL,
-    parent_cid text NOT NULL,
-    child_cid text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(161) NOT NULL,
+    parent_cid VARCHAR(80) NOT NULL,
+    child_cid VARCHAR(80) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.file_cids OWNER TO postgres;
 
 CREATE TABLE files.files (
-    id text NOT NULL,
-    size numeric NOT NULL,
-    name text,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(80) NOT NULL,
+    size NUMERIC NOT NULL,
+    name VARCHAR(255),
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.files OWNER TO postgres;
 
 CREATE TABLE files.folder_cids (
-    id text NOT NULL,
-    parent_cid text NOT NULL,
-    child_cid text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(161) NOT NULL,
+    parent_cid VARCHAR(80) NOT NULL,
+    child_cid VARCHAR(80) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.folder_cids OWNER TO postgres;
 
 CREATE TABLE files.folders (
-    id text NOT NULL,
-    size numeric NOT NULL,
-    name text,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(80) NOT NULL,
+    size NUMERIC NOT NULL,
+    name VARCHAR(255),
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.folders OWNER TO postgres;
 
 CREATE TABLE files.metadata (
-    id text NOT NULL,
-    size numeric NOT NULL,
-    name text,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(80) NOT NULL,
+    size NUMERIC NOT NULL,
+    name VARCHAR(255),
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.metadata OWNER TO postgres;
 
 CREATE TABLE files.metadata_cids (
-    id text NOT NULL,
-    parent_cid text NOT NULL,
-    child_cid text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    id VARCHAR(161) NOT NULL,
+    parent_cid VARCHAR(80) NOT NULL,
+    child_cid VARCHAR(80) NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.metadata_cids OWNER TO postgres;
 
