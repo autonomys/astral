@@ -83,6 +83,8 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
         let stringifyData = "";
         try {
           const data = JSON.parse(stringify(nodeData.data)).data;
+          if (!data) throw new Error("Data is null");
+
           const dataAsArrayBuffer = new Uint8Array(data);
           stringifyData = stringify(dataAsArrayBuffer);
         } catch {
