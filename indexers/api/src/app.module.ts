@@ -6,14 +6,21 @@ import { AccountsController } from './controllers/accounts.controller';
 import { AppController } from './controllers/app.controller';
 import { BlocksController } from './controllers/blocks.controller';
 import { ExtrinsicsController } from './controllers/extrinsics.controller';
-import { ApiKeysDailyUsage, ApiKeysMonthlyUsage } from './entities';
-import { Accounts } from './entities/consensus/accounts.entity';
-import { Blocks } from './entities/consensus/blocks.entity';
-import { Extrinsics } from './entities/consensus/extrinsics.entity';
-import { ApiDailyUsage } from './entities/users/api-daily-usage.entity';
-import { ApiKey } from './entities/users/api-key.entity';
-import { ApiMonthlyUsage } from './entities/users/api-monthly-usage.entity';
-import { Profile } from './entities/users/profile.entity';
+import {
+  Accounts,
+  ApiDailyUsage,
+  ApiKey,
+  ApiKeysDailyUsage,
+  ApiKeysMonthlyUsage,
+  ApiMonthlyUsage,
+  Blocks,
+  ConsensusMetadata,
+  Extrinsics,
+  FilesMetadata,
+  LeaderboardMetadata,
+  Profile,
+  StakingMetadata,
+} from './entities';
 import { ApiUsageService } from './services/api-usage.service';
 
 @Module({
@@ -35,6 +42,10 @@ import { ApiUsageService } from './services/api-usage.service';
         ApiKeysDailyUsage,
         ApiKeysMonthlyUsage,
         Accounts,
+        ConsensusMetadata,
+        LeaderboardMetadata,
+        FilesMetadata,
+        StakingMetadata,
       ],
       synchronize: false,
     }),
@@ -48,6 +59,10 @@ import { ApiUsageService } from './services/api-usage.service';
       ApiKeysDailyUsage,
       ApiKeysMonthlyUsage,
       Accounts,
+      ConsensusMetadata,
+      LeaderboardMetadata,
+      FilesMetadata,
+      StakingMetadata,
     ]),
     PassportModule.register({ defaultStrategy: 'api-key' }),
   ],
