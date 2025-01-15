@@ -4,12 +4,7 @@
   "private": true,
   "main": "index.js",
   "license": "MIT",
-  "workspaces": [
-    "mainnet/*",
-    "taurus/*",
-    "db",
-    "taskboard"
-  ],
+  "workspaces": ["*"],
   "scripts": {
     "postinstall": "git submodule update --init --recursive",
     "bootstrap": "lerna run bootstrap",

@@ -218,10 +218,10 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
     volumes:
-      - ./indexers/${NETWORK_ID}/consensus:/${NETWORK_ID}/consensus
+      - ./indexers/consensus:/consensus
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/${NETWORK_ID}/consensus
+      - -f=/consensus
       - --db-schema=consensus
       - --workers=4
       - --unsafe
@@ -257,10 +257,10 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
     volumes:
-      - ./indexers/${NETWORK_ID}/leaderboard:/${NETWORK_ID}/leaderboard
+      - ./indexers/leaderboard:/leaderboard
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/${NETWORK_ID}/leaderboard
+      - -f=/leaderboard
       - --db-schema=leaderboard
       - --workers=1
       - --batch-size=100
@@ -295,10 +295,10 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
     volumes:
-      - ./indexers/${NETWORK_ID}/staking:/${NETWORK_ID}/staking
+      - ./indexers/staking:/staking
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/${NETWORK_ID}/staking
+      - -f=/staking
       - --db-schema=staking
       - --workers=1
       - --unsafe
@@ -330,10 +330,10 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
     volumes:
-      - ./indexers/${NETWORK_ID}/files:/${NETWORK_ID}/files
+      - ./indexers/files:/files
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/${NETWORK_ID}/files
+      - -f=/files
       - --db-schema=files
       - --workers=1
       - --unsafe
