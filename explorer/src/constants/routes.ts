@@ -11,6 +11,7 @@ export enum Routes {
   autoevm = 'auto-evm',
   autoid = 'auto-id',
   testnetRewards = 'testnet-rewards',
+  profile = 'profile',
 }
 
 export enum RoutesConsensus {
@@ -45,6 +46,12 @@ export enum RoutesDomains {
   autoid = '/auto-id',
 }
 
+export enum RoutesProfile {
+  profile = '/profile',
+  wallets = Routes.profile + '/wallets',
+  apiKeys = Routes.profile + '/api-keys',
+}
+
 export type AnyRoutes =
   | Routes
   | RoutesConsensus
@@ -52,6 +59,7 @@ export type AnyRoutes =
   | RoutesStaking
   | RoutesLeaderboard
   | RoutesDomains
+  | RoutesProfile
 
 export const ROUTES: Route[] = [
   {
@@ -101,17 +109,17 @@ export const ROUTES: Route[] = [
   {
     name: Routes.staking,
     title: 'Staking',
-    networks: [NetworkId.TAURUS],
+    networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
     children: [
       {
         name: RoutesStaking.operators,
         title: 'Operators',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesStaking.register,
         title: 'Register Operator',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesStaking.nominations,
@@ -131,12 +139,12 @@ export const ROUTES: Route[] = [
       {
         name: RoutesLeaderboard.accounts,
         title: 'Top Accounts',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesLeaderboard.operators,
         title: 'Top Operators',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesLeaderboard.nominators,
@@ -148,12 +156,12 @@ export const ROUTES: Route[] = [
   {
     name: Routes.domains,
     title: 'Domains',
-    networks: [NetworkId.TAURUS],
+    networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
     children: [
       {
         name: RoutesDomains.autoevm,
         title: 'Auto EVM',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesDomains.autoid,
@@ -165,6 +173,25 @@ export const ROUTES: Route[] = [
   {
     name: Routes.testnetRewards,
     title: 'Testnet Rewards',
+  },
+  {
+    name: Routes.profile,
+    title: 'Profile',
+    hidden: true,
+    children: [
+      {
+        name: RoutesProfile.profile,
+        title: 'Profile',
+      },
+      {
+        name: RoutesProfile.wallets,
+        title: 'Wallets',
+      },
+      {
+        name: RoutesProfile.apiKeys,
+        title: 'API Keys',
+      },
+    ],
   },
 ]
 
@@ -295,6 +322,9 @@ export const INTERNAL_ROUTES = {
     farmers: 'farmers',
     operators: 'operators',
     nominators: 'nominators',
+  },
+  profile: {
+    page: '/profile',
   },
   notFound: '/error/404',
   catchAll: '*',
