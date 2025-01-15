@@ -12,6 +12,29 @@ export class AccountsController {
     private accountRepository: Repository<Accounts>,
   ) {}
 
+  @Get('count')
+  @ApiOperation({
+    operationId: 'getAccountsCount',
+    summary: 'Get total number of accounts',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Total number of accounts retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        count: {
+          type: 'number',
+          description: 'Total number of accounts',
+        },
+      },
+    },
+  })
+  async getAccountsCount() {
+    const count = await this.accountRepository.count();
+    return { count };
+  }
+
   @Get(':accountId')
   @ApiOperation({
     operationId: 'getAccountById',

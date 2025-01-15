@@ -17,6 +17,16 @@ export * from './consensus/extrinsic_modules.entity';
 export * from './consensus/extrinsics.entity';
 export * from './consensus/log_kinds.entity';
 export * from './consensus/logs.entity';
+export * from './consensus/metadata.entity';
 export * from './consensus/rewards.entity';
 export * from './consensus/sections.entity';
 export * from './consensus/transfers.entity';
+
+// Leaderboard Entities
+export * from './leaderboard/metadata.entity';
+
+// Files Entities
+export * from './files/metadata.entity';
+
+// Staking Entities
+export * from './staking/metadata.entity';
