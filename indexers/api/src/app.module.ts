@@ -6,6 +6,7 @@ import { AccountsController } from './controllers/accounts.controller';
 import { AppController } from './controllers/app.controller';
 import { BlocksController } from './controllers/blocks.controller';
 import { ExtrinsicsController } from './controllers/extrinsics.controller';
+import { FilesController } from './controllers/files.controller';
 import {
   Accounts,
   ApiDailyUsage,
@@ -14,14 +15,18 @@ import {
   ApiKeysMonthlyUsage,
   ApiMonthlyUsage,
   Blocks,
+  Chunks,
   ConsensusMetadata,
   Extrinsics,
+  FileCids,
+  Files,
   FilesMetadata,
   LeaderboardMetadata,
   Profile,
   StakingMetadata,
 } from './entities';
 import { ApiUsageService } from './services/api-usage.service';
+import { FileRetrieverService } from './services/file-retriever.sevice';
 
 @Module({
   imports: [
@@ -42,6 +47,9 @@ import { ApiUsageService } from './services/api-usage.service';
         ApiKeysDailyUsage,
         ApiKeysMonthlyUsage,
         Accounts,
+        Files,
+        Chunks,
+        FileCids,
         ConsensusMetadata,
         LeaderboardMetadata,
         FilesMetadata,
@@ -59,6 +67,9 @@ import { ApiUsageService } from './services/api-usage.service';
       ApiKeysDailyUsage,
       ApiKeysMonthlyUsage,
       Accounts,
+      Files,
+      Chunks,
+      FileCids,
       ConsensusMetadata,
       LeaderboardMetadata,
       FilesMetadata,
@@ -71,7 +82,8 @@ import { ApiUsageService } from './services/api-usage.service';
     BlocksController,
     ExtrinsicsController,
     AccountsController,
+    FilesController,
   ],
-  providers: [ApiKeyStrategy, ApiUsageService],
+  providers: [ApiKeyStrategy, ApiUsageService, FileRetrieverService],
 })
 export class AppModule {}
