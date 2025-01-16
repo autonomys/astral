@@ -62,10 +62,8 @@ export class ApiUsageService {
           })
           .getOne();
 
-        if (
-          profile.api_daily_requests_limit <=
-          (apiDailyUsage?.total_requests || 0) + 1
-        )
+        const newApiDailyUsage = Number(apiDailyUsage.total_requests) + 1;
+        if (profile.api_daily_requests_limit <= newApiDailyUsage)
           throw new ApiUsageLimitException('Daily requests limit exceeded');
 
         const apiMonthlyUsage = await transactionalEntityManager
@@ -76,10 +74,8 @@ export class ApiUsageService {
           })
           .getOne();
 
-        if (
-          profile.api_monthly_requests_limit <=
-          (apiMonthlyUsage?.total_requests || 0) + 1
-        )
+        const newApiMonthlyUsage = Number(apiMonthlyUsage.total_requests) + 1;
+        if (profile.api_monthly_requests_limit <= newApiMonthlyUsage)
           throw new ApiUsageLimitException('Monthly requests limit exceeded');
 
         await transactionalEntityManager
