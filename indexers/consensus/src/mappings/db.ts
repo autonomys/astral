@@ -1,17 +1,8 @@
-import {
-  AccountHistory,
-  Block,
-  Event,
-  Extrinsic,
-  Log,
-  Reward,
-  Transfer,
-} from "../types";
-import { dateEntry, getSortId, moduleName } from "./utils";
+import { getSortId, moduleName } from "./utils";
 
 // Core Consensus DB Functions
 
-export async function createAndSaveBlock(
+export function createBlock(
   hash: string,
   height: bigint,
   timestamp: Date,
@@ -32,10 +23,10 @@ export async function createAndSaveBlock(
   blockRewardValue: bigint,
   voteRewardValue: bigint,
   authorId: string
-): Promise<Block> {
+) {
   const id = height.toString();
   const sortId = getSortId(height);
-  const block = Block.create({
+  return {
     id,
     sortId,
     height,
@@ -58,22 +49,20 @@ export async function createAndSaveBlock(
     blockRewardValue,
     voteRewardValue,
     authorId,
-  });
-  await block.save();
-  return block;
+  };
 }
 
-export async function createAndSaveLog(
+export function createAndSaveLog(
   blockHeight: bigint,
   blockHash: string,
   indexInBlock: number,
   kind: string,
   value: string,
   timestamp: Date
-): Promise<Log> {
+) {
   const id = `${blockHeight}-${indexInBlock}`;
   const sortId = getSortId(blockHeight, BigInt(indexInBlock));
-  const log = Log.create({
+  return {
     id,
     sortId,
     blockHeight,
@@ -82,13 +71,7 @@ export async function createAndSaveLog(
     kind,
     value,
     timestamp,
-  });
-  await log.save();
-  return log;
-}
-
-export async function saveLog(logs: Log[]): Promise<void> {
-  await Promise.all(logs.map((log) => log.save()));
+  };
 }
 
 export function createExtrinsic(
@@ -109,10 +92,10 @@ export function createExtrinsic(
   fee: bigint,
   pos: number,
   cid?: string
-): Extrinsic {
+) {
   const extrinsicId = `${blockHeight}-${indexInBlock}`;
   const sortId = getSortId(blockHeight, BigInt(indexInBlock));
-  return Extrinsic.create({
+  return {
     id: extrinsicId,
     sortId,
     hash,
@@ -133,11 +116,7 @@ export function createExtrinsic(
     fee,
     pos,
     cid,
-  });
-}
-
-export async function saveExtrinsics(extrinsics: Extrinsic[]): Promise<void> {
-  await Promise.all(extrinsics.map((extrinsic) => extrinsic.save()));
+  };
 }
 
 export function createEvent(
@@ -153,10 +132,10 @@ export function createEvent(
   pos: number,
   args: string,
   cid?: string
-): Event {
+) {
   const id = `${blockHeight}-${indexInBlock.toString()}`;
   const sortId = getSortId(blockHeight, BigInt(indexInBlock));
-  return Event.create({
+  return {
     id,
     sortId,
     blockHeight,
@@ -172,11 +151,7 @@ export function createEvent(
     pos,
     args,
     cid,
-  });
-}
-
-export async function saveEvents(events: Event[]): Promise<void> {
-  await Promise.all(events.map((event) => event.save()));
+  };
 }
 
 // Accounts DB Functions
@@ -188,24 +163,16 @@ export function createAccountHistory(
   free: bigint,
   reserved: bigint,
   total: bigint
-): AccountHistory {
-  const accountHistory = AccountHistory.create({
+) {
+  return {
     id,
     nonce,
     free,
     reserved,
     total,
-    ...dateEntry(blockNumber),
-  });
-  return accountHistory;
-}
-
-export async function saveAccountHistories(
-  accountHistories: AccountHistory[]
-): Promise<void> {
-  await Promise.all(
-    accountHistories.map((accountHistory) => accountHistory.save())
-  );
+    createdAt: blockNumber,
+    updatedAt: blockNumber,
+  };
 }
 
 export function createTransfer(
@@ -219,9 +186,9 @@ export function createTransfer(
   fee: bigint,
   success: boolean,
   timestamp: Date
-): Transfer {
+) {
   const id = extrinsicId + "-" + eventId;
-  return Transfer.create({
+  return {
     id,
     blockHeight,
     blockHash,
@@ -233,11 +200,7 @@ export function createTransfer(
     fee,
     success,
     timestamp,
-  });
-}
-
-export async function saveTransfers(transfers: Transfer[]): Promise<void> {
-  await Promise.all(transfers.map((transfer) => transfer.save()));
+  };
 }
 
 export function createReward(
@@ -249,9 +212,9 @@ export function createReward(
   rewardType: string,
   amount: bigint,
   timestamp: Date
-): Reward {
+) {
   const id = accountId + "-" + eventId;
-  return Reward.create({
+  return {
     id,
     blockHeight,
     blockHash,
@@ -261,9 +224,5 @@ export function createReward(
     rewardType,
     amount,
     timestamp,
-  });
-}
-
-export async function saveRewards(rewards: Reward[]): Promise<void> {
-  await Promise.all(rewards.map((reward) => reward.save()));
+  };
 }
