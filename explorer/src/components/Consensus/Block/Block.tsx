@@ -25,7 +25,7 @@ export const Block: FC = () => {
   const { loading, setIsVisible } = useIndexersQuery<BlockByIdQuery, BlockByIdQueryVariables>(
     QUERY_BLOCK_BY_ID,
     {
-      variables: { blockId: blockId ?? '0', blockHash: blockId?.toString() ?? '' },
+      variables: { blockId: blockId ?? '0', blockHash: blockId ?? '' },
       skip: !inFocus,
     },
     Routes.consensus,

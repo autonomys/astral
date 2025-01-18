@@ -32,10 +32,8 @@ export const QUERY_BLOCKS = gql`
 `
 
 export const QUERY_BLOCK_BY_ID = gql`
-  query BlockById($blockId: numeric!, $blockHash: String!) {
-    consensus_blocks(
-      where: { _or: [{ height: { _eq: $blockId } }, { hash: { _eq: $blockHash } }] }
-    ) {
+  query BlockById($blockId: String!, $blockHash: String!) {
+    consensus_blocks(where: { _or: [{ id: { _eq: $blockId } }, { hash: { _eq: $blockHash } }] }) {
       id
       height
       hash
