@@ -223,9 +223,9 @@ services:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/consensus
       - --db-schema=consensus
-      - --workers=4
+      - --workers=1
       - --unsafe
-      - --batch-size=250
+      - --batch-size=120
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
@@ -337,7 +337,7 @@ services:
       - --db-schema=files
       - --workers=1
       - --unsafe
-      - --batch-size=25
+      - --batch-size=50
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
