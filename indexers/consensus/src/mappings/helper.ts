@@ -39,7 +39,7 @@ export const getBlockAuthor = (block: SubstrateBlock): string => {
 };
 
 export const parseDataToCid = (data: string): ParsedArgs => {
-  let cid: Cid = undefined;
+  let cid: Cid = "";
   let modifiedArgs: ModifiedArgs = undefined;
   let node: PBNode | null = null;
   try {
