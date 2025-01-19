@@ -132,7 +132,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     const extrinsicSigner = extrinsic.signer.toString();
 
     // Detect data storage extrinsics and parse args to cid
-    let cid: string | undefined = undefined;
+    let cid: string | undefined = "";
     let args: string = stringify(extrinsicMethodToPrimitive.args);
     if (
       (extrinsic.method.section === "historySeeding" &&
@@ -177,7 +177,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         : "";
 
       // Detect data storage extrinsics and parse args to cid
-      let cid: string | undefined = undefined;
+      let cid: string | undefined = "";
       let args: string = stringify(event.event.data);
       if (
         event.event.section === "system" &&
@@ -241,85 +241,85 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       // Increment event index
       eventIndex++;
     });
+  });
 
-    // Process finalization events
-    finalizationEvents.forEach(async (event) => {
-      newEvents.push(
-        createEvent(
-          height,
-          blockHash,
-          BigInt(eventIndex),
-          height + "-" + event.phase.type,
-          extrinsicHash,
-          event.event.section,
-          event.event.method,
-          blockTimestamp,
-          event.phase.type,
-          pos,
-          args,
-          cid
-        )
-      );
+  // Process finalization events
+  finalizationEvents.forEach(async (event) => {
+    newEvents.push(
+      createEvent(
+        height,
+        blockHash,
+        BigInt(eventIndex),
+        "",
+        "",
+        event.event.section,
+        event.event.method,
+        blockTimestamp,
+        event.phase.type,
+        0,
+        stringify(event.event.data),
+        ""
+      )
+    );
 
-      // Process specific events
-      switch (`${event.event.section}.${event.event.method}`) {
-        case "rewards.VoteReward": {
-          const voter = event.event.data[0].toString();
-          const reward = BigInt(event.event.data[1].toString());
+    // Process specific events
+    switch (`${event.event.section}.${event.event.method}`) {
+      case "rewards.VoteReward": {
+        const voter = event.event.data[0].toString();
+        const reward = BigInt(event.event.data[1].toString());
 
-          addressToUpdate.add(voter);
+        addressToUpdate.add(voter);
 
-          totalVoteRewardsCount++;
-          totalRewardValue += reward;
-          totalVoteRewardValue += reward;
+        totalVoteRewardsCount++;
+        totalRewardValue += reward;
+        totalVoteRewardValue += reward;
 
-          newRewards.push(
-            createReward(
-              height,
-              blockHash,
-              height + "-" + event.phase.type,
-              height + "-" + eventIndex,
-              voter,
-              "rewards.VoteReward",
-              reward,
-              blockTimestamp
-            )
-          );
+        newRewards.push(
+          createReward(
+            height,
+            blockHash,
+            height + "-" + event.phase.type,
+            height + "-" + eventIndex,
+            voter,
+            "rewards.VoteReward",
+            reward,
+            blockTimestamp
+          )
+        );
 
-          break;
-        }
-        case "rewards.BlockReward": {
-          const blockAuthor = event.event.data[0].toString();
-          const reward = BigInt(event.event.data[1].toString());
-
-          addressToUpdate.add(blockAuthor);
-
-          totalBlockRewardsCount++;
-          totalRewardValue += reward;
-          totalBlockRewardValue += reward;
-
-          newRewards.push(
-            createReward(
-              height,
-              blockHash,
-              height + "-" + event.phase.type,
-              height + "-" + eventIndex,
-              blockAuthor,
-              "rewards.BlockReward",
-              reward,
-              blockTimestamp
-            )
-          );
-
-          break;
-        }
-        default:
-          break;
+        break;
       }
+      case "rewards.BlockReward": {
+        const blockAuthor = event.event.data[0].toString();
+        const reward = BigInt(event.event.data[1].toString());
 
-      // Increment event index
-      eventIndex++;
-    });
+        addressToUpdate.add(blockAuthor);
+
+        totalBlockRewardsCount++;
+        totalRewardValue += reward;
+        totalBlockRewardValue += reward;
+
+        newRewards.push(
+          createReward(
+            height,
+            blockHash,
+            height + "-" + event.phase.type,
+            height + "-" + eventIndex,
+            blockAuthor,
+            "rewards.BlockReward",
+            reward,
+            blockTimestamp
+          )
+        );
+
+        break;
+      }
+      default:
+        break;
+    }
+
+    // Increment event index
+    eventIndex++;
   });
 
   // Create block logs
