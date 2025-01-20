@@ -26,19 +26,19 @@ export const FarmingHeader = () => {
         link: `/${network}/${Routes.farming}`,
       },
       {
-        title: 'Advance CLI',
-        link: `${EXTERNAL_ROUTES.docs}docs/category/advanced-cli`,
+        title: 'Advance CLI Documentation',
+        link: `${EXTERNAL_ROUTES.docs}farming/advanced-cli/install`,
       },
       {
-        title: 'Documentation',
-        link: `${EXTERNAL_ROUTES.docs}docs/farming-&-staking/farming/space-acres/space-acres-install`,
+        title: 'Space Acres Documentation',
+        link: `${EXTERNAL_ROUTES.docs}farming/space-acres/install`,
       },
     ],
     [network],
   )
 
   return (
-    <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">
+    <header className='body-font z-9 py-[30px] text-gray-600'>
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link

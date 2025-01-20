@@ -22,7 +22,7 @@ const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
         <div className='flex flex-col items-center gap-4'>
           <div className='grid grid-cols-1 gap-4'>
             <Accordion title='How to become a farmer?'>
-              <Link href={EXTERNAL_ROUTES.docs + 'docs/category/farming/'} target='_blank'>
+              <Link href={EXTERNAL_ROUTES.docs + 'category/farming/'} target='_blank'>
                 Please refer to the farming documentation on the Subspace website.
               </Link>
             </Accordion>

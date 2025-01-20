@@ -1,0 +1,43 @@
+table:
+  name: wallets
+  schema: users
+object_relationships:
+  - name: profile
+    using:
+      manual_configuration:
+        column_mapping:
+          profile_id: id
+        insertion_order: null
+        remote_table:
+          name: profiles
+          schema: users
+insert_permissions:
+  - role: astral-api
+    permission:
+      check: {}
+      columns:
+        - profile_id
+        - type
+        - address
+    comment: ""
+select_permissions:
+  - role: astral-api
+    permission:
+      columns:
+        - created_at
+        - deleted_at
+        - id
+        - profile_id
+        - type
+        - updated_at
+        - address
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: astral-api
+    permission:
+      columns:
+        - deleted_at
+      filter: {}
+      check: null
+    comment: ""

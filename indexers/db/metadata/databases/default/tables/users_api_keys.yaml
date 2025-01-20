@@ -1,0 +1,62 @@
+table:
+  name: api_keys
+  schema: users
+object_relationships:
+  - name: profile
+    using:
+      manual_configuration:
+        column_mapping:
+          profile_id: id
+        insertion_order: null
+        remote_table:
+          name: profiles
+          schema: users
+array_relationships:
+  - name: daily_usage
+    using:
+      manual_configuration:
+        column_mapping:
+          id: api_key_id
+        insertion_order: null
+        remote_table:
+          name: api_keys_daily_usage
+          schema: users
+  - name: monthly_usage
+    using:
+      manual_configuration:
+        column_mapping:
+          id: api_key_id
+        insertion_order: null
+        remote_table:
+          name: api_keys_monthly_usage
+          schema: users
+insert_permissions:
+  - role: astral-api
+    permission:
+      check: {}
+      columns:
+        - description
+        - profile_id
+    comment: ""
+select_permissions:
+  - role: astral-api
+    permission:
+      columns:
+        - created_at
+        - deleted_at
+        - description
+        - id
+        - key
+        - profile_id
+        - total_requests
+        - updated_at
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: astral-api
+    permission:
+      columns:
+        - deleted_at
+      filter: {}
+      check: null
+    comment: ""

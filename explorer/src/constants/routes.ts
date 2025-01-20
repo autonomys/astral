@@ -173,15 +173,12 @@ export const EXTERNAL_ROUTES = {
   academy: 'https://academy.autonomys.xyz/',
   privacyPolicy: 'https://www.autonomys.xyz/privacy-policy',
   forum: 'https://forum.autonomys.xyz/',
-  gemini2guide:
-    'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
   docs: 'https://docs.autonomys.xyz/',
   status: 'https://status.autonomys.xyz/',
-  operatorDocs:
-    'https://docs.autonomys.xyz/docs/farming-&-staking/staking/operators/register-operator',
+  operatorDocs: 'https://docs.autonomys.xyz/staking/operator/register',
   social: {
     twitter: 'https://x.com/AutonomysNet',
-    discord: 'https://discord.gg/subspace-network',
+    discord: 'https://autonomys.xyz/discord',
     telegram: 'https://t.me/subspace_network',
     github: 'https://github.com/autonomys',
     reddit: 'https://www.reddit.com/r/autonomys',
@@ -194,7 +191,7 @@ export const EXTERNAL_ROUTES = {
   polkadot: (network: NetworkId): string =>
     `https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.${network}.subspace.network%2Fws#/explorer`,
   subscan: 'https://autonomys.subscan.io/',
-  spaceAcres: 'https://api.github.com/repos/subspace/space-acres/releases/latest',
+  spaceAcres: 'https://api.github.com/repos/autonomys/space-acres/releases/latest',
 }
 
 export const INTERNAL_ROUTES = {

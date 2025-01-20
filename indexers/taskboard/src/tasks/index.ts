@@ -1,7 +1,5 @@
-import { consensusUniqueRowsMapping } from "./consensus";
 import { leaderboardSortAndRank } from "./leaderboardSortAndRank";
 import { slackNotification } from "./slackNotification";
-import { updateAccount } from "./updateAccount";
 
 interface CronConfig {
   pattern: string;
@@ -19,14 +17,6 @@ interface Tasks {
 }
 
 export const tasks: Tasks = {
-  consensusUniqueRowsMapping: {
-    handler: consensusUniqueRowsMapping,
-    concurrency: 1,
-    cron: {
-      pattern: "*/1 * * * *", // Runs every 1 minute
-      enabled: true,
-    },
-  },
   leaderboardSortAndRank: {
     handler: leaderboardSortAndRank,
     concurrency: 1,
@@ -34,10 +24,6 @@ export const tasks: Tasks = {
       pattern: "*/2 * * * *", // Runs every 2 minutes
       enabled: true,
     },
-  },
-  updateAccount: {
-    handler: updateAccount,
-    concurrency: 1,
   },
   slackNotification: {
     handler: slackNotification,
