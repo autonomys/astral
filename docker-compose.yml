@@ -110,13 +110,16 @@ services:
       timeout: 5s
       retries: 3
     depends_on:
-      "postgres":
+      postgres:
         condition: service_healthy
+    restart: unless-stopped
 
   # Hasura GraphQL Engine
   hasura:
     image: hasura/graphql-engine:v2.40.0
     depends_on:
+      pgcat:
+        condition: service_healthy
       postgres:
         condition: service_healthy
     volumes:
@@ -179,7 +182,9 @@ services:
     build:
       context: ./indexers/dictionary/${DICTIONARY_DIRECTORY}
     depends_on:
-      "postgres":
+      pgcat:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -205,9 +210,11 @@ services:
     ports:
       - "127.0.0.1:${DICTIONARY_SUBQUERY_NODE_PORT}:3000"
     depends_on:
-      "postgres":
+      pgcat:
         condition: service_healthy
-      "dictionary_subquery_node":
+      postgres:
+        condition: service_healthy
+      dictionary_subquery_node:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -227,7 +234,9 @@ services:
     ports:
       - "3001:3001"
     depends_on:
-      "postgres":
+      pgcat:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -264,9 +273,11 @@ services:
     ports:
       - "3002:3002"
     depends_on:
-      "postgres":
+      pgcat:
         condition: service_healthy
-      "dictionary_subquery_node":
+      postgres:
+        condition: service_healthy
+      dictionary_subquery_node:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -303,9 +314,11 @@ services:
     ports:
       - "3003:3003"
     depends_on:
-      "postgres":
+      pgcat:
         condition: service_healthy
-      "dictionary_subquery_node":
+      postgres:
+        condition: service_healthy
+      dictionary_subquery_node:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -342,7 +355,9 @@ services:
     ports:
       - "3004:3004"
     depends_on:
-      "postgres":
+      pgcat:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -400,6 +415,8 @@ services:
     build:
       context: ./indexers/taskboard
     depends_on:
+      pgcat:
+        condition: service_healthy
       postgres:
         condition: service_healthy
       redis:
