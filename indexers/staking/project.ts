@@ -7,7 +7,7 @@ import * as dotenv from "dotenv";
 import path from "path";
 
 // Load the appropriate .env file
-const dotenvPath = path.resolve(__dirname, `../../../.env`);
+const dotenvPath = path.resolve(__dirname, `../../.env`);
 dotenv.config({ path: dotenvPath });
 
 // Can expand the Datasource processor types via the genreic param
