@@ -56,7 +56,7 @@ admin_password = "postgres"
 # Pool mode (see PgBouncer docs for more).
 # session: one server connection per connected client
 # transaction: one server connection per client transaction
-pool_mode = "transaction"
+pool_mode = "session"
 
 # If the client doesn't specify, route traffic to
 # this role by default.
