@@ -15,7 +15,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableStates } from 'states/tables'
-import { Cell, ExtrinsicsFilters, TableSettingsTabs } from 'types/table'
+import { Cell, FilesFilters, TableSettingsTabs } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
@@ -35,7 +35,7 @@ export const FileList: FC = () => {
   const availableColumns = useTableStates((state) => state[TABLE].columns)
   const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
   const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
-  const filters = useTableStates((state) => state[TABLE].filters) as ExtrinsicsFilters
+  const filters = useTableStates((state) => state[TABLE].filters) as FilesFilters
   const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
   const setColumns = useTableStates((state) => state.setColumns)
   const setFilters = useTableStates((state) => state.setFilters)
@@ -70,29 +70,29 @@ export const FileList: FC = () => {
     availableColumns
       .filter((column) => column.searchable)
       .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof ExtrinsicsFilters
+        const searchKey = `search-${column.name}` as keyof FilesFilters
         const searchValue = filters[searchKey]
         if (searchValue) {
           conditions[column.name] = { _ilike: `%${searchValue}%` }
         }
       })
 
+    // CID
+    if (filters.cid) {
+      conditions['cid'] = { _ilike: `%${filters.cid}%` }
+    }
+
+    // Name
+    if (filters.name) {
+      conditions['name'] = { _ilike: `%${filters.name}%` }
+    }
+
     // Block Height
-    // if (filters.blockHeightMin || filters.blockHeightMax) {
-    //   conditions['block_height'] = {}
-    //   if (filters.blockHeightMin) conditions.block_height._gte = filters.blockHeightMin
-    //   if (filters.blockHeightMax) conditions.block_height._lte = filters.blockHeightMax
-    // }
-
-    // // Section
-    // if (filters.section) {
-    //   conditions['section'] = { _ilike: `%${filters.section}%` }
-    // }
-
-    // // Module
-    // if (filters.module) {
-    //   conditions['module'] = { _ilike: `%${filters.module}%` }
-    // }
+    if (filters.blockHeightMin || filters.blockHeightMax) {
+      conditions['block_height'] = {}
+      if (filters.blockHeightMin) conditions.block_height._gte = filters.blockHeightMin
+      if (filters.blockHeightMax) conditions.block_height._lte = filters.blockHeightMax
+    }
 
     return conditions
   }, [filters, availableColumns])
@@ -147,19 +147,15 @@ export const FileList: FC = () => {
           </Link>
         ),
         name: ({ row }: Cell<Row>) => `${row.original.name ?? ''}`,
-        // hash: ({ row }: Cell<Row>) => (
-        //   <CopyButton value={row.original.hash} message='Hash copied'>
-        //     {shortString(row.original.hash)}
-        //   </CopyButton>
-        // ),
-        // section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
-        // module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
-        // name: ({ row }: Cell<Row>) => row.original.name.toUpperCase(),
         blockHeight: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-file-block_height`}
             className='hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.cid?.blockHeight)}
+            href={INTERNAL_ROUTES.blocks.id.page(
+              network,
+              Routes.consensus,
+              row.original.cid?.blockHeight,
+            )}
           >
             <div>{row.original.cid?.blockHeight}</div>
           </Link>
@@ -170,7 +166,7 @@ export const FileList: FC = () => {
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(
               network,
-              section,
+              Routes.consensus,
               row.original.cid?.extrinsicId ?? '',
             )}
           >
@@ -178,24 +174,6 @@ export const FileList: FC = () => {
           </Link>
         ),
         timestamp: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.cid?.timestamp),
-        // indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock.toString(),
-        // success: ({ row }: Cell<Row>) => <StatusIcon status={row.original.success} />,
-        // nonce: ({ row }: Cell<Row>) => row.original.nonce,
-        // signer: ({ row }: Cell<Row>) => (
-        //   <AccountIconWithLink
-        //     address={row.original.signer}
-        //     network={network}
-        //     section={Routes.consensus}
-        //     forceShortString={true}
-        //   />
-        // ),
-        // signature: ({ row }: Cell<Row>) => (
-        //   <CopyButton value={row.original.signature} message='Signature copied'>
-        //     {shortString(row.original.signature)}
-        //   </CopyButton>
-        // ),
-        // tip: ({ row }: Cell<Row>) => row.original.tip,
-        // fee: ({ row }: Cell<Row>) => row.original.fee,
       }),
     [network, section, selectedColumns],
   )
