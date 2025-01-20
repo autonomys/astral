@@ -1,18 +1,18 @@
 type Cid @entity {
   id: ID!
-  blockHeight: BigInt! @index
-  blockHash: String! @index
-  extrinsicId: String! @index
-  extrinsicHash: String! @index
-  indexInBlock: Int! @index
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  extrinsicHash: String!
+  indexInBlock: Int!
   links: [String]!
-  timestamp: Date! @index
+  timestamp: Date!
 }
 
 type Chunk @entity {
   id: ID!
-  type: String! @index
-  linkDepth: Int! @index
+  type: String!
+  linkDepth: Int!
   size: BigInt
   name: String
   data: String
@@ -21,47 +21,47 @@ type Chunk @entity {
 
 type Metadata @entity {
   id: ID!
-  size: BigInt! @index
-  name: String @index
+  size: BigInt!
+  name: String
 }
 
 type MetadataCid @entity {
   id: ID!
-  parentCid: String! @index
-  childCid: String! @index
+  parentCid: String!
+  childCid: String!
 }
 
 type Folder @entity {
   id: ID!
-  size: BigInt! @index
-  name: String @index
+  size: BigInt!
+  name: String
 }
 
 type FolderCid @entity {
   id: ID!
-  parentCid: String! @index
-  childCid: String! @index
+  parentCid: String!
+  childCid: String!
 }
 
 type File @entity {
   id: ID!
-  size: BigInt! @index
-  name: String @index
+  size: BigInt!
+  name: String
 }
 
 type FileCid @entity {
   id: ID!
-  parentCid: String! @index
-  childCid: String! @index
+  parentCid: String!
+  childCid: String!
 }
 
 type Error @entity {
   id: ID!
-  blockHeight: BigInt! @index
-  blockHash: String! @index
-  extrinsicId: String! @index
-  extrinsicHash: String! @index
-  indexInBlock: Int! @index
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  extrinsicHash: String!
+  indexInBlock: Int!
   error: String!
-  timestamp: Date! @index
+  timestamp: Date!
 }

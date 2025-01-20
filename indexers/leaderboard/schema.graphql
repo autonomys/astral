@@ -5,90 +5,90 @@
 # account
 type AccountTransferSenderTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type AccountTransferSenderTotalValueHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type AccountTransferReceiverTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type AccountTransferReceiverTotalValueHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type AccountRemarkCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type AccountExtrinsicTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type AccountExtrinsicSuccessTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type AccountExtrinsicFailedTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type AccountTransactionFeePaidTotalValueHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
@@ -96,60 +96,60 @@ type AccountTransactionFeePaidTotalValueHistory @entity {
 # farmer
 type FarmerVoteTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type FarmerVoteTotalValueHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type FarmerBlockTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type FarmerBlockTotalValueHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type FarmerVoteAndBlockTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type FarmerVoteAndBlockTotalValueHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
@@ -157,60 +157,60 @@ type FarmerVoteAndBlockTotalValueHistory @entity {
 # operator
 type OperatorTotalRewardsCollectedHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type OperatorTotalTaxCollectedHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type OperatorBundleTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type OperatorDepositsTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type OperatorDepositsTotalValueHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type OperatorWithdrawalsTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
@@ -218,30 +218,30 @@ type OperatorWithdrawalsTotalCountHistory @entity {
 # nominator/account
 type NominatorDepositsTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type NominatorDepositsTotalValueHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }
 
 type NominatorWithdrawalsTotalCountHistory @entity {
   id: ID!
-  accountId: String! @index
-  value: BigInt! @index
+  accountId: String!
+  value: BigInt!
   lastContributionAt: Date!
-  blockHeight: BigInt! @index
+  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }

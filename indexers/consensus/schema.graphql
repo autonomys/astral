@@ -2,10 +2,10 @@
 
 type Block @entity {
   id: ID!
-  sortId: String! @index
-  height: BigInt! @index
-  hash: String! @index
-  timestamp: Date! @index
+  sortId: String!
+  height: BigInt!
+  hash: String!
+  timestamp: Date!
   parentHash: String!
   specId: String!
   stateRoot: String!
@@ -22,59 +22,59 @@ type Block @entity {
   rewardValue: BigInt!
   blockRewardValue: BigInt!
   voteRewardValue: BigInt!
-  authorId: String! @index
+  authorId: String!
 }
 
 type Log @entity {
   id: ID!
-  sortId: String! @index
-  blockHeight: BigInt! @index
-  blockHash: String! @index
-  indexInBlock: Int! @index
+  sortId: String!
+  blockHeight: BigInt!
+  blockHash: String!
+  indexInBlock: Int!
   kind: String!
   value: String
-  timestamp: Date! @index
+  timestamp: Date!
 }
 
 type Extrinsic @entity {
   id: ID!
-  sortId: String! @index
-  hash: String! @index
-  blockHeight: BigInt! @index
-  blockHash: String! @index
-  section: String! @index
-  module: String! @index
+  sortId: String!
+  hash: String!
+  blockHeight: BigInt!
+  blockHash: String!
+  section: String!
+  module: String!
   name: String!
   indexInBlock: Int!
-  success: Boolean! @index
-  timestamp: Date! @index
+  success: Boolean!
+  timestamp: Date!
   nonce: BigInt!
-  signer: String! @index
+  signer: String!
   signature: String!
   args: String!
   error: String!
   tip: BigInt!
   fee: BigInt!
   pos: Int!
-  cid: String @index
+  cid: String
 }
 
 type Event @entity {
   id: ID!
-  sortId: String! @index
-  blockHeight: BigInt! @index
-  blockHash: String! @index
-  extrinsicId: String! @index
-  extrinsicHash: String! @index
-  section: String! @index
-  module: String! @index
+  sortId: String!
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  extrinsicHash: String!
+  section: String!
+  module: String!
   name: String!
   indexInBlock: BigInt!
-  timestamp: Date! @index
+  timestamp: Date!
   phase: String!
   pos: Int!
   args: String!
-  cid: String @index
+  cid: String
 }
 
 # Accounts Entities
@@ -84,32 +84,32 @@ type AccountHistory @entity {
   nonce: BigInt!
   free: BigInt!
   reserved: BigInt!
-  total: BigInt @index
-  createdAt: BigInt! @index
+  total: BigInt
+  createdAt: BigInt!
 }
 
 type Transfer @entity {
   id: ID!
-  blockHeight: BigInt! @index
-  blockHash: String! @index
-  extrinsicId: String! @index
-  eventId: String! @index
-  from: String! @index
-  to: String! @index
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  eventId: String!
+  from: String!
+  to: String!
   value: BigInt!
   fee: BigInt!
   success: Boolean!
-  timestamp: Date! @index
+  timestamp: Date!
 }
 
 type Reward @entity {
   id: ID!
-  blockHeight: BigInt! @index
-  blockHash: String! @index
-  extrinsicId: String! @index
-  eventId: String! @index
-  accountId: String! @index
-  rewardType: String! @index
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  eventId: String!
+  accountId: String!
+  rewardType: String!
   amount: BigInt!
-  timestamp: Date! @index
+  timestamp: Date!
 }
