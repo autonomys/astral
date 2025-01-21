@@ -8,7 +8,7 @@ import { getMetadata } from 'utils/metadata/basic'
 import { isRouteSupportingNetwork } from 'utils/route'
 
 export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadata =>
-  getMetadata(chain, 'Extrinsics', undefined, `${chain}/${RoutesConsensus.extrinsics}`)
+  getMetadata(chain, 'Extrinsics', undefined)
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
   isRouteSupportingNetwork(chain, Routes.consensus, RoutesConsensus.extrinsics) ? (
