@@ -18490,7 +18490,7 @@ export type CheckRoleQueryVariables = Exact<{
 }>;
 
 
-export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }> };
+export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }>, isOperator: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }>, isNominator: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }> };
 
 export type StakingSummaryQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -22435,6 +22435,22 @@ export const CheckRoleDocument = gql`
     query CheckRole($subspaceAccount: String!) {
   isFarmer: consensus_rewards(
     where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}}
+    limit: 1
+  ) {
+    account {
+      id
+    }
+  }
+  isOperator: consensus_rewards(
+    where: {reward_type: {_eq: "Domains.OperatorRegistered"}, account_id: {_eq: $subspaceAccount}}
+    limit: 1
+  ) {
+    account {
+      id
+    }
+  }
+  isNominator: consensus_rewards(
+    where: {reward_type: {_eq: "Domains.NominatedOperator"}, account_id: {_eq: $subspaceAccount}}
     limit: 1
   ) {
     account {

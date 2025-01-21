@@ -30,7 +30,7 @@ export const HeaderChainDropdown: FC = () => {
 
   return (
     <Listbox value={indexerSet} onChange={handleChainChange}>
-      <div className='relative'>
+      <div className='relative z-10'>
         <Listbox.Button className='relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-blueAccent dark:text-white sm:text-sm'>
           <div className='flex items-center justify-center'>
             <AutonomysSymbol />
