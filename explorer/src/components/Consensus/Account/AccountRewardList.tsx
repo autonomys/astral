@@ -50,7 +50,11 @@ export const AccountRewardList: FC = () => {
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const { accountId } = useParams<AccountIdParam>()
   const inFocus = useWindowFocus()
-  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
+  const lastNetworkBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
+  const lastBlockNumber = useMemo(
+    () => lastNetworkBlockNumber[network],
+    [lastNetworkBlockNumber, network],
+  )
   const orderBy = useMemo(
     () =>
       sorting && sorting.length > 0

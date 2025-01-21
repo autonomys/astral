@@ -17,7 +17,7 @@ const OutOfSyncBanner: FC = () => {
   return (
     <div className='container mx-auto mb-4 flex grow justify-center px-5 md:px-[25px] 2xl:px-0'>
       <div className='sticky top-0 z-50 w-full'>
-        <div className='dark:bg-boxDark w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none'>
+        <div className='w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-boxDark'>
           <div className='flex flex-col gap-4'>
             <div className='text-[20px] font-bold text-[#282929] dark:text-white'>
               Indexer Currently Out of Sync
@@ -51,7 +51,7 @@ const OutOfSyncBanner: FC = () => {
 export const useOutOfSyncBanner = () => {
   const { network } = useIndexers()
 
-  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
+  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber[network])
   const setLastBlockNumber = useConsensusStates((state) => state.setLastBlockNumber)
 
   const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
@@ -61,7 +61,7 @@ export const useOutOfSyncBanner = () => {
   const getChainLastBlock = useCallback(async () => {
     try {
       const api = await activate({ networkId: network })
-      setLastBlockNumber(await blockNumber(api))
+      setLastBlockNumber(network, await blockNumber(api))
       await api.disconnect()
     } catch (error) {
       console.error('Error getting chain last block', error)
