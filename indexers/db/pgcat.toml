@@ -6,7 +6,7 @@
 # General pooler settings
 [general]
 # What IP to run on, 0.0.0.0 means accessible from everywhere.
-host = "0.0.0.0"
+host = "127.0.0.1"
 
 # Port to run on, same as PgBouncer used in this example.
 port = 6432
