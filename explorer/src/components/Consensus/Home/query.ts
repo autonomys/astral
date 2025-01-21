@@ -19,6 +19,14 @@ export const QUERY_HOME = gql`
         timestamp
         success
       }
+      cumulative {
+        cumulative_extrinsics_count
+        cumulative_events_count
+        cumulative_transfers_count
+        cumulative_transfer_value
+        cumulative_rewards_count
+        cumulative_reward_value
+      }
     }
     consensus_accounts_aggregate {
       aggregate {
