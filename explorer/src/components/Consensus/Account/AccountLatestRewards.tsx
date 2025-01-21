@@ -46,11 +46,11 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
               return (
                 <li
                   key={`${id}-account-rewards-block`}
-                  className={`flex w-full justify-between ${
+                  className={`flex w-full items-center justify-between ${
                     index !== rewards.length - 1 && 'mb-[26px]'
                   }`}
                 >
-                  <div className='w-full flex-1 grow'>
+                  <div className='flex w-full flex-1 grow items-center'>
                     <div
                       className={`absolute -left-1.5 size-3 rounded-full ${
                         index === 0
@@ -58,7 +58,7 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
                           : 'bg-buttonDarkFrom dark:bg-buttonDarkTo'
                       }`}
                     ></div>
-                    <div className='-mt-1 ml-4 flex-1 grow text-[13px] font-normal text-grayDark dark:text-white '>
+                    <div className='-mt-1 ml-4 flex flex-1 grow items-center text-[13px] font-normal text-grayDark dark:text-white'>
                       <Link
                         key={`${id}-account-index`}
                         className='hover:text-primaryAccent'

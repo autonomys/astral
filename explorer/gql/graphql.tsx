@@ -18073,7 +18073,7 @@ export type HomeQueryVariables = Exact<{
 }>;
 
 
-export type HomeQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, extrinsics_count: number, events_count: number, space_pledged: any, blockchain_size: any, extrinsicsCount: number, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, name: string, timestamp: any, success: boolean }> }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null } };
+export type HomeQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, extrinsics_count: number, events_count: number, space_pledged: any, blockchain_size: any, extrinsicsCount: number, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, name: string, timestamp: any, success: boolean }>, cumulative?: { __typename?: 'consensus_cumulative_blocks', cumulative_extrinsics_count: any, cumulative_events_count: any, cumulative_transfers_count: any, cumulative_transfer_value: any, cumulative_rewards_count: any, cumulative_reward_value: any } | null }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null } };
 
 export type LogsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -18508,7 +18508,7 @@ export type LastBlockQuery = { __typename?: 'query_root', lastBlock: Array<{ __t
 
 export const AccountsDocument = gql`
     query Accounts($limit: Int!, $offset: Int, $orderBy: [consensus_accounts_order_by!]!, $where: consensus_accounts_bool_exp) {
-  consensus_accounts_aggregate(where: $where) {
+  consensus_accounts_aggregate(limit: 1000, offset: $offset, where: $where) {
     aggregate {
       count
     }
@@ -19643,6 +19643,14 @@ export const HomeDocument = gql`
       name
       timestamp
       success
+    }
+    cumulative {
+      cumulative_extrinsics_count
+      cumulative_events_count
+      cumulative_transfers_count
+      cumulative_transfer_value
+      cumulative_rewards_count
+      cumulative_reward_value
     }
   }
   consensus_accounts_aggregate {
