@@ -26,12 +26,12 @@ export const FarmingHeader = () => {
         link: `/${network}/${Routes.farming}`,
       },
       {
-        title: 'Advance CLI',
-        link: `${EXTERNAL_ROUTES.docs}docs/category/advanced-cli`,
+        title: 'Advance CLI Documentation',
+        link: `${EXTERNAL_ROUTES.docs}farming/advanced-cli/install`,
       },
       {
-        title: 'Documentation',
-        link: `${EXTERNAL_ROUTES.docs}docs/farming-&-staking/farming/space-acres/space-acres-install`,
+        title: 'Space Acres Documentation',
+        link: `${EXTERNAL_ROUTES.docs}farming/space-acres/install`,
       },
     ],
     [network],

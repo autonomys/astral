@@ -4,20 +4,8 @@ export const QUEUES = [NETWORK, SLACK];
 export const TASKS_QUEUES = [
   {
     queue: NETWORK,
-    name: "consensusUniqueRowsMapping",
-    title: "Consensus Unique Rows Mapping",
-    enabled: true,
-  },
-  {
-    queue: NETWORK,
     name: "leaderboardSortAndRank",
     title: "Leaderboard Sort and Rank",
-    enabled: true,
-  },
-  {
-    queue: NETWORK,
-    name: "updateAccount",
-    title: "Update Account",
     enabled: true,
   },
   {

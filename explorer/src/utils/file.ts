@@ -1,5 +1,5 @@
 import { GetCidQuery } from 'gql/graphql'
-import { Zlib } from 'zlibjs/bin/zlib_and_gzip.min.js'
+import { inflate } from 'pako'
 
 export const detectFileType = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   const bytes = [...new Uint8Array(arrayBuffer.slice(0, 4))]
@@ -106,14 +106,7 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') 
   }
   try {
     if (uploadOptions.compression.algorithm === 'ZLIB') {
-      const inflate = new Zlib.Inflate(new Uint8Array(dataArrayBuffer), {
-        index: 0,
-        bufferSize: 1024,
-        bufferType: Zlib.Inflate.BufferType.BLOCK,
-        resize: true,
-        verify: true,
-      })
-      dataArrayBuffer = inflate.decompress()
+      dataArrayBuffer = inflate(new Uint8Array(dataArrayBuffer))
     }
   } catch (error) {
     console.error('Error decompressing data:', error)
