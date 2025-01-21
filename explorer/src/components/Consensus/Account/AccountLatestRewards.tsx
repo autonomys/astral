@@ -5,7 +5,7 @@ import { AccountByIdQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import { AccountIdParam } from 'types/app'
 import { bigNumberToNumber } from 'utils/number'
@@ -18,7 +18,11 @@ interface AccountLatestRewardsProps {
 export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
   const { network, section, tokenSymbol } = useIndexers()
   const { accountId } = useParams<AccountIdParam>()
-  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
+  const lastNetworkBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
+  const lastBlockNumber = useMemo(
+    () => lastNetworkBlockNumber[network],
+    [lastNetworkBlockNumber, network],
+  )
   const { push } = useRouter()
 
   return (
