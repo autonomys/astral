@@ -103,17 +103,17 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@autonomys/auto-consensus@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.0.12.tgz#161866b6e11f586b49846c9387372baeaea3ef0e"
-  integrity sha512-369FyXi5uxKvciEnkPPkBrQhKAK7n8m3EFG3gQBahK36+oRDIP7Dk7DwpRCVnEMIXEIuEEddpEB3cWzWB+V3Rw==
+"@autonomys/auto-consensus@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.2.1.tgz#2325f1cf9348fe03e08d052e4c3677a34a0d1864"
+  integrity sha512-F7MvI8S2oq/CPCgCRWs0aaIvA1ohmNeOuvKWXG/6s5gUyQY8pPEBfhbY5gZWYOylRHUFUCeYeapRQpPSgpj0Fw==
   dependencies:
-    "@autonomys/auto-utils" "^1.0.12"
+    "@autonomys/auto-utils" "^1.2.1"
 
-"@autonomys/auto-utils@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.0.12.tgz#f720eb876df7240a3fa289e6ad6511d468146364"
-  integrity sha512-5vCv37UyjhKExERucnq9epGrQx+K6eqzzglkVUgA9/H7N4J4mXfrRkvES4Ft0ecIukRKxTfjeUEl/mqhZPWhcQ==
+"@autonomys/auto-utils@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.2.1.tgz#f12561d4380d798b4a1706a35605a8f8bf9996f4"
+  integrity sha512-g5TQqq3dLEC25lXD8IzHEUCRfQ8k5j84PX7t9JwPKp+M/tmJEGHdLeIk/FUv6h3IUMQWctynZgfMcA5G0XDIeQ==
   dependencies:
     "@polkadot/api" "^14.3.1"
     "@polkadot/extension-dapp" "^0.56.2"
@@ -3740,6 +3740,11 @@
   version "18.15.13"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.13.tgz#f64277c341150c979e42b00e4ac289290c9df469"
   integrity sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==
+
+"@types/pako@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@types/pako/-/pako-2.0.3.tgz#b6993334f3af27c158f3fe0dfeeba987c578afb1"
+  integrity sha512-bq0hMV9opAcrmE0Byyo0fY3Ew4tgOevJmQ9grUhpXQhYfyLJ1Kqg3P33JT5fdbT2AjeAjR51zqqVjAL/HMkx7Q==
 
 "@types/prop-types@*", "@types/prop-types@^15.7.2":
   version "15.7.11"
@@ -8000,6 +8005,11 @@ pako@^0.2.5:
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
   integrity sha512-NUcwaKxUxWrZLpDG+z/xZaCgQITkA/Dv4V/T6bw7VON6l1Xz/VnrBqrYjZQ12TamKHzITTfOEIYUj48y2KXImA==
 
+pako@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-2.1.0.tgz#266cc37f98c7d883545d11335c00fbd4062c9a86"
+  integrity sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==
+
 param-case@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/param-case/-/param-case-3.0.4.tgz#7d17fe4aa12bde34d4a77d91acfb6219caad01c5"
@@ -10300,11 +10310,6 @@ zen-observable@0.8.15:
   version "0.8.15"
   resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.15.tgz#96415c512d8e3ffd920afd3889604e30b9eaac15"
   integrity sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==
-
-zlibjs@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/zlibjs/-/zlibjs-0.3.1.tgz#50197edb28a1c42ca659cc8b4e6a9ddd6d444554"
-  integrity sha512-+J9RrgTKOmlxFSDHo0pI1xM6BLVUv+o0ZT9ANtCxGkjIVCCUdx9alUF8Gm+dGLKbkkkidWIHFDZHDMpfITt4+w==
 
 zod@^3.22.4:
   version "3.22.4"
