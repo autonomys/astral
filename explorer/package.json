@@ -64,6 +64,7 @@
     "next": "^14.1.2",
     "next-auth": "^4.24.6",
     "next-pwa": "^5.6.0",
+    "pako": "^2.1.0",
     "qrcode.react": "^3.1.0",
     "rc-slider": "^10.6.2",
     "react": "^18.2.0",
@@ -80,7 +81,6 @@
     "web-vitals": "^3.5.2",
     "xlsx": "^0.18.5",
     "yup": "^0.32.11",
-    "zlibjs": "^0.3.1",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"
   },
@@ -94,6 +94,7 @@
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.3",
     "@types/node": "^20.11.24",
+    "@types/pako": "^2.0.3",
     "@types/react": "^18.2.63",
     "@types/react-dom": "^18.2.20",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
