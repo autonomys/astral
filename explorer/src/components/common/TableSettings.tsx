@@ -53,7 +53,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             {tableName} {totalCount && `(${numberWithCommas(totalCount)})`}
           </span>
           <div className='flex items-center'>
-            <div className='sm:flex'>
+            <div className='flex'>
               {addExtraIcons && addExtraIcons}
               <MagnifyingGlassIcon
                 className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
