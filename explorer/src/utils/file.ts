@@ -1,5 +1,13 @@
+import type { FileUploadOptions } from '@autonomys/auto-drive'
 import { GetCidQuery } from 'gql/graphql'
 import { inflate } from 'pako'
+
+export type FileData = {
+  rawData: string
+  dataArrayBuffer: ArrayBuffer
+  isEncrypted: boolean
+  uploadOptions: FileUploadOptions
+}
 
 export const detectFileType = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   const bytes = [...new Uint8Array(arrayBuffer.slice(0, 4))]
@@ -70,17 +78,19 @@ export const detectFileType = async (arrayBuffer: ArrayBuffer): Promise<string> 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') => {
+const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'): FileData => {
   let rawData: string = ''
   let dataArrayBuffer: ArrayBuffer = new ArrayBuffer(0)
   let depth = 0
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let uploadOptions: any
+  let uploadOptions: FileUploadOptions = {}
 
   try {
     if (data['files_' + type + 's'][0].chunk?.uploadOptions) {
-      uploadOptions = JSON.parse(data['files_' + type + 's'][0].chunk?.uploadOptions)
-      if (uploadOptions.encryption.algorithm)
+      uploadOptions = JSON.parse(
+        data['files_' + type + 's'][0].chunk?.uploadOptions,
+      ) as FileUploadOptions
+      if (uploadOptions.encryption && uploadOptions.encryption.algorithm)
         return { rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
     }
   } catch (error) {
@@ -105,7 +115,7 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') 
     }
   }
   try {
-    if (uploadOptions.compression.algorithm === 'ZLIB') {
+    if (uploadOptions.compression && uploadOptions.compression.algorithm === 'ZLIB') {
       dataArrayBuffer = inflate(new Uint8Array(dataArrayBuffer))
     }
   } catch (error) {
@@ -115,7 +125,7 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const extractFileData = (data: GetCidQuery) => {
+export const extractFileData = (data: GetCidQuery): FileData => {
   if (data.files_files.length > 0) return extractFileDataByType(data, 'file')
   else if (data.files_folders.length > 0) return extractFileDataByType(data, 'folder')
   return extractFileDataByType(data, 'metadata')
