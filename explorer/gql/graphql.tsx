@@ -18508,7 +18508,7 @@ export type LastBlockQuery = { __typename?: 'query_root', lastBlock: Array<{ __t
 
 export const AccountsDocument = gql`
     query Accounts($limit: Int!, $offset: Int, $orderBy: [consensus_accounts_order_by!]!, $where: consensus_accounts_bool_exp) {
-  consensus_accounts_aggregate(limit: 1000, offset: $offset, where: $where) {
+  consensus_accounts_aggregate(where: $where) {
     aggregate {
       count
     }
