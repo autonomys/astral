@@ -189,8 +189,8 @@ export const NotFoundImage = () => {
             y2='245.004'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#542C72' />
-            <stop offset='0.7402' stopColor='#160C1E' />
+            <stop stopColor='#3654A6' />
+            <stop offset='0.7402' stopColor='#1E254E' />
             <stop offset='1' />
           </linearGradient>
           <linearGradient
