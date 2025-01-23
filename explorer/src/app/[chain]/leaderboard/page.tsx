@@ -8,7 +8,7 @@ import { getMetadata } from 'utils/metadata/basic'
 import { isRouteSupportingNetwork } from 'utils/route'
 
 export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadata =>
-  getMetadata(chain, 'Top Farmers', undefined)
+  getMetadata(chain, 'Top Farmers', undefined, '/images/share-leaderboard.png')
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
   isRouteSupportingNetwork(chain, Routes.leaderboard) ? <FarmerLeaderboard /> : <NotFound />
