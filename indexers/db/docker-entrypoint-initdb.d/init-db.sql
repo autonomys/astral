@@ -1344,10 +1344,12 @@ ALTER TABLE ONLY files.metadata
 CREATE INDEX "0xccedb032815757ed" ON consensus.blocks USING btree (id);
 CREATE INDEX "consensus_blocks_sort_id" ON consensus.blocks USING btree (sort_id DESC);
 CREATE INDEX "consensus_blocks_hash" ON consensus.blocks USING btree (hash);
+CREATE INDEX "consensus_blocks_id_hash" ON consensus.blocks (id, hash);
 CREATE INDEX "0xd8db4c8313621519" ON consensus.extrinsics USING btree (id);
 CREATE INDEX "consensus_extrinsics_sort_id" ON consensus.extrinsics USING btree (sort_id DESC);
 CREATE INDEX "consensus_extrinsics_hash" ON consensus.extrinsics USING btree (hash);
 CREATE INDEX "consensus_extrinsics_block_height" ON consensus.extrinsics USING btree (block_height);
+CREATE INDEX "consensus_extrinsics_signer" ON consensus.extrinsics USING btree (signer);
 CREATE INDEX "0xe5bf5858bd35a276" ON consensus.events USING btree (id);
 CREATE INDEX "consensus_events_sort_id" ON consensus.events USING btree (sort_id DESC);
 CREATE INDEX "consensus_events_extrinsic_id" ON consensus.events USING btree (extrinsic_id);
@@ -1367,6 +1369,8 @@ CREATE INDEX "0x3d8ee08d232943ea" ON consensus.sections USING btree (id);
 CREATE INDEX "0x1e967733a0d5db15" ON consensus.rewards USING btree (id);
 CREATE INDEX "consensus_rewards_account_id" ON consensus.rewards USING btree (account_id);
 CREATE INDEX "0x09a98aa53fa2c2e3" ON consensus.logs USING btree (id);
+CREATE INDEX "consensus_logs_sort_id" ON consensus.logs USING btree (sort_id DESC);
+CREATE INDEX "consensus_logs_block_height" ON consensus.logs USING btree (block_height);
 
 CREATE INDEX "0x288575ef7a7aaf75" ON dictionary.extrinsics USING btree (module);
 CREATE INDEX "0x46e7a495bb4c21d1" ON dictionary.events USING btree (event);
