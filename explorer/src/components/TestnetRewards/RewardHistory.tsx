@@ -101,7 +101,11 @@ export const RewardHistory: FC = () => {
               Please review your Subspace Network rewards for the testnet phases.
             </p>
             <div className='flex justify-center'>
-              {!actingAccount ? <WalletButton /> : <AccountListDropdown className='rounded-full' />}
+              {!actingAccount ? (
+                <WalletButton />
+              ) : (
+                <AccountListDropdown className='rounded-full' labelClassName='block w-full' />
+              )}
             </div>
             {actingAccount && !subspaceAccount && (
               <div className='flex justify-center'>

@@ -15,9 +15,10 @@ import { limitText } from 'utils/string'
 
 interface AccountListDropdownProps {
   className?: string
+  labelClassName?: string
 }
 
-function AccountListDropdown({ className }: AccountListDropdownProps) {
+function AccountListDropdown({ className, labelClassName }: AccountListDropdownProps) {
   const { actingAccount, subspaceAccount, accounts, changeAccount, disconnectWallet } = useWallet()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
@@ -99,7 +100,9 @@ function AccountListDropdown({ className }: AccountListDropdownProps) {
         >
           <div className='flex items-center justify-center'>
             {extensionIcon}
-            <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full '>
+            <span
+              className={cn('ml-2 hidden w-5 truncate text-sm sm:block md:w-full', labelClassName)}
+            >
               {subspaceAccount
                 ? shortString(subspaceAccount)
                 : actingAccount
