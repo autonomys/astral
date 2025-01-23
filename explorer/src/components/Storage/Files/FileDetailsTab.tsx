@@ -79,18 +79,18 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
         ) : (
           <></>
         )}
-        <Tab title='File Upload Options'>
-          <FileUploadOptions fileData={fileData} />
-        </Tab>
-        <Tab title='Raw File Data'>
-          <FileRawData fileData={fileData} />
-        </Tab>
         <Tab title='Download' onClick={downloadFile}>
           <div className='flex justify-center'>
             <div className='mb-4 flex w-full items-center justify-center break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10'>
               Your download should start shortly.
             </div>
           </div>
+        </Tab>
+        <Tab title='File Upload Options'>
+          <FileUploadOptions fileData={fileData} />
+        </Tab>
+        <Tab title='Raw File Data'>
+          <FileRawData fileData={fileData} />
         </Tab>
       </PageTabs>
     </div>
