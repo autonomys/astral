@@ -97,8 +97,10 @@ export const FilePreview: FC<Props> = ({ fileData }) => {
 
   return (
     <div className='flex justify-center'>
-      {imageSrc && preview}
-      {!imageSrc && <p>No preview available.</p>}
+      <div className='mb-4 w-full break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10'>
+        {imageSrc && preview}
+        {!imageSrc && <p>No preview available.</p>}
+      </div>
     </div>
   )
 }
