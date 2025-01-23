@@ -3,6 +3,7 @@ import { GetCidQuery } from 'gql/graphql'
 import { inflate } from 'pako'
 
 export type FileData = {
+  name: string
   rawData: string
   dataArrayBuffer: ArrayBuffer
   isEncrypted: boolean
@@ -79,6 +80,7 @@ export const detectFileType = async (arrayBuffer: ArrayBuffer): Promise<string> 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'): FileData => {
+  const name = data['files_' + type + 's'][0].name || ''
   let rawData: string = ''
   let dataArrayBuffer: ArrayBuffer = new ArrayBuffer(0)
   let depth = 0
@@ -91,7 +93,7 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'):
         data['files_' + type + 's'][0].chunk?.uploadOptions,
       ) as FileUploadOptions
       if (uploadOptions.encryption && uploadOptions.encryption.algorithm)
-        return { rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
+        return { name, rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
     }
   } catch (error) {
     console.error('Error checking uploadOptions:', error)
@@ -121,7 +123,7 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'):
   } catch (error) {
     console.error('Error decompressing data:', error)
   }
-  return { rawData, dataArrayBuffer, isEncrypted: false, uploadOptions }
+  return { name, rawData, dataArrayBuffer, isEncrypted: false, uploadOptions }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
