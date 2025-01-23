@@ -1,43 +1,18 @@
 import { LockClosedIcon } from '@heroicons/react/24/outline'
 import { Arguments } from 'components/common/Arguments'
 import Image from 'next/image'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { detectFileType, FileData } from 'utils/file'
+import { FC, useMemo } from 'react'
+import { FileData } from 'utils/file'
 
 type Props = {
   fileData: FileData
+  fileType: string
+  fileUrl: string
 }
 
-export const FilePreview: FC<Props> = ({ fileData }) => {
-  const [fileType, setFileType] = useState<string | null>(null)
-  const [imageSrc, setImageSrc] = useState<string | null>(null)
-
-  const fetchData = useCallback(async () => {
-    const fileType = await detectFileType(fileData.dataArrayBuffer)
-    setFileType(fileType)
-  }, [fileData])
-
-  const getPreviewUrl = useCallback(
-    (fileData: FileData) => {
-      if (fileData) {
-        if (fileType?.startsWith('image/svg')) {
-          const url = `data:${fileType};charset=utf-8,${encodeURIComponent(Buffer.from(fileData.rawData).toString('utf-8'))}`
-          setImageSrc(url)
-          return () => {}
-        } else {
-          const url = URL.createObjectURL(new Blob([fileData.rawData], { type: fileType ?? '' }))
-          setImageSrc(url)
-          return () => {
-            URL.revokeObjectURL(url)
-          }
-        }
-      }
-    },
-    [fileType],
-  )
-
+export const FilePreview: FC<Props> = ({ fileData, fileType, fileUrl }) => {
   const preview = useMemo(() => {
-    if (!imageSrc) return <></>
+    if (!fileUrl) return <></>
 
     switch (true) {
       case fileData?.isEncrypted:
@@ -52,7 +27,7 @@ export const FilePreview: FC<Props> = ({ fileData }) => {
       case fileType?.startsWith('image'):
         return (
           <Image
-            src={imageSrc}
+            src={fileUrl}
             alt='File Preview'
             width={520}
             height={520}
@@ -62,9 +37,9 @@ export const FilePreview: FC<Props> = ({ fileData }) => {
       case fileType?.startsWith('application/pdf'):
       case fileType?.startsWith('application/ai'):
         return (
-          <object data={imageSrc} type={fileType ?? ''} width='100%' height='800px'>
+          <object data={fileUrl} type={fileType ?? ''} width='100%' height='800px'>
             <p>
-              Alternative text - include a link <a href={imageSrc}>to the PDF!</a>
+              Alternative text - include a link <a href={fileUrl}>to the PDF!</a>
             </p>
           </object>
         )
@@ -85,21 +60,13 @@ export const FilePreview: FC<Props> = ({ fileData }) => {
       default:
         return <div>No preview available</div>
     }
-  }, [imageSrc, fileData, fileType])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  useEffect(() => {
-    if (fileData) getPreviewUrl(fileData)
-  }, [fileData, getPreviewUrl])
+  }, [fileUrl, fileData, fileType])
 
   return (
     <div className='flex justify-center'>
-      <div className='mb-4 w-full break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10'>
-        {imageSrc && preview}
-        {!imageSrc && <p>No preview available.</p>}
+      <div className='mb-4 flex w-full items-center justify-center break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10'>
+        {fileUrl && preview}
+        {!fileUrl && <p>No preview available.</p>}
       </div>
     </div>
   )
