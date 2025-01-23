@@ -7,7 +7,7 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { extractFileData, FileData } from 'utils/file'
+import { detectFileType, extractFileData, FileData } from 'utils/file'
 import { FilePreview } from './FilePreview'
 import { FileRawData } from './FileRawData'
 import { FileUploadOptions } from './FileUploadOptions'
@@ -32,6 +32,23 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
     setFileData(extractFileData(data))
   }, [data])
 
+  const downloadFile = useCallback(async () => {
+    if (!fileData) return
+
+    const typeDetected = await detectFileType(fileData.dataArrayBuffer)
+    const type = typeDetected === 'unknown' ? 'application/json' : typeDetected
+
+    const blob = new Blob([fileData.dataArrayBuffer], { type })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = fileData.name || 'download'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }, [fileData])
+
   useEffect(() => {
     getDataDetails()
   }, [getDataDetails])
@@ -51,6 +68,7 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
         <Tab title='Raw File Data'>
           <FileRawData fileData={fileData} />
         </Tab>
+        <Tab title='Download' onClick={downloadFile} />
       </PageTabs>
     </div>
   )
