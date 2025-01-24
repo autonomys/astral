@@ -374,7 +374,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -525,7 +525,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                             }`}
                           />
                           <button
-                            className='bg-buttonLightFrom dark:bg-buttonDarkFrom absolute flex items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                            className='absolute flex items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                             type='button'
                             style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                             onClick={() => setFieldValue('amount', maxAmount)}
@@ -560,8 +560,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                               <Field
                                 name='nonce'
                                 type='number'
-                                placeholder={`Nonce'
-                                }`}
+                                placeholder={'Nonce'}
                                 className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                                   errors.nonce &&
                                   'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
@@ -586,7 +585,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium capitalize text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -621,7 +620,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -687,8 +686,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                               <Field
                                 name='nonce'
                                 type='number'
-                                placeholder={`Nonce'
-                                }`}
+                                placeholder={'Nonce'}
                                 className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                                   errors.nonce &&
                                   'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
@@ -713,7 +711,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium capitalize text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -771,7 +769,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -824,8 +822,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                               <Field
                                 name='nonce'
                                 type='number'
-                                placeholder={`Nonce'
-                                }`}
+                                placeholder={'Nonce'}
                                 className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                                   errors.nonce &&
                                   'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
@@ -851,7 +848,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     )}
                     {selectedCategory && selectedMethod && (
                       <button
-                        className='bg-buttonLightFrom dark:bg-buttonDarkFrom flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium capitalize text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(selectedMethod)}
@@ -914,7 +911,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
         </div>
         <button
-          className='bg-buttonLightTo dark:bg-buttonDarkTo flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightTo px-2 text-sm font-medium text-white dark:bg-buttonDarkTo md:space-x-4 md:text-base'
           onClick={handleClose}
         >
           Close
