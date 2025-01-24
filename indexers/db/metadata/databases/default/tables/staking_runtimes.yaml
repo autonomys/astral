@@ -1,21 +1,18 @@
 table:
-  name: domains
+  name: runtimes
   schema: staking
 select_permissions:
   - role: user
     permission:
       columns:
         - _block_range
-        - runtime_id
         - block_height
-        - completed_epoch
         - created_by
         - extrinsic_id
         - id
         - name
-        - runtime
-        - runtime_info
         - sort_id
+        - type
         - _id
       filter: {}
       allow_aggregations: true
