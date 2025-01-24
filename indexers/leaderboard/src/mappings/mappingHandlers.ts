@@ -15,21 +15,63 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   let cache = db.initializeCache();
   let eventIndex = 0;
 
+  const [eventsByExtrinsic, finalizationEvents] = events.reduce<
+    [Record<number, typeof events>, typeof events]
+  >(
+    (acc, event) => {
+      if (event.phase.isApplyExtrinsic) {
+        const idx = event.phase.asApplyExtrinsic.toNumber();
+        if (!acc[0][idx]) acc[0][idx] = [];
+        acc[0][idx].push(event);
+      } else if (event.phase.isFinalization) {
+        acc[1].push(event);
+      }
+      return acc;
+    },
+    [{}, []]
+  );
+
   // Process extrinsics
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
-    const extrinsicEvents = events.filter(
-      (e) =>
-        e.phase.isApplyExtrinsic &&
-        e.phase.asApplyExtrinsic.toNumber() === extrinsicIdx
+    const extrinsicEvents = eventsByExtrinsic[extrinsicIdx] || [];
+    const { feeEvent, errorEvent, successEvent } = extrinsicEvents.reduce(
+      (
+        acc: {
+          feeEvent?: (typeof events)[number];
+          errorEvent?: (typeof events)[number];
+          successEvent?: (typeof events)[number];
+        },
+        event
+      ) => {
+        // Check for fee event
+        if (
+          !acc.feeEvent &&
+          event.event.section === "balances" &&
+          event.event.method === "Withdraw"
+        ) {
+          acc.feeEvent = event;
+        }
+        // Check for error event
+        else if (
+          !acc.errorEvent &&
+          event.event.section === "system" &&
+          event.event.method === "ExtrinsicFailed"
+        ) {
+          acc.errorEvent = event;
+        }
+        // Check for success event
+        else if (
+          !acc.successEvent &&
+          event.event.section === "system" &&
+          event.event.method === "ExtrinsicSuccess"
+        ) {
+          acc.successEvent = event;
+        }
+        return acc;
+      },
+      {}
     );
-    const successEvent = events.find(
-      (e) =>
-        e.event.section === "system" && e.event.method === "ExtrinsicSuccess"
-    );
-    const successEventId = events.findIndex(
-      (e) =>
-        e.event.section === "system" && e.event.method === "ExtrinsicSuccess"
-    );
+    const successEventId = successEvent?.event.index.toString() || "";
     const extrinsicId = extrinsic ? height + "-" + extrinsicIdx.toString() : "";
     const extrinsicSigner = extrinsic.signer.toString();
 
@@ -39,7 +81,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         BigInt(1),
         height,
         extrinsicId,
-        height + "-" + successEventId.toString(),
+        height + "-" + successEventId,
         timestamp
       )
     );
@@ -50,7 +92,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           BigInt(1),
           height,
           extrinsicId,
-          height + "-" + successEventId.toString(),
+          height + "-" + successEventId,
           timestamp
         )
       );
@@ -59,13 +101,19 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       switch (`${extrinsic.method.section}.${extrinsic.method.method}`) {
         case "system.remark":
         case "system.remarkWithEvent": {
+          const eventRemarked = extrinsicEvents.find(
+            (e) => e.event.section === "system" && e.event.method === "Remarked"
+          );
+          const eventRemarkedId = eventRemarked
+            ? height + "-" + eventRemarked.event.index.toString()
+            : "";
           cache.accountRemarkCountHistory.push(
             db.createAccountRemarkCount(
               extrinsicSigner,
               BigInt(1),
               height,
               extrinsicId,
-              "",
+              eventRemarkedId,
               timestamp
             )
           );
@@ -145,7 +193,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
             break;
           }
           case "domains.OperatorRewarded": {
-            const operatorId = event.event.data[0].toString();
+            const operatorId = event.event.data[1].toString();
             const reward = BigInt(event.event.data[1].toString());
             if (reward === BigInt(0)) break;
 
@@ -194,13 +242,46 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
             break;
           }
           case "domains.OperatorRegistered": {
-            const operatorId = event.event.data[0].toString();
-            const reward = BigInt(event.event.data[1].toString());
+            const domainId = event.event.data[0].toString();
+            const operatorId = event.event.data[1].toString();
+            const amount = BigInt(extrinsic.data[0].toString());
+            const nominatorId = extrinsic.signer.toString();
 
-            cache.operatorTotalRewardsCollectedHistory.push(
-              db.createOperatorTotalRewardsCollected(
+            cache.operatorDepositsTotalCountHistory.push(
+              db.createOperatorDepositsTotalCount(
                 operatorId,
-                reward,
+                BigInt(1),
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            cache.operatorDepositsTotalValueHistory.push(
+              db.createOperatorDepositsTotalValue(
+                operatorId,
+                amount,
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+
+            cache.nominatorDepositsTotalCountHistory.push(
+              db.createNominatorDepositsTotalCount(
+                nominatorId,
+                BigInt(1),
+                height,
+                extrinsicId,
+                eventId,
+                timestamp
+              )
+            );
+            cache.nominatorDepositsTotalValueHistory.push(
+              db.createNominatorDepositsTotalValue(
+                nominatorId,
+                amount,
                 height,
                 extrinsicId,
                 eventId,
@@ -304,8 +385,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       );
     }
   });
-
-  const finalizationEvents = events.filter((e) => e.phase.isFinalization);
 
   // Process finalization events
   finalizationEvents.forEach((event) => {
