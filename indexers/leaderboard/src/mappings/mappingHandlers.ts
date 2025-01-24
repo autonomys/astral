@@ -34,33 +34,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   // Process extrinsics
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
     const extrinsicEvents = eventsByExtrinsic[extrinsicIdx] || [];
-    const { feeEvent, errorEvent, successEvent } = extrinsicEvents.reduce(
+    const { successEvent } = extrinsicEvents.reduce(
       (
         acc: {
-          feeEvent?: (typeof events)[number];
-          errorEvent?: (typeof events)[number];
           successEvent?: (typeof events)[number];
         },
         event
       ) => {
-        // Check for fee event
-        if (
-          !acc.feeEvent &&
-          event.event.section === "balances" &&
-          event.event.method === "Withdraw"
-        ) {
-          acc.feeEvent = event;
-        }
-        // Check for error event
-        else if (
-          !acc.errorEvent &&
-          event.event.section === "system" &&
-          event.event.method === "ExtrinsicFailed"
-        ) {
-          acc.errorEvent = event;
-        }
         // Check for success event
-        else if (
+        if (
           !acc.successEvent &&
           event.event.section === "system" &&
           event.event.method === "ExtrinsicSuccess"
