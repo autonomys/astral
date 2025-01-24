@@ -110,7 +110,7 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
         title: 'Total Extrinsics',
         icon: <DocIcon />,
         value: extrinsicsCount,
-        darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleUndertone dark:to-pastelBlue',
+        darkBgClass: 'dark:bg-boxDark',
       },
     ],
     [blocksCount, nodeCount, spacePledged, historySize, accountsCount, extrinsicsCount],
