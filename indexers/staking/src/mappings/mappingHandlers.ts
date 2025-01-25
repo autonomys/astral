@@ -1,10 +1,10 @@
 import { capitalizeFirstLetter, stringify } from "@autonomys/auto-utils";
 import { SubstrateEvent } from "@subql/types";
 import {
-  createAndSaveBundleStored,
+  createAndSaveBundleSubmission,
   createAndSaveDeposit,
-  createAndSaveDomainInstantiated,
-  createAndSaveOperatorRegistered,
+  createAndSaveDomain,
+  createAndSaveOperator,
   createAndSaveOperatorReward,
   createAndSaveRuntime,
 } from "./db";
@@ -58,7 +58,7 @@ export async function handleDomainInstantiated(
     const blockHeight = BigInt(event.block.block.header.number.toString());
     const extrinsicId = `${blockHeight}-${extrinsic.idx}`;
 
-    await createAndSaveDomainInstantiated(
+    await createAndSaveDomain(
       domainId,
       domainName,
       runtimeId,
@@ -109,7 +109,7 @@ export async function handleOperatorRegistered(
       storageFeeDepositedEvent?.event.data[2].toString() ?? 0
     );
 
-    const operator = await createAndSaveOperatorRegistered(
+    const operator = await createAndSaveOperator(
       eventOperatorId,
       signer,
       domainId,
@@ -294,7 +294,7 @@ export async function handleBundleStored(event: SubstrateEvent): Promise<void> {
     if (!bundleStoredEvent) throw new Error("BundleStored event not found");
     const bundleHash = bundleStoredEvent.event.data[1].toString();
 
-    await createAndSaveBundleStored(
+    await createAndSaveBundleSubmission(
       bundleHash,
       signer,
       String(domainId),

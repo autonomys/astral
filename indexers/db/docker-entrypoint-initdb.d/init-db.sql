@@ -1117,7 +1117,7 @@ CREATE TABLE files.metadata (
 );
 ALTER TABLE files.metadata OWNER TO postgres;
 
-CREATE TABLE staking.bundle_storeds (
+CREATE TABLE staking.bundle_submissions (
     id text NOT NULL,
     account_id text NOT NULL,
     bundle_id text NOT NULL,
@@ -1145,7 +1145,7 @@ CREATE TABLE staking.bundle_storeds (
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
-ALTER TABLE staking.bundle_storeds OWNER TO postgres;
+ALTER TABLE staking.bundle_submissions OWNER TO postgres;
 
 CREATE TABLE staking.deposits (
     id text NOT NULL,
@@ -1164,7 +1164,7 @@ CREATE TABLE staking.deposits (
 );
 ALTER TABLE staking.deposits OWNER TO postgres;
 
-CREATE TABLE staking.domain_instantiateds (
+CREATE TABLE staking.domains (
     id text NOT NULL,
     sort_id text NOT NULL,
     name text NOT NULL,
@@ -1178,9 +1178,9 @@ CREATE TABLE staking.domain_instantiateds (
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
-ALTER TABLE staking.domain_instantiateds OWNER TO postgres;
+ALTER TABLE staking.domains OWNER TO postgres;
 
-CREATE TABLE staking.operator_registereds (
+CREATE TABLE staking.operators (
     id text NOT NULL,
     sort_id text NOT NULL,
     owner text NOT NULL,
@@ -1193,7 +1193,7 @@ CREATE TABLE staking.operator_registereds (
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
-ALTER TABLE staking.operator_registereds OWNER TO postgres;
+ALTER TABLE staking.operators OWNER TO postgres;
 
 CREATE TABLE staking.operator_rewards (
     id text NOT NULL,
@@ -1470,17 +1470,17 @@ ALTER TABLE ONLY files.metadata
 ALTER TABLE ONLY staking._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
 
-ALTER TABLE ONLY staking.bundle_storeds
-    ADD CONSTRAINT bundle_storeds_pkey PRIMARY KEY (_id);
+ALTER TABLE ONLY staking.bundle_submissions
+    ADD CONSTRAINT bundle_submissions_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY staking.deposits
     ADD CONSTRAINT deposits_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.domain_instantiateds
-    ADD CONSTRAINT domain_instantiateds_pkey PRIMARY KEY (_id);
+ALTER TABLE ONLY staking.domains
+    ADD CONSTRAINT domains_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.operator_registereds
-    ADD CONSTRAINT operator_registereds_pkey PRIMARY KEY (_id);
+ALTER TABLE ONLY staking.operators
+    ADD CONSTRAINT operators_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY staking.operator_rewards
     ADD CONSTRAINT operator_rewards_pkey PRIMARY KEY (_id);
@@ -1638,10 +1638,10 @@ CREATE INDEX "0xd9be8718ef6c7984" ON files.folder_cids USING btree (id);
 CREATE INDEX "files_folder_cids_parent_cid" ON files.folder_cids USING btree (parent_cid);
 
 CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
-CREATE INDEX "0x4d3285ccda1510ee" ON staking.domain_instantiateds USING btree (id);
+CREATE INDEX "0x4d3285ccda1510ee" ON staking.domains USING btree (id);
 CREATE INDEX "0x5a29da535e66d318" ON staking.deposits USING btree (id);
-CREATE INDEX "0x6cb7d13b1c4d2ddd" ON staking.bundle_storeds USING btree (id);
-CREATE INDEX "0x807715b2063aac6b" ON staking.operator_registereds USING btree (id);
+CREATE INDEX "0x6cb7d13b1c4d2ddd" ON staking.bundle_submissions USING btree (id);
+CREATE INDEX "0x807715b2063aac6b" ON staking.operators USING btree (id);
 CREATE INDEX "0xae5b6472b5054a3a" ON staking.runtimes USING btree (id);
 
 

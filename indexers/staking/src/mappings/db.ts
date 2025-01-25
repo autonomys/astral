@@ -1,8 +1,8 @@
 import {
-  BundleStored,
+  BundleSubmission,
   Deposit,
-  DomainInstantiated,
-  OperatorRegistered,
+  Domain,
+  Operator,
   OperatorReward,
   Runtime,
 } from "../types";
@@ -28,7 +28,7 @@ export async function createAndSaveRuntime(
   await runtime.save();
 }
 
-export async function createAndSaveDomainInstantiated(
+export async function createAndSaveDomain(
   domainId: string,
   name: string,
   runtimeId: number,
@@ -40,7 +40,7 @@ export async function createAndSaveDomainInstantiated(
   extrinsicId: string
 ): Promise<void> {
   const id = domainId.toLowerCase();
-  const domain = DomainInstantiated.create({
+  const domain = Domain.create({
     id,
     sortId: getSortId(id),
     name,
@@ -55,7 +55,7 @@ export async function createAndSaveDomainInstantiated(
   await domain.save();
 }
 
-export async function createAndSaveOperatorRegistered(
+export async function createAndSaveOperator(
   operatorId: string,
   owner: string,
   domainId: string,
@@ -66,7 +66,7 @@ export async function createAndSaveOperatorRegistered(
   extrinsicId: string
 ): Promise<void> {
   const id = operatorId.toLowerCase();
-  const operator = OperatorRegistered.create({
+  const operator = Operator.create({
     id,
     sortId: getSortId(domainId, id),
     owner,
@@ -125,7 +125,7 @@ export async function createAndSaveOperatorReward(
   await nominator.save();
 }
 
-export async function createAndSaveBundleStored(
+export async function createAndSaveBundleSubmission(
   id: string,
   accountId: string,
   domainId: string,
@@ -150,7 +150,7 @@ export async function createAndSaveBundleStored(
   burnedBalance: bigint
 ): Promise<void> {
   const bundleId = `${domainId}-${id.toLowerCase()}`;
-  const bundle = BundleStored.create({
+  const bundle = BundleSubmission.create({
     id: bundleId,
     accountId,
     bundleId,

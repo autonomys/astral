@@ -12,7 +12,7 @@ type Runtime @entity {
   extrinsicId: String!
 }
 
-type DomainInstantiated @entity {
+type Domain @entity {
   id: ID!
   sortId: String!
   name: String!
@@ -25,7 +25,7 @@ type DomainInstantiated @entity {
   extrinsicId: String!
 }
 
-type OperatorRegistered @entity {
+type Operator @entity {
   id: ID!
   sortId: String!
   owner: String!
@@ -60,7 +60,7 @@ type OperatorReward @entity {
   createdAt: BigInt!
 }
 
-type BundleStored @entity {
+type BundleSubmission @entity {
   id: ID!
   accountId: String!
   bundleId: String!
