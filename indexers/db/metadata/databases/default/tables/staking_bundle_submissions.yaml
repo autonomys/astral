@@ -1,5 +1,5 @@
 table:
-  name: bundle_storeds
+  name: bundle_submissions
   schema: staking
 select_permissions:
   - role: user

@@ -1,5 +1,5 @@
 table:
-  name: domain_instantiateds
+  name: domains
   schema: staking
 select_permissions:
   - role: user
