@@ -80,6 +80,30 @@ const project: SubstrateProject = {
               method: "OperatorRegistered",
             },
           },
+          {
+            kind: SubstrateHandlerKind.Call,
+            handler: "handleOperatorNominated",
+            filter: {
+              module: "domains",
+              method: "OperatorNominated",
+            },
+          },
+          {
+            kind: SubstrateHandlerKind.Event,
+            handler: "handleOperatorRewarded",
+            filter: {
+              module: "domains",
+              method: "OperatorRewarded",
+            },
+          },
+          {
+            kind: SubstrateHandlerKind.Event,
+            handler: "handleBundleStored",
+            filter: {
+              module: "domains",
+              method: "BundleStored",
+            },
+          },
         ],
       },
     },

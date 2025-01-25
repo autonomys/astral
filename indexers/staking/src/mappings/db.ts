@@ -1,4 +1,11 @@
-import { Domain, Operator, Runtime } from "../types";
+import {
+  BundleStored,
+  Deposit,
+  DomainInstantiated,
+  OperatorRegistered,
+  OperatorReward,
+  Runtime,
+} from "../types";
 import { getSortId } from "./utils";
 
 export async function createAndSaveRuntime(
@@ -8,7 +15,7 @@ export async function createAndSaveRuntime(
   createdBy: string,
   blockHeight: bigint,
   extrinsicId: string
-): Promise<Runtime> {
+): Promise<void> {
   const runtime = Runtime.create({
     id: runtimeId,
     sortId: getSortId(runtimeId),
@@ -19,10 +26,9 @@ export async function createAndSaveRuntime(
     extrinsicId,
   });
   await runtime.save();
-  return runtime;
 }
 
-export async function createAndSaveDomain(
+export async function createAndSaveDomainInstantiated(
   domainId: string,
   name: string,
   runtimeId: number,
@@ -32,9 +38,9 @@ export async function createAndSaveDomain(
   createdBy: string,
   blockHeight: bigint,
   extrinsicId: string
-): Promise<Domain> {
+): Promise<void> {
   const id = domainId.toLowerCase();
-  const domain = Domain.create({
+  const domain = DomainInstantiated.create({
     id,
     sortId: getSortId(id),
     name,
@@ -47,10 +53,9 @@ export async function createAndSaveDomain(
     extrinsicId,
   });
   await domain.save();
-  return domain;
 }
 
-export async function createAndSaveOperator(
+export async function createAndSaveOperatorRegistered(
   operatorId: string,
   owner: string,
   domainId: string,
@@ -59,9 +64,9 @@ export async function createAndSaveOperator(
   nominationTax: number,
   blockHeight: bigint,
   extrinsicId: string
-): Promise<Operator> {
+): Promise<void> {
   const id = operatorId.toLowerCase();
-  const operator = Operator.create({
+  const operator = OperatorRegistered.create({
     id,
     sortId: getSortId(domainId, id),
     owner,
@@ -73,5 +78,103 @@ export async function createAndSaveOperator(
     extrinsicId,
   });
   await operator.save();
-  return operator;
+}
+
+export async function createAndSaveDeposit(
+  accountId: string,
+  domainId: string,
+  operatorId: string,
+  amount: bigint,
+  storageFeeDeposit: bigint,
+  extrinsicId: string,
+  blockHeight: bigint
+): Promise<void> {
+  const nominatorId = `${accountId}-${domainId}-${operatorId}`;
+  const id = `${blockHeight}-${extrinsicId}-${nominatorId}`;
+  const nominator = Deposit.create({
+    id,
+    sortId: `${getSortId(blockHeight, extrinsicId)}`,
+    accountId,
+    domainId,
+    operatorId,
+    nominatorId,
+    amount,
+    storageFeeDeposit,
+    totalAmount: amount + storageFeeDeposit,
+    extrinsicId,
+    createdAt: blockHeight,
+  });
+  await nominator.save();
+}
+
+export async function createAndSaveOperatorReward(
+  operatorId: string,
+  amount: bigint,
+  atBlockNumber: bigint,
+  extrinsicId: string,
+  blockHeight: bigint
+): Promise<void> {
+  const nominator = OperatorReward.create({
+    id: extrinsicId,
+    operatorId,
+    amount,
+    atBlockNumber,
+    extrinsicId,
+    createdAt: blockHeight,
+  });
+  await nominator.save();
+}
+
+export async function createAndSaveBundleStored(
+  id: string,
+  accountId: string,
+  domainId: string,
+  domainBlockId: string,
+  operatorId: string,
+  domainBlockNumber: bigint,
+  domainBlockHash: string,
+  domainBlockExtrinsicRoot: string,
+  consensusBlockNumber: bigint,
+  consensusBlockHash: string,
+  totalTransfersIn: bigint,
+  transfersInCount: bigint,
+  totalTransfersOut: bigint,
+  transfersOutCount: bigint,
+  totalRejectedTransfersClaimed: bigint,
+  rejectedTransfersClaimedCount: bigint,
+  totalTransfersRejected: bigint,
+  transfersRejectedCount: bigint,
+  totalVolume: bigint,
+  consensusStorageFee: bigint,
+  domainExecutionFee: bigint,
+  burnedBalance: bigint
+): Promise<void> {
+  const bundleId = `${domainId}-${id.toLowerCase()}`;
+  const bundle = BundleStored.create({
+    id: bundleId,
+    accountId,
+    bundleId,
+    domainId,
+    domainBlockId,
+    operatorId,
+    domainBlockNumber,
+    domainBlockHash,
+    domainBlockExtrinsicRoot,
+    epoch: BigInt(0),
+    consensusBlockNumber,
+    consensusBlockHash,
+    totalTransfersIn,
+    transfersInCount,
+    totalTransfersOut,
+    transfersOutCount,
+    totalRejectedTransfersClaimed,
+    rejectedTransfersClaimedCount,
+    totalTransfersRejected,
+    transfersRejectedCount,
+    totalVolume,
+    consensusStorageFee,
+    domainExecutionFee,
+    burnedBalance,
+  });
+  await bundle.save();
 }

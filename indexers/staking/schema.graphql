@@ -12,7 +12,7 @@ type Runtime @entity {
   extrinsicId: String!
 }
 
-type Domain @entity {
+type DomainInstantiated @entity {
   id: ID!
   sortId: String!
   name: String!
@@ -25,7 +25,7 @@ type Domain @entity {
   extrinsicId: String!
 }
 
-type Operator @entity {
+type OperatorRegistered @entity {
   id: ID!
   sortId: String!
   owner: String!
@@ -35,4 +35,54 @@ type Operator @entity {
   nominationTax: Int!
   blockHeight: BigInt!
   extrinsicId: String!
+}
+
+type Deposit @entity {
+  id: ID!
+  sortId: String!
+  accountId: String!
+  domainId: String!
+  operatorId: String!
+  nominatorId: String!
+  amount: BigInt!
+  storageFeeDeposit: BigInt!
+  totalAmount: BigInt!
+  extrinsicId: String!
+  createdAt: BigInt!
+}
+
+type OperatorReward @entity {
+  id: ID!
+  operatorId: String!
+  amount: BigInt!
+  atBlockNumber: BigInt!
+  extrinsicId: String!
+  createdAt: BigInt!
+}
+
+type BundleStored @entity {
+  id: ID!
+  accountId: String!
+  bundleId: String!
+  domainId: String!
+  domainBlockId: String!
+  operatorId: String!
+  domainBlockNumber: BigInt!
+  domainBlockHash: String!
+  domainBlockExtrinsicRoot: String!
+  epoch: BigInt!
+  consensusBlockNumber: BigInt!
+  consensusBlockHash: String!
+  totalTransfersIn: BigInt!
+  transfersInCount: BigInt!
+  totalTransfersOut: BigInt!
+  transfersOutCount: BigInt!
+  totalRejectedTransfersClaimed: BigInt!
+  rejectedTransfersClaimedCount: BigInt!
+  totalTransfersRejected: BigInt!
+  transfersRejectedCount: BigInt!
+  totalVolume: BigInt!
+  consensusStorageFee: BigInt!
+  domainExecutionFee: BigInt!
+  burnedBalance: BigInt!
 }
