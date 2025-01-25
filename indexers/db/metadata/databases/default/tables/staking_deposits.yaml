@@ -1,19 +1,21 @@
 table:
-  name: operators
+  name: deposits
   schema: staking
 select_permissions:
   - role: user
     permission:
       columns:
         - _block_range
-        - nomination_tax
-        - block_height
-        - minimum_nominator_stake
+        - amount
+        - created_at
+        - storage_fee_deposit
+        - total_amount
+        - account_id
         - domain_id
         - extrinsic_id
         - id
-        - owner
-        - signing_key
+        - nominator_id
+        - operator_id
         - sort_id
         - _id
       filter: {}

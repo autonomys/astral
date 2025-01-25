@@ -1,0 +1,21 @@
+table:
+  name: operator_registereds
+  schema: staking
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - nomination_tax
+        - block_height
+        - minimum_nominator_stake
+        - domain_id
+        - extrinsic_id
+        - id
+        - owner
+        - signing_key
+        - sort_id
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
