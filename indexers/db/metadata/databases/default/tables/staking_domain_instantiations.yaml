@@ -1,0 +1,21 @@
+table:
+  name: domain_instantiations
+  schema: staking
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - runtime_id
+        - block_height
+        - created_by
+        - extrinsic_id
+        - id
+        - name
+        - runtime
+        - runtime_info
+        - sort_id
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
