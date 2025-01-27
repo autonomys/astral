@@ -1,10 +1,11 @@
 import { Spinner } from '@/components/common/Spinner'
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
+import { ArchivedHistoryIcon, BlockIcon, DocIcon, PieChartIcon, WalletIcon } from 'components/icons'
 import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { numberWithCommas } from 'utils/number'
-import { HomeCards } from './HomeCards'
+import { HomeInfoCard } from './HomeInfoCard'
 
 type TelemetryObject = [string, string, number, number]
 type TelemetryData = TelemetryObject[]
@@ -69,6 +70,51 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const accountsCount = data
     ? numberWithCommas(Number(data.consensus_accounts_aggregate?.aggregate?.count))
     : 'error'
+  const extrinsicsCount = data
+    ? numberWithCommas(Number(data.consensus_blocks[0].cumulative?.cumulative_extrinsics_count))
+    : 'error'
+
+  const listOfCards = useMemo(
+    () => [
+      {
+        title: 'Processed Blocks',
+        icon: <BlockIcon />,
+        value: blocksCount,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Wallet addresses',
+        icon: <WalletIcon />,
+        value: accountsCount,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Total Nodes',
+        icon: <BlockIcon />,
+        value: nodeCount,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Total Space Pledged',
+        icon: <PieChartIcon />,
+        value: spacePledged,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Archived History Size',
+        icon: <ArchivedHistoryIcon />,
+        value: historySize,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Total Extrinsics',
+        icon: <DocIcon />,
+        value: extrinsicsCount,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+    ],
+    [blocksCount, nodeCount, spacePledged, historySize, accountsCount, extrinsicsCount],
+  )
 
   useEffect(() => {
     getTelemetryData()
@@ -80,13 +126,17 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
       {!data || loading ? (
         <Spinner isXSmall />
       ) : (
-        <HomeCards
-          blocksCount={blocksCount}
-          spacePledged={spacePledged}
-          nodeCount={nodeCount}
-          historySize={historySize}
-          accountsCount={accountsCount}
-        />
+        <div className='mb-12 flex w-full items-center gap-5 overflow-x-auto'>
+          {listOfCards.map(({ title, value, icon, darkBgClass }, index) => (
+            <HomeInfoCard
+              key={`${title}-${index}`}
+              title={title}
+              value={value}
+              icon={icon}
+              darkBgClass={darkBgClass}
+            />
+          ))}
+        </div>
       )}
     </>
   )

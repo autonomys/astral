@@ -23,7 +23,7 @@ export const ConsensusHeader: FC = () => {
   const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.consensus), [network])
 
   return (
-    <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">
+    <header className='body-font z-9 py-[30px] text-gray-600'>
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
@@ -42,7 +42,7 @@ export const ConsensusHeader: FC = () => {
                   key={index}
                   className={
                     isCurrentPath
-                      ? 'block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
+                      ? 'bg-buttonLightFrom block rounded-full px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
                       : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }
                   href={item.link}
@@ -56,7 +56,7 @@ export const ConsensusHeader: FC = () => {
             <HeaderChainDropdown />
             <button
               onClick={toggleTheme}
-              className='ml-4 inline-flex items-center rounded-full bg-grayDarker p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
+              className='bg-buttonLightFrom ml-4 inline-flex items-center rounded-full p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
             >
               {isDark ? (
                 <SunIcon
@@ -89,7 +89,7 @@ export const ConsensusHeader: FC = () => {
           <div className='flex items-center gap-4'>
             <HeaderChainDropdown />
             <button
-              className='items-center rounded-full bg-grayDarker p-3 text-white dark:bg-white dark:text-blueAccent'
+              className='bg-buttonLightFrom items-center rounded-full p-3 text-white dark:bg-white dark:text-blueAccent'
               onClick={() => setIsOpen(true)}
             >
               <Bars3BottomRightIcon className='size-4' fill='currentColor' stroke='currentColor' />

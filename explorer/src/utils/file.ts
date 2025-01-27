@@ -1,5 +1,14 @@
+import type { FileUploadOptions } from '@autonomys/auto-drive'
 import { GetCidQuery } from 'gql/graphql'
-import { Zlib } from 'zlibjs/bin/zlib_and_gzip.min.js'
+import { inflate } from 'pako'
+
+export type FileData = {
+  name: string
+  rawData: string
+  dataArrayBuffer: ArrayBuffer
+  isEncrypted: boolean
+  uploadOptions: FileUploadOptions
+}
 
 export const detectFileType = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   const bytes = [...new Uint8Array(arrayBuffer.slice(0, 4))]
@@ -70,10 +79,26 @@ export const detectFileType = async (arrayBuffer: ArrayBuffer): Promise<string> 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') => {
+const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'): FileData => {
+  const name = data['files_' + type + 's'][0].name || ''
   let rawData: string = ''
   let dataArrayBuffer: ArrayBuffer = new ArrayBuffer(0)
   let depth = 0
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let uploadOptions: FileUploadOptions = {}
+
+  try {
+    if (data['files_' + type + 's'][0].chunk?.uploadOptions) {
+      uploadOptions = JSON.parse(
+        data['files_' + type + 's'][0].chunk?.uploadOptions,
+      ) as FileUploadOptions
+      if (uploadOptions.encryption && uploadOptions.encryption.algorithm)
+        return { name, rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
+    }
+  } catch (error) {
+    console.error('Error checking uploadOptions:', error)
+  }
+
   if (data['files_' + type + 's'][0][type + '_cids'].length === 0) {
     rawData = data['files_' + type + 's'][0].chunk?.data ?? ''
     dataArrayBuffer = Object.values(JSON.parse(rawData)) as unknown as ArrayBuffer
@@ -92,27 +117,17 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') 
     }
   }
   try {
-    if (data['files_' + type + 's'][0].chunk?.uploadOptions) {
-      const options = JSON.parse(data['files_' + type + 's'][0].chunk?.uploadOptions)
-      if (options.compression.algorithm === 'ZLIB') {
-        const inflate = new Zlib.Inflate(new Uint8Array(dataArrayBuffer), {
-          index: 0,
-          bufferSize: 1024,
-          bufferType: Zlib.Inflate.BufferType.BLOCK,
-          resize: true,
-          verify: true,
-        })
-        dataArrayBuffer = inflate.decompress()
-      }
+    if (uploadOptions.compression && uploadOptions.compression.algorithm === 'ZLIB') {
+      dataArrayBuffer = inflate(new Uint8Array(dataArrayBuffer))
     }
   } catch (error) {
     console.error('Error decompressing data:', error)
   }
-  return { rawData, dataArrayBuffer }
+  return { name, rawData, dataArrayBuffer, isEncrypted: false, uploadOptions }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const extractFileData = (data: GetCidQuery) => {
+export const extractFileData = (data: GetCidQuery): FileData => {
   if (data.files_files.length > 0) return extractFileDataByType(data, 'file')
   else if (data.files_folders.length > 0) return extractFileDataByType(data, 'folder')
   return extractFileDataByType(data, 'metadata')

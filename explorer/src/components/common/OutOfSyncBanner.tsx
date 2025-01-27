@@ -1,20 +1,23 @@
 import { useQuery } from '@apollo/client'
+import { blockNumber } from '@autonomys/auto-consensus'
 import { activate, NetworkId } from '@autonomys/auto-utils'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { LastBlockQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo } from 'react'
+import { useConsensusStates } from 'states/consensus'
 import { LAST_BLOCK } from './query'
 
 const NORMAL_BLOCKS_DIVERGENCE = 120
+const POLL_INTERVAL = 12000
 
 const OutOfSyncBanner: FC = () => {
   const { network } = useIndexers()
   return (
-    <div className="container mx-auto mb-4 flex grow justify-center px-5 font-['Montserrat'] md:px-[25px] 2xl:px-0">
+    <div className='container mx-auto mb-4 flex grow justify-center px-5 md:px-[25px] 2xl:px-0'>
       <div className='sticky top-0 z-50 w-full'>
-        <div className='w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+        <div className='w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-boxDark'>
           <div className='flex flex-col gap-4'>
             <div className='text-[20px] font-bold text-[#282929] dark:text-white'>
               Indexer Currently Out of Sync
@@ -47,19 +50,23 @@ const OutOfSyncBanner: FC = () => {
 
 export const useOutOfSyncBanner = () => {
   const { network } = useIndexers()
-  const [lastChainBlock, setLastChainBlock] = useState<number | null>(null)
+
+  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber[network])
+  const setLastBlockNumber = useConsensusStates((state) => state.setLastBlockNumber)
 
   const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
-    pollInterval: 30000,
+    pollInterval: POLL_INTERVAL,
   })
 
   const getChainLastBlock = useCallback(async () => {
-    const api = await activate({ networkId: network })
-
-    const block = await api.rpc.chain.getBlock()
-
-    setLastChainBlock(block.block.header.number.toNumber())
-  }, [network])
+    try {
+      const api = await activate({ networkId: network })
+      setLastBlockNumber(network, await blockNumber(api))
+      await api.disconnect()
+    } catch (error) {
+      console.error('Error getting chain last block', error)
+    }
+  }, [network, setLastBlockNumber])
 
   const lastBlock = useMemo(() => data && parseInt(data.lastBlock[0].height), [data])
 
@@ -67,15 +74,20 @@ export const useOutOfSyncBanner = () => {
     () =>
       data &&
       lastBlock &&
-      lastChainBlock !== null &&
-      lastBlock + NORMAL_BLOCKS_DIVERGENCE < lastChainBlock ? (
+      lastBlockNumber !== null &&
+      lastBlock + NORMAL_BLOCKS_DIVERGENCE < lastBlockNumber ? (
         <OutOfSyncBanner />
       ) : null,
-    [data, lastBlock, lastChainBlock],
+    [data, lastBlock, lastBlockNumber],
   )
 
   useEffect(() => {
     getChainLastBlock()
+    const interval = setInterval(() => {
+      getChainLastBlock()
+    }, POLL_INTERVAL)
+
+    return () => clearInterval(interval)
   }, [getChainLastBlock])
 
   return outOfSyncBanner

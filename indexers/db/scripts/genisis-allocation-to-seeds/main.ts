@@ -11,11 +11,6 @@ const data = await response.json();
 await Deno.mkdir("seeds", { recursive: true });
 
 // Open a file to write the SQL output
-const accountsFile = await Deno.open("seeds/accounts.sql", {
-  write: true,
-  create: true,
-  truncate: true,
-});
 const accountHistoriesFile = await Deno.open("seeds/account_histories.sql", {
   write: true,
   create: true,
@@ -32,16 +27,10 @@ for (const entry of data) {
   const reservedBalance = "0";
   const totalBalance = freeBalance;
   const createdAt = 0;
-  const updatedAt = 0;
   const uniqueNamespace = await v1.generate();
   const _id = await v5.generate(uniqueNamespace, accountId);
   const _blockRange = "[0,)";
 
-  await accountsFile.write(
-    new TextEncoder().encode(
-      `INSERT INTO consensus.accounts (id, account_id, nonce, free, reserved, total, created_at, updated_at, _id, _block_range) VALUES ('${accountId}', '${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, ${updatedAt}, '${_id}', '${_blockRange}');\n`
-    )
-  );
   await accountHistoriesFile.write(
     new TextEncoder().encode(
       `INSERT INTO consensus.account_histories (id, nonce, free, reserved, total, created_at, _id, _block_range) VALUES ('${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, '${_id}', '${_blockRange}');\n`
@@ -50,5 +39,4 @@ for (const entry of data) {
 }
 
 // Close the file
-accountsFile.close();
 accountHistoriesFile.close();

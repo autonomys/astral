@@ -41,7 +41,7 @@ export const AutoEvmPage: FC = () => (
               environment to deploying and interacting with smart contracts on our platform. To
               access this valuable resource and start building on Auto EVM, please visit our{' '}
               <Link
-                href={EXTERNAL_ROUTES.docs + 'docs/category/develop-on-nova-evm'}
+                href={EXTERNAL_ROUTES.docs + 'develop/auto-evm'}
                 target='_blank'
                 rel='noopener noreferrer'
                 className='text-blue-500 underline hover:text-blue-700'

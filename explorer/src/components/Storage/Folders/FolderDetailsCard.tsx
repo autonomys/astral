@@ -19,12 +19,12 @@ export const FolderDetailsCard: FC<Props> = ({ folder, isDesktop = false }) => {
   return (
     <div className='w-full'>
       <div className='flex'>
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
+        <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none sm:p-6'>
           <div className='mb-10 flex items-center justify-between'>
             <h3 className='text-sm font-medium text-grayDarker dark:text-white  md:text-2xl'>
               Folder root CID
             </h3>
-            <div className='flex items-center justify-center gap-2 rounded-full bg-grayDarker px-5 py-3'>
+            <div className='bg-buttonDarkTo flex items-center justify-center gap-2 rounded-full px-5 py-3'>
               <div className=' block text-xs font-semibold leading-normal text-white'>
                 {folder.id}
               </div>

@@ -42,7 +42,7 @@ export const LazyExportButton: FC<Props> = ({ query, filename }) => {
 
   return (
     <button
-      className='flex w-full max-w-fit items-center gap-2 rounded-full border-2 border-grayDarker p-2 text-sm font-medium text-grayDarker dark:bg-blueAccent dark:text-white md:space-x-4 md:text-base'
+      className='dark:bg-buttonDarkTo border-buttonLightFrom text-buttonLightFrom flex w-full max-w-fit items-center gap-2 rounded-full border-2 p-2 text-sm font-medium dark:border-transparent dark:text-white md:space-x-4 md:text-base'
       onClick={handleClick}
     >
       <span className='hidden md:block'>{text}</span>

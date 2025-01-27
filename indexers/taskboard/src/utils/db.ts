@@ -22,82 +22,31 @@ export const entryTypeToTable = (entryType: string): string =>
     .toLowerCase()
     .replace(/^_/, "") + "s";
 
-// Update or insert accounts
-const consensusAccountsQuery = `
-    INSERT INTO consensus.accounts (id, account_id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
-    SELECT DISTINCT ON (id) 
-      id,
-      id as account_id,
-      gen_random_uuid() as _id,
-      nonce,
-      free,
-      reserved,
-      total,
-      created_at,
-      created_at as updated_at,
-      int8range($1::int8, $2::int8) as _block_range
-    FROM consensus.account_histories
-    WHERE _block_range && int8range($1::int8, $2::int8)
-    ON CONFLICT (id) 
-    DO UPDATE SET
-      account_id = EXCLUDED.id,
-      nonce = EXCLUDED.nonce,
-      free = EXCLUDED.free,
-      reserved = EXCLUDED.reserved,
-      total = EXCLUDED.total,
-      created_at = EXCLUDED.created_at,
-      updated_at = EXCLUDED.created_at
-    RETURNING *`;
-
 // Get unique sections from both extrinsics and events
-const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
+export const updateLeaderboardRanking = (
+  sourceTable: string,
+  targetTable: string
+) => `
   WITH aggregated_entries AS (
-    SELECT id, 
-           SUM(value) AS total_value,
-           MAX(last_contribution_at) AS last_contribution_at,
-           MIN(created_at) AS created_at,
-           MAX(updated_at) AS updated_at
+    SELECT account_id, 
+          SUM(value) AS total_value,
+          MAX(last_contribution_at) AS last_contribution_at,
+          MIN(block_height) AS created_at,
+          MAX(block_height) AS updated_at
     FROM leaderboard.${sourceTable}
-    GROUP BY id
+    GROUP BY account_id
   ),
   ranked_entries AS (
-    SELECT id, 
-           ROW_NUMBER() OVER (ORDER BY total_value DESC, id) AS new_rank,
-           total_value,
-           last_contribution_at,
-           created_at,
-           updated_at
+    SELECT account_id as id, 
+          ROW_NUMBER() OVER (ORDER BY total_value DESC, account_id) AS new_rank,
+          total_value,
+          last_contribution_at,
+          created_at,
+          updated_at
     FROM aggregated_entries
   )
   INSERT INTO leaderboard.${targetTable} (id, rank, value, last_contribution_at, created_at, updated_at)
   SELECT id, new_rank, total_value, last_contribution_at, created_at, updated_at FROM ranked_entries
   ON CONFLICT (id) 
-  DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, created_at = EXCLUDED.created_at, updated_at = EXCLUDED.updated_at;
-  `;
-
-const consensusUpsertAccountQuery = `
-    INSERT INTO consensus.accounts (id, account_id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
-    VALUES ($1, $1, gen_random_uuid(), $2, $3, $4, $5, $6, $6, int8range($7::int8, $7::int8))
-    ON CONFLICT (id) 
-    DO UPDATE SET
-      nonce = $2,
-      free = $3,
-      reserved = $4,
-      total = $5,
-      updated_at = $6
-    RETURNING *`;
-
-interface Queries {
-  consensusAccountsQuery: string;
-  updateLeaderboardRanking: (
-    sourceTable: string,
-    targetTable: string
-  ) => string;
-  consensusUpsertAccountQuery: string;
-}
-
-export const queries: Queries = {
-  consensusAccountsQuery,
-  updateLeaderboardRanking,
-  consensusUpsertAccountQuery,
-};
+  DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, updated_at = EXCLUDED.updated_at;
+`;

@@ -43,6 +43,7 @@ export const QUERY_FILE_BY_ID = gql`
 export const QUERY_CID = gql`
   query GetCID($cid: String!) {
     files_metadata(where: { id: { _eq: $cid } }) {
+      name
       chunk {
         data
         uploadOptions: upload_options
@@ -54,6 +55,7 @@ export const QUERY_CID = gql`
       }
     }
     files_folders(where: { id: { _eq: $cid } }) {
+      name
       chunk {
         data
         uploadOptions: upload_options
@@ -65,6 +67,7 @@ export const QUERY_CID = gql`
       }
     }
     files_files(where: { id: { _eq: $cid } }) {
+      name
       chunk {
         data
         uploadOptions: upload_options

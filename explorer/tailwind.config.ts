@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-import defaultTheme from 'tailwindcss/defaultTheme'
+import plugin from 'tailwindcss/plugin'
 
 const config: Config = {
   content: [
@@ -15,38 +15,25 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
-        dark: 'linear-gradient(180deg, #0B050F 0%, #4D2F92 50%, #BC8EDA 100%)',
-        light: 'linear-gradient(180deg, #f1f7f8 0%, #effdff 100%)',
+        dark: 'linear-gradient(180deg, #050D26 0%, #27355D 100%)',
+        light: 'linear-gradient(180deg, #EBEFFC 0%, #3654A6 100%)',
       },
       colors: {
-        // Common Gradient
-        gradientFrom: '#4141B3',
-        gradientVia: '#6B5ACF',
-        gradientTo: '#896BD2',
-        gradientToSecondary: '#678CD5',
+        // Gradients
+        gradientFrom: '#032372',
+        gradientVia: '#1949D2',
+        gradientTo: '#5373C4',
+        gradientToSecondary: '#0C1C43',
 
         // Grays and Blacks
-        grayDark: '#282929',
-        grayDarker: '#241235',
-        grayLight: '#DDEFF1',
+        grayDark: '#2A2C38',
+        grayDarker: '#27355D',
+        grayLight: '#EBEFFC',
 
         // Whites
         white: '#FFFFFF',
         whiteTransparent: '#ffffff1a',
         whiteOpaque: '#ffffffb3',
-
-        // Purples
-        purpleLight: '#E6EAFA',
-        purpleShade: '#857EC2',
-        purpleUndertone: '#5649A3',
-        purpleLighterAccent: '#6E6ECD',
-        
-        // Primary
-        primaryAccent: '#EA71F9',
-
-        // Blues
-        blueAccent: '#1E254E',
-        blueDarkAccent: '#2A345E',
 
         // Pastels
         pastelPurple: '#C2B0EE',
@@ -56,17 +43,151 @@ const config: Config = {
 
         // Greens
         greenBright: '#37D058',
+
+        // Primary
+        primaryAccent: '#1949D2',
+
+        // Blues
+        blueAccent: '#1E254E',
+        blueDarkAccent: '#2A345E',
+        blueLight: '#EBEFFC',
+        blueShade: '#3654A6',
+        blueUndertone: '#27355D',
+
+        // background
+        backgroundLight: '#EBEFFC',
+        backgroundDark: '#3654A6',
+        backgroundDarker: '#27355D',
+        backgroundDarkest: '#050D26',
+
+        // box
+        boxLight: '#FFFFFF',
+        boxDark: '#2A2C38',
+
+        // Button
+        buttonLightFrom: '#032372',
+        buttonLightTo: '#5373C4',
+        buttonDarkFrom: '#1949D2',
+        buttonDarkTo: '#0C1C43',
+
+        // Header
+        headerLight: '#FFFFFF',
+        headerDark: '#2A2C38',
+
+        // Footer
+        footerLight: '#032372',
+        footerDark: '#08183E',
       },
-    },
-    fontFamily: {
-      montserrat: ['Montserrat'],
-    },
-    theme: {
+
       fontFamily: {
-        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+        display: ['var(--font-roboto-serif)', 'serif'],
+        body: ['var(--font-libre-franklin)', 'sans-serif'],
       },
       fontSize: {
-        xs: ['13px', '16px'],
+        'display-lg': [
+          '4.75rem',
+          {
+            lineHeight: '100%',
+            letterSpacing: '-0.04em',
+            fontWeight: '300',
+          },
+        ],
+        'display-md': [
+          '3.75rem',
+          {
+            lineHeight: '100%',
+            letterSpacing: '-0.04em',
+            fontWeight: '300',
+          },
+        ],
+        'display-sm': [
+          '3rem',
+          {
+            lineHeight: '100%',
+            letterSpacing: '-0.04em',
+            fontWeight: '300',
+          },
+        ],
+        'title-1': [
+          '3.313rem',
+          {
+            lineHeight: '100%',
+            letterSpacing: '-0.02em',
+            fontWeight: '300',
+          },
+        ],
+        'title-2': [
+          '2.938rem',
+          {
+            lineHeight: '120%',
+            letterSpacing: '-0.02em',
+            fontWeight: '300',
+          },
+        ],
+        'title-3': [
+          '2.5rem',
+          {
+            lineHeight: '120%',
+            letterSpacing: '-0.02em',
+            fontWeight: '300',
+          },
+        ],
+        'body-lg': [
+          '2rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0.02em',
+            fontWeight: '400',
+          },
+        ],
+        'body-md': [
+          '1.688rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0.02em',
+            fontWeight: '400',
+          },
+        ],
+        'body-sm': [
+          '1.313rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0.02em',
+            fontWeight: '400',
+          },
+        ],
+        'button-lg': [
+          '1.188rem',
+          {
+            lineHeight: '20px',
+            letterSpacing: '0',
+            fontWeight: '500',
+          },
+        ],
+        'button-md': [
+          '1rem',
+          {
+            lineHeight: '20px',
+            letterSpacing: '0',
+            fontWeight: '500',
+          },
+        ],
+        'pre-title': [
+          '1.188rem',
+          {
+            lineHeight: '150%',
+            letterSpacing: '0.02em',
+            fontWeight: '400',
+          },
+        ],
+        detail: [
+          '1.188rem',
+          {
+            lineHeight: '120%',
+            letterSpacing: '-0.02em',
+            fontWeight: '600',
+          },
+        ],
       },
       spacing: {
         13: '3.125rem',
@@ -78,7 +199,94 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('@headlessui/tailwindcss'), require('@tailwindcss/forms')],
+  plugins: [
+    require('@headlessui/tailwindcss'),
+    require('@tailwindcss/forms'),
+    plugin(function ({ addBase }) {
+      addBase({
+        'h1.display-large': {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '4.75rem',
+          lineHeight: '100%',
+          letterSpacing: '-0.04em',
+          fontWeight: '300',
+        },
+        'h1.display-medium': {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '3.75rem',
+          lineHeight: '100%',
+          letterSpacing: '-0.04em',
+          fontWeight: '300',
+        },
+        'h2.display-small': {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '3rem',
+          lineHeight: '100%',
+          letterSpacing: '-0.04em',
+          fontWeight: '300',
+        },
+        h1: {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '3.313rem',
+          lineHeight: '100%',
+          letterSpacing: '-0.02em',
+          fontWeight: '300',
+        },
+        h2: {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '2.938rem',
+          lineHeight: '120%',
+          letterSpacing: '-0.02em',
+          fontWeight: '300',
+        },
+        h3: {
+          fontFamily: 'var(--font-roboto-serif), serif',
+          fontSize: '2.5rem',
+          lineHeight: '120%',
+          letterSpacing: '-0.02em',
+          fontWeight: '300',
+        },
+        p: {
+          fontFamily: 'var(--font-libre-franklin), sans-serif',
+          fontSize: '1.313rem',
+          lineHeight: '150%',
+          letterSpacing: '0.02em',
+          fontWeight: '400',
+        },
+        'p.body-large': {
+          fontSize: '2rem',
+        },
+        'p.body-medium': {
+          fontSize: '1.688rem',
+        },
+        button: {
+          fontFamily: 'var(--font-libre-franklin), sans-serif',
+          fontSize: '1rem',
+          lineHeight: '20px',
+          letterSpacing: '0',
+          fontWeight: '500',
+        },
+        'button.button-large': {
+          fontSize: '1.188rem',
+        },
+        '.pre-title': {
+          fontFamily: 'var(--font-libre-franklin), sans-serif',
+          fontSize: '1.188rem',
+          lineHeight: '150%',
+          letterSpacing: '0.02em',
+          fontWeight: '400',
+          textTransform: 'uppercase',
+        },
+        '.detail': {
+          fontFamily: 'var(--font-libre-franklin), sans-serif',
+          fontSize: '1.188rem',
+          lineHeight: '120%',
+          letterSpacing: '-0.02em',
+          fontWeight: '600',
+        },
+      })
+    }),
+  ],
 }
 
 export default config

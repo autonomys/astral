@@ -13,12 +13,24 @@
       "path": "../indexers"
     },
     {
-      "name": "Indexer - Mainnet",
-      "path": "../indexers/mainnet"
+      "name": "Indexer - Consensus",
+      "path": "../indexers/consensus"
     },
     {
-      "name": "Indexer - Testnet Taurus",
-      "path": "../indexers/taurus"
+      "name": "Indexer - Leaderboard",
+      "path": "../indexers/leaderboard"
+    },
+    {
+      "name": "Indexer - Files",
+      "path": "../indexers/files"
+    },
+    {
+      "name": "Indexer - Staking",
+      "path": "../indexers/staking"
+    },
+    {
+      "name": "Indexer - API",
+      "path": "../indexers/api"
     },
     {
       "name": "Indexer - Taskboard",

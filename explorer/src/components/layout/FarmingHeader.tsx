@@ -26,19 +26,19 @@ export const FarmingHeader = () => {
         link: `/${network}/${Routes.farming}`,
       },
       {
-        title: 'Advance CLI',
-        link: `${EXTERNAL_ROUTES.docs}docs/category/advanced-cli`,
+        title: 'Advance CLI Documentation',
+        link: `${EXTERNAL_ROUTES.docs}farming/advanced-cli/install`,
       },
       {
-        title: 'Documentation',
-        link: `${EXTERNAL_ROUTES.docs}docs/farming-&-staking/farming/space-acres/space-acres-install`,
+        title: 'Space Acres Documentation',
+        link: `${EXTERNAL_ROUTES.docs}farming/space-acres/install`,
       },
     ],
     [network],
   )
 
   return (
-    <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">
+    <header className='body-font z-9 py-[30px] text-gray-600'>
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
@@ -59,7 +59,7 @@ export const FarmingHeader = () => {
                   key={index}
                   className={
                     isCurrentPath || isInitialPath
-                      ? 'block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
+                      ? 'bg-buttonLightFrom block rounded-full px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
                       : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }
                   href={item.link}
@@ -73,7 +73,7 @@ export const FarmingHeader = () => {
             <HeaderChainDropdown />
             <button
               onClick={toggleTheme}
-              className='ml-4 inline-flex items-center rounded-full bg-grayDarker p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
+              className='bg-buttonLightFrom ml-4 inline-flex items-center rounded-full p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
             >
               {isDark ? (
                 <SunIcon

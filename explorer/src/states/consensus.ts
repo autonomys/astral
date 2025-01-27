@@ -1,4 +1,5 @@
 import type { Deposit, Withdrawal } from '@autonomys/auto-consensus'
+import { NetworkId } from '@autonomys/auto-utils'
 import {
   ConfirmedDomainExecutionReceipt,
   Domain,
@@ -38,6 +39,9 @@ interface ConsensusDefaultState {
   successfulBundles: SuccessfulBundle[]
   deposits: Deposit[]
   withdrawals: Withdrawal[]
+
+  // last block number
+  lastBlockNumber: { [key: string]: number | null }
 }
 
 interface ConsensusState extends ConsensusDefaultState {
@@ -63,6 +67,7 @@ interface ConsensusState extends ConsensusDefaultState {
   setSuccessfulBundles: (successfulBundles: SuccessfulBundle[]) => void
   setDeposits: (deposits: Deposit[]) => void
   setWithdrawals: (withdrawals: Withdrawal[]) => void
+  setLastBlockNumber: (network: NetworkId, lastBlockNumber: number) => void
   clear: () => void
 }
 
@@ -89,6 +94,9 @@ const initialState: ConsensusDefaultState = {
   successfulBundles: [],
   deposits: [],
   withdrawals: [],
+
+  // last block number
+  lastBlockNumber: {},
 }
 
 export const useConsensusStates = create<ConsensusState>()(
@@ -116,11 +124,18 @@ export const useConsensusStates = create<ConsensusState>()(
       setSuccessfulBundles: (successfulBundles) => set(() => ({ successfulBundles })),
       setDeposits: (deposits) => set(() => ({ deposits })),
       setWithdrawals: (withdrawals) => set(() => ({ withdrawals })),
+      setLastBlockNumber: (network, lastBlockNumber) =>
+        set((state) => ({
+          lastBlockNumber: {
+            ...state.lastBlockNumber,
+            [network]: lastBlockNumber,
+          },
+        })),
       clear: () => set(() => ({ ...initialState })),
     }),
     {
       name: 'consensus-storage',
-      version: 2,
+      version: 4,
       storage: createJSONStorage(() => localStorage),
       serialize: (state) => JSON.stringify(state, bigIntSerializer),
       deserialize: (str) => JSON.parse(str, bigIntDeserializer),

@@ -53,7 +53,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             {tableName} {totalCount && `(${numberWithCommas(totalCount)})`}
           </span>
           <div className='flex items-center'>
-            <div className='sm:flex'>
+            <div className='flex'>
               {addExtraIcons && addExtraIcons}
               <MagnifyingGlassIcon
                 className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
@@ -106,7 +106,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
         id='accordion-open-body-1'
         aria-labelledby='accordion-open-heading-1'
       >
-        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
+        <div className='dark:bg-boxDark w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none'>
           <div>
             <div className='mt-4'>
               <div className='flex flex-col gap-3'>
@@ -285,7 +285,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
 
       {mobileMenuOpen && (
         <div className='mt-4 w-full sm:hidden'>
-          <div className='flex flex-col space-y-2 rounded-[20px] bg-grayLight p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
+          <div className='dark:bg-boxDark flex flex-col space-y-2 rounded-[20px] bg-grayLight p-4 shadow dark:border-none dark:to-gradientTo'>
             {addExtraIcons && (
               <div className='mb-1 w-full'>
                 {React.Children.map(addExtraIcons, (child) =>
