@@ -57,52 +57,8 @@ const project: SubstrateProject = {
         file: "./dist/index.js",
         handlers: [
           {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleDomainRuntimeCreated",
-            filter: {
-              module: "domains",
-              method: "DomainRuntimeCreated",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleDomainInstantiated",
-            filter: {
-              module: "domains",
-              method: "DomainInstantiated",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorRegistered",
-            filter: {
-              module: "domains",
-              method: "OperatorRegistered",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Call,
-            handler: "handleOperatorNominated",
-            filter: {
-              module: "domains",
-              method: "OperatorNominated",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorRewarded",
-            filter: {
-              module: "domains",
-              method: "OperatorRewarded",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleBundleStored",
-            filter: {
-              module: "domains",
-              method: "BundleStored",
-            },
+            kind: SubstrateHandlerKind.Block,
+            handler: "handleBlock",
           },
         ],
       },
