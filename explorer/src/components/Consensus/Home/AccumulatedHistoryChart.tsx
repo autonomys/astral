@@ -6,7 +6,7 @@ import { formatDate, getLineChartTickValues } from '@/utils/dateFormat'
 import { useState } from 'react'
 
 export function AccumulatedHistoryChart() {
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>('1M')
+  const [timeFrame, setTimeFrame] = useState<TimeFrame>('1D')
 
   // Generate the time series data
   const data = [

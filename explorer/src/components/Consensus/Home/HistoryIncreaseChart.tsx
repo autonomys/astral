@@ -6,7 +6,7 @@ import { formatDate, getBarChartTickValues } from '@/utils/dateFormat'
 import { useState } from 'react'
 
 export function HistoryIncreaseChart() {
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>('1M')
+  const [timeFrame, setTimeFrame] = useState<TimeFrame>('1D')
 
   // Generate delta data
   const data = generateDeltaData(timeFrame).map((d) => ({

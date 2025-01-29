@@ -6,15 +6,19 @@ export function generateTimeSeriesData(timeFrame: TimeFrame) {
   let interval: number
 
   switch (timeFrame) {
-    case '1D':
+    case '1H':
       points = 24 // Generate 1-day of hourly data
       interval = 60 * 60 * 1000 // 1 hour per candle
       break
-    case '1M':
+    case '1D':
       points = 30 // Generate 30 days of daily data
       interval = 24 * 60 * 60 * 1000 // 1 day per candle
       break
-    case '1Y':
+    case '1W':
+      points = 12 // Generate 12 weeks of data
+      interval = 7 * 24 * 60 * 60 * 1000 // 1 week per candle
+      break
+    case '1M':
       points = 12 // Generate 12 months of data
       break
   }
@@ -22,7 +26,7 @@ export function generateTimeSeriesData(timeFrame: TimeFrame) {
   return Array.from({ length: points }).map((_, i) => {
     let date: Date
 
-    if (timeFrame === '1Y') {
+    if (timeFrame === '1M') {
       date = new Date(now) // Start from today
       date.setMonth(now.getMonth() - (points - i)) // Move exactly N months back
     } else {
