@@ -1,5 +1,5 @@
 table:
-  name: operator_rewards
+  name: domain_staking_histories
   schema: staking
 configuration:
   column_config:
@@ -13,12 +13,11 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - amount
-        - at_block_number
+        - current_epoch_index
         - block_height
-        - extrinsic_id
+        - current_total_stake
+        - domain_id
         - id
-        - operator_id
         - _id
       filter: {}
     comment: ""

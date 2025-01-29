@@ -1,5 +1,5 @@
 table:
-  name: deposits
+  name: withdrawals
   schema: staking
 object_relationships:
   - name: account
@@ -33,19 +33,25 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - amount
-        - created_at
-        - storage_fee_deposit
-        - total_amount
-        - total_withdrawn
-        - updated_at
         - account_id
+        - created_at
+        - domain_block_number_withdrawal_requested_at
         - domain_id
-        - extrinsic_id
+        - epoch_withdrawal_requested_at
+        - estimated_amount
         - id
         - nominator_id
         - operator_id
+        - ready_at
+        - shares
         - status
         - timestamp
+        - total_amount
+        - unlock_extrinsic_hash
+        - unlocked_amount
+        - unlocked_at
+        - unlocked_storage_fee
+        - updated_at
+        - withdraw_extrinsic_hash
       filter: {}
     comment: ""

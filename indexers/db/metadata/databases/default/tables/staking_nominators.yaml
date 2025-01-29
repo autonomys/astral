@@ -1,5 +1,5 @@
 table:
-  name: domains
+  name: nominators
   schema: staking
 object_relationships:
   - name: account
@@ -11,39 +11,39 @@ object_relationships:
         remote_table:
           name: accounts
           schema: staking
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domains
+          schema: staking
+  - name: operator
+    using:
+      manual_configuration:
+        column_mapping:
+          operator_id: id
+        insertion_order: null
+        remote_table:
+          name: operators
+          schema: staking
 array_relationships:
   - name: deposits
     using:
       manual_configuration:
         column_mapping:
-          id: domain_id
+          id: nominator_id
         insertion_order: null
         remote_table:
           name: deposits
-          schema: staking
-  - name: nominators
-    using:
-      manual_configuration:
-        column_mapping:
-          id: domain_id
-        insertion_order: null
-        remote_table:
-          name: nominators
-          schema: staking
-  - name: operators
-    using:
-      manual_configuration:
-        column_mapping:
-          id: domain_id
-        insertion_order: null
-        remote_table:
-          name: operators
           schema: staking
   - name: withdrawals
     using:
       manual_configuration:
         column_mapping:
-          id: domain_id
+          id: nominator_id
         insertion_order: null
         remote_table:
           name: withdrawals
@@ -52,49 +52,36 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - accumulated_epoch_rewards
+        - unlock_at_confirmed_domain_block_number
         - accumulated_epoch_shares
         - accumulated_epoch_stake
         - accumulated_epoch_storage_fee_deposit
-        - bundle_count
-        - completed_epoch
+        - active_epoch_count
         - created_at
-        - current_epoch_duration
         - current_share_price
         - current_storage_fee_deposit
         - current_total_shares
         - current_total_stake
-        - last144_epoch_duration
-        - last1k_epoch_duration
-        - last6_epochs_duration
-        - last_bundle_at
-        - last_domain_block_number
-        - last_epoch_duration
-        - rejected_transfers_claimed_count
-        - total_burned_balance
-        - total_consensus_storage_fee
+        - known_shares
+        - known_storage_fee_deposit
+        - pending_amount
+        - pending_effective_domain_epoch
+        - pending_shares
+        - pending_storage_fee_deposit
+        - pending_storage_fee_refund
         - total_deposits
-        - total_domain_execution_fee
+        - total_deposits_count
         - total_estimated_withdrawals
-        - total_rejected_transfers_claimed
-        - total_rewards_collected
-        - total_tax_collected
-        - total_transfers_in
-        - total_transfers_out
-        - total_transfers_rejected
-        - total_volume
+        - total_storage_fee_refund
+        - total_withdrawal_amounts
         - total_withdrawals
-        - transfers_in_count
-        - transfers_out_count
-        - transfers_rejected_count
+        - total_withdrawals_count
         - updated_at
         - account_id
-        - extrinsic_id
+        - domain_id
         - id
-        - name
-        - runtime
-        - runtime_id
-        - runtime_info
-        - sort_id
+        - operator_id
+        - pending_action
+        - status
       filter: {}
     comment: ""
