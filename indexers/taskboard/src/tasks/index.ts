@@ -29,7 +29,7 @@ export const tasks: Tasks = {
     handler: updateBlockchainStats,
     concurrency: 1,
     cron: {
-      pattern: "*/1 * * * *", // Runs every 5 minutes
+      pattern: "*/5 * * * *", // Runs every 5 minutes
       enabled: true,
     },
   },
