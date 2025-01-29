@@ -24,6 +24,9 @@ ALTER SCHEMA leaderboard OWNER TO postgres;
 CREATE SCHEMA files;
 ALTER SCHEMA files OWNER TO postgres;
 
+CREATE SCHEMA staking;
+ALTER SCHEMA staking OWNER TO postgres;
+
 CREATE SCHEMA users;
 ALTER SCHEMA users OWNER TO postgres;
 
@@ -81,6 +84,18 @@ CREATE FUNCTION files.schema_notification() RETURNS trigger
   $$;
 ALTER FUNCTION files.schema_notification() OWNER TO postgres;
 
+CREATE FUNCTION staking.schema_notification() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    PERFORM pg_notify(
+            '0x0e7ff8012c52fcca',
+            'schema_updated');
+    RETURN NULL;
+  END;
+  $$;
+ALTER FUNCTION staking.schema_notification() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -116,6 +131,14 @@ CREATE TABLE files._metadata (
     "updatedAt" timestamp with time zone NOT NULL
 );
 ALTER TABLE files._metadata OWNER TO postgres;
+
+CREATE TABLE staking._metadata (
+    key character varying(255) NOT NULL,
+    value jsonb,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
+ALTER TABLE staking._metadata OWNER TO postgres;
 
 CREATE TABLE users.profiles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -1094,6 +1117,109 @@ CREATE TABLE files.metadata (
 );
 ALTER TABLE files.metadata OWNER TO postgres;
 
+CREATE TABLE staking.bundle_submissions (
+    id text NOT NULL,
+    account_id text NOT NULL,
+    bundle_id text NOT NULL,
+    domain_id text NOT NULL,
+    domain_block_id text NOT NULL,
+    operator_id text NOT NULL,
+    domain_block_number numeric NOT NULL,
+    domain_block_hash text NOT NULL,
+    domain_block_extrinsic_root text NOT NULL,
+    epoch numeric NOT NULL,
+    consensus_block_number numeric NOT NULL,
+    consensus_block_hash text NOT NULL,
+    total_transfers_in numeric NOT NULL,
+    transfers_in_count numeric NOT NULL,
+    total_transfers_out numeric NOT NULL,
+    transfers_out_count numeric NOT NULL,
+    total_rejected_transfers_claimed numeric NOT NULL,
+    rejected_transfers_claimed_count numeric NOT NULL,
+    total_transfers_rejected numeric NOT NULL,
+    transfers_rejected_count numeric NOT NULL,
+    total_volume numeric NOT NULL,
+    consensus_storage_fee numeric NOT NULL,
+    domain_execution_fee numeric NOT NULL,
+    burned_balance numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.bundle_submissions OWNER TO postgres;
+
+CREATE TABLE staking.deposits (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    account_id text NOT NULL,
+    domain_id text NOT NULL,
+    operator_id text NOT NULL,
+    nominator_id text NOT NULL,
+    amount numeric NOT NULL,
+    storage_fee_deposit numeric NOT NULL,
+    total_amount numeric NOT NULL,
+    extrinsic_id text NOT NULL,
+    created_at numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.deposits OWNER TO postgres;
+
+CREATE TABLE staking.domains (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    name text NOT NULL,
+    runtime_id integer NOT NULL,
+    runtime text NOT NULL,
+    runtime_info text NOT NULL,
+    completed_epoch numeric NOT NULL,
+    created_by text NOT NULL,
+    block_height numeric NOT NULL,
+    extrinsic_id text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.domains OWNER TO postgres;
+
+CREATE TABLE staking.operators (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    owner text NOT NULL,
+    domain_id text NOT NULL,
+    signing_key text NOT NULL,
+    minimum_nominator_stake numeric NOT NULL,
+    nomination_tax integer NOT NULL,
+    block_height numeric NOT NULL,
+    extrinsic_id text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.operators OWNER TO postgres;
+
+CREATE TABLE staking.operator_rewards (
+    id text NOT NULL,
+    operator_id text NOT NULL,
+    amount numeric NOT NULL,
+    at_block_number numeric NOT NULL,
+    extrinsic_id text NOT NULL,
+    created_at numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.operator_rewards OWNER TO postgres;
+
+CREATE TABLE staking.runtimes (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    name text NOT NULL,
+    type text NOT NULL,
+    created_by text NOT NULL,
+    block_height numeric NOT NULL,
+    extrinsic_id text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.runtimes OWNER TO postgres;
+
 CREATE TABLE files.metadata_cids (
     id TEXT NOT NULL,
     parent_cid TEXT NOT NULL,
@@ -1341,6 +1467,28 @@ ALTER TABLE ONLY files.metadata_cids
 ALTER TABLE ONLY files.metadata
     ADD CONSTRAINT metadata_pkey PRIMARY KEY (_id);
 
+ALTER TABLE ONLY staking._metadata
+    ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
+
+ALTER TABLE ONLY staking.bundle_submissions
+    ADD CONSTRAINT bundle_submissions_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.deposits
+    ADD CONSTRAINT deposits_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.domains
+    ADD CONSTRAINT domains_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.operators
+    ADD CONSTRAINT operators_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.operator_rewards
+    ADD CONSTRAINT operator_rewards_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.runtimes
+    ADD CONSTRAINT runtimes_pkey PRIMARY KEY (_id);
+
+
 CREATE INDEX "0xccedb032815757ed" ON consensus.blocks USING btree (id);
 CREATE INDEX "consensus_blocks_sort_id" ON consensus.blocks USING btree (sort_id DESC);
 CREATE INDEX "consensus_blocks_hash" ON consensus.blocks USING btree (hash);
@@ -1489,10 +1637,19 @@ CREATE INDEX "0xd5509466634aea27" ON files.chunks USING btree (id);
 CREATE INDEX "0xd9be8718ef6c7984" ON files.folder_cids USING btree (id);
 CREATE INDEX "files_folder_cids_parent_cid" ON files.folder_cids USING btree (parent_cid);
 
+CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
+CREATE INDEX "0x4d3285ccda1510ee" ON staking.domains USING btree (id);
+CREATE INDEX "0x5a29da535e66d318" ON staking.deposits USING btree (id);
+CREATE INDEX "0x6cb7d13b1c4d2ddd" ON staking.bundle_submissions USING btree (id);
+CREATE INDEX "0x807715b2063aac6b" ON staking.operators USING btree (id);
+CREATE INDEX "0xae5b6472b5054a3a" ON staking.runtimes USING btree (id);
+
+
 CREATE TRIGGER "0x648269cc35867c16" AFTER UPDATE ON consensus._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION consensus.schema_notification();
 CREATE TRIGGER "0xda8a29b0fa478533" AFTER UPDATE ON dictionary._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION dictionary.schema_notification();
 CREATE TRIGGER "0xf3241711d3af6c36" AFTER UPDATE ON leaderboard._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION leaderboard.schema_notification();
 CREATE TRIGGER "0x22152f0c663c5f9e" AFTER UPDATE ON files._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION files.schema_notification();
+CREATE TRIGGER "0x36531371aced88b2" AFTER UPDATE ON staking._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION staking.schema_notification();
 
 CREATE FUNCTION consensus.insert_log_kind() RETURNS trigger
     LANGUAGE plpgsql

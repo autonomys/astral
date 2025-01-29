@@ -1,5 +1,5 @@
 table:
-  name: deposits
+  name: operator_rewards
   schema: staking
 select_permissions:
   - role: user
@@ -7,16 +7,11 @@ select_permissions:
       columns:
         - _block_range
         - amount
+        - at_block_number
         - created_at
-        - storage_fee_deposit
-        - total_amount
-        - account_id
-        - domain_id
         - extrinsic_id
         - id
-        - nominator_id
         - operator_id
-        - sort_id
         - _id
       filter: {}
       allow_aggregations: true

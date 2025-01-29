@@ -1,22 +1,18 @@
 table:
-  name: deposits
+  name: runtimes
   schema: staking
 select_permissions:
   - role: user
     permission:
       columns:
         - _block_range
-        - amount
-        - created_at
-        - storage_fee_deposit
-        - total_amount
-        - account_id
-        - domain_id
+        - block_height
+        - created_by
         - extrinsic_id
         - id
-        - nominator_id
-        - operator_id
+        - name
         - sort_id
+        - type
         - _id
       filter: {}
       allow_aggregations: true
