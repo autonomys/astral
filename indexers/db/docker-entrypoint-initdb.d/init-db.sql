@@ -2337,6 +2337,7 @@ BEGIN
         last144_epoch_duration,
         last1k_epoch_duration,
         last_bundle_at,
+        extrinsic_id,
         created_at,
         updated_at
     ) VALUES (
@@ -2630,3 +2631,55 @@ CREATE TRIGGER insert_new_deposit
 AFTER INSERT ON staking.deposit_events
 FOR EACH ROW
 EXECUTE FUNCTION staking.insert_new_deposit();
+
+CREATE OR REPLACE FUNCTION staking.update_account_deposits() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    INSERT INTO staking.accounts (
+        id,
+        total_deposits,
+        total_estimated_withdrawals,
+        total_withdrawals,
+        total_tax_collected,
+        current_total_stake,
+        current_storage_fee_deposit,
+        current_total_shares,
+        current_share_price,
+        accumulated_epoch_stake,
+        accumulated_epoch_storage_fee_deposit,
+        accumulated_epoch_shares,
+        created_at,
+        updated_at
+    ) VALUES (
+        NEW.account_id,            -- id
+        NEW.total_amount,          -- total_deposits (start with the new deposit amount)
+        0,                         -- total_estimated_withdrawals
+        0,                         -- total_withdrawals
+        0,                         -- total_tax_collected
+        NEW.amount,                -- current_total_stake
+        NEW.storage_fee_deposit,   -- current_storage_fee_deposit
+        0,                         -- current_total_shares
+        0,                         -- current_share_price
+        0,                         -- accumulated_epoch_stake
+        0,                         -- accumulated_epoch_storage_fee_deposit
+        0,                         -- accumulated_epoch_shares
+        NEW.created_at,            -- created_at
+        NEW.updated_at             -- updated_at
+    )
+    ON CONFLICT (id) DO UPDATE SET
+        total_deposits = staking.accounts.total_deposits + NEW.total_amount,
+        current_total_stake = staking.accounts.current_total_stake + NEW.amount,
+        current_storage_fee_deposit = staking.accounts.current_storage_fee_deposit + NEW.storage_fee_deposit,
+        updated_at = NEW.updated_at;
+    
+    RETURN NEW;
+END;
+$$;
+
+ALTER FUNCTION staking.update_account_deposits() OWNER TO postgres;
+
+CREATE TRIGGER update_account_deposits
+AFTER INSERT ON staking.deposits
+FOR EACH ROW
+EXECUTE FUNCTION staking.update_account_deposits();
