@@ -1,38 +1,54 @@
 import {
   BundleSubmission,
-  Deposit,
+  DepositEvent,
+  DepositHistory,
+  DomainBlockHistory,
   DomainInstantiation,
+  DomainStakingHistory,
   OperatorRegistration,
   OperatorReward,
+  OperatorStakingHistory,
   RuntimeCreation,
 } from "../types";
 import { getSortId } from "./utils";
 
 type Cache = {
   bundleSubmission: BundleSubmission[];
-  deposit: Deposit[];
+  depositEvent: DepositEvent[];
+  depositHistory: DepositHistory[];
+  domainBlockHistory: DomainBlockHistory[];
   domainInstantiation: DomainInstantiation[];
+  domainStakingHistory: DomainStakingHistory[];
   operatorRegistration: OperatorRegistration[];
+  operatorStakingHistory: OperatorStakingHistory[];
   operatorReward: OperatorReward[];
   runtimeCreation: RuntimeCreation[];
 };
 
 export const initializeCache = (): Cache => ({
   bundleSubmission: [],
-  deposit: [],
+  depositEvent: [],
+  depositHistory: [],
+  domainBlockHistory: [],
   domainInstantiation: [],
+  domainStakingHistory: [],
   operatorRegistration: [],
   operatorReward: [],
+  operatorStakingHistory: [],
   runtimeCreation: [],
 });
 
 export const saveCache = async (cache: Cache) => {
   await Promise.all([
     store.bulkCreate(`BundleSubmission`, cache.bundleSubmission),
-    store.bulkCreate(`Deposit`, cache.deposit),
+    store.bulkCreate(`DepositEvent`, cache.depositEvent),
+    store.bulkCreate(`DepositHistory`, cache.depositHistory),
+    store.bulkCreate(`DomainBlockHistory`, cache.domainBlockHistory),
     store.bulkCreate(`DomainInstantiation`, cache.domainInstantiation),
+    store.bulkCreate(`DomainStakingHistory`, cache.domainStakingHistory),
     store.bulkCreate(`OperatorRegistration`, cache.operatorRegistration),
     store.bulkCreate(`OperatorReward`, cache.operatorReward),
+    store.bulkCreate(`OperatorStakingHistory`, cache.operatorStakingHistory),
     store.bulkCreate(`RuntimeCreation`, cache.runtimeCreation),
   ]);
 };
@@ -104,18 +120,19 @@ export function createOperatorRegistration(
   });
 }
 
-export function createDeposit(
+export function createDepositEvent(
   accountId: string,
   domainId: string,
   operatorId: string,
   amount: bigint,
   storageFeeDeposit: bigint,
-  extrinsicId: string,
-  blockHeight: bigint
-): Deposit {
+  timestamp: Date,
+  blockHeight: bigint,
+  extrinsicId: string
+): DepositEvent {
   const nominatorId = `${accountId}-${domainId}-${operatorId}`;
   const id = `${blockHeight}-${extrinsicId}-${nominatorId}`;
-  return Deposit.create({
+  return DepositEvent.create({
     id,
     sortId: `${getSortId(blockHeight, extrinsicId)}`,
     accountId,
@@ -125,8 +142,9 @@ export function createDeposit(
     amount,
     storageFeeDeposit,
     totalAmount: amount + storageFeeDeposit,
+    timestamp,
+    blockHeight,
     extrinsicId,
-    createdAt: blockHeight,
   });
 }
 
@@ -134,16 +152,16 @@ export function createOperatorReward(
   operatorId: string,
   amount: bigint,
   atBlockNumber: bigint,
-  extrinsicId: string,
-  blockHeight: bigint
+  blockHeight: bigint,
+  extrinsicId: string
 ): OperatorReward {
   return OperatorReward.create({
     id: extrinsicId,
     operatorId,
     amount,
     atBlockNumber,
+    blockHeight,
     extrinsicId,
-    createdAt: blockHeight,
   });
 }
 
@@ -197,5 +215,98 @@ export function createBundleSubmission(
     consensusStorageFee,
     domainExecutionFee,
     burnedBalance,
+  });
+}
+
+export function createDomainBlockHistory(
+  hash: string,
+  domainId: string,
+  domainBlockNumber: bigint,
+  blockHeight: bigint
+): DomainBlockHistory {
+  return DomainBlockHistory.create({
+    id: hash,
+    domainId,
+    domainBlockNumber,
+    blockHeight,
+  });
+}
+
+export function createDomainStakingHistory(
+  hash: string,
+  domainId: string,
+  currentEpochIndex: number,
+  currentTotalStake: bigint,
+  blockHeight: bigint
+): DomainStakingHistory {
+  return DomainStakingHistory.create({
+    id: hash,
+    domainId,
+    currentEpochIndex,
+    currentTotalStake,
+    blockHeight,
+  });
+}
+
+export function createOperatorStakingHistory(
+  hash: string,
+  operatorId: string,
+  operatorOwner: string,
+  signingKey: string,
+  currentDomainId: string,
+  currentTotalStake: bigint,
+  currentTotalShares: bigint,
+  currentEpochRewards: bigint,
+  depositsInEpoch: bigint,
+  withdrawalsInEpoch: bigint,
+  totalStorageFeeDeposit: bigint,
+  sharePrice: bigint,
+  blockHeight: bigint
+): OperatorStakingHistory {
+  return OperatorStakingHistory.create({
+    id: hash,
+    operatorId,
+    operatorOwner,
+    signingKey,
+    currentDomainId,
+    currentTotalStake,
+    currentTotalShares,
+    currentEpochRewards,
+    depositsInEpoch,
+    withdrawalsInEpoch,
+    totalStorageFeeDeposit,
+    sharePrice,
+    blockHeight,
+  });
+}
+
+export function createDepositHistory(
+  hash: string,
+  accountId: string,
+  operatorId: string,
+  shares: bigint,
+  storageFeeDeposit: bigint,
+  sharesKnown: bigint,
+  storageFeeDepositKnown: bigint,
+  effectiveDomainIdPending: number,
+  effectiveDomainEpochPending: number,
+  amountPending: bigint,
+  storageFeeDepositPending: bigint,
+  blockHeight: bigint
+): DepositHistory {
+  return DepositHistory.create({
+    id: hash,
+    accountId,
+    operatorId,
+    nominatorId: `${accountId}-${operatorId}`,
+    shares,
+    storageFeeDeposit,
+    sharesKnown,
+    storageFeeDepositKnown,
+    effectiveDomainIdPending,
+    effectiveDomainEpochPending,
+    amountPending,
+    storageFeeDepositPending,
+    blockHeight,
   });
 }
