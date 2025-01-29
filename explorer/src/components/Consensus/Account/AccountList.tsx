@@ -1,7 +1,8 @@
 'use client'
 
+import { formatAddress } from '@/utils/formatAddress'
 import { useApolloClient } from '@apollo/client'
-import { capitalizeFirstLetter } from '@autonomys/auto-utils'
+import { capitalizeFirstLetter, isAddress } from '@autonomys/auto-utils'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -49,7 +50,7 @@ export const AccountList: FC = () => {
   const hideSettings = useTableStates((state) => state.hideSettings)
   const resetSettings = useTableStates((state) => state.resetSettings)
   const showReset = useTableStates((state) => state.showReset)
-
+  const [updatedFilters, setUpdatedFilters] = useState<Record<string, string>>({});
   const orderBy = useMemo(
     () =>
       sorting && sorting.length > 0
@@ -63,15 +64,30 @@ export const AccountList: FC = () => {
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conditions: Record<string, any> = {}
+    const tempUpdatedFilters: Record<string, string> = {};
 
-    // Add search conditions
     availableColumns
       .filter((column) => column.searchable)
       .forEach((column) => {
         const searchKey = `search-${column.name}` as keyof AccountsFilters
         const searchValue = filters[searchKey]
         if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
+          let formattedAddress = searchValue;
+
+          if (column.name === 'id' && isAddress(formattedAddress)) {
+            const convertedAddress = formatAddress(searchValue);
+            if (convertedAddress) {
+              formattedAddress = convertedAddress;
+              if (filters[searchKey] !== formattedAddress) {
+                tempUpdatedFilters[searchKey] = formattedAddress;
+              }
+            }
+          }
+
+          conditions[column.name] = { 
+            _ilike: `%${formattedAddress}%` 
+          };
+          console.log('83',formattedAddress,column.name);
         }
       })
 
@@ -130,7 +146,7 @@ export const AccountList: FC = () => {
         ).toString()
       }
     }
-
+    setUpdatedFilters(tempUpdatedFilters);
     return conditions
   }, [availableColumns, filters, tokenDecimals])
 
@@ -256,6 +272,12 @@ export const AccountList: FC = () => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
 
+  useEffect(() => {
+    Object.entries(updatedFilters).forEach(([key, value]) => {
+      handleFilterChange(key, value);
+    });
+  }, [updatedFilters, handleFilterChange]);
+  
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
