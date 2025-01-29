@@ -10191,12 +10191,42 @@ export type Query_Root = {
   staking_accounts_aggregate: Staking_Accounts_Aggregate;
   /** fetch data from the table: "staking.accounts" using primary key columns */
   staking_accounts_by_pk?: Maybe<Staking_Accounts>;
+  /** fetch data from the table: "staking.bundle_submissions" */
+  staking_bundle_submissions: Array<Staking_Bundle_Submissions>;
+  /** fetch data from the table: "staking.bundle_submissions" using primary key columns */
+  staking_bundle_submissions_by_pk?: Maybe<Staking_Bundle_Submissions>;
+  /** fetch data from the table: "staking.deposit_events" */
+  staking_deposit_events: Array<Staking_Deposit_Events>;
+  /** fetch data from the table: "staking.deposit_events" using primary key columns */
+  staking_deposit_events_by_pk?: Maybe<Staking_Deposit_Events>;
+  /** fetch data from the table: "staking.deposit_histories" */
+  staking_deposit_histories: Array<Staking_Deposit_Histories>;
+  /** fetch data from the table: "staking.deposit_histories" using primary key columns */
+  staking_deposit_histories_by_pk?: Maybe<Staking_Deposit_Histories>;
   /** fetch data from the table: "staking.deposits" */
   staking_deposits: Array<Staking_Deposits>;
   /** fetch aggregated fields from the table: "staking.deposits" */
   staking_deposits_aggregate: Staking_Deposits_Aggregate;
   /** fetch data from the table: "staking.deposits" using primary key columns */
   staking_deposits_by_pk?: Maybe<Staking_Deposits>;
+  /** fetch data from the table: "staking.domain_block_histories" */
+  staking_domain_block_histories: Array<Staking_Domain_Block_Histories>;
+  /** fetch data from the table: "staking.domain_blocks" */
+  staking_domain_blocks: Array<Staking_Domain_Blocks>;
+  /** fetch data from the table: "staking.domain_blocks" using primary key columns */
+  staking_domain_blocks_by_pk?: Maybe<Staking_Domain_Blocks>;
+  /** fetch data from the table: "staking.domain_epoches" */
+  staking_domain_epoches: Array<Staking_Domain_Epoches>;
+  /** fetch data from the table: "staking.domain_epoches" using primary key columns */
+  staking_domain_epoches_by_pk?: Maybe<Staking_Domain_Epoches>;
+  /** fetch data from the table: "staking.domain_instantiations" */
+  staking_domain_instantiations: Array<Staking_Domain_Instantiations>;
+  /** fetch data from the table: "staking.domain_instantiations" using primary key columns */
+  staking_domain_instantiations_by_pk?: Maybe<Staking_Domain_Instantiations>;
+  /** fetch data from the table: "staking.domain_staking_histories" */
+  staking_domain_staking_histories: Array<Staking_Domain_Staking_Histories>;
+  /** fetch data from the table: "staking.domain_staking_histories" using primary key columns */
+  staking_domain_staking_histories_by_pk?: Maybe<Staking_Domain_Staking_Histories>;
   /** fetch data from the table: "staking.domains" */
   staking_domains: Array<Staking_Domains>;
   /** fetch aggregated fields from the table: "staking.domains" */
@@ -10209,18 +10239,54 @@ export type Query_Root = {
   staking_nominators_aggregate: Staking_Nominators_Aggregate;
   /** fetch data from the table: "staking.nominators" using primary key columns */
   staking_nominators_by_pk?: Maybe<Staking_Nominators>;
+  /** fetch data from the table: "staking.operator_registrations" */
+  staking_operator_registrations: Array<Staking_Operator_Registrations>;
+  /** fetch data from the table: "staking.operator_registrations" using primary key columns */
+  staking_operator_registrations_by_pk?: Maybe<Staking_Operator_Registrations>;
+  /** fetch data from the table: "staking.operator_rewards" */
+  staking_operator_rewards: Array<Staking_Operator_Rewards>;
+  /** fetch data from the table: "staking.operator_rewards" using primary key columns */
+  staking_operator_rewards_by_pk?: Maybe<Staking_Operator_Rewards>;
+  /** fetch data from the table: "staking.operator_staking_histories" */
+  staking_operator_staking_histories: Array<Staking_Operator_Staking_Histories>;
+  /** fetch data from the table: "staking.operator_staking_histories" using primary key columns */
+  staking_operator_staking_histories_by_pk?: Maybe<Staking_Operator_Staking_Histories>;
   /** fetch data from the table: "staking.operators" */
   staking_operators: Array<Staking_Operators>;
   /** fetch aggregated fields from the table: "staking.operators" */
   staking_operators_aggregate: Staking_Operators_Aggregate;
   /** fetch data from the table: "staking.operators" using primary key columns */
   staking_operators_by_pk?: Maybe<Staking_Operators>;
+  /** fetch data from the table: "staking.runtime_creations" */
+  staking_runtime_creations: Array<Staking_Runtime_Creations>;
+  /** fetch data from the table: "staking.runtime_creations" using primary key columns */
+  staking_runtime_creations_by_pk?: Maybe<Staking_Runtime_Creations>;
+  /** fetch data from the table: "staking.withdrawal_histories" */
+  staking_withdrawal_histories: Array<Staking_Withdrawal_Histories>;
+  /** fetch data from the table: "staking.withdrawal_histories" using primary key columns */
+  staking_withdrawal_histories_by_pk?: Maybe<Staking_Withdrawal_Histories>;
   /** fetch data from the table: "staking.withdrawals" */
   staking_withdrawals: Array<Staking_Withdrawals>;
   /** fetch aggregated fields from the table: "staking.withdrawals" */
   staking_withdrawals_aggregate: Staking_Withdrawals_Aggregate;
   /** fetch data from the table: "staking.withdrawals" using primary key columns */
   staking_withdrawals_by_pk?: Maybe<Staking_Withdrawals>;
+  /** fetch data from the table: "stats.daily" */
+  stats_daily: Array<Stats_Daily>;
+  /** fetch data from the table: "stats.daily" using primary key columns */
+  stats_daily_by_pk?: Maybe<Stats_Daily>;
+  /** fetch data from the table: "stats.hourly" */
+  stats_hourly: Array<Stats_Hourly>;
+  /** fetch data from the table: "stats.hourly" using primary key columns */
+  stats_hourly_by_pk?: Maybe<Stats_Hourly>;
+  /** fetch data from the table: "stats.monthly" */
+  stats_monthly: Array<Stats_Monthly>;
+  /** fetch data from the table: "stats.monthly" using primary key columns */
+  stats_monthly_by_pk?: Maybe<Stats_Monthly>;
+  /** fetch data from the table: "stats.weekly" */
+  stats_weekly: Array<Stats_Weekly>;
+  /** fetch data from the table: "stats.weekly" using primary key columns */
+  stats_weekly_by_pk?: Maybe<Stats_Weekly>;
 };
 
 
@@ -11311,6 +11377,48 @@ export type Query_RootStaking_Accounts_By_PkArgs = {
 };
 
 
+export type Query_RootStaking_Bundle_SubmissionsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Bundle_Submissions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Bundle_Submissions_Order_By>>;
+  where?: InputMaybe<Staking_Bundle_Submissions_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Bundle_Submissions_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootStaking_Deposit_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Deposit_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Deposit_Events_Order_By>>;
+  where?: InputMaybe<Staking_Deposit_Events_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Deposit_Events_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootStaking_Deposit_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Deposit_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Deposit_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Deposit_Histories_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Deposit_Histories_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
 export type Query_RootStaking_DepositsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Deposits_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -11331,6 +11439,71 @@ export type Query_RootStaking_Deposits_AggregateArgs = {
 
 export type Query_RootStaking_Deposits_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStaking_Domain_Block_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Block_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Block_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Block_Histories_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Domain_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Blocks_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Domain_Blocks_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStaking_Domain_EpochesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Epoches_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Epoches_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Epoches_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Domain_Epoches_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStaking_Domain_InstantiationsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Instantiations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Instantiations_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Instantiations_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Domain_Instantiations_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootStaking_Domain_Staking_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Staking_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Staking_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Staking_Histories_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Domain_Staking_Histories_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
 };
 
 
@@ -11380,6 +11553,48 @@ export type Query_RootStaking_Nominators_By_PkArgs = {
 };
 
 
+export type Query_RootStaking_Operator_RegistrationsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Operator_Registrations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Operator_Registrations_Order_By>>;
+  where?: InputMaybe<Staking_Operator_Registrations_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Operator_Registrations_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootStaking_Operator_RewardsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Operator_Rewards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Operator_Rewards_Order_By>>;
+  where?: InputMaybe<Staking_Operator_Rewards_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Operator_Rewards_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootStaking_Operator_Staking_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Operator_Staking_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Operator_Staking_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Operator_Staking_Histories_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Operator_Staking_Histories_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
 export type Query_RootStaking_OperatorsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Operators_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -11403,6 +11618,34 @@ export type Query_RootStaking_Operators_By_PkArgs = {
 };
 
 
+export type Query_RootStaking_Runtime_CreationsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Runtime_Creations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Runtime_Creations_Order_By>>;
+  where?: InputMaybe<Staking_Runtime_Creations_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Runtime_Creations_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootStaking_Withdrawal_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Withdrawal_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Withdrawal_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Withdrawal_Histories_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Withdrawal_Histories_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
 export type Query_RootStaking_WithdrawalsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Withdrawals_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -11422,6 +11665,62 @@ export type Query_RootStaking_Withdrawals_AggregateArgs = {
 
 
 export type Query_RootStaking_Withdrawals_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStats_DailyArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Daily_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Daily_Order_By>>;
+  where?: InputMaybe<Stats_Daily_Bool_Exp>;
+};
+
+
+export type Query_RootStats_Daily_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStats_HourlyArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Hourly_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Hourly_Order_By>>;
+  where?: InputMaybe<Stats_Hourly_Bool_Exp>;
+};
+
+
+export type Query_RootStats_Hourly_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStats_MonthlyArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Monthly_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Monthly_Order_By>>;
+  where?: InputMaybe<Stats_Monthly_Bool_Exp>;
+};
+
+
+export type Query_RootStats_Monthly_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStats_WeeklyArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Weekly_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Weekly_Order_By>>;
+  where?: InputMaybe<Stats_Weekly_Bool_Exp>;
+};
+
+
+export type Query_RootStats_Weekly_By_PkArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -11753,6 +12052,432 @@ export type Staking_Accounts_Variance_Fields = {
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
+/** columns and relationships of "staking.bundle_submissions" */
+export type Staking_Bundle_Submissions = {
+  __typename?: 'staking_bundle_submissions';
+  _block_range: Scalars['int8range']['output'];
+  account_id: Scalars['String']['output'];
+  bundle_id: Scalars['String']['output'];
+  burned_balance: Scalars['numeric']['output'];
+  consensus_block_hash: Scalars['String']['output'];
+  consensus_block_number: Scalars['numeric']['output'];
+  consensus_storage_fee: Scalars['numeric']['output'];
+  domain_block_extrinsic_root: Scalars['String']['output'];
+  domain_block_hash: Scalars['String']['output'];
+  domain_block_id: Scalars['String']['output'];
+  domain_block_number: Scalars['numeric']['output'];
+  domain_execution_fee: Scalars['numeric']['output'];
+  domain_id: Scalars['String']['output'];
+  epoch: Scalars['numeric']['output'];
+  id: Scalars['String']['output'];
+  operator_id: Scalars['String']['output'];
+  rejected_transfers_claimed_count: Scalars['numeric']['output'];
+  total_rejected_transfers_claimed: Scalars['numeric']['output'];
+  total_transfers_in: Scalars['numeric']['output'];
+  total_transfers_out: Scalars['numeric']['output'];
+  total_transfers_rejected: Scalars['numeric']['output'];
+  total_volume: Scalars['numeric']['output'];
+  transfers_in_count: Scalars['numeric']['output'];
+  transfers_out_count: Scalars['numeric']['output'];
+  transfers_rejected_count: Scalars['numeric']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.bundle_submissions". All fields are combined with a logical 'AND'. */
+export type Staking_Bundle_Submissions_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Bundle_Submissions_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Bundle_Submissions_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Bundle_Submissions_Bool_Exp>>;
+  account_id?: InputMaybe<String_Comparison_Exp>;
+  bundle_id?: InputMaybe<String_Comparison_Exp>;
+  burned_balance?: InputMaybe<Numeric_Comparison_Exp>;
+  consensus_block_hash?: InputMaybe<String_Comparison_Exp>;
+  consensus_block_number?: InputMaybe<Numeric_Comparison_Exp>;
+  consensus_storage_fee?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_block_extrinsic_root?: InputMaybe<String_Comparison_Exp>;
+  domain_block_hash?: InputMaybe<String_Comparison_Exp>;
+  domain_block_id?: InputMaybe<String_Comparison_Exp>;
+  domain_block_number?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_execution_fee?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  epoch?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  operator_id?: InputMaybe<String_Comparison_Exp>;
+  rejected_transfers_claimed_count?: InputMaybe<Numeric_Comparison_Exp>;
+  total_rejected_transfers_claimed?: InputMaybe<Numeric_Comparison_Exp>;
+  total_transfers_in?: InputMaybe<Numeric_Comparison_Exp>;
+  total_transfers_out?: InputMaybe<Numeric_Comparison_Exp>;
+  total_transfers_rejected?: InputMaybe<Numeric_Comparison_Exp>;
+  total_volume?: InputMaybe<Numeric_Comparison_Exp>;
+  transfers_in_count?: InputMaybe<Numeric_Comparison_Exp>;
+  transfers_out_count?: InputMaybe<Numeric_Comparison_Exp>;
+  transfers_rejected_count?: InputMaybe<Numeric_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.bundle_submissions". */
+export type Staking_Bundle_Submissions_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  account_id?: InputMaybe<Order_By>;
+  bundle_id?: InputMaybe<Order_By>;
+  burned_balance?: InputMaybe<Order_By>;
+  consensus_block_hash?: InputMaybe<Order_By>;
+  consensus_block_number?: InputMaybe<Order_By>;
+  consensus_storage_fee?: InputMaybe<Order_By>;
+  domain_block_extrinsic_root?: InputMaybe<Order_By>;
+  domain_block_hash?: InputMaybe<Order_By>;
+  domain_block_id?: InputMaybe<Order_By>;
+  domain_block_number?: InputMaybe<Order_By>;
+  domain_execution_fee?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
+  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
+  total_transfers_in?: InputMaybe<Order_By>;
+  total_transfers_out?: InputMaybe<Order_By>;
+  total_transfers_rejected?: InputMaybe<Order_By>;
+  total_volume?: InputMaybe<Order_By>;
+  transfers_in_count?: InputMaybe<Order_By>;
+  transfers_out_count?: InputMaybe<Order_By>;
+  transfers_rejected_count?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.bundle_submissions" */
+export enum Staking_Bundle_Submissions_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  AccountId = 'account_id',
+  /** column name */
+  BundleId = 'bundle_id',
+  /** column name */
+  BurnedBalance = 'burned_balance',
+  /** column name */
+  ConsensusBlockHash = 'consensus_block_hash',
+  /** column name */
+  ConsensusBlockNumber = 'consensus_block_number',
+  /** column name */
+  ConsensusStorageFee = 'consensus_storage_fee',
+  /** column name */
+  DomainBlockExtrinsicRoot = 'domain_block_extrinsic_root',
+  /** column name */
+  DomainBlockHash = 'domain_block_hash',
+  /** column name */
+  DomainBlockId = 'domain_block_id',
+  /** column name */
+  DomainBlockNumber = 'domain_block_number',
+  /** column name */
+  DomainExecutionFee = 'domain_execution_fee',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  Epoch = 'epoch',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  OperatorId = 'operator_id',
+  /** column name */
+  RejectedTransfersClaimedCount = 'rejected_transfers_claimed_count',
+  /** column name */
+  TotalRejectedTransfersClaimed = 'total_rejected_transfers_claimed',
+  /** column name */
+  TotalTransfersIn = 'total_transfers_in',
+  /** column name */
+  TotalTransfersOut = 'total_transfers_out',
+  /** column name */
+  TotalTransfersRejected = 'total_transfers_rejected',
+  /** column name */
+  TotalVolume = 'total_volume',
+  /** column name */
+  TransfersInCount = 'transfers_in_count',
+  /** column name */
+  TransfersOutCount = 'transfers_out_count',
+  /** column name */
+  TransfersRejectedCount = 'transfers_rejected_count',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_bundle_submissions" */
+export type Staking_Bundle_Submissions_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Bundle_Submissions_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Bundle_Submissions_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  account_id?: InputMaybe<Scalars['String']['input']>;
+  bundle_id?: InputMaybe<Scalars['String']['input']>;
+  burned_balance?: InputMaybe<Scalars['numeric']['input']>;
+  consensus_block_hash?: InputMaybe<Scalars['String']['input']>;
+  consensus_block_number?: InputMaybe<Scalars['numeric']['input']>;
+  consensus_storage_fee?: InputMaybe<Scalars['numeric']['input']>;
+  domain_block_extrinsic_root?: InputMaybe<Scalars['String']['input']>;
+  domain_block_hash?: InputMaybe<Scalars['String']['input']>;
+  domain_block_id?: InputMaybe<Scalars['String']['input']>;
+  domain_block_number?: InputMaybe<Scalars['numeric']['input']>;
+  domain_execution_fee?: InputMaybe<Scalars['numeric']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  epoch?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  operator_id?: InputMaybe<Scalars['String']['input']>;
+  rejected_transfers_claimed_count?: InputMaybe<Scalars['numeric']['input']>;
+  total_rejected_transfers_claimed?: InputMaybe<Scalars['numeric']['input']>;
+  total_transfers_in?: InputMaybe<Scalars['numeric']['input']>;
+  total_transfers_out?: InputMaybe<Scalars['numeric']['input']>;
+  total_transfers_rejected?: InputMaybe<Scalars['numeric']['input']>;
+  total_volume?: InputMaybe<Scalars['numeric']['input']>;
+  transfers_in_count?: InputMaybe<Scalars['numeric']['input']>;
+  transfers_out_count?: InputMaybe<Scalars['numeric']['input']>;
+  transfers_rejected_count?: InputMaybe<Scalars['numeric']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "staking.deposit_events" */
+export type Staking_Deposit_Events = {
+  __typename?: 'staking_deposit_events';
+  _block_range: Scalars['int8range']['output'];
+  account_id: Scalars['String']['output'];
+  amount: Scalars['numeric']['output'];
+  block_height: Scalars['numeric']['output'];
+  domain_id: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  nominator_id: Scalars['String']['output'];
+  operator_id: Scalars['String']['output'];
+  sort_id: Scalars['String']['output'];
+  storage_fee_deposit: Scalars['numeric']['output'];
+  timestamp: Scalars['timestamp']['output'];
+  total_amount: Scalars['numeric']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.deposit_events". All fields are combined with a logical 'AND'. */
+export type Staking_Deposit_Events_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Deposit_Events_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Deposit_Events_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Deposit_Events_Bool_Exp>>;
+  account_id?: InputMaybe<String_Comparison_Exp>;
+  amount?: InputMaybe<Numeric_Comparison_Exp>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  nominator_id?: InputMaybe<String_Comparison_Exp>;
+  operator_id?: InputMaybe<String_Comparison_Exp>;
+  sort_id?: InputMaybe<String_Comparison_Exp>;
+  storage_fee_deposit?: InputMaybe<Numeric_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
+  total_amount?: InputMaybe<Numeric_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.deposit_events". */
+export type Staking_Deposit_Events_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  account_id?: InputMaybe<Order_By>;
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nominator_id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  sort_id?: InputMaybe<Order_By>;
+  storage_fee_deposit?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  total_amount?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.deposit_events" */
+export enum Staking_Deposit_Events_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  AccountId = 'account_id',
+  /** column name */
+  Amount = 'amount',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  NominatorId = 'nominator_id',
+  /** column name */
+  OperatorId = 'operator_id',
+  /** column name */
+  SortId = 'sort_id',
+  /** column name */
+  StorageFeeDeposit = 'storage_fee_deposit',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  TotalAmount = 'total_amount',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_deposit_events" */
+export type Staking_Deposit_Events_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Deposit_Events_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Deposit_Events_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  account_id?: InputMaybe<Scalars['String']['input']>;
+  amount?: InputMaybe<Scalars['numeric']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  nominator_id?: InputMaybe<Scalars['String']['input']>;
+  operator_id?: InputMaybe<Scalars['String']['input']>;
+  sort_id?: InputMaybe<Scalars['String']['input']>;
+  storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamp']['input']>;
+  total_amount?: InputMaybe<Scalars['numeric']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "staking.deposit_histories" */
+export type Staking_Deposit_Histories = {
+  __typename?: 'staking_deposit_histories';
+  _block_range: Scalars['int8range']['output'];
+  account_id: Scalars['String']['output'];
+  amount_pending: Scalars['numeric']['output'];
+  block_height: Scalars['numeric']['output'];
+  effective_domain_epoch_pending: Scalars['Int']['output'];
+  effective_domain_id_pending: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  nominator_id: Scalars['String']['output'];
+  operator_id: Scalars['String']['output'];
+  shares: Scalars['numeric']['output'];
+  shares_known: Scalars['numeric']['output'];
+  storage_fee_deposit: Scalars['numeric']['output'];
+  storage_fee_deposit_known: Scalars['numeric']['output'];
+  storage_fee_deposit_pending: Scalars['numeric']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.deposit_histories". All fields are combined with a logical 'AND'. */
+export type Staking_Deposit_Histories_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Deposit_Histories_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Deposit_Histories_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Deposit_Histories_Bool_Exp>>;
+  account_id?: InputMaybe<String_Comparison_Exp>;
+  amount_pending?: InputMaybe<Numeric_Comparison_Exp>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  effective_domain_epoch_pending?: InputMaybe<Int_Comparison_Exp>;
+  effective_domain_id_pending?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  nominator_id?: InputMaybe<String_Comparison_Exp>;
+  operator_id?: InputMaybe<String_Comparison_Exp>;
+  shares?: InputMaybe<Numeric_Comparison_Exp>;
+  shares_known?: InputMaybe<Numeric_Comparison_Exp>;
+  storage_fee_deposit?: InputMaybe<Numeric_Comparison_Exp>;
+  storage_fee_deposit_known?: InputMaybe<Numeric_Comparison_Exp>;
+  storage_fee_deposit_pending?: InputMaybe<Numeric_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.deposit_histories". */
+export type Staking_Deposit_Histories_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  account_id?: InputMaybe<Order_By>;
+  amount_pending?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  effective_domain_epoch_pending?: InputMaybe<Order_By>;
+  effective_domain_id_pending?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nominator_id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
+  shares_known?: InputMaybe<Order_By>;
+  storage_fee_deposit?: InputMaybe<Order_By>;
+  storage_fee_deposit_known?: InputMaybe<Order_By>;
+  storage_fee_deposit_pending?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.deposit_histories" */
+export enum Staking_Deposit_Histories_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  AccountId = 'account_id',
+  /** column name */
+  AmountPending = 'amount_pending',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  EffectiveDomainEpochPending = 'effective_domain_epoch_pending',
+  /** column name */
+  EffectiveDomainIdPending = 'effective_domain_id_pending',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  NominatorId = 'nominator_id',
+  /** column name */
+  OperatorId = 'operator_id',
+  /** column name */
+  Shares = 'shares',
+  /** column name */
+  SharesKnown = 'shares_known',
+  /** column name */
+  StorageFeeDeposit = 'storage_fee_deposit',
+  /** column name */
+  StorageFeeDepositKnown = 'storage_fee_deposit_known',
+  /** column name */
+  StorageFeeDepositPending = 'storage_fee_deposit_pending',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_deposit_histories" */
+export type Staking_Deposit_Histories_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Deposit_Histories_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Deposit_Histories_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  account_id?: InputMaybe<Scalars['String']['input']>;
+  amount_pending?: InputMaybe<Scalars['numeric']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  effective_domain_epoch_pending?: InputMaybe<Scalars['Int']['input']>;
+  effective_domain_id_pending?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  nominator_id?: InputMaybe<Scalars['String']['input']>;
+  operator_id?: InputMaybe<Scalars['String']['input']>;
+  shares?: InputMaybe<Scalars['numeric']['input']>;
+  shares_known?: InputMaybe<Scalars['numeric']['input']>;
+  storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
+  storage_fee_deposit_known?: InputMaybe<Scalars['numeric']['input']>;
+  storage_fee_deposit_pending?: InputMaybe<Scalars['numeric']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
 /** columns and relationships of "staking.deposits" */
 export type Staking_Deposits = {
   __typename?: 'staking_deposits';
@@ -11763,16 +12488,13 @@ export type Staking_Deposits = {
   created_at: Scalars['numeric']['output'];
   /** An object relationship */
   domain?: Maybe<Staking_Domains>;
-  domain_block_number_deposited_at: Scalars['numeric']['output'];
   domain_id: Scalars['String']['output'];
-  epoch_deposited_at: Scalars['numeric']['output'];
-  extrinsic_hash: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
   id: Scalars['String']['output'];
   nominator_id: Scalars['String']['output'];
   /** An object relationship */
   operator?: Maybe<Staking_Operators>;
   operator_id: Scalars['String']['output'];
-  staked_at: Scalars['numeric']['output'];
   status: Scalars['String']['output'];
   storage_fee_deposit: Scalars['numeric']['output'];
   timestamp: Scalars['timestamp']['output'];
@@ -11842,9 +12564,6 @@ export type Staking_Deposits_Avg_Fields = {
   __typename?: 'staking_deposits_avg_fields';
   amount?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['Float']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['Float']['output']>;
-  staked_at?: Maybe<Scalars['Float']['output']>;
   storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   total_withdrawn?: Maybe<Scalars['Float']['output']>;
@@ -11855,9 +12574,6 @@ export type Staking_Deposits_Avg_Fields = {
 export type Staking_Deposits_Avg_Order_By = {
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   total_withdrawn?: InputMaybe<Order_By>;
@@ -11874,15 +12590,12 @@ export type Staking_Deposits_Bool_Exp = {
   amount?: InputMaybe<Numeric_Comparison_Exp>;
   created_at?: InputMaybe<Numeric_Comparison_Exp>;
   domain?: InputMaybe<Staking_Domains_Bool_Exp>;
-  domain_block_number_deposited_at?: InputMaybe<Numeric_Comparison_Exp>;
   domain_id?: InputMaybe<String_Comparison_Exp>;
-  epoch_deposited_at?: InputMaybe<Numeric_Comparison_Exp>;
-  extrinsic_hash?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
   nominator_id?: InputMaybe<String_Comparison_Exp>;
   operator?: InputMaybe<Staking_Operators_Bool_Exp>;
   operator_id?: InputMaybe<String_Comparison_Exp>;
-  staked_at?: InputMaybe<Numeric_Comparison_Exp>;
   status?: InputMaybe<String_Comparison_Exp>;
   storage_fee_deposit?: InputMaybe<Numeric_Comparison_Exp>;
   timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
@@ -11897,14 +12610,11 @@ export type Staking_Deposits_Max_Fields = {
   account_id?: Maybe<Scalars['String']['output']>;
   amount?: Maybe<Scalars['numeric']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['numeric']['output']>;
   domain_id?: Maybe<Scalars['String']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['numeric']['output']>;
-  extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   nominator_id?: Maybe<Scalars['String']['output']>;
   operator_id?: Maybe<Scalars['String']['output']>;
-  staked_at?: Maybe<Scalars['numeric']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   timestamp?: Maybe<Scalars['timestamp']['output']>;
@@ -11918,14 +12628,11 @@ export type Staking_Deposits_Max_Order_By = {
   account_id?: InputMaybe<Order_By>;
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  extrinsic_hash?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   nominator_id?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
@@ -11940,14 +12647,11 @@ export type Staking_Deposits_Min_Fields = {
   account_id?: Maybe<Scalars['String']['output']>;
   amount?: Maybe<Scalars['numeric']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['numeric']['output']>;
   domain_id?: Maybe<Scalars['String']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['numeric']['output']>;
-  extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   nominator_id?: Maybe<Scalars['String']['output']>;
   operator_id?: Maybe<Scalars['String']['output']>;
-  staked_at?: Maybe<Scalars['numeric']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   timestamp?: Maybe<Scalars['timestamp']['output']>;
@@ -11961,14 +12665,11 @@ export type Staking_Deposits_Min_Order_By = {
   account_id?: InputMaybe<Order_By>;
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  extrinsic_hash?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   nominator_id?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
@@ -11984,15 +12685,12 @@ export type Staking_Deposits_Order_By = {
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   domain?: InputMaybe<Staking_Domains_Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  extrinsic_hash?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   nominator_id?: InputMaybe<Order_By>;
   operator?: InputMaybe<Staking_Operators_Order_By>;
   operator_id?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
@@ -12010,21 +12708,15 @@ export enum Staking_Deposits_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
-  DomainBlockNumberDepositedAt = 'domain_block_number_deposited_at',
-  /** column name */
   DomainId = 'domain_id',
   /** column name */
-  EpochDepositedAt = 'epoch_deposited_at',
-  /** column name */
-  ExtrinsicHash = 'extrinsic_hash',
+  ExtrinsicId = 'extrinsic_id',
   /** column name */
   Id = 'id',
   /** column name */
   NominatorId = 'nominator_id',
   /** column name */
   OperatorId = 'operator_id',
-  /** column name */
-  StakedAt = 'staked_at',
   /** column name */
   Status = 'status',
   /** column name */
@@ -12044,9 +12736,6 @@ export type Staking_Deposits_Stddev_Fields = {
   __typename?: 'staking_deposits_stddev_fields';
   amount?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['Float']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['Float']['output']>;
-  staked_at?: Maybe<Scalars['Float']['output']>;
   storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   total_withdrawn?: Maybe<Scalars['Float']['output']>;
@@ -12057,9 +12746,6 @@ export type Staking_Deposits_Stddev_Fields = {
 export type Staking_Deposits_Stddev_Order_By = {
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   total_withdrawn?: InputMaybe<Order_By>;
@@ -12071,9 +12757,6 @@ export type Staking_Deposits_Stddev_Pop_Fields = {
   __typename?: 'staking_deposits_stddev_pop_fields';
   amount?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['Float']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['Float']['output']>;
-  staked_at?: Maybe<Scalars['Float']['output']>;
   storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   total_withdrawn?: Maybe<Scalars['Float']['output']>;
@@ -12084,9 +12767,6 @@ export type Staking_Deposits_Stddev_Pop_Fields = {
 export type Staking_Deposits_Stddev_Pop_Order_By = {
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   total_withdrawn?: InputMaybe<Order_By>;
@@ -12098,9 +12778,6 @@ export type Staking_Deposits_Stddev_Samp_Fields = {
   __typename?: 'staking_deposits_stddev_samp_fields';
   amount?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['Float']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['Float']['output']>;
-  staked_at?: Maybe<Scalars['Float']['output']>;
   storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   total_withdrawn?: Maybe<Scalars['Float']['output']>;
@@ -12111,9 +12788,6 @@ export type Staking_Deposits_Stddev_Samp_Fields = {
 export type Staking_Deposits_Stddev_Samp_Order_By = {
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   total_withdrawn?: InputMaybe<Order_By>;
@@ -12133,14 +12807,11 @@ export type Staking_Deposits_Stream_Cursor_Value_Input = {
   account_id?: InputMaybe<Scalars['String']['input']>;
   amount?: InputMaybe<Scalars['numeric']['input']>;
   created_at?: InputMaybe<Scalars['numeric']['input']>;
-  domain_block_number_deposited_at?: InputMaybe<Scalars['numeric']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
-  epoch_deposited_at?: InputMaybe<Scalars['numeric']['input']>;
-  extrinsic_hash?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   nominator_id?: InputMaybe<Scalars['String']['input']>;
   operator_id?: InputMaybe<Scalars['String']['input']>;
-  staked_at?: InputMaybe<Scalars['numeric']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
   storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
   timestamp?: InputMaybe<Scalars['timestamp']['input']>;
@@ -12154,9 +12825,6 @@ export type Staking_Deposits_Sum_Fields = {
   __typename?: 'staking_deposits_sum_fields';
   amount?: Maybe<Scalars['numeric']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['numeric']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['numeric']['output']>;
-  staked_at?: Maybe<Scalars['numeric']['output']>;
   storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   total_amount?: Maybe<Scalars['numeric']['output']>;
   total_withdrawn?: Maybe<Scalars['numeric']['output']>;
@@ -12167,9 +12835,6 @@ export type Staking_Deposits_Sum_Fields = {
 export type Staking_Deposits_Sum_Order_By = {
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   total_withdrawn?: InputMaybe<Order_By>;
@@ -12181,9 +12846,6 @@ export type Staking_Deposits_Var_Pop_Fields = {
   __typename?: 'staking_deposits_var_pop_fields';
   amount?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['Float']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['Float']['output']>;
-  staked_at?: Maybe<Scalars['Float']['output']>;
   storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   total_withdrawn?: Maybe<Scalars['Float']['output']>;
@@ -12194,9 +12856,6 @@ export type Staking_Deposits_Var_Pop_Fields = {
 export type Staking_Deposits_Var_Pop_Order_By = {
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   total_withdrawn?: InputMaybe<Order_By>;
@@ -12208,9 +12867,6 @@ export type Staking_Deposits_Var_Samp_Fields = {
   __typename?: 'staking_deposits_var_samp_fields';
   amount?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['Float']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['Float']['output']>;
-  staked_at?: Maybe<Scalars['Float']['output']>;
   storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   total_withdrawn?: Maybe<Scalars['Float']['output']>;
@@ -12221,9 +12877,6 @@ export type Staking_Deposits_Var_Samp_Fields = {
 export type Staking_Deposits_Var_Samp_Order_By = {
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   total_withdrawn?: InputMaybe<Order_By>;
@@ -12235,9 +12888,6 @@ export type Staking_Deposits_Variance_Fields = {
   __typename?: 'staking_deposits_variance_fields';
   amount?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
-  domain_block_number_deposited_at?: Maybe<Scalars['Float']['output']>;
-  epoch_deposited_at?: Maybe<Scalars['Float']['output']>;
-  staked_at?: Maybe<Scalars['Float']['output']>;
   storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   total_withdrawn?: Maybe<Scalars['Float']['output']>;
@@ -12248,13 +12898,476 @@ export type Staking_Deposits_Variance_Fields = {
 export type Staking_Deposits_Variance_Order_By = {
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
-  domain_block_number_deposited_at?: InputMaybe<Order_By>;
-  epoch_deposited_at?: InputMaybe<Order_By>;
-  staked_at?: InputMaybe<Order_By>;
   storage_fee_deposit?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   total_withdrawn?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "staking.domain_block_histories" */
+export type Staking_Domain_Block_Histories = {
+  __typename?: 'staking_domain_block_histories';
+  _block_range: Scalars['int8range']['output'];
+  block_height: Scalars['numeric']['output'];
+  domain_block_number: Scalars['numeric']['output'];
+  domain_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.domain_block_histories". All fields are combined with a logical 'AND'. */
+export type Staking_Domain_Block_Histories_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Domain_Block_Histories_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Domain_Block_Histories_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Domain_Block_Histories_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_block_number?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.domain_block_histories". */
+export type Staking_Domain_Block_Histories_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  domain_block_number?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.domain_block_histories" */
+export enum Staking_Domain_Block_Histories_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  DomainBlockNumber = 'domain_block_number',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_domain_block_histories" */
+export type Staking_Domain_Block_Histories_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Domain_Block_Histories_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Domain_Block_Histories_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  domain_block_number?: InputMaybe<Scalars['numeric']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "staking.domain_blocks" */
+export type Staking_Domain_Blocks = {
+  __typename?: 'staking_domain_blocks';
+  block_hash: Scalars['String']['output'];
+  block_number: Scalars['numeric']['output'];
+  consensus_block_hash: Scalars['String']['output'];
+  consensus_block_number: Scalars['numeric']['output'];
+  created_at: Scalars['numeric']['output'];
+  domain_epoch_id: Scalars['String']['output'];
+  domain_id: Scalars['String']['output'];
+  epoch: Scalars['numeric']['output'];
+  extrinsic_root: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  timestamp: Scalars['timestamp']['output'];
+  updated_at: Scalars['numeric']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.domain_blocks". All fields are combined with a logical 'AND'. */
+export type Staking_Domain_Blocks_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Domain_Blocks_Bool_Exp>>;
+  _not?: InputMaybe<Staking_Domain_Blocks_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Domain_Blocks_Bool_Exp>>;
+  block_hash?: InputMaybe<String_Comparison_Exp>;
+  block_number?: InputMaybe<Numeric_Comparison_Exp>;
+  consensus_block_hash?: InputMaybe<String_Comparison_Exp>;
+  consensus_block_number?: InputMaybe<Numeric_Comparison_Exp>;
+  created_at?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_epoch_id?: InputMaybe<String_Comparison_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  epoch?: InputMaybe<Numeric_Comparison_Exp>;
+  extrinsic_root?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
+  updated_at?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.domain_blocks". */
+export type Staking_Domain_Blocks_Order_By = {
+  block_hash?: InputMaybe<Order_By>;
+  block_number?: InputMaybe<Order_By>;
+  consensus_block_hash?: InputMaybe<Order_By>;
+  consensus_block_number?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  domain_epoch_id?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  extrinsic_root?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.domain_blocks" */
+export enum Staking_Domain_Blocks_Select_Column {
+  /** column name */
+  BlockHash = 'block_hash',
+  /** column name */
+  BlockNumber = 'block_number',
+  /** column name */
+  ConsensusBlockHash = 'consensus_block_hash',
+  /** column name */
+  ConsensusBlockNumber = 'consensus_block_number',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DomainEpochId = 'domain_epoch_id',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  Epoch = 'epoch',
+  /** column name */
+  ExtrinsicRoot = 'extrinsic_root',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "staking_domain_blocks" */
+export type Staking_Domain_Blocks_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Domain_Blocks_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Domain_Blocks_Stream_Cursor_Value_Input = {
+  block_hash?: InputMaybe<Scalars['String']['input']>;
+  block_number?: InputMaybe<Scalars['numeric']['input']>;
+  consensus_block_hash?: InputMaybe<Scalars['String']['input']>;
+  consensus_block_number?: InputMaybe<Scalars['numeric']['input']>;
+  created_at?: InputMaybe<Scalars['numeric']['input']>;
+  domain_epoch_id?: InputMaybe<Scalars['String']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  epoch?: InputMaybe<Scalars['numeric']['input']>;
+  extrinsic_root?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamp']['input']>;
+  updated_at?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** columns and relationships of "staking.domain_epoches" */
+export type Staking_Domain_Epoches = {
+  __typename?: 'staking_domain_epoches';
+  block_count: Scalars['numeric']['output'];
+  block_number_end: Scalars['numeric']['output'];
+  block_number_start: Scalars['numeric']['output'];
+  consensus_block_hash_end: Scalars['String']['output'];
+  consensus_block_hash_start: Scalars['String']['output'];
+  consensus_block_number_end: Scalars['numeric']['output'];
+  consensus_block_number_start: Scalars['numeric']['output'];
+  created_at: Scalars['numeric']['output'];
+  domain_id: Scalars['String']['output'];
+  epoch: Scalars['numeric']['output'];
+  epoch_duration: Scalars['numeric']['output'];
+  id: Scalars['String']['output'];
+  timestamp_end: Scalars['timestamp']['output'];
+  timestamp_start: Scalars['timestamp']['output'];
+  updated_at: Scalars['numeric']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.domain_epoches". All fields are combined with a logical 'AND'. */
+export type Staking_Domain_Epoches_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Domain_Epoches_Bool_Exp>>;
+  _not?: InputMaybe<Staking_Domain_Epoches_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Domain_Epoches_Bool_Exp>>;
+  block_count?: InputMaybe<Numeric_Comparison_Exp>;
+  block_number_end?: InputMaybe<Numeric_Comparison_Exp>;
+  block_number_start?: InputMaybe<Numeric_Comparison_Exp>;
+  consensus_block_hash_end?: InputMaybe<String_Comparison_Exp>;
+  consensus_block_hash_start?: InputMaybe<String_Comparison_Exp>;
+  consensus_block_number_end?: InputMaybe<Numeric_Comparison_Exp>;
+  consensus_block_number_start?: InputMaybe<Numeric_Comparison_Exp>;
+  created_at?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  epoch?: InputMaybe<Numeric_Comparison_Exp>;
+  epoch_duration?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  timestamp_end?: InputMaybe<Timestamp_Comparison_Exp>;
+  timestamp_start?: InputMaybe<Timestamp_Comparison_Exp>;
+  updated_at?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.domain_epoches". */
+export type Staking_Domain_Epoches_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_hash_end?: InputMaybe<Order_By>;
+  consensus_block_hash_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  timestamp_end?: InputMaybe<Order_By>;
+  timestamp_start?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.domain_epoches" */
+export enum Staking_Domain_Epoches_Select_Column {
+  /** column name */
+  BlockCount = 'block_count',
+  /** column name */
+  BlockNumberEnd = 'block_number_end',
+  /** column name */
+  BlockNumberStart = 'block_number_start',
+  /** column name */
+  ConsensusBlockHashEnd = 'consensus_block_hash_end',
+  /** column name */
+  ConsensusBlockHashStart = 'consensus_block_hash_start',
+  /** column name */
+  ConsensusBlockNumberEnd = 'consensus_block_number_end',
+  /** column name */
+  ConsensusBlockNumberStart = 'consensus_block_number_start',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  Epoch = 'epoch',
+  /** column name */
+  EpochDuration = 'epoch_duration',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  TimestampEnd = 'timestamp_end',
+  /** column name */
+  TimestampStart = 'timestamp_start',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "staking_domain_epoches" */
+export type Staking_Domain_Epoches_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Domain_Epoches_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Domain_Epoches_Stream_Cursor_Value_Input = {
+  block_count?: InputMaybe<Scalars['numeric']['input']>;
+  block_number_end?: InputMaybe<Scalars['numeric']['input']>;
+  block_number_start?: InputMaybe<Scalars['numeric']['input']>;
+  consensus_block_hash_end?: InputMaybe<Scalars['String']['input']>;
+  consensus_block_hash_start?: InputMaybe<Scalars['String']['input']>;
+  consensus_block_number_end?: InputMaybe<Scalars['numeric']['input']>;
+  consensus_block_number_start?: InputMaybe<Scalars['numeric']['input']>;
+  created_at?: InputMaybe<Scalars['numeric']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  epoch?: InputMaybe<Scalars['numeric']['input']>;
+  epoch_duration?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  timestamp_end?: InputMaybe<Scalars['timestamp']['input']>;
+  timestamp_start?: InputMaybe<Scalars['timestamp']['input']>;
+  updated_at?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** columns and relationships of "staking.domain_instantiations" */
+export type Staking_Domain_Instantiations = {
+  __typename?: 'staking_domain_instantiations';
+  _block_range: Scalars['int8range']['output'];
+  block_height: Scalars['numeric']['output'];
+  created_by: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  runtime: Scalars['String']['output'];
+  runtime_id: Scalars['Int']['output'];
+  runtime_info: Scalars['String']['output'];
+  sort_id: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.domain_instantiations". All fields are combined with a logical 'AND'. */
+export type Staking_Domain_Instantiations_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Domain_Instantiations_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Domain_Instantiations_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Domain_Instantiations_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  created_by?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  runtime?: InputMaybe<String_Comparison_Exp>;
+  runtime_id?: InputMaybe<Int_Comparison_Exp>;
+  runtime_info?: InputMaybe<String_Comparison_Exp>;
+  sort_id?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.domain_instantiations". */
+export type Staking_Domain_Instantiations_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  created_by?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  runtime?: InputMaybe<Order_By>;
+  runtime_id?: InputMaybe<Order_By>;
+  runtime_info?: InputMaybe<Order_By>;
+  sort_id?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.domain_instantiations" */
+export enum Staking_Domain_Instantiations_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  CreatedBy = 'created_by',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Runtime = 'runtime',
+  /** column name */
+  RuntimeId = 'runtime_id',
+  /** column name */
+  RuntimeInfo = 'runtime_info',
+  /** column name */
+  SortId = 'sort_id',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_domain_instantiations" */
+export type Staking_Domain_Instantiations_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Domain_Instantiations_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Domain_Instantiations_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  created_by?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  runtime?: InputMaybe<Scalars['String']['input']>;
+  runtime_id?: InputMaybe<Scalars['Int']['input']>;
+  runtime_info?: InputMaybe<Scalars['String']['input']>;
+  sort_id?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "staking.domain_staking_histories" */
+export type Staking_Domain_Staking_Histories = {
+  __typename?: 'staking_domain_staking_histories';
+  _block_range: Scalars['int8range']['output'];
+  block_height: Scalars['numeric']['output'];
+  current_epoch_index: Scalars['Int']['output'];
+  current_total_stake: Scalars['numeric']['output'];
+  domain_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.domain_staking_histories". All fields are combined with a logical 'AND'. */
+export type Staking_Domain_Staking_Histories_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Domain_Staking_Histories_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Domain_Staking_Histories_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Domain_Staking_Histories_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  current_epoch_index?: InputMaybe<Int_Comparison_Exp>;
+  current_total_stake?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.domain_staking_histories". */
+export type Staking_Domain_Staking_Histories_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  current_epoch_index?: InputMaybe<Order_By>;
+  current_total_stake?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.domain_staking_histories" */
+export enum Staking_Domain_Staking_Histories_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  CurrentEpochIndex = 'current_epoch_index',
+  /** column name */
+  CurrentTotalStake = 'current_total_stake',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_domain_staking_histories" */
+export type Staking_Domain_Staking_Histories_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Domain_Staking_Histories_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Domain_Staking_Histories_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  current_epoch_index?: InputMaybe<Scalars['Int']['input']>;
+  current_total_stake?: InputMaybe<Scalars['numeric']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
 };
 
 /** columns and relationships of "staking.domains" */
@@ -12279,6 +13392,7 @@ export type Staking_Domains = {
   deposits: Array<Staking_Deposits>;
   /** An aggregate relationship */
   deposits_aggregate: Staking_Deposits_Aggregate;
+  extrinsic_id: Scalars['String']['output'];
   id: Scalars['String']['output'];
   last1k_epoch_duration: Scalars['numeric']['output'];
   last6_epochs_duration: Scalars['numeric']['output'];
@@ -12297,9 +13411,9 @@ export type Staking_Domains = {
   operators_aggregate: Staking_Operators_Aggregate;
   rejected_transfers_claimed_count: Scalars['numeric']['output'];
   runtime: Scalars['String']['output'];
-  runtime_id: Scalars['Int']['output'];
+  runtime_id: Scalars['String']['output'];
   runtime_info: Scalars['String']['output'];
-  sort_id: Scalars['numeric']['output'];
+  sort_id: Scalars['String']['output'];
   total_burned_balance: Scalars['numeric']['output'];
   total_consensus_storage_fee: Scalars['numeric']['output'];
   total_deposits: Scalars['numeric']['output'];
@@ -12455,8 +13569,6 @@ export type Staking_Domains_Avg_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  runtime_id?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -12497,6 +13609,7 @@ export type Staking_Domains_Bool_Exp = {
   current_total_stake?: InputMaybe<Numeric_Comparison_Exp>;
   deposits?: InputMaybe<Staking_Deposits_Bool_Exp>;
   deposits_aggregate?: InputMaybe<Staking_Deposits_Aggregate_Bool_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
   last1k_epoch_duration?: InputMaybe<Numeric_Comparison_Exp>;
   last6_epochs_duration?: InputMaybe<Numeric_Comparison_Exp>;
@@ -12511,9 +13624,9 @@ export type Staking_Domains_Bool_Exp = {
   operators_aggregate?: InputMaybe<Staking_Operators_Aggregate_Bool_Exp>;
   rejected_transfers_claimed_count?: InputMaybe<Numeric_Comparison_Exp>;
   runtime?: InputMaybe<String_Comparison_Exp>;
-  runtime_id?: InputMaybe<Int_Comparison_Exp>;
+  runtime_id?: InputMaybe<String_Comparison_Exp>;
   runtime_info?: InputMaybe<String_Comparison_Exp>;
-  sort_id?: InputMaybe<Numeric_Comparison_Exp>;
+  sort_id?: InputMaybe<String_Comparison_Exp>;
   total_burned_balance?: InputMaybe<Numeric_Comparison_Exp>;
   total_consensus_storage_fee?: InputMaybe<Numeric_Comparison_Exp>;
   total_deposits?: InputMaybe<Numeric_Comparison_Exp>;
@@ -12551,6 +13664,7 @@ export type Staking_Domains_Max_Fields = {
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   current_total_shares?: Maybe<Scalars['numeric']['output']>;
   current_total_stake?: Maybe<Scalars['numeric']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   last1k_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   last6_epochs_duration?: Maybe<Scalars['numeric']['output']>;
@@ -12561,9 +13675,9 @@ export type Staking_Domains_Max_Fields = {
   name?: Maybe<Scalars['String']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['numeric']['output']>;
   runtime?: Maybe<Scalars['String']['output']>;
-  runtime_id?: Maybe<Scalars['Int']['output']>;
+  runtime_id?: Maybe<Scalars['String']['output']>;
   runtime_info?: Maybe<Scalars['String']['output']>;
-  sort_id?: Maybe<Scalars['numeric']['output']>;
+  sort_id?: Maybe<Scalars['String']['output']>;
   total_burned_balance?: Maybe<Scalars['numeric']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['numeric']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
@@ -12599,6 +13713,7 @@ export type Staking_Domains_Min_Fields = {
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   current_total_shares?: Maybe<Scalars['numeric']['output']>;
   current_total_stake?: Maybe<Scalars['numeric']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   last1k_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   last6_epochs_duration?: Maybe<Scalars['numeric']['output']>;
@@ -12609,9 +13724,9 @@ export type Staking_Domains_Min_Fields = {
   name?: Maybe<Scalars['String']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['numeric']['output']>;
   runtime?: Maybe<Scalars['String']['output']>;
-  runtime_id?: Maybe<Scalars['Int']['output']>;
+  runtime_id?: Maybe<Scalars['String']['output']>;
   runtime_info?: Maybe<Scalars['String']['output']>;
-  sort_id?: Maybe<Scalars['numeric']['output']>;
+  sort_id?: Maybe<Scalars['String']['output']>;
   total_burned_balance?: Maybe<Scalars['numeric']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['numeric']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
@@ -12648,6 +13763,7 @@ export type Staking_Domains_Order_By = {
   current_total_shares?: InputMaybe<Order_By>;
   current_total_stake?: InputMaybe<Order_By>;
   deposits_aggregate?: InputMaybe<Staking_Deposits_Aggregate_Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   last1k_epoch_duration?: InputMaybe<Order_By>;
   last6_epochs_duration?: InputMaybe<Order_By>;
@@ -12711,6 +13827,8 @@ export enum Staking_Domains_Select_Column {
   CurrentTotalShares = 'current_total_shares',
   /** column name */
   CurrentTotalStake = 'current_total_stake',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
   /** column name */
   Id = 'id',
   /** column name */
@@ -12795,8 +13913,6 @@ export type Staking_Domains_Stddev_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  runtime_id?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -12838,8 +13954,6 @@ export type Staking_Domains_Stddev_Pop_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  runtime_id?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -12881,8 +13995,6 @@ export type Staking_Domains_Stddev_Samp_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  runtime_id?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -12925,6 +14037,7 @@ export type Staking_Domains_Stream_Cursor_Value_Input = {
   current_storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
   current_total_shares?: InputMaybe<Scalars['numeric']['input']>;
   current_total_stake?: InputMaybe<Scalars['numeric']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   last1k_epoch_duration?: InputMaybe<Scalars['numeric']['input']>;
   last6_epochs_duration?: InputMaybe<Scalars['numeric']['input']>;
@@ -12935,9 +14048,9 @@ export type Staking_Domains_Stream_Cursor_Value_Input = {
   name?: InputMaybe<Scalars['String']['input']>;
   rejected_transfers_claimed_count?: InputMaybe<Scalars['numeric']['input']>;
   runtime?: InputMaybe<Scalars['String']['input']>;
-  runtime_id?: InputMaybe<Scalars['Int']['input']>;
+  runtime_id?: InputMaybe<Scalars['String']['input']>;
   runtime_info?: InputMaybe<Scalars['String']['input']>;
-  sort_id?: InputMaybe<Scalars['numeric']['input']>;
+  sort_id?: InputMaybe<Scalars['String']['input']>;
   total_burned_balance?: InputMaybe<Scalars['numeric']['input']>;
   total_consensus_storage_fee?: InputMaybe<Scalars['numeric']['input']>;
   total_deposits?: InputMaybe<Scalars['numeric']['input']>;
@@ -12979,8 +14092,6 @@ export type Staking_Domains_Sum_Fields = {
   last_domain_block_number?: Maybe<Scalars['numeric']['output']>;
   last_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['numeric']['output']>;
-  runtime_id?: Maybe<Scalars['Int']['output']>;
-  sort_id?: Maybe<Scalars['numeric']['output']>;
   total_burned_balance?: Maybe<Scalars['numeric']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['numeric']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
@@ -13022,8 +14133,6 @@ export type Staking_Domains_Var_Pop_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  runtime_id?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -13065,8 +14174,6 @@ export type Staking_Domains_Var_Samp_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  runtime_id?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -13108,8 +14215,6 @@ export type Staking_Domains_Variance_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  runtime_id?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -14069,6 +15174,306 @@ export type Staking_Nominators_Variance_Order_By = {
   updated_at?: InputMaybe<Order_By>;
 };
 
+/** columns and relationships of "staking.operator_registrations" */
+export type Staking_Operator_Registrations = {
+  __typename?: 'staking_operator_registrations';
+  _block_range: Scalars['int8range']['output'];
+  block_height: Scalars['numeric']['output'];
+  domain_id: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  minimum_nominator_stake: Scalars['numeric']['output'];
+  nomination_tax: Scalars['Int']['output'];
+  owner: Scalars['String']['output'];
+  signing_key: Scalars['String']['output'];
+  sort_id: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.operator_registrations". All fields are combined with a logical 'AND'. */
+export type Staking_Operator_Registrations_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Operator_Registrations_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Operator_Registrations_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Operator_Registrations_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  minimum_nominator_stake?: InputMaybe<Numeric_Comparison_Exp>;
+  nomination_tax?: InputMaybe<Int_Comparison_Exp>;
+  owner?: InputMaybe<String_Comparison_Exp>;
+  signing_key?: InputMaybe<String_Comparison_Exp>;
+  sort_id?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.operator_registrations". */
+export type Staking_Operator_Registrations_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  minimum_nominator_stake?: InputMaybe<Order_By>;
+  nomination_tax?: InputMaybe<Order_By>;
+  owner?: InputMaybe<Order_By>;
+  signing_key?: InputMaybe<Order_By>;
+  sort_id?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.operator_registrations" */
+export enum Staking_Operator_Registrations_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  MinimumNominatorStake = 'minimum_nominator_stake',
+  /** column name */
+  NominationTax = 'nomination_tax',
+  /** column name */
+  Owner = 'owner',
+  /** column name */
+  SigningKey = 'signing_key',
+  /** column name */
+  SortId = 'sort_id',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_operator_registrations" */
+export type Staking_Operator_Registrations_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Operator_Registrations_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Operator_Registrations_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  minimum_nominator_stake?: InputMaybe<Scalars['numeric']['input']>;
+  nomination_tax?: InputMaybe<Scalars['Int']['input']>;
+  owner?: InputMaybe<Scalars['String']['input']>;
+  signing_key?: InputMaybe<Scalars['String']['input']>;
+  sort_id?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "staking.operator_rewards" */
+export type Staking_Operator_Rewards = {
+  __typename?: 'staking_operator_rewards';
+  _block_range: Scalars['int8range']['output'];
+  amount: Scalars['numeric']['output'];
+  at_block_number: Scalars['numeric']['output'];
+  block_height: Scalars['numeric']['output'];
+  extrinsic_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  operator_id: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.operator_rewards". All fields are combined with a logical 'AND'. */
+export type Staking_Operator_Rewards_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Operator_Rewards_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Operator_Rewards_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Operator_Rewards_Bool_Exp>>;
+  amount?: InputMaybe<Numeric_Comparison_Exp>;
+  at_block_number?: InputMaybe<Numeric_Comparison_Exp>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  operator_id?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.operator_rewards". */
+export type Staking_Operator_Rewards_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  amount?: InputMaybe<Order_By>;
+  at_block_number?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.operator_rewards" */
+export enum Staking_Operator_Rewards_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  Amount = 'amount',
+  /** column name */
+  AtBlockNumber = 'at_block_number',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  OperatorId = 'operator_id',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_operator_rewards" */
+export type Staking_Operator_Rewards_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Operator_Rewards_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Operator_Rewards_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  amount?: InputMaybe<Scalars['numeric']['input']>;
+  at_block_number?: InputMaybe<Scalars['numeric']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  operator_id?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "staking.operator_staking_histories" */
+export type Staking_Operator_Staking_Histories = {
+  __typename?: 'staking_operator_staking_histories';
+  _block_range: Scalars['int8range']['output'];
+  block_height: Scalars['numeric']['output'];
+  current_domain_id: Scalars['String']['output'];
+  current_epoch_rewards: Scalars['numeric']['output'];
+  current_total_shares: Scalars['numeric']['output'];
+  current_total_stake: Scalars['numeric']['output'];
+  deposits_in_epoch: Scalars['numeric']['output'];
+  id: Scalars['String']['output'];
+  operator_id: Scalars['String']['output'];
+  operator_owner: Scalars['String']['output'];
+  share_price: Scalars['numeric']['output'];
+  signing_key: Scalars['String']['output'];
+  total_storage_fee_deposit: Scalars['numeric']['output'];
+  uuid: Scalars['uuid']['output'];
+  withdrawals_in_epoch: Scalars['numeric']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.operator_staking_histories". All fields are combined with a logical 'AND'. */
+export type Staking_Operator_Staking_Histories_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Operator_Staking_Histories_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Operator_Staking_Histories_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Operator_Staking_Histories_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  current_domain_id?: InputMaybe<String_Comparison_Exp>;
+  current_epoch_rewards?: InputMaybe<Numeric_Comparison_Exp>;
+  current_total_shares?: InputMaybe<Numeric_Comparison_Exp>;
+  current_total_stake?: InputMaybe<Numeric_Comparison_Exp>;
+  deposits_in_epoch?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  operator_id?: InputMaybe<String_Comparison_Exp>;
+  operator_owner?: InputMaybe<String_Comparison_Exp>;
+  share_price?: InputMaybe<Numeric_Comparison_Exp>;
+  signing_key?: InputMaybe<String_Comparison_Exp>;
+  total_storage_fee_deposit?: InputMaybe<Numeric_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+  withdrawals_in_epoch?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.operator_staking_histories". */
+export type Staking_Operator_Staking_Histories_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  current_domain_id?: InputMaybe<Order_By>;
+  current_epoch_rewards?: InputMaybe<Order_By>;
+  current_total_shares?: InputMaybe<Order_By>;
+  current_total_stake?: InputMaybe<Order_By>;
+  deposits_in_epoch?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  operator_owner?: InputMaybe<Order_By>;
+  share_price?: InputMaybe<Order_By>;
+  signing_key?: InputMaybe<Order_By>;
+  total_storage_fee_deposit?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+  withdrawals_in_epoch?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.operator_staking_histories" */
+export enum Staking_Operator_Staking_Histories_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  CurrentDomainId = 'current_domain_id',
+  /** column name */
+  CurrentEpochRewards = 'current_epoch_rewards',
+  /** column name */
+  CurrentTotalShares = 'current_total_shares',
+  /** column name */
+  CurrentTotalStake = 'current_total_stake',
+  /** column name */
+  DepositsInEpoch = 'deposits_in_epoch',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  OperatorId = 'operator_id',
+  /** column name */
+  OperatorOwner = 'operator_owner',
+  /** column name */
+  SharePrice = 'share_price',
+  /** column name */
+  SigningKey = 'signing_key',
+  /** column name */
+  TotalStorageFeeDeposit = 'total_storage_fee_deposit',
+  /** column name */
+  Uuid = 'uuid',
+  /** column name */
+  WithdrawalsInEpoch = 'withdrawals_in_epoch'
+}
+
+/** Streaming cursor of the table "staking_operator_staking_histories" */
+export type Staking_Operator_Staking_Histories_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Operator_Staking_Histories_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Operator_Staking_Histories_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  current_domain_id?: InputMaybe<Scalars['String']['input']>;
+  current_epoch_rewards?: InputMaybe<Scalars['numeric']['input']>;
+  current_total_shares?: InputMaybe<Scalars['numeric']['input']>;
+  current_total_stake?: InputMaybe<Scalars['numeric']['input']>;
+  deposits_in_epoch?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  operator_id?: InputMaybe<Scalars['String']['input']>;
+  operator_owner?: InputMaybe<Scalars['String']['input']>;
+  share_price?: InputMaybe<Scalars['numeric']['input']>;
+  signing_key?: InputMaybe<Scalars['String']['input']>;
+  total_storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+  withdrawals_in_epoch?: InputMaybe<Scalars['numeric']['input']>;
+};
+
 /** columns and relationships of "staking.operators" */
 export type Staking_Operators = {
   __typename?: 'staking_operators';
@@ -14094,6 +15499,7 @@ export type Staking_Operators = {
   /** An object relationship */
   domain?: Maybe<Staking_Domains>;
   domain_id: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
   id: Scalars['String']['output'];
   last_bundle_at: Scalars['numeric']['output'];
   minimum_nominator_stake: Scalars['numeric']['output'];
@@ -14106,7 +15512,7 @@ export type Staking_Operators = {
   raw_status: Scalars['String']['output'];
   rejected_transfers_claimed_count: Scalars['numeric']['output'];
   signing_key: Scalars['String']['output'];
-  sort_id: Scalars['numeric']['output'];
+  sort_id: Scalars['String']['output'];
   status: Scalars['String']['output'];
   total_burned_balance: Scalars['numeric']['output'];
   total_consensus_storage_fee: Scalars['numeric']['output'];
@@ -14266,7 +15672,6 @@ export type Staking_Operators_Avg_Fields = {
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -14304,7 +15709,6 @@ export type Staking_Operators_Avg_Order_By = {
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
   rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  sort_id?: InputMaybe<Order_By>;
   total_burned_balance?: InputMaybe<Order_By>;
   total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
@@ -14347,6 +15751,7 @@ export type Staking_Operators_Bool_Exp = {
   deposits_aggregate?: InputMaybe<Staking_Deposits_Aggregate_Bool_Exp>;
   domain?: InputMaybe<Staking_Domains_Bool_Exp>;
   domain_id?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
   last_bundle_at?: InputMaybe<Numeric_Comparison_Exp>;
   minimum_nominator_stake?: InputMaybe<Numeric_Comparison_Exp>;
@@ -14357,7 +15762,7 @@ export type Staking_Operators_Bool_Exp = {
   raw_status?: InputMaybe<String_Comparison_Exp>;
   rejected_transfers_claimed_count?: InputMaybe<Numeric_Comparison_Exp>;
   signing_key?: InputMaybe<String_Comparison_Exp>;
-  sort_id?: InputMaybe<Numeric_Comparison_Exp>;
+  sort_id?: InputMaybe<String_Comparison_Exp>;
   status?: InputMaybe<String_Comparison_Exp>;
   total_burned_balance?: InputMaybe<Numeric_Comparison_Exp>;
   total_consensus_storage_fee?: InputMaybe<Numeric_Comparison_Exp>;
@@ -14397,6 +15802,7 @@ export type Staking_Operators_Max_Fields = {
   current_total_shares?: Maybe<Scalars['numeric']['output']>;
   current_total_stake?: Maybe<Scalars['numeric']['output']>;
   domain_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   last_bundle_at?: Maybe<Scalars['numeric']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['numeric']['output']>;
@@ -14405,7 +15811,7 @@ export type Staking_Operators_Max_Fields = {
   raw_status?: Maybe<Scalars['String']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['numeric']['output']>;
   signing_key?: Maybe<Scalars['String']['output']>;
-  sort_id?: Maybe<Scalars['numeric']['output']>;
+  sort_id?: Maybe<Scalars['String']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   total_burned_balance?: Maybe<Scalars['numeric']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['numeric']['output']>;
@@ -14442,6 +15848,7 @@ export type Staking_Operators_Max_Order_By = {
   current_total_shares?: InputMaybe<Order_By>;
   current_total_stake?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
@@ -14488,6 +15895,7 @@ export type Staking_Operators_Min_Fields = {
   current_total_shares?: Maybe<Scalars['numeric']['output']>;
   current_total_stake?: Maybe<Scalars['numeric']['output']>;
   domain_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   last_bundle_at?: Maybe<Scalars['numeric']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['numeric']['output']>;
@@ -14496,7 +15904,7 @@ export type Staking_Operators_Min_Fields = {
   raw_status?: Maybe<Scalars['String']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['numeric']['output']>;
   signing_key?: Maybe<Scalars['String']['output']>;
-  sort_id?: Maybe<Scalars['numeric']['output']>;
+  sort_id?: Maybe<Scalars['String']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   total_burned_balance?: Maybe<Scalars['numeric']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['numeric']['output']>;
@@ -14533,6 +15941,7 @@ export type Staking_Operators_Min_Order_By = {
   current_total_shares?: InputMaybe<Order_By>;
   current_total_stake?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
@@ -14581,6 +15990,7 @@ export type Staking_Operators_Order_By = {
   deposits_aggregate?: InputMaybe<Staking_Deposits_Aggregate_Order_By>;
   domain?: InputMaybe<Staking_Domains_Order_By>;
   domain_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
@@ -14642,6 +16052,8 @@ export enum Staking_Operators_Select_Column {
   CurrentTotalStake = 'current_total_stake',
   /** column name */
   DomainId = 'domain_id',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
   /** column name */
   Id = 'id',
   /** column name */
@@ -14717,7 +16129,6 @@ export type Staking_Operators_Stddev_Fields = {
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -14755,7 +16166,6 @@ export type Staking_Operators_Stddev_Order_By = {
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
   rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  sort_id?: InputMaybe<Order_By>;
   total_burned_balance?: InputMaybe<Order_By>;
   total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
@@ -14794,7 +16204,6 @@ export type Staking_Operators_Stddev_Pop_Fields = {
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -14832,7 +16241,6 @@ export type Staking_Operators_Stddev_Pop_Order_By = {
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
   rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  sort_id?: InputMaybe<Order_By>;
   total_burned_balance?: InputMaybe<Order_By>;
   total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
@@ -14871,7 +16279,6 @@ export type Staking_Operators_Stddev_Samp_Fields = {
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -14909,7 +16316,6 @@ export type Staking_Operators_Stddev_Samp_Order_By = {
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
   rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  sort_id?: InputMaybe<Order_By>;
   total_burned_balance?: InputMaybe<Order_By>;
   total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
@@ -14953,6 +16359,7 @@ export type Staking_Operators_Stream_Cursor_Value_Input = {
   current_total_shares?: InputMaybe<Scalars['numeric']['input']>;
   current_total_stake?: InputMaybe<Scalars['numeric']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   last_bundle_at?: InputMaybe<Scalars['numeric']['input']>;
   minimum_nominator_stake?: InputMaybe<Scalars['numeric']['input']>;
@@ -14961,7 +16368,7 @@ export type Staking_Operators_Stream_Cursor_Value_Input = {
   raw_status?: InputMaybe<Scalars['String']['input']>;
   rejected_transfers_claimed_count?: InputMaybe<Scalars['numeric']['input']>;
   signing_key?: InputMaybe<Scalars['String']['input']>;
-  sort_id?: InputMaybe<Scalars['numeric']['input']>;
+  sort_id?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
   total_burned_balance?: InputMaybe<Scalars['numeric']['input']>;
   total_consensus_storage_fee?: InputMaybe<Scalars['numeric']['input']>;
@@ -15001,7 +16408,6 @@ export type Staking_Operators_Sum_Fields = {
   minimum_nominator_stake?: Maybe<Scalars['numeric']['output']>;
   nomination_tax?: Maybe<Scalars['Int']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['numeric']['output']>;
-  sort_id?: Maybe<Scalars['numeric']['output']>;
   total_burned_balance?: Maybe<Scalars['numeric']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['numeric']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
@@ -15039,7 +16445,6 @@ export type Staking_Operators_Sum_Order_By = {
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
   rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  sort_id?: InputMaybe<Order_By>;
   total_burned_balance?: InputMaybe<Order_By>;
   total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
@@ -15078,7 +16483,6 @@ export type Staking_Operators_Var_Pop_Fields = {
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -15116,7 +16520,6 @@ export type Staking_Operators_Var_Pop_Order_By = {
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
   rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  sort_id?: InputMaybe<Order_By>;
   total_burned_balance?: InputMaybe<Order_By>;
   total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
@@ -15155,7 +16558,6 @@ export type Staking_Operators_Var_Samp_Fields = {
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -15193,7 +16595,6 @@ export type Staking_Operators_Var_Samp_Order_By = {
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
   rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  sort_id?: InputMaybe<Order_By>;
   total_burned_balance?: InputMaybe<Order_By>;
   total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
@@ -15232,7 +16633,6 @@ export type Staking_Operators_Variance_Fields = {
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  sort_id?: Maybe<Scalars['Float']['output']>;
   total_burned_balance?: Maybe<Scalars['Float']['output']>;
   total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
@@ -15270,7 +16670,6 @@ export type Staking_Operators_Variance_Order_By = {
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
   rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  sort_id?: InputMaybe<Order_By>;
   total_burned_balance?: InputMaybe<Order_By>;
   total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
@@ -15288,6 +16687,148 @@ export type Staking_Operators_Variance_Order_By = {
   transfers_out_count?: InputMaybe<Order_By>;
   transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "staking.runtime_creations" */
+export type Staking_Runtime_Creations = {
+  __typename?: 'staking_runtime_creations';
+  _block_range: Scalars['int8range']['output'];
+  block_height: Scalars['numeric']['output'];
+  created_by: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  sort_id: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.runtime_creations". All fields are combined with a logical 'AND'. */
+export type Staking_Runtime_Creations_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Runtime_Creations_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Runtime_Creations_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Runtime_Creations_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  created_by?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  sort_id?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.runtime_creations". */
+export type Staking_Runtime_Creations_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  created_by?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  sort_id?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.runtime_creations" */
+export enum Staking_Runtime_Creations_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  CreatedBy = 'created_by',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  SortId = 'sort_id',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_runtime_creations" */
+export type Staking_Runtime_Creations_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Runtime_Creations_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Runtime_Creations_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  created_by?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  sort_id?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** columns and relationships of "staking.withdrawal_histories" */
+export type Staking_Withdrawal_Histories = {
+  __typename?: 'staking_withdrawal_histories';
+  _block_range: Scalars['int8range']['output'];
+  block_height: Scalars['numeric']['output'];
+  id: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** Boolean expression to filter rows from the table "staking.withdrawal_histories". All fields are combined with a logical 'AND'. */
+export type Staking_Withdrawal_Histories_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Withdrawal_Histories_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Withdrawal_Histories_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Withdrawal_Histories_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking.withdrawal_histories". */
+export type Staking_Withdrawal_Histories_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.withdrawal_histories" */
+export enum Staking_Withdrawal_Histories_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** Streaming cursor of the table "staking_withdrawal_histories" */
+export type Staking_Withdrawal_Histories_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Withdrawal_Histories_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Withdrawal_Histories_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
 };
 
 /** columns and relationships of "staking.withdrawals" */
@@ -15856,6 +17397,326 @@ export type Staking_Withdrawals_Variance_Order_By = {
   updated_at?: InputMaybe<Order_By>;
 };
 
+/** columns and relationships of "stats.daily" */
+export type Stats_Daily = {
+  __typename?: 'stats_daily';
+  cumulated_history_size: Scalars['numeric']['output'];
+  delta_history_size: Scalars['numeric']['output'];
+  end_block: Scalars['numeric']['output'];
+  end_date: Scalars['timestamp']['output'];
+  id: Scalars['String']['output'];
+  start_block: Scalars['numeric']['output'];
+  start_date: Scalars['timestamp']['output'];
+  updated_at: Scalars['timestamp']['output'];
+};
+
+/** Boolean expression to filter rows from the table "stats.daily". All fields are combined with a logical 'AND'. */
+export type Stats_Daily_Bool_Exp = {
+  _and?: InputMaybe<Array<Stats_Daily_Bool_Exp>>;
+  _not?: InputMaybe<Stats_Daily_Bool_Exp>;
+  _or?: InputMaybe<Array<Stats_Daily_Bool_Exp>>;
+  cumulated_history_size?: InputMaybe<Numeric_Comparison_Exp>;
+  delta_history_size?: InputMaybe<Numeric_Comparison_Exp>;
+  end_block?: InputMaybe<Numeric_Comparison_Exp>;
+  end_date?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  start_block?: InputMaybe<Numeric_Comparison_Exp>;
+  start_date?: InputMaybe<Timestamp_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "stats.daily". */
+export type Stats_Daily_Order_By = {
+  cumulated_history_size?: InputMaybe<Order_By>;
+  delta_history_size?: InputMaybe<Order_By>;
+  end_block?: InputMaybe<Order_By>;
+  end_date?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  start_block?: InputMaybe<Order_By>;
+  start_date?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "stats.daily" */
+export enum Stats_Daily_Select_Column {
+  /** column name */
+  CumulatedHistorySize = 'cumulated_history_size',
+  /** column name */
+  DeltaHistorySize = 'delta_history_size',
+  /** column name */
+  EndBlock = 'end_block',
+  /** column name */
+  EndDate = 'end_date',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  StartBlock = 'start_block',
+  /** column name */
+  StartDate = 'start_date',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "stats_daily" */
+export type Stats_Daily_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Stats_Daily_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Stats_Daily_Stream_Cursor_Value_Input = {
+  cumulated_history_size?: InputMaybe<Scalars['numeric']['input']>;
+  delta_history_size?: InputMaybe<Scalars['numeric']['input']>;
+  end_block?: InputMaybe<Scalars['numeric']['input']>;
+  end_date?: InputMaybe<Scalars['timestamp']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  start_block?: InputMaybe<Scalars['numeric']['input']>;
+  start_date?: InputMaybe<Scalars['timestamp']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamp']['input']>;
+};
+
+/** columns and relationships of "stats.hourly" */
+export type Stats_Hourly = {
+  __typename?: 'stats_hourly';
+  cumulated_history_size: Scalars['numeric']['output'];
+  delta_history_size: Scalars['numeric']['output'];
+  end_block: Scalars['numeric']['output'];
+  end_date: Scalars['timestamp']['output'];
+  id: Scalars['String']['output'];
+  start_block: Scalars['numeric']['output'];
+  start_date: Scalars['timestamp']['output'];
+  updated_at: Scalars['timestamp']['output'];
+};
+
+/** Boolean expression to filter rows from the table "stats.hourly". All fields are combined with a logical 'AND'. */
+export type Stats_Hourly_Bool_Exp = {
+  _and?: InputMaybe<Array<Stats_Hourly_Bool_Exp>>;
+  _not?: InputMaybe<Stats_Hourly_Bool_Exp>;
+  _or?: InputMaybe<Array<Stats_Hourly_Bool_Exp>>;
+  cumulated_history_size?: InputMaybe<Numeric_Comparison_Exp>;
+  delta_history_size?: InputMaybe<Numeric_Comparison_Exp>;
+  end_block?: InputMaybe<Numeric_Comparison_Exp>;
+  end_date?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  start_block?: InputMaybe<Numeric_Comparison_Exp>;
+  start_date?: InputMaybe<Timestamp_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "stats.hourly". */
+export type Stats_Hourly_Order_By = {
+  cumulated_history_size?: InputMaybe<Order_By>;
+  delta_history_size?: InputMaybe<Order_By>;
+  end_block?: InputMaybe<Order_By>;
+  end_date?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  start_block?: InputMaybe<Order_By>;
+  start_date?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "stats.hourly" */
+export enum Stats_Hourly_Select_Column {
+  /** column name */
+  CumulatedHistorySize = 'cumulated_history_size',
+  /** column name */
+  DeltaHistorySize = 'delta_history_size',
+  /** column name */
+  EndBlock = 'end_block',
+  /** column name */
+  EndDate = 'end_date',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  StartBlock = 'start_block',
+  /** column name */
+  StartDate = 'start_date',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "stats_hourly" */
+export type Stats_Hourly_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Stats_Hourly_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Stats_Hourly_Stream_Cursor_Value_Input = {
+  cumulated_history_size?: InputMaybe<Scalars['numeric']['input']>;
+  delta_history_size?: InputMaybe<Scalars['numeric']['input']>;
+  end_block?: InputMaybe<Scalars['numeric']['input']>;
+  end_date?: InputMaybe<Scalars['timestamp']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  start_block?: InputMaybe<Scalars['numeric']['input']>;
+  start_date?: InputMaybe<Scalars['timestamp']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamp']['input']>;
+};
+
+/** columns and relationships of "stats.monthly" */
+export type Stats_Monthly = {
+  __typename?: 'stats_monthly';
+  cumulated_history_size: Scalars['numeric']['output'];
+  delta_history_size: Scalars['numeric']['output'];
+  end_block: Scalars['numeric']['output'];
+  end_date: Scalars['timestamp']['output'];
+  id: Scalars['String']['output'];
+  start_block: Scalars['numeric']['output'];
+  start_date: Scalars['timestamp']['output'];
+  updated_at: Scalars['timestamp']['output'];
+};
+
+/** Boolean expression to filter rows from the table "stats.monthly". All fields are combined with a logical 'AND'. */
+export type Stats_Monthly_Bool_Exp = {
+  _and?: InputMaybe<Array<Stats_Monthly_Bool_Exp>>;
+  _not?: InputMaybe<Stats_Monthly_Bool_Exp>;
+  _or?: InputMaybe<Array<Stats_Monthly_Bool_Exp>>;
+  cumulated_history_size?: InputMaybe<Numeric_Comparison_Exp>;
+  delta_history_size?: InputMaybe<Numeric_Comparison_Exp>;
+  end_block?: InputMaybe<Numeric_Comparison_Exp>;
+  end_date?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  start_block?: InputMaybe<Numeric_Comparison_Exp>;
+  start_date?: InputMaybe<Timestamp_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "stats.monthly". */
+export type Stats_Monthly_Order_By = {
+  cumulated_history_size?: InputMaybe<Order_By>;
+  delta_history_size?: InputMaybe<Order_By>;
+  end_block?: InputMaybe<Order_By>;
+  end_date?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  start_block?: InputMaybe<Order_By>;
+  start_date?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "stats.monthly" */
+export enum Stats_Monthly_Select_Column {
+  /** column name */
+  CumulatedHistorySize = 'cumulated_history_size',
+  /** column name */
+  DeltaHistorySize = 'delta_history_size',
+  /** column name */
+  EndBlock = 'end_block',
+  /** column name */
+  EndDate = 'end_date',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  StartBlock = 'start_block',
+  /** column name */
+  StartDate = 'start_date',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "stats_monthly" */
+export type Stats_Monthly_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Stats_Monthly_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Stats_Monthly_Stream_Cursor_Value_Input = {
+  cumulated_history_size?: InputMaybe<Scalars['numeric']['input']>;
+  delta_history_size?: InputMaybe<Scalars['numeric']['input']>;
+  end_block?: InputMaybe<Scalars['numeric']['input']>;
+  end_date?: InputMaybe<Scalars['timestamp']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  start_block?: InputMaybe<Scalars['numeric']['input']>;
+  start_date?: InputMaybe<Scalars['timestamp']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamp']['input']>;
+};
+
+/** columns and relationships of "stats.weekly" */
+export type Stats_Weekly = {
+  __typename?: 'stats_weekly';
+  cumulated_history_size: Scalars['numeric']['output'];
+  delta_history_size: Scalars['numeric']['output'];
+  end_block: Scalars['numeric']['output'];
+  end_date: Scalars['timestamp']['output'];
+  id: Scalars['String']['output'];
+  start_block: Scalars['numeric']['output'];
+  start_date: Scalars['timestamp']['output'];
+  updated_at: Scalars['timestamp']['output'];
+};
+
+/** Boolean expression to filter rows from the table "stats.weekly". All fields are combined with a logical 'AND'. */
+export type Stats_Weekly_Bool_Exp = {
+  _and?: InputMaybe<Array<Stats_Weekly_Bool_Exp>>;
+  _not?: InputMaybe<Stats_Weekly_Bool_Exp>;
+  _or?: InputMaybe<Array<Stats_Weekly_Bool_Exp>>;
+  cumulated_history_size?: InputMaybe<Numeric_Comparison_Exp>;
+  delta_history_size?: InputMaybe<Numeric_Comparison_Exp>;
+  end_block?: InputMaybe<Numeric_Comparison_Exp>;
+  end_date?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  start_block?: InputMaybe<Numeric_Comparison_Exp>;
+  start_date?: InputMaybe<Timestamp_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "stats.weekly". */
+export type Stats_Weekly_Order_By = {
+  cumulated_history_size?: InputMaybe<Order_By>;
+  delta_history_size?: InputMaybe<Order_By>;
+  end_block?: InputMaybe<Order_By>;
+  end_date?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  start_block?: InputMaybe<Order_By>;
+  start_date?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "stats.weekly" */
+export enum Stats_Weekly_Select_Column {
+  /** column name */
+  CumulatedHistorySize = 'cumulated_history_size',
+  /** column name */
+  DeltaHistorySize = 'delta_history_size',
+  /** column name */
+  EndBlock = 'end_block',
+  /** column name */
+  EndDate = 'end_date',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  StartBlock = 'start_block',
+  /** column name */
+  StartDate = 'start_date',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "stats_weekly" */
+export type Stats_Weekly_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Stats_Weekly_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Stats_Weekly_Stream_Cursor_Value_Input = {
+  cumulated_history_size?: InputMaybe<Scalars['numeric']['input']>;
+  delta_history_size?: InputMaybe<Scalars['numeric']['input']>;
+  end_block?: InputMaybe<Scalars['numeric']['input']>;
+  end_date?: InputMaybe<Scalars['timestamp']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  start_block?: InputMaybe<Scalars['numeric']['input']>;
+  start_date?: InputMaybe<Scalars['timestamp']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamp']['input']>;
+};
+
 export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** fetch data from the table: "consensus.account_histories" */
@@ -16244,6 +18105,24 @@ export type Subscription_Root = {
   staking_accounts_by_pk?: Maybe<Staking_Accounts>;
   /** fetch data from the table in a streaming manner: "staking.accounts" */
   staking_accounts_stream: Array<Staking_Accounts>;
+  /** fetch data from the table: "staking.bundle_submissions" */
+  staking_bundle_submissions: Array<Staking_Bundle_Submissions>;
+  /** fetch data from the table: "staking.bundle_submissions" using primary key columns */
+  staking_bundle_submissions_by_pk?: Maybe<Staking_Bundle_Submissions>;
+  /** fetch data from the table in a streaming manner: "staking.bundle_submissions" */
+  staking_bundle_submissions_stream: Array<Staking_Bundle_Submissions>;
+  /** fetch data from the table: "staking.deposit_events" */
+  staking_deposit_events: Array<Staking_Deposit_Events>;
+  /** fetch data from the table: "staking.deposit_events" using primary key columns */
+  staking_deposit_events_by_pk?: Maybe<Staking_Deposit_Events>;
+  /** fetch data from the table in a streaming manner: "staking.deposit_events" */
+  staking_deposit_events_stream: Array<Staking_Deposit_Events>;
+  /** fetch data from the table: "staking.deposit_histories" */
+  staking_deposit_histories: Array<Staking_Deposit_Histories>;
+  /** fetch data from the table: "staking.deposit_histories" using primary key columns */
+  staking_deposit_histories_by_pk?: Maybe<Staking_Deposit_Histories>;
+  /** fetch data from the table in a streaming manner: "staking.deposit_histories" */
+  staking_deposit_histories_stream: Array<Staking_Deposit_Histories>;
   /** fetch data from the table: "staking.deposits" */
   staking_deposits: Array<Staking_Deposits>;
   /** fetch aggregated fields from the table: "staking.deposits" */
@@ -16252,6 +18131,34 @@ export type Subscription_Root = {
   staking_deposits_by_pk?: Maybe<Staking_Deposits>;
   /** fetch data from the table in a streaming manner: "staking.deposits" */
   staking_deposits_stream: Array<Staking_Deposits>;
+  /** fetch data from the table: "staking.domain_block_histories" */
+  staking_domain_block_histories: Array<Staking_Domain_Block_Histories>;
+  /** fetch data from the table in a streaming manner: "staking.domain_block_histories" */
+  staking_domain_block_histories_stream: Array<Staking_Domain_Block_Histories>;
+  /** fetch data from the table: "staking.domain_blocks" */
+  staking_domain_blocks: Array<Staking_Domain_Blocks>;
+  /** fetch data from the table: "staking.domain_blocks" using primary key columns */
+  staking_domain_blocks_by_pk?: Maybe<Staking_Domain_Blocks>;
+  /** fetch data from the table in a streaming manner: "staking.domain_blocks" */
+  staking_domain_blocks_stream: Array<Staking_Domain_Blocks>;
+  /** fetch data from the table: "staking.domain_epoches" */
+  staking_domain_epoches: Array<Staking_Domain_Epoches>;
+  /** fetch data from the table: "staking.domain_epoches" using primary key columns */
+  staking_domain_epoches_by_pk?: Maybe<Staking_Domain_Epoches>;
+  /** fetch data from the table in a streaming manner: "staking.domain_epoches" */
+  staking_domain_epoches_stream: Array<Staking_Domain_Epoches>;
+  /** fetch data from the table: "staking.domain_instantiations" */
+  staking_domain_instantiations: Array<Staking_Domain_Instantiations>;
+  /** fetch data from the table: "staking.domain_instantiations" using primary key columns */
+  staking_domain_instantiations_by_pk?: Maybe<Staking_Domain_Instantiations>;
+  /** fetch data from the table in a streaming manner: "staking.domain_instantiations" */
+  staking_domain_instantiations_stream: Array<Staking_Domain_Instantiations>;
+  /** fetch data from the table: "staking.domain_staking_histories" */
+  staking_domain_staking_histories: Array<Staking_Domain_Staking_Histories>;
+  /** fetch data from the table: "staking.domain_staking_histories" using primary key columns */
+  staking_domain_staking_histories_by_pk?: Maybe<Staking_Domain_Staking_Histories>;
+  /** fetch data from the table in a streaming manner: "staking.domain_staking_histories" */
+  staking_domain_staking_histories_stream: Array<Staking_Domain_Staking_Histories>;
   /** fetch data from the table: "staking.domains" */
   staking_domains: Array<Staking_Domains>;
   /** fetch aggregated fields from the table: "staking.domains" */
@@ -16268,6 +18175,24 @@ export type Subscription_Root = {
   staking_nominators_by_pk?: Maybe<Staking_Nominators>;
   /** fetch data from the table in a streaming manner: "staking.nominators" */
   staking_nominators_stream: Array<Staking_Nominators>;
+  /** fetch data from the table: "staking.operator_registrations" */
+  staking_operator_registrations: Array<Staking_Operator_Registrations>;
+  /** fetch data from the table: "staking.operator_registrations" using primary key columns */
+  staking_operator_registrations_by_pk?: Maybe<Staking_Operator_Registrations>;
+  /** fetch data from the table in a streaming manner: "staking.operator_registrations" */
+  staking_operator_registrations_stream: Array<Staking_Operator_Registrations>;
+  /** fetch data from the table: "staking.operator_rewards" */
+  staking_operator_rewards: Array<Staking_Operator_Rewards>;
+  /** fetch data from the table: "staking.operator_rewards" using primary key columns */
+  staking_operator_rewards_by_pk?: Maybe<Staking_Operator_Rewards>;
+  /** fetch data from the table in a streaming manner: "staking.operator_rewards" */
+  staking_operator_rewards_stream: Array<Staking_Operator_Rewards>;
+  /** fetch data from the table: "staking.operator_staking_histories" */
+  staking_operator_staking_histories: Array<Staking_Operator_Staking_Histories>;
+  /** fetch data from the table: "staking.operator_staking_histories" using primary key columns */
+  staking_operator_staking_histories_by_pk?: Maybe<Staking_Operator_Staking_Histories>;
+  /** fetch data from the table in a streaming manner: "staking.operator_staking_histories" */
+  staking_operator_staking_histories_stream: Array<Staking_Operator_Staking_Histories>;
   /** fetch data from the table: "staking.operators" */
   staking_operators: Array<Staking_Operators>;
   /** fetch aggregated fields from the table: "staking.operators" */
@@ -16276,6 +18201,18 @@ export type Subscription_Root = {
   staking_operators_by_pk?: Maybe<Staking_Operators>;
   /** fetch data from the table in a streaming manner: "staking.operators" */
   staking_operators_stream: Array<Staking_Operators>;
+  /** fetch data from the table: "staking.runtime_creations" */
+  staking_runtime_creations: Array<Staking_Runtime_Creations>;
+  /** fetch data from the table: "staking.runtime_creations" using primary key columns */
+  staking_runtime_creations_by_pk?: Maybe<Staking_Runtime_Creations>;
+  /** fetch data from the table in a streaming manner: "staking.runtime_creations" */
+  staking_runtime_creations_stream: Array<Staking_Runtime_Creations>;
+  /** fetch data from the table: "staking.withdrawal_histories" */
+  staking_withdrawal_histories: Array<Staking_Withdrawal_Histories>;
+  /** fetch data from the table: "staking.withdrawal_histories" using primary key columns */
+  staking_withdrawal_histories_by_pk?: Maybe<Staking_Withdrawal_Histories>;
+  /** fetch data from the table in a streaming manner: "staking.withdrawal_histories" */
+  staking_withdrawal_histories_stream: Array<Staking_Withdrawal_Histories>;
   /** fetch data from the table: "staking.withdrawals" */
   staking_withdrawals: Array<Staking_Withdrawals>;
   /** fetch aggregated fields from the table: "staking.withdrawals" */
@@ -16284,6 +18221,30 @@ export type Subscription_Root = {
   staking_withdrawals_by_pk?: Maybe<Staking_Withdrawals>;
   /** fetch data from the table in a streaming manner: "staking.withdrawals" */
   staking_withdrawals_stream: Array<Staking_Withdrawals>;
+  /** fetch data from the table: "stats.daily" */
+  stats_daily: Array<Stats_Daily>;
+  /** fetch data from the table: "stats.daily" using primary key columns */
+  stats_daily_by_pk?: Maybe<Stats_Daily>;
+  /** fetch data from the table in a streaming manner: "stats.daily" */
+  stats_daily_stream: Array<Stats_Daily>;
+  /** fetch data from the table: "stats.hourly" */
+  stats_hourly: Array<Stats_Hourly>;
+  /** fetch data from the table: "stats.hourly" using primary key columns */
+  stats_hourly_by_pk?: Maybe<Stats_Hourly>;
+  /** fetch data from the table in a streaming manner: "stats.hourly" */
+  stats_hourly_stream: Array<Stats_Hourly>;
+  /** fetch data from the table: "stats.monthly" */
+  stats_monthly: Array<Stats_Monthly>;
+  /** fetch data from the table: "stats.monthly" using primary key columns */
+  stats_monthly_by_pk?: Maybe<Stats_Monthly>;
+  /** fetch data from the table in a streaming manner: "stats.monthly" */
+  stats_monthly_stream: Array<Stats_Monthly>;
+  /** fetch data from the table: "stats.weekly" */
+  stats_weekly: Array<Stats_Weekly>;
+  /** fetch data from the table: "stats.weekly" using primary key columns */
+  stats_weekly_by_pk?: Maybe<Stats_Weekly>;
+  /** fetch data from the table in a streaming manner: "stats.weekly" */
+  stats_weekly_stream: Array<Stats_Weekly>;
 };
 
 
@@ -17724,6 +19685,69 @@ export type Subscription_RootStaking_Accounts_StreamArgs = {
 };
 
 
+export type Subscription_RootStaking_Bundle_SubmissionsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Bundle_Submissions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Bundle_Submissions_Order_By>>;
+  where?: InputMaybe<Staking_Bundle_Submissions_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Bundle_Submissions_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Bundle_Submissions_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Bundle_Submissions_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Bundle_Submissions_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Deposit_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Deposit_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Deposit_Events_Order_By>>;
+  where?: InputMaybe<Staking_Deposit_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Deposit_Events_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Deposit_Events_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Deposit_Events_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Deposit_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Deposit_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Deposit_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Deposit_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Deposit_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Deposit_Histories_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Deposit_Histories_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Deposit_Histories_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Deposit_Histories_Bool_Exp>;
+};
+
+
 export type Subscription_RootStaking_DepositsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Deposits_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -17751,6 +19775,106 @@ export type Subscription_RootStaking_Deposits_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Staking_Deposits_Stream_Cursor_Input>>;
   where?: InputMaybe<Staking_Deposits_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_Block_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Block_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Block_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Block_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_Block_Histories_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Domain_Block_Histories_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Domain_Block_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Blocks_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_Blocks_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStaking_Domain_Blocks_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Domain_Blocks_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Domain_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_EpochesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Epoches_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Epoches_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Epoches_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_Epoches_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStaking_Domain_Epoches_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Domain_Epoches_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Domain_Epoches_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_InstantiationsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Instantiations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Instantiations_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Instantiations_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_Instantiations_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Domain_Instantiations_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Domain_Instantiations_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Domain_Instantiations_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_Staking_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Domain_Staking_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Domain_Staking_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Domain_Staking_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Domain_Staking_Histories_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Domain_Staking_Histories_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Domain_Staking_Histories_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Domain_Staking_Histories_Bool_Exp>;
 };
 
 
@@ -17814,6 +19938,69 @@ export type Subscription_RootStaking_Nominators_StreamArgs = {
 };
 
 
+export type Subscription_RootStaking_Operator_RegistrationsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Operator_Registrations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Operator_Registrations_Order_By>>;
+  where?: InputMaybe<Staking_Operator_Registrations_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Operator_Registrations_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Operator_Registrations_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Operator_Registrations_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Operator_Registrations_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Operator_RewardsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Operator_Rewards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Operator_Rewards_Order_By>>;
+  where?: InputMaybe<Staking_Operator_Rewards_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Operator_Rewards_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Operator_Rewards_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Operator_Rewards_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Operator_Rewards_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Operator_Staking_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Operator_Staking_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Operator_Staking_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Operator_Staking_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Operator_Staking_Histories_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Operator_Staking_Histories_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Operator_Staking_Histories_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Operator_Staking_Histories_Bool_Exp>;
+};
+
+
 export type Subscription_RootStaking_OperatorsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Operators_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -17844,6 +20031,48 @@ export type Subscription_RootStaking_Operators_StreamArgs = {
 };
 
 
+export type Subscription_RootStaking_Runtime_CreationsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Runtime_Creations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Runtime_Creations_Order_By>>;
+  where?: InputMaybe<Staking_Runtime_Creations_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Runtime_Creations_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Runtime_Creations_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Runtime_Creations_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Runtime_Creations_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Withdrawal_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Withdrawal_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Withdrawal_Histories_Order_By>>;
+  where?: InputMaybe<Staking_Withdrawal_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Withdrawal_Histories_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Withdrawal_Histories_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Withdrawal_Histories_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Withdrawal_Histories_Bool_Exp>;
+};
+
+
 export type Subscription_RootStaking_WithdrawalsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Withdrawals_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -17871,6 +20100,90 @@ export type Subscription_RootStaking_Withdrawals_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Staking_Withdrawals_Stream_Cursor_Input>>;
   where?: InputMaybe<Staking_Withdrawals_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_DailyArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Daily_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Daily_Order_By>>;
+  where?: InputMaybe<Stats_Daily_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_Daily_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStats_Daily_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Stats_Daily_Stream_Cursor_Input>>;
+  where?: InputMaybe<Stats_Daily_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_HourlyArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Hourly_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Hourly_Order_By>>;
+  where?: InputMaybe<Stats_Hourly_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_Hourly_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStats_Hourly_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Stats_Hourly_Stream_Cursor_Input>>;
+  where?: InputMaybe<Stats_Hourly_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_MonthlyArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Monthly_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Monthly_Order_By>>;
+  where?: InputMaybe<Stats_Monthly_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_Monthly_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStats_Monthly_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Stats_Monthly_Stream_Cursor_Input>>;
+  where?: InputMaybe<Stats_Monthly_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_WeeklyArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Weekly_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Weekly_Order_By>>;
+  where?: InputMaybe<Stats_Weekly_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_Weekly_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStats_Weekly_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Stats_Weekly_Stream_Cursor_Input>>;
+  where?: InputMaybe<Stats_Weekly_Bool_Exp>;
 };
 
 /** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
@@ -18100,7 +20413,7 @@ export type DomainsListQueryVariables = Exact<{
 }>;
 
 
-export type DomainsListQuery = { __typename?: 'query_root', staking_domains_aggregate: { __typename?: 'staking_domains_aggregate', aggregate?: { __typename?: 'staking_domains_aggregate_fields', count: number } | null }, staking_domains: Array<{ __typename?: 'staking_domains', id: string, name: string, runtime: string, transfers_out_count: any, current_share_price: any, accumulated_epoch_stake: any, sortId: any, accountId: string, bundleCount: any, totalVolume: any, totalTaxCollected: any, totalRewardsCollected: any, totalDomainExecutionFee: any, totalDeposits: any, totalConsensusStorageFee: any, totalBurnedBalance: any, runtimeInfo: string, runtimeId: number, lastDomainBlockNumber: any, lastBundleAt: any, currentTotalStake: any, currentStorageFeeDeposit: any, currentSharePrice: any, createdAt: any, completedEpoch: any, totalTransfersIn: any, transfersInCount: any, totalTransfersOut: any, totalRejectedTransfersClaimed: any, rejectedTransfersClaimedCount: any, totalTransfersRejected: any, transfersRejectedCount: any, updatedAt: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, currentTotalShares: any, accumulatedEpochStorageFeeDeposit: any, accumulatedEpochRewards: any, accumulatedEpochShares: any, currentEpochDuration: any, lastEpochDuration: any, last6EpochsDuration: any, last144EpochDuration: any, last1kEpochDuration: any, operatorsAggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } }> };
+export type DomainsListQuery = { __typename?: 'query_root', staking_domains_aggregate: { __typename?: 'staking_domains_aggregate', aggregate?: { __typename?: 'staking_domains_aggregate_fields', count: number } | null }, staking_domains: Array<{ __typename?: 'staking_domains', id: string, name: string, runtime: string, transfers_out_count: any, current_share_price: any, accumulated_epoch_stake: any, sortId: string, accountId: string, bundleCount: any, totalVolume: any, totalTaxCollected: any, totalRewardsCollected: any, totalDomainExecutionFee: any, totalDeposits: any, totalConsensusStorageFee: any, totalBurnedBalance: any, runtimeInfo: string, runtimeId: string, lastDomainBlockNumber: any, lastBundleAt: any, currentTotalStake: any, currentStorageFeeDeposit: any, currentSharePrice: any, createdAt: any, completedEpoch: any, totalTransfersIn: any, transfersInCount: any, totalTransfersOut: any, totalRejectedTransfersClaimed: any, rejectedTransfersClaimedCount: any, totalTransfersRejected: any, transfersRejectedCount: any, updatedAt: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, currentTotalShares: any, accumulatedEpochStorageFeeDeposit: any, accumulatedEpochRewards: any, accumulatedEpochShares: any, currentEpochDuration: any, lastEpochDuration: any, last6EpochsDuration: any, last144EpochDuration: any, last1kEpochDuration: any, operatorsAggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } }> };
 
 export type DomainsStatusQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -18117,7 +20430,7 @@ export type DomainByIdQueryVariables = Exact<{
 }>;
 
 
-export type DomainByIdQuery = { __typename?: 'query_root', staking_domains_by_pk?: { __typename?: 'staking_domains', id: string, sort_id: any, name: string, account_id: string, bundle_count: any, total_volume: any, total_tax_collected: any, total_rewards_collected: any, total_domain_execution_fee: any, total_deposits: any, total_consensus_storage_fee: any, total_burned_balance: any, runtime_info: string, runtime_id: number, runtime: string, last_domain_block_number: any, last_bundle_at: any, current_total_stake: any, current_storage_fee_deposit: any, created_at: any, completed_epoch: any, total_transfers_in: any, transfers_in_count: any, total_transfers_out: any, transfers_out_count: any, total_rejected_transfers_claimed: any, rejected_transfers_claimed_count: any, total_transfers_rejected: any, transfers_rejected_count: any, updated_at: any, total_estimated_withdrawals: any, total_withdrawals: any, accumulated_epoch_stake: any, accumulated_epoch_storage_fee_deposit: any, operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, deposits_aggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, withdrawals_aggregate: { __typename?: 'staking_withdrawals_aggregate', aggregate?: { __typename?: 'staking_withdrawals_aggregate_fields', count: number } | null } } | null };
+export type DomainByIdQuery = { __typename?: 'query_root', staking_domains_by_pk?: { __typename?: 'staking_domains', id: string, sort_id: string, name: string, account_id: string, bundle_count: any, total_volume: any, total_tax_collected: any, total_rewards_collected: any, total_domain_execution_fee: any, total_deposits: any, total_consensus_storage_fee: any, total_burned_balance: any, runtime_info: string, runtime_id: string, runtime: string, last_domain_block_number: any, last_bundle_at: any, current_total_stake: any, current_storage_fee_deposit: any, created_at: any, completed_epoch: any, total_transfers_in: any, transfers_in_count: any, total_transfers_out: any, transfers_out_count: any, total_rejected_transfers_claimed: any, rejected_transfers_claimed_count: any, total_transfers_rejected: any, transfers_rejected_count: any, updated_at: any, total_estimated_withdrawals: any, total_withdrawals: any, accumulated_epoch_stake: any, accumulated_epoch_storage_fee_deposit: any, operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, deposits_aggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, withdrawals_aggregate: { __typename?: 'staking_withdrawals_aggregate', aggregate?: { __typename?: 'staking_withdrawals_aggregate_fields', count: number } | null } } | null };
 
 export type AccountTransferSenderTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -18367,7 +20680,7 @@ export type NominationsListQueryVariables = Exact<{
 }>;
 
 
-export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, pending_action: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, pending_action: string, current_total_shares: any } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, timestamp: any, extrinsic_hash: string, status: string, created_at: any, staked_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, timestamp: any, withdraw_extrinsic_hash: string, unlock_extrinsic_hash: string, status: string, created_at: any, ready_at: any, unlocked_at: any, updated_at: any }> }> };
+export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, pending_action: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, pending_action: string, current_total_shares: any } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, timestamp: any, extrinsic_id: string, status: string, created_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, timestamp: any, withdraw_extrinsic_hash: string, unlock_extrinsic_hash: string, status: string, created_at: any, ready_at: any, unlocked_at: any, updated_at: any }> }> };
 
 export type OperatorsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -18377,14 +20690,14 @@ export type OperatorsListQueryVariables = Exact<{
 }>;
 
 
-export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, status: string, sortId: any, accountId: string, domainId: string, currentEpochRewards: any, currentTotalStake: any, currentTotalShares: any, currentSharePrice: any, currentStorageFeeDeposit: any, minimumNominatorStake: any, nominationTax: number, signingKey: string, rawStatus: string, pendingAction: string, totalDeposits: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, totalTaxCollected: any, totalRewardsCollected: any, totalTransfersIn: any, transfersInCount: any, totalTransfersOut: any, transfersOutCount: any, totalRejectedTransfersClaimed: any, rejectedTransfersClaimedCount: any, totalTransfersRejected: any, transfersRejectedCount: any, totalVolume: any, totalConsensusStorageFee: any, totalDomainExecutionFee: any, totalBurnedBalance: any, accumulatedEpochShares: any, accumulatedEpochStorageFeeDeposit: any, activeEpochCount: any, bundleCount: any, lastBundleAt: any, createdAt: any, updatedAt: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: any, last_domain_block_number: any } | null, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, depositsAggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, known_shares: any, unlock_at_confirmed_domain_block_number: any }> }> };
+export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, status: string, sortId: string, accountId: string, domainId: string, currentEpochRewards: any, currentTotalStake: any, currentTotalShares: any, currentSharePrice: any, currentStorageFeeDeposit: any, minimumNominatorStake: any, nominationTax: number, signingKey: string, rawStatus: string, pendingAction: string, totalDeposits: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, totalTaxCollected: any, totalRewardsCollected: any, totalTransfersIn: any, transfersInCount: any, totalTransfersOut: any, transfersOutCount: any, totalRejectedTransfersClaimed: any, rejectedTransfersClaimedCount: any, totalTransfersRejected: any, transfersRejectedCount: any, totalVolume: any, totalConsensusStorageFee: any, totalDomainExecutionFee: any, totalBurnedBalance: any, accumulatedEpochShares: any, accumulatedEpochStorageFeeDeposit: any, activeEpochCount: any, bundleCount: any, lastBundleAt: any, createdAt: any, updatedAt: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string, last_domain_block_number: any } | null, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, depositsAggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, known_shares: any, unlock_at_confirmed_domain_block_number: any }> }> };
 
 export type OperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['String']['input'];
 }>;
 
 
-export type OperatorByIdQuery = { __typename?: 'query_root', staking_operators_by_pk?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, bundle_count: any, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_share_price: any, current_storage_fee_deposit: any, minimum_nominator_stake: any, total_rewards_collected: any, total_consensus_storage_fee: any, total_domain_execution_fee: any, total_burned_balance: any, total_tax_collected: any, nomination_tax: number, signing_key: string, status: string, raw_status: string, pending_action: string, last_bundle_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: any } | null, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, deposits_aggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, withdrawals_aggregate: { __typename?: 'staking_withdrawals_aggregate', aggregate?: { __typename?: 'staking_withdrawals_aggregate_fields', count: number } | null } } | null };
+export type OperatorByIdQuery = { __typename?: 'query_root', staking_operators_by_pk?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, bundle_count: any, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_share_price: any, current_storage_fee_deposit: any, minimum_nominator_stake: any, total_rewards_collected: any, total_consensus_storage_fee: any, total_domain_execution_fee: any, total_burned_balance: any, total_tax_collected: any, nomination_tax: number, signing_key: string, status: string, raw_status: string, pending_action: string, last_bundle_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string } | null, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, deposits_aggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, withdrawals_aggregate: { __typename?: 'staking_withdrawals_aggregate', aggregate?: { __typename?: 'staking_withdrawals_aggregate_fields', count: number } | null } } | null };
 
 export type OperatorNominatorsByIdQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -21504,10 +23817,9 @@ export const NominationsListDocument = gql`
       amount
       storage_fee_deposit
       timestamp
-      extrinsic_hash
+      extrinsic_id
       status
       created_at
-      staked_at
       updated_at
     }
     withdrawals {
