@@ -1,13 +1,3 @@
 table:
   name: _metadata
   schema: staking
-select_permissions:
-  - role: indexers-api
-    permission:
-      columns:
-        - key
-        - value
-        - createdAt
-        - updatedAt
-      filter: {}
-    comment: ""

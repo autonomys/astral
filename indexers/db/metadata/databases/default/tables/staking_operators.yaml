@@ -1,18 +1,57 @@
 table:
   name: operators
   schema: staking
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: accounts
+          schema: staking
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domains
+          schema: staking
+array_relationships:
+  - name: deposits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: deposits
+          schema: staking
+  - name: nominators
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: nominators
+          schema: staking
+  - name: withdrawals
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: withdrawals
+          schema: staking
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - nomination_tax
         - accumulated_epoch_rewards
         - accumulated_epoch_shares
@@ -29,7 +68,6 @@ select_permissions:
         - last_bundle_at
         - minimum_nominator_stake
         - rejected_transfers_claimed_count
-        - sort_id
         - total_burned_balance
         - total_consensus_storage_fee
         - total_deposits
@@ -49,12 +87,12 @@ select_permissions:
         - updated_at
         - account_id
         - domain_id
+        - extrinsic_id
         - id
         - pending_action
         - raw_status
         - signing_key
+        - sort_id
         - status
-        - _id
       filter: {}
-      allow_aggregations: true
     comment: ""

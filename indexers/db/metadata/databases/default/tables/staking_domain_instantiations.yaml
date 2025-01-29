@@ -24,5 +24,4 @@ select_permissions:
         - sort_id
         - _id
       filter: {}
-      allow_aggregations: true
     comment: ""

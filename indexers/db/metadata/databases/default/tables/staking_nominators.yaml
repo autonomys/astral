@@ -1,18 +1,57 @@
 table:
   name: nominators
   schema: staking
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: accounts
+          schema: staking
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domains
+          schema: staking
+  - name: operator
+    using:
+      manual_configuration:
+        column_mapping:
+          operator_id: id
+        insertion_order: null
+        remote_table:
+          name: operators
+          schema: staking
+array_relationships:
+  - name: deposits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: nominator_id
+        insertion_order: null
+        remote_table:
+          name: deposits
+          schema: staking
+  - name: withdrawals
+    using:
+      manual_configuration:
+        column_mapping:
+          id: nominator_id
+        insertion_order: null
+        remote_table:
+          name: withdrawals
+          schema: staking
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - unlock_at_confirmed_domain_block_number
         - accumulated_epoch_shares
         - accumulated_epoch_stake
@@ -44,7 +83,5 @@ select_permissions:
         - operator_id
         - pending_action
         - status
-        - _id
       filter: {}
-      allow_aggregations: true
     comment: ""

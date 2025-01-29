@@ -1,5 +1,5 @@
 table:
-  name: operator_registrations
+  name: deposit_events
   schema: staking
 configuration:
   column_config:
@@ -13,15 +13,18 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - nomination_tax
+        - amount
         - block_height
-        - minimum_nominator_stake
+        - storage_fee_deposit
+        - total_amount
+        - account_id
         - domain_id
         - extrinsic_id
         - id
-        - owner
-        - signing_key
+        - nominator_id
+        - operator_id
         - sort_id
+        - timestamp
         - _id
       filter: {}
     comment: ""

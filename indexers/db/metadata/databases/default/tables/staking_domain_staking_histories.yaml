@@ -1,5 +1,5 @@
 table:
-  name: operator_registrations
+  name: domain_staking_histories
   schema: staking
 configuration:
   column_config:
@@ -13,15 +13,11 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - nomination_tax
+        - current_epoch_index
         - block_height
-        - minimum_nominator_stake
+        - current_total_stake
         - domain_id
-        - extrinsic_id
         - id
-        - owner
-        - signing_key
-        - sort_id
         - _id
       filter: {}
     comment: ""

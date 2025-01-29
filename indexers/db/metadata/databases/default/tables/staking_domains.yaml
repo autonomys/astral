@@ -1,19 +1,57 @@
 table:
   name: domains
   schema: staking
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: accounts
+          schema: staking
+array_relationships:
+  - name: deposits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: deposits
+          schema: staking
+  - name: nominators
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: nominators
+          schema: staking
+  - name: operators
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: operators
+          schema: staking
+  - name: withdrawals
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: withdrawals
+          schema: staking
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
-        - runtime_id
         - accumulated_epoch_rewards
         - accumulated_epoch_shares
         - accumulated_epoch_stake
@@ -33,7 +71,6 @@ select_permissions:
         - last_domain_block_number
         - last_epoch_duration
         - rejected_transfers_claimed_count
-        - sort_id
         - total_burned_balance
         - total_consensus_storage_fee
         - total_deposits
@@ -52,11 +89,12 @@ select_permissions:
         - transfers_rejected_count
         - updated_at
         - account_id
+        - extrinsic_id
         - id
         - name
         - runtime
+        - runtime_id
         - runtime_info
-        - _id
+        - sort_id
       filter: {}
-      allow_aggregations: true
     comment: ""
