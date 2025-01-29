@@ -1,37 +1,42 @@
-export type TimeFrame = '1H' | '1D' | '1M'
+import { TimeFrame } from '@/components/common/Charts'
 
-// Generate time series data based on timeframe
 export function generateTimeSeriesData(timeFrame: TimeFrame) {
   const now = new Date()
   let points: number
   let interval: number
 
   switch (timeFrame) {
-    case '1H':
-      points = 60 // One point per minute
-      interval = 60 * 1000 // 1 minute
-      break
     case '1D':
-      points = 24 // One point per hour
-      interval = 60 * 60 * 1000 // 1 hour
+      points = 24 // Generate 1-day of hourly data
+      interval = 60 * 60 * 1000 // 1 hour per candle
       break
     case '1M':
-      points = 30 // One point per day
-      interval = 24 * 60 * 60 * 1000 // 1 day
+      points = 30 // Generate 30 days of daily data
+      interval = 24 * 60 * 60 * 1000 // 1 day per candle
+      break
+    case '1Y':
+      points = 12 // Generate 12 months of data
       break
   }
 
   return Array.from({ length: points }).map((_, i) => {
-    const date = new Date(now.getTime() - (points - i) * interval)
-    const baseValue = 20 + i * 0.1 // Simulate growing trend
+    let date: Date
+
+    if (timeFrame === '1Y') {
+      date = new Date(now) // Start from today
+      date.setMonth(now.getMonth() - (points - i)) // Move exactly N months back
+    } else {
+      date = new Date(now.getTime() - (points - i) * interval) // Normal backtracking
+    }
+
+    const baseValue = 20 + i * 0.1 // Simulated trend
     return {
       date: date.toISOString(),
-      value: baseValue + Math.random() * 2,
+      value: baseValue + Math.random() * 2, // Adding some randomness for variation
     }
   })
 }
 
-// Generate delta data based on timeframe
 export function generateDeltaData(timeFrame: TimeFrame) {
   return generateTimeSeriesData(timeFrame).map((item) => ({
     ...item,

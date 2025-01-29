@@ -21,8 +21,6 @@ export const Home: FC = () => {
     pollInterval: 6000,
   })
 
-  console.log('render')
-
   return (
     <div className='flex w-full flex-col align-middle'>
       <SearchBar />
