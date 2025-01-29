@@ -1,6 +1,6 @@
 import { leaderboardSortAndRank } from "./leaderboardSortAndRank";
 import { slackNotification } from "./slackNotification";
-
+import { updateBlockchainStats } from "./updateBlockchainStats";
 interface CronConfig {
   pattern: string;
   enabled: boolean;
@@ -22,6 +22,14 @@ export const tasks: Tasks = {
     concurrency: 1,
     cron: {
       pattern: "*/2 * * * *", // Runs every 2 minutes
+      enabled: true,
+    },
+  },
+  updateBlockchainStats: {
+    handler: updateBlockchainStats,
+    concurrency: 1,
+    cron: {
+      pattern: "*/1 * * * *", // Runs every 5 minutes
       enabled: true,
     },
   },
