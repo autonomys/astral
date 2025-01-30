@@ -30,6 +30,9 @@ ALTER SCHEMA staking OWNER TO postgres;
 CREATE SCHEMA users;
 ALTER SCHEMA users OWNER TO postgres;
 
+CREATE SCHEMA stats;
+ALTER SCHEMA stats OWNER TO postgres;
+
 CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
 COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiST';
 
@@ -1521,6 +1524,54 @@ CREATE TABLE files.metadata_cids (
 );
 ALTER TABLE files.metadata_cids OWNER TO postgres;
 
+CREATE TABLE stats.hourly (
+    id TEXT NOT NULL,
+    cumulated_history_size numeric NOT NULL,
+    delta_history_size numeric NOT NULL,
+    start_date timestamp without time zone NOT NULL,
+    start_block numeric NOT NULL,
+    end_date timestamp without time zone NOT NULL,
+    end_block numeric NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+ALTER TABLE stats.hourly OWNER TO postgres;
+
+CREATE TABLE stats.daily (
+    id TEXT NOT NULL,
+    cumulated_history_size numeric NOT NULL,
+    delta_history_size numeric NOT NULL,
+    start_date timestamp without time zone NOT NULL,
+    start_block numeric NOT NULL,
+    end_date timestamp without time zone NOT NULL,
+    end_block numeric NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+ALTER TABLE stats.daily OWNER TO postgres;
+
+CREATE TABLE stats.weekly (
+    id TEXT NOT NULL,
+    cumulated_history_size numeric NOT NULL,
+    delta_history_size numeric NOT NULL,
+    start_date timestamp without time zone NOT NULL,
+    start_block numeric NOT NULL,
+    end_date timestamp without time zone NOT NULL,
+    end_block numeric NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+ALTER TABLE stats.weekly OWNER TO postgres;
+
+CREATE TABLE stats.monthly (
+    id TEXT NOT NULL,
+    cumulated_history_size numeric NOT NULL,
+    delta_history_size numeric NOT NULL,
+    start_date timestamp without time zone NOT NULL,
+    start_block numeric NOT NULL,
+    end_date timestamp without time zone NOT NULL,
+    end_block numeric NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+ALTER TABLE stats.monthly OWNER TO postgres;
+
 ALTER TABLE ONLY consensus._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
 
@@ -1816,6 +1867,18 @@ ALTER TABLE ONLY staking.withdrawal_histories
 ALTER TABLE ONLY staking.withdrawals
     ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY stats.hourly
+    ADD CONSTRAINT hourly_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY stats.daily
+    ADD CONSTRAINT daily_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY stats.weekly
+    ADD CONSTRAINT weekly_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY stats.monthly
+    ADD CONSTRAINT monthly_pkey PRIMARY KEY (id);
+
 CREATE INDEX "0xccedb032815757ed" ON consensus.blocks USING btree (id);
 CREATE INDEX "consensus_blocks_sort_id" ON consensus.blocks USING btree (sort_id DESC);
 CREATE INDEX "consensus_blocks_hash" ON consensus.blocks USING btree (hash);
@@ -1983,6 +2046,11 @@ CREATE INDEX "0xd3486d6b21c11e22" ON staking.withdrawal_histories USING btree (i
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
 CREATE INDEX "0xdca5e6b13feac3f6" ON staking.deposit_histories USING btree (id);
 CREATE INDEX "0xdefc8472839e625c" ON staking.domain_blocks USING btree (id);
+
+CREATE INDEX "stats_hourly_end_date" ON stats.hourly USING btree ("end_date" DESC);
+CREATE INDEX "stats_daily_end_date" ON stats.daily USING btree ("end_date" DESC);
+CREATE INDEX "stats_weekly_end_date" ON stats.weekly USING btree ("end_date" DESC);
+CREATE INDEX "stats_monthly_end_date" ON stats.monthly USING btree ("end_date" DESC);
 
 CREATE TRIGGER "0x648269cc35867c16" AFTER UPDATE ON consensus._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION consensus.schema_notification();
 CREATE TRIGGER "0xda8a29b0fa478533" AFTER UPDATE ON dictionary._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION dictionary.schema_notification();

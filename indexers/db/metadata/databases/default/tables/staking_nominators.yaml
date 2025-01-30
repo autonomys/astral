@@ -84,4 +84,5 @@ select_permissions:
         - pending_action
         - status
       filter: {}
+      allow_aggregations: true
     comment: ""
