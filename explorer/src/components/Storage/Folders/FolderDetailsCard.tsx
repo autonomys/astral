@@ -1,7 +1,7 @@
 import { shortString } from '@autonomys/auto-utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { FolderByIdQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
@@ -14,17 +14,17 @@ type Props = {
 }
 
 export const FolderDetailsCard: FC<Props> = ({ folder, isDesktop = false }) => {
-  const { network, section } = useIndexers()
+  const { network } = useIndexers()
 
   return (
     <div className='w-full'>
       <div className='flex'>
-        <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none sm:p-6'>
+        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
           <div className='mb-10 flex items-center justify-between'>
             <h3 className='text-sm font-medium text-grayDarker dark:text-white  md:text-2xl'>
               Folder root CID
             </h3>
-            <div className='bg-buttonDarkTo flex items-center justify-center gap-2 rounded-full px-5 py-3'>
+            <div className='flex items-center justify-center gap-2 rounded-full bg-buttonDarkTo px-5 py-3'>
               <div className=' block text-xs font-semibold leading-normal text-white'>
                 {folder.id}
               </div>
@@ -44,7 +44,11 @@ export const FolderDetailsCard: FC<Props> = ({ folder, isDesktop = false }) => {
                 </StyledListItem>
                 <StyledListItem title='Block Number'>
                   <Link
-                    href={INTERNAL_ROUTES.blocks.id.page(network, section, folder.cid?.blockHeight)}
+                    href={INTERNAL_ROUTES.blocks.id.page(
+                      network,
+                      Routes.consensus,
+                      folder.cid?.blockHeight,
+                    )}
                   >
                     <div> {folder.cid?.blockHeight}</div>
                   </Link>
@@ -58,7 +62,7 @@ export const FolderDetailsCard: FC<Props> = ({ folder, isDesktop = false }) => {
                   <Link
                     href={INTERNAL_ROUTES.extrinsics.id.page(
                       network,
-                      section,
+                      Routes.consensus,
                       folder.cid?.extrinsicId ?? '',
                     )}
                   >
