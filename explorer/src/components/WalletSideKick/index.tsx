@@ -125,7 +125,7 @@ export const WalletSidekick: FC = () => {
         <div className='fixed inset-0  z-20 bg-gray-900 bg-opacity-25' onClick={onCloseSidebar} />
       )}
       <div
-        className={`fixed right-0 top-0 z-30 h-full w-screen max-w-[495px] transform bg-light transition-transform duration-300 ease-in-out dark:bg-dark ${
+        className={`fixed right-0 top-0 z-30 h-full w-screen max-w-lg transform bg-light transition-transform duration-300 ease-in-out dark:bg-dark ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -181,9 +181,9 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onCloseSidebar }) => {
 
   return (
     // backdrop
-    <section onClick={(e) => e.stopPropagation()}>
+    <section onClick={(e) => e.stopPropagation()} className='w-screen max-w-lg'>
       <HeaderBackground />
-      <article className='relative flex h-full w-screen max-w-lg flex-col gap-2 overflow-y-scroll pb-10'>
+      <article className='relative flex h-screen w-screen max-w-lg flex-col gap-2 overflow-y-scroll pb-10'>
         <div className='flex items-center justify-between p-5 align-middle'>
           <button
             onClick={() => handleNavigate(`/${network}/${section}`)}
