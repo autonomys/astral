@@ -54,4 +54,5 @@ select_permissions:
         - updated_at
         - withdraw_extrinsic_hash
       filter: {}
+      allow_aggregations: true
     comment: ""

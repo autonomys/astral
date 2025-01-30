@@ -95,4 +95,5 @@ select_permissions:
         - sort_id
         - status
       filter: {}
+      allow_aggregations: true
     comment: ""
