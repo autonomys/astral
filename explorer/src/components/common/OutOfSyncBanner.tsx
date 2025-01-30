@@ -68,7 +68,7 @@ export const useOutOfSyncBanner = () => {
     }
   }, [network, setLastBlockNumber])
 
-  const lastBlock = useMemo(() => data && parseInt(data.lastBlock[0].height), [data])
+  const lastBlock = useMemo(() => data && data.lastBlock && parseInt(data.lastBlock.value), [data])
 
   const outOfSyncBanner = useMemo(
     () =>

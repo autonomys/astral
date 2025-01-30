@@ -81,6 +81,56 @@ export type String_Comparison_Exp = {
   _similar?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** columns and relationships of "consensus._metadata" */
+export type Consensus__Metadata = {
+  __typename?: 'consensus__metadata';
+  key: Scalars['String']['output'];
+  value?: Maybe<Scalars['jsonb']['output']>;
+};
+
+
+/** columns and relationships of "consensus._metadata" */
+export type Consensus__MetadataValueArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "consensus._metadata". All fields are combined with a logical 'AND'. */
+export type Consensus__Metadata_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus__Metadata_Bool_Exp>>;
+  _not?: InputMaybe<Consensus__Metadata_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus__Metadata_Bool_Exp>>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "consensus._metadata". */
+export type Consensus__Metadata_Order_By = {
+  key?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "consensus._metadata" */
+export enum Consensus__Metadata_Select_Column {
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Value = 'value'
+}
+
+/** Streaming cursor of the table "consensus__metadata" */
+export type Consensus__Metadata_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus__Metadata_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Consensus__Metadata_Stream_Cursor_Value_Input = {
+  key?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
 /** columns and relationships of "consensus.account_histories" */
 export type Consensus_Account_Histories = {
   __typename?: 'consensus_account_histories';
@@ -3880,6 +3930,56 @@ export type Dictionary_Spec_Versions_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** columns and relationships of "files._metadata" */
+export type Files__Metadata = {
+  __typename?: 'files__metadata';
+  key: Scalars['String']['output'];
+  value?: Maybe<Scalars['jsonb']['output']>;
+};
+
+
+/** columns and relationships of "files._metadata" */
+export type Files__MetadataValueArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "files._metadata". All fields are combined with a logical 'AND'. */
+export type Files__Metadata_Bool_Exp = {
+  _and?: InputMaybe<Array<Files__Metadata_Bool_Exp>>;
+  _not?: InputMaybe<Files__Metadata_Bool_Exp>;
+  _or?: InputMaybe<Array<Files__Metadata_Bool_Exp>>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "files._metadata". */
+export type Files__Metadata_Order_By = {
+  key?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files._metadata" */
+export enum Files__Metadata_Select_Column {
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Value = 'value'
+}
+
+/** Streaming cursor of the table "files__metadata" */
+export type Files__Metadata_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files__Metadata_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files__Metadata_Stream_Cursor_Value_Input = {
+  key?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
 /** columns and relationships of "files.chunks" */
 export type Files_Chunks = {
   __typename?: 'files_chunks';
@@ -5264,6 +5364,56 @@ export type Jsonb_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['jsonb']['input']>;
   _neq?: InputMaybe<Scalars['jsonb']['input']>;
   _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+};
+
+/** columns and relationships of "leaderboard._metadata" */
+export type Leaderboard__Metadata = {
+  __typename?: 'leaderboard__metadata';
+  key: Scalars['String']['output'];
+  value?: Maybe<Scalars['jsonb']['output']>;
+};
+
+
+/** columns and relationships of "leaderboard._metadata" */
+export type Leaderboard__MetadataValueArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard._metadata". All fields are combined with a logical 'AND'. */
+export type Leaderboard__Metadata_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard__Metadata_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard__Metadata_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard__Metadata_Bool_Exp>>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "leaderboard._metadata". */
+export type Leaderboard__Metadata_Order_By = {
+  key?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard._metadata" */
+export enum Leaderboard__Metadata_Select_Column {
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Value = 'value'
+}
+
+/** Streaming cursor of the table "leaderboard__metadata" */
+export type Leaderboard__Metadata_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard__Metadata_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard__Metadata_Stream_Cursor_Value_Input = {
+  key?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** columns and relationships of "leaderboard.account_extrinsic_failed_total_counts" */
@@ -9905,6 +10055,10 @@ export enum Order_By {
 
 export type Query_Root = {
   __typename?: 'query_root';
+  /** fetch data from the table: "consensus._metadata" */
+  consensus__metadata: Array<Consensus__Metadata>;
+  /** fetch data from the table: "consensus._metadata" using primary key columns */
+  consensus__metadata_by_pk?: Maybe<Consensus__Metadata>;
   /** fetch data from the table: "consensus.account_histories" */
   consensus_account_histories: Array<Consensus_Account_Histories>;
   /** fetch aggregated fields from the table: "consensus.account_histories" */
@@ -9997,6 +10151,10 @@ export type Query_Root = {
   dictionary_spec_versions: Array<Dictionary_Spec_Versions>;
   /** fetch data from the table: "dictionary.spec_versions" using primary key columns */
   dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "files._metadata" */
+  files__metadata: Array<Files__Metadata>;
+  /** fetch data from the table: "files._metadata" using primary key columns */
+  files__metadata_by_pk?: Maybe<Files__Metadata>;
   /** fetch data from the table: "files.chunks" */
   files_chunks: Array<Files_Chunks>;
   /** fetch data from the table: "files.chunks" using primary key columns */
@@ -10041,6 +10199,10 @@ export type Query_Root = {
   files_metadata_cids_aggregate: Files_Metadata_Cids_Aggregate;
   /** fetch data from the table: "files.metadata_cids" using primary key columns */
   files_metadata_cids_by_pk?: Maybe<Files_Metadata_Cids>;
+  /** fetch data from the table: "leaderboard._metadata" */
+  leaderboard__metadata: Array<Leaderboard__Metadata>;
+  /** fetch data from the table: "leaderboard._metadata" using primary key columns */
+  leaderboard__metadata_by_pk?: Maybe<Leaderboard__Metadata>;
   /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
   leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
   /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
@@ -10185,6 +10347,10 @@ export type Query_Root = {
   leaderboard_operator_withdrawals_total_counts_aggregate: Leaderboard_Operator_Withdrawals_Total_Counts_Aggregate;
   /** fetch data from the table: "leaderboard.operator_withdrawals_total_counts" using primary key columns */
   leaderboard_operator_withdrawals_total_counts_by_pk?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts>;
+  /** fetch data from the table: "staking._metadata" */
+  staking__metadata: Array<Staking__Metadata>;
+  /** fetch data from the table: "staking._metadata" using primary key columns */
+  staking__metadata_by_pk?: Maybe<Staking__Metadata>;
   /** fetch data from the table: "staking.accounts" */
   staking_accounts: Array<Staking_Accounts>;
   /** fetch aggregated fields from the table: "staking.accounts" */
@@ -10287,6 +10453,20 @@ export type Query_Root = {
   stats_weekly: Array<Stats_Weekly>;
   /** fetch data from the table: "stats.weekly" using primary key columns */
   stats_weekly_by_pk?: Maybe<Stats_Weekly>;
+};
+
+
+export type Query_RootConsensus__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Consensus__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus__Metadata_Order_By>>;
+  where?: InputMaybe<Consensus__Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
 };
 
 
@@ -10636,6 +10816,20 @@ export type Query_RootDictionary_Spec_Versions_By_PkArgs = {
 };
 
 
+export type Query_RootFiles__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Files__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files__Metadata_Order_By>>;
+  where?: InputMaybe<Files__Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootFiles__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
 export type Query_RootFiles_ChunksArgs = {
   distinct_on?: InputMaybe<Array<Files_Chunks_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -10799,6 +10993,20 @@ export type Query_RootFiles_Metadata_Cids_AggregateArgs = {
 
 export type Query_RootFiles_Metadata_Cids_By_PkArgs = {
   uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootLeaderboard__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard__Metadata_Order_By>>;
+  where?: InputMaybe<Leaderboard__Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
 };
 
 
@@ -11354,6 +11562,20 @@ export type Query_RootLeaderboard_Operator_Withdrawals_Total_Counts_By_PkArgs = 
 };
 
 
+export type Query_RootStaking__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Staking__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking__Metadata_Order_By>>;
+  where?: InputMaybe<Staking__Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootStaking__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
 export type Query_RootStaking_AccountsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Accounts_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -11722,6 +11944,56 @@ export type Query_RootStats_WeeklyArgs = {
 
 export type Query_RootStats_Weekly_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+/** columns and relationships of "staking._metadata" */
+export type Staking__Metadata = {
+  __typename?: 'staking__metadata';
+  key: Scalars['String']['output'];
+  value?: Maybe<Scalars['jsonb']['output']>;
+};
+
+
+/** columns and relationships of "staking._metadata" */
+export type Staking__MetadataValueArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "staking._metadata". All fields are combined with a logical 'AND'. */
+export type Staking__Metadata_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking__Metadata_Bool_Exp>>;
+  _not?: InputMaybe<Staking__Metadata_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking__Metadata_Bool_Exp>>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking._metadata". */
+export type Staking__Metadata_Order_By = {
+  key?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking._metadata" */
+export enum Staking__Metadata_Select_Column {
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Value = 'value'
+}
+
+/** Streaming cursor of the table "staking__metadata" */
+export type Staking__Metadata_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking__Metadata_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking__Metadata_Stream_Cursor_Value_Input = {
+  key?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** columns and relationships of "staking.accounts" */
@@ -17719,6 +17991,12 @@ export type Stats_Weekly_Stream_Cursor_Value_Input = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "consensus._metadata" */
+  consensus__metadata: Array<Consensus__Metadata>;
+  /** fetch data from the table: "consensus._metadata" using primary key columns */
+  consensus__metadata_by_pk?: Maybe<Consensus__Metadata>;
+  /** fetch data from the table in a streaming manner: "consensus._metadata" */
+  consensus__metadata_stream: Array<Consensus__Metadata>;
   /** fetch data from the table: "consensus.account_histories" */
   consensus_account_histories: Array<Consensus_Account_Histories>;
   /** fetch aggregated fields from the table: "consensus.account_histories" */
@@ -17845,6 +18123,12 @@ export type Subscription_Root = {
   dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
   /** fetch data from the table in a streaming manner: "dictionary.spec_versions" */
   dictionary_spec_versions_stream: Array<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "files._metadata" */
+  files__metadata: Array<Files__Metadata>;
+  /** fetch data from the table: "files._metadata" using primary key columns */
+  files__metadata_by_pk?: Maybe<Files__Metadata>;
+  /** fetch data from the table in a streaming manner: "files._metadata" */
+  files__metadata_stream: Array<Files__Metadata>;
   /** fetch data from the table: "files.chunks" */
   files_chunks: Array<Files_Chunks>;
   /** fetch data from the table: "files.chunks" using primary key columns */
@@ -17905,6 +18189,12 @@ export type Subscription_Root = {
   files_metadata_cids_stream: Array<Files_Metadata_Cids>;
   /** fetch data from the table in a streaming manner: "files.metadata" */
   files_metadata_stream: Array<Files_Metadata>;
+  /** fetch data from the table: "leaderboard._metadata" */
+  leaderboard__metadata: Array<Leaderboard__Metadata>;
+  /** fetch data from the table: "leaderboard._metadata" using primary key columns */
+  leaderboard__metadata_by_pk?: Maybe<Leaderboard__Metadata>;
+  /** fetch data from the table in a streaming manner: "leaderboard._metadata" */
+  leaderboard__metadata_stream: Array<Leaderboard__Metadata>;
   /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
   leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
   /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
@@ -18097,6 +18387,12 @@ export type Subscription_Root = {
   leaderboard_operator_withdrawals_total_counts_by_pk?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts>;
   /** fetch data from the table in a streaming manner: "leaderboard.operator_withdrawals_total_counts" */
   leaderboard_operator_withdrawals_total_counts_stream: Array<Leaderboard_Operator_Withdrawals_Total_Counts>;
+  /** fetch data from the table: "staking._metadata" */
+  staking__metadata: Array<Staking__Metadata>;
+  /** fetch data from the table: "staking._metadata" using primary key columns */
+  staking__metadata_by_pk?: Maybe<Staking__Metadata>;
+  /** fetch data from the table in a streaming manner: "staking._metadata" */
+  staking__metadata_stream: Array<Staking__Metadata>;
   /** fetch data from the table: "staking.accounts" */
   staking_accounts: Array<Staking_Accounts>;
   /** fetch aggregated fields from the table: "staking.accounts" */
@@ -18245,6 +18541,27 @@ export type Subscription_Root = {
   stats_weekly_by_pk?: Maybe<Stats_Weekly>;
   /** fetch data from the table in a streaming manner: "stats.weekly" */
   stats_weekly_stream: Array<Stats_Weekly>;
+};
+
+
+export type Subscription_RootConsensus__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Consensus__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus__Metadata_Order_By>>;
+  where?: InputMaybe<Consensus__Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus__Metadata_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus__Metadata_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus__Metadata_Bool_Exp>;
 };
 
 
@@ -18713,6 +19030,27 @@ export type Subscription_RootDictionary_Spec_Versions_StreamArgs = {
 };
 
 
+export type Subscription_RootFiles__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Files__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files__Metadata_Order_By>>;
+  where?: InputMaybe<Files__Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootFiles__Metadata_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files__Metadata_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files__Metadata_Bool_Exp>;
+};
+
+
 export type Subscription_RootFiles_ChunksArgs = {
   distinct_on?: InputMaybe<Array<Files_Chunks_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -18932,6 +19270,27 @@ export type Subscription_RootFiles_Metadata_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Files_Metadata_Stream_Cursor_Input>>;
   where?: InputMaybe<Files_Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard__Metadata_Order_By>>;
+  where?: InputMaybe<Leaderboard__Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard__Metadata_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard__Metadata_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard__Metadata_Bool_Exp>;
 };
 
 
@@ -19652,6 +20011,27 @@ export type Subscription_RootLeaderboard_Operator_Withdrawals_Total_Counts_Strea
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Stream_Cursor_Input>>;
   where?: InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Staking__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking__Metadata_Order_By>>;
+  where?: InputMaybe<Staking__Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStaking__Metadata_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking__Metadata_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking__Metadata_Bool_Exp>;
 };
 
 
@@ -20816,7 +21196,7 @@ export type StakingSummaryQuery = { __typename?: 'query_root', staking_operators
 export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LastBlockQuery = { __typename?: 'query_root', lastBlock: Array<{ __typename?: 'consensus_blocks', height: any }> };
+export type LastBlockQuery = { __typename?: 'query_root', lastBlock?: { __typename?: 'consensus__metadata', value?: any | null } | null };
 
 
 export const AccountsDocument = gql`
@@ -24877,8 +25257,8 @@ export type StakingSummarySuspenseQueryHookResult = ReturnType<typeof useStaking
 export type StakingSummaryQueryResult = Apollo.QueryResult<StakingSummaryQuery, StakingSummaryQueryVariables>;
 export const LastBlockDocument = gql`
     query LastBlock {
-  lastBlock: consensus_blocks(limit: 1, order_by: {sort_id: desc}) {
-    height
+  lastBlock: consensus__metadata_by_pk(key: "lastProcessedHeight") {
+    value
   }
 }
     `;
