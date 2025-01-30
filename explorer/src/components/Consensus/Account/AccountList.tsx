@@ -64,7 +64,7 @@ export const AccountList: FC = () => {
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conditions: Record<string, any> = {}
-    const tempUpdatedFilters: Record<string, string> = {};
+    // const tempUpdatedFilters: Record<string, string> = {};
 
     availableColumns
       .filter((column) => column.searchable)
@@ -72,22 +72,12 @@ export const AccountList: FC = () => {
         const searchKey = `search-${column.name}` as keyof AccountsFilters
         const searchValue = filters[searchKey]
         if (searchValue) {
-          let formattedAddress = searchValue;
-
-          if (column.name === 'id' && isAddress(formattedAddress)) {
-            const convertedAddress = formatAddress(searchValue);
-            if (convertedAddress) {
-              formattedAddress = convertedAddress;
-              if (filters[searchKey] !== formattedAddress) {
-                tempUpdatedFilters[searchKey] = formattedAddress;
-              }
-            }
-          }
-
-          conditions[column.name] = { 
-            _ilike: `%${formattedAddress}%` 
-          };
-          console.log('83',formattedAddress,column.name);
+          const formattedAddress = searchValue;
+          if (column.name === 'id' && isAddress(formattedAddress)) {  
+            conditions['id'] = { _ilike: `%${formatAddress(searchValue)}%` };  
+          } else {  
+            conditions[column.name] = { _ilike: `%${searchValue}%` };  
+          }  
         }
       })
 
@@ -146,7 +136,7 @@ export const AccountList: FC = () => {
         ).toString()
       }
     }
-    setUpdatedFilters(tempUpdatedFilters);
+    // setUpdatedFilters(tempUpdatedFilters);
     return conditions
   }, [availableColumns, filters, tokenDecimals])
 
