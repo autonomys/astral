@@ -174,6 +174,7 @@ export const EXTERNAL_ROUTES = {
   privacyPolicy: 'https://www.autonomys.xyz/privacy-policy',
   forum: 'https://forum.autonomys.xyz/',
   docs: 'https://docs.autonomys.xyz/',
+  autoDrive: 'https://ai3.storage',
   status: 'https://status.autonomys.xyz/',
   operatorDocs: 'https://docs.autonomys.xyz/staking/operator/register',
   social: {
