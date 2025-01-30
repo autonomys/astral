@@ -59,7 +59,9 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
                 <StyledListItem title='Module'>{module}</StyledListItem>
                 <StyledListItem title='Call'>{call}</StyledListItem>
                 <StyledListItem title='Sender'>
-                  {isDesktop ? extrinsic.signer : shortString(extrinsic.signer)}
+                  <Link href={INTERNAL_ROUTES.accounts.id.page(network, section, extrinsic.signer)}>
+                    {isDesktop ? extrinsic.signer : shortString(extrinsic.signer)}
+                  </Link>
                 </StyledListItem>
                 <StyledListItem title='Signature'>
                   {isDesktop
