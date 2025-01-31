@@ -353,8 +353,8 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'id',
-        desc: false,
+        id: 'total',
+        desc: true,
       },
     ],
   },

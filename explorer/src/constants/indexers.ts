@@ -7,7 +7,7 @@ export interface Indexer {
   telemetryNetworkName?: string
 }
 
-const LOCAL_INDEXER = 'https://subql.green.mainnet.subspace.network/v1/graphql'
+const LOCAL_INDEXER = 'http://localhost:8080/v1/graphql'
 
 export const indexers: Indexer[] = [
   {
