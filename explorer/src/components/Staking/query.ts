@@ -48,10 +48,9 @@ export const QUERY_NOMINATIONS_LIST = gql`
         amount
         storage_fee_deposit
         timestamp
-        extrinsic_hash
+        extrinsic_id
         status
         created_at
-        staked_at
         updated_at
       }
       withdrawals {

@@ -94,7 +94,7 @@ services:
       retries: 5
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
-# PGCat Proxy
+  # PGCat Proxy
   pgcat:
     image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
     command:
@@ -338,7 +338,8 @@ services:
       - --unsafe
       - --batch-size=100
       - --scale-batch-size
-      - --disable-historical=true
+      - --unfinalized-blocks=true
+      - --disable-historical=false
       #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]

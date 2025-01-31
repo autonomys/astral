@@ -80,76 +80,108 @@ export const initializeCache = (): Cache => ({
 });
 
 export const saveCache = async (cache: Cache) => {
-  await Promise.all(
-    cache.accountTransferSenderTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.accountTransferReceiverTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.accountTransferSenderTotalValueHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.accountTransferReceiverTotalValueHistory.map((item) => item.save())
-  );
-  await Promise.all(cache.accountRemarkCountHistory.map((item) => item.save()));
-  await Promise.all(
-    cache.accountExtrinsicTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.accountExtrinsicSuccessTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.accountExtrinsicFailedTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.accountTransactionFeePaidTotalValueHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.farmerVoteTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.farmerVoteTotalValueHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.farmerBlockTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.farmerBlockTotalValueHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.farmerVoteAndBlockTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.farmerVoteAndBlockTotalValueHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.nominatorDepositsTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.nominatorDepositsTotalValueHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.nominatorWithdrawalsTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.operatorBundleTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.operatorDepositsTotalCountHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.operatorDepositsTotalValueHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.operatorTotalRewardsCollectedHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.operatorTotalTaxCollectedHistory.map((item) => item.save())
-  );
-  await Promise.all(
-    cache.operatorWithdrawalsTotalCountHistory.map((item) => item.save())
-  );
+  // Account entities
+  await Promise.all([
+    store.bulkCreate(
+      `AccountTransferSenderTotalCountHistory`,
+      cache.accountTransferSenderTotalCountHistory
+    ),
+    store.bulkCreate(
+      `AccountTransferReceiverTotalCountHistory`,
+      cache.accountTransferReceiverTotalCountHistory
+    ),
+    store.bulkCreate(
+      `AccountTransferSenderTotalValueHistory`,
+      cache.accountTransferSenderTotalValueHistory
+    ),
+    store.bulkCreate(
+      `AccountTransferReceiverTotalValueHistory`,
+      cache.accountTransferReceiverTotalValueHistory
+    ),
+    store.bulkCreate(
+      `AccountRemarkCountHistory`,
+      cache.accountRemarkCountHistory
+    ),
+    store.bulkCreate(
+      `AccountExtrinsicTotalCountHistory`,
+      cache.accountExtrinsicTotalCountHistory
+    ),
+    store.bulkCreate(
+      `AccountExtrinsicSuccessTotalCountHistory`,
+      cache.accountExtrinsicSuccessTotalCountHistory
+    ),
+    store.bulkCreate(
+      `AccountExtrinsicFailedTotalCountHistory`,
+      cache.accountExtrinsicFailedTotalCountHistory
+    ),
+    store.bulkCreate(
+      `AccountTransactionFeePaidTotalValueHistory`,
+      cache.accountTransactionFeePaidTotalValueHistory
+    ),
+    // Farmer entities
+    store.bulkCreate(
+      `FarmerVoteTotalCountHistory`,
+      cache.farmerVoteTotalCountHistory
+    ),
+    store.bulkCreate(
+      `FarmerVoteTotalValueHistory`,
+      cache.farmerVoteTotalValueHistory
+    ),
+    store.bulkCreate(
+      `FarmerBlockTotalCountHistory`,
+      cache.farmerBlockTotalCountHistory
+    ),
+    store.bulkCreate(
+      `FarmerBlockTotalValueHistory`,
+      cache.farmerBlockTotalValueHistory
+    ),
+    store.bulkCreate(
+      `FarmerVoteAndBlockTotalCountHistory`,
+      cache.farmerVoteAndBlockTotalCountHistory
+    ),
+    store.bulkCreate(
+      `FarmerVoteAndBlockTotalValueHistory`,
+      cache.farmerVoteAndBlockTotalValueHistory
+    ),
+    // Nominator entities
+    store.bulkCreate(
+      `NominatorDepositsTotalCountHistory`,
+      cache.nominatorDepositsTotalCountHistory
+    ),
+    store.bulkCreate(
+      `NominatorDepositsTotalValueHistory`,
+      cache.nominatorDepositsTotalValueHistory
+    ),
+    store.bulkCreate(
+      `NominatorWithdrawalsTotalCountHistory`,
+      cache.nominatorWithdrawalsTotalCountHistory
+    ),
+    // Operator entities
+    store.bulkCreate(
+      `OperatorBundleTotalCountHistory`,
+      cache.operatorBundleTotalCountHistory
+    ),
+    store.bulkCreate(
+      `OperatorDepositsTotalCountHistory`,
+      cache.operatorDepositsTotalCountHistory
+    ),
+    store.bulkCreate(
+      `OperatorDepositsTotalValueHistory`,
+      cache.operatorDepositsTotalValueHistory
+    ),
+    store.bulkCreate(
+      `OperatorTotalRewardsCollectedHistory`,
+      cache.operatorTotalRewardsCollectedHistory
+    ),
+    store.bulkCreate(
+      `OperatorTotalTaxCollectedHistory`,
+      cache.operatorTotalTaxCollectedHistory
+    ),
+    store.bulkCreate(
+      `OperatorWithdrawalsTotalCountHistory`,
+      cache.operatorWithdrawalsTotalCountHistory
+    ),
+  ]);
 };
 
 export function createAccountTransferSenderTotalCount(

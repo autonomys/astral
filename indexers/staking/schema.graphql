@@ -2,178 +2,79 @@
 # Add the `@index` or `@index(unique: true)` annotation after any non-key field
 # https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
 
-type Domain @entity {
+# Events driven entities
+
+type RuntimeCreation @entity {
   id: ID!
-  sortId: BigInt! @index
-  accountId: String! @index
-  name: String! @index
-  runtimeId: Int! @index
+  sortId: String!
+  name: String!
+  type: String!
+  createdBy: String!
+  blockHeight: BigInt!
+  extrinsicId: String!
+}
+
+type DomainInstantiation @entity {
+  id: ID!
+  sortId: String!
+  name: String!
+  runtimeId: Int!
   runtime: String!
   runtimeInfo: String!
-  completedEpoch: BigInt! @index
-  lastDomainBlockNumber: BigInt! @index
-  totalDeposits: BigInt!
-  totalEstimatedWithdrawals: BigInt!
-  totalWithdrawals: BigInt!
-  totalTaxCollected: BigInt!
-  totalRewardsCollected: BigInt!
-  totalTransfersIn: BigInt!
-  transfersInCount: BigInt!
-  totalTransfersOut: BigInt!
-  transfersOutCount: BigInt!
-  totalRejectedTransfersClaimed: BigInt!
-  rejectedTransfersClaimedCount: BigInt!
-  totalTransfersRejected: BigInt!
-  transfersRejectedCount: BigInt!
-  totalVolume: BigInt! @index
-  totalConsensusStorageFee: BigInt!
-  totalDomainExecutionFee: BigInt!
-  totalBurnedBalance: BigInt!
-  currentTotalStake: BigInt!
-  currentStorageFeeDeposit: BigInt!
-  currentTotalShares: BigInt!
-  currentSharePrice: BigInt!
-  accumulatedEpochStake: BigInt!
-  accumulatedEpochStorageFeeDeposit: BigInt!
-  accumulatedEpochRewards: BigInt!
-  accumulatedEpochShares: BigInt!
-  bundleCount: BigInt!
-  currentEpochDuration: BigInt!
-  lastEpochDuration: BigInt!
-  last6EpochsDuration: BigInt!
-  last144EpochDuration: BigInt!
-  last1kEpochDuration: BigInt!
-  lastBundleAt: BigInt!
-  createdAt: BigInt! @index
-  updatedAt: BigInt! @index
+  createdBy: String!
+  blockHeight: BigInt!
+  extrinsicId: String!
 }
 
-type Account @entity {
+type OperatorRegistration @entity {
   id: ID!
-  totalDeposits: BigInt!
-  totalEstimatedWithdrawals: BigInt!
-  totalWithdrawals: BigInt!
-  totalTaxCollected: BigInt!
-  currentTotalStake: BigInt!
-  currentStorageFeeDeposit: BigInt!
-  currentTotalShares: BigInt!
-  currentSharePrice: BigInt!
-  accumulatedEpochStake: BigInt!
-  accumulatedEpochStorageFeeDeposit: BigInt!
-  accumulatedEpochShares: BigInt!
-  createdAt: BigInt! @index
-  updatedAt: BigInt! @index
-}
-
-type Operator @entity {
-  id: ID!
-  sortId: BigInt! @index
-  accountId: String! @index
-  domainId: String! @index
-  signingKey: String! @index
+  sortId: String!
+  owner: String!
+  domainId: String!
+  signingKey: String!
   minimumNominatorStake: BigInt!
   nominationTax: Int!
-  currentTotalStake: BigInt!
-  currentStorageFeeDeposit: BigInt!
-  currentEpochRewards: BigInt!
-  currentTotalShares: BigInt!
-  currentSharePrice: BigInt!
-  rawStatus: String!
-  totalDeposits: BigInt!
-  totalEstimatedWithdrawals: BigInt!
-  totalWithdrawals: BigInt!
-  totalTaxCollected: BigInt!
-  totalRewardsCollected: BigInt!
-  totalTransfersIn: BigInt!
-  transfersInCount: BigInt!
-  totalTransfersOut: BigInt!
-  transfersOutCount: BigInt!
-  totalRejectedTransfersClaimed: BigInt!
-  rejectedTransfersClaimedCount: BigInt!
-  totalTransfersRejected: BigInt!
-  transfersRejectedCount: BigInt!
-  totalVolume: BigInt! @index
-  totalConsensusStorageFee: BigInt!
-  totalDomainExecutionFee: BigInt!
-  totalBurnedBalance: BigInt!
-  accumulatedEpochStake: BigInt!
-  accumulatedEpochStorageFeeDeposit: BigInt!
-  accumulatedEpochRewards: BigInt!
-  accumulatedEpochShares: BigInt!
-  activeEpochCount: BigInt!
-  bundleCount: BigInt!
-  status: String!
-  pendingAction: String!
-  lastBundleAt: BigInt!
-  createdAt: BigInt! @index
-  updatedAt: BigInt! @index
+  blockHeight: BigInt!
+  extrinsicId: String!
 }
 
-type OperatorProfile @entity {
+type DepositEvent @entity {
   id: ID!
-  operatorId: String! @index
-  accountId: String! @index
-  name: String! @index
-  description: String!
-  icon: String!
-  banner: String!
-  website: String!
-  websiteVerified: Boolean!
-  email: String!
-  emailVerified: Boolean!
-  discord: String!
-  github: String!
-  twitter: String!
-  proofMessage: String!
-  proofSignature: String!
-  createdAt: BigInt! @index
-  updatedAt: BigInt! @index
+  sortId: String!
+  accountId: String!
+  domainId: String!
+  operatorId: String!
+  nominatorId: String!
+  amount: BigInt!
+  storageFeeDeposit: BigInt!
+  totalAmount: BigInt!
+  timestamp: Date!
+  blockHeight: BigInt!
+  extrinsicId: String!
 }
 
-type DomainBlock @entity {
+type OperatorReward @entity {
   id: ID!
-  domainId: String! @index
-  domainEpochId: String! @index
-  blockNumber: BigInt! @index
-  blockHash: String! @index
-  extrinsicRoot: String!
-  epoch: BigInt! @index
-  consensusBlockNumber: BigInt! @index
-  consensusBlockHash: String! @index
-  timestamp: Date! @index
-  createdAt: BigInt! @index
-  updatedAt: BigInt! @index
+  operatorId: String!
+  amount: BigInt!
+  atBlockNumber: BigInt!
+  blockHeight: BigInt!
+  extrinsicId: String!
 }
 
-type DomainEpoch @entity {
+type BundleSubmission @entity {
   id: ID!
-  epoch: BigInt! @index
-  domainId: String! @index
-  blockNumberStart: BigInt! @index
-  blockNumberEnd: BigInt! @index
-  blockCount: BigInt!
-  timestampStart: Date! @index
-  timestampEnd: Date! @index
-  epochDuration: BigInt!
-  consensusBlockNumberStart: BigInt!
-  consensusBlockNumberEnd: BigInt!
-  consensusBlockHashStart: String!
-  consensusBlockHashEnd: String!
-  createdAt: BigInt! @index
-  updatedAt: BigInt! @index
-}
-
-type Bundle @entity {
-  id: ID!
-  domainId: String! @index
-  domainBlockId: String! @index
-  domainEpochId: String! @index
-  domainBlockNumber: BigInt! @index
+  accountId: String!
+  bundleId: String!
+  domainId: String!
+  domainBlockId: String!
+  operatorId: String!
+  domainBlockNumber: BigInt!
   domainBlockHash: String!
   domainBlockExtrinsicRoot: String!
-  epoch: BigInt! @index
-  consensusBlockNumber: BigInt! @index
-  consensusBlockHash: String! @index
+  epoch: BigInt!
+  consensusBlockNumber: BigInt!
+  consensusBlockHash: String!
   totalTransfersIn: BigInt!
   transfersInCount: BigInt!
   totalTransfersOut: BigInt!
@@ -182,206 +83,280 @@ type Bundle @entity {
   rejectedTransfersClaimedCount: BigInt!
   totalTransfersRejected: BigInt!
   transfersRejectedCount: BigInt!
-  totalVolume: BigInt! @index
+  totalVolume: BigInt!
   consensusStorageFee: BigInt!
   domainExecutionFee: BigInt!
   burnedBalance: BigInt!
 }
 
-type BundleAuthor @entity {
+# Chain states entities
+
+type DomainBlockHistory @entity {
   id: ID!
-  domainId: String! @index
-  accountId: String! @index
-  operatorId: String! @index
-  bundleId: String! @index
-  domainBlockId: String! @index
-  domainEpochId: String! @index
-  epoch: BigInt! @index
+  domainId: String!
+  domainBlockNumber: BigInt!
+  blockHeight: BigInt!
 }
 
-type Nominator @entity {
+type DomainStakingHistory @entity {
   id: ID!
-  accountId: String! @index
-  domainId: String! @index
-  operatorId: String! @index
-  knownShares: BigInt!
-  knownStorageFeeDeposit: BigInt!
-  pendingAmount: BigInt!
-  pendingStorageFeeDeposit: BigInt!
-  pendingEffectiveDomainEpoch: BigInt!
-  totalWithdrawalAmounts: BigInt!
-  totalStorageFeeRefund: BigInt!
-  unlockAtConfirmedDomainBlockNumber: [Int!]!
-  pendingShares: BigInt!
-  pendingStorageFeeRefund: BigInt!
-  totalDeposits: BigInt!
-  totalEstimatedWithdrawals: BigInt!
-  totalWithdrawals: BigInt!
-  totalDepositsCount: BigInt!
-  totalWithdrawalsCount: BigInt!
+  domainId: String!
+  currentEpochIndex: Int!
   currentTotalStake: BigInt!
-  currentStorageFeeDeposit: BigInt!
+  blockHeight: BigInt!
+}
+
+type OperatorStakingHistory @entity {
+  id: ID!
+  operatorId: String!
+  operatorOwner: String!
+  signingKey: String!
+  currentDomainId: String!
+  currentTotalStake: BigInt!
   currentTotalShares: BigInt!
-  currentSharePrice: BigInt!
-  accumulatedEpochStake: BigInt!
-  accumulatedEpochStorageFeeDeposit: BigInt!
-  accumulatedEpochShares: BigInt!
-  activeEpochCount: BigInt!
-  status: String! # NominatorStatus!
-  pendingAction: String! # NominatorPendingAction!
-  createdAt: BigInt! @index
-  updatedAt: BigInt! @index
+  currentEpochRewards: BigInt!
+  depositsInEpoch: BigInt!
+  withdrawalsInEpoch: BigInt!
+  totalStorageFeeDeposit: BigInt!
+  sharePrice: BigInt!
+  blockHeight: BigInt!
 }
 
-type Deposit @entity {
+type DepositHistory @entity {
   id: ID!
-  accountId: String! @index
-  domainId: String! @index
-  operatorId: String! @index
-  nominatorId: String! @index
-  amount: BigInt!
-  storageFeeDeposit: BigInt!
-  totalAmount: BigInt!
-  totalWithdrawn: BigInt!
-  status: String!
-  timestamp: Date!
-  extrinsicHash: String!
-  epochDepositedAt: BigInt!
-  domainBlockNumberDepositedAt: BigInt!
-  createdAt: BigInt! @index
-  stakedAt: BigInt!
-  updatedAt: BigInt! @index
-}
-
-type Withdrawal @entity {
-  id: ID!
-  accountId: String! @index
-  domainId: String! @index
-  operatorId: String! @index
-  nominatorId: String! @index
+  accountId: String!
+  operatorId: String!
+  nominatorId: String!
   shares: BigInt!
-  estimatedAmount: BigInt!
-  unlockedAmount: BigInt!
-  unlockedStorageFee: BigInt!
-  totalAmount: BigInt!
-  status: String!
-  timestamp: Date!
-  withdrawExtrinsicHash: String!
-  unlockExtrinsicHash: String!
-  epochWithdrawalRequestedAt: BigInt!
-  domainBlockNumberWithdrawalRequestedAt: BigInt!
-  createdAt: BigInt! @index
-  readyAt: BigInt!
-  unlockedAt: BigInt!
-  updatedAt: BigInt!
+  storageFeeDeposit: BigInt!
+  sharesKnown: BigInt!
+  storageFeeDepositKnown: BigInt!
+  effectiveDomainIdPending: Int!
+  effectiveDomainEpochPending: Int!
+  amountPending: BigInt!
+  storageFeeDepositPending: BigInt!
+  blockHeight: BigInt!
 }
 
-type Reward @entity {
+type WithdrawalHistory @entity {
   id: ID!
-  domainId: String! @index
-  operatorId: String! @index
-  amount: BigInt!
-  timestamp: Date! @index
-  blockNumber: BigInt! @index
-  extrinsicHash: String! @index
+  blockHeight: BigInt!
 }
 
-type Stats @entity {
-  id: ID!
-  blockNumber: BigInt! @index
-  totalStaked: BigInt!
-  totalTaxCollected: BigInt!
-  totalRewardsCollected: BigInt!
-  totalDeposits: BigInt!
-  totalWithdrawals: BigInt!
-  totalShares: BigInt!
-  currentSharePrice: BigInt!
-  allTimeHighStaked: BigInt!
-  allTimeHighSharePrice: BigInt!
-  domainsCount: BigInt!
-  operatorsCount: BigInt!
-  activeOperatorsCount: BigInt!
-  slashedOperatorsCount: BigInt!
-  nominatorsCount: BigInt!
-  depositsCount: BigInt!
-  withdrawalsCount: BigInt!
-  timestamp: Date! @index
-}
+# Synthetic entities
 
-type StatsPerDomain @entity {
-  id: ID!
-  domainId: String! @index
-  blockNumber: BigInt! @index
-  totalStaked: BigInt!
-  totalTaxCollected: BigInt!
-  totalRewardsCollected: BigInt!
-  totalDeposits: BigInt!
-  totalWithdrawals: BigInt!
-  totalShares: BigInt!
-  currentSharePrice: BigInt!
-  allTimeHighStaked: BigInt!
-  allTimeHighSharePrice: BigInt!
-  operatorsCount: BigInt!
-  activeOperatorsCount: BigInt!
-  slashedOperatorsCount: BigInt!
-  nominatorsCount: BigInt!
-  depositsCount: BigInt!
-  withdrawalsCount: BigInt!
-  timestamp: Date! @index
-}
+# type Domain @entity {
+#   id: ID!
+#   sortId: BigInt!
+#   accountId: String!
+#   name: String!
+#   runtimeId: Int!
+#   runtime: String!
+#   runtimeInfo: String!
+#   completedEpoch: BigInt!
+#   lastDomainBlockNumber: BigInt!
+#   totalDeposits: BigInt!
+#   totalEstimatedWithdrawals: BigInt!
+#   totalWithdrawals: BigInt!
+#   totalTaxCollected: BigInt!
+#   totalRewardsCollected: BigInt!
+#   totalTransfersIn: BigInt!
+#   transfersInCount: BigInt!
+#   totalTransfersOut: BigInt!
+#   transfersOutCount: BigInt!
+#   totalRejectedTransfersClaimed: BigInt!
+#   rejectedTransfersClaimedCount: BigInt!
+#   totalTransfersRejected: BigInt!
+#   transfersRejectedCount: BigInt!
+#   totalVolume: BigInt!
+#   totalConsensusStorageFee: BigInt!
+#   totalDomainExecutionFee: BigInt!
+#   totalBurnedBalance: BigInt!
+#   currentTotalStake: BigInt!
+#   currentStorageFeeDeposit: BigInt!
+#   currentTotalShares: BigInt!
+#   currentSharePrice: BigInt!
+#   accumulatedEpochStake: BigInt!
+#   accumulatedEpochStorageFeeDeposit: BigInt!
+#   accumulatedEpochRewards: BigInt!
+#   accumulatedEpochShares: BigInt!
+#   bundleCount: BigInt!
+#   currentEpochDuration: BigInt!
+#   lastEpochDuration: BigInt!
+#   last6EpochsDuration: BigInt!
+#   last144EpochDuration: BigInt!
+#   last1kEpochDuration: BigInt!
+#   lastBundleAt: BigInt!
+#   createdAt: BigInt!
+#   updatedAt: BigInt!
+# }
 
-type StatsPerOperator @entity {
-  id: ID!
-  domainId: String! @index
-  operatorId: String! @index
-  blockNumber: BigInt! @index
-  totalStaked: BigInt!
-  totalTaxCollected: BigInt!
-  totalRewardsCollected: BigInt!
-  totalDeposits: BigInt!
-  totalWithdrawals: BigInt!
-  totalShares: BigInt!
-  currentSharePrice: BigInt!
-  allTimeHighStaked: BigInt!
-  allTimeHighSharePrice: BigInt!
-  nominatorsCount: BigInt!
-  depositsCount: BigInt!
-  withdrawalsCount: BigInt!
-  timestamp: Date! @index
-}
+# type Operator @entity {
+#   id: ID!
+#   sortId: BigInt!
+#   accountId: String!
+#   domainId: String!
+#   signingKey: String!
+#   minimumNominatorStake: BigInt!
+#   nominationTax: Int!
+#   currentTotalStake: BigInt!
+#   currentStorageFeeDeposit: BigInt!
+#   currentEpochRewards: BigInt!
+#   currentTotalShares: BigInt!
+#   currentSharePrice: BigInt!
+#   rawStatus: String!
+#   totalDeposits: BigInt!
+#   totalEstimatedWithdrawals: BigInt!
+#   totalWithdrawals: BigInt!
+#   totalTaxCollected: BigInt!
+#   totalRewardsCollected: BigInt!
+#   totalTransfersIn: BigInt!
+#   transfersInCount: BigInt!
+#   totalTransfersOut: BigInt!
+#   transfersOutCount: BigInt!
+#   totalRejectedTransfersClaimed: BigInt!
+#   rejectedTransfersClaimedCount: BigInt!
+#   totalTransfersRejected: BigInt!
+#   transfersRejectedCount: BigInt!
+#   totalVolume: BigInt!
+#   totalConsensusStorageFee: BigInt!
+#   totalDomainExecutionFee: BigInt!
+#   totalBurnedBalance: BigInt!
+#   accumulatedEpochStake: BigInt!
+#   accumulatedEpochStorageFeeDeposit: BigInt!
+#   accumulatedEpochRewards: BigInt!
+#   accumulatedEpochShares: BigInt!
+#   activeEpochCount: BigInt!
+#   bundleCount: BigInt!
+#   status: String!
+#   pendingAction: String!
+#   lastBundleAt: BigInt!
+#   createdAt: BigInt!
+#   updatedAt: BigInt!
+# }
 
-type StatsPerNominator @entity {
-  id: ID!
-  domainId: String! @index
-  operatorId: String! @index
-  nominatorId: String! @index
-  blockNumber: BigInt! @index
-  totalStaked: BigInt!
-  totalDeposits: BigInt!
-  totalWithdrawals: BigInt!
-  totalShares: BigInt!
-  currentSharePrice: BigInt!
-  allTimeHighStaked: BigInt!
-  allTimeHighSharePrice: BigInt!
-  depositsCount: BigInt!
-  withdrawalsCount: BigInt!
-  timestamp: Date! @index
-}
+# type Nominator @entity {
+#   id: ID!
+#   accountId: String!
+#   domainId: String!
+#   operatorId: String!
+#   knownShares: BigInt!
+#   knownStorageFeeDeposit: BigInt!
+#   pendingAmount: BigInt!
+#   pendingStorageFeeDeposit: BigInt!
+#   pendingEffectiveDomainEpoch: BigInt!
+#   totalWithdrawalAmounts: BigInt!
+#   totalStorageFeeRefund: BigInt!
+#   unlockAtConfirmedDomainBlockNumber: [Int!]!
+#   pendingShares: BigInt!
+#   pendingStorageFeeRefund: BigInt!
+#   totalDeposits: BigInt!
+#   totalEstimatedWithdrawals: BigInt!
+#   totalWithdrawals: BigInt!
+#   totalDepositsCount: BigInt!
+#   totalWithdrawalsCount: BigInt!
+#   currentTotalStake: BigInt!
+#   currentStorageFeeDeposit: BigInt!
+#   currentTotalShares: BigInt!
+#   currentSharePrice: BigInt!
+#   accumulatedEpochStake: BigInt!
+#   accumulatedEpochStorageFeeDeposit: BigInt!
+#   accumulatedEpochShares: BigInt!
+#   activeEpochCount: BigInt!
+#   status: String! # NominatorStatus!
+#   pendingAction: String! # NominatorPendingAction!
+#   createdAt: BigInt!
+#   updatedAt: BigInt!
+# }
 
-type StatsPerAccount @entity {
-  id: ID!
-  accountId: String! @index
-  blockNumber: BigInt! @index
-  totalStaked: BigInt!
-  totalDeposits: BigInt!
-  totalWithdrawals: BigInt!
-  totalShares: BigInt!
-  currentSharePrice: BigInt!
-  allTimeHighStaked: BigInt!
-  allTimeHighSharePrice: BigInt!
-  operatorsCount: BigInt!
-  nominatorsCount: BigInt!
-  depositsCount: BigInt!
-  withdrawalsCount: BigInt!
-  timestamp: Date! @index
-}
+# Need double check if this is implemented
+# type Deposit @entity {
+#   id: ID!
+#   accountId: String!
+#   domainId: String!
+#   operatorId: String!
+#   nominatorId: String!
+#   amount: BigInt!
+#   storageFeeDeposit: BigInt!
+#   totalAmount: BigInt!
+#   totalWithdrawn: BigInt!
+#   status: String!
+#   timestamp: Date!
+#   extrinsicId: String!
+#   createdAt: BigInt!
+#   updatedAt: BigInt!
+# }
+
+# Not implemented
+# type Withdrawal @entity {
+#   id: ID!
+#   accountId: String!
+#   domainId: String!
+#   operatorId: String!
+#   nominatorId: String!
+#   shares: BigInt!
+#   estimatedAmount: BigInt!
+#   unlockedAmount: BigInt!
+#   unlockedStorageFee: BigInt!
+#   totalAmount: BigInt!
+#   status: String!
+#   timestamp: Date!
+#   withdrawExtrinsicHash: String!
+#   unlockExtrinsicHash: String!
+#   epochWithdrawalRequestedAt: BigInt!
+#   domainBlockNumberWithdrawalRequestedAt: BigInt!
+#   createdAt: BigInt!
+#   readyAt: BigInt!
+#   unlockedAt: BigInt!
+#   updatedAt: BigInt!
+# }
+
+# type Account @entity {
+#   id: ID!
+#   totalDeposits: BigInt!
+#   totalEstimatedWithdrawals: BigInt!
+#   totalWithdrawals: BigInt!
+#   totalTaxCollected: BigInt!
+#   currentTotalStake: BigInt!
+#   currentStorageFeeDeposit: BigInt!
+#   currentTotalShares: BigInt!
+#   currentSharePrice: BigInt!
+#   accumulatedEpochStake: BigInt!
+#   accumulatedEpochStorageFeeDeposit: BigInt!
+#   accumulatedEpochShares: BigInt!
+#   createdAt: BigInt! @index
+#   updatedAt: BigInt! @index
+# }
+
+# type DomainBlock @entity {
+#   id: ID!
+#   domainId: String!
+#   domainEpochId: String!
+#   blockNumber: BigInt!
+#   blockHash: String!
+#   extrinsicRoot: String!
+#   epoch: BigInt!
+#   consensusBlockNumber: BigInt!
+#   consensusBlockHash: String!
+#   timestamp: Date!
+#   createdAt: BigInt!
+#   updatedAt: BigInt!
+# }
+
+# type DomainEpoch @entity {
+#   id: ID!
+#   epoch: BigInt!
+#   domainId: String!
+#   blockNumberStart: BigInt!
+#   blockNumberEnd: BigInt!
+#   blockCount: BigInt!
+#   timestampStart: Date!
+#   timestampEnd: Date!
+#   epochDuration: BigInt!
+#   consensusBlockNumberStart: BigInt!
+#   consensusBlockNumberEnd: BigInt!
+#   consensusBlockHashStart: String!
+#   consensusBlockHashEnd: String!
+#   createdAt: BigInt!
+#   updatedAt: BigInt!
+# }
