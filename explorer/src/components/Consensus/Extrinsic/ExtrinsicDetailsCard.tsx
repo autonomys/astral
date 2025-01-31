@@ -18,8 +18,6 @@ type Props = {
 export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
   const { network, section } = useIndexers()
 
-  const [module, call] = extrinsic.name.split('.')
-
   return (
     <div className='w-full'>
       <div className='flex'>
@@ -56,8 +54,8 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
                     {isDesktop ? extrinsic.hash : shortString(extrinsic.hash)}
                   </CopyButton>
                 </StyledListItem>
-                <StyledListItem title='Module'>{module}</StyledListItem>
-                <StyledListItem title='Call'>{call}</StyledListItem>
+                <StyledListItem title='Section'>{extrinsic.section}</StyledListItem>
+                <StyledListItem title='Module'>{extrinsic.module}</StyledListItem>
                 <StyledListItem title='Sender'>
                   <Link href={INTERNAL_ROUTES.accounts.id.page(network, section, extrinsic.signer)}>
                     {isDesktop ? extrinsic.signer : shortString(extrinsic.signer)}

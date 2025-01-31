@@ -42,8 +42,8 @@ export const QUERY_BLOCK_BY_ID = gql`
       extrinsics_root
       spec_id
       parent_hash
-      extrinsics_count
-      events_count
+      extrinsicsCount: extrinsics_count
+      eventsCount: events_count
       logs(limit: 10, order_by: { block_height: desc }) {
         block_height
         block {
@@ -64,11 +64,6 @@ export const QUERY_BLOCK_EXTRINSICS = gql`
     $offset: Int
     $orderBy: [consensus_extrinsics_order_by!]
   ) {
-    consensus_extrinsics_aggregate(where: { block_height: { _eq: $blockId } }) {
-      aggregate {
-        count
-      }
-    }
     consensus_extrinsics(
       order_by: $orderBy
       limit: $limit
@@ -77,11 +72,9 @@ export const QUERY_BLOCK_EXTRINSICS = gql`
     ) {
       id
       hash
-      name
+      section
+      module
       success
-      block_height
-      timestamp
-      index_in_block
     }
   }
 `
@@ -93,11 +86,6 @@ export const QUERY_BLOCK_EVENTS = gql`
     $offset: Int
     $orderBy: [consensus_events_order_by!]
   ) {
-    consensus_events_aggregate(where: { block_height: { _eq: $blockId } }) {
-      aggregate {
-        count
-      }
-    }
     consensus_events(
       order_by: $orderBy
       limit: $limit
@@ -105,20 +93,10 @@ export const QUERY_BLOCK_EVENTS = gql`
       where: { block_height: { _eq: $blockId } }
     ) {
       id
-      name
+      section
+      module
       phase
-      index_in_block
-      block_height
       extrinsic_id
-    }
-  }
-`
-
-export const QUERY_BLOCK_BY_HASH = gql`
-  query BlocksByHash($hash: String!) {
-    consensus_blocks(limit: 10, where: { hash: { _eq: $hash } }) {
-      id
-      height
     }
   }
 `

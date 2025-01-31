@@ -31,7 +31,6 @@ export const QUERY_LOG_BY_ID = gql`
       kind
       value
       block_height
-      timestamp
     }
   }
 `

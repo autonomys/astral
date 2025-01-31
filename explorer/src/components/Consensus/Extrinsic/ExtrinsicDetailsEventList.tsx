@@ -28,7 +28,11 @@ import { QUERY_EXTRINSIC_EVENTS } from './query'
 
 type Row = EventsByExtrinsicIdQuery['consensus_events'][number]
 
-export const ExtrinsicDetailsEventList: FC = () => {
+type Props = {
+  eventsCount: number
+}
+
+export const ExtrinsicDetailsEventList: FC<Props> = ({ eventsCount }) => {
   const { ref, inView } = useInView()
   const { network, section } = useIndexers()
   const { extrinsicId } = useParams<ExtrinsicIdParam>()
@@ -105,11 +109,19 @@ export const ExtrinsicDetailsEventList: FC = () => {
         ),
       },
       {
-        accessorKey: 'name',
-        header: 'Action',
+        accessorKey: 'section',
+        header: 'Section',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-extrinsic-event-action`}>{row.original.name.split('.')[1]}</div>
+          <div key={`${row.index}-extrinsic-event-section`}>{row.original.section}</div>
+        ),
+      },
+      {
+        accessorKey: 'module',
+        header: 'Module',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-extrinsic-event-module`}>{row.original.module}</div>
         ),
       },
       {
@@ -129,10 +141,9 @@ export const ExtrinsicDetailsEventList: FC = () => {
     [apolloClient, variables],
   )
 
-  const totalCount = useMemo(() => (events ? events.length : 0), [events])
   const pageCount = useMemo(
-    () => countTablePages(totalCount, pagination.pageSize),
-    [totalCount, pagination],
+    () => countTablePages(eventsCount, pagination.pageSize),
+    [eventsCount, pagination],
   )
 
   const noData = useMemo(() => {

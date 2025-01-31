@@ -81,6 +81,56 @@ export type String_Comparison_Exp = {
   _similar?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** columns and relationships of "consensus._metadata" */
+export type Consensus__Metadata = {
+  __typename?: 'consensus__metadata';
+  key: Scalars['String']['output'];
+  value?: Maybe<Scalars['jsonb']['output']>;
+};
+
+
+/** columns and relationships of "consensus._metadata" */
+export type Consensus__MetadataValueArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "consensus._metadata". All fields are combined with a logical 'AND'. */
+export type Consensus__Metadata_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus__Metadata_Bool_Exp>>;
+  _not?: InputMaybe<Consensus__Metadata_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus__Metadata_Bool_Exp>>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "consensus._metadata". */
+export type Consensus__Metadata_Order_By = {
+  key?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "consensus._metadata" */
+export enum Consensus__Metadata_Select_Column {
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Value = 'value'
+}
+
+/** Streaming cursor of the table "consensus__metadata" */
+export type Consensus__Metadata_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus__Metadata_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Consensus__Metadata_Stream_Cursor_Value_Input = {
+  key?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
 /** columns and relationships of "consensus.account_histories" */
 export type Consensus_Account_Histories = {
   __typename?: 'consensus_account_histories';
@@ -3880,6 +3930,56 @@ export type Dictionary_Spec_Versions_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** columns and relationships of "files._metadata" */
+export type Files__Metadata = {
+  __typename?: 'files__metadata';
+  key: Scalars['String']['output'];
+  value?: Maybe<Scalars['jsonb']['output']>;
+};
+
+
+/** columns and relationships of "files._metadata" */
+export type Files__MetadataValueArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "files._metadata". All fields are combined with a logical 'AND'. */
+export type Files__Metadata_Bool_Exp = {
+  _and?: InputMaybe<Array<Files__Metadata_Bool_Exp>>;
+  _not?: InputMaybe<Files__Metadata_Bool_Exp>;
+  _or?: InputMaybe<Array<Files__Metadata_Bool_Exp>>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "files._metadata". */
+export type Files__Metadata_Order_By = {
+  key?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "files._metadata" */
+export enum Files__Metadata_Select_Column {
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Value = 'value'
+}
+
+/** Streaming cursor of the table "files__metadata" */
+export type Files__Metadata_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files__Metadata_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files__Metadata_Stream_Cursor_Value_Input = {
+  key?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
 /** columns and relationships of "files.chunks" */
 export type Files_Chunks = {
   __typename?: 'files_chunks';
@@ -5264,6 +5364,56 @@ export type Jsonb_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['jsonb']['input']>;
   _neq?: InputMaybe<Scalars['jsonb']['input']>;
   _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+};
+
+/** columns and relationships of "leaderboard._metadata" */
+export type Leaderboard__Metadata = {
+  __typename?: 'leaderboard__metadata';
+  key: Scalars['String']['output'];
+  value?: Maybe<Scalars['jsonb']['output']>;
+};
+
+
+/** columns and relationships of "leaderboard._metadata" */
+export type Leaderboard__MetadataValueArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard._metadata". All fields are combined with a logical 'AND'. */
+export type Leaderboard__Metadata_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard__Metadata_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard__Metadata_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard__Metadata_Bool_Exp>>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "leaderboard._metadata". */
+export type Leaderboard__Metadata_Order_By = {
+  key?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard._metadata" */
+export enum Leaderboard__Metadata_Select_Column {
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Value = 'value'
+}
+
+/** Streaming cursor of the table "leaderboard__metadata" */
+export type Leaderboard__Metadata_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard__Metadata_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard__Metadata_Stream_Cursor_Value_Input = {
+  key?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** columns and relationships of "leaderboard.account_extrinsic_failed_total_counts" */
@@ -9905,6 +10055,10 @@ export enum Order_By {
 
 export type Query_Root = {
   __typename?: 'query_root';
+  /** fetch data from the table: "consensus._metadata" */
+  consensus__metadata: Array<Consensus__Metadata>;
+  /** fetch data from the table: "consensus._metadata" using primary key columns */
+  consensus__metadata_by_pk?: Maybe<Consensus__Metadata>;
   /** fetch data from the table: "consensus.account_histories" */
   consensus_account_histories: Array<Consensus_Account_Histories>;
   /** fetch aggregated fields from the table: "consensus.account_histories" */
@@ -9997,6 +10151,10 @@ export type Query_Root = {
   dictionary_spec_versions: Array<Dictionary_Spec_Versions>;
   /** fetch data from the table: "dictionary.spec_versions" using primary key columns */
   dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "files._metadata" */
+  files__metadata: Array<Files__Metadata>;
+  /** fetch data from the table: "files._metadata" using primary key columns */
+  files__metadata_by_pk?: Maybe<Files__Metadata>;
   /** fetch data from the table: "files.chunks" */
   files_chunks: Array<Files_Chunks>;
   /** fetch data from the table: "files.chunks" using primary key columns */
@@ -10041,6 +10199,10 @@ export type Query_Root = {
   files_metadata_cids_aggregate: Files_Metadata_Cids_Aggregate;
   /** fetch data from the table: "files.metadata_cids" using primary key columns */
   files_metadata_cids_by_pk?: Maybe<Files_Metadata_Cids>;
+  /** fetch data from the table: "leaderboard._metadata" */
+  leaderboard__metadata: Array<Leaderboard__Metadata>;
+  /** fetch data from the table: "leaderboard._metadata" using primary key columns */
+  leaderboard__metadata_by_pk?: Maybe<Leaderboard__Metadata>;
   /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
   leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
   /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
@@ -10185,6 +10347,10 @@ export type Query_Root = {
   leaderboard_operator_withdrawals_total_counts_aggregate: Leaderboard_Operator_Withdrawals_Total_Counts_Aggregate;
   /** fetch data from the table: "leaderboard.operator_withdrawals_total_counts" using primary key columns */
   leaderboard_operator_withdrawals_total_counts_by_pk?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts>;
+  /** fetch data from the table: "staking._metadata" */
+  staking__metadata: Array<Staking__Metadata>;
+  /** fetch data from the table: "staking._metadata" using primary key columns */
+  staking__metadata_by_pk?: Maybe<Staking__Metadata>;
   /** fetch data from the table: "staking.accounts" */
   staking_accounts: Array<Staking_Accounts>;
   /** fetch aggregated fields from the table: "staking.accounts" */
@@ -10287,6 +10453,20 @@ export type Query_Root = {
   stats_weekly: Array<Stats_Weekly>;
   /** fetch data from the table: "stats.weekly" using primary key columns */
   stats_weekly_by_pk?: Maybe<Stats_Weekly>;
+};
+
+
+export type Query_RootConsensus__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Consensus__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus__Metadata_Order_By>>;
+  where?: InputMaybe<Consensus__Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
 };
 
 
@@ -10636,6 +10816,20 @@ export type Query_RootDictionary_Spec_Versions_By_PkArgs = {
 };
 
 
+export type Query_RootFiles__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Files__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files__Metadata_Order_By>>;
+  where?: InputMaybe<Files__Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootFiles__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
 export type Query_RootFiles_ChunksArgs = {
   distinct_on?: InputMaybe<Array<Files_Chunks_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -10799,6 +10993,20 @@ export type Query_RootFiles_Metadata_Cids_AggregateArgs = {
 
 export type Query_RootFiles_Metadata_Cids_By_PkArgs = {
   uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootLeaderboard__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard__Metadata_Order_By>>;
+  where?: InputMaybe<Leaderboard__Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
 };
 
 
@@ -11354,6 +11562,20 @@ export type Query_RootLeaderboard_Operator_Withdrawals_Total_Counts_By_PkArgs = 
 };
 
 
+export type Query_RootStaking__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Staking__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking__Metadata_Order_By>>;
+  where?: InputMaybe<Staking__Metadata_Bool_Exp>;
+};
+
+
+export type Query_RootStaking__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
 export type Query_RootStaking_AccountsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Accounts_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -11722,6 +11944,56 @@ export type Query_RootStats_WeeklyArgs = {
 
 export type Query_RootStats_Weekly_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+/** columns and relationships of "staking._metadata" */
+export type Staking__Metadata = {
+  __typename?: 'staking__metadata';
+  key: Scalars['String']['output'];
+  value?: Maybe<Scalars['jsonb']['output']>;
+};
+
+
+/** columns and relationships of "staking._metadata" */
+export type Staking__MetadataValueArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "staking._metadata". All fields are combined with a logical 'AND'. */
+export type Staking__Metadata_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking__Metadata_Bool_Exp>>;
+  _not?: InputMaybe<Staking__Metadata_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking__Metadata_Bool_Exp>>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "staking._metadata". */
+export type Staking__Metadata_Order_By = {
+  key?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking._metadata" */
+export enum Staking__Metadata_Select_Column {
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Value = 'value'
+}
+
+/** Streaming cursor of the table "staking__metadata" */
+export type Staking__Metadata_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking__Metadata_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking__Metadata_Stream_Cursor_Value_Input = {
+  key?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** columns and relationships of "staking.accounts" */
@@ -17719,6 +17991,12 @@ export type Stats_Weekly_Stream_Cursor_Value_Input = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "consensus._metadata" */
+  consensus__metadata: Array<Consensus__Metadata>;
+  /** fetch data from the table: "consensus._metadata" using primary key columns */
+  consensus__metadata_by_pk?: Maybe<Consensus__Metadata>;
+  /** fetch data from the table in a streaming manner: "consensus._metadata" */
+  consensus__metadata_stream: Array<Consensus__Metadata>;
   /** fetch data from the table: "consensus.account_histories" */
   consensus_account_histories: Array<Consensus_Account_Histories>;
   /** fetch aggregated fields from the table: "consensus.account_histories" */
@@ -17845,6 +18123,12 @@ export type Subscription_Root = {
   dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
   /** fetch data from the table in a streaming manner: "dictionary.spec_versions" */
   dictionary_spec_versions_stream: Array<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "files._metadata" */
+  files__metadata: Array<Files__Metadata>;
+  /** fetch data from the table: "files._metadata" using primary key columns */
+  files__metadata_by_pk?: Maybe<Files__Metadata>;
+  /** fetch data from the table in a streaming manner: "files._metadata" */
+  files__metadata_stream: Array<Files__Metadata>;
   /** fetch data from the table: "files.chunks" */
   files_chunks: Array<Files_Chunks>;
   /** fetch data from the table: "files.chunks" using primary key columns */
@@ -17905,6 +18189,12 @@ export type Subscription_Root = {
   files_metadata_cids_stream: Array<Files_Metadata_Cids>;
   /** fetch data from the table in a streaming manner: "files.metadata" */
   files_metadata_stream: Array<Files_Metadata>;
+  /** fetch data from the table: "leaderboard._metadata" */
+  leaderboard__metadata: Array<Leaderboard__Metadata>;
+  /** fetch data from the table: "leaderboard._metadata" using primary key columns */
+  leaderboard__metadata_by_pk?: Maybe<Leaderboard__Metadata>;
+  /** fetch data from the table in a streaming manner: "leaderboard._metadata" */
+  leaderboard__metadata_stream: Array<Leaderboard__Metadata>;
   /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
   leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
   /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
@@ -18097,6 +18387,12 @@ export type Subscription_Root = {
   leaderboard_operator_withdrawals_total_counts_by_pk?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts>;
   /** fetch data from the table in a streaming manner: "leaderboard.operator_withdrawals_total_counts" */
   leaderboard_operator_withdrawals_total_counts_stream: Array<Leaderboard_Operator_Withdrawals_Total_Counts>;
+  /** fetch data from the table: "staking._metadata" */
+  staking__metadata: Array<Staking__Metadata>;
+  /** fetch data from the table: "staking._metadata" using primary key columns */
+  staking__metadata_by_pk?: Maybe<Staking__Metadata>;
+  /** fetch data from the table in a streaming manner: "staking._metadata" */
+  staking__metadata_stream: Array<Staking__Metadata>;
   /** fetch data from the table: "staking.accounts" */
   staking_accounts: Array<Staking_Accounts>;
   /** fetch aggregated fields from the table: "staking.accounts" */
@@ -18245,6 +18541,27 @@ export type Subscription_Root = {
   stats_weekly_by_pk?: Maybe<Stats_Weekly>;
   /** fetch data from the table in a streaming manner: "stats.weekly" */
   stats_weekly_stream: Array<Stats_Weekly>;
+};
+
+
+export type Subscription_RootConsensus__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Consensus__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus__Metadata_Order_By>>;
+  where?: InputMaybe<Consensus__Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus__Metadata_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus__Metadata_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus__Metadata_Bool_Exp>;
 };
 
 
@@ -18713,6 +19030,27 @@ export type Subscription_RootDictionary_Spec_Versions_StreamArgs = {
 };
 
 
+export type Subscription_RootFiles__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Files__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Files__Metadata_Order_By>>;
+  where?: InputMaybe<Files__Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootFiles__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootFiles__Metadata_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Files__Metadata_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files__Metadata_Bool_Exp>;
+};
+
+
 export type Subscription_RootFiles_ChunksArgs = {
   distinct_on?: InputMaybe<Array<Files_Chunks_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -18932,6 +19270,27 @@ export type Subscription_RootFiles_Metadata_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Files_Metadata_Stream_Cursor_Input>>;
   where?: InputMaybe<Files_Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard__Metadata_Order_By>>;
+  where?: InputMaybe<Leaderboard__Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard__Metadata_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard__Metadata_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard__Metadata_Bool_Exp>;
 };
 
 
@@ -19655,6 +20014,27 @@ export type Subscription_RootLeaderboard_Operator_Withdrawals_Total_Counts_Strea
 };
 
 
+export type Subscription_RootStaking__MetadataArgs = {
+  distinct_on?: InputMaybe<Array<Staking__Metadata_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking__Metadata_Order_By>>;
+  where?: InputMaybe<Staking__Metadata_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking__Metadata_By_PkArgs = {
+  key: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStaking__Metadata_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking__Metadata_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking__Metadata_Bool_Exp>;
+};
+
+
 export type Subscription_RootStaking_AccountsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Accounts_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -20300,7 +20680,7 @@ export type BlockByIdQueryVariables = Exact<{
 }>;
 
 
-export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, extrinsics_count: number, events_count: number, author_id: string, logs: Array<{ __typename?: 'consensus_logs', block_height: any, kind: string, id: string, block?: { __typename?: 'consensus_blocks', timestamp: any } | null }> }> };
+export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, author_id: string, extrinsicsCount: number, eventsCount: number, logs: Array<{ __typename?: 'consensus_logs', block_height: any, kind: string, id: string, block?: { __typename?: 'consensus_blocks', timestamp: any } | null }> }> };
 
 export type ExtrinsicsByBlockIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];
@@ -20310,7 +20690,7 @@ export type ExtrinsicsByBlockIdQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsByBlockIdQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, name: string, success: boolean, block_height: any, timestamp: any, index_in_block: number }> };
+export type ExtrinsicsByBlockIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean }> };
 
 export type EventsByBlockIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];
@@ -20320,14 +20700,7 @@ export type EventsByBlockIdQueryVariables = Exact<{
 }>;
 
 
-export type EventsByBlockIdQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, name: string, phase: string, index_in_block: any, block_height: any, extrinsic_id: string }> };
-
-export type BlocksByHashQueryVariables = Exact<{
-  hash: Scalars['String']['input'];
-}>;
-
-
-export type BlocksByHashQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any }> };
+export type EventsByBlockIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, phase: string, extrinsic_id: string }> };
 
 export type EventsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -20337,14 +20710,14 @@ export type EventsQueryVariables = Exact<{
 }>;
 
 
-export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, name: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', method: string }> };
+export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', method: string }> };
 
 export type EventByIdQueryVariables = Exact<{
   eventId: Scalars['String']['input'];
 }>;
 
 
-export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', args: any, id: string, index_in_block: any, name: string, phase: string, timestamp: any, extrinsic?: { __typename?: 'consensus_extrinsics', args: any, success: boolean, tip: any, fee: any, id: string, signer: string } | null, block?: { __typename?: 'consensus_blocks', height: any, id: string, timestamp: any, spec_id: string, hash: string } | null }> };
+export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, args: any, extrinsicId: string, blockHeight: any }> };
 
 export type ExtrinsicsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -20354,14 +20727,14 @@ export type ExtrinsicsQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, name: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }>, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', method: string }> };
+export type ExtrinsicsQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }>, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', method: string }> };
 
 export type ExtrinsicsByIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
 }>;
 
 
-export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, index_in_block: number, hash: string, block_height: any, timestamp: any, signature: string, success: boolean, tip: any, args: any, signer: string, name: string, events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null } }> };
+export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, section: string, module: string, timestamp: any, success: boolean, signature: string, signer: string, args: any, events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null } }> };
 
 export type EventsByExtrinsicIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
@@ -20371,14 +20744,7 @@ export type EventsByExtrinsicIdQueryVariables = Exact<{
 }>;
 
 
-export type EventsByExtrinsicIdQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, name: string, phase: string, index_in_block: any, block_height: any, extrinsic_id: string }> };
-
-export type ExtrinsicsByHashQueryVariables = Exact<{
-  hash: Scalars['String']['input'];
-}>;
-
-
-export type ExtrinsicsByHashQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, index_in_block: number, success: boolean, name: string, nonce: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }> };
+export type EventsByExtrinsicIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, phase: string, extrinsic_id: string }> };
 
 export type HomeQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -20403,7 +20769,7 @@ export type LogByIdQueryVariables = Exact<{
 }>;
 
 
-export type LogByIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: any | null, block_height: any, timestamp: any }> };
+export type LogByIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: any | null, block_height: any }> };
 
 export type DomainsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -20816,7 +21182,7 @@ export type StakingSummaryQuery = { __typename?: 'query_root', staking_operators
 export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LastBlockQuery = { __typename?: 'query_root', lastBlock: Array<{ __typename?: 'consensus_blocks', height: any }> };
+export type LastBlockQuery = { __typename?: 'query_root', lastBlock?: { __typename?: 'consensus__metadata', value?: any | null } | null };
 
 
 export const AccountsDocument = gql`
@@ -21369,8 +21735,8 @@ export const BlockByIdDocument = gql`
     extrinsics_root
     spec_id
     parent_hash
-    extrinsics_count
-    events_count
+    extrinsicsCount: extrinsics_count
+    eventsCount: events_count
     logs(limit: 10, order_by: {block_height: desc}) {
       block_height
       block {
@@ -21419,11 +21785,6 @@ export type BlockByIdSuspenseQueryHookResult = ReturnType<typeof useBlockByIdSus
 export type BlockByIdQueryResult = Apollo.QueryResult<BlockByIdQuery, BlockByIdQueryVariables>;
 export const ExtrinsicsByBlockIdDocument = gql`
     query ExtrinsicsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]) {
-  consensus_extrinsics_aggregate(where: {block_height: {_eq: $blockId}}) {
-    aggregate {
-      count
-    }
-  }
   consensus_extrinsics(
     order_by: $orderBy
     limit: $limit
@@ -21432,11 +21793,9 @@ export const ExtrinsicsByBlockIdDocument = gql`
   ) {
     id
     hash
-    name
+    section
+    module
     success
-    block_height
-    timestamp
-    index_in_block
   }
 }
     `;
@@ -21478,11 +21837,6 @@ export type ExtrinsicsByBlockIdSuspenseQueryHookResult = ReturnType<typeof useEx
 export type ExtrinsicsByBlockIdQueryResult = Apollo.QueryResult<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>;
 export const EventsByBlockIdDocument = gql`
     query EventsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
-  consensus_events_aggregate(where: {block_height: {_eq: $blockId}}) {
-    aggregate {
-      count
-    }
-  }
   consensus_events(
     order_by: $orderBy
     limit: $limit
@@ -21490,10 +21844,9 @@ export const EventsByBlockIdDocument = gql`
     where: {block_height: {_eq: $blockId}}
   ) {
     id
-    name
+    section
+    module
     phase
-    index_in_block
-    block_height
     extrinsic_id
   }
 }
@@ -21534,47 +21887,6 @@ export type EventsByBlockIdQueryHookResult = ReturnType<typeof useEventsByBlockI
 export type EventsByBlockIdLazyQueryHookResult = ReturnType<typeof useEventsByBlockIdLazyQuery>;
 export type EventsByBlockIdSuspenseQueryHookResult = ReturnType<typeof useEventsByBlockIdSuspenseQuery>;
 export type EventsByBlockIdQueryResult = Apollo.QueryResult<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>;
-export const BlocksByHashDocument = gql`
-    query BlocksByHash($hash: String!) {
-  consensus_blocks(limit: 10, where: {hash: {_eq: $hash}}) {
-    id
-    height
-  }
-}
-    `;
-
-/**
- * __useBlocksByHashQuery__
- *
- * To run a query within a React component, call `useBlocksByHashQuery` and pass it any options that fit your needs.
- * When your component renders, `useBlocksByHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useBlocksByHashQuery({
- *   variables: {
- *      hash: // value for 'hash'
- *   },
- * });
- */
-export function useBlocksByHashQuery(baseOptions: Apollo.QueryHookOptions<BlocksByHashQuery, BlocksByHashQueryVariables> & ({ variables: BlocksByHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BlocksByHashQuery, BlocksByHashQueryVariables>(BlocksByHashDocument, options);
-      }
-export function useBlocksByHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlocksByHashQuery, BlocksByHashQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BlocksByHashQuery, BlocksByHashQueryVariables>(BlocksByHashDocument, options);
-        }
-export function useBlocksByHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BlocksByHashQuery, BlocksByHashQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<BlocksByHashQuery, BlocksByHashQueryVariables>(BlocksByHashDocument, options);
-        }
-export type BlocksByHashQueryHookResult = ReturnType<typeof useBlocksByHashQuery>;
-export type BlocksByHashLazyQueryHookResult = ReturnType<typeof useBlocksByHashLazyQuery>;
-export type BlocksByHashSuspenseQueryHookResult = ReturnType<typeof useBlocksByHashSuspenseQuery>;
-export type BlocksByHashQueryResult = Apollo.QueryResult<BlocksByHashQuery, BlocksByHashQueryVariables>;
 export const EventsDocument = gql`
     query Events($limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]!, $where: consensus_events_bool_exp) {
   consensus_events_aggregate(where: $where) {
@@ -21596,7 +21908,6 @@ export const EventsDocument = gql`
     extrinsicHash: extrinsic_hash
     section
     module
-    name
     indexInBlock: index_in_block
     timestamp
     phase
@@ -21645,27 +21956,13 @@ export type EventsQueryResult = Apollo.QueryResult<EventsQuery, EventsQueryVaria
 export const EventByIdDocument = gql`
     query EventById($eventId: String!) {
   consensus_events(where: {id: {_eq: $eventId}}) {
-    args
     id
-    index_in_block
-    name
-    phase
+    extrinsicId: extrinsic_id
+    blockHeight: block_height
+    section
+    module
     timestamp
-    extrinsic {
-      args
-      success
-      tip
-      fee
-      id
-      signer
-    }
-    block {
-      height
-      id
-      timestamp
-      spec_id
-      hash
-    }
+    args
   }
 }
     `;
@@ -21722,7 +22019,6 @@ export const ExtrinsicsDocument = gql`
     blockHash: block_hash
     section
     module
-    name
     indexInBlock: index_in_block
     success
     timestamp
@@ -21779,21 +22075,20 @@ export const ExtrinsicsByIdDocument = gql`
     where: {_or: [{id: {_eq: $extrinsicId}}, {hash: {_eq: $extrinsicId}}]}
   ) {
     id
-    index_in_block
     hash
     block_height
+    section
+    module
     timestamp
-    signature
     success
-    tip
-    args
+    signature
     signer
+    args
     events_aggregate {
       aggregate {
         count
       }
     }
-    name
   }
 }
     `;
@@ -21832,11 +22127,6 @@ export type ExtrinsicsByIdSuspenseQueryHookResult = ReturnType<typeof useExtrins
 export type ExtrinsicsByIdQueryResult = Apollo.QueryResult<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>;
 export const EventsByExtrinsicIdDocument = gql`
     query EventsByExtrinsicId($extrinsicId: String!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
-  consensus_events_aggregate(where: {extrinsic_id: {_eq: $extrinsicId}}) {
-    aggregate {
-      count
-    }
-  }
   consensus_events(
     order_by: $orderBy
     limit: $limit
@@ -21844,10 +22134,9 @@ export const EventsByExtrinsicIdDocument = gql`
     where: {extrinsic_id: {_eq: $extrinsicId}}
   ) {
     id
-    name
+    section
+    module
     phase
-    index_in_block
-    block_height
     extrinsic_id
   }
 }
@@ -21888,56 +22177,6 @@ export type EventsByExtrinsicIdQueryHookResult = ReturnType<typeof useEventsByEx
 export type EventsByExtrinsicIdLazyQueryHookResult = ReturnType<typeof useEventsByExtrinsicIdLazyQuery>;
 export type EventsByExtrinsicIdSuspenseQueryHookResult = ReturnType<typeof useEventsByExtrinsicIdSuspenseQuery>;
 export type EventsByExtrinsicIdQueryResult = Apollo.QueryResult<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables>;
-export const ExtrinsicsByHashDocument = gql`
-    query ExtrinsicsByHash($hash: String!) {
-  consensus_extrinsics(limit: 10, where: {hash: {_eq: $hash}}) {
-    id
-    hash
-    index_in_block
-    success
-    block {
-      id
-      timestamp
-      height
-    }
-    name
-    nonce
-  }
-}
-    `;
-
-/**
- * __useExtrinsicsByHashQuery__
- *
- * To run a query within a React component, call `useExtrinsicsByHashQuery` and pass it any options that fit your needs.
- * When your component renders, `useExtrinsicsByHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useExtrinsicsByHashQuery({
- *   variables: {
- *      hash: // value for 'hash'
- *   },
- * });
- */
-export function useExtrinsicsByHashQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables> & ({ variables: ExtrinsicsByHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
-      }
-export function useExtrinsicsByHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
-        }
-export function useExtrinsicsByHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
-        }
-export type ExtrinsicsByHashQueryHookResult = ReturnType<typeof useExtrinsicsByHashQuery>;
-export type ExtrinsicsByHashLazyQueryHookResult = ReturnType<typeof useExtrinsicsByHashLazyQuery>;
-export type ExtrinsicsByHashSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByHashSuspenseQuery>;
-export type ExtrinsicsByHashQueryResult = Apollo.QueryResult<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>;
 export const HomeDocument = gql`
     query Home($limit: Int!, $offset: Int!) {
   consensus_blocks(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {
@@ -22073,7 +22312,6 @@ export const LogByIdDocument = gql`
     kind
     value
     block_height
-    timestamp
   }
 }
     `;
@@ -24877,8 +25115,8 @@ export type StakingSummarySuspenseQueryHookResult = ReturnType<typeof useStaking
 export type StakingSummaryQueryResult = Apollo.QueryResult<StakingSummaryQuery, StakingSummaryQueryVariables>;
 export const LastBlockDocument = gql`
     query LastBlock {
-  lastBlock: consensus_blocks(limit: 1, order_by: {sort_id: desc}) {
-    height
+  lastBlock: consensus__metadata_by_pk(key: "lastProcessedHeight") {
+    value
   }
 }
     `;

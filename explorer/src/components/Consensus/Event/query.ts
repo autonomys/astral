@@ -21,7 +21,6 @@ export const QUERY_EVENTS = gql`
       extrinsicHash: extrinsic_hash
       section
       module
-      name
       indexInBlock: index_in_block
       timestamp
       phase
@@ -35,34 +34,13 @@ export const QUERY_EVENTS = gql`
 export const QUERY_EVENT_BY_ID = gql`
   query EventById($eventId: String!) {
     consensus_events(where: { id: { _eq: $eventId } }) {
-      args
       id
-      index_in_block
-      name
-      phase
+      extrinsicId: extrinsic_id
+      blockHeight: block_height
+      section
+      module
       timestamp
-      #  call {
-      #    args
-      #    name
-      #    success
-      #    timestamp
-      #    id
-      #  }
-      extrinsic {
-        args
-        success
-        tip
-        fee
-        id
-        signer
-      }
-      block {
-        height
-        id
-        timestamp
-        spec_id
-        hash
-      }
+      args
     }
   }
 `
