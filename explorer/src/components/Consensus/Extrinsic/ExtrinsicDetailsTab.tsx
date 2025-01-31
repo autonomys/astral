@@ -12,7 +12,7 @@ export const ExtrinsicDetailsTab: FC<Props> = ({ eventsCount, isDesktop = false 
   return (
     <PageTabs isDesktop={isDesktop}>
       <Tab title={`Events (${eventsCount})`}>
-        <ExtrinsicDetailsEventList />
+        <ExtrinsicDetailsEventList eventsCount={eventsCount} />
       </Tab>
     </PageTabs>
   )
