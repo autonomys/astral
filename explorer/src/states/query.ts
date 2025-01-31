@@ -75,7 +75,6 @@ interface ExplorerQueryState {
     domain: QueryState<GqlT.DomainByIdQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
-    claim: QueryState<GqlT.ExtrinsicsByHashQuery>
     stakingSummary: QueryState<GqlT.StakingSummaryQuery>
     lastExtrinsics: QueryState<GqlT.ExtrinsicsSummaryQuery>
     leaderboard: QueryState<GqlT.AccountsTopLeaderboardQuery>
@@ -148,7 +147,6 @@ const initialState: ExplorerQueryState = {
     domain: initialized,
   },
   walletSidekick: {
-    claim: initialized,
     stakingSummary: initialized,
     lastExtrinsics: initialized,
     leaderboard: initialized,

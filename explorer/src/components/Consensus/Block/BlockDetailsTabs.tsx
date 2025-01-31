@@ -11,9 +11,9 @@ type Logs = NonNullable<BlockByIdQuery['consensus_blocks'][number]>['logs']
 
 type Props = {
   logs: Logs
-  isDesktop?: boolean
-  extrinsicsCount?: number
-  eventsCount?: number
+  extrinsicsCount: number
+  eventsCount: number
+  isDesktop: boolean
 }
 
 export const BlockDetailsTabs: FC<Props> = ({
@@ -25,10 +25,10 @@ export const BlockDetailsTabs: FC<Props> = ({
   return (
     <PageTabs isDesktop={isDesktop}>
       <Tab title={`Extrinsics (${extrinsicsCount})`}>
-        <BlockDetailsExtrinsicList isDesktop={isDesktop} />
+        <BlockDetailsExtrinsicList extrinsicsCount={extrinsicsCount} isDesktop={isDesktop} />
       </Tab>
       <Tab title={`Events (${eventsCount})`}>
-        <BlockDetailsEventList />
+        <BlockDetailsEventList eventsCount={eventsCount} />
       </Tab>
       <Tab title={`Logs (${logs.length})`}>
         {isDesktop ? (
