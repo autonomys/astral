@@ -20600,7 +20600,7 @@ export type AccountsQueryVariables = Exact<{
 }>;
 
 
-export type AccountsQuery = { __typename?: 'query_root', consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_accounts: Array<{ __typename?: 'consensus_accounts', id: string, nonce: any, free: any, reserved: any, total?: any | null, createdAt: any, updatedAt: any, extrinsicsCount: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } }> };
+export type AccountsQuery = { __typename?: 'query_root', consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_accounts: Array<{ __typename?: 'consensus_accounts', id: string, nonce: any, free: any, reserved: any, total?: any | null, createdAt: any, updatedAt: any }> };
 
 export type AccountByIdQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
@@ -20656,13 +20656,6 @@ export type BalanceHistoryByAccountIdQueryVariables = Exact<{
 
 
 export type BalanceHistoryByAccountIdQuery = { __typename?: 'query_root', consensus_account_histories_aggregate: { __typename?: 'consensus_account_histories_aggregate', aggregate?: { __typename?: 'consensus_account_histories_aggregate_fields', count: number } | null }, consensus_account_histories: Array<{ __typename?: 'consensus_account_histories', reserved: any, total?: any | null, nonce: any, free: any, created_at: any, _block_range: any, id: any }> };
-
-export type AllRewardForAccountByIdQueryVariables = Exact<{
-  accountId: Scalars['String']['input'];
-}>;
-
-
-export type AllRewardForAccountByIdQuery = { __typename?: 'query_root', consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, block_height: any, reward_type: string, amount: any, timestamp: any }> };
 
 export type BlocksQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -21205,11 +21198,6 @@ export const AccountsDocument = gql`
     total
     createdAt: created_at
     updatedAt: updated_at
-    extrinsicsCount: extrinsics_aggregate {
-      aggregate {
-        count
-      }
-    }
   }
 }
     `;
@@ -21609,53 +21597,6 @@ export type BalanceHistoryByAccountIdQueryHookResult = ReturnType<typeof useBala
 export type BalanceHistoryByAccountIdLazyQueryHookResult = ReturnType<typeof useBalanceHistoryByAccountIdLazyQuery>;
 export type BalanceHistoryByAccountIdSuspenseQueryHookResult = ReturnType<typeof useBalanceHistoryByAccountIdSuspenseQuery>;
 export type BalanceHistoryByAccountIdQueryResult = Apollo.QueryResult<BalanceHistoryByAccountIdQuery, BalanceHistoryByAccountIdQueryVariables>;
-export const AllRewardForAccountByIdDocument = gql`
-    query AllRewardForAccountById($accountId: String!) {
-  consensus_rewards(
-    where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
-    limit: 1
-  ) {
-    id
-    block_height
-    reward_type
-    amount
-    timestamp
-  }
-}
-    `;
-
-/**
- * __useAllRewardForAccountByIdQuery__
- *
- * To run a query within a React component, call `useAllRewardForAccountByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useAllRewardForAccountByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAllRewardForAccountByIdQuery({
- *   variables: {
- *      accountId: // value for 'accountId'
- *   },
- * });
- */
-export function useAllRewardForAccountByIdQuery(baseOptions: Apollo.QueryHookOptions<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables> & ({ variables: AllRewardForAccountByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>(AllRewardForAccountByIdDocument, options);
-      }
-export function useAllRewardForAccountByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>(AllRewardForAccountByIdDocument, options);
-        }
-export function useAllRewardForAccountByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>(AllRewardForAccountByIdDocument, options);
-        }
-export type AllRewardForAccountByIdQueryHookResult = ReturnType<typeof useAllRewardForAccountByIdQuery>;
-export type AllRewardForAccountByIdLazyQueryHookResult = ReturnType<typeof useAllRewardForAccountByIdLazyQuery>;
-export type AllRewardForAccountByIdSuspenseQueryHookResult = ReturnType<typeof useAllRewardForAccountByIdSuspenseQuery>;
-export type AllRewardForAccountByIdQueryResult = Apollo.QueryResult<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>;
 export const BlocksDocument = gql`
     query Blocks($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!, $where: consensus_blocks_bool_exp) {
   consensus_blocks_aggregate(where: $where) {
