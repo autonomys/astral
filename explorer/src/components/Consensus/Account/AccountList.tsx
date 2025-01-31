@@ -71,8 +71,7 @@ export const AccountList: FC = () => {
         const searchKey = `search-${column.name}` as keyof AccountsFilters
         const searchValue = filters[searchKey]
         if (searchValue) {
-          const formattedAddress = searchValue;
-          if (column.name === 'id' && isAddress(formattedAddress)) {  
+          if (column.name === 'id' && isAddress(searchValue)) {  
             conditions['id'] = { _ilike: `%${formatAddress(searchValue)}%` };  
           } else {  
             conditions[column.name] = { _ilike: `%${searchValue}%` };  
