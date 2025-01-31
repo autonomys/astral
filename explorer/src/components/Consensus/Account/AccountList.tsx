@@ -260,8 +260,7 @@ export const AccountList: FC = () => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
-
-  
+ 
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
