@@ -50,7 +50,7 @@ export const AccountList: FC = () => {
   const hideSettings = useTableStates((state) => state.hideSettings)
   const resetSettings = useTableStates((state) => state.resetSettings)
   const showReset = useTableStates((state) => state.showReset)
-  const [updatedFilters, setUpdatedFilters] = useState<Record<string, string>>({});
+
   const orderBy = useMemo(
     () =>
       sorting && sorting.length > 0
@@ -64,7 +64,6 @@ export const AccountList: FC = () => {
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conditions: Record<string, any> = {}
-    // const tempUpdatedFilters: Record<string, string> = {};
 
     availableColumns
       .filter((column) => column.searchable)
@@ -136,7 +135,7 @@ export const AccountList: FC = () => {
         ).toString()
       }
     }
-    // setUpdatedFilters(tempUpdatedFilters);
+
     return conditions
   }, [availableColumns, filters, tokenDecimals])
 
@@ -262,11 +261,6 @@ export const AccountList: FC = () => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
 
-  useEffect(() => {
-    Object.entries(updatedFilters).forEach(([key, value]) => {
-      handleFilterChange(key, value);
-    });
-  }, [updatedFilters, handleFilterChange]);
   
   return (
     <div className='flex w-full flex-col align-middle'>
