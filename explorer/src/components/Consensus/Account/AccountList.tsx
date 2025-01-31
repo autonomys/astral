@@ -1,6 +1,8 @@
 'use client'
 
+import { formatAddress } from '@/utils/formatAddress'
 import { useApolloClient } from '@apollo/client'
+import { isAddress } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
@@ -45,14 +47,17 @@ export const AccountList: FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conditions: Record<string, any> = {}
 
-    // Add search conditions
     availableColumns
       .filter((column) => column.searchable)
       .forEach((column) => {
         const searchKey = `search-${column.name}` as keyof AccountsFilters
         const searchValue = filters[searchKey]
         if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
+          if (column.name === 'id' && isAddress(searchValue)) {
+            conditions['id'] = { _ilike: `%${formatAddress(searchValue)}%` }
+          } else {
+            conditions[column.name] = { _ilike: `%${searchValue}%` }
+          }
         }
       })
 
