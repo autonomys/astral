@@ -73,7 +73,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       label: 'Block Height',
       isSelected: true,
       searchable: true,
-      accessorKey: 'cid.block_height',
+      accessorKey: '_block_range',
     },
     {
       name: 'extrinsicId',
@@ -82,7 +82,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       searchable: true,
       accessorKey: 'cid.extrinsic_id',
     },
-    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: 'cid.timestamp' },
+    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: '_block_range' },
   ],
   folders: [
     { name: 'id', label: 'CID', isSelected: true, searchable: true },
@@ -92,7 +92,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       label: 'Block Height',
       isSelected: true,
       searchable: true,
-      accessorKey: 'cid.block_height',
+      accessorKey: '_block_range',
     },
     {
       name: 'extrinsicId',
@@ -101,7 +101,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       searchable: true,
       accessorKey: 'cid.extrinsic_id',
     },
-    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: 'cid.timestamp' },
+    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: '_block_range' },
   ],
   domains: [
     { name: 'id', label: 'Id', isSelected: true, searchable: true },
@@ -455,14 +455,14 @@ export const INITIAL_TABLES: InitialTables = {
       .map((column) => column.name),
     filtersOptions: FILTERS_OPTIONS.files,
     filters: {
-      cid: '',
+      id: '',
       name: '',
       blockHeightMin: '',
       blockHeightMax: '',
     },
     sorting: [
       {
-        id: 'cid_timestamp',
+        id: '_block_range',
         desc: true,
       },
     ],
@@ -476,14 +476,14 @@ export const INITIAL_TABLES: InitialTables = {
       .map((column) => column.name),
     filtersOptions: FILTERS_OPTIONS.folders,
     filters: {
-      cid: '',
+      id: '',
       name: '',
       blockHeightMin: '',
       blockHeightMax: '',
     },
     sorting: [
       {
-        id: 'cid_timestamp',
+        id: '_block_range',
         desc: true,
       },
     ],
