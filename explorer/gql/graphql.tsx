@@ -20607,7 +20607,7 @@ export type AccountByIdQueryVariables = Exact<{
 }>;
 
 
-export type AccountByIdQuery = { __typename?: 'query_root', consensus_account_histories: Array<{ __typename?: 'consensus_account_histories', id: string, free: any, reserved: any, total?: any | null, nonce: any }>, consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, amount: any, timestamp: any, blockHeight: any, rewardType: string }> };
+export type AccountByIdQuery = { __typename?: 'query_root', consensus_accounts_by_pk?: { __typename?: 'consensus_accounts', id: string, free: any, reserved: any, total?: any | null, nonce: any } | null, consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, amount: any, timestamp: any, blockHeight: any, rewardType: string }> };
 
 export type LatestRewardsWeekQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
@@ -21239,11 +21239,7 @@ export type AccountsSuspenseQueryHookResult = ReturnType<typeof useAccountsSuspe
 export type AccountsQueryResult = Apollo.QueryResult<AccountsQuery, AccountsQueryVariables>;
 export const AccountByIdDocument = gql`
     query AccountById($accountId: String!) {
-  consensus_account_histories(
-    where: {id: {_eq: $accountId}}
-    limit: 1
-    order_by: {_block_range: desc}
-  ) {
+  consensus_accounts_by_pk(id: $accountId) {
     id
     free
     reserved
