@@ -1,7 +1,8 @@
 'use client'
 
+import { formatAddress } from '@/utils/formatAddress'
 import { useApolloClient } from '@apollo/client'
-import { capitalizeFirstLetter } from '@autonomys/auto-utils'
+import { capitalizeFirstLetter, isAddress } from '@autonomys/auto-utils'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -64,14 +65,17 @@ export const AccountList: FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conditions: Record<string, any> = {}
 
-    // Add search conditions
     availableColumns
       .filter((column) => column.searchable)
       .forEach((column) => {
         const searchKey = `search-${column.name}` as keyof AccountsFilters
         const searchValue = filters[searchKey]
         if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
+          if (column.name === 'id' && isAddress(searchValue)) {  
+            conditions['id'] = { _ilike: `%${formatAddress(searchValue)}%` };  
+          } else {  
+            conditions[column.name] = { _ilike: `%${searchValue}%` };  
+          }  
         }
       })
 
@@ -253,7 +257,7 @@ export const AccountList: FC = () => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
-
+ 
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
