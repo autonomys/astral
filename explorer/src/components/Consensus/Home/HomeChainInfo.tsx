@@ -7,6 +7,13 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { numberWithCommas } from 'utils/number'
 import { HomeInfoCard } from './HomeInfoCard'
 
+import useMediaQuery from '@/hooks/useMediaQuery'
+import { cn } from '@/utils/cn'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import { Pagination } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
+
 type TelemetryObject = [string, string, number, number]
 type TelemetryData = TelemetryObject[]
 
@@ -18,6 +25,8 @@ type Props = {
 export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const { indexerSet } = useIndexers()
   const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
+
+  const isDesktop = useMediaQuery('(min-width: 1536px)')
 
   const getTelemetryData = useCallback(async () => {
     if (!process.env.NEXT_PUBLIC_TELEMETRY_URL) return
@@ -126,17 +135,41 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
       {!data || loading ? (
         <Spinner isXSmall />
       ) : (
-        <div className='mb-12 flex w-full items-center gap-5 overflow-x-auto'>
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={20}
+          pagination={{
+            clickable: true,
+            renderBullet: (index, className) =>
+              `<span class="${className}" style="background-color: #1949D2;"></span>`,
+          }}
+          breakpoints={{
+            460: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 3,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            1536: {
+              slidesPerView: 6,
+              spaceBetween: 20,
+            },
+          }}
+          modules={[Pagination]}
+          className={cn('mb-4 flex w-full items-center !pb-10', isDesktop ? 'mb-12 !p-0' : '')}
+        >
           {listOfCards.map(({ title, value, icon, darkBgClass }, index) => (
-            <HomeInfoCard
-              key={`${title}-${index}`}
-              title={title}
-              value={value}
-              icon={icon}
-              darkBgClass={darkBgClass}
-            />
+            <SwiperSlide key={`${title}-${index}`}>
+              <HomeInfoCard title={title} value={value} icon={icon} darkBgClass={darkBgClass} />
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       )}
     </>
   )
