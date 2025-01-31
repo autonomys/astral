@@ -286,27 +286,25 @@ export const useTableSettings = <TFilter>(table: TableName) => {
 
   const onSortingChange = useCallback(
     (newSorting: SortingState | ((prev: SortingState) => SortingState)) =>
-      typeof newSorting === 'function' ? newSorting(sorting) : setSorting(table, newSorting),
+      setSorting(table, typeof newSorting === 'function' ? newSorting(sorting) : newSorting),
     [sorting, setSorting, table],
   )
 
   const onPaginationChange = useCallback(
-    (newPagination: PaginationState | ((prev: PaginationState) => PaginationState)) => {
+    (newPagination: PaginationState | ((prev: PaginationState) => PaginationState)) =>
       setPagination(
         table,
         typeof newPagination === 'function' ? newPagination(pagination) : newPagination,
-      )
-    },
+      ),
     [setPagination, table, pagination],
   )
 
   const handleFilterChange = useCallback(
-    (filterName: string, value: string | boolean) => {
+    (filterName: string, value: string | boolean) =>
       setFilters(table, {
         ...filters,
         [filterName]: value,
-      })
-    },
+      }),
     [filters, setFilters, table],
   )
 
