@@ -97,7 +97,9 @@ type Transfer @entity {
   extrinsicId: String!
   eventId: String!
   from: String!
+  fromChain: String!
   to: String!
+  toChain: String!
   value: BigInt!
   fee: BigInt!
   success: Boolean!
