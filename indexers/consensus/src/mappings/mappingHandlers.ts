@@ -353,6 +353,13 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
         break;
       }
+      case "balances.Deposit": {
+        const receiver = event.event.data[0].toString();
+
+        addressToUpdate.add(receiver);
+
+        break;
+      }
       default:
         break;
     }
