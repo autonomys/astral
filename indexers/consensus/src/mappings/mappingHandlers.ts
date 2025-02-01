@@ -391,6 +391,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         _blockchainSize,
         extrinsicsCount,
         eventsCount,
+        newLogs.length,
         newTransfers.length,
         newRewards.length,
         totalBlockRewardsCount,
