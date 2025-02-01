@@ -388,6 +388,7 @@ CREATE TABLE consensus.extrinsics (
     nonce NUMERIC NOT NULL,
     signer TEXT NOT NULL,
     signature TEXT NOT NULL,
+    events_count INTEGER NOT NULL,
     args JSONB NOT NULL,
     error TEXT NOT NULL,
     tip NUMERIC NOT NULL,
