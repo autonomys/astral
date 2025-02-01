@@ -68,7 +68,8 @@ function Screen({
     hash: extrinsicById?.hash ?? '0',
     timestamp: extrinsicById?.timestamp ?? '0',
     blockHeight: extrinsicById?.block_height ?? '0',
-    action: extrinsicById?.name ?? '',
+    section: extrinsicById?.section ?? '',
+    module: extrinsicById?.module ?? '',
     eventsCount: extrinsicById?.events_aggregate.aggregate?.count ?? 0,
     signer: extrinsicById?.signer ?? '',
   }
@@ -173,7 +174,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-16 font-bold'
             >
-              Action {extrinsic.action}
+              Extrinsic {extrinsic.section}.{extrinsic.module}
             </span>
           </div>
         </div>

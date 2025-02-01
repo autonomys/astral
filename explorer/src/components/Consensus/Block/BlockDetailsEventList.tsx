@@ -27,7 +27,11 @@ import { QUERY_BLOCK_EVENTS } from './query'
 
 type Row = EventsByBlockIdQuery['consensus_events'][number]
 
-export const BlockDetailsEventList: FC = () => {
+type Props = {
+  eventsCount: number
+}
+
+export const BlockDetailsEventList: FC<Props> = ({ eventsCount }) => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
   const { network, section } = useIndexers()
@@ -105,11 +109,19 @@ export const BlockDetailsEventList: FC = () => {
         ),
       },
       {
-        accessorKey: 'name',
-        header: 'Action',
+        accessorKey: 'section',
+        header: 'Section',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-event-action`}>{row.original.name.split('.')[1]}</div>
+          <div key={`${row.index}-block-event-section`}>{row.original.section}</div>
+        ),
+      },
+      {
+        accessorKey: 'module',
+        header: 'Module',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-block-event-module`}>{row.original.module}</div>
         ),
       },
       {
@@ -129,16 +141,9 @@ export const BlockDetailsEventList: FC = () => {
     [apolloClient, variables],
   )
 
-  const totalCount = useMemo(
-    () =>
-      hasValue(consensusEntry) && consensusEntry.value.consensus_events_aggregate.aggregate
-        ? consensusEntry.value.consensus_events_aggregate.aggregate.count
-        : 0,
-    [consensusEntry],
-  )
   const pageCount = useMemo(
-    () => countTablePages(totalCount, pagination.pageSize),
-    [totalCount, pagination],
+    () => countTablePages(eventsCount, pagination.pageSize),
+    [eventsCount, pagination],
   )
 
   const noData = useMemo(() => {

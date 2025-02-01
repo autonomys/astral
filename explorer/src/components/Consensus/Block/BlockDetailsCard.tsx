@@ -17,15 +17,11 @@ export const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
 
   return (
     <div className='w-full'>
-      <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none sm:p-6'>
+      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
         <div className='mb-10 flex items-center justify-between'>
           <h3 className='text-sm font-semibold leading-none text-gray-900 dark:text-white lg:text-2xl'>
             Block #{block.height}
           </h3>
-          {/* TODO: uncomment when we have support for best blocks, currently all blocks are archived
-          <div className='bg-buttonDarkTo text-xs font-medium  px-5 py-3 rounded-full block leading-normal text-white'>
-            Best Block
-          </div> */}
         </div>
 
         <div className='flow-root'>

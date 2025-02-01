@@ -9,7 +9,6 @@ import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
 import { ChainPageProps, LogIdPageProps } from 'types/app'
 import { numberWithCommas } from 'utils/number'
-import { utcToLocalRelativeTime } from 'utils/time'
 
 // export const runtime = 'edge'
 export async function GET(
@@ -63,9 +62,9 @@ function Screen({
   logById: LogByIdQuery['consensus_logs'][number]
 }) {
   const log = {
+    id: logById?.id ?? '0',
     height: logById?.block_height ?? '0',
     kind: logById?.kind ?? '0',
-    timestamp: logById?.timestamp ?? '0',
     value: logById?.value ?? '',
   }
   const title = `${metadata.title} - ${chainMatch.title} - Log`
@@ -135,7 +134,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
             >
-              Timestamp {utcToLocalRelativeTime(log.timestamp)}
+              Log {log.id}
             </span>
           </div>
         </div>
