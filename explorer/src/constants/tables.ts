@@ -6,9 +6,8 @@ import { OperatorStatus } from './staking'
 export const AVAILABLE_COLUMNS: AvailableColumns = {
   accounts: [
     { name: 'id', label: 'Account', isSelected: true, searchable: true },
-    { name: 'nonce', label: 'Nonce', isSelected: false },
-    { name: 'extrinsicsCount', label: 'Extrinsics', isSelected: true },
-    { name: 'free', label: 'Free', isSelected: false },
+    { name: 'nonce', label: 'Nonce', isSelected: true },
+    { name: 'free', label: 'Free', isSelected: true },
     { name: 'reserved', label: 'Locked', isSelected: true },
     { name: 'total', label: 'Balance', isSelected: true },
     { name: 'createdAt', label: 'Created At', isSelected: false },
@@ -354,8 +353,8 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'id',
-        desc: false,
+        id: 'total',
+        desc: true,
       },
     ],
   },

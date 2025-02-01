@@ -32,7 +32,7 @@ const TABLE = 'accounts'
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()
   const { network, section, tokenDecimals } = useIndexers()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'total', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
@@ -57,7 +57,7 @@ export const AccountList: FC = () => {
         ? sorting[0].id.endsWith('aggregate')
           ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
           : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
-        : { id: OrderBy.Asc },
+        : { total: OrderBy.Desc },
     [sorting],
   )
 
@@ -184,8 +184,6 @@ export const AccountList: FC = () => {
             <AccountIconWithLink address={row.original.id} network={network} section={section} />
           ),
           nonce: ({ row }: Cell<Row>) => row.original.nonce.toString(),
-          extrinsicsCount: ({ row }: Cell<Row>) =>
-            row.original.extrinsicsCount.aggregate?.count.toString() || '0',
           free: ({ row }: Cell<Row>) => numberWithCommas(bigNumberToNumber(row.original.free)),
           reserved: ({ row }: Cell<Row>) =>
             numberWithCommas(bigNumberToNumber(row.original.reserved)),
