@@ -28,4 +28,5 @@ select_permissions:
         - parent_cid
         - _id
       filter: {}
+      limit: 50
     comment: ""
