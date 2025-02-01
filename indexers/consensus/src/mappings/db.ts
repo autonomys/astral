@@ -86,6 +86,7 @@ export function createExtrinsic(
   nonce: bigint,
   signer: string,
   signature: string,
+  eventsCount: number,
   args: string,
   error: string,
   tip: bigint,
