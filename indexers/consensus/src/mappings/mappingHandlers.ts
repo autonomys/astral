@@ -273,6 +273,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
           break;
         }
+        case "balances.Burned": {
+          addressToUpdate.add(event.event.data[0].toString());
+          break;
+        }
         default:
           break;
       }
@@ -354,10 +358,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         break;
       }
       case "balances.Deposit": {
-        const receiver = event.event.data[0].toString();
-
-        addressToUpdate.add(receiver);
-
+        addressToUpdate.add(event.event.data[0].toString());
         break;
       }
       default:
