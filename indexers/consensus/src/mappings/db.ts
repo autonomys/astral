@@ -111,6 +111,7 @@ export function createExtrinsic(
     nonce,
     signer,
     signature,
+    eventsCount,
     args,
     error,
     tip,
