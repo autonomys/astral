@@ -24,4 +24,5 @@ select_permissions:
         - sort_id
         - _id
       filter: {}
+      limit: 50
     comment: ""
