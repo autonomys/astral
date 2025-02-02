@@ -284,6 +284,10 @@ const config: Config = {
           letterSpacing: '-0.02em',
           fontWeight: '600',
         },
+        html: {
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
+        },
       })
     }),
   ],
