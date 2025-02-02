@@ -1,26 +1,24 @@
 'use client'
 
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
-import { SortingState } from '@tanstack/react-table'
+import { shortString } from '@autonomys/auto-utils'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { NotFound } from 'components/layout/NotFound'
-import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { BlocksQuery, BlocksQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import { BlocksQuery, BlocksQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { useTableStates } from 'states/tables'
-import { BlocksFilters, Cell, TableSettingsTabs } from 'types/table'
+import { useTableSettings } from 'states/tables'
+import { BlocksFilters, Cell } from 'types/table'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { QUERY_BLOCKS } from './query'
@@ -30,35 +28,18 @@ const TABLE = 'blocks'
 
 export const BlockList: FC = () => {
   const { ref, inView } = useInView()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
   const { network, section } = useIndexers()
-
-  const [pagination, setPagination] = useState({
-    pageSize: PAGE_SIZE,
-    pageIndex: 0,
-  })
   const inFocus = useWindowFocus()
-  const availableColumns = useTableStates((state) => state[TABLE].columns)
-  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
-  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
-  const filters = useTableStates((state) => state[TABLE].filters) as BlocksFilters
-  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
-  const setColumns = useTableStates((state) => state.setColumns)
-  const setFilters = useTableStates((state) => state.setFilters)
-  const showSettings = useTableStates((state) => state.showSettings)
-  const hideSettings = useTableStates((state) => state.hideSettings)
-  const resetSettings = useTableStates((state) => state.resetSettings)
-  const showReset = useTableStates((state) => state.showReset)
-
-  const orderBy = useMemo(
-    () =>
-      sorting && sorting.length > 0
-        ? sorting[0].id.endsWith('aggregate')
-          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
-          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
-        : { id: OrderBy.Asc },
-    [sorting],
-  )
+  const {
+    pagination,
+    sorting,
+    availableColumns,
+    selectedColumns,
+    filters,
+    orderBy,
+    onPaginationChange,
+    onSortingChange,
+  } = useTableSettings<BlocksFilters>(TABLE)
 
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -212,27 +193,6 @@ export const BlockList: FC = () => {
     return null
   }, [data, consensusEntry, loading])
 
-  const handleFilterChange = useCallback(
-    (filterName: string, value: string | boolean) => {
-      setFilters(TABLE, {
-        ...filters,
-        [filterName]: value,
-      })
-    },
-    [filters, setFilters],
-  )
-
-  const handleClickOnColumnToEditTable = useCallback(
-    (column: string, checked: boolean) =>
-      checked
-        ? setColumns(TABLE, [...selectedColumns, column])
-        : setColumns(
-            TABLE,
-            selectedColumns.filter((c) => c !== column),
-          ),
-    [selectedColumns, setColumns],
-  )
-
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
@@ -240,31 +200,17 @@ export const BlockList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
-        <TableSettings
-          tableName={capitalizeFirstLetter(TABLE)}
-          totalCount={totalCount}
-          availableColumns={availableColumns}
-          selectedColumns={selectedColumns}
-          filters={filters}
-          showTableSettings={showTableSettings}
-          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
-          hideSettings={() => hideSettings(TABLE)}
-          handleColumnChange={handleClickOnColumnToEditTable}
-          handleFilterChange={handleFilterChange}
-          filterOptions={filtersOptions}
-          handleReset={() => resetSettings(TABLE)}
-          showReset={showReset(TABLE)}
-        />
+        <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
         {!loading && blocks ? (
           <SortedTable
             data={blocks}
             columns={columns}
             showNavigation={true}
             sorting={sorting}
-            onSortingChange={setSorting}
+            onSortingChange={onSortingChange}
             pagination={pagination}
             pageCount={pageCount}
-            onPaginationChange={setPagination}
+            onPaginationChange={onPaginationChange}
             filename={TABLE}
           />
         ) : (
