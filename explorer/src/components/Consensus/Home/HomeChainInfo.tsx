@@ -162,7 +162,7 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
             },
           }}
           modules={[Pagination]}
-          className={cn('mb-4 flex w-full items-center !pb-10', isDesktop ? 'mb-12 !p-0' : '')}
+          className={cn('flex w-full items-center', isDesktop ? 'mb-12 !p-0' : 'mb-4 !pb-10')}
         >
           {listOfCards.map(({ title, value, icon, darkBgClass }, index) => (
             <SwiperSlide key={`${title}-${index}`}>
