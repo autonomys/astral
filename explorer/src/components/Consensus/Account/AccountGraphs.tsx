@@ -5,7 +5,7 @@ import { AccountBalanceStats } from './AccountBalanceStats'
 import { AccountGraphTabs } from './AccountGraphTabs'
 
 type Props = {
-  account: AccountByIdQuery['consensus_account_histories'][number] | undefined
+  account: AccountByIdQuery['consensus_accounts_by_pk'] | undefined
   isDesktop?: boolean
 }
 

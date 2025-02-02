@@ -42,7 +42,6 @@ interface ExplorerQueryState {
     log: QueryState<GqlT.LogByIdQuery>
 
     accountExtrinsic: QueryState<GqlT.ExtrinsicsByAccountIdQuery>
-    accountPreviousReward: QueryState<GqlT.AllRewardForAccountByIdQuery>
     accountRewardGraph: QueryState<GqlT.LatestRewardsWeekQuery>
     accountReward: QueryState<GqlT.RewardsListQuery>
     accountTransfers: QueryState<GqlT.TransfersByAccountIdQuery>
@@ -112,7 +111,6 @@ const initialState: ExplorerQueryState = {
     log: initialized,
 
     accountExtrinsic: initialized,
-    accountPreviousReward: initialized,
     accountRewardGraph: initialized,
     accountReward: initialized,
     accountTransfers: initialized,

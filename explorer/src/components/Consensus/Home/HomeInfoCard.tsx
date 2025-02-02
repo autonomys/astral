@@ -24,7 +24,7 @@ export const HomeInfoCard: FC<Props> = ({
   )
   return (
     <div
-      className={`h-[${icon ? '216px' : '120px'}] w-1/5 min-w-[200px] grow md:min-w-[228px] ${additionalClass}`}
+      className={`h-[${icon ? '216px' : '120px'}] w-full min-w-[200px] grow md:min-w-[228px] ${additionalClass}`}
     >
       <div className={`flex h-full flex-col justify-center rounded-[20px] bg-white ${darkBgClass}`}>
         {icon && (

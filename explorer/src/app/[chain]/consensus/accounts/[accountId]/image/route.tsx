@@ -24,7 +24,7 @@ export async function GET(
   if (!accountId || !chainMatch) notFound()
 
   const {
-    data: { consensus_account_histories: accountById },
+    data: { consensus_accounts_by_pk: accountById },
   }: {
     data: AccountByIdQuery
   } = await fetch(chainMatch.indexer, {
@@ -46,7 +46,7 @@ export async function GET(
         <Screen
           chainMatch={chainMatch}
           accountId={accountId}
-          accountById={accountById[0]}
+          accountById={accountById}
           tokenSymbol={tokenSymbol}
         />
       ),
@@ -69,7 +69,7 @@ function Screen({
 }: {
   chainMatch: (typeof indexers)[number]
   accountId: string
-  accountById: AccountByIdQuery['consensus_account_histories'][number]
+  accountById: AccountByIdQuery['consensus_accounts_by_pk']
   tokenSymbol: string
 }) {
   const account = {
