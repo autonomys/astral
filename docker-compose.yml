@@ -276,13 +276,10 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
-      dictionary_subquery_node:
-        condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: ${DICTIONARY_URL}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
