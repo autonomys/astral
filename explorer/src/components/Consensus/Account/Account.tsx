@@ -47,7 +47,7 @@ export const Account: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const account = useMemo(() => data && data.consensus_account_histories[0], [data])
+  const account = useMemo(() => data && data.consensus_accounts_by_pk, [data])
   const rewards = useMemo(() => (data ? data.consensus_rewards : []), [data])
 
   useEffect(() => {

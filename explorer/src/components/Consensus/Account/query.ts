@@ -20,22 +20,13 @@ export const QUERY_ACCOUNTS = gql`
       total
       createdAt: created_at
       updatedAt: updated_at
-      extrinsicsCount: extrinsics_aggregate {
-        aggregate {
-          count
-        }
-      }
     }
   }
 `
 
 export const QUERY_ACCOUNT_BY_ID = gql`
   query AccountById($accountId: String!) {
-    consensus_account_histories(
-      where: { id: { _eq: $accountId } }
-      limit: 1
-      order_by: { _block_range: desc }
-    ) {
+    consensus_accounts_by_pk(id: $accountId) {
       id
       free
       reserved
@@ -187,18 +178,6 @@ export const QUERY_ACCOUNT_BALANCE_HISTORY = gql`
       free
       created_at
       _block_range
-    }
-  }
-`
-
-export const QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID = gql`
-  query AllRewardForAccountById($accountId: String!) {
-    consensus_rewards(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }, limit: 1) {
-      id
-      block_height
-      reward_type
-      amount
-      timestamp
     }
   }
 `
