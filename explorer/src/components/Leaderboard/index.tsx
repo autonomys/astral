@@ -1,15 +1,14 @@
 'use client'
 
-import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { PageTabs } from 'components/common/PageTabs'
 import { Tab } from 'components/common/Tabs'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
-import React, { FC, useCallback } from 'react'
-import { useTableStates } from 'states/tables'
-import type { LeaderboardFilters, TableSettingsTabs } from 'types/table'
+import React, { FC } from 'react'
+import { useTableSettings } from 'states/tables'
+import type { LeaderboardFilters } from 'types/table'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
 import { LeaderboardList } from './LeaderboardList'
@@ -22,45 +21,12 @@ const TABLE = 'leaderboard'
 
 const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
   const { subspaceAccount } = useWallet()
-  const availableColumns = useTableStates((state) => state[TABLE].columns)
-  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
-  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
-  const filters = useTableStates((state) => state[TABLE].filters) as LeaderboardFilters
-  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
-  const setColumns = useTableStates((state) => state.setColumns)
-  const setFilters = useTableStates((state) => state.setFilters)
-  const showSettings = useTableStates((state) => state.showSettings)
-  const hideSettings = useTableStates((state) => state.hideSettings)
-  const resetSettings = useTableStates((state) => state.resetSettings)
-  const showReset = useTableStates((state) => state.showReset)
-
-  const handleFilterChange = useCallback(
-    (filterName: string, value: string | boolean) => {
-      setFilters(TABLE, {
-        ...filters,
-        [filterName]: value,
-      })
-    },
-    [filters, setFilters],
-  )
-
-  const handleClickOnColumnToEditTable = useCallback(
-    (column: string, checked: boolean) =>
-      checked
-        ? setColumns(TABLE, [...selectedColumns, column])
-        : setColumns(
-            TABLE,
-            selectedColumns.filter((c) => c !== column),
-          ),
-    [selectedColumns, setColumns],
-  )
+  const { filters } = useTableSettings<LeaderboardFilters>(TABLE)
 
   return (
     <div className='flex w-full flex-col space-y-6'>
       <TableSettings
-        tableName={capitalizeFirstLetter(TABLE)}
-        availableColumns={availableColumns}
-        selectedColumns={selectedColumns}
+        table={TABLE}
         filters={filters}
         addExtraIcons={
           subspaceAccount && (
@@ -69,14 +35,6 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
             </div>
           )
         }
-        showTableSettings={showTableSettings}
-        showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
-        hideSettings={() => hideSettings(TABLE)}
-        handleColumnChange={handleClickOnColumnToEditTable}
-        handleFilterChange={handleFilterChange}
-        filterOptions={filtersOptions}
-        handleReset={() => resetSettings(TABLE)}
-        showReset={showReset(TABLE)}
       />
       {children}
     </div>
