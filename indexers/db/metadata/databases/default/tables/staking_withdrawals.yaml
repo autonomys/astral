@@ -54,5 +54,6 @@ select_permissions:
         - updated_at
         - withdraw_extrinsic_hash
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

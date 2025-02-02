@@ -27,4 +27,5 @@ select_permissions:
         - cumulative_vote_rewards_count
         - id
       filter: {}
+      limit: 50
     comment: ""

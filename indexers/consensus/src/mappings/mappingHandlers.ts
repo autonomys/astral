@@ -13,15 +13,17 @@ import { SubstrateBlock } from "@subql/types";
 import { Entity } from "@subql/types-core";
 import {
   createAccountHistory,
-  createAndSaveLog,
   createBlock,
   createEvent,
   createExtrinsic,
+  createLog,
   createReward,
   createTransfer,
 } from "./db";
 import { getBlockAuthor, parseDataToCid } from "./helper";
 import { ExtrinsicPrimitive, LogValue } from "./types";
+
+const CONSENSUS_CHAIN_TYPE = "consensus";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -133,7 +135,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
     // Detect data storage extrinsics and parse args to cid
     let cid: string | undefined = "";
-    let args: string = stringify(extrinsicMethodToPrimitive.args);
+    let extrinsicArgs: string = stringify(extrinsicMethodToPrimitive.args);
     if (
       (extrinsic.method.section === "historySeeding" &&
         extrinsic.method.method === "seedHistory") ||
@@ -144,7 +146,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       const parsedArgs = parseDataToCid(extrinsicMethodToPrimitive.args.remark);
       cid = parsedArgs.cid;
       // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
-      args = parsedArgs.modifiedArgs ?? args;
+      extrinsicArgs = parsedArgs.modifiedArgs ?? extrinsicArgs;
     }
 
     newExtrinsics.push(
@@ -160,7 +162,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         BigInt(extrinsic.nonce.toString()),
         extrinsicSigner,
         extrinsic.signature.toString(),
-        args,
+        extrinsicEvents.length,
+        extrinsicArgs,
         error,
         BigInt(extrinsic.tip.toString()),
         fee,
@@ -178,7 +181,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
       // Detect data storage extrinsics and parse args to cid
       let cid: string | undefined = "";
-      let args: string = stringify(event.event.data);
+      let eventsArgs: string = stringify(event.event.data);
       if (
         event.event.section === "system" &&
         event.event.method === "Remarked"
@@ -186,7 +189,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         const parsedArgs = parseDataToCid(event.event.data[1].toString());
         cid = parsedArgs.cid;
         // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
-        args = parsedArgs.modifiedArgs ?? args;
+        eventsArgs = parsedArgs.modifiedArgs ?? eventsArgs;
       }
 
       newEvents.push(
@@ -201,13 +204,13 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           blockTimestamp,
           event.phase.type,
           pos,
-          args,
+          eventsArgs,
           cid
         )
       );
 
       // Process specific events
-      switch (`${event.event.section}.${event.event.method}`) {
+      switch (event.event.section + "." + event.event.method) {
         case "balances.Transfer": {
           const from = event.event.data[0].toString();
           const to = event.event.data[1].toString();
@@ -224,7 +227,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
             extrinsicId,
             height + "-" + eventIndex,
             from,
+            CONSENSUS_CHAIN_TYPE,
             to,
+            CONSENSUS_CHAIN_TYPE,
             amount,
             fee,
             successEvent ? true : false,
@@ -232,6 +237,44 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           );
           newTransfers.push(newTransfer);
 
+          break;
+        }
+        case "transporter.OutgoingTransferInitiated": {
+          const [chainType, domainId] = Object.entries(
+            extrinsicMethodToPrimitive.args.dst_location.chainId
+          )[0] as [string, string | undefined];
+          const [_, to] = Object.entries(
+            extrinsicMethodToPrimitive.args.dst_location.accountId
+          )[0] as [string, string];
+          const amount = BigInt(
+            extrinsicMethodToPrimitive.args.amount.toString()
+          );
+
+          addressToUpdate.add(extrinsicSigner);
+          if (chainType === CONSENSUS_CHAIN_TYPE) addressToUpdate.add(to);
+
+          totalTransferValue += amount;
+
+          const newTransfer = createTransfer(
+            height,
+            blockHash,
+            extrinsicId,
+            height + "-" + eventIndex,
+            extrinsicSigner,
+            CONSENSUS_CHAIN_TYPE,
+            to,
+            chainType + ":" + domainId,
+            amount,
+            fee,
+            successEvent ? true : false,
+            blockTimestamp
+          );
+          newTransfers.push(newTransfer);
+
+          break;
+        }
+        case "balances.Burned": {
+          addressToUpdate.add(event.event.data[0].toString());
           break;
         }
         default:
@@ -263,7 +306,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
 
     // Process specific events
-    switch (`${event.event.section}.${event.event.method}`) {
+    switch (event.event.section + "." + event.event.method) {
       case "rewards.VoteReward": {
         const voter = event.event.data[0].toString();
         const reward = BigInt(event.event.data[1].toString());
@@ -314,6 +357,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
         break;
       }
+      case "balances.Deposit": {
+        addressToUpdate.add(event.event.data[0].toString());
+        break;
+      }
       default:
         break;
     }
@@ -334,7 +381,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         ? { data: _value[1], engine: _value[0] }
         : { data: _value };
 
-    return createAndSaveLog(
+    return createLog(
       height,
       blockHash,
       i,
@@ -390,6 +437,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         _blockchainSize,
         extrinsicsCount,
         eventsCount,
+        newLogs.length,
         newTransfers.length,
         newRewards.length,
         totalBlockRewardsCount,

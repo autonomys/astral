@@ -21,4 +21,5 @@ select_permissions:
         - timestamp_start
         - updated_at
       filter: {}
+      limit: 50
     comment: ""
