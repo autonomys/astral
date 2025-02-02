@@ -105,7 +105,7 @@ export const AccountRewardList: FC = () => {
   const account = useMemo(
     () =>
       rewards
-        ? (rewards[0].account as unknown as AccountByIdQuery['consensus_account_histories'][number])
+        ? (rewards[0].account as unknown as AccountByIdQuery['consensus_accounts_by_pk'])
         : undefined,
     [rewards],
   )
