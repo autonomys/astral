@@ -166,8 +166,6 @@ export const AccountList: FC = () => {
             <AccountIconWithLink address={row.original.id} network={network} section={section} />
           ),
           nonce: ({ row }: Cell<Row>) => row.original.nonce.toString(),
-          extrinsicsCount: ({ row }: Cell<Row>) =>
-            row.original.extrinsicsCount.aggregate?.count.toString() || '0',
           free: ({ row }: Cell<Row>) => numberWithCommas(bigNumberToNumber(row.original.free)),
           reserved: ({ row }: Cell<Row>) =>
             numberWithCommas(bigNumberToNumber(row.original.reserved)),

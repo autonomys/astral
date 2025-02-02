@@ -20600,14 +20600,14 @@ export type AccountsQueryVariables = Exact<{
 }>;
 
 
-export type AccountsQuery = { __typename?: 'query_root', consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_accounts: Array<{ __typename?: 'consensus_accounts', id: string, nonce: any, free: any, reserved: any, total?: any | null, createdAt: any, updatedAt: any, extrinsicsCount: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } }> };
+export type AccountsQuery = { __typename?: 'query_root', consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_accounts: Array<{ __typename?: 'consensus_accounts', id: string, nonce: any, free: any, reserved: any, total?: any | null, createdAt: any, updatedAt: any }> };
 
 export type AccountByIdQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
 }>;
 
 
-export type AccountByIdQuery = { __typename?: 'query_root', consensus_account_histories: Array<{ __typename?: 'consensus_account_histories', id: string, free: any, reserved: any, total?: any | null, nonce: any }>, consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, amount: any, timestamp: any, blockHeight: any, rewardType: string }> };
+export type AccountByIdQuery = { __typename?: 'query_root', consensus_accounts_by_pk?: { __typename?: 'consensus_accounts', id: string, free: any, reserved: any, total?: any | null, nonce: any } | null, consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, amount: any, timestamp: any, blockHeight: any, rewardType: string }> };
 
 export type LatestRewardsWeekQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
@@ -20657,13 +20657,6 @@ export type BalanceHistoryByAccountIdQueryVariables = Exact<{
 
 export type BalanceHistoryByAccountIdQuery = { __typename?: 'query_root', consensus_account_histories_aggregate: { __typename?: 'consensus_account_histories_aggregate', aggregate?: { __typename?: 'consensus_account_histories_aggregate_fields', count: number } | null }, consensus_account_histories: Array<{ __typename?: 'consensus_account_histories', reserved: any, total?: any | null, nonce: any, free: any, created_at: any, _block_range: any, id: any }> };
 
-export type AllRewardForAccountByIdQueryVariables = Exact<{
-  accountId: Scalars['String']['input'];
-}>;
-
-
-export type AllRewardForAccountByIdQuery = { __typename?: 'query_root', consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, block_height: any, reward_type: string, amount: any, timestamp: any }> };
-
 export type BlocksQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -20680,7 +20673,7 @@ export type BlockByIdQueryVariables = Exact<{
 }>;
 
 
-export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, extrinsics_count: number, events_count: number, author_id: string, logs: Array<{ __typename?: 'consensus_logs', block_height: any, kind: string, id: string, block?: { __typename?: 'consensus_blocks', timestamp: any } | null }> }> };
+export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, author_id: string, extrinsicsCount: number, eventsCount: number, logs: Array<{ __typename?: 'consensus_logs', block_height: any, kind: string, id: string, block?: { __typename?: 'consensus_blocks', timestamp: any } | null }> }> };
 
 export type ExtrinsicsByBlockIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];
@@ -20690,7 +20683,7 @@ export type ExtrinsicsByBlockIdQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsByBlockIdQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, name: string, success: boolean, block_height: any, timestamp: any, index_in_block: number }> };
+export type ExtrinsicsByBlockIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean }> };
 
 export type EventsByBlockIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];
@@ -20700,14 +20693,7 @@ export type EventsByBlockIdQueryVariables = Exact<{
 }>;
 
 
-export type EventsByBlockIdQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, name: string, phase: string, index_in_block: any, block_height: any, extrinsic_id: string }> };
-
-export type BlocksByHashQueryVariables = Exact<{
-  hash: Scalars['String']['input'];
-}>;
-
-
-export type BlocksByHashQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any }> };
+export type EventsByBlockIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, phase: string, extrinsic_id: string }> };
 
 export type EventsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -20717,14 +20703,14 @@ export type EventsQueryVariables = Exact<{
 }>;
 
 
-export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, name: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', method: string }> };
+export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', method: string }> };
 
 export type EventByIdQueryVariables = Exact<{
   eventId: Scalars['String']['input'];
 }>;
 
 
-export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', args: any, id: string, index_in_block: any, name: string, phase: string, timestamp: any, extrinsic?: { __typename?: 'consensus_extrinsics', args: any, success: boolean, tip: any, fee: any, id: string, signer: string } | null, block?: { __typename?: 'consensus_blocks', height: any, id: string, timestamp: any, spec_id: string, hash: string } | null }> };
+export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, args: any, extrinsicId: string, blockHeight: any }> };
 
 export type ExtrinsicsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -20734,14 +20720,14 @@ export type ExtrinsicsQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, name: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }>, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', method: string }> };
+export type ExtrinsicsQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }>, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', method: string }> };
 
 export type ExtrinsicsByIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
 }>;
 
 
-export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, index_in_block: number, hash: string, block_height: any, timestamp: any, signature: string, success: boolean, tip: any, args: any, signer: string, name: string, events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null } }> };
+export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, section: string, module: string, timestamp: any, success: boolean, signature: string, signer: string, args: any, events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null } }> };
 
 export type EventsByExtrinsicIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
@@ -20751,14 +20737,7 @@ export type EventsByExtrinsicIdQueryVariables = Exact<{
 }>;
 
 
-export type EventsByExtrinsicIdQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, name: string, phase: string, index_in_block: any, block_height: any, extrinsic_id: string }> };
-
-export type ExtrinsicsByHashQueryVariables = Exact<{
-  hash: Scalars['String']['input'];
-}>;
-
-
-export type ExtrinsicsByHashQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, index_in_block: number, success: boolean, name: string, nonce: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }> };
+export type EventsByExtrinsicIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, phase: string, extrinsic_id: string }> };
 
 export type HomeQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -20783,7 +20762,7 @@ export type LogByIdQueryVariables = Exact<{
 }>;
 
 
-export type LogByIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: any | null, block_height: any, timestamp: any }> };
+export type LogByIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: any | null, block_height: any }> };
 
 export type DomainsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -21219,11 +21198,6 @@ export const AccountsDocument = gql`
     total
     createdAt: created_at
     updatedAt: updated_at
-    extrinsicsCount: extrinsics_aggregate {
-      aggregate {
-        count
-      }
-    }
   }
 }
     `;
@@ -21265,11 +21239,7 @@ export type AccountsSuspenseQueryHookResult = ReturnType<typeof useAccountsSuspe
 export type AccountsQueryResult = Apollo.QueryResult<AccountsQuery, AccountsQueryVariables>;
 export const AccountByIdDocument = gql`
     query AccountById($accountId: String!) {
-  consensus_account_histories(
-    where: {id: {_eq: $accountId}}
-    limit: 1
-    order_by: {_block_range: desc}
-  ) {
+  consensus_accounts_by_pk(id: $accountId) {
     id
     free
     reserved
@@ -21623,53 +21593,6 @@ export type BalanceHistoryByAccountIdQueryHookResult = ReturnType<typeof useBala
 export type BalanceHistoryByAccountIdLazyQueryHookResult = ReturnType<typeof useBalanceHistoryByAccountIdLazyQuery>;
 export type BalanceHistoryByAccountIdSuspenseQueryHookResult = ReturnType<typeof useBalanceHistoryByAccountIdSuspenseQuery>;
 export type BalanceHistoryByAccountIdQueryResult = Apollo.QueryResult<BalanceHistoryByAccountIdQuery, BalanceHistoryByAccountIdQueryVariables>;
-export const AllRewardForAccountByIdDocument = gql`
-    query AllRewardForAccountById($accountId: String!) {
-  consensus_rewards(
-    where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
-    limit: 1
-  ) {
-    id
-    block_height
-    reward_type
-    amount
-    timestamp
-  }
-}
-    `;
-
-/**
- * __useAllRewardForAccountByIdQuery__
- *
- * To run a query within a React component, call `useAllRewardForAccountByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useAllRewardForAccountByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAllRewardForAccountByIdQuery({
- *   variables: {
- *      accountId: // value for 'accountId'
- *   },
- * });
- */
-export function useAllRewardForAccountByIdQuery(baseOptions: Apollo.QueryHookOptions<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables> & ({ variables: AllRewardForAccountByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>(AllRewardForAccountByIdDocument, options);
-      }
-export function useAllRewardForAccountByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>(AllRewardForAccountByIdDocument, options);
-        }
-export function useAllRewardForAccountByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>(AllRewardForAccountByIdDocument, options);
-        }
-export type AllRewardForAccountByIdQueryHookResult = ReturnType<typeof useAllRewardForAccountByIdQuery>;
-export type AllRewardForAccountByIdLazyQueryHookResult = ReturnType<typeof useAllRewardForAccountByIdLazyQuery>;
-export type AllRewardForAccountByIdSuspenseQueryHookResult = ReturnType<typeof useAllRewardForAccountByIdSuspenseQuery>;
-export type AllRewardForAccountByIdQueryResult = Apollo.QueryResult<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>;
 export const BlocksDocument = gql`
     query Blocks($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!, $where: consensus_blocks_bool_exp) {
   consensus_blocks_aggregate(where: $where) {
@@ -21749,8 +21672,8 @@ export const BlockByIdDocument = gql`
     extrinsics_root
     spec_id
     parent_hash
-    extrinsics_count
-    events_count
+    extrinsicsCount: extrinsics_count
+    eventsCount: events_count
     logs(limit: 10, order_by: {block_height: desc}) {
       block_height
       block {
@@ -21799,11 +21722,6 @@ export type BlockByIdSuspenseQueryHookResult = ReturnType<typeof useBlockByIdSus
 export type BlockByIdQueryResult = Apollo.QueryResult<BlockByIdQuery, BlockByIdQueryVariables>;
 export const ExtrinsicsByBlockIdDocument = gql`
     query ExtrinsicsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]) {
-  consensus_extrinsics_aggregate(where: {block_height: {_eq: $blockId}}) {
-    aggregate {
-      count
-    }
-  }
   consensus_extrinsics(
     order_by: $orderBy
     limit: $limit
@@ -21812,11 +21730,9 @@ export const ExtrinsicsByBlockIdDocument = gql`
   ) {
     id
     hash
-    name
+    section
+    module
     success
-    block_height
-    timestamp
-    index_in_block
   }
 }
     `;
@@ -21858,11 +21774,6 @@ export type ExtrinsicsByBlockIdSuspenseQueryHookResult = ReturnType<typeof useEx
 export type ExtrinsicsByBlockIdQueryResult = Apollo.QueryResult<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>;
 export const EventsByBlockIdDocument = gql`
     query EventsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
-  consensus_events_aggregate(where: {block_height: {_eq: $blockId}}) {
-    aggregate {
-      count
-    }
-  }
   consensus_events(
     order_by: $orderBy
     limit: $limit
@@ -21870,10 +21781,9 @@ export const EventsByBlockIdDocument = gql`
     where: {block_height: {_eq: $blockId}}
   ) {
     id
-    name
+    section
+    module
     phase
-    index_in_block
-    block_height
     extrinsic_id
   }
 }
@@ -21914,47 +21824,6 @@ export type EventsByBlockIdQueryHookResult = ReturnType<typeof useEventsByBlockI
 export type EventsByBlockIdLazyQueryHookResult = ReturnType<typeof useEventsByBlockIdLazyQuery>;
 export type EventsByBlockIdSuspenseQueryHookResult = ReturnType<typeof useEventsByBlockIdSuspenseQuery>;
 export type EventsByBlockIdQueryResult = Apollo.QueryResult<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>;
-export const BlocksByHashDocument = gql`
-    query BlocksByHash($hash: String!) {
-  consensus_blocks(limit: 10, where: {hash: {_eq: $hash}}) {
-    id
-    height
-  }
-}
-    `;
-
-/**
- * __useBlocksByHashQuery__
- *
- * To run a query within a React component, call `useBlocksByHashQuery` and pass it any options that fit your needs.
- * When your component renders, `useBlocksByHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useBlocksByHashQuery({
- *   variables: {
- *      hash: // value for 'hash'
- *   },
- * });
- */
-export function useBlocksByHashQuery(baseOptions: Apollo.QueryHookOptions<BlocksByHashQuery, BlocksByHashQueryVariables> & ({ variables: BlocksByHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BlocksByHashQuery, BlocksByHashQueryVariables>(BlocksByHashDocument, options);
-      }
-export function useBlocksByHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlocksByHashQuery, BlocksByHashQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BlocksByHashQuery, BlocksByHashQueryVariables>(BlocksByHashDocument, options);
-        }
-export function useBlocksByHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BlocksByHashQuery, BlocksByHashQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<BlocksByHashQuery, BlocksByHashQueryVariables>(BlocksByHashDocument, options);
-        }
-export type BlocksByHashQueryHookResult = ReturnType<typeof useBlocksByHashQuery>;
-export type BlocksByHashLazyQueryHookResult = ReturnType<typeof useBlocksByHashLazyQuery>;
-export type BlocksByHashSuspenseQueryHookResult = ReturnType<typeof useBlocksByHashSuspenseQuery>;
-export type BlocksByHashQueryResult = Apollo.QueryResult<BlocksByHashQuery, BlocksByHashQueryVariables>;
 export const EventsDocument = gql`
     query Events($limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]!, $where: consensus_events_bool_exp) {
   consensus_events_aggregate(where: $where) {
@@ -21976,7 +21845,6 @@ export const EventsDocument = gql`
     extrinsicHash: extrinsic_hash
     section
     module
-    name
     indexInBlock: index_in_block
     timestamp
     phase
@@ -22025,27 +21893,13 @@ export type EventsQueryResult = Apollo.QueryResult<EventsQuery, EventsQueryVaria
 export const EventByIdDocument = gql`
     query EventById($eventId: String!) {
   consensus_events(where: {id: {_eq: $eventId}}) {
-    args
     id
-    index_in_block
-    name
-    phase
+    extrinsicId: extrinsic_id
+    blockHeight: block_height
+    section
+    module
     timestamp
-    extrinsic {
-      args
-      success
-      tip
-      fee
-      id
-      signer
-    }
-    block {
-      height
-      id
-      timestamp
-      spec_id
-      hash
-    }
+    args
   }
 }
     `;
@@ -22102,7 +21956,6 @@ export const ExtrinsicsDocument = gql`
     blockHash: block_hash
     section
     module
-    name
     indexInBlock: index_in_block
     success
     timestamp
@@ -22159,21 +22012,20 @@ export const ExtrinsicsByIdDocument = gql`
     where: {_or: [{id: {_eq: $extrinsicId}}, {hash: {_eq: $extrinsicId}}]}
   ) {
     id
-    index_in_block
     hash
     block_height
+    section
+    module
     timestamp
-    signature
     success
-    tip
-    args
+    signature
     signer
+    args
     events_aggregate {
       aggregate {
         count
       }
     }
-    name
   }
 }
     `;
@@ -22212,11 +22064,6 @@ export type ExtrinsicsByIdSuspenseQueryHookResult = ReturnType<typeof useExtrins
 export type ExtrinsicsByIdQueryResult = Apollo.QueryResult<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>;
 export const EventsByExtrinsicIdDocument = gql`
     query EventsByExtrinsicId($extrinsicId: String!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
-  consensus_events_aggregate(where: {extrinsic_id: {_eq: $extrinsicId}}) {
-    aggregate {
-      count
-    }
-  }
   consensus_events(
     order_by: $orderBy
     limit: $limit
@@ -22224,10 +22071,9 @@ export const EventsByExtrinsicIdDocument = gql`
     where: {extrinsic_id: {_eq: $extrinsicId}}
   ) {
     id
-    name
+    section
+    module
     phase
-    index_in_block
-    block_height
     extrinsic_id
   }
 }
@@ -22268,56 +22114,6 @@ export type EventsByExtrinsicIdQueryHookResult = ReturnType<typeof useEventsByEx
 export type EventsByExtrinsicIdLazyQueryHookResult = ReturnType<typeof useEventsByExtrinsicIdLazyQuery>;
 export type EventsByExtrinsicIdSuspenseQueryHookResult = ReturnType<typeof useEventsByExtrinsicIdSuspenseQuery>;
 export type EventsByExtrinsicIdQueryResult = Apollo.QueryResult<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables>;
-export const ExtrinsicsByHashDocument = gql`
-    query ExtrinsicsByHash($hash: String!) {
-  consensus_extrinsics(limit: 10, where: {hash: {_eq: $hash}}) {
-    id
-    hash
-    index_in_block
-    success
-    block {
-      id
-      timestamp
-      height
-    }
-    name
-    nonce
-  }
-}
-    `;
-
-/**
- * __useExtrinsicsByHashQuery__
- *
- * To run a query within a React component, call `useExtrinsicsByHashQuery` and pass it any options that fit your needs.
- * When your component renders, `useExtrinsicsByHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useExtrinsicsByHashQuery({
- *   variables: {
- *      hash: // value for 'hash'
- *   },
- * });
- */
-export function useExtrinsicsByHashQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables> & ({ variables: ExtrinsicsByHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
-      }
-export function useExtrinsicsByHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
-        }
-export function useExtrinsicsByHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
-        }
-export type ExtrinsicsByHashQueryHookResult = ReturnType<typeof useExtrinsicsByHashQuery>;
-export type ExtrinsicsByHashLazyQueryHookResult = ReturnType<typeof useExtrinsicsByHashLazyQuery>;
-export type ExtrinsicsByHashSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByHashSuspenseQuery>;
-export type ExtrinsicsByHashQueryResult = Apollo.QueryResult<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>;
 export const HomeDocument = gql`
     query Home($limit: Int!, $offset: Int!) {
   consensus_blocks(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {
@@ -22453,7 +22249,6 @@ export const LogByIdDocument = gql`
     kind
     value
     block_height
-    timestamp
   }
 }
     `;

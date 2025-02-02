@@ -154,7 +154,6 @@ export const EventList: FC = () => {
         ),
         section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
         module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
-        name: ({ row }: Cell<Row>) => row.original.name.toUpperCase(),
         indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock,
         timestamp: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.timestamp),
       }),

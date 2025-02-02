@@ -18,9 +18,8 @@ import { OperatorStatus } from './staking'
 export const AVAILABLE_COLUMNS: AvailableColumns = {
   accounts: [
     { name: 'id', label: 'Account', isSelected: true, searchable: true },
-    { name: 'nonce', label: 'Nonce', isSelected: false },
-    { name: 'extrinsicsCount', label: 'Extrinsics', isSelected: true },
-    { name: 'free', label: 'Free', isSelected: false },
+    { name: 'nonce', label: 'Nonce', isSelected: true },
+    { name: 'free', label: 'Free', isSelected: true },
     { name: 'reserved', label: 'Locked', isSelected: true },
     { name: 'total', label: 'Balance', isSelected: true },
     { name: 'createdAt', label: 'Created At', isSelected: false },
@@ -47,7 +46,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
     { name: 'section', label: 'Section', isSelected: false, searchable: true },
     { name: 'module', label: 'Module', isSelected: true, searchable: true },
-    { name: 'name', label: 'Action', isSelected: false, searchable: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: false },
     { name: 'success', label: 'Status', isSelected: true, searchable: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
@@ -65,7 +63,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: false, searchable: true },
     { name: 'section', label: 'Section', isSelected: true, searchable: true },
     { name: 'module', label: 'Module', isSelected: true, searchable: true },
-    { name: 'name', label: 'Action', isSelected: false, searchable: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],

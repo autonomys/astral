@@ -67,8 +67,8 @@ function Screen({
     height: blockById?.height ?? '0',
     hash: blockById?.hash ?? '0',
     timestamp: blockById?.state_root ?? '0',
-    extrinsicsCount: blockById?.extrinsics_count ?? '0',
-    eventsCount: blockById?.events_count ?? '0',
+    extrinsicsCount: blockById?.extrinsicsCount ?? '0',
+    eventsCount: blockById?.eventsCount ?? '0',
     blockAuthor: blockById?.author_id ?? '',
   }
   const title = `${metadata.title} - ${chainMatch.title} - Block`

@@ -42,7 +42,6 @@ interface ExplorerQueryState {
     log: QueryState<GqlT.LogByIdQuery>
 
     accountExtrinsic: QueryState<GqlT.ExtrinsicsByAccountIdQuery>
-    accountPreviousReward: QueryState<GqlT.AllRewardForAccountByIdQuery>
     accountRewardGraph: QueryState<GqlT.LatestRewardsWeekQuery>
     accountReward: QueryState<GqlT.RewardsListQuery>
     accountTransfers: QueryState<GqlT.TransfersByAccountIdQuery>
@@ -75,7 +74,6 @@ interface ExplorerQueryState {
     domain: QueryState<GqlT.DomainByIdQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
-    claim: QueryState<GqlT.ExtrinsicsByHashQuery>
     stakingSummary: QueryState<GqlT.StakingSummaryQuery>
     lastExtrinsics: QueryState<GqlT.ExtrinsicsSummaryQuery>
     leaderboard: QueryState<GqlT.AccountsTopLeaderboardQuery>
@@ -113,7 +111,6 @@ const initialState: ExplorerQueryState = {
     log: initialized,
 
     accountExtrinsic: initialized,
-    accountPreviousReward: initialized,
     accountRewardGraph: initialized,
     accountReward: initialized,
     accountTransfers: initialized,
@@ -148,7 +145,6 @@ const initialState: ExplorerQueryState = {
     domain: initialized,
   },
   walletSidekick: {
-    claim: initialized,
     stakingSummary: initialized,
     lastExtrinsics: initialized,
     leaderboard: initialized,

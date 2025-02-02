@@ -133,7 +133,6 @@ export const ExtrinsicList: FC = () => {
         ),
         section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
         module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
-        name: ({ row }: Cell<Row>) => row.original.name.toUpperCase(),
         blockHeight: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-extrinsic-block_height`}

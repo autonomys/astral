@@ -5,7 +5,6 @@ import { EXTERNAL_ROUTES } from 'constants/routes'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
-// import { ClaimStakingToken } from './Actions/ClaimStakingToken'
 import { ConnectDiscord } from './Actions/ConnectDiscord'
 import { JoinDiscord } from './Actions/JoinDiscord'
 import { VerifyWalletOwnership } from './Actions/VerifyWalletOwnership'
@@ -86,7 +85,6 @@ export const GetDiscordRoles: FC = () => {
             <VerifyWalletOwnership />
             <ConnectDiscord />
           </List>
-          {/* <ClaimStakingToken /> */}
         </Accordion>
         <ExplainerLinkAndModal />
       </div>
