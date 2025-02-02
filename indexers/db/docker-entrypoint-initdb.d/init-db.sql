@@ -309,6 +309,7 @@ CREATE TABLE consensus.blocks (
     blockchain_size NUMERIC NOT NULL,
     extrinsics_count INTEGER NOT NULL,
     events_count INTEGER NOT NULL,
+    logs_count INTEGER NOT NULL,
     transfers_count INTEGER NOT NULL,
     rewards_count INTEGER NOT NULL,
     block_rewards_count INTEGER NOT NULL,
@@ -327,6 +328,7 @@ CREATE TABLE consensus.cumulative_blocks (
     id TEXT NOT NULL,
     cumulative_extrinsics_count NUMERIC NOT NULL,
     cumulative_events_count NUMERIC NOT NULL,
+    cumulative_logs_count NUMERIC NOT NULL,
     cumulative_transfers_count NUMERIC NOT NULL,
     cumulative_rewards_count NUMERIC NOT NULL,
     cumulative_block_rewards_count NUMERIC NOT NULL,
@@ -2193,6 +2195,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
     IF prev_cumulative IS NULL THEN
       prev_cumulative.cumulative_extrinsics_count := 0;
       prev_cumulative.cumulative_events_count := 0;
+      prev_cumulative.cumulative_logs_count := 0;
       prev_cumulative.cumulative_transfers_count := 0;
       prev_cumulative.cumulative_rewards_count := 0;
       prev_cumulative.cumulative_block_rewards_count := 0;
@@ -2207,6 +2210,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
       id,
       cumulative_extrinsics_count,
       cumulative_events_count,
+      cumulative_logs_count,
       cumulative_transfers_count,
       cumulative_rewards_count,
       cumulative_block_rewards_count,
@@ -2220,6 +2224,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
       NEW.id,
       prev_cumulative.cumulative_extrinsics_count + NEW.extrinsics_count,
       prev_cumulative.cumulative_events_count + NEW.events_count,
+      prev_cumulative.cumulative_logs_count + NEW.logs_count,
       prev_cumulative.cumulative_transfers_count + NEW.transfers_count,
       prev_cumulative.cumulative_rewards_count + NEW.rewards_count,
       prev_cumulative.cumulative_block_rewards_count + NEW.block_rewards_count,
@@ -2232,6 +2237,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
     ON CONFLICT (id) DO UPDATE SET
       cumulative_extrinsics_count = prev_cumulative.cumulative_extrinsics_count + NEW.extrinsics_count,
       cumulative_events_count = prev_cumulative.cumulative_events_count + NEW.events_count,
+      cumulative_logs_count = prev_cumulative.cumulative_logs_count + NEW.logs_count,
       cumulative_transfers_count = prev_cumulative.cumulative_transfers_count + NEW.transfers_count,
       cumulative_rewards_count = prev_cumulative.cumulative_rewards_count + NEW.rewards_count,
       cumulative_block_rewards_count = prev_cumulative.cumulative_block_rewards_count + NEW.block_rewards_count,
