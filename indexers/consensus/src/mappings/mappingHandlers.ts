@@ -160,6 +160,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         BigInt(extrinsic.nonce.toString()),
         extrinsicSigner,
         extrinsic.signature.toString(),
+        extrinsicEvents.length,
         args,
         error,
         BigInt(extrinsic.tip.toString()),

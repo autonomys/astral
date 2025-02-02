@@ -51,6 +51,7 @@ type Extrinsic @entity {
   nonce: BigInt!
   signer: String!
   signature: String!
+  eventsCount: Int!
   args: String!
   error: String!
   tip: BigInt!
