@@ -1,4 +1,34 @@
+import { Entity } from "@subql/types-core";
+import { ZERO_BIGINT } from "./constants";
 import { getSortId, moduleName } from "./utils";
+
+export type Cache = {
+  rewards: Entity[];
+  transfers: Entity[];
+
+  addressToUpdate: Set<string>;
+  // Totals
+  totalBlockRewardsCount: number;
+  totalVoteRewardsCount: number;
+  totalTransferValue: bigint;
+  totalRewardValue: bigint;
+  totalBlockRewardValue: bigint;
+  totalVoteRewardValue: bigint;
+};
+
+export const initializeCache = (): Cache => ({
+  rewards: [],
+  transfers: [],
+
+  addressToUpdate: new Set<string>(),
+  // Totals
+  totalBlockRewardsCount: 0,
+  totalVoteRewardsCount: 0,
+  totalTransferValue: ZERO_BIGINT,
+  totalRewardValue: ZERO_BIGINT,
+  totalBlockRewardValue: ZERO_BIGINT,
+  totalVoteRewardValue: ZERO_BIGINT,
+});
 
 // Core Consensus DB Functions
 

@@ -12,6 +12,7 @@ type RuntimeCreation @entity {
   createdBy: String!
   blockHeight: BigInt!
   extrinsicId: String!
+  eventId: String!
 }
 
 type DomainInstantiation @entity {
@@ -24,6 +25,7 @@ type DomainInstantiation @entity {
   createdBy: String!
   blockHeight: BigInt!
   extrinsicId: String!
+  eventId: String!
 }
 
 type OperatorRegistration @entity {
@@ -36,6 +38,7 @@ type OperatorRegistration @entity {
   nominationTax: Int!
   blockHeight: BigInt!
   extrinsicId: String!
+  eventId: String!
 }
 
 type DepositEvent @entity {
@@ -51,15 +54,28 @@ type DepositEvent @entity {
   timestamp: Date!
   blockHeight: BigInt!
   extrinsicId: String!
+  eventId: String!
 }
 
 type OperatorReward @entity {
   id: ID!
+  domainId: String!
   operatorId: String!
   amount: BigInt!
   atBlockNumber: BigInt!
   blockHeight: BigInt!
   extrinsicId: String!
+  eventId: String!
+}
+
+type OperatorTaxCollection @entity {
+  id: ID!
+  domainId: String!
+  operatorId: String!
+  amount: BigInt!
+  blockHeight: BigInt!
+  extrinsicId: String!
+  eventId: String!
 }
 
 type BundleSubmission @entity {
@@ -87,6 +103,7 @@ type BundleSubmission @entity {
   consensusStorageFee: BigInt!
   domainExecutionFee: BigInt!
   burnedBalance: BigInt!
+  eventId: String!
 }
 
 # Chain states entities
@@ -114,11 +131,11 @@ type OperatorStakingHistory @entity {
   currentDomainId: String!
   currentTotalStake: BigInt!
   currentTotalShares: BigInt!
-  currentEpochRewards: BigInt!
   depositsInEpoch: BigInt!
   withdrawalsInEpoch: BigInt!
   totalStorageFeeDeposit: BigInt!
   sharePrice: BigInt!
+  partialStatus: String!
   blockHeight: BigInt!
 }
 

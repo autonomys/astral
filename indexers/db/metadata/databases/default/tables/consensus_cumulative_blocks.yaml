@@ -19,6 +19,7 @@ select_permissions:
         - cumulative_block_rewards_count
         - cumulative_events_count
         - cumulative_extrinsics_count
+        - cumulative_logs_count
         - cumulative_reward_value
         - cumulative_rewards_count
         - cumulative_transfer_value
