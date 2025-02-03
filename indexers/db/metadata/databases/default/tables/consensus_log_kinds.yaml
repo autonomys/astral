@@ -18,5 +18,6 @@ select_permissions:
         - id
         - kind
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

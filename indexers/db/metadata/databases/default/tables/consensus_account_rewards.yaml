@@ -36,4 +36,5 @@ select_permissions:
         - id
         - _id
       filter: {}
+      limit: 50
     comment: ""

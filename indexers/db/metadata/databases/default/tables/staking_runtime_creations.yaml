@@ -15,6 +15,7 @@ select_permissions:
         - _block_range
         - block_height
         - created_by
+        - event_id
         - extrinsic_id
         - id
         - name
@@ -22,4 +23,5 @@ select_permissions:
         - type
         - _id
       filter: {}
+      limit: 50
     comment: ""

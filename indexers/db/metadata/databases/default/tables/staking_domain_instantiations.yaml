@@ -16,6 +16,7 @@ select_permissions:
         - runtime_id
         - block_height
         - created_by
+        - event_id
         - extrinsic_id
         - id
         - name
@@ -24,4 +25,5 @@ select_permissions:
         - sort_id
         - _id
       filter: {}
+      limit: 50
     comment: ""

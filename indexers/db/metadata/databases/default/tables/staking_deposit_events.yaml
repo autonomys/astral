@@ -19,6 +19,7 @@ select_permissions:
         - total_amount
         - account_id
         - domain_id
+        - event_id
         - extrinsic_id
         - id
         - nominator_id
@@ -27,4 +28,5 @@ select_permissions:
         - timestamp
         - _id
       filter: {}
+      limit: 50
     comment: ""

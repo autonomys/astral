@@ -309,6 +309,7 @@ CREATE TABLE consensus.blocks (
     blockchain_size NUMERIC NOT NULL,
     extrinsics_count INTEGER NOT NULL,
     events_count INTEGER NOT NULL,
+    logs_count INTEGER NOT NULL,
     transfers_count INTEGER NOT NULL,
     rewards_count INTEGER NOT NULL,
     block_rewards_count INTEGER NOT NULL,
@@ -327,6 +328,7 @@ CREATE TABLE consensus.cumulative_blocks (
     id TEXT NOT NULL,
     cumulative_extrinsics_count NUMERIC NOT NULL,
     cumulative_events_count NUMERIC NOT NULL,
+    cumulative_logs_count NUMERIC NOT NULL,
     cumulative_transfers_count NUMERIC NOT NULL,
     cumulative_rewards_count NUMERIC NOT NULL,
     cumulative_block_rewards_count NUMERIC NOT NULL,
@@ -388,6 +390,7 @@ CREATE TABLE consensus.extrinsics (
     nonce NUMERIC NOT NULL,
     signer TEXT NOT NULL,
     signature TEXT NOT NULL,
+    events_count INTEGER NOT NULL,
     args JSONB NOT NULL,
     error TEXT NOT NULL,
     tip NUMERIC NOT NULL,
@@ -447,7 +450,9 @@ CREATE TABLE consensus.transfers (
     extrinsic_id TEXT NOT NULL,
     event_id TEXT NOT NULL,
     "from" TEXT NOT NULL,
+    from_chain TEXT NOT NULL,
     "to" TEXT NOT NULL,
+    to_chain TEXT NOT NULL,
     value NUMERIC NOT NULL,
     fee NUMERIC NOT NULL,
     success BOOLEAN NOT NULL,
@@ -1055,6 +1060,8 @@ CREATE TABLE files.cids (
     extrinsic_hash TEXT NOT NULL,
     index_in_block INTEGER NOT NULL,
     links JSONB NOT NULL,
+    blake3_hash TEXT NOT NULL,
+    is_archived BOOLEAN NOT NULL,
     "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
@@ -1086,8 +1093,11 @@ ALTER TABLE files.file_cids OWNER TO postgres;
 
 CREATE TABLE files.files (
     id TEXT NOT NULL,
+    sort_id TEXT NOT NULL,
     size NUMERIC NOT NULL,
     name TEXT,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
 );
@@ -1104,8 +1114,11 @@ ALTER TABLE files.folder_cids OWNER TO postgres;
 
 CREATE TABLE files.folders (
     id TEXT NOT NULL,
+    sort_id TEXT NOT NULL,
     size NUMERIC NOT NULL,
     name TEXT,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
 );
@@ -1113,8 +1126,11 @@ ALTER TABLE files.folders OWNER TO postgres;
 
 CREATE TABLE files.metadata (
     id TEXT NOT NULL,
+    sort_id TEXT NOT NULL,
     size NUMERIC NOT NULL,
     name TEXT,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
 );
@@ -1163,6 +1179,7 @@ CREATE TABLE staking.bundle_submissions (
     consensus_storage_fee numeric NOT NULL,
     domain_execution_fee numeric NOT NULL,
     burned_balance numeric NOT NULL,
+    event_id text NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -1181,6 +1198,7 @@ CREATE TABLE staking.deposit_events (
     "timestamp" timestamp without time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -1278,6 +1296,7 @@ CREATE TABLE staking.domain_instantiations (
     created_by text NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -1387,6 +1406,7 @@ CREATE TABLE staking.operator_registrations (
     nomination_tax integer NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -1394,15 +1414,30 @@ ALTER TABLE staking.operator_registrations OWNER TO postgres;
 
 CREATE TABLE staking.operator_rewards (
     id text NOT NULL,
+    domain_id text NOT NULL,
     operator_id text NOT NULL,
     amount numeric NOT NULL,
     at_block_number numeric NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
 ALTER TABLE staking.operator_rewards OWNER TO postgres;
+
+CREATE TABLE staking.operator_tax_collections (
+    id text NOT NULL,
+    domain_id text NOT NULL,
+    operator_id text NOT NULL,
+    amount numeric NOT NULL,
+    block_height numeric NOT NULL,
+    extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.operator_tax_collections OWNER TO postgres;
 
 CREATE TABLE staking.operator_staking_histories (
     id text NOT NULL,
@@ -1412,11 +1447,11 @@ CREATE TABLE staking.operator_staking_histories (
     current_domain_id text NOT NULL,
     current_total_stake numeric NOT NULL,
     current_total_shares numeric NOT NULL,
-    current_epoch_rewards numeric NOT NULL,
     deposits_in_epoch numeric NOT NULL,
     withdrawals_in_epoch numeric NOT NULL,
     total_storage_fee_deposit numeric NOT NULL,
     share_price numeric NOT NULL,
+    partial_status text NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
@@ -1478,6 +1513,7 @@ CREATE TABLE staking.runtime_creations (
     created_by text NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -1852,6 +1888,9 @@ ALTER TABLE ONLY staking.operator_registrations
 ALTER TABLE ONLY staking.operator_rewards
     ADD CONSTRAINT operator_rewards_pkey PRIMARY KEY (_id);
 
+ALTER TABLE ONLY staking.operator_tax_collections
+    ADD CONSTRAINT operator_tax_collections_pkey PRIMARY KEY (_id);
+
 ALTER TABLE ONLY staking.operator_staking_histories
     ADD CONSTRAINT operator_staking_histories_pkey PRIMARY KEY (_id);
 
@@ -2018,9 +2057,15 @@ CREATE INDEX "leaderboard_account_extrinsic_failed_total_count_histories_account
 CREATE INDEX "0xf8a25fbf0822721a" ON leaderboard.account_remark_counts USING btree (rank);
 
 CREATE INDEX "0x1186578888875727" ON files.folders USING btree (id);
+CREATE INDEX "files_folders_block_height" ON files.folders USING btree (block_height);
+CREATE INDEX "files_folders_sort_id" ON files.folders USING btree (sort_id DESC);
 CREATE INDEX "0x68de2b24ed2b1879" ON files.errors USING btree (id);
 CREATE INDEX "0x9831414911f0da25" ON files.files USING btree (id);
+CREATE INDEX "files_files_block_height" ON files.files USING btree (block_height);
+CREATE INDEX "files_files_sort_id" ON files.files USING btree (sort_id DESC);
 CREATE INDEX "0xa00ebe7be447c522" ON files.metadata USING btree (id);
+CREATE INDEX "files_metadata_block_height" ON files.metadata USING btree (block_height);
+CREATE INDEX "files_metadata_sort_id" ON files.metadata USING btree (sort_id DESC);
 CREATE INDEX "0xc48b083269566769" ON files.file_cids USING btree (id);
 CREATE INDEX "files_file_cids_parent_cid" ON files.file_cids USING btree (parent_cid);
 CREATE INDEX "0xc822e1f44430d2bc" ON files.metadata_cids USING btree (id);
@@ -2034,6 +2079,7 @@ CREATE INDEX "files_folder_cids_parent_cid" ON files.folder_cids USING btree (pa
 CREATE INDEX "0x2e3c877df846cf68" ON staking.operators USING btree (id);
 CREATE INDEX "0x37bedb20b3490374" ON staking.withdrawals USING btree (id);
 CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
+CREATE INDEX "0x3a7ed99d2776ff11" ON staking.operator_tax_collections USING btree (id);
 CREATE INDEX "0x4cb388e53e3e30f3" ON staking.accounts USING btree (id);
 CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (id);
 CREATE INDEX "0x59e52a1d9c35dee5" ON staking.domain_block_histories USING btree (id);
@@ -2192,6 +2238,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
     IF prev_cumulative IS NULL THEN
       prev_cumulative.cumulative_extrinsics_count := 0;
       prev_cumulative.cumulative_events_count := 0;
+      prev_cumulative.cumulative_logs_count := 0;
       prev_cumulative.cumulative_transfers_count := 0;
       prev_cumulative.cumulative_rewards_count := 0;
       prev_cumulative.cumulative_block_rewards_count := 0;
@@ -2206,6 +2253,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
       id,
       cumulative_extrinsics_count,
       cumulative_events_count,
+      cumulative_logs_count,
       cumulative_transfers_count,
       cumulative_rewards_count,
       cumulative_block_rewards_count,
@@ -2219,6 +2267,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
       NEW.id,
       prev_cumulative.cumulative_extrinsics_count + NEW.extrinsics_count,
       prev_cumulative.cumulative_events_count + NEW.events_count,
+      prev_cumulative.cumulative_logs_count + NEW.logs_count,
       prev_cumulative.cumulative_transfers_count + NEW.transfers_count,
       prev_cumulative.cumulative_rewards_count + NEW.rewards_count,
       prev_cumulative.cumulative_block_rewards_count + NEW.block_rewards_count,
@@ -2231,6 +2280,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
     ON CONFLICT (id) DO UPDATE SET
       cumulative_extrinsics_count = prev_cumulative.cumulative_extrinsics_count + NEW.extrinsics_count,
       cumulative_events_count = prev_cumulative.cumulative_events_count + NEW.events_count,
+      cumulative_logs_count = prev_cumulative.cumulative_logs_count + NEW.logs_count,
       cumulative_transfers_count = prev_cumulative.cumulative_transfers_count + NEW.transfers_count,
       cumulative_rewards_count = prev_cumulative.cumulative_rewards_count + NEW.rewards_count,
       cumulative_block_rewards_count = prev_cumulative.cumulative_block_rewards_count + NEW.block_rewards_count,

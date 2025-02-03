@@ -87,14 +87,14 @@ export type LogsFilters = {
 }
 
 export type FilesFilters = {
-  cid: string
+  id: string
   name: string
   blockHeightMin: string
   blockHeightMax: string
 }
 
 export type FoldersFilters = {
-  cid: string
+  id: string
   name: string
   blockHeightMin: string
   blockHeightMax: string

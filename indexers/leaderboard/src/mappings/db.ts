@@ -25,7 +25,7 @@ import {
   OperatorWithdrawalsTotalCountHistory,
 } from "../types";
 
-type Cache = {
+export type Cache = {
   accountExtrinsicFailedTotalCountHistory: AccountExtrinsicFailedTotalCountHistory[];
   accountExtrinsicSuccessTotalCountHistory: AccountExtrinsicSuccessTotalCountHistory[];
   accountExtrinsicTotalCountHistory: AccountExtrinsicTotalCountHistory[];
