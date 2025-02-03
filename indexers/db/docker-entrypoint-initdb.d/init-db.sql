@@ -1060,6 +1060,8 @@ CREATE TABLE files.cids (
     extrinsic_hash TEXT NOT NULL,
     index_in_block INTEGER NOT NULL,
     links JSONB NOT NULL,
+    blake3_hash TEXT NOT NULL,
+    is_archived BOOLEAN NOT NULL,
     "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
@@ -1091,8 +1093,11 @@ ALTER TABLE files.file_cids OWNER TO postgres;
 
 CREATE TABLE files.files (
     id TEXT NOT NULL,
+    sort_id TEXT NOT NULL,
     size NUMERIC NOT NULL,
     name TEXT,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
 );
@@ -1109,8 +1114,11 @@ ALTER TABLE files.folder_cids OWNER TO postgres;
 
 CREATE TABLE files.folders (
     id TEXT NOT NULL,
+    sort_id TEXT NOT NULL,
     size NUMERIC NOT NULL,
     name TEXT,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
 );
@@ -1118,8 +1126,11 @@ ALTER TABLE files.folders OWNER TO postgres;
 
 CREATE TABLE files.metadata (
     id TEXT NOT NULL,
+    sort_id TEXT NOT NULL,
     size NUMERIC NOT NULL,
     name TEXT,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL
 );
@@ -2046,9 +2057,15 @@ CREATE INDEX "leaderboard_account_extrinsic_failed_total_count_histories_account
 CREATE INDEX "0xf8a25fbf0822721a" ON leaderboard.account_remark_counts USING btree (rank);
 
 CREATE INDEX "0x1186578888875727" ON files.folders USING btree (id);
+CREATE INDEX "files_folders_block_height" ON files.folders USING btree (block_height);
+CREATE INDEX "files_folders_sort_id" ON files.folders USING btree (sort_id DESC);
 CREATE INDEX "0x68de2b24ed2b1879" ON files.errors USING btree (id);
 CREATE INDEX "0x9831414911f0da25" ON files.files USING btree (id);
+CREATE INDEX "files_files_block_height" ON files.files USING btree (block_height);
+CREATE INDEX "files_files_sort_id" ON files.files USING btree (sort_id DESC);
 CREATE INDEX "0xa00ebe7be447c522" ON files.metadata USING btree (id);
+CREATE INDEX "files_metadata_block_height" ON files.metadata USING btree (block_height);
+CREATE INDEX "files_metadata_sort_id" ON files.metadata USING btree (sort_id DESC);
 CREATE INDEX "0xc48b083269566769" ON files.file_cids USING btree (id);
 CREATE INDEX "files_file_cids_parent_cid" ON files.file_cids USING btree (parent_cid);
 CREATE INDEX "0xc822e1f44430d2bc" ON files.metadata_cids USING btree (id);
