@@ -17,6 +17,7 @@ select_permissions:
         - block_height
         - minimum_nominator_stake
         - domain_id
+        - event_id
         - extrinsic_id
         - id
         - owner

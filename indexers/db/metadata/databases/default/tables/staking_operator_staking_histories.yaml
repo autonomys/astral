@@ -24,6 +24,7 @@ select_permissions:
         - id
         - operator_id
         - operator_owner
+        - partial_status
         - signing_key
         - _id
       filter: {}
