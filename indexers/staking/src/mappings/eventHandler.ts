@@ -28,12 +28,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     cache,
     extrinsicSigner,
     height,
-    blockTimestamp,
     extrinsicId,
     eventId,
     extrinsic,
-    extrinsicEvents,
-    operatorStates,
   }) => {
     const runtimeId = event.event.data[0].toString();
     const runtimeType = event.event.data[1].toString();
@@ -57,12 +54,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     cache,
     extrinsicSigner,
     height,
-    blockTimestamp,
     extrinsicId,
     eventId,
     extrinsic,
-    extrinsicEvents,
-    operatorStates,
   }) => {
     const domainId = event.event.data[0].toString();
     const extrinsicArgs = extrinsic.method.args[0].toPrimitive() as any;
@@ -93,7 +87,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     eventId,
     extrinsic,
     extrinsicEvents,
-    operatorStates,
   }) => {
     const operatorId = event.event.data[0].toString();
     const domainId = event.event.data[1].toString();
@@ -143,12 +136,10 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   "domains.OperatorNominated": ({
     event,
     cache,
-    extrinsicSigner,
     height,
     blockTimestamp,
     extrinsicId,
     eventId,
-    extrinsic,
     extrinsicEvents,
     operatorStates,
   }) => {
@@ -185,22 +176,15 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   "domains.OperatorRewarded": ({
     event,
     cache,
-    extrinsicSigner,
     height,
-    blockTimestamp,
     extrinsicId,
     eventId,
-    extrinsic,
-    extrinsicEvents,
     operatorStates,
   }) => {
     const bundleDetails = event.event.data[0].toPrimitive() as any;
     const operatorId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
     const atBlockNumber = BigInt(bundleDetails.bundle.atBlockNumber.toString());
-    // const opFromStateEntity = cache.operatorStakingHistory.find(
-    //   (o) => o.operatorId === operatorId
-    // );
     const opFromStateEntity = operatorStates.get(operatorId);
     if (!opFromStateEntity) throw new Error("Operator state entity not found");
     const domainId = opFromStateEntity?.currentDomainId;
@@ -220,20 +204,13 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   "domains.OperatorTaxCollected": ({
     event,
     cache,
-    extrinsicSigner,
     height,
-    blockTimestamp,
     extrinsicId,
     eventId,
-    extrinsic,
-    extrinsicEvents,
     operatorStates,
   }) => {
     const operatorId = event.event.data[0].toString();
     const tax = BigInt(event.event.data[1].toString());
-    // const opFromStateEntity = cache.operatorStakingHistory.find(
-    //   (o) => o.operatorId === operatorId
-    // );
     const opFromStateEntity = operatorStates.get(operatorId);
     if (!opFromStateEntity) throw new Error("Operator state entity not found");
     const domainId = opFromStateEntity?.currentDomainId;
@@ -253,13 +230,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     event,
     cache,
     extrinsicSigner,
-    height,
-    blockTimestamp,
-    extrinsicId,
     eventId,
     extrinsic,
-    extrinsicEvents,
-    operatorStates,
   }) => {
     const bundleHash = event.event.data[1].toString();
     const _extrinsic = extrinsic.method.args[0].toPrimitive() as any;
@@ -277,12 +249,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       transfers,
     } = header.receipt;
 
-    const {
-      consensusStorageFee,
-      domainExecutionFee,
-      burnedBalance,
-      // chainRewards,
-    } = blockFees;
+    const { consensusStorageFee, domainExecutionFee, burnedBalance } =
+      blockFees;
     const {
       transfersIn,
       transfersOut,
