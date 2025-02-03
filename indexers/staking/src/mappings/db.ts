@@ -8,11 +8,12 @@ import {
   OperatorRegistration,
   OperatorReward,
   OperatorStakingHistory,
+  OperatorTaxCollection,
   RuntimeCreation,
 } from "../types";
 import { getSortId } from "./utils";
 
-type Cache = {
+export type Cache = {
   bundleSubmission: BundleSubmission[];
   depositEvent: DepositEvent[];
   depositHistory: DepositHistory[];
@@ -22,6 +23,7 @@ type Cache = {
   operatorRegistration: OperatorRegistration[];
   operatorStakingHistory: OperatorStakingHistory[];
   operatorReward: OperatorReward[];
+  operatorTaxCollection: OperatorTaxCollection[];
   runtimeCreation: RuntimeCreation[];
 };
 
@@ -33,8 +35,9 @@ export const initializeCache = (): Cache => ({
   domainInstantiation: [],
   domainStakingHistory: [],
   operatorRegistration: [],
-  operatorReward: [],
   operatorStakingHistory: [],
+  operatorReward: [],
+  operatorTaxCollection: [],
   runtimeCreation: [],
 });
 
@@ -47,8 +50,9 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(`DomainInstantiation`, cache.domainInstantiation),
     store.bulkCreate(`DomainStakingHistory`, cache.domainStakingHistory),
     store.bulkCreate(`OperatorRegistration`, cache.operatorRegistration),
-    store.bulkCreate(`OperatorReward`, cache.operatorReward),
     store.bulkCreate(`OperatorStakingHistory`, cache.operatorStakingHistory),
+    store.bulkCreate(`OperatorReward`, cache.operatorReward),
+    store.bulkCreate(`OperatorTaxCollection`, cache.operatorTaxCollection),
     store.bulkCreate(`RuntimeCreation`, cache.runtimeCreation),
   ]);
 };
@@ -59,7 +63,8 @@ export function createRuntimeCreation(
   type: string,
   createdBy: string,
   blockHeight: bigint,
-  extrinsicId: string
+  extrinsicId: string,
+  eventId: string
 ): RuntimeCreation {
   return RuntimeCreation.create({
     id: runtimeId,
@@ -69,6 +74,7 @@ export function createRuntimeCreation(
     createdBy,
     blockHeight,
     extrinsicId,
+    eventId,
   });
 }
 
@@ -80,7 +86,8 @@ export function createDomainInstantiation(
   runtimeInfo: string,
   createdBy: string,
   blockHeight: bigint,
-  extrinsicId: string
+  extrinsicId: string,
+  eventId: string
 ): DomainInstantiation {
   const id = domainId.toLowerCase();
   return DomainInstantiation.create({
@@ -93,6 +100,7 @@ export function createDomainInstantiation(
     createdBy,
     blockHeight,
     extrinsicId,
+    eventId,
   });
 }
 
@@ -104,12 +112,12 @@ export function createOperatorRegistration(
   minimumNominatorStake: bigint,
   nominationTax: number,
   blockHeight: bigint,
-  extrinsicId: string
+  extrinsicId: string,
+  eventId: string
 ): OperatorRegistration {
-  const id = operatorId.toLowerCase();
   return OperatorRegistration.create({
-    id,
-    sortId: getSortId(domainId, id),
+    id: operatorId,
+    sortId: getSortId(domainId, operatorId),
     owner,
     domainId,
     signingKey,
@@ -117,6 +125,7 @@ export function createOperatorRegistration(
     nominationTax,
     blockHeight,
     extrinsicId,
+    eventId,
   });
 }
 
@@ -128,40 +137,63 @@ export function createDepositEvent(
   storageFeeDeposit: bigint,
   timestamp: Date,
   blockHeight: bigint,
-  extrinsicId: string
+  extrinsicId: string,
+  eventId: string
 ): DepositEvent {
-  const nominatorId = `${accountId}-${domainId}-${operatorId}`;
-  const id = `${blockHeight}-${extrinsicId}-${nominatorId}`;
   return DepositEvent.create({
-    id,
-    sortId: `${getSortId(blockHeight, extrinsicId)}`,
+    id: extrinsicId + "-" + accountId + "-" + domainId + "-" + operatorId,
+    sortId: getSortId(blockHeight, extrinsicId),
     accountId,
     domainId,
     operatorId,
-    nominatorId,
+    nominatorId: accountId + "-" + domainId + "-" + operatorId,
     amount,
     storageFeeDeposit,
     totalAmount: amount + storageFeeDeposit,
     timestamp,
     blockHeight,
     extrinsicId,
+    eventId,
   });
 }
 
 export function createOperatorReward(
+  domainId: string,
   operatorId: string,
   amount: bigint,
   atBlockNumber: bigint,
   blockHeight: bigint,
-  extrinsicId: string
+  extrinsicId: string,
+  eventId: string
 ): OperatorReward {
   return OperatorReward.create({
     id: extrinsicId,
+    domainId,
     operatorId,
     amount,
     atBlockNumber,
     blockHeight,
     extrinsicId,
+    eventId,
+  });
+}
+
+export function createOperatorTaxCollection(
+  domainId: string,
+  operatorId: string,
+  amount: bigint,
+  blockHeight: bigint,
+  extrinsicId: string,
+  eventId: string
+): OperatorTaxCollection {
+  return OperatorTaxCollection.create({
+    id: extrinsicId,
+    domainId,
+    operatorId,
+    amount,
+    blockHeight,
+    extrinsicId,
+    eventId,
   });
 }
 
@@ -187,13 +219,13 @@ export function createBundleSubmission(
   totalVolume: bigint,
   consensusStorageFee: bigint,
   domainExecutionFee: bigint,
-  burnedBalance: bigint
+  burnedBalance: bigint,
+  eventId: string
 ): BundleSubmission {
-  const bundleId = `${domainId}-${id.toLowerCase()}`;
   return BundleSubmission.create({
-    id: bundleId,
+    id: domainId + "-" + id,
     accountId,
-    bundleId,
+    bundleId: id,
     domainId,
     domainBlockId,
     operatorId,
@@ -215,6 +247,7 @@ export function createBundleSubmission(
     consensusStorageFee,
     domainExecutionFee,
     burnedBalance,
+    eventId,
   });
 }
 
@@ -256,11 +289,11 @@ export function createOperatorStakingHistory(
   currentDomainId: string,
   currentTotalStake: bigint,
   currentTotalShares: bigint,
-  currentEpochRewards: bigint,
   depositsInEpoch: bigint,
   withdrawalsInEpoch: bigint,
   totalStorageFeeDeposit: bigint,
   sharePrice: bigint,
+  partialStatus: string,
   blockHeight: bigint
 ): OperatorStakingHistory {
   return OperatorStakingHistory.create({
@@ -271,11 +304,11 @@ export function createOperatorStakingHistory(
     currentDomainId,
     currentTotalStake,
     currentTotalShares,
-    currentEpochRewards,
     depositsInEpoch,
     withdrawalsInEpoch,
     totalStorageFeeDeposit,
     sharePrice,
+    partialStatus,
     blockHeight,
   });
 }
@@ -298,7 +331,7 @@ export function createDepositHistory(
     id: hash,
     accountId,
     operatorId,
-    nominatorId: `${accountId}-${operatorId}`,
+    nominatorId: accountId + "-" + operatorId,
     shares,
     storageFeeDeposit,
     sharesKnown,

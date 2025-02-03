@@ -14,7 +14,6 @@ select_permissions:
       columns:
         - _block_range
         - block_height
-        - current_epoch_rewards
         - current_total_shares
         - current_total_stake
         - deposits_in_epoch
