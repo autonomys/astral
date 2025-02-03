@@ -19,6 +19,7 @@ select_permissions:
         - total_amount
         - account_id
         - domain_id
+        - event_id
         - extrinsic_id
         - id
         - nominator_id

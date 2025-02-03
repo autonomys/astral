@@ -35,6 +35,7 @@ select_permissions:
         - domain_block_hash
         - domain_block_id
         - domain_id
+        - event_id
         - id
         - operator_id
         - _id
