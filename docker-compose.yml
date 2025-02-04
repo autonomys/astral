@@ -82,7 +82,7 @@ services:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_MAX_CONNECTIONS: 100
+      POSTGRES_MAX_CONNECTIONS: 500
       POSTGRES_HOST_AUTH_METHOD: md5
       POSTGRES_INITDB_ARGS: --auth=md5
     ports:
@@ -118,8 +118,6 @@ services:
   hasura:
     image: hasura/graphql-engine:v2.40.0
     depends_on:
-      pgcat:
-        condition: service_healthy
       postgres:
         condition: service_healthy
     volumes:
@@ -128,8 +126,8 @@ services:
     restart: unless-stopped
     environment:
       # Essential Environment Variables
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@pgcat:6432/${DB_DATABASE}
-      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@pgcat:6432/${DB_DATABASE} # Main database connection
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE} # Main database connection
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET} # Admin access secret
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET} # JWT authentication secret
 
