@@ -12,6 +12,7 @@ import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   AccountByIdQuery,
   Order_By as OrderBy,
+  RewardsListDocument,
   RewardsListQuery,
   RewardsListQueryVariables,
 } from 'gql/graphql'
@@ -34,7 +35,6 @@ import { countTablePages } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { AccountDetailsCard } from './AccountDetailsCard'
-import { QUERY_REWARDS_LIST } from './query'
 
 type Row = RewardsListQuery['consensus_rewards'][number]
 
@@ -77,7 +77,7 @@ export const AccountRewardList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<RewardsListQuery, RewardsListQueryVariables>(
-    QUERY_REWARDS_LIST,
+    RewardsListDocument,
     {
       variables,
       skip: !inFocus,
@@ -209,7 +209,7 @@ export const AccountRewardList: FC = () => {
 
   const apolloClient = useApolloClient()
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_REWARDS_LIST, 'consensus_rewards', variables),
+    () => downloadFullData(apolloClient, RewardsListDocument, 'consensus_rewards', variables),
     [apolloClient, variables],
   )
 

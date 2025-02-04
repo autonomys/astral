@@ -9,7 +9,7 @@ import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { NotFound } from 'components/layout/NotFound'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { BlocksQuery, BlocksQueryVariables } from 'gql/graphql'
+import { BlocksDocument, BlocksQuery, BlocksQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -21,7 +21,6 @@ import { useTableSettings } from 'states/tables'
 import { BlocksFilters, Cell } from 'types/table'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { QUERY_BLOCKS } from './query'
 
 type Row = BlocksQuery['consensus_blocks'][number]
 const TABLE = 'blocks'
@@ -107,7 +106,7 @@ export const BlockList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<BlocksQuery, BlocksQueryVariables>(
-    QUERY_BLOCKS,
+    BlocksDocument,
     {
       variables,
       skip: !inFocus,

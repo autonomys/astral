@@ -7,7 +7,12 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { LogsByBlockIdQuery, LogsByBlockIdQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import {
+  LogsByBlockIdDocument,
+  LogsByBlockIdQuery,
+  LogsByBlockIdQueryVariables,
+  Order_By as OrderBy,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -19,7 +24,6 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
-import { QUERY_BLOCK_LOGS } from './query'
 
 type Row = LogsByBlockIdQuery['consensus_logs'][number]
 
@@ -64,7 +68,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logsCount }) => {
     LogsByBlockIdQuery,
     LogsByBlockIdQueryVariables
   >(
-    QUERY_BLOCK_LOGS,
+    LogsByBlockIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -115,7 +119,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logsCount }) => {
   )
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_BLOCK_LOGS, 'consensus_logs', variables),
+    () => downloadFullData(apolloClient, LogsByBlockIdDocument, 'consensus_logs', variables),
     [apolloClient, variables],
   )
 

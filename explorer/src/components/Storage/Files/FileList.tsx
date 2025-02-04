@@ -4,7 +4,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { FilesQuery, FilesQueryVariables } from 'gql/graphql'
+import { FilesDocument, FilesQuery, FilesQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
@@ -16,7 +16,6 @@ import { Cell, FilesFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_FILES } from './query'
 
 type Row = FilesQuery['files_files'][0]
 const TABLE = 'files'
@@ -81,7 +80,7 @@ export const FileList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<FilesQuery, FilesQueryVariables>(
-    QUERY_FILES,
+    FilesDocument,
     {
       variables,
       pollInterval: 6000,

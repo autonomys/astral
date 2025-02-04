@@ -8,7 +8,7 @@ import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { NotFound } from 'components/layout/NotFound'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { AccountsQuery, AccountsQueryVariables } from 'gql/graphql'
+import { AccountsDocument, AccountsQuery, AccountsQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -22,7 +22,6 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { AccountIconWithLink } from '../../common/AccountIcon'
-import { QUERY_ACCOUNTS } from './query'
 
 type Row = AccountsQuery['consensus_accounts'][number]
 const TABLE = 'accounts'
@@ -131,7 +130,7 @@ export const AccountList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<AccountsQuery, AccountsQueryVariables>(
-    QUERY_ACCOUNTS,
+    AccountsDocument,
     {
       variables,
       skip: !inFocus,
@@ -202,7 +201,7 @@ export const AccountList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNTS, 'consensus_' + TABLE, {
+      downloadFullData(apolloClient, AccountsDocument, 'consensus_' + TABLE, {
         orderBy,
         where,
       }),

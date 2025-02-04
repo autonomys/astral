@@ -4,7 +4,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { FilesQuery, FilesQueryVariables, FoldersQuery } from 'gql/graphql'
+import { FoldersDocument, FoldersQuery, FoldersQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
@@ -16,7 +16,6 @@ import { Cell, FilesFilters, FoldersFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_FOLDERS } from './query'
 
 type Row = FoldersQuery['files_folders'][0]
 const TABLE = 'folders'
@@ -80,8 +79,8 @@ export const FolderList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where, orderBy],
   )
 
-  const { loading, setIsVisible } = useIndexersQuery<FilesQuery, FilesQueryVariables>(
-    QUERY_FOLDERS,
+  const { loading, setIsVisible } = useIndexersQuery<FoldersQuery, FoldersQueryVariables>(
+    FoldersDocument,
     {
       variables,
       pollInterval: 6000,
