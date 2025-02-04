@@ -1,9 +1,11 @@
+import Image from 'next/image'
 import { FC, ReactElement, useMemo } from 'react'
 
 type Props = {
   title: string
   value: string
   icon?: ReactElement
+  imagePath?: string
   tooltip?: string | React.ReactNode
   darkBgClass?: string
   additionalClass?: string
@@ -12,6 +14,7 @@ type Props = {
 export const HomeInfoCard: FC<Props> = ({
   title,
   icon,
+  imagePath,
   value,
   darkBgClass,
   additionalClass = '',
@@ -24,13 +27,18 @@ export const HomeInfoCard: FC<Props> = ({
   )
   return (
     <div
-      className={`h-[${icon ? '216px' : '120px'}] w-full min-w-[200px] grow md:min-w-[228px] ${additionalClass}`}
+      className={`h-[${icon || imagePath ? '216px' : '120px'}] w-full min-w-[200px] grow md:min-w-[228px] ${additionalClass}`}
     >
       <div className={`flex h-full flex-col justify-center rounded-[20px] bg-white ${darkBgClass}`}>
-        {icon && (
-          <div className='mb-6 flex w-full items-center justify-center align-middle'>{icon}</div>
+        {imagePath && (
+          <div className='mb-2 mt-2 flex w-full items-center justify-center align-middle'>
+            <Image src={imagePath} alt={title} width={96} height={96} />
+          </div>
         )}
-        <div className='flex w-full flex-col  items-center justify-center align-middle'>
+        {icon && (
+          <div className='mt-6 flex w-full items-center justify-center align-middle'>{icon}</div>
+        )}
+        <div className='flex w-full flex-col items-center justify-center align-middle'>
           <h2 className='mb-2.5 text-center text-xs font-normal text-gray-900 dark:text-white'>
             {title}
           </h2>
