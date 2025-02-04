@@ -1,18 +1,16 @@
-import { Spinner } from '@/components/common/Spinner'
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { ArchivedHistoryIcon, BlockIcon, DocIcon, PieChartIcon, WalletIcon } from 'components/icons'
+import { Spinner } from 'components/common/Spinner'
 import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
+import useMediaQuery from 'hooks/useMediaQuery'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { numberWithCommas } from 'utils/number'
-import { HomeInfoCard } from './HomeInfoCard'
-
-import useMediaQuery from '@/hooks/useMediaQuery'
-import { cn } from '@/utils/cn'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { cn } from 'utils/cn'
+import { numberWithCommas } from 'utils/number'
+import { HomeInfoCard } from './HomeInfoCard'
 
 type TelemetryObject = [string, string, number, number]
 type TelemetryData = TelemetryObject[]
@@ -87,37 +85,37 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
     () => [
       {
         title: 'Processed Blocks',
-        icon: <BlockIcon />,
+        imagePath: '/images/icons/processed-blocks.webp',
         value: blocksCount,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Wallet addresses',
-        icon: <WalletIcon />,
+        imagePath: '/images/icons/wallet-addresses.webp',
         value: accountsCount,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Nodes',
-        icon: <BlockIcon />,
+        imagePath: '/images/icons/total-nodes.webp',
         value: nodeCount,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Space Pledged',
-        icon: <PieChartIcon />,
+        imagePath: '/images/icons/total-space-pledged.webp',
         value: spacePledged,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Archived History Size',
-        icon: <ArchivedHistoryIcon />,
+        imagePath: '/images/icons/archived-history-size.webp',
         value: historySize,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Extrinsics',
-        icon: <DocIcon />,
+        imagePath: '/images/icons/total-extrinsics.webp',
         value: extrinsicsCount,
         darkBgClass: 'dark:bg-boxDark',
       },
@@ -164,9 +162,14 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
           modules={[Pagination]}
           className={cn('flex w-full items-center', isDesktop ? 'mb-12 !p-0' : 'mb-4 !pb-10')}
         >
-          {listOfCards.map(({ title, value, icon, darkBgClass }, index) => (
+          {listOfCards.map(({ title, value, imagePath, darkBgClass }, index) => (
             <SwiperSlide key={`${title}-${index}`}>
-              <HomeInfoCard title={title} value={value} icon={icon} darkBgClass={darkBgClass} />
+              <HomeInfoCard
+                title={title}
+                value={value}
+                imagePath={imagePath}
+                darkBgClass={darkBgClass}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
