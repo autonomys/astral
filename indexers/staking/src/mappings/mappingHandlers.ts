@@ -22,12 +22,20 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   let cache = db.initializeCache();
   let eventIndex = 0;
 
+  // FIX: Between 824014 and 835747 on Taurus Testnet domains.operators() return a parsing error, so in between these blocks, we query at the last valid block instead
+  const apiPatched =
+    unsafeApi && height > 824013 && height < 835748
+      ? await unsafeApi.at(
+          "0x77cc55c79e3adfbe38c79ce3475e2cace1c47e3a04166dc2ca9b1cfd49c26f5f"
+        )
+      : api;
+
   const [domainStakingSummary, headDomainNumber, operatorIdOwner, operators] =
     await Promise.all([
       api.query.domains.domainStakingSummary.entries(),
       api.query.domains.headDomainNumber.entries(),
       api.query.domains.operatorIdOwner.entries(),
-      api.query.domains.operators.entries(),
+      apiPatched.query.domains.operators.entries(),
     ]);
 
   domainStakingSummary.forEach((data) => {
