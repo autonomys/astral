@@ -5,7 +5,7 @@ import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { DomainsListQuery, DomainsListQueryVariables } from 'gql/graphql'
+import { DomainsListDocument, DomainsListQuery, DomainsListQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useIndexers from 'hooks/useIndexers'
@@ -28,7 +28,6 @@ import { AccountIconWithLink } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
-import { QUERY_DOMAIN_LIST } from './query'
 
 type Row = DomainsListQuery['staking_domains'][0]
 const TABLE = 'domains'
@@ -349,7 +348,7 @@ export const DomainsList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<DomainsListQuery, DomainsListQueryVariables>(
-    QUERY_DOMAIN_LIST,
+    DomainsListDocument,
     {
       variables,
       skip: !inFocus,
@@ -364,7 +363,7 @@ export const DomainsList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_DOMAIN_LIST, TABLE, {
+      downloadFullData(apolloClient, DomainsListDocument, TABLE, {
         orderBy,
       }),
     [apolloClient, orderBy],

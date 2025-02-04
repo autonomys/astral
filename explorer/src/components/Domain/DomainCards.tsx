@@ -2,7 +2,12 @@ import { Spinner } from 'components/common/Spinner'
 import { BlockIcon, DocIcon } from 'components/icons'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import {
+  DomainsStatusDocument,
+  DomainsStatusQuery,
+  DomainsStatusQueryVariables,
+  Order_By as OrderBy,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -10,7 +15,6 @@ import Link from 'next/link'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
-import { QUERY_DOMAIN_STATUS } from './query'
 
 interface CardData {
   title: string
@@ -30,7 +34,7 @@ export const DomainCards: FC = () => {
   const { data, loading, error, setIsVisible } = useIndexersQuery<
     DomainsStatusQuery,
     DomainsStatusQueryVariables
-  >(QUERY_DOMAIN_STATUS, {
+  >(DomainsStatusDocument, {
     variables: {
       limit: 10,
       orderBy: [{ id: OrderBy.Asc }],
@@ -99,7 +103,7 @@ export const DomainCards: FC = () => {
                       </div>
                       <div className='mt-2 h-2 w-full rounded-full bg-grayLight dark:bg-grayDarker'>
                         <div
-                          className='to-blueUndertone h-2 rounded-full bg-gradient-to-r from-primaryAccent dark:from-primaryAccent dark:to-pastelBlue'
+                          className='h-2 rounded-full bg-gradient-to-r from-primaryAccent to-blueUndertone dark:from-primaryAccent dark:to-pastelBlue'
                           style={{ width: `${progress}%` }}
                         ></div>
                       </div>

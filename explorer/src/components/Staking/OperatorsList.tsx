@@ -8,7 +8,7 @@ import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
-import { OperatorsListQuery, OperatorsListQueryVariables } from 'gql/graphql'
+import { OperatorsListDocument, OperatorsListQuery, OperatorsListQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useIndexers from 'hooks/useIndexers'
@@ -42,7 +42,6 @@ import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { QUERY_OPERATOR_LIST } from './query'
 
 type Row = OperatorsListQuery['staking_operators'][0] & { nominatorsCount: number }
 const TABLE = 'operators'
@@ -505,7 +504,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     OperatorsListQuery,
     OperatorsListQueryVariables
   >(
-    QUERY_OPERATOR_LIST,
+    OperatorsListDocument,
     {
       variables,
       skip: !inFocus,
@@ -520,7 +519,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_OPERATOR_LIST, 'operator', {
+      downloadFullData(apolloClient, OperatorsListDocument, 'operator', {
         orderBy,
       }),
     [apolloClient, orderBy],

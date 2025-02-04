@@ -2,7 +2,7 @@ import { PageTabs } from 'components/common/PageTabs'
 import { Spinner } from 'components/common/Spinner'
 import { Tab } from 'components/common/Tabs'
 import { NotFound } from 'components/layout/NotFound'
-import { FileByIdQuery, GetCidQuery, GetCidQueryVariables } from 'gql/graphql'
+import { FileByIdQuery, GetCidDocument, GetCidQuery, GetCidQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useCallback, useEffect, useState } from 'react'
@@ -11,7 +11,6 @@ import { detectFileType, extractFileData, FileData } from 'utils/file'
 import { FilePreview } from './FilePreview'
 import { FileRawData } from './FileRawData'
 import { FileUploadOptions } from './FileUploadOptions'
-import { QUERY_CID } from './query'
 
 type Props = {
   file: NonNullable<FileByIdQuery['files_files'][number]>
@@ -25,7 +24,7 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
   const [fileType, setFileType] = useState<string | null>(null)
   const [fileUrl, setFileUrl] = useState<string | null>(null)
 
-  const { loading, data } = useIndexersQuery<GetCidQuery, GetCidQueryVariables>(QUERY_CID, {
+  const { loading, data } = useIndexersQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, {
     variables: { cid: file.id ?? '' },
     skip: !inFocus || !inView,
   })

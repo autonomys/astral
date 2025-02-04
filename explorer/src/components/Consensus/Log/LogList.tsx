@@ -6,7 +6,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { LogsQuery, LogsQueryVariables } from 'gql/graphql'
+import { LogsDocument, LogsQuery, LogsQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -19,7 +19,6 @@ import { Cell, LogsFilters } from 'types/table'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_LOGS } from './query'
 
 type Row = LogsQuery['consensus_logs'][0]
 const TABLE = 'logs'
@@ -80,7 +79,7 @@ export const LogList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<LogsQuery, LogsQueryVariables>(
-    QUERY_LOGS,
+    LogsDocument,
     {
       variables,
       skip: !inFocus,

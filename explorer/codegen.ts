@@ -8,7 +8,7 @@ const config: CodegenConfig = {
   generates: {
     './gql/graphql.tsx': {
       schema: defaultIndexer.indexer,
-      documents: ['./src/**/query.ts'],
+      documents: ['./src/**/query.gql'],
       plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
     },
   },

@@ -2,12 +2,11 @@ import { useQuery } from '@apollo/client'
 import { blockNumber } from '@autonomys/auto-consensus'
 import { activate, NetworkId } from '@autonomys/auto-utils'
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import { LastBlockQuery } from 'gql/graphql'
+import { LastBlockDocument, LastBlockQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import React, { FC, useCallback, useEffect, useMemo } from 'react'
 import { useConsensusStates } from 'states/consensus'
-import { LAST_BLOCK } from './query'
 
 const NORMAL_BLOCKS_DIVERGENCE = 120
 const POLL_INTERVAL = 12000
@@ -54,7 +53,7 @@ export const useOutOfSyncBanner = () => {
   const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber[network])
   const setLastBlockNumber = useConsensusStates((state) => state.setLastBlockNumber)
 
-  const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
+  const { data } = useQuery<LastBlockQuery>(LastBlockDocument, {
     pollInterval: POLL_INTERVAL,
   })
 

@@ -8,6 +8,7 @@ import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  FolderChildrenByIdDocument,
   FolderChildrenByIdQuery,
   FolderChildrenByIdQueryVariables,
   Order_By as OrderBy,
@@ -24,7 +25,6 @@ import { CIDParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
-import { QUERY_FOLDER_CHILDREN_BY_ID } from './query'
 
 type Row = FolderChildrenByIdQuery['files_folder_cids'][number]
 
@@ -65,7 +65,7 @@ export const FolderDetailsFileList: FC = () => {
     FolderChildrenByIdQuery,
     FolderChildrenByIdQueryVariables
   >(
-    QUERY_FOLDER_CHILDREN_BY_ID,
+    FolderChildrenByIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -110,7 +110,7 @@ export const FolderDetailsFileList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_FOLDER_CHILDREN_BY_ID, 'files_folder_cids', variables),
+      downloadFullData(apolloClient, FolderChildrenByIdDocument, 'files_folder_cids', variables),
     [apolloClient, variables],
   )
 

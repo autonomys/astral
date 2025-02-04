@@ -8,7 +8,7 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { ExtrinsicsQuery, ExtrinsicsQueryVariables } from 'gql/graphql'
+import { ExtrinsicsDocument, ExtrinsicsQuery, ExtrinsicsQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
@@ -20,7 +20,6 @@ import { Cell, ExtrinsicsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_EXTRINSICS } from './query'
 
 type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
 const TABLE = 'extrinsics'
@@ -85,7 +84,7 @@ export const ExtrinsicList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
-    QUERY_EXTRINSICS,
+    ExtrinsicsDocument,
     {
       variables,
       pollInterval: 6000,

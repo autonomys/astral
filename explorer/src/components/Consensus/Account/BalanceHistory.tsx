@@ -9,6 +9,7 @@ import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { formatUnits } from 'ethers'
 import {
+  BalanceHistoryByAccountIdDocument,
   BalanceHistoryByAccountIdQuery,
   BalanceHistoryByAccountIdQueryVariables,
   Consensus_Account_Histories_Select_Column as BalanceHistoryColumn,
@@ -26,7 +27,6 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
 import { countTablePages } from 'utils/table'
-import { QUERY_ACCOUNT_BALANCE_HISTORY } from './query'
 
 type Props = {
   accountId: string
@@ -72,7 +72,7 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     BalanceHistoryByAccountIdQuery,
     BalanceHistoryByAccountIdQueryVariables
   >(
-    QUERY_ACCOUNT_BALANCE_HISTORY,
+    BalanceHistoryByAccountIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -93,7 +93,7 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     () =>
       downloadFullData(
         apolloClient,
-        QUERY_ACCOUNT_BALANCE_HISTORY,
+        BalanceHistoryByAccountIdDocument,
         'consensus_account_histories',
         variables,
       ),

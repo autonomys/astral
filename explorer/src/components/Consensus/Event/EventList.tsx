@@ -6,7 +6,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { EventsQuery, EventsQueryVariables } from 'gql/graphql'
+import { EventsDocument, EventsQuery, EventsQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -19,7 +19,6 @@ import { Cell, EventsFilters } from 'types/table'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_EVENTS } from './query'
 
 type Row = EventsQuery['consensus_events'][0]
 const TABLE = 'events'
@@ -85,7 +84,7 @@ export const EventList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<EventsQuery, EventsQueryVariables>(
-    QUERY_EVENTS,
+    EventsDocument,
     {
       variables,
       skip: !inFocus,
