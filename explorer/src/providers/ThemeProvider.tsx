@@ -36,7 +36,7 @@ type Props = {
 
 export const ThemeProvider: FC<Props> = ({ children }) => {
   const prefersDarkMode = usePrefersDarkMode()
-  const [isEnabled, setIsEnabled] = useSafeLocalStorage('dark-mode', false)
+  const [isEnabled, setIsEnabled] = useSafeLocalStorage('dark-mode', prefersDarkMode)
 
   useEffect(() => {
     if (window === undefined) return
