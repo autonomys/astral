@@ -49,6 +49,7 @@ interface ExplorerQueryState {
 
     blockDetailsExtrinsic: QueryState<GqlT.ExtrinsicsByBlockIdQuery>
     blockDetailsEvent: QueryState<GqlT.EventsByBlockIdQuery>
+    blockDetailsLog: QueryState<GqlT.LogsByBlockIdQuery>
 
     extrinsicDetailsEvent: QueryState<GqlT.EventsByExtrinsicIdQuery>
   }
@@ -118,6 +119,7 @@ const initialState: ExplorerQueryState = {
 
     blockDetailsExtrinsic: initialized,
     blockDetailsEvent: initialized,
+    blockDetailsLog: initialized,
 
     extrinsicDetailsEvent: initialized,
   },

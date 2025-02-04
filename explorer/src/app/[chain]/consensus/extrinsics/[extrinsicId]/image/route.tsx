@@ -70,7 +70,7 @@ function Screen({
     blockHeight: extrinsicById?.block_height ?? '0',
     section: extrinsicById?.section ?? '',
     module: extrinsicById?.module ?? '',
-    eventsCount: extrinsicById?.events_aggregate.aggregate?.count ?? 0,
+    eventsCount: extrinsicById?.events_count ?? 0,
     signer: extrinsicById?.signer ?? '',
   }
   const title = `${metadata.title} - ${chainMatch.title} - Extrinsic`
