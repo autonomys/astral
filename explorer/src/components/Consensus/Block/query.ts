@@ -44,14 +44,7 @@ export const QUERY_BLOCK_BY_ID = gql`
       parent_hash
       extrinsicsCount: extrinsics_count
       eventsCount: events_count
-      logs(limit: 10, order_by: { block_height: desc }) {
-        block_height
-        block {
-          timestamp
-        }
-        kind
-        id
-      }
+      logsCount: logs_count
       author_id
     }
   }
@@ -97,6 +90,26 @@ export const QUERY_BLOCK_EVENTS = gql`
       module
       phase
       extrinsic_id
+    }
+  }
+`
+
+export const QUERY_BLOCK_LOGS = gql`
+  query LogsByBlockId(
+    $blockId: numeric!
+    $limit: Int!
+    $offset: Int
+    $orderBy: [consensus_logs_order_by!]
+  ) {
+    consensus_logs(
+      order_by: $orderBy
+      limit: $limit
+      offset: $offset
+      where: { block_height: { _eq: $blockId } }
+    ) {
+      id
+      kind
+      block_height
     }
   }
 `
