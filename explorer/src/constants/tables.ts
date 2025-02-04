@@ -258,6 +258,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'depositsAggregate', label: 'Deposit Count', isSelected: false },
     { name: 'createdAt', label: 'Created At', isSelected: false },
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
+    { name: 'actions', label: 'Actions', isSelected: true },
   ],
   leaderboard: [
     { name: 'id', label: 'Id', isSelected: true, searchable: true },

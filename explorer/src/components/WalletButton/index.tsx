@@ -1,8 +1,8 @@
 'use client'
 
-import { WalletIcon } from '@heroicons/react/24/outline'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import useMediaQuery from 'hooks/useMediaQuery'
+import Image from 'next/image'
 import React, { useCallback, useState } from 'react'
 
 export const WalletButton: React.FC = () => {
@@ -21,9 +21,18 @@ export const WalletButton: React.FC = () => {
         onClick={onClick}
         className={`h-10 ${
           isDesktop ? 'w-36' : 'w-10 p-2'
-        } from-buttonLightFrom to-buttonLightTo dark:from-buttonDarkFrom dark:to-buttonDarkTo dark:bg-boxDark rounded-full bg-gradient-to-r font-medium text-white md:mt-3`}
+        } rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo font-medium text-white dark:bg-boxDark dark:from-buttonDarkFrom dark:to-buttonDarkTo md:mt-3`}
       >
-        {isDesktop ? 'Connect Wallet' : <WalletIcon className='size-6' />}
+        {isDesktop ? (
+          'Connect Wallet'
+        ) : (
+          <Image
+            src='/images/icons/wallet-addresses-small.webp'
+            alt='Wallet list'
+            width={24}
+            height={24}
+          />
+        )}
       </button>
       <PreferredExtensionModal isOpen={isOpen} onClose={onClose} />
     </>
