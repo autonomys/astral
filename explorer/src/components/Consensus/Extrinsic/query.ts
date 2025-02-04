@@ -50,11 +50,7 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
       signature
       signer
       args
-      events_aggregate {
-        aggregate {
-          count
-        }
-      }
+      events_count
     }
   }
 `

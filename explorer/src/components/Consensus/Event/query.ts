@@ -35,8 +35,8 @@ export const QUERY_EVENT_BY_ID = gql`
   query EventById($eventId: String!) {
     consensus_events(where: { id: { _eq: $eventId } }) {
       id
-      extrinsicId: extrinsic_id
-      blockHeight: block_height
+      extrinsic_id
+      block_height
       section
       module
       timestamp
