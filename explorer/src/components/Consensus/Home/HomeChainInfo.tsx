@@ -85,37 +85,37 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
     () => [
       {
         title: 'Processed Blocks',
-        imagePath: '/images/icons/processed-blocks.png',
+        imagePath: '/images/icons/processed-blocks.webp',
         value: blocksCount,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Wallet addresses',
-        imagePath: '/images/icons/wallet-addresses.png',
+        imagePath: '/images/icons/wallet-addresses.webp',
         value: accountsCount,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Nodes',
-        imagePath: '/images/icons/total-nodes.png',
+        imagePath: '/images/icons/total-nodes.webp',
         value: nodeCount,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Space Pledged',
-        imagePath: '/images/icons/total-space-pledged.png',
+        imagePath: '/images/icons/total-space-pledged.webp',
         value: spacePledged,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Archived History Size',
-        imagePath: '/images/icons/archived-history-size.png',
+        imagePath: '/images/icons/archived-history-size.webp',
         value: historySize,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Extrinsics',
-        imagePath: '/images/icons/total-extrinsics.png',
+        imagePath: '/images/icons/total-extrinsics.webp',
         value: extrinsicsCount,
         darkBgClass: 'dark:bg-boxDark',
       },
