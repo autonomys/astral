@@ -63,8 +63,8 @@ function Screen({
 }) {
   const event = {
     id: eventById?.id ?? '0',
-    extrinsicId: eventById?.extrinsicId ?? '0',
-    blockHeight: eventById?.blockHeight ?? '0',
+    extrinsicId: eventById?.extrinsic_id ?? '0',
+    blockHeight: eventById?.block_height ?? '0',
     section: eventById?.section ?? '0',
     module: eventById?.module ?? '0',
     timestamp: eventById?.timestamp ?? '0',

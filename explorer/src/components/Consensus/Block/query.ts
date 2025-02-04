@@ -42,9 +42,9 @@ export const QUERY_BLOCK_BY_ID = gql`
       extrinsics_root
       spec_id
       parent_hash
-      extrinsicsCount: extrinsics_count
-      eventsCount: events_count
-      logsCount: logs_count
+      extrinsics_count
+      events_count
+      logs_count
       author_id
     }
   }

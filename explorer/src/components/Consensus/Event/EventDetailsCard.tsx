@@ -27,9 +27,9 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
             <div className='block rounded-full bg-buttonDarkTo px-5 py-3 text-xs font-semibold leading-normal text-white'>
               <Link
                 className='flex gap-1'
-                href={INTERNAL_ROUTES.blocks.id.page(network, section, event.blockHeight)}
+                href={INTERNAL_ROUTES.blocks.id.page(network, section, event.block_height)}
               >
-                #{event.blockHeight}
+                #{event.block_height}
               </Link>
             </div>
           </div>
@@ -41,15 +41,11 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
                   {utcToLocalRelativeTime(event.timestamp)}
                 </StyledListItem>
                 <StyledListItem title='Extrinsic'>
-                  {event.extrinsicId ? (
-                    <Link
-                      href={INTERNAL_ROUTES.extrinsics.id.page(network, section, event.extrinsicId)}
-                    >
-                      {event.extrinsicId}
-                    </Link>
-                  ) : (
-                    '-'
-                  )}
+                  <Link
+                    href={INTERNAL_ROUTES.extrinsics.id.page(network, section, event.extrinsic_id)}
+                  >
+                    {event.extrinsic_id}
+                  </Link>
                 </StyledListItem>
                 <StyledListItem title='Module'>{event.module}</StyledListItem>
                 <StyledListItem title='Section'>{event.section}</StyledListItem>

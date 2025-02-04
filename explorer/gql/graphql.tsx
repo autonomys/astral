@@ -20919,7 +20919,7 @@ export type BlockByIdQueryVariables = Exact<{
 }>;
 
 
-export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, author_id: string, extrinsicsCount: number, eventsCount: number, logsCount: number }> };
+export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, extrinsics_count: number, events_count: number, logs_count: number, author_id: string }> };
 
 export type ExtrinsicsByBlockIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];
@@ -20966,7 +20966,7 @@ export type EventByIdQueryVariables = Exact<{
 }>;
 
 
-export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, args: any, extrinsicId: string, blockHeight: any }> };
+export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, extrinsic_id: string, block_height: any, section: string, module: string, timestamp: any, args: any }> };
 
 export type ExtrinsicsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -21928,9 +21928,9 @@ export const BlockByIdDocument = gql`
     extrinsics_root
     spec_id
     parent_hash
-    extrinsicsCount: extrinsics_count
-    eventsCount: events_count
-    logsCount: logs_count
+    extrinsics_count
+    events_count
+    logs_count
     author_id
   }
 }
@@ -22193,8 +22193,8 @@ export const EventByIdDocument = gql`
     query EventById($eventId: String!) {
   consensus_events(where: {id: {_eq: $eventId}}) {
     id
-    extrinsicId: extrinsic_id
-    blockHeight: block_height
+    extrinsic_id
+    block_height
     section
     module
     timestamp
