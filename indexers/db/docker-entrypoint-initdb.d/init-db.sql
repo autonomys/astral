@@ -2312,6 +2312,11 @@ BEGIN
     ) THEN
         RETURN NULL;
     END IF;
+
+    UPDATE staking.domains
+    SET 
+        last_domain_block_number = NEW.domain_block_number
+    WHERE id = NEW.domain_id;
     
     RETURN NEW;
 END;
