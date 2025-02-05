@@ -1458,7 +1458,6 @@ CREATE TABLE staking.operator_staking_histories (
 );
 ALTER TABLE staking.operator_staking_histories OWNER TO postgres;
 
-
 CREATE TABLE staking.operators (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -2412,7 +2411,8 @@ BEFORE INSERT ON staking.withdrawal_histories
 FOR EACH ROW
 EXECUTE FUNCTION staking.prevent_withdrawal_histories_duplicate();
 
--- Synthetic tables
+-- Staking triggers
+
 CREATE OR REPLACE FUNCTION staking.insert_new_domain() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
@@ -2621,11 +2621,20 @@ AFTER INSERT ON staking.operator_registrations
 FOR EACH ROW
 EXECUTE FUNCTION staking.insert_new_operator();
 
-CREATE OR REPLACE FUNCTION staking.insert_new_nominator() RETURNS TRIGGER
+CREATE OR REPLACE FUNCTION staking.handle_deposit_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
 BEGIN
-    -- Check if nominator already exists
+    UPDATE staking.domains
+    SET 
+        total_deposits = staking.domains.total_deposits + NEW.amount
+    WHERE id = NEW.domain_id;
+
+    UPDATE staking.operators
+    SET 
+        total_deposits = staking.operators.total_deposits + NEW.amount
+    WHERE id = NEW.operator_id;
+
     IF NOT EXISTS (
         SELECT 1 
         FROM staking.nominators 
@@ -2696,22 +2705,15 @@ BEGIN
             NEW.block_height,                -- created_at
             NEW.block_height                 -- updated_at
         );
+    ELSE
+        UPDATE staking.nominators
+        SET
+            total_deposits = staking.nominators.total_deposits + NEW.amount,
+            total_deposits_count = staking.nominators.total_deposits_count + 1,
+            updated_at = NEW.block_height
+        WHERE id = NEW.nominator_id;
     END IF;
-    
-    RETURN NEW;
-END;
-$$;
-ALTER FUNCTION staking.insert_new_nominator() OWNER TO postgres;
 
-CREATE TRIGGER insert_new_nominator
-AFTER INSERT ON staking.deposit_events
-FOR EACH ROW
-EXECUTE FUNCTION staking.insert_new_nominator();
-
-CREATE OR REPLACE FUNCTION staking.insert_new_deposit() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
     INSERT INTO staking.deposits (
         id,
         account_id,
@@ -2743,21 +2745,7 @@ BEGIN
         NEW.block_height,            -- created_at
         NEW.block_height             -- updated_at
     );
-    
-    RETURN NEW;
-END;
-$$;
-ALTER FUNCTION staking.insert_new_deposit() OWNER TO postgres;
 
-CREATE TRIGGER insert_new_deposit
-AFTER INSERT ON staking.deposit_events
-FOR EACH ROW
-EXECUTE FUNCTION staking.insert_new_deposit();
-
-CREATE OR REPLACE FUNCTION staking.update_account_deposits() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
     INSERT INTO staking.accounts (
         id,
         total_deposits,
@@ -2786,22 +2774,99 @@ BEGIN
         0,                         -- accumulated_epoch_stake
         0,                         -- accumulated_epoch_storage_fee_deposit
         0,                         -- accumulated_epoch_shares
-        NEW.created_at,            -- created_at
-        NEW.updated_at             -- updated_at
+        NEW.block_height,            -- created_at
+        NEW.block_height             -- updated_at
     )
     ON CONFLICT (id) DO UPDATE SET
         total_deposits = staking.accounts.total_deposits + NEW.total_amount,
         current_total_stake = staking.accounts.current_total_stake + NEW.amount,
         current_storage_fee_deposit = staking.accounts.current_storage_fee_deposit + NEW.storage_fee_deposit,
-        updated_at = NEW.updated_at;
+        updated_at = NEW.block_height;
     
     RETURN NEW;
 END;
 $$;
+ALTER FUNCTION staking.handle_deposit_events() OWNER TO postgres;
 
-ALTER FUNCTION staking.update_account_deposits() OWNER TO postgres;
-
-CREATE TRIGGER update_account_deposits
-AFTER INSERT ON staking.deposits
+CREATE TRIGGER handle_deposit_events
+AFTER INSERT ON staking.deposit_events
 FOR EACH ROW
-EXECUTE FUNCTION staking.update_account_deposits();
+EXECUTE FUNCTION staking.handle_deposit_events();
+
+CREATE OR REPLACE FUNCTION staking.handle_operator_tax_collections_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    operator_account_id TEXT;
+BEGIN
+    SELECT account_id INTO operator_account_id
+    FROM staking.operators
+    WHERE id = NEW.operator_id;
+
+    UPDATE staking.domains
+    SET 
+        total_tax_collected = staking.domains.total_tax_collected + NEW.amount
+    WHERE id = NEW.domain_id;
+
+    UPDATE staking.operators
+    SET 
+        total_tax_collected = staking.operators.total_tax_collected + NEW.amount
+    WHERE id = NEW.operator_id;
+
+    UPDATE staking.accounts
+    SET 
+        total_tax_collected = staking.accounts.total_tax_collected + NEW.amount
+    WHERE id = operator_account_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_operator_tax_collections_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_operator_tax_collections_events
+AFTER INSERT ON staking.operator_tax_collections
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_operator_tax_collections_events();
+
+CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.operators
+    SET 
+        current_total_stake = NEW.current_total_stake,
+        current_storage_fee_deposit = NEW.total_storage_fee_deposit,
+        current_total_shares = NEW.current_total_shares,
+        current_share_price = NEW.share_price,
+        "status" = NEW.partial_status
+    WHERE id = NEW.operator_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.update_operator_stakes() OWNER TO postgres;
+
+CREATE TRIGGER update_operator_stakes_trigger
+AFTER INSERT ON staking.operator_staking_histories
+FOR EACH ROW
+EXECUTE FUNCTION staking.update_operator_stakes();
+
+CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.domains
+    SET 
+        current_total_stake = NEW.current_total_stake,
+        completed_epoch = NEW.current_epoch_index
+    WHERE id = NEW.domain_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.update_domain_stakes() OWNER TO postgres;
+
+CREATE TRIGGER update_domain_stakes_trigger
+AFTER INSERT ON staking.domain_staking_histories
+FOR EACH ROW
+EXECUTE FUNCTION staking.update_domain_stakes();
