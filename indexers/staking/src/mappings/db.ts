@@ -273,6 +273,7 @@ export function createDomainStakingHistory(
   domainId: string,
   currentEpochIndex: number,
   currentTotalStake: bigint,
+  timestamp: Date,
   blockHeight: bigint
 ): DomainStakingHistory {
   return DomainStakingHistory.create({
@@ -280,6 +281,7 @@ export function createDomainStakingHistory(
     domainId,
     currentEpochIndex,
     currentTotalStake,
+    timestamp,
     blockHeight,
   });
 }

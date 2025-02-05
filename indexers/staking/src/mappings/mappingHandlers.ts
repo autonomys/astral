@@ -47,6 +47,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         keyPrimitive[0].toString(),
         valuePrimitive.currentEpochIndex.toString(),
         valuePrimitive.currentTotalStake.toString(),
+        blockTimestamp,
         height
       )
     );

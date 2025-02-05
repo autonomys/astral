@@ -2319,7 +2319,7 @@ BEGIN
     ) THEN
         RETURN NULL;
     END IF;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -2861,19 +2861,19 @@ BEGIN
 
     UPDATE staking.operators
     SET 
-        total_transfers_in = staking.domains.total_transfers_in + NEW.total_transfers_in,
-        transfers_in_count = staking.domains.transfers_in_count + NEW.transfers_in_count,
-        total_transfers_out = staking.domains.total_transfers_out + NEW.total_transfers_out,
-        transfers_out_count = staking.domains.transfers_out_count + NEW.transfers_out_count,
-        total_rejected_transfers_claimed = staking.domains.total_rejected_transfers_claimed + NEW.total_rejected_transfers_claimed,
-        rejected_transfers_claimed_count = staking.domains.rejected_transfers_claimed_count + NEW.rejected_transfers_claimed_count,
-        total_transfers_rejected = staking.domains.total_transfers_rejected + NEW.total_transfers_rejected,
-        transfers_rejected_count = staking.domains.transfers_rejected_count + NEW.transfers_rejected_count,
-        total_volume = staking.domains.total_volume + NEW.total_volume,
-        total_consensus_storage_fee = staking.domains.total_consensus_storage_fee + NEW.consensus_storage_fee,
-        total_domain_execution_fee = staking.domains.total_domain_execution_fee + NEW.domain_execution_fee,
-        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance,
-        bundle_count = staking.domains.bundle_count + 1,
+        total_transfers_in = staking.operators.total_transfers_in + NEW.total_transfers_in,
+        transfers_in_count = staking.operators.transfers_in_count + NEW.transfers_in_count,
+        total_transfers_out = staking.operators.total_transfers_out + NEW.total_transfers_out,
+        transfers_out_count = staking.operators.transfers_out_count + NEW.transfers_out_count,
+        total_rejected_transfers_claimed = staking.operators.total_rejected_transfers_claimed + NEW.total_rejected_transfers_claimed,
+        rejected_transfers_claimed_count = staking.operators.rejected_transfers_claimed_count + NEW.rejected_transfers_claimed_count,
+        total_transfers_rejected = staking.operators.total_transfers_rejected + NEW.total_transfers_rejected,
+        transfers_rejected_count = staking.operators.transfers_rejected_count + NEW.transfers_rejected_count,
+        total_volume = staking.operators.total_volume + NEW.total_volume,
+        total_consensus_storage_fee = staking.operators.total_consensus_storage_fee + NEW.consensus_storage_fee,
+        total_domain_execution_fee = staking.operators.total_domain_execution_fee + NEW.domain_execution_fee,
+        total_burned_balance = staking.operators.total_burned_balance + NEW.burned_balance,
+        bundle_count = staking.operators.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number
     WHERE id = NEW.operator_id;
     
@@ -2919,6 +2919,43 @@ BEGIN
         current_total_stake = NEW.current_total_stake,
         completed_epoch = NEW.current_epoch_index
     WHERE id = NEW.domain_id;
+
+    INSERT INTO staking.domain_epochs (
+        id,
+        domain_id,
+        epoch,
+        domain_block_number_start,
+        domain_block_number_end,
+        domain_block_count,
+        timestamp_start,
+        timestamp_end,
+        epoch_duration,
+        consensus_block_number_start,
+        consensus_block_number_end,
+        consensus_block_count,
+        created_at,
+        updated_at
+    ) VALUES (
+        NEW.domain_id || '-' || NEW.current_epoch_index,
+        NEW.domain_id,
+        NEW.current_epoch_index,
+        0,
+        0,
+        0,
+        NEW.timestamp,
+        NEW.timestamp,
+        0,
+        NEW.block_height,
+        NEW.block_height,
+        1,
+        NEW.block_height,
+        NEW.block_height
+    ) ON CONFLICT (id) DO UPDATE SET
+        timestamp_end = NEW.timestamp,
+        epoch_duration = NEW.timestamp - staking.domain_epochs.timestamp_start,
+        consensus_block_number_end = NEW.block_height,
+        consensus_block_count = staking.domain_epochs.consensus_block_count + 1,
+        updated_at = NEW.block_height;
     
     RETURN NEW;
 END;

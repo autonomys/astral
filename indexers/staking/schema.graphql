@@ -121,6 +121,7 @@ type DomainStakingHistory @entity {
   domainId: String!
   currentEpochIndex: Int!
   currentTotalStake: BigInt!
+  timestamp: Date!
   blockHeight: BigInt!
 }
 
