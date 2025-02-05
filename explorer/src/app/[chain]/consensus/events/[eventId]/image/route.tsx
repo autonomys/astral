@@ -1,9 +1,8 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_EVENT_BY_ID } from 'components/Consensus/Event/query'
 import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { EventByIdQuery } from 'gql/graphql'
+import { EventByIdDocument, EventByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -31,7 +30,7 @@ export async function GET(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_EVENT_BY_ID['loc']?.source.body,
+      query: EventByIdDocument['loc']?.source.body,
       variables: { eventId },
     }),
   }).then((res) => res.json())

@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { sendGAEvent } from '@next/third-parties/google'
-import { LogoIcon, WalletIcon } from 'components/icons'
+import { LogoIcon } from 'components/icons'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
 import {
   ROUTE_EXTRA_FLAGS,
@@ -14,6 +14,7 @@ import { WalletType } from 'constants/wallet'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -119,7 +120,12 @@ export const WalletSidekick: FC = () => {
           isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
         } shadow-md dark:bg-buttonLightTo md:mt-3`}
       >
-        <WalletIcon width='24' height='24' />
+        <Image
+          src='/images/icons/wallet-addresses-small.webp'
+          alt='Wallet list'
+          width={24}
+          height={24}
+        />
       </button>
       {isOpen && (
         <div className='fixed inset-0  z-20 bg-gray-900 bg-opacity-25' onClick={onCloseSidebar} />

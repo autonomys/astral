@@ -13,6 +13,7 @@ import { formatUnits } from 'ethers'
 import {
   Order_By as OrderBy,
   Consensus_Transfers_Select_Column as TransferColumn,
+  TransfersByAccountIdDocument,
   TransfersByAccountIdQuery,
   TransfersByAccountIdQueryVariables,
   Consensus_Transfers_Bool_Exp as TransferWhere,
@@ -29,7 +30,6 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
 import { formatExtrinsicId } from 'utils/string'
 import { countTablePages } from 'utils/table'
-import { QUERY_ACCOUNT_TRANSFERS } from './query'
 
 type Props = {
   accountId: string
@@ -80,7 +80,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     TransfersByAccountIdQuery,
     TransfersByAccountIdQueryVariables
   >(
-    QUERY_ACCOUNT_TRANSFERS,
+    TransfersByAccountIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -99,7 +99,13 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   )
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_ACCOUNT_TRANSFERS, 'consensus_transfers', variables),
+    () =>
+      downloadFullData(
+        apolloClient,
+        TransfersByAccountIdDocument,
+        'consensus_transfers',
+        variables,
+      ),
     [apolloClient, variables],
   )
   const totalCount = useMemo(

@@ -9,6 +9,7 @@ import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  ExtrinsicsByBlockIdDocument,
   ExtrinsicsByBlockIdQuery,
   ExtrinsicsByBlockIdQueryVariables,
   Order_By as OrderBy,
@@ -25,7 +26,6 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_BLOCK_EXTRINSICS } from './query'
 
 type Props = {
   extrinsicsCount: number
@@ -71,7 +71,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsicsCount, isDeskto
     ExtrinsicsByBlockIdQuery,
     ExtrinsicsByBlockIdQueryVariables
   >(
-    QUERY_BLOCK_EXTRINSICS,
+    ExtrinsicsByBlockIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -146,7 +146,13 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsicsCount, isDeskto
   )
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_BLOCK_EXTRINSICS, 'consensus_extrinsics', variables),
+    () =>
+      downloadFullData(
+        apolloClient,
+        ExtrinsicsByBlockIdDocument,
+        'consensus_extrinsics',
+        variables,
+      ),
     [apolloClient, variables],
   )
 

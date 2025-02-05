@@ -8,6 +8,7 @@ import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  EventsByExtrinsicIdDocument,
   EventsByExtrinsicIdQuery,
   EventsByExtrinsicIdQueryVariables,
   Order_By as OrderBy,
@@ -24,7 +25,6 @@ import { ExtrinsicIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
-import { QUERY_EXTRINSIC_EVENTS } from './query'
 
 type Row = EventsByExtrinsicIdQuery['consensus_events'][number]
 
@@ -69,7 +69,7 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ eventsCount }) => {
     EventsByExtrinsicIdQuery,
     EventsByExtrinsicIdQueryVariables
   >(
-    QUERY_EXTRINSIC_EVENTS,
+    EventsByExtrinsicIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -137,7 +137,8 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ eventsCount }) => {
   )
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_EXTRINSIC_EVENTS, 'consensus_events', variables),
+    () =>
+      downloadFullData(apolloClient, EventsByExtrinsicIdDocument, 'consensus_events', variables),
     [apolloClient, variables],
   )
 

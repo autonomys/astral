@@ -1,9 +1,8 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
 import { AutonomysSymbol, DocIcon, WalletIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { AccountByIdQuery } from 'gql/graphql'
+import { AccountByIdDocument, AccountByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -33,7 +32,7 @@ export async function GET(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_ACCOUNT_BY_ID['loc']?.source.body,
+      query: AccountByIdDocument['loc']?.source.body,
       variables: { accountId },
     }),
   }).then((res) => res.json())

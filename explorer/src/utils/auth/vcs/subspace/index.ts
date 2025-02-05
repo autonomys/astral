@@ -1,11 +1,11 @@
-import { QUERY_CHECK_ROLES } from 'components/WalletSideKick/query'
+import { CheckRoleDocument } from 'gql/graphql'
 import { queryGraphqlServer } from 'utils/queryGraphqlServer'
 
 export const verifySubspaceAccountRoles = async (subspaceAccount: string) => {
   try {
-    if (!QUERY_CHECK_ROLES.loc) throw new Error('No query')
+    if (!CheckRoleDocument.loc) throw new Error('No query')
 
-    const data = await queryGraphqlServer(QUERY_CHECK_ROLES.loc.source.body, {
+    const data = await queryGraphqlServer(CheckRoleDocument.loc.source.body, {
       subspaceAccount,
     })
 

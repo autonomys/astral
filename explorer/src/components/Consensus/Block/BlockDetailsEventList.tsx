@@ -7,6 +7,7 @@ import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  EventsByBlockIdDocument,
   EventsByBlockIdQuery,
   EventsByBlockIdQueryVariables,
   Order_By as OrderBy,
@@ -23,7 +24,6 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_BLOCK_EVENTS } from './query'
 
 type Row = EventsByBlockIdQuery['consensus_events'][number]
 
@@ -68,7 +68,7 @@ export const BlockDetailsEventList: FC<Props> = ({ eventsCount }) => {
     EventsByBlockIdQuery,
     EventsByBlockIdQueryVariables
   >(
-    QUERY_BLOCK_EVENTS,
+    EventsByBlockIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -137,7 +137,7 @@ export const BlockDetailsEventList: FC<Props> = ({ eventsCount }) => {
   )
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_BLOCK_EVENTS, 'consensus_events', variables),
+    () => downloadFullData(apolloClient, EventsByBlockIdDocument, 'consensus_events', variables),
     [apolloClient, variables],
   )
 

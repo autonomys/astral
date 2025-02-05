@@ -4,6 +4,7 @@ import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants
 import { Routes } from 'constants/routes'
 import {
   OperatorByIdQuery,
+  OperatorNominatorsByIdDocument,
   OperatorNominatorsByIdQuery,
   OperatorNominatorsByIdQueryVariables,
   Order_By as OrderBy,
@@ -23,7 +24,6 @@ import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from 'utils/
 import { countTablePages } from 'utils/table'
 import { AccountIconWithLink } from '../common/AccountIcon'
 import { Spinner } from '../common/Spinner'
-import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './query'
 
 type Props = {
   operator: OperatorByIdQuery['staking_operators_by_pk']
@@ -178,7 +178,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     OperatorNominatorsByIdQuery,
     OperatorNominatorsByIdQueryVariables
   >(
-    QUERY_OPERATOR_NOMINATORS_BY_ID,
+    OperatorNominatorsByIdDocument,
     {
       variables,
       skip: !inFocus,
