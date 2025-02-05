@@ -2815,6 +2815,56 @@ AFTER INSERT ON staking.operator_rewards
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_operator_rewards_events();
 
+CREATE OR REPLACE FUNCTION staking.handle_bundle_submissions_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.domains
+    SET 
+        total_transfers_in = staking.domains.total_transfers_in + NEW.total_transfers_in,
+        transfers_in_count = staking.domains.transfers_in_count + NEW.transfers_in_count,
+        total_transfers_out = staking.domains.total_transfers_out + NEW.total_transfers_out,
+        transfers_out_count = staking.domains.transfers_out_count + NEW.transfers_out_count,
+        total_rejected_transfers_claimed = staking.domains.total_rejected_transfers_claimed + NEW.total_rejected_transfers_claimed,
+        rejected_transfers_claimed_count = staking.domains.rejected_transfers_claimed_count + NEW.rejected_transfers_claimed_count,
+        total_transfers_rejected = staking.domains.total_transfers_rejected + NEW.total_transfers_rejected,
+        transfers_rejected_count = staking.domains.transfers_rejected_count + NEW.transfers_rejected_count,
+        total_volume = staking.domains.total_volume + NEW.total_volume,
+        total_consensus_storage_fee = staking.domains.total_consensus_storage_fee + NEW.consensus_storage_fee,
+        total_domain_execution_fee = staking.domains.total_domain_execution_fee + NEW.domain_execution_fee,
+        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance,
+        bundle_count = staking.domains.bundle_count + 1,
+        last_bundle_at = NEW.consensus_block_number
+    WHERE id = NEW.domain_id;
+
+    UPDATE staking.operators
+    SET 
+        total_transfers_in = staking.domains.total_transfers_in + NEW.total_transfers_in,
+        transfers_in_count = staking.domains.transfers_in_count + NEW.transfers_in_count,
+        total_transfers_out = staking.domains.total_transfers_out + NEW.total_transfers_out,
+        transfers_out_count = staking.domains.transfers_out_count + NEW.transfers_out_count,
+        total_rejected_transfers_claimed = staking.domains.total_rejected_transfers_claimed + NEW.total_rejected_transfers_claimed,
+        rejected_transfers_claimed_count = staking.domains.rejected_transfers_claimed_count + NEW.rejected_transfers_claimed_count,
+        total_transfers_rejected = staking.domains.total_transfers_rejected + NEW.total_transfers_rejected,
+        transfers_rejected_count = staking.domains.transfers_rejected_count + NEW.transfers_rejected_count,
+        total_volume = staking.domains.total_volume + NEW.total_volume,
+        total_consensus_storage_fee = staking.domains.total_consensus_storage_fee + NEW.consensus_storage_fee,
+        total_domain_execution_fee = staking.domains.total_domain_execution_fee + NEW.domain_execution_fee,
+        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance,
+        bundle_count = staking.domains.bundle_count + 1,
+        last_bundle_at = NEW.consensus_block_number
+    WHERE id = NEW.operator_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_bundle_submissions_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_bundle_submissions_events
+AFTER INSERT ON staking.bundle_submissions
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_bundle_submissions_events();
+
 CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
