@@ -2828,6 +2828,30 @@ AFTER INSERT ON staking.operator_tax_collections
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_operator_tax_collections_events();
 
+CREATE OR REPLACE FUNCTION staking.handle_operator_rewards_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.domains
+    SET 
+        total_rewards_collected = staking.domains.total_rewards_collected + NEW.amount
+    WHERE id = NEW.domain_id;
+
+    UPDATE staking.operators
+    SET 
+        total_rewards_collected = staking.operators.total_rewards_collected + NEW.amount
+    WHERE id = NEW.operator_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_operator_rewards_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_operator_rewards_events
+AFTER INSERT ON staking.operator_rewards
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_operator_rewards_events();
+
 CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
