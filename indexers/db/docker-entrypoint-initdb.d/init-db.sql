@@ -1252,6 +1252,24 @@ CREATE TABLE staking.domain_block_histories (
 );
 ALTER TABLE staking.domain_block_histories OWNER TO postgres;
 
+CREATE TABLE staking.domain_epochs (
+    id text NOT NULL,
+    domain_id text NOT NULL,
+    epoch numeric NOT NULL,
+    domain_block_number_start numeric NOT NULL,
+    domain_block_number_end numeric NOT NULL,
+    domain_block_count numeric NOT NULL,
+    timestamp_start timestamp without time zone NOT NULL,
+    timestamp_end timestamp without time zone NOT NULL,
+    epoch_duration numeric NOT NULL,
+    consensus_block_number_start numeric NOT NULL,
+    consensus_block_number_end numeric NOT NULL,
+    consensus_block_count numeric NOT NULL,
+    created_at numeric NOT NULL,
+    updated_at numeric NOT NULL
+);
+ALTER TABLE staking.domain_epochs OWNER TO postgres;
+
 CREATE TABLE staking.domain_instantiations (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -1828,6 +1846,9 @@ ALTER TABLE ONLY staking.deposit_histories
 
 ALTER TABLE ONLY staking.deposits
     ADD CONSTRAINT deposits_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY staking.domain_epochs
+    ADD CONSTRAINT domain_epochs_pkey PRIMARY KEY (id);
     
 ALTER TABLE ONLY staking.domain_instantiations
     ADD CONSTRAINT domain_instantiations_pkey PRIMARY KEY (_id);
@@ -2050,6 +2071,7 @@ CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING bt
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
 CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btree (id);
 CREATE INDEX "0xc145a7f38e7f82ec" ON staking.domains USING btree (id);
+CREATE INDEX "0xce8aa0eadbbe994d" ON staking.domain_epochs USING btree (id);
 CREATE INDEX "0xd3486d6b21c11e22" ON staking.withdrawal_histories USING btree (id);
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
 CREATE INDEX "0xdca5e6b13feac3f6" ON staking.deposit_histories USING btree (id);
