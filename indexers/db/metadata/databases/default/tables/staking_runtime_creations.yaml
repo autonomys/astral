@@ -1,0 +1,27 @@
+table:
+  name: runtime_creations
+  schema: staking
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - block_height
+        - created_by
+        - event_id
+        - extrinsic_id
+        - id
+        - name
+        - sort_id
+        - type
+        - _id
+      filter: {}
+      limit: 50
+    comment: ""

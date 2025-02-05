@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import type { LogByIdQuery, LogByIdQueryVariables } from 'gql/graphql'
+import { LogByIdDocument, LogByIdQuery, LogByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
@@ -12,14 +12,13 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { LogIdParam } from 'types/app'
 import { LogDetailsCard } from './LogDetailsCard'
-import { QUERY_LOG_BY_ID } from './query'
 
 export const Log: FC = () => {
   const { ref, inView } = useInView()
   const { logId } = useParams<LogIdParam>()
   const inFocus = useWindowFocus()
   const { loading, setIsVisible } = useIndexersQuery<LogByIdQuery, LogByIdQueryVariables>(
-    QUERY_LOG_BY_ID,
+    LogByIdDocument,
     {
       variables: { logId: logId ?? '' },
       skip: !inFocus,

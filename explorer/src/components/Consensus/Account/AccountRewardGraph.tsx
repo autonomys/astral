@@ -2,7 +2,11 @@ import { ResponsiveLine } from '@nivo/line'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
-import { LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables } from 'gql/graphql'
+import {
+  LatestRewardsWeekDocument,
+  LatestRewardsWeekQuery,
+  LatestRewardsWeekQueryVariables,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -11,7 +15,6 @@ import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, useQueryStates } from 'states/query'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
-import { QUERY_LAST_WEEK_REWARDS } from './query'
 
 dayjs.extend(relativeTime)
 dayjs.extend(utc)
@@ -31,7 +34,7 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const { setIsVisible } = useIndexersQuery<
     LatestRewardsWeekQuery,
     LatestRewardsWeekQueryVariables
-  >(QUERY_LAST_WEEK_REWARDS, {
+  >(LatestRewardsWeekDocument, {
     variables: { accountId: accountId, timestampComparison: { _gte: lastWeek } },
     skip: !inFocus,
   })

@@ -8,7 +8,7 @@ import { accountIdToHex } from 'utils//formatAddress'
 import { AccountIcon } from '../../common/AccountIcon'
 
 type Props = {
-  account: AccountByIdQuery['consensus_account_histories'][number] | undefined
+  account: AccountByIdQuery['consensus_accounts_by_pk'] | undefined
   accountAddress: string
   isDesktop?: boolean
 }
@@ -16,7 +16,7 @@ type Props = {
 export const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDesktop = false }) => {
   const publicKey = accountIdToHex(accountAddress)
   return (
-    <div className='dark:bg-boxDark mb-4 rounded-[20px] border border-slate-100 bg-white p-6 shadow dark:border-none md:p-4'>
+    <div className='mb-4 rounded-[20px] border border-slate-100 bg-white p-6 shadow dark:border-none dark:bg-boxDark md:p-4'>
       <div className='flex w-full items-center gap-3'>
         <Accordion
           title={

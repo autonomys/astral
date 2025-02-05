@@ -1,0 +1,5 @@
+query LastBlock {
+  lastBlock: consensus__metadata_by_pk(key: "lastProcessedHeight") {
+    value
+  }
+}

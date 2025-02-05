@@ -2,23 +2,21 @@
 
 import { useApolloClient } from '@apollo/client'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
-import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import { DomainsListDocument, DomainsListQuery, DomainsListQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { useTableStates } from 'states/tables'
-import type { Cell, DomainsFilters, TableSettingsTabs } from 'types/table'
+import { useTableSettings } from 'states/tables'
+import type { Cell, DomainsFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import {
   bigNumberToFormattedString,
@@ -30,34 +28,27 @@ import { AccountIconWithLink } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
-import { QUERY_DOMAIN_LIST } from './query'
 
 type Row = DomainsListQuery['staking_domains'][0]
 const TABLE = 'domains'
 
 export const DomainsList: FC = () => {
   const { ref, inView } = useInView()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
-  const [pagination, setPagination] = useState({
-    pageSize: PAGE_SIZE,
-    pageIndex: 0,
-  })
   useDomainsData()
   useConsensusData()
   const { network, section, tokenSymbol, tokenDecimals } = useIndexers()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
-  const availableColumns = useTableStates((state) => state[TABLE].columns)
-  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
-  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
-  const filters = useTableStates((state) => state[TABLE].filters) as DomainsFilters
-  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
-  const setColumns = useTableStates((state) => state.setColumns)
-  const setFilters = useTableStates((state) => state.setFilters)
-  const showSettings = useTableStates((state) => state.showSettings)
-  const hideSettings = useTableStates((state) => state.hideSettings)
-  const resetSettings = useTableStates((state) => state.resetSettings)
-  const showReset = useTableStates((state) => state.showReset)
+  const {
+    pagination,
+    sorting,
+    availableColumns,
+    selectedColumns,
+    filters,
+    orderBy,
+    onPaginationChange,
+    onSortingChange,
+  } = useTableSettings<DomainsFilters>(TABLE)
 
   const columns = useMemo(
     () =>
@@ -260,16 +251,6 @@ export const DomainsList: FC = () => {
     [selectedColumns, network, section, tokenSymbol],
   )
 
-  const orderBy = useMemo(
-    () =>
-      sorting && sorting.length > 0
-        ? sorting[0].id.endsWith('aggregate')
-          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
-          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
-        : { id: OrderBy.Asc },
-    [sorting],
-  )
-
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conditions: Record<string, any> = {}
@@ -367,7 +348,7 @@ export const DomainsList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<DomainsListQuery, DomainsListQueryVariables>(
-    QUERY_DOMAIN_LIST,
+    DomainsListDocument,
     {
       variables,
       skip: !inFocus,
@@ -382,7 +363,7 @@ export const DomainsList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_DOMAIN_LIST, TABLE, {
+      downloadFullData(apolloClient, DomainsListDocument, TABLE, {
         orderBy,
       }),
     [apolloClient, orderBy],
@@ -408,27 +389,6 @@ export const DomainsList: FC = () => {
     return null
   }, [domains])
 
-  const handleFilterChange = useCallback(
-    (filterName: string, value: string | boolean) => {
-      setFilters(TABLE, {
-        ...filters,
-        [filterName]: value,
-      })
-    },
-    [filters, setFilters],
-  )
-
-  const handleClickOnColumnToEditTable = useCallback(
-    (column: string, checked: boolean) =>
-      checked
-        ? setColumns(TABLE, [...selectedColumns, column])
-        : setColumns(
-            TABLE,
-            selectedColumns.filter((c) => c !== column),
-          ),
-    [selectedColumns, setColumns],
-  )
-
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
@@ -436,31 +396,17 @@ export const DomainsList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
-        <TableSettings
-          tableName={capitalizeFirstLetter(TABLE)}
-          totalCount={totalCount}
-          availableColumns={availableColumns}
-          selectedColumns={selectedColumns}
-          filters={filters}
-          showTableSettings={showTableSettings}
-          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
-          hideSettings={() => hideSettings(TABLE)}
-          handleColumnChange={handleClickOnColumnToEditTable}
-          handleFilterChange={handleFilterChange}
-          filterOptions={filtersOptions}
-          handleReset={() => resetSettings(TABLE)}
-          showReset={showReset(TABLE)}
-        />
+        <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
         {!loading && domainsList ? (
           <SortedTable
             data={domainsList}
             columns={columns}
             showNavigation={true}
             sorting={sorting}
-            onSortingChange={setSorting}
+            onSortingChange={onSortingChange}
             pagination={pagination}
             pageCount={pageCount}
-            onPaginationChange={setPagination}
+            onPaginationChange={onPaginationChange}
             filename='staking-domains-list'
             fullDataDownloader={fullDataDownloader}
           />

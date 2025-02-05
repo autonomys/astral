@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import {
   Bars3Icon,
   FunnelIcon,
@@ -6,44 +7,41 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
-import { AvailableColumn, FilterOption } from 'types/table'
+import { TableName, useTableSettings } from 'states/tables'
 import { numberWithCommas } from 'utils/number'
 
 interface TableSettingsProps {
-  tableName: string
+  table: TableName
+  tableName?: string
   totalCount?: number
-  availableColumns: AvailableColumn[]
-  selectedColumns: string[]
-  filterOptions: FilterOption[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: Record<string, any>
-  showTableSettings: string | null
   addExtraIcons?: React.ReactNode
-  showReset: boolean
-  showSettings: (setting: 'columns' | 'filters' | 'search') => void
-  hideSettings: () => void
-  handleColumnChange: (column: string, checked: boolean) => void
-  handleFilterChange: (filterName: string, value: string | boolean) => void
-  handleReset: () => void
 }
 
 export const TableSettings: React.FC<TableSettingsProps> = ({
+  table,
   tableName,
   totalCount,
-  availableColumns,
-  selectedColumns,
-  filterOptions,
   filters,
-  showTableSettings,
   addExtraIcons,
-  showReset,
-  showSettings,
-  hideSettings,
-  handleColumnChange,
-  handleFilterChange,
-  handleReset,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  if (!tableName) {
+    tableName = capitalizeFirstLetter(table)
+  }
+  const {
+    availableColumns,
+    selectedColumns,
+    filtersOptions,
+    showTableSettings,
+    showReset,
+    handleFilterChange,
+    handleColumnChange,
+    showSettings,
+    hideSettings,
+    handleReset,
+  } = useTableSettings(table)
 
   return (
     <div className='mb-4 w-full' id='accordion-open' data-accordion='open'>
@@ -106,7 +104,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
         id='accordion-open-body-1'
         aria-labelledby='accordion-open-heading-1'
       >
-        <div className='dark:bg-boxDark w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none'>
+        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-boxDark'>
           <div>
             <div className='mt-4'>
               <div className='flex flex-col gap-3'>
@@ -171,8 +169,8 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                     <h4 className='font-semibold text-grayDark dark:text-white'>Filters</h4>
                     <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                       <ul className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3'>
-                        {filterOptions &&
-                          filterOptions.map((filter) => (
+                        {filtersOptions &&
+                          filtersOptions.map((filter) => (
                             <li key={filter.key}>
                               {filter.type === 'range' && (
                                 <>
@@ -285,7 +283,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
 
       {mobileMenuOpen && (
         <div className='mt-4 w-full sm:hidden'>
-          <div className='dark:bg-boxDark flex flex-col space-y-2 rounded-[20px] bg-grayLight p-4 shadow dark:border-none dark:to-gradientTo'>
+          <div className='flex flex-col space-y-2 rounded-[20px] bg-grayLight p-4 shadow dark:border-none dark:bg-boxDark dark:to-gradientTo'>
             {addExtraIcons && (
               <div className='mb-1 w-full'>
                 {React.Children.map(addExtraIcons, (child) =>

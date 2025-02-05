@@ -17,6 +17,9 @@ enable_prometheus_exporter = true
 # Port at which prometheus exporter listens on.
 prometheus_exporter_port = 9930
 
+# The number of Tokio worker threads to launch. This should match the number of CPU cores available.
+worker_threads = 16
+
 # How long to wait before aborting a server connection (ms).
 connect_timeout = 10000
 
@@ -56,7 +59,7 @@ admin_password = "postgres"
 # Pool mode (see PgBouncer docs for more).
 # session: one server connection per connected client
 # transaction: one server connection per client transaction
-pool_mode = "session"
+pool_mode = "transaction"
 
 # If the client doesn't specify, route traffic to
 # this role by default.
@@ -73,7 +76,7 @@ password = "postgres"
 # Maximum number of server connections that can be established for this user
 # The maximum number of connection from a single Pgcat process to any database in the cluster
 # is the sum of pool_size across all users.
-pool_size = 30
+pool_size = 100
 
 # Maximum query duration. Dangerous, but protects against DBs that died in a non-obvious way.
 statement_timeout = 0

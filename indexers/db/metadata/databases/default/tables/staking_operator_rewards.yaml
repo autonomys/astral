@@ -1,0 +1,27 @@
+table:
+  name: operator_rewards
+  schema: staking
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - amount
+        - at_block_number
+        - block_height
+        - domain_id
+        - event_id
+        - extrinsic_id
+        - id
+        - operator_id
+        - _id
+      filter: {}
+      limit: 50
+    comment: ""

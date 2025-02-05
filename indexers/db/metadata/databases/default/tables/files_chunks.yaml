@@ -32,4 +32,5 @@ select_permissions:
         - upload_options
         - _id
       filter: {}
+      limit: 50
     comment: ""

@@ -3,6 +3,7 @@
 import { CookieBanner } from 'components/common/CookieBanner'
 import { ErrorFallback } from 'components/common/ErrorFallback'
 import { useOutOfSyncBanner } from 'components/common/OutOfSyncBanner'
+import { UnsupportedNetworkBanner } from 'components/common/UnsupportedNetworkBanner'
 import { Container } from 'components/layout/Container'
 import Footer from 'components/layout/Footer'
 import { SectionHeader } from 'components/layout/SectionHeader'
@@ -26,9 +27,10 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
   }, [pathname])
 
   return (
-    <div className='from-backgroundLight to-backgroundDark dark:from-backgroundDarker dark:to-backgroundDarkest dark:bg-boxDark relative flex min-h-screen w-full flex-col bg-gradient-to-b'>
+    <div className='relative flex min-h-screen w-full flex-col bg-gradient-to-b from-backgroundLight to-backgroundDark dark:bg-boxDark dark:from-backgroundDarker dark:to-backgroundDarkest'>
       <div className='relative flex min-h-screen w-full flex-col'>
         {outOfSync}
+        <UnsupportedNetworkBanner />
         <SectionHeader />
         {subHeader}
         <ErrorBoundary

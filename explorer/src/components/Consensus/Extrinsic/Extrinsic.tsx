@@ -3,7 +3,11 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables } from 'gql/graphql'
+import {
+  ExtrinsicsByIdDocument,
+  ExtrinsicsByIdQuery,
+  ExtrinsicsByIdQueryVariables,
+} from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -14,7 +18,6 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { ExtrinsicIdParam } from 'types/app'
 import { ExtrinsicDetailsCard } from './ExtrinsicDetailsCard'
 import { ExtrinsicDetailsTab } from './ExtrinsicDetailsTab'
-import { QUERY_EXTRINSIC_BY_ID } from './query'
 
 export const Extrinsic: FC = () => {
   const { ref, inView } = useInView()
@@ -27,7 +30,7 @@ export const Extrinsic: FC = () => {
     ExtrinsicsByIdQuery,
     ExtrinsicsByIdQueryVariables
   >(
-    QUERY_EXTRINSIC_BY_ID,
+    ExtrinsicsByIdDocument,
     {
       variables: { extrinsicId: extrinsicId ?? '' },
       skip: !inFocus,
@@ -60,10 +63,7 @@ export const Extrinsic: FC = () => {
         {!loading && extrinsic ? (
           <>
             <ExtrinsicDetailsCard extrinsic={extrinsic} isDesktop={isLargeDesktop} />
-            <ExtrinsicDetailsTab
-              eventsCount={extrinsic.events_aggregate.aggregate?.count ?? 0}
-              isDesktop={isDesktop}
-            />
+            <ExtrinsicDetailsTab eventsCount={extrinsic.events_count} isDesktop={isDesktop} />
           </>
         ) : (
           noData

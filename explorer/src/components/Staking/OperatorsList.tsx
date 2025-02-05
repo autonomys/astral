@@ -1,15 +1,14 @@
 'use client'
 
 import { useApolloClient } from '@apollo/client'
-import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
+import { shortString } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
-import { PaginationState, SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
+import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
-import { OperatorsListQuery, OperatorsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import { OperatorsListDocument, OperatorsListQuery, OperatorsListQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useIndexers from 'hooks/useIndexers'
@@ -21,9 +20,9 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useConsensusStates } from 'states/consensus'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { useTableStates } from 'states/tables'
+import { useTableSettings } from 'states/tables'
 import { useViewStates } from 'states/view'
-import type { Cell, OperatorsFilters, TableSettingsTabs } from 'types/table'
+import type { Cell, OperatorsFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import {
   bigNumberToFormattedString,
@@ -43,7 +42,6 @@ import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { QUERY_OPERATOR_LIST } from './query'
 
 type Row = OperatorsListQuery['staking_operators'][0] & { nominatorsCount: number }
 const TABLE = 'operators'
@@ -54,11 +52,6 @@ interface OperatorsListProps {
 
 export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   const { ref, inView } = useInView()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageSize: PAGE_SIZE,
-    pageIndex: 0,
-  })
   const { network, tokenSymbol, tokenDecimals } = useIndexers()
   const { subspaceAccount } = useWallet()
   const { operators: rpcOperators, domainRegistry, deposits } = useConsensusStates()
@@ -66,17 +59,16 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   useDomainsData()
   const inFocus = useWindowFocus()
   const { myPositionOnly } = useViewStates()
-  const availableColumns = useTableStates((state) => state[TABLE].columns)
-  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
-  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
-  const filters = useTableStates((state) => state[TABLE].filters) as OperatorsFilters
-  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
-  const setColumns = useTableStates((state) => state.setColumns)
-  const setFilters = useTableStates((state) => state.setFilters)
-  const showSettings = useTableStates((state) => state.showSettings)
-  const hideSettings = useTableStates((state) => state.hideSettings)
-  const resetSettings = useTableStates((state) => state.resetSettings)
-  const showReset = useTableStates((state) => state.showReset)
+  const {
+    pagination,
+    sorting,
+    availableColumns,
+    selectedColumns,
+    filters,
+    orderBy,
+    onPaginationChange,
+    onSortingChange,
+  } = useTableSettings<OperatorsFilters>(TABLE)
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -84,16 +76,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     maxShares: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
-
-  const handleFilterChange = useCallback(
-    (filterName: string, value: string | boolean) => {
-      setFilters(TABLE, {
-        ...filters,
-        [filterName]: value,
-      })
-    },
-    [filters, setFilters],
-  )
 
   const handleAction = useCallback((value: OperatorAction) => {
     setAction(value)
@@ -367,16 +349,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     ],
   )
 
-  const orderBy = useMemo(
-    () =>
-      sorting && sorting.length > 0
-        ? sorting[0].id.endsWith('aggregate')
-          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
-          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
-        : { id: OrderBy.Asc },
-    [sorting],
-  )
-
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conditions: Record<string, any> = {}
@@ -532,7 +504,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     OperatorsListQuery,
     OperatorsListQueryVariables
   >(
-    QUERY_OPERATOR_LIST,
+    OperatorsListDocument,
     {
       variables,
       skip: !inFocus,
@@ -547,7 +519,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_OPERATOR_LIST, 'operator', {
+      downloadFullData(apolloClient, OperatorsListDocument, 'operator', {
         orderBy,
       }),
     [apolloClient, orderBy],
@@ -580,17 +552,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     return null
   }, [loading, operators])
 
-  const handleClickOnColumnToEditTable = useCallback(
-    (column: string, checked: boolean) =>
-      checked
-        ? setColumns(TABLE, [...selectedColumns, column])
-        : setColumns(
-            TABLE,
-            selectedColumns.filter((c) => c !== column),
-          ),
-    [selectedColumns, setColumns],
-  )
-
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
@@ -607,10 +568,8 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       </div>
       <div className='my-4' ref={ref}>
         <TableSettings
-          tableName={capitalizeFirstLetter(TABLE)}
+          table={TABLE}
           totalCount={totalCount}
-          availableColumns={availableColumns}
-          selectedColumns={selectedColumns}
           filters={filters}
           addExtraIcons={
             subspaceAccount && (
@@ -619,14 +578,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               </div>
             )
           }
-          showTableSettings={showTableSettings}
-          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
-          hideSettings={() => hideSettings(TABLE)}
-          handleColumnChange={handleClickOnColumnToEditTable}
-          handleFilterChange={handleFilterChange}
-          filterOptions={filtersOptions}
-          handleReset={() => resetSettings(TABLE)}
-          showReset={showReset(TABLE)}
         />
         {!loading && operatorsList ? (
           <SortedTable
@@ -634,10 +585,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             columns={columns}
             showNavigation={true}
             sorting={sorting}
-            onSortingChange={setSorting}
+            onSortingChange={onSortingChange}
             pagination={pagination}
             pageCount={pageCount}
-            onPaginationChange={setPagination}
+            onPaginationChange={onPaginationChange}
             filename='staking-operators-list'
             fullDataDownloader={fullDataDownloader}
           />

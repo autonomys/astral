@@ -41,15 +41,18 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - index_in_block
-        - links
-        - block_height
+        - _id
+        - blake3_hash
         - block_hash
+        - block_height
         - extrinsic_hash
         - extrinsic_id
         - id
+        - index_in_block
+        - is_archived
+        - links
         - timestamp
-        - _id
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

@@ -52,7 +52,6 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - runtime_id
         - accumulated_epoch_rewards
         - accumulated_epoch_shares
         - accumulated_epoch_stake
@@ -72,7 +71,6 @@ select_permissions:
         - last_domain_block_number
         - last_epoch_duration
         - rejected_transfers_claimed_count
-        - sort_id
         - total_burned_balance
         - total_consensus_storage_fee
         - total_deposits
@@ -91,10 +89,14 @@ select_permissions:
         - transfers_rejected_count
         - updated_at
         - account_id
+        - extrinsic_id
         - id
         - name
         - runtime
+        - runtime_id
         - runtime_info
+        - sort_id
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

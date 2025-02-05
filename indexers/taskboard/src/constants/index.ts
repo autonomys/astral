@@ -9,6 +9,12 @@ export const TASKS_QUEUES = [
     enabled: true,
   },
   {
+    queue: NETWORK,
+    name: "updateBlockchainStats",
+    title: "Update Blockchain Stats",
+    enabled: true,
+  },
+  {
     queue: SLACK,
     name: "slackNotification",
     title: "Slack Notification",

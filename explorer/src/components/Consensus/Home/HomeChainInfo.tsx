@@ -1,9 +1,14 @@
-import { Spinner } from '@/components/common/Spinner'
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { ArchivedHistoryIcon, BlockIcon, DocIcon, PieChartIcon, WalletIcon } from 'components/icons'
+import { Spinner } from 'components/common/Spinner'
 import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
+import useMediaQuery from 'hooks/useMediaQuery'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import { Pagination } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { cn } from 'utils/cn'
 import { numberWithCommas } from 'utils/number'
 import { HomeInfoCard } from './HomeInfoCard'
 
@@ -18,6 +23,8 @@ type Props = {
 export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const { indexerSet } = useIndexers()
   const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
+
+  const isDesktop = useMediaQuery('(min-width: 1536px)')
 
   const getTelemetryData = useCallback(async () => {
     if (!process.env.NEXT_PUBLIC_TELEMETRY_URL) return
@@ -78,37 +85,37 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
     () => [
       {
         title: 'Processed Blocks',
-        icon: <BlockIcon />,
+        imagePath: '/images/icons/processed-blocks.webp',
         value: blocksCount,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Wallet addresses',
-        icon: <WalletIcon />,
+        imagePath: '/images/icons/wallet-addresses.webp',
         value: accountsCount,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Nodes',
-        icon: <BlockIcon />,
+        imagePath: '/images/icons/total-nodes.webp',
         value: nodeCount,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Space Pledged',
-        icon: <PieChartIcon />,
+        imagePath: '/images/icons/total-space-pledged.webp',
         value: spacePledged,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Archived History Size',
-        icon: <ArchivedHistoryIcon />,
+        imagePath: '/images/icons/archived-history-size.webp',
         value: historySize,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Total Extrinsics',
-        icon: <DocIcon />,
+        imagePath: '/images/icons/total-extrinsics.webp',
         value: extrinsicsCount,
         darkBgClass: 'dark:bg-boxDark',
       },
@@ -126,17 +133,46 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
       {!data || loading ? (
         <Spinner isXSmall />
       ) : (
-        <div className='mb-12 flex w-full items-center gap-5 overflow-x-auto'>
-          {listOfCards.map(({ title, value, icon, darkBgClass }, index) => (
-            <HomeInfoCard
-              key={`${title}-${index}`}
-              title={title}
-              value={value}
-              icon={icon}
-              darkBgClass={darkBgClass}
-            />
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={20}
+          pagination={{
+            clickable: true,
+            renderBullet: (index, className) =>
+              `<span class="${className}" style="background-color: #1949D2;"></span>`,
+          }}
+          breakpoints={{
+            460: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 3,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            1536: {
+              slidesPerView: 6,
+              spaceBetween: 20,
+            },
+          }}
+          modules={[Pagination]}
+          className={cn('flex w-full items-center', isDesktop ? 'mb-12 !p-0' : 'mb-4 !pb-10')}
+        >
+          {listOfCards.map(({ title, value, imagePath, darkBgClass }, index) => (
+            <SwiperSlide key={`${title}-${index}`}>
+              <HomeInfoCard
+                title={title}
+                value={value}
+                imagePath={imagePath}
+                darkBgClass={darkBgClass}
+              />
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       )}
     </>
   )

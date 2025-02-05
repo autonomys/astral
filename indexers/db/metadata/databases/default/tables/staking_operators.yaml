@@ -68,7 +68,6 @@ select_permissions:
         - last_bundle_at
         - minimum_nominator_stake
         - rejected_transfers_claimed_count
-        - sort_id
         - total_burned_balance
         - total_consensus_storage_fee
         - total_deposits
@@ -88,11 +87,14 @@ select_permissions:
         - updated_at
         - account_id
         - domain_id
+        - extrinsic_id
         - id
         - pending_action
         - raw_status
         - signing_key
+        - sort_id
         - status
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

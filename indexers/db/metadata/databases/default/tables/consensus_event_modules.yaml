@@ -19,5 +19,6 @@ select_permissions:
         - method
         - section
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

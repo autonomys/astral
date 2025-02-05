@@ -32,9 +32,9 @@
   "license": "MIT",
   "devDependencies": {
     "@apollo/client": "^3.7.16",
-    "@autonomys/auto-consensus": "^1.2.1",
-    "@autonomys/auto-dag-data": "^1.2.1",
-    "@autonomys/auto-utils": "^1.2.1",
+    "@autonomys/auto-consensus": "^1.2.4",
+    "@autonomys/auto-dag-data": "^1.2.4",
+    "@autonomys/auto-utils": "^1.2.4",
     "@polkadot/api": "^12.4.2",
     "@polkadot/types": "^14.1.1",
     "@polkadot/util": "^13.2.2",

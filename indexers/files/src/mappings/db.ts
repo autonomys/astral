@@ -9,8 +9,47 @@ import {
   Metadata,
   MetadataCid,
 } from "../types";
+import { getSortId } from "./utils";
 
-export async function createAndSaveCid(
+export type Cache = {
+  cid: Cid[];
+  chunk: Chunk[];
+  folder: Folder[];
+  file: File[];
+  error: Error[];
+  metadata: Metadata[];
+  metadataCid: MetadataCid[];
+  folderCid: FolderCid[];
+  fileCid: FileCid[];
+};
+
+export const initializeCache = (): Cache => ({
+  cid: [],
+  chunk: [],
+  folder: [],
+  file: [],
+  error: [],
+  metadata: [],
+  metadataCid: [],
+  folderCid: [],
+  fileCid: [],
+});
+
+export const saveCache = async (cache: Cache) => {
+  await Promise.all([
+    store.bulkCreate(`Cid`, cache.cid),
+    store.bulkCreate(`Chunk`, cache.chunk),
+    store.bulkCreate(`Folder`, cache.folder),
+    store.bulkCreate(`File`, cache.file),
+    store.bulkCreate(`Error`, cache.error),
+    store.bulkCreate(`Metadata`, cache.metadata),
+    store.bulkCreate(`MetadataCid`, cache.metadataCid),
+    store.bulkCreate(`FolderCid`, cache.folderCid),
+    store.bulkCreate(`FileCid`, cache.fileCid),
+  ]);
+};
+
+export function createCid(
   cid: string,
   blockHeight: bigint,
   blockHash: string,
@@ -18,9 +57,10 @@ export async function createAndSaveCid(
   extrinsicHash: string,
   indexInBlock: number,
   links: string[],
+  blake3Hash: string,
   timestamp: Date
-): Promise<Cid> {
-  const _cid = Cid.create({
+): Cid {
+  return Cid.create({
     id: cid,
     blockHeight,
     blockHash,
@@ -28,13 +68,13 @@ export async function createAndSaveCid(
     extrinsicHash,
     indexInBlock,
     links,
+    blake3Hash,
+    isArchived: false,
     timestamp,
   });
-  await _cid.save();
-  return _cid;
 }
 
-export async function createAndSaveChunk(
+export function createChunk(
   cid: string,
   type: string,
   linkDepth: number,
@@ -42,8 +82,8 @@ export async function createAndSaveChunk(
   name?: string,
   data?: string,
   uploadOptions?: string
-): Promise<Chunk> {
-  const chunk = Chunk.create({
+): Chunk {
+  return Chunk.create({
     id: cid,
     type,
     linkDepth,
@@ -52,77 +92,90 @@ export async function createAndSaveChunk(
     data,
     uploadOptions,
   });
-  await chunk.save();
-  return chunk;
 }
 
 const prepareRelation = (cid: string, link: string) => ({
-  id: `${cid}:${link}`,
+  id: cid + ":" + link,
   parentCid: cid,
   childCid: link,
 });
 
-export async function createAndSaveMetadata(
+export function createMetadata(
   cid: string,
   links: string[],
-  name?: string
-): Promise<Metadata> {
+  name: string,
+  blockHeight: bigint,
+  extrinsicId: string
+): { metadata: Metadata; relations: MetadataCid[] } {
   const metadata = Metadata.create({
     id: cid,
+    sortId: getSortId(blockHeight, extrinsicId),
     size: BigInt(0),
     name,
+    blockHeight,
+    extrinsicId,
   });
-  await metadata.save();
-  if (links.length > 0) {
-    const relations = links.map((link) =>
-      MetadataCid.create(prepareRelation(cid, link))
-    );
-    await Promise.all(relations.map((relation) => relation.save()));
-  }
-  return metadata;
+  if (links.length > 0)
+    return {
+      metadata,
+      relations: links.map((link) =>
+        MetadataCid.create(prepareRelation(cid, link))
+      ),
+    };
+  return { metadata, relations: [] };
 }
 
-export async function createAndSaveFolder(
+export function createFolder(
   cid: string,
   links: string[],
-  name?: string
-): Promise<Folder> {
+  name: string,
+  blockHeight: bigint,
+  extrinsicId: string
+): { folder: Folder; relations: FolderCid[] } {
   const folder = Folder.create({
     id: cid,
+    sortId: getSortId(blockHeight, extrinsicId),
     size: BigInt(0),
     name,
+    blockHeight,
+    extrinsicId,
   });
-  await folder.save();
-  if (links.length > 0) {
-    const relations = links.map((link) =>
-      FolderCid.create(prepareRelation(cid, link))
-    );
-    await Promise.all(relations.map((relation) => relation.save()));
-  }
-  return folder;
+  if (links.length > 0)
+    return {
+      folder,
+      relations: links.map((link) =>
+        FolderCid.create(prepareRelation(cid, link))
+      ),
+    };
+  return { folder, relations: [] };
 }
 
-export async function createAndSaveFile(
+export function createFile(
   cid: string,
   links: string[],
-  name?: string
-): Promise<File> {
+  name: string,
+  blockHeight: bigint,
+  extrinsicId: string
+): { file: File; relations: FileCid[] } {
   const file = File.create({
     id: cid,
+    sortId: getSortId(blockHeight, extrinsicId),
     size: BigInt(0),
     name,
+    blockHeight,
+    extrinsicId,
   });
-  await file.save();
-  if (links.length > 0) {
-    const relations = links.map((link) =>
-      FileCid.create(prepareRelation(cid, link))
-    );
-    await Promise.all(relations.map((relation) => relation.save()));
-  }
-  return file;
+  if (links.length > 0)
+    return {
+      file,
+      relations: links.map((link) =>
+        FileCid.create(prepareRelation(cid, link))
+      ),
+    };
+  return { file, relations: [] };
 }
 
-export async function createAndSaveError(
+export function createError(
   blockHeight: bigint,
   blockHash: string,
   extrinsicId: string,
@@ -130,8 +183,8 @@ export async function createAndSaveError(
   indexInBlock: number,
   error: string,
   timestamp: Date
-): Promise<Error> {
-  const _error = Error.create({
+): Error {
+  return Error.create({
     id: extrinsicId,
     blockHeight,
     blockHash,
@@ -141,6 +194,4 @@ export async function createAndSaveError(
     error,
     timestamp,
   });
-  await _error.save();
-  return _error;
 }
