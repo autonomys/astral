@@ -1291,6 +1291,7 @@ CREATE TABLE staking.domain_staking_histories (
     domain_id text NOT NULL,
     current_epoch_index integer NOT NULL,
     current_total_stake numeric NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
@@ -2952,7 +2953,7 @@ BEGIN
         NEW.block_height
     ) ON CONFLICT (id) DO UPDATE SET
         timestamp_end = NEW.timestamp,
-        epoch_duration = NEW.timestamp - staking.domain_epochs.timestamp_start,
+        epoch_duration = EXTRACT(EPOCH FROM (NEW.timestamp - staking.domain_epochs.timestamp_start)),
         consensus_block_number_end = NEW.block_height,
         consensus_block_count = staking.domain_epochs.consensus_block_count + 1,
         updated_at = NEW.block_height;
