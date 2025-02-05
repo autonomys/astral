@@ -256,12 +256,14 @@ export function createDomainBlockHistory(
   hash: string,
   domainId: string,
   domainBlockNumber: bigint,
+  timestamp: Date,
   blockHeight: bigint
 ): DomainBlockHistory {
   return DomainBlockHistory.create({
     id: hash,
     domainId,
     domainBlockNumber,
+    timestamp,
     blockHeight,
   });
 }

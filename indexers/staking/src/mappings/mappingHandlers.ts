@@ -59,6 +59,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         createHashId(data),
         domainId,
         domainBlockNumber,
+        blockTimestamp,
         height
       )
     );
