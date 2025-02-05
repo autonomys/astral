@@ -92,6 +92,7 @@
 - "!include staking_operator_registrations.yaml"
 - "!include staking_operator_rewards.yaml"
 - "!include staking_operator_staking_histories.yaml"
+- "!include staking_operator_tax_collections.yaml"
 - "!include staking_operators.yaml"
 - "!include staking_runtime_creations.yaml"
 - "!include staking_withdrawal_histories.yaml"
