@@ -1,4 +1,8 @@
-import { parseDeposit, parseOperator } from "@autonomys/auto-consensus";
+import {
+  parseDeposit,
+  parseOperator,
+  parseWithdrawal,
+} from "@autonomys/auto-consensus";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
@@ -98,9 +102,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     );
   });
-  const operatorStateMap = new Map(
-    cache.operatorStakingHistory.map((op) => [op.operatorId, op])
-  );
 
   const deposits = (
     await Promise.all(
@@ -130,18 +131,18 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     );
   });
-  // const withdrawals = (
-  //   await Promise.all(
-  //     operatorIdOwner.map((o) =>
-  //       api.query.domains.withdrawals.entries(
-  //         (o[0].toHuman() as any)[0].toString()
-  //       )
-  //     )
-  //   )
-  // ).flat();
-  // logger.info(
-  //   `withdrawals: ${stringify(withdrawals.map((d: any) => parseWithdrawal(d)))}`
-  // );
+  const withdrawals = (
+    await Promise.all(
+      operatorIdOwner.map((o) =>
+        api.query.domains.withdrawals.entries(
+          (o[0].toHuman() as any)[0].toString()
+        )
+      )
+    )
+  ).flat();
+  logger.info(
+    `withdrawals: ${stringify(withdrawals.map((d: any) => parseWithdrawal(d)))}`
+  );
 
   const eventsByExtrinsic = new Map<number, typeof events>();
   for (const event of events) {
@@ -185,7 +186,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
             eventId,
             extrinsicSigner,
             extrinsicEvents,
-            operatorStates: operatorStateMap,
           });
         }
 
