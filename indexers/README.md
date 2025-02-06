@@ -26,10 +26,17 @@ To contribute to an indexer or modify its behavior:
 1. Clone the repository if you haven't done so already.
 2. Open Docker Desktop
 3. Run `yarn` from this directory
-4. Run `yarn dev` from this directory
-5. Open a new terminal and run `yarn metadata:dev` from indexers/ directory
-6. Open a new terminal and run `yarn migrate:dev` from indexers/ directory
-7. Open a new terminal and run `yarn console:dev` from indexers/ directory
+4. Run `bash scripts/run.sh --network taurus --env dev --task dev` from this directory
+   - This will start the indexers for the taurus network in dev mode
+   - You can change the network, env and task to fit your needs
+   - Tasks:
+     - `dev`: start the indexers stack
+     - `dev-bootstrap`: start the minimal indexers stack (usually used to run `apply-seeds` before running `dev`)
+     - `codegen`: generate the types
+     - `build`: build the indexers
+     - `metadata`: generate the metadata for Hasura
+     - `migrate`: start the migrations for Hasura
+     - `apply-seeds:mainnet`: apply the seeds for the mainnet
 
 ## Testing
 
