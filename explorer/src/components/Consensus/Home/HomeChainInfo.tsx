@@ -1,5 +1,5 @@
+import HomeInfoCardSkeleton from '@/components/common/HomeInfoCardSkeleton'
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { Spinner } from 'components/common/Spinner'
 import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -129,40 +129,42 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   }, [])
 
   return (
-    <>
-      {!data || loading ? (
-        <Spinner isXSmall />
-      ) : (
-        <Swiper
-          slidesPerView={1}
-          spaceBetween={20}
-          pagination={{
-            clickable: true,
-            renderBullet: (index, className) =>
-              `<span class="${className}" style="background-color: #1949D2;"></span>`,
-          }}
-          breakpoints={{
-            460: {
-              slidesPerView: 2,
-              spaceBetween: 20,
-            },
-            768: {
-              slidesPerView: 3,
-              spaceBetween: 20,
-            },
-            1024: {
-              slidesPerView: 4,
-              spaceBetween: 20,
-            },
-            1536: {
-              slidesPerView: 6,
-              spaceBetween: 20,
-            },
-          }}
-          modules={[Pagination]}
-          className={cn('flex w-full items-center', isDesktop ? 'mb-12 !p-0' : 'mb-4 !pb-10')}
-        >
-          {listOfCards.map(({ title, value, imagePath, darkBgClass }, index) => (
+    <Swiper
+      slidesPerView={1}
+      spaceBetween={20}
+      pagination={{
+        clickable: true,
+        renderBullet: (index, className) =>
+          `<span key="${index}" class="${className}" style="background-color: #1949D2;"></span>`,
+      }}
+      breakpoints={{
+        460: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+        1024: {
+          slidesPerView: 4,
+          spaceBetween: 20,
+        },
+        1536: {
+          slidesPerView: 6,
+          spaceBetween: 20,
+        },
+      }}
+      modules={[Pagination]}
+      className={cn('flex w-full items-center', isDesktop ? 'mb-12 !p-0' : 'mb-4 !pb-10')}
+    >
+      {!data || loading
+        ? Array.from({ length: 6 }).map((_, index) => (
+            <SwiperSlide key={`loader-${index}`}>
+              <HomeInfoCardSkeleton key={index} />
+            </SwiperSlide>
+          ))
+        : listOfCards.map(({ title, value, imagePath, darkBgClass }, index) => (
             <SwiperSlide key={`${title}-${index}`}>
               <HomeInfoCard
                 title={title}
@@ -172,8 +174,6 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
               />
             </SwiperSlide>
           ))}
-        </Swiper>
-      )}
-    </>
+    </Swiper>
   )
 }
