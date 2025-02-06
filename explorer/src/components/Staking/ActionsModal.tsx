@@ -5,8 +5,9 @@ import {
   nominateOperator,
   unlockFunds,
   unlockNominator,
+  withdrawStake,
+  WithdrawStakeParams,
 } from '@autonomys/auto-consensus'
-import { createType } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { WalletType } from 'constants/wallet'
@@ -179,15 +180,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       try {
         const operatorId = action.operatorId.toString()
-        const percentage = values.amount.toString()
-        const tx = await api.tx.domains.withdrawStake(
+        const percent = values.amount.toString()
+        const params: WithdrawStakeParams = {
+          api,
           operatorId,
-          percentage === '100'
-            ? createType(api.registry, 'PalletDomainsStakingWithdrawStake', { All: null })
-            : createType(api.registry, 'PalletDomainsStakingWithdrawStake', {
-                Percent: percentage,
-              }),
-        )
+          ...(percent === '100' ? { all: true } : { percent }),
+        }
+        const tx = await withdrawStake(params)
         await sendAndSaveTx({
           call: 'withdrawStake',
           tx,
