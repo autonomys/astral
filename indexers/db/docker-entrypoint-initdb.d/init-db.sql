@@ -1195,7 +1195,7 @@ CREATE TABLE staking.deposit_events (
     amount numeric NOT NULL,
     storage_fee_deposit numeric NOT NULL,
     total_amount numeric NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
@@ -1234,7 +1234,7 @@ CREATE TABLE staking.deposits (
     total_amount numeric NOT NULL,
     total_withdrawn numeric NOT NULL,
     status text NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
     extrinsic_id text NOT NULL,
     created_at numeric NOT NULL,
     updated_at numeric NOT NULL
@@ -1245,46 +1245,30 @@ CREATE TABLE staking.domain_block_histories (
     id text NOT NULL,
     domain_id text NOT NULL,
     domain_block_number numeric NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
 ALTER TABLE staking.domain_block_histories OWNER TO postgres;
 
-CREATE TABLE staking.domain_blocks (
+CREATE TABLE staking.domain_epochs (
     id text NOT NULL,
     domain_id text NOT NULL,
-    domain_epoch_id text NOT NULL,
-    block_number numeric NOT NULL,
-    block_hash text NOT NULL,
-    extrinsic_root text NOT NULL,
     epoch numeric NOT NULL,
-    consensus_block_number numeric NOT NULL,
-    consensus_block_hash text NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    created_at numeric NOT NULL,
-    updated_at numeric NOT NULL
-);
-ALTER TABLE staking.domain_blocks OWNER TO postgres;
-
-CREATE TABLE staking.domain_epoches (
-    id text NOT NULL,
-    epoch numeric NOT NULL,
-    domain_id text NOT NULL,
-    block_number_start numeric NOT NULL,
-    block_number_end numeric NOT NULL,
-    block_count numeric NOT NULL,
+    domain_block_number_start numeric NOT NULL,
+    domain_block_number_end numeric NOT NULL,
+    domain_block_count numeric NOT NULL,
     timestamp_start timestamp without time zone NOT NULL,
     timestamp_end timestamp without time zone NOT NULL,
     epoch_duration numeric NOT NULL,
     consensus_block_number_start numeric NOT NULL,
     consensus_block_number_end numeric NOT NULL,
-    consensus_block_hash_start text NOT NULL,
-    consensus_block_hash_end text NOT NULL,
+    consensus_block_count numeric NOT NULL,
     created_at numeric NOT NULL,
     updated_at numeric NOT NULL
 );
-ALTER TABLE staking.domain_epoches OWNER TO postgres;
+ALTER TABLE staking.domain_epochs OWNER TO postgres;
 
 CREATE TABLE staking.domain_instantiations (
     id text NOT NULL,
@@ -1307,6 +1291,7 @@ CREATE TABLE staking.domain_staking_histories (
     domain_id text NOT NULL,
     current_epoch_index integer NOT NULL,
     current_total_stake numeric NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
@@ -1458,7 +1443,6 @@ CREATE TABLE staking.operator_staking_histories (
 );
 ALTER TABLE staking.operator_staking_histories OWNER TO postgres;
 
-
 CREATE TABLE staking.operators (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -1539,7 +1523,7 @@ CREATE TABLE staking.withdrawals (
     unlocked_storage_fee numeric NOT NULL,
     total_amount numeric NOT NULL,
     status text NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
     withdraw_extrinsic_hash text NOT NULL,
     unlock_extrinsic_hash text NOT NULL,
     epoch_withdrawal_requested_at numeric NOT NULL,
@@ -1864,11 +1848,8 @@ ALTER TABLE ONLY staking.deposit_histories
 ALTER TABLE ONLY staking.deposits
     ADD CONSTRAINT deposits_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY staking.domain_blocks
-    ADD CONSTRAINT domain_blocks_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY staking.domain_epoches
-    ADD CONSTRAINT domain_epoches_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY staking.domain_epochs
+    ADD CONSTRAINT domain_epochs_pkey PRIMARY KEY (id);
     
 ALTER TABLE ONLY staking.domain_instantiations
     ADD CONSTRAINT domain_instantiations_pkey PRIMARY KEY (_id);
@@ -2091,11 +2072,10 @@ CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING bt
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
 CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btree (id);
 CREATE INDEX "0xc145a7f38e7f82ec" ON staking.domains USING btree (id);
-CREATE INDEX "0xce8aa0eadbbe994d" ON staking.domain_epoches USING btree (id);
+CREATE INDEX "0xce8aa0eadbbe994d" ON staking.domain_epochs USING btree (id);
 CREATE INDEX "0xd3486d6b21c11e22" ON staking.withdrawal_histories USING btree (id);
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
 CREATE INDEX "0xdca5e6b13feac3f6" ON staking.deposit_histories USING btree (id);
-CREATE INDEX "0xdefc8472839e625c" ON staking.domain_blocks USING btree (id);
 
 CREATE INDEX "stats_hourly_end_date" ON stats.hourly USING btree ("end_date" DESC);
 CREATE INDEX "stats_daily_end_date" ON stats.daily USING btree ("end_date" DESC);
@@ -2313,6 +2293,11 @@ BEGIN
     ) THEN
         RETURN NULL;
     END IF;
+
+    UPDATE staking.domains
+    SET 
+        last_domain_block_number = NEW.domain_block_number
+    WHERE id = NEW.domain_id;
     
     RETURN NEW;
 END;
@@ -2335,7 +2320,7 @@ BEGIN
     ) THEN
         RETURN NULL;
     END IF;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -2412,7 +2397,8 @@ BEFORE INSERT ON staking.withdrawal_histories
 FOR EACH ROW
 EXECUTE FUNCTION staking.prevent_withdrawal_histories_duplicate();
 
--- Synthetic tables
+-- Staking triggers
+
 CREATE OR REPLACE FUNCTION staking.insert_new_domain() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
@@ -2621,11 +2607,20 @@ AFTER INSERT ON staking.operator_registrations
 FOR EACH ROW
 EXECUTE FUNCTION staking.insert_new_operator();
 
-CREATE OR REPLACE FUNCTION staking.insert_new_nominator() RETURNS TRIGGER
+CREATE OR REPLACE FUNCTION staking.handle_deposit_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
 BEGIN
-    -- Check if nominator already exists
+    UPDATE staking.domains
+    SET 
+        total_deposits = staking.domains.total_deposits + NEW.amount
+    WHERE id = NEW.domain_id;
+
+    UPDATE staking.operators
+    SET 
+        total_deposits = staking.operators.total_deposits + NEW.amount
+    WHERE id = NEW.operator_id;
+
     IF NOT EXISTS (
         SELECT 1 
         FROM staking.nominators 
@@ -2696,22 +2691,15 @@ BEGIN
             NEW.block_height,                -- created_at
             NEW.block_height                 -- updated_at
         );
+    ELSE
+        UPDATE staking.nominators
+        SET
+            total_deposits = staking.nominators.total_deposits + NEW.amount,
+            total_deposits_count = staking.nominators.total_deposits_count + 1,
+            updated_at = NEW.block_height
+        WHERE id = NEW.nominator_id;
     END IF;
-    
-    RETURN NEW;
-END;
-$$;
-ALTER FUNCTION staking.insert_new_nominator() OWNER TO postgres;
 
-CREATE TRIGGER insert_new_nominator
-AFTER INSERT ON staking.deposit_events
-FOR EACH ROW
-EXECUTE FUNCTION staking.insert_new_nominator();
-
-CREATE OR REPLACE FUNCTION staking.insert_new_deposit() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
     INSERT INTO staking.deposits (
         id,
         account_id,
@@ -2743,21 +2731,7 @@ BEGIN
         NEW.block_height,            -- created_at
         NEW.block_height             -- updated_at
     );
-    
-    RETURN NEW;
-END;
-$$;
-ALTER FUNCTION staking.insert_new_deposit() OWNER TO postgres;
 
-CREATE TRIGGER insert_new_deposit
-AFTER INSERT ON staking.deposit_events
-FOR EACH ROW
-EXECUTE FUNCTION staking.insert_new_deposit();
-
-CREATE OR REPLACE FUNCTION staking.update_account_deposits() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
     INSERT INTO staking.accounts (
         id,
         total_deposits,
@@ -2786,22 +2760,210 @@ BEGIN
         0,                         -- accumulated_epoch_stake
         0,                         -- accumulated_epoch_storage_fee_deposit
         0,                         -- accumulated_epoch_shares
-        NEW.created_at,            -- created_at
-        NEW.updated_at             -- updated_at
+        NEW.block_height,            -- created_at
+        NEW.block_height             -- updated_at
     )
     ON CONFLICT (id) DO UPDATE SET
         total_deposits = staking.accounts.total_deposits + NEW.total_amount,
         current_total_stake = staking.accounts.current_total_stake + NEW.amount,
         current_storage_fee_deposit = staking.accounts.current_storage_fee_deposit + NEW.storage_fee_deposit,
-        updated_at = NEW.updated_at;
+        updated_at = NEW.block_height;
     
     RETURN NEW;
 END;
 $$;
+ALTER FUNCTION staking.handle_deposit_events() OWNER TO postgres;
 
-ALTER FUNCTION staking.update_account_deposits() OWNER TO postgres;
-
-CREATE TRIGGER update_account_deposits
-AFTER INSERT ON staking.deposits
+CREATE TRIGGER handle_deposit_events
+AFTER INSERT ON staking.deposit_events
 FOR EACH ROW
-EXECUTE FUNCTION staking.update_account_deposits();
+EXECUTE FUNCTION staking.handle_deposit_events();
+
+CREATE OR REPLACE FUNCTION staking.handle_operator_tax_collections_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    operator_account_id TEXT;
+BEGIN
+    SELECT account_id INTO operator_account_id
+    FROM staking.operators
+    WHERE id = NEW.operator_id;
+
+    UPDATE staking.domains
+    SET 
+        total_tax_collected = staking.domains.total_tax_collected + NEW.amount
+    WHERE id = NEW.domain_id;
+
+    UPDATE staking.operators
+    SET 
+        total_tax_collected = staking.operators.total_tax_collected + NEW.amount
+    WHERE id = NEW.operator_id;
+
+    UPDATE staking.accounts
+    SET 
+        total_tax_collected = staking.accounts.total_tax_collected + NEW.amount
+    WHERE id = operator_account_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_operator_tax_collections_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_operator_tax_collections_events
+AFTER INSERT ON staking.operator_tax_collections
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_operator_tax_collections_events();
+
+CREATE OR REPLACE FUNCTION staking.handle_operator_rewards_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.domains
+    SET 
+        total_rewards_collected = staking.domains.total_rewards_collected + NEW.amount
+    WHERE id = NEW.domain_id;
+
+    UPDATE staking.operators
+    SET 
+        total_rewards_collected = staking.operators.total_rewards_collected + NEW.amount
+    WHERE id = NEW.operator_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_operator_rewards_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_operator_rewards_events
+AFTER INSERT ON staking.operator_rewards
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_operator_rewards_events();
+
+CREATE OR REPLACE FUNCTION staking.handle_bundle_submissions_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.domains
+    SET 
+        total_transfers_in = staking.domains.total_transfers_in + NEW.total_transfers_in,
+        transfers_in_count = staking.domains.transfers_in_count + NEW.transfers_in_count,
+        total_transfers_out = staking.domains.total_transfers_out + NEW.total_transfers_out,
+        transfers_out_count = staking.domains.transfers_out_count + NEW.transfers_out_count,
+        total_rejected_transfers_claimed = staking.domains.total_rejected_transfers_claimed + NEW.total_rejected_transfers_claimed,
+        rejected_transfers_claimed_count = staking.domains.rejected_transfers_claimed_count + NEW.rejected_transfers_claimed_count,
+        total_transfers_rejected = staking.domains.total_transfers_rejected + NEW.total_transfers_rejected,
+        transfers_rejected_count = staking.domains.transfers_rejected_count + NEW.transfers_rejected_count,
+        total_volume = staking.domains.total_volume + NEW.total_volume,
+        total_consensus_storage_fee = staking.domains.total_consensus_storage_fee + NEW.consensus_storage_fee,
+        total_domain_execution_fee = staking.domains.total_domain_execution_fee + NEW.domain_execution_fee,
+        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance,
+        bundle_count = staking.domains.bundle_count + 1,
+        last_bundle_at = NEW.consensus_block_number
+    WHERE id = NEW.domain_id;
+
+    UPDATE staking.operators
+    SET 
+        total_transfers_in = staking.operators.total_transfers_in + NEW.total_transfers_in,
+        transfers_in_count = staking.operators.transfers_in_count + NEW.transfers_in_count,
+        total_transfers_out = staking.operators.total_transfers_out + NEW.total_transfers_out,
+        transfers_out_count = staking.operators.transfers_out_count + NEW.transfers_out_count,
+        total_rejected_transfers_claimed = staking.operators.total_rejected_transfers_claimed + NEW.total_rejected_transfers_claimed,
+        rejected_transfers_claimed_count = staking.operators.rejected_transfers_claimed_count + NEW.rejected_transfers_claimed_count,
+        total_transfers_rejected = staking.operators.total_transfers_rejected + NEW.total_transfers_rejected,
+        transfers_rejected_count = staking.operators.transfers_rejected_count + NEW.transfers_rejected_count,
+        total_volume = staking.operators.total_volume + NEW.total_volume,
+        total_consensus_storage_fee = staking.operators.total_consensus_storage_fee + NEW.consensus_storage_fee,
+        total_domain_execution_fee = staking.operators.total_domain_execution_fee + NEW.domain_execution_fee,
+        total_burned_balance = staking.operators.total_burned_balance + NEW.burned_balance,
+        bundle_count = staking.operators.bundle_count + 1,
+        last_bundle_at = NEW.consensus_block_number
+    WHERE id = NEW.operator_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_bundle_submissions_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_bundle_submissions_events
+AFTER INSERT ON staking.bundle_submissions
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_bundle_submissions_events();
+
+CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.operators
+    SET 
+        current_total_stake = NEW.current_total_stake,
+        current_storage_fee_deposit = NEW.total_storage_fee_deposit,
+        current_total_shares = NEW.current_total_shares,
+        current_share_price = NEW.share_price,
+        "status" = NEW.partial_status
+    WHERE id = NEW.operator_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.update_operator_stakes() OWNER TO postgres;
+
+CREATE TRIGGER update_operator_stakes_trigger
+AFTER INSERT ON staking.operator_staking_histories
+FOR EACH ROW
+EXECUTE FUNCTION staking.update_operator_stakes();
+
+CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.domains
+    SET 
+        current_total_stake = NEW.current_total_stake,
+        completed_epoch = NEW.current_epoch_index
+    WHERE id = NEW.domain_id;
+
+    INSERT INTO staking.domain_epochs (
+        id,
+        domain_id,
+        epoch,
+        domain_block_number_start,
+        domain_block_number_end,
+        domain_block_count,
+        timestamp_start,
+        timestamp_end,
+        epoch_duration,
+        consensus_block_number_start,
+        consensus_block_number_end,
+        consensus_block_count,
+        created_at,
+        updated_at
+    ) VALUES (
+        NEW.domain_id || '-' || NEW.current_epoch_index,
+        NEW.domain_id,
+        NEW.current_epoch_index,
+        0,
+        0,
+        0,
+        NEW.timestamp,
+        NEW.timestamp,
+        0,
+        NEW.block_height,
+        NEW.block_height,
+        1,
+        NEW.block_height,
+        NEW.block_height
+    ) ON CONFLICT (id) DO UPDATE SET
+        timestamp_end = NEW.timestamp,
+        epoch_duration = EXTRACT(EPOCH FROM (NEW.timestamp - staking.domain_epochs.timestamp_start)),
+        consensus_block_number_end = NEW.block_height,
+        consensus_block_count = staking.domain_epochs.consensus_block_count + 1,
+        updated_at = NEW.block_height;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.update_domain_stakes() OWNER TO postgres;
+
+CREATE TRIGGER update_domain_stakes_trigger
+AFTER INSERT ON staking.domain_staking_histories
+FOR EACH ROW
+EXECUTE FUNCTION staking.update_domain_stakes();

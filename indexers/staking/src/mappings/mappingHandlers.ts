@@ -46,6 +46,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         keyPrimitive[0].toString(),
         valuePrimitive.currentEpochIndex.toString(),
         valuePrimitive.currentTotalStake.toString(),
+        blockTimestamp,
         height
       )
     );
@@ -58,6 +59,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         createHashId(data),
         domainId,
         domainBlockNumber,
+        blockTimestamp,
         height
       )
     );

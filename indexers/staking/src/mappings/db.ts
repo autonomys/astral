@@ -135,6 +135,7 @@ export function createDepositEvent(
   operatorId: string,
   amount: bigint,
   storageFeeDeposit: bigint,
+  totalAmount: bigint,
   timestamp: Date,
   blockHeight: bigint,
   extrinsicId: string,
@@ -149,7 +150,7 @@ export function createDepositEvent(
     nominatorId: accountId + "-" + domainId + "-" + operatorId,
     amount,
     storageFeeDeposit,
-    totalAmount: amount + storageFeeDeposit,
+    totalAmount,
     timestamp,
     blockHeight,
     extrinsicId,
@@ -255,12 +256,14 @@ export function createDomainBlockHistory(
   hash: string,
   domainId: string,
   domainBlockNumber: bigint,
+  timestamp: Date,
   blockHeight: bigint
 ): DomainBlockHistory {
   return DomainBlockHistory.create({
     id: hash,
     domainId,
     domainBlockNumber,
+    timestamp,
     blockHeight,
   });
 }
@@ -270,6 +273,7 @@ export function createDomainStakingHistory(
   domainId: string,
   currentEpochIndex: number,
   currentTotalStake: bigint,
+  timestamp: Date,
   blockHeight: bigint
 ): DomainStakingHistory {
   return DomainStakingHistory.create({
@@ -277,6 +281,7 @@ export function createDomainStakingHistory(
     domainId,
     currentEpochIndex,
     currentTotalStake,
+    timestamp,
     blockHeight,
   });
 }

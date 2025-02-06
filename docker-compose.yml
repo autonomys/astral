@@ -311,8 +311,6 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
-      dictionary_subquery_node:
-        condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${RPC_URLS}
@@ -331,7 +329,7 @@ services:
       - --db-schema=staking
       - --workers=1
       - --unsafe
-      - --batch-size=100
+      - --batch-size=125
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
