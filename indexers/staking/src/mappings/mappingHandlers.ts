@@ -140,9 +140,25 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     )
   ).flat();
-  logger.info(
-    `withdrawals: ${stringify(withdrawals.map((d: any) => parseWithdrawal(d)))}`
-  );
+
+  withdrawals.forEach((w: any) => {
+    const data = parseWithdrawal(w);
+    logger.info(`withdrawals: ${stringify(data)}`);
+    cache.withdrawalHistory.push(
+      db.createWithdrawalHistoryHistory(
+        createHashId(data),
+        data.withdrawalInShares.domainEpoch[0].toString(),
+        data.account,
+        data.operatorId.toString(),
+        data.totalWithdrawalAmount,
+        data.withdrawalInShares.domainEpoch[1],
+        BigInt(data.withdrawalInShares.unlockAtConfirmedDomainBlockNumber),
+        data.withdrawalInShares.shares,
+        data.withdrawalInShares.storageFeeRefund,
+        height
+      )
+    );
+  });
 
   const eventsByExtrinsic = new Map<number, typeof events>();
   for (const event of events) {
