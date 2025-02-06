@@ -73,7 +73,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: null,
-    maxShares: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -87,7 +86,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
+    setAction({ type: OperatorActionType.None, operatorId: null })
   }, [])
 
   const apolloClient = useApolloClient()
@@ -328,7 +327,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
                   } as ActionsDropdownRow
                 }
                 excludeActions={excludeActions}
-                nominatorMaxShares={nominator ? BigInt(nominator.known_shares) : BIGINT_ZERO}
               />
             )
           },

@@ -42,7 +42,6 @@ export const NominationsTable: FC = () => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: null,
-    maxShares: null,
   })
 
   const handleAction = useCallback((value: OperatorAction) => {
@@ -56,7 +55,7 @@ export const NominationsTable: FC = () => {
 
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
+    setAction({ type: OperatorActionType.None, operatorId: null })
   }, [])
 
   const orderBy = useMemo(
@@ -249,9 +248,6 @@ export const NominationsTable: FC = () => {
                             } as ActionsDropdownRow
                           }
                           excludeActions={excludeActions}
-                          nominatorMaxShares={
-                            nominator ? BigInt(nominator.known_shares) : BIGINT_ZERO
-                          }
                         />
                       )
                     })()}
