@@ -24,7 +24,7 @@ export type FilterOption = {
   type: 'range' | 'checkbox' | 'number' | 'text' | 'dropdown'
   label: string
   key: string
-  options?: string[]
+  options?: string[] | { label: string; value: string }[]
 }
 
 export type FiltersOptions = {

@@ -217,33 +217,63 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                                 <>
                                   <p className='mb-1 block font-medium'>{filter.label}</p>
                                   <div className='mt-4 flex flex-wrap gap-2'>
-                                    {filter.options?.map((option) => (
-                                      <div key={option} className='flex items-center'>
-                                        <input
-                                          type='checkbox'
-                                          id={`${filter.key}-${option}`}
-                                          value={option}
-                                          checked={
-                                            filters[
-                                              `${filter.key}${option.replace(/\s+/g, '')}`
-                                            ] === 'true'
-                                          }
-                                          onChange={(e) =>
-                                            handleFilterChange(
-                                              `${filter.key}${option.replace(/\s+/g, '')}`,
-                                              e.target.checked.toString(),
-                                            )
-                                          }
-                                          className='mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
-                                        />
-                                        <label
-                                          htmlFor={`${filter.key}-${option}`}
-                                          className='text-sm text-gray-700 dark:text-gray-300'
-                                        >
-                                          {option}
-                                        </label>
-                                      </div>
-                                    ))}
+                                    {filter.options?.map((option) => {
+                                      if (typeof option === 'string')
+                                        return (
+                                          <div key={option} className='flex items-center'>
+                                            <input
+                                              type='checkbox'
+                                              id={`${filter.key}-${option}`}
+                                              value={option}
+                                              checked={
+                                                filters[
+                                                  `${filter.key}${option.replace(/\s+/g, '')}`
+                                                ] === 'true'
+                                              }
+                                              onChange={(e) =>
+                                                handleFilterChange(
+                                                  `${filter.key}${option.replace(/\s+/g, '')}`,
+                                                  e.target.checked.toString(),
+                                                )
+                                              }
+                                              className='mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                                            />
+                                            <label
+                                              htmlFor={`${filter.key}-${option}`}
+                                              className='text-sm text-gray-700 dark:text-gray-300'
+                                            >
+                                              {option}
+                                            </label>
+                                          </div>
+                                        )
+                                      return (
+                                        <div key={option.value} className='flex items-center'>
+                                          <input
+                                            type='checkbox'
+                                            id={`${filter.key}-${option.value}`}
+                                            value={option.value}
+                                            checked={
+                                              filters[
+                                                `${filter.key}${option.value.replace(/\s+/g, '')}`
+                                              ] === 'true'
+                                            }
+                                            onChange={(e) =>
+                                              handleFilterChange(
+                                                `${filter.key}${option.value.replace(/\s+/g, '')}`,
+                                                e.target.checked.toString(),
+                                              )
+                                            }
+                                            className='mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                                          />
+                                          <label
+                                            htmlFor={`${filter.key}-${option.value}`}
+                                            className='text-sm text-gray-700 dark:text-gray-300'
+                                          >
+                                            {option.label}
+                                          </label>
+                                        </div>
+                                      )
+                                    })}
                                   </div>
                                 </>
                               )}
@@ -289,11 +319,19 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                                     onChange={(e) => handleFilterChange(filter.key, e.target.value)}
                                   >
                                     <option value=''>Select {filter.label}</option>
-                                    {filter.options?.map((option) => (
-                                      <option key={option} value={option}>
-                                        {capitalizeFirstLetter(option)}
-                                      </option>
-                                    ))}
+                                    {filter.options?.map((option) => {
+                                      if (typeof option === 'string')
+                                        return (
+                                          <option key={option} value={option}>
+                                            {capitalizeFirstLetter(option)}
+                                          </option>
+                                        )
+                                      return (
+                                        <option key={option.value} value={option.value}>
+                                          {option.label}
+                                        </option>
+                                      )
+                                    })}
                                   </select>
                                 </>
                               )}
