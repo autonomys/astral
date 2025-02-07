@@ -20959,7 +20959,7 @@ export type EventsQueryVariables = Exact<{
 }>;
 
 
-export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', method: string }> };
+export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', section: string, method: string }> };
 
 export type EventByIdQueryVariables = Exact<{
   eventId: Scalars['String']['input'];
@@ -20976,7 +20976,7 @@ export type ExtrinsicsQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }>, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', method: string }> };
+export type ExtrinsicsQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }>, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', section: string, method: string }> };
 
 export type ExtrinsicsByIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
@@ -22148,7 +22148,8 @@ export const EventsDocument = gql`
     timestamp
     phase
   }
-  consensus_event_modules(limit: 300) {
+  consensus_event_modules(order_by: {section: asc, method: asc}, limit: 50) {
+    section
     method
   }
 }
@@ -22264,7 +22265,8 @@ export const ExtrinsicsDocument = gql`
     tip
     fee
   }
-  consensus_extrinsic_modules(limit: 300) {
+  consensus_extrinsic_modules(order_by: {section: asc, method: asc}, limit: 50) {
+    section
     method
   }
 }
