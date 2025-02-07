@@ -22,10 +22,10 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   const isDesktop = useMediaQuery('(min-width: 1536px)')
 
   const eventsCount = data
-    ? numberWithCommas(Number(data.consensus_blocks[0].cumulative?.cumulative_events_count))
+    ? Number(data.consensus_blocks[0].cumulative?.cumulative_events_count)
     : 'error'
   const transfersCount = data
-    ? numberWithCommas(Number(data.consensus_blocks[0].cumulative?.cumulative_transfers_count))
+    ? Number(data.consensus_blocks[0].cumulative?.cumulative_transfers_count)
     : 'error'
   const transferValue = data
     ? numberWithCommas(
@@ -33,7 +33,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
       ) + ` ${tokenSymbol}`
     : 'error'
   const rewardsCount = data
-    ? numberWithCommas(Number(data.consensus_blocks[0].cumulative?.cumulative_rewards_count))
+    ? Number(data.consensus_blocks[0].cumulative?.cumulative_rewards_count)
     : 'error'
   const rewardsValue = data
     ? numberWithCommas(

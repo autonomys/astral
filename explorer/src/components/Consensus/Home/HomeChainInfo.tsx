@@ -73,12 +73,10 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const spacePledged = formatSpaceToDecimal(spacePledgedVal)
   const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
   const historySize = formatSpaceToDecimal(historySizeVal)
-  const blocksCount = data ? numberWithCommas(Number(data.consensus_blocks[0].height)) : 'error'
-  const accountsCount = data
-    ? numberWithCommas(Number(data.consensus_accounts_aggregate?.aggregate?.count))
-    : 'error'
+  const blocksCount = data ? Number(data.consensus_blocks[0].height) : 'error'
+  const accountsCount = data ? Number(data.consensus_accounts_aggregate?.aggregate?.count) : 'error'
   const extrinsicsCount = data
-    ? numberWithCommas(Number(data.consensus_blocks[0].cumulative?.cumulative_extrinsics_count))
+    ? Number(data.consensus_blocks[0].cumulative?.cumulative_extrinsics_count)
     : 'error'
 
   const listOfCards = useMemo(
