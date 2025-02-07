@@ -67,12 +67,11 @@ const getPostgresTimeUnit = (timeFrame: StatsTableType): string => {
 
 export const generateStatsQuery = (timeFrame: StatsTableType) => `
 WITH last_completed_${getPostgresTimeUnit(timeFrame)} AS (
-    SELECT start_date as last_date
+    SELECT start_date as last_date, cumulated_history_size as last_history_size
     FROM stats.${timeFrame}
     WHERE start_date < DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', NOW())
     ORDER BY start_date DESC
-    OFFSET 1
-    LIMIT 1
+    LIMIT 2
 ), 
 ${timeFrame}_stats AS (
     SELECT 
@@ -82,12 +81,16 @@ ${timeFrame}_stats AS (
         MAX(height) AS end_block,
         MIN("timestamp") AS start_date,
         MAX("timestamp") AS end_date,
-        MAX(blockchain_size) - LAG(MAX(blockchain_size)) OVER (ORDER BY DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', "timestamp")) AS delta_size
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM last_completed_${getPostgresTimeUnit(timeFrame)}) THEN
+                MAX(blockchain_size) - (SELECT last_history_size FROM last_completed_${getPostgresTimeUnit(timeFrame)} ORDER BY last_history_size DESC OFFSET 1 LIMIT 1)
+            ELSE MAX(blockchain_size)
+        END AS delta_size
     FROM consensus.blocks
     WHERE 
         CASE 
             WHEN EXISTS (SELECT 1 FROM last_completed_${getPostgresTimeUnit(timeFrame)}) THEN
-                "timestamp" >= (SELECT last_date FROM last_completed_${getPostgresTimeUnit(timeFrame)})
+                "timestamp" >= (SELECT last_date FROM last_completed_${getPostgresTimeUnit(timeFrame)} ORDER BY last_date DESC LIMIT 1)
             ELSE true
         END
     GROUP BY DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', "timestamp")
