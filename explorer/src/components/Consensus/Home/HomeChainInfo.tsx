@@ -9,7 +9,6 @@ import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { cn } from 'utils/cn'
-import { numberWithCommas } from 'utils/number'
 import { HomeInfoCard } from './HomeInfoCard'
 
 type TelemetryObject = [string, string, number, number]
@@ -52,20 +51,18 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   }, [])
 
   const nodeCount = useMemo(() => {
-    if (!telemetryData.length || !indexerSet.telemetryNetworkName) return '0'
+    if (!telemetryData.length || !indexerSet.telemetryNetworkName) return 0
     try {
       const filterNetwork = telemetryData.filter(
         (item: TelemetryObject) => item[0] === indexerSet.telemetryNetworkName,
       )
-      return numberWithCommas(
-        filterNetwork.reduce(
-          (max: number, current: TelemetryObject) => (current[2] > max ? current[2] : max),
-          filterNetwork[0][2],
-        ),
+      return filterNetwork.reduce(
+        (max: number, current: TelemetryObject) => (current[2] > max ? current[2] : max),
+        filterNetwork[0][2],
       )
     } catch (err) {
       console.error('Failed to get node count:', err)
-      return '0'
+      return 0
     }
   }, [telemetryData, indexerSet.telemetryNetworkName])
 
