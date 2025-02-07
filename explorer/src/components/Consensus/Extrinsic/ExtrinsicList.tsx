@@ -110,7 +110,10 @@ export const ExtrinsicList: FC = () => {
               options: [...new Set(data.consensus_extrinsic_modules.map((m) => m.section))],
             }),
             ...(filter.key === 'module' && {
-              options: data.consensus_extrinsic_modules.map((m) => m.method),
+              options: data.consensus_extrinsic_modules.map((m) => ({
+                value: m.method,
+                label: m.method + ' (' + m.section + ')',
+              })),
             }),
           }))
         : undefined,
