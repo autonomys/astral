@@ -6,6 +6,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { FILTERS_OPTIONS } from 'constants/tables'
 import { EventsDocument, EventsQuery, EventsQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
@@ -101,6 +102,21 @@ export const EventList: FC = () => {
   }, [consensusEntry])
 
   const events = useMemo(() => data && data.consensus_events, [data])
+  const filtersOptions = useMemo(
+    () =>
+      data
+        ? FILTERS_OPTIONS[TABLE].map((filter) => ({
+            ...filter,
+            ...(filter.key === 'section' && {
+              options: data.consensus_event_modules.map((m) => m.section),
+            }),
+            ...(filter.key === 'module' && {
+              options: data.consensus_event_modules.map((m) => m.method),
+            }),
+          }))
+        : undefined,
+    [data],
+  )
   const totalCount = useMemo(
     () =>
       data && data.consensus_events_aggregate.aggregate
@@ -177,7 +193,12 @@ export const EventList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
-        <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
+        <TableSettings
+          table={TABLE}
+          totalCount={totalCount}
+          filters={filters}
+          overrideFiltersOptions={filtersOptions}
+        />
         {!loading && events ? (
           <SortedTable
             data={events}
