@@ -108,7 +108,7 @@ export const EventList: FC = () => {
         ? FILTERS_OPTIONS[TABLE].map((filter) => ({
             ...filter,
             ...(filter.key === 'section' && {
-              options: data.consensus_event_modules.map((m) => m.section),
+              options: [...new Set(data.consensus_event_modules.map((m) => m.section))],
             }),
             ...(filter.key === 'module' && {
               options: data.consensus_event_modules.map((m) => m.method),
