@@ -1,4 +1,3 @@
-import { FilterOption } from '@/types/table'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import {
   Bars3Icon,
@@ -9,6 +8,7 @@ import {
 } from '@heroicons/react/24/outline'
 import React, { useMemo, useState } from 'react'
 import { TableName, useTableSettings } from 'states/tables'
+import { FilterOption } from 'types/table'
 import { numberWithCommas } from 'utils/number'
 
 interface TableSettingsProps {
@@ -291,7 +291,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                                     <option value=''>Select {filter.label}</option>
                                     {filter.options?.map((option) => (
                                       <option key={option} value={option}>
-                                        {option}
+                                        {capitalizeFirstLetter(option)}
                                       </option>
                                     ))}
                                   </select>
