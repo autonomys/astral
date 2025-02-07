@@ -1,5 +1,6 @@
 'use client'
 
+import { FILTERS_OPTIONS } from '@/constants/tables'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
@@ -62,12 +63,12 @@ export const ExtrinsicList: FC = () => {
 
     // Section
     if (filters.section) {
-      conditions['section'] = { _ilike: `%${filters.section}%` }
+      conditions['section'] = { _eq: filters.section }
     }
 
     // Module
     if (filters.module) {
-      conditions['module'] = { _ilike: `%${filters.module}%` }
+      conditions['module'] = { _eq: filters.module }
     }
 
     return conditions
@@ -100,6 +101,21 @@ export const ExtrinsicList: FC = () => {
   }, [consensusEntry])
 
   const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
+  const filtersOptions = useMemo(
+    () =>
+      data
+        ? FILTERS_OPTIONS[TABLE].map((filter) => ({
+            ...filter,
+            ...(filter.key === 'section' && {
+              options: data.consensus_extrinsic_modules.map((m) => m.section),
+            }),
+            ...(filter.key === 'module' && {
+              options: data.consensus_extrinsic_modules.map((m) => m.method),
+            }),
+          }))
+        : undefined,
+    [data],
+  )
   const totalCount = useMemo(
     () =>
       data && data.consensus_extrinsics_aggregate.aggregate
@@ -181,7 +197,12 @@ export const ExtrinsicList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
-        <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
+        <TableSettings
+          table={TABLE}
+          totalCount={totalCount}
+          filters={filters}
+          overrideFiltersOptions={filtersOptions}
+        />
         {!loading && extrinsics ? (
           <SortedTable
             data={extrinsics}
