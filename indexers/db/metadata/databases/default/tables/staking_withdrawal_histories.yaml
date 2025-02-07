@@ -13,8 +13,17 @@ select_permissions:
     permission:
       columns:
         - _block_range
+        - domain_epoch
         - block_height
+        - shares
+        - storage_fee_refund
+        - total_withdrawal_amount
+        - unlock_at_confirmed_domain_block_number
+        - account_id
+        - domain_id
         - id
+        - nominator_id
+        - operator_id
         - _id
       filter: {}
       limit: 50

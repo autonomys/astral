@@ -57,6 +57,23 @@ type DepositEvent @entity {
   eventId: String!
 }
 
+type WithdrawEvent @entity {
+  id: ID!
+  sortId: String!
+  accountId: String!
+  domainId: String!
+  operatorId: String!
+  nominatorId: String!
+  toWithdraw: String!
+  amount1: BigInt!
+  amount2: BigInt!
+  totalAmount: BigInt!
+  timestamp: Date!
+  blockHeight: BigInt!
+  extrinsicId: String!
+  eventId: String!
+}
+
 type OperatorReward @entity {
   id: ID!
   domainId: String!
@@ -159,5 +176,14 @@ type DepositHistory @entity {
 
 type WithdrawalHistory @entity {
   id: ID!
+  domainId: String!
+  accountId: String!
+  operatorId: String!
+  nominatorId: String!
+  totalWithdrawalAmount: BigInt!
+  domainEpoch: Int!
+  unlockAtConfirmedDomainBlockNumber: BigInt!
+  shares: BigInt!
+  storageFeeRefund: BigInt!
   blockHeight: BigInt!
 }
