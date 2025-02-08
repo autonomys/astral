@@ -37,8 +37,8 @@ import { AccountIcon, AccountIconWithLink } from '../common/AccountIcon'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
-import { DomainBlockTime } from '../Domain/DomainBlockTime'
-import { DomainProgress } from '../Domain/DomainProgress'
+// import { DomainBlockTime } from '../Domain/DomainBlockTime'
+// import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -545,14 +545,14 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='flex flex-col sm:flex-row sm:justify-between'>
+      {/* <div className='flex flex-col sm:flex-row sm:justify-between'>
         <div className='mb-4 sm:mb-0'>
           <DomainBlockTime />
         </div>
         <div>
           <DomainProgress />
         </div>
-      </div>
+      </div> */}
       <div className='my-4' ref={ref}>
         <TableSettings
           table={TABLE}
