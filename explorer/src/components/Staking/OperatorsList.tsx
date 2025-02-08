@@ -107,7 +107,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           ),
           accountId: ({ row }: Cell<Row>) => (
             <AccountIconWithLink
-              address={row.original.id}
+              address={row.original.accountId}
               network={network}
               section={Routes.consensus}
             />
