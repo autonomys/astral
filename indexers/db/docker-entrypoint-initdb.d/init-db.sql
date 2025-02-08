@@ -2146,6 +2146,10 @@ CREATE FUNCTION consensus.insert_event_module() RETURNS trigger
     INSERT INTO consensus.event_modules (id, section, method)
     VALUES (NEW.name, NEW.section, NEW.module)
     ON CONFLICT (id) DO NOTHING;
+
+    INSERT INTO consensus.sections (id, section)
+    VALUES (NEW.section, NEW.section)
+    ON CONFLICT (id) DO NOTHING;
     
     RETURN NEW;
   END;
@@ -2162,7 +2166,11 @@ CREATE FUNCTION consensus.insert_extrinsic_module() RETURNS trigger
     AS $$
   BEGIN
     INSERT INTO consensus.extrinsic_modules (id, section, method)
-    VALUES (NEW.name, NEW.section, NEW.name)
+    VALUES (NEW.name, NEW.section, NEW.module)
+    ON CONFLICT (id) DO NOTHING;
+
+    INSERT INTO consensus.sections (id, section)
+    VALUES (NEW.section, NEW.section)
     ON CONFLICT (id) DO NOTHING;
     
     RETURN NEW;
@@ -2174,29 +2182,6 @@ CREATE TRIGGER ensure_extrinsic_module
     BEFORE INSERT ON consensus.extrinsics
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_extrinsic_module();
-
-CREATE FUNCTION consensus.insert_section() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    INSERT INTO consensus.sections (id, section)
-    VALUES (NEW.section, NEW.section)
-    ON CONFLICT (id) DO NOTHING;
-    
-    RETURN NEW;
-  END;
-  $$;
-ALTER FUNCTION consensus.insert_section() OWNER TO postgres;
-
-CREATE TRIGGER ensure_extrinsic_section
-    BEFORE INSERT ON consensus.extrinsics
-    FOR EACH ROW
-    EXECUTE FUNCTION consensus.insert_section();
-
-CREATE TRIGGER ensure_event_section
-    BEFORE INSERT ON consensus.events
-    FOR EACH ROW
-    EXECUTE FUNCTION consensus.insert_section();
 
 CREATE FUNCTION consensus.update_account() RETURNS trigger
     LANGUAGE plpgsql
