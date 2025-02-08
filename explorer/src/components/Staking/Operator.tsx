@@ -77,7 +77,7 @@ export const Operator: FC = () => {
                 Next Operator
               </button>
             </div>
-            <div className='mt-5 flex w-full flex-col rounded-[20px] bg-white p-5 dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:mt-0'>
+            <div className='mt-5 flex w-full flex-col rounded-[20px] bg-white p-5 dark:bg-boxDark sm:mt-0'>
               <OperatorNominatorTable operator={operatorDetails} />
             </div>
           </div>
