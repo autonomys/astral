@@ -236,16 +236,16 @@ export const DomainsList: FC = () => {
           numberFormattedString(row.original.accumulatedEpochRewards),
         accumulatedEpochShares: ({ row }: Cell<Row>) =>
           numberFormattedString(row.original.accumulatedEpochShares),
-        currentEpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.currentEpochDuration),
-        lastEpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.currentEpochDuration),
-        last6EpochsDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.last6EpochsDuration),
-        last144EpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.last144EpochDuration),
-        last1kEpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.last1kEpochDuration),
+        // currentEpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.currentEpochDuration),
+        // lastEpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.currentEpochDuration),
+        // last6EpochsDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.last6EpochsDuration),
+        // last144EpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.last144EpochDuration),
+        // last1kEpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.last1kEpochDuration),
       }),
     [selectedColumns, network, section, tokenSymbol],
   )
