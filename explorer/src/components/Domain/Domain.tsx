@@ -18,22 +18,18 @@ export const Domain: FC = () => {
   const { domainId } = useParams<{ domainId?: string }>()
   const { push } = useRouter()
   const inFocus = useWindowFocus()
-
-  // eslint
   const variables = useMemo(() => ({ domainId: domainId ?? '' }), [domainId])
   const { setIsVisible } = useIndexersQuery<DomainByIdQuery, DomainByIdQueryVariables>(
     DomainByIdDocument,
     {
       variables,
       skip: !inFocus,
-      context: { clientName: 'staking' },
     },
     Routes.domains,
     'domain',
   )
 
   const domain = useQueryStates((state) => state.domains.domain)
-
   const domainDetails = useMemo(
     () => hasValue(domain) && domain.value.staking_domains_by_pk,
     [domain],
