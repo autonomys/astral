@@ -24,12 +24,7 @@ import { useTableSettings } from 'states/tables'
 import { useViewStates } from 'states/view'
 import type { Cell, OperatorsFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import {
-  bigNumberToFormattedString,
-  bigNumberToNumber,
-  formatUnitsToNumber,
-  numberFormattedString,
-} from 'utils/number'
+import { bigNumberToFormattedString, bigNumberToNumber, numberFormattedString } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { allCapsToNormal } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
@@ -167,7 +162,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           currentTotalShares: ({ row }: Cell<Row>) =>
             bigNumberToFormattedString(row.original.currentTotalShares),
           currentSharePrice: ({ row }: Cell<Row>) =>
-            `${formatUnitsToNumber((row.original.currentSharePrice * 1000000).toString())} ${tokenSymbol}`,
+            `${bigNumberToFormattedString(row.original.currentSharePrice)} ${tokenSymbol}`,
           totalDeposits: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.totalDeposits)} ${tokenSymbol}`,
           totalEstimatedWithdrawals: ({ row }: Cell<Row>) =>
@@ -209,9 +204,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           activeEpochCount: ({ row }: Cell<Row>) =>
             numberFormattedString(row.original.activeEpochCount),
           bundleCount: ({ row }: Cell<Row>) => numberFormattedString(row.original.bundleCount),
-          status: ({ row }: Cell<Row>) => allCapsToNormal(row.original.status),
-          rawStatus: ({ row }: Cell<Row>) =>
-            allCapsToNormal(operatorStatus(JSON.parse(row.original.rawStatus ?? '{}'))),
+          status: ({ row }: Cell<Row>) =>
+            allCapsToNormal(operatorStatus(JSON.parse(row.original.status ?? '{}'))),
+          rawStatus: ({ row }: Cell<Row>) => allCapsToNormal(row.original.rawStatus),
           pendingAction: ({ row }: Cell<Row>) => allCapsToNormal(row.original.pendingAction),
           lastBundleAt: ({ row }: Cell<Row>) => (
             <Link
