@@ -113,12 +113,11 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: FoldersColumns.BlockRange },
   ],
   domains: [
-    { name: 'id', label: 'Id', isSelected: true, searchable: true },
+    { name: 'sortId', label: 'Id', isSelected: true, searchable: true },
     { name: 'accountId', label: 'Owner', isSelected: true, searchable: true },
     { name: 'name', label: 'Name', isSelected: true, searchable: true },
     { name: 'runtimeId', label: 'Runtime Id', isSelected: false },
     { name: 'runtime', label: 'Runtime', isSelected: true },
-    { name: 'runtimeInfo', label: 'Runtime Info', isSelected: false },
     { name: 'completedEpoch', label: 'Completed Epoch', isSelected: true },
     { name: 'lastDomainBlockNumber', label: 'Last Domain Block Number', isSelected: false },
     { name: 'totalDeposits', label: 'Total Deposits', isSelected: true },
