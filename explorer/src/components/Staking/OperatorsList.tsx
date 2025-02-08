@@ -62,10 +62,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   const {
     pagination,
     sorting,
-    availableColumns,
     selectedColumns,
     filters,
     orderBy,
+    whereForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<OperatorsFilters>(TABLE)
@@ -349,7 +349,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
+    const conditions: Record<string, any> = whereForSearch
 
     if (domainId) {
       conditions['domain_id'] = {}
@@ -364,17 +364,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         { nominators: { account_id: { _eq: subspaceAccount } } },
       ]
     }
-
-    // Dynamic search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof OperatorsFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
 
     // Total Stake
     if (filters.totalStakeMin || filters.totalStakeMax) {
@@ -486,7 +475,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     }
 
     return conditions
-  }, [domainId, subspaceAccount, myPositionOnly, availableColumns, filters, tokenDecimals])
+  }, [domainId, subspaceAccount, myPositionOnly, whereForSearch, filters, tokenDecimals])
 
   const variables: OperatorsListQueryVariables = useMemo(
     () => ({

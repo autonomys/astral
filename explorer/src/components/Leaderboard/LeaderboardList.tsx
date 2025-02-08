@@ -58,9 +58,9 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   const {
     pagination,
     sorting,
-    availableColumns,
     selectedColumns,
     filters,
+    whereForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<LeaderboardFilters>(TABLE)
@@ -150,23 +150,12 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
 
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
+    const conditions: Record<string, any> = whereForSearch
 
     if (subspaceAccount && myPositionOnly) {
       conditions['id'] = {}
       conditions.id._eq = subspaceAccount
     }
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof LeaderboardFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
 
     // Rank
     if (filters.rankMin || filters.rankMax) {
@@ -191,7 +180,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     }
 
     return conditions
-  }, [availableColumns, filters, myPositionOnly, subspaceAccount, tokenDecimals])
+  }, [whereForSearch, filters, myPositionOnly, subspaceAccount, tokenDecimals])
 
   const variables = useMemo(
     () => ({
