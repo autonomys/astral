@@ -1,6 +1,7 @@
 import { PaginationState, SortingState } from '@tanstack/react-table'
 import { INITIAL_TABLES } from 'constants/tables'
 import { Order_By as OrderBy } from 'gql/graphql'
+import { snakeCase } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { Filters, Table, TableSettingsTabs } from 'types/table'
 import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
@@ -282,6 +283,19 @@ export const useTableSettings = <TFilter>(table: TableName) => {
     [sorting],
   )
 
+  const whereForSearch = useMemo(
+    () =>
+      availableColumns
+        .filter((column) => column.searchable)
+        .reduce((conditions, column) => {
+          const searchValue = filters[`search-${column.name}` as keyof TFilter]
+          return searchValue
+            ? { ...conditions, [snakeCase(column.name)]: { _ilike: `%${searchValue}%` } }
+            : conditions
+        }, {}),
+    [availableColumns, filters],
+  )
+
   const showReset = useMemo(() => _showReset(table), [_showReset, table])
 
   const onSortingChange = useCallback(
@@ -333,6 +347,7 @@ export const useTableSettings = <TFilter>(table: TableName) => {
     filtersOptions,
     filters,
     orderBy,
+    whereForSearch,
     showTableSettings,
     showReset,
     onPaginationChange,
