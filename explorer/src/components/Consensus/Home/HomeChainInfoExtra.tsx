@@ -1,4 +1,4 @@
-import { Spinner } from '@/components/common/Spinner'
+import HomeInfoCardSkeleton from '@/components/common/HomeInfoCardSkeleton'
 import useMediaQuery from '@/hooks/useMediaQuery'
 import { cn } from '@/utils/cn'
 import type { HomeQuery } from 'gql/graphql'
@@ -22,10 +22,10 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   const isDesktop = useMediaQuery('(min-width: 1536px)')
 
   const eventsCount = data
-    ? numberWithCommas(Number(data.consensus_blocks[0].cumulative?.cumulative_events_count))
+    ? Number(data.consensus_blocks[0].cumulative?.cumulative_events_count)
     : 'error'
   const transfersCount = data
-    ? numberWithCommas(Number(data.consensus_blocks[0].cumulative?.cumulative_transfers_count))
+    ? Number(data.consensus_blocks[0].cumulative?.cumulative_transfers_count)
     : 'error'
   const transferValue = data
     ? numberWithCommas(
@@ -33,7 +33,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
       ) + ` ${tokenSymbol}`
     : 'error'
   const rewardsCount = data
-    ? numberWithCommas(Number(data.consensus_blocks[0].cumulative?.cumulative_rewards_count))
+    ? Number(data.consensus_blocks[0].cumulative?.cumulative_rewards_count)
     : 'error'
   const rewardsValue = data
     ? numberWithCommas(
@@ -73,40 +73,46 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   )
 
   return (
-    <>
-      {!data || loading ? (
-        <Spinner isXSmall />
-      ) : (
-        <Swiper
-          slidesPerView={1}
-          spaceBetween={20}
-          pagination={{
-            clickable: true,
-            renderBullet: (index, className) =>
-              `<span class="${className}" style="background-color: #1949D2;"></span>`,
-          }}
-          breakpoints={{
-            460: {
-              slidesPerView: 2,
-              spaceBetween: 20,
-            },
-            768: {
-              slidesPerView: 3,
-              spaceBetween: 20,
-            },
-            1024: {
-              slidesPerView: 4,
-              spaceBetween: 20,
-            },
-            1536: {
-              slidesPerView: 5,
-              spaceBetween: 20,
-            },
-          }}
-          modules={[Pagination]}
-          className={cn('flex w-full items-center gap-5', isDesktop ? '!p-0' : '!pb-10')}
-        >
-          {listOfCards.map(({ title, value, darkBgClass }, index) => (
+    <Swiper
+      slidesPerView={1}
+      spaceBetween={20}
+      pagination={{
+        clickable: true,
+        renderBullet: (index, className) =>
+          `<span class="${className}" style="background-color: #1949D2;"></span>`,
+      }}
+      breakpoints={{
+        460: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+        1024: {
+          slidesPerView: 4,
+          spaceBetween: 20,
+        },
+        1536: {
+          slidesPerView: 5,
+          spaceBetween: 20,
+        },
+      }}
+      modules={[Pagination]}
+      className={cn('flex w-full items-center gap-5', isDesktop ? '!p-0' : '!pb-10')}
+    >
+      {!data || loading
+        ? Array.from({ length: 5 }).map((_, index) => (
+            <SwiperSlide key={`loader-${index}`}>
+              <HomeInfoCardSkeleton
+                key={index}
+                className='h-[120px]'
+                imagePlaceholderClassName='hidden'
+              />
+            </SwiperSlide>
+          ))
+        : listOfCards.map(({ title, value, darkBgClass }, index) => (
             <SwiperSlide key={`${title}-${index}`}>
               <HomeInfoCard
                 key={`${title}-${index}`}
@@ -116,8 +122,6 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
               />
             </SwiperSlide>
           ))}
-        </Swiper>
-      )}
-    </>
+    </Swiper>
   )
 }

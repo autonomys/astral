@@ -284,13 +284,13 @@ export const FILTERS_OPTIONS: FiltersOptions = {
   ],
   extrinsics: [
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
-    { type: 'text', label: 'Section', key: 'section' },
-    { type: 'text', label: 'Module', key: 'module' },
+    { type: 'dropdown', label: 'Section', key: 'section', options: [] },
+    { type: 'dropdown', label: 'Module', key: 'module', options: [] },
   ],
   events: [
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
-    { type: 'text', label: 'Section', key: 'section' },
-    { type: 'text', label: 'Module', key: 'module' },
+    { type: 'dropdown', label: 'Section', key: 'section', options: [] },
+    { type: 'dropdown', label: 'Module', key: 'module', options: [] },
   ],
   logs: [
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
