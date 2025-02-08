@@ -85,7 +85,6 @@ export const DomainsList: FC = () => {
         ),
         runtimeId: ({ row }: Cell<Row>) => row.original.runtimeId.toString(),
         runtime: ({ row }: Cell<Row>) => row.original.runtime,
-        runtimeInfo: ({ row }: Cell<Row>) => row.original.runtimeInfo,
         completedEpoch: ({ row }: Cell<Row>) => (
           <div>
             <Tooltip
