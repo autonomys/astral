@@ -12,7 +12,7 @@ import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableSettings } from 'states/tables'
-import { Cell, FilesFilters, FoldersFilters } from 'types/table'
+import { Cell, FoldersFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
@@ -26,48 +26,32 @@ export const FolderList: FC = () => {
   const {
     pagination,
     sorting,
-    availableColumns,
     selectedColumns,
     filters,
     orderBy,
+    whereForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<FoldersFilters>(TABLE)
 
-  const where = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof FilesFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
-
-    // CID
-    if (filters.id) {
-      conditions['id'] = { _ilike: `%${filters.id}%` }
-    }
-
-    // Name
-    if (filters.name) {
-      conditions['name'] = { _ilike: `%${filters.name}%` }
-    }
-
-    // Block Height
-    if (filters.blockHeightMin || filters.blockHeightMax) {
-      conditions['block_height'] = {}
-      if (filters.blockHeightMin) conditions.block_height._gte = filters.blockHeightMin
-      if (filters.blockHeightMax) conditions.block_height._lte = filters.blockHeightMax
-    }
-
-    return conditions
-  }, [filters, availableColumns])
+  const where = useMemo(
+    () => ({
+      ...whereForSearch,
+      // CID
+      ...(filters.id && { id: { _ilike: `%${filters.id}%` } }),
+      // Name
+      ...(filters.name && { name: { _ilike: `%${filters.name}%` } }),
+      // Block Height
+      ...((filters.blockHeightMin || filters.blockHeightMax) && {
+        // eslint-disable-next-line camelcase
+        block_height: {
+          ...(filters.blockHeightMin && { _gte: filters.blockHeightMin }),
+          ...(filters.blockHeightMax && { _lte: filters.blockHeightMax }),
+        },
+      }),
+    }),
+    [filters, whereForSearch],
+  )
 
   const variables = useMemo(
     () => ({

@@ -32,68 +32,51 @@ export const BlockList: FC = () => {
   const {
     pagination,
     sorting,
-    availableColumns,
     selectedColumns,
     filters,
     orderBy,
+    whereForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<BlocksFilters>(TABLE)
 
-  const where = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof BlocksFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
-
-    // Height
-    if (filters.heightMin || filters.heightMax) {
-      conditions['height'] = {}
-      if (filters.heightMin) {
-        conditions.height._gte = Math.floor(parseFloat(filters.heightMin)).toString()
-      }
-      if (filters.heightMax) {
-        conditions.height._lte = Math.floor(parseFloat(filters.heightMax)).toString()
-      }
-    }
-
-    // Space Pledged
-    if (filters.spacePledgedMin || filters.spacePledgedMax) {
-      conditions['space_pledged'] = {}
-      if (filters.spacePledgedMin) {
-        conditions.space_pledged._gte = Math.floor(parseFloat(filters.spacePledgedMin)).toString()
-      }
-      if (filters.spacePledgedMax) {
-        conditions.space_pledged._lte = Math.floor(parseFloat(filters.spacePledgedMax)).toString()
-      }
-    }
-
-    // Blockchain Size
-    if (filters.blockchainSizeMin || filters.blockchainSizeMax) {
-      conditions['blockchain_size'] = {}
-      if (filters.blockchainSizeMin) {
-        conditions.blockchain_size._gte = Math.floor(
-          parseFloat(filters.blockchainSizeMin),
-        ).toString()
-      }
-      if (filters.blockchainSizeMax) {
-        conditions.blockchain_size._lte = Math.floor(
-          parseFloat(filters.blockchainSizeMax),
-        ).toString()
-      }
-    }
-
-    return conditions
-  }, [availableColumns, filters])
+  const where = useMemo(
+    () => ({
+      ...whereForSearch,
+      // Height
+      ...((filters.heightMin || filters.heightMax) && {
+        height: {
+          ...(filters.heightMin && { _gte: Math.floor(parseFloat(filters.heightMin)).toString() }),
+          ...(filters.heightMax && { _lte: Math.floor(parseFloat(filters.heightMax)).toString() }),
+        },
+      }),
+      // Space Pledged
+      ...((filters.spacePledgedMin || filters.spacePledgedMax) && {
+        // eslint-disable-next-line camelcase
+        space_pledged: {
+          ...(filters.spacePledgedMin && {
+            _gte: Math.floor(parseFloat(filters.spacePledgedMin)).toString(),
+          }),
+          ...(filters.spacePledgedMax && {
+            _lte: Math.floor(parseFloat(filters.spacePledgedMax)).toString(),
+          }),
+        },
+      }),
+      // Blockchain Size
+      ...((filters.blockchainSizeMin || filters.blockchainSizeMax) && {
+        // eslint-disable-next-line camelcase
+        blockchain_size: {
+          ...(filters.blockchainSizeMin && {
+            _gte: Math.floor(parseFloat(filters.blockchainSizeMin)).toString(),
+          }),
+          ...(filters.blockchainSizeMax && {
+            _lte: Math.floor(parseFloat(filters.blockchainSizeMax)).toString(),
+          }),
+        },
+      }),
+    }),
+    [filters, whereForSearch],
+  )
 
   const variables = useMemo(
     () => ({

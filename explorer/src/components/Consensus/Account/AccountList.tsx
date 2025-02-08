@@ -12,6 +12,7 @@ import { AccountsDocument, AccountsQuery, AccountsQueryVariables } from 'gql/gra
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
+import { snakeCase } from 'lodash'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -34,90 +35,77 @@ export const AccountList: FC = () => {
   const {
     pagination,
     sorting,
-    availableColumns,
     selectedColumns,
     filters,
     orderBy,
+    availableColumns,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<AccountsFilters>(TABLE)
 
-  const where = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
-
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof AccountsFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          if (column.name === 'id' && isAddress(searchValue)) {
-            conditions['id'] = { _ilike: `%${formatAddress(searchValue)}%` }
-          } else {
-            conditions[column.name] = { _ilike: `%${searchValue}%` }
-          }
-        }
-      })
-
-    // Nonce
-    if (filters.nonceMin || filters.nonceMax) {
-      conditions['nonce'] = {}
-      if (filters.nonceMin) {
-        conditions.nonce._gte = filters.nonceMin
-      }
-      if (filters.nonceMax) {
-        conditions.nonce._lte = filters.nonceMax
-      }
-    }
-
-    // Free
-    if (filters.freeMin || filters.freeMax) {
-      conditions['free'] = {}
-      if (filters.freeMin) {
-        conditions.free._gte = BigInt(
-          Math.floor(parseFloat(filters.freeMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.freeMax) {
-        conditions.free._lte = BigInt(
-          Math.floor(parseFloat(filters.freeMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Reserved
-    if (filters.reservedMin || filters.reservedMax) {
-      conditions['reserved'] = {}
-      if (filters.reservedMin) {
-        conditions.reserved._gte = BigInt(
-          Math.floor(parseFloat(filters.reservedMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.reservedMax) {
-        conditions.reserved._lte = BigInt(
-          Math.floor(parseFloat(filters.reservedMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Total
-    if (filters.totalMin || filters.totalMax) {
-      conditions['total'] = {}
-      if (filters.totalMin) {
-        conditions.total._gte = BigInt(
-          Math.floor(parseFloat(filters.totalMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.totalMax) {
-        conditions.total._lte = BigInt(
-          Math.floor(parseFloat(filters.totalMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    return conditions
-  }, [availableColumns, filters, tokenDecimals])
+  const where = useMemo(
+    () => ({
+      ...availableColumns
+        .filter((column) => column.searchable)
+        .reduce((conditions, column) => {
+          const searchValue = `search-${column.name}` as keyof AccountsFilters
+          return searchValue
+            ? {
+                ...conditions,
+                [snakeCase(column.name)]:
+                  column.name === 'id' && isAddress(searchValue)
+                    ? { _eq: formatAddress(searchValue) }
+                    : { _ilike: `%${searchValue}%` },
+              }
+            : conditions
+        }, {}),
+      // Nonce
+      ...((filters.nonceMin || filters.nonceMax) && {
+        nonce: {
+          ...(filters.nonceMin && { _gte: filters.nonceMin }),
+          ...(filters.nonceMax && { _lte: filters.nonceMax }),
+        },
+      }),
+      // Free
+      ...((filters.freeMin || filters.freeMax) && {
+        free: {
+          ...(filters.freeMin && {
+            _gte: BigInt(Math.floor(parseFloat(filters.freeMin) * 10 ** tokenDecimals)).toString(),
+          }),
+          ...(filters.freeMax && {
+            _lte: BigInt(Math.floor(parseFloat(filters.freeMax) * 10 ** tokenDecimals)).toString(),
+          }),
+        },
+      }),
+      // Reserved
+      ...((filters.reservedMin || filters.reservedMax) && {
+        reserved: {
+          ...(filters.reservedMin && {
+            _gte: BigInt(
+              Math.floor(parseFloat(filters.reservedMin) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+          ...(filters.reservedMax && {
+            _lte: BigInt(
+              Math.floor(parseFloat(filters.reservedMax) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+        },
+      }),
+      // Total
+      ...((filters.totalMin || filters.totalMax) && {
+        total: {
+          ...(filters.totalMin && {
+            _gte: BigInt(Math.floor(parseFloat(filters.totalMin) * 10 ** tokenDecimals)).toString(),
+          }),
+          ...(filters.totalMax && {
+            _lte: BigInt(Math.floor(parseFloat(filters.totalMax) * 10 ** tokenDecimals)).toString(),
+          }),
+        },
+      }),
+    }),
+    [filters, availableColumns, tokenDecimals],
+  )
 
   const variables = useMemo(
     () => ({
