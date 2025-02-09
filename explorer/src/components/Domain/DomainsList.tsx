@@ -77,7 +77,7 @@ export const DomainsList: FC = () => {
                   Details: {row.original.runtimeInfo}
                 </span>
               }
-              direction='left'
+              direction='bottom'
               className='max-w-[650px]'
             >
               <div>{capitalizeFirstLetter(row.original.name)}</div>
