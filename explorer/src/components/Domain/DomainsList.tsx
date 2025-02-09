@@ -42,10 +42,10 @@ export const DomainsList: FC = () => {
   const {
     pagination,
     sorting,
-    availableColumns,
     selectedColumns,
     filters,
     orderBy,
+    whereForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<DomainsFilters>(TABLE)
@@ -85,7 +85,6 @@ export const DomainsList: FC = () => {
         ),
         runtimeId: ({ row }: Cell<Row>) => row.original.runtimeId.toString(),
         runtime: ({ row }: Cell<Row>) => row.original.runtime,
-        runtimeInfo: ({ row }: Cell<Row>) => row.original.runtimeInfo,
         completedEpoch: ({ row }: Cell<Row>) => (
           <div>
             <Tooltip
@@ -237,105 +236,102 @@ export const DomainsList: FC = () => {
           numberFormattedString(row.original.accumulatedEpochRewards),
         accumulatedEpochShares: ({ row }: Cell<Row>) =>
           numberFormattedString(row.original.accumulatedEpochShares),
-        currentEpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.currentEpochDuration),
-        lastEpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.currentEpochDuration),
-        last6EpochsDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.last6EpochsDuration),
-        last144EpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.last144EpochDuration),
-        last1kEpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.last1kEpochDuration),
+        // currentEpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.currentEpochDuration),
+        // lastEpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.currentEpochDuration),
+        // last6EpochsDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.last6EpochsDuration),
+        // last144EpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.last144EpochDuration),
+        // last1kEpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.last1kEpochDuration),
       }),
     [selectedColumns, network, section, tokenSymbol],
   )
 
-  const where = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof DomainsFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
-
-    // Total Stake
-    if (filters.totalStakeMin || filters.totalStakeMax) {
-      conditions['current_total_stake'] = {}
-      if (filters.totalStakeMin) {
-        conditions.current_total_stake._gte = BigInt(
-          Math.floor(parseFloat(filters.totalStakeMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.totalStakeMax) {
-        conditions.current_total_stake._lte = BigInt(
-          Math.floor(parseFloat(filters.totalStakeMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Total Deposits
-    if (filters.totalDepositsMin || filters.totalDepositsMax) {
-      conditions['total_deposits'] = {}
-      if (filters.totalDepositsMin) {
-        conditions.total_deposits._gte = BigInt(
-          Math.floor(parseFloat(filters.totalDepositsMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.totalDepositsMax) {
-        conditions.total_deposits._lte = BigInt(
-          Math.floor(parseFloat(filters.totalDepositsMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Total Rewards Collected
-    if (filters.totalRewardsCollectedMin || filters.totalRewardsCollectedMax) {
-      conditions['total_rewards_collected'] = {}
-      if (filters.totalRewardsCollectedMin) {
-        conditions.total_rewards_collected._gte = BigInt(
-          Math.floor(parseFloat(filters.totalRewardsCollectedMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.totalRewardsCollectedMax) {
-        conditions.total_rewards_collected._lte = BigInt(
-          Math.floor(parseFloat(filters.totalRewardsCollectedMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Deposit Count
-    if (filters.depositsCountMin || filters.depositsCountMax) {
-      conditions['deposits_aggregate'] = { count: { predicate: {} } }
-      if (filters.depositsCountMin)
-        conditions.deposits_aggregate.count.predicate._gte = filters.depositsCountMin
-      if (filters.depositsCountMax)
-        conditions.deposits_aggregate.count.predicate._lte = filters.depositsCountMax
-    }
-
-    // Completed Epoch
-    if (filters.completedEpochMin || filters.completedEpochMax) {
-      conditions['completed_epoch'] = {}
-      if (filters.completedEpochMin) conditions.completed_epoch._gte = filters.completedEpochMin
-      if (filters.completedEpochMax) conditions.completed_epoch._lte = filters.completedEpochMax
-    }
-
-    // Bundle Count
-    if (filters.bundleCountMin || filters.bundleCountMax) {
-      conditions['bundle_count'] = {}
-      if (filters.bundleCountMin) conditions.bundle_count._gte = filters.bundleCountMin
-      if (filters.bundleCountMax) conditions.bundle_count._lte = filters.bundleCountMax
-    }
-
-    return conditions
-  }, [availableColumns, filters, tokenDecimals])
+  const where = useMemo(
+    () => ({
+      ...whereForSearch,
+      // Total Stake
+      ...((filters.totalStakeMin || filters.totalStakeMax) && {
+        // eslint-disable-next-line camelcase
+        current_total_stake: {
+          ...(filters.totalStakeMin && {
+            _gte: BigInt(
+              Math.floor(parseFloat(filters.totalStakeMin) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+          ...(filters.totalStakeMax && {
+            _lte: BigInt(
+              Math.floor(parseFloat(filters.totalStakeMax) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+        },
+      }),
+      // Total Deposits
+      ...((filters.totalDepositsMin || filters.totalDepositsMax) && {
+        // eslint-disable-next-line camelcase
+        total_deposits: {
+          ...(filters.totalDepositsMin && {
+            _gte: BigInt(
+              Math.floor(parseFloat(filters.totalDepositsMin) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+          ...(filters.totalDepositsMax && {
+            _lte: BigInt(
+              Math.floor(parseFloat(filters.totalDepositsMax) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+        },
+      }),
+      // Total Rewards Collected
+      ...((filters.totalRewardsCollectedMin || filters.totalRewardsCollectedMax) && {
+        // eslint-disable-next-line camelcase
+        total_rewards_collected: {
+          ...(filters.totalRewardsCollectedMin && {
+            _gte: BigInt(
+              Math.floor(parseFloat(filters.totalRewardsCollectedMin) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+          ...(filters.totalRewardsCollectedMax && {
+            _lte: BigInt(
+              Math.floor(parseFloat(filters.totalRewardsCollectedMax) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+        },
+      }),
+      // Deposit Count
+      ...((filters.depositsCountMin || filters.depositsCountMax) && {
+        // eslint-disable-next-line camelcase
+        deposits_aggregate: {
+          count: {
+            predicate: {
+              ...(filters.depositsCountMin && { _gte: parseFloat(filters.depositsCountMin) }),
+              ...(filters.depositsCountMax && { _lte: parseFloat(filters.depositsCountMax) }),
+            },
+          },
+        },
+      }),
+      // Completed Epoch
+      ...((filters.completedEpochMin || filters.completedEpochMax) && {
+        // eslint-disable-next-line camelcase
+        completed_epoch: {
+          ...(filters.completedEpochMin && { _gte: filters.completedEpochMin }),
+          ...(filters.completedEpochMax && { _lte: filters.completedEpochMax }),
+        },
+      }),
+      // Bundle Count
+      ...((filters.bundleCountMin || filters.bundleCountMax) && {
+        // eslint-disable-next-line camelcase
+        bundle_count: {
+          ...(filters.bundleCountMin && { _gte: filters.bundleCountMin }),
+          ...(filters.bundleCountMax && { _lte: filters.bundleCountMax }),
+        },
+      }),
+    }),
+    [filters, tokenDecimals, whereForSearch],
+  )
 
   const variables: DomainsListQueryVariables = useMemo(
     () => ({

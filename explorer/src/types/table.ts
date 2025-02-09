@@ -21,10 +21,10 @@ export type AvailableColumns = {
 export type Filters = object
 
 export type FilterOption = {
-  type: 'range' | 'checkbox' | 'number' | 'text'
+  type: 'range' | 'checkbox' | 'number' | 'text' | 'dropdown'
   label: string
   key: string
-  options?: string[]
+  options?: string[] | { label: string; value: string }[]
 }
 
 export type FiltersOptions = {

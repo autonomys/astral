@@ -6,8 +6,9 @@ import {
   PencilIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { TableName, useTableSettings } from 'states/tables'
+import { FilterOption } from 'types/table'
 import { numberWithCommas } from 'utils/number'
 
 interface TableSettingsProps {
@@ -17,6 +18,7 @@ interface TableSettingsProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: Record<string, any>
   addExtraIcons?: React.ReactNode
+  overrideFiltersOptions?: FilterOption[]
 }
 
 export const TableSettings: React.FC<TableSettingsProps> = ({
@@ -25,6 +27,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
   totalCount,
   filters,
   addExtraIcons,
+  overrideFiltersOptions,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   if (!tableName) {
@@ -33,7 +36,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
   const {
     availableColumns,
     selectedColumns,
-    filtersOptions,
+    filtersOptions: _filtersOptions,
     showTableSettings,
     showReset,
     handleFilterChange,
@@ -42,6 +45,11 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
     hideSettings,
     handleReset,
   } = useTableSettings(table)
+
+  const filtersOptions = useMemo(
+    () => overrideFiltersOptions || _filtersOptions,
+    [overrideFiltersOptions, _filtersOptions],
+  )
 
   return (
     <div className='mb-4 w-full' id='accordion-open' data-accordion='open'>
@@ -209,33 +217,63 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                                 <>
                                   <p className='mb-1 block font-medium'>{filter.label}</p>
                                   <div className='mt-4 flex flex-wrap gap-2'>
-                                    {filter.options?.map((option) => (
-                                      <div key={option} className='flex items-center'>
-                                        <input
-                                          type='checkbox'
-                                          id={`${filter.key}-${option}`}
-                                          value={option}
-                                          checked={
-                                            filters[
-                                              `${filter.key}${option.replace(/\s+/g, '')}`
-                                            ] === 'true'
-                                          }
-                                          onChange={(e) =>
-                                            handleFilterChange(
-                                              `${filter.key}${option.replace(/\s+/g, '')}`,
-                                              e.target.checked.toString(),
-                                            )
-                                          }
-                                          className='mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
-                                        />
-                                        <label
-                                          htmlFor={`${filter.key}-${option}`}
-                                          className='text-sm text-gray-700 dark:text-gray-300'
-                                        >
-                                          {option}
-                                        </label>
-                                      </div>
-                                    ))}
+                                    {filter.options?.map((option) => {
+                                      if (typeof option === 'string')
+                                        return (
+                                          <div key={option} className='flex items-center'>
+                                            <input
+                                              type='checkbox'
+                                              id={`${filter.key}-${option}`}
+                                              value={option}
+                                              checked={
+                                                filters[
+                                                  `${filter.key}${option.replace(/\s+/g, '')}`
+                                                ] === 'true'
+                                              }
+                                              onChange={(e) =>
+                                                handleFilterChange(
+                                                  `${filter.key}${option.replace(/\s+/g, '')}`,
+                                                  e.target.checked.toString(),
+                                                )
+                                              }
+                                              className='mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                                            />
+                                            <label
+                                              htmlFor={`${filter.key}-${option}`}
+                                              className='text-sm text-gray-700 dark:text-gray-300'
+                                            >
+                                              {option}
+                                            </label>
+                                          </div>
+                                        )
+                                      return (
+                                        <div key={option.value} className='flex items-center'>
+                                          <input
+                                            type='checkbox'
+                                            id={`${filter.key}-${option.value}`}
+                                            value={option.value}
+                                            checked={
+                                              filters[
+                                                `${filter.key}${option.value.replace(/\s+/g, '')}`
+                                              ] === 'true'
+                                            }
+                                            onChange={(e) =>
+                                              handleFilterChange(
+                                                `${filter.key}${option.value.replace(/\s+/g, '')}`,
+                                                e.target.checked.toString(),
+                                              )
+                                            }
+                                            className='mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                                          />
+                                          <label
+                                            htmlFor={`${filter.key}-${option.value}`}
+                                            className='text-sm text-gray-700 dark:text-gray-300'
+                                          >
+                                            {option.label}
+                                          </label>
+                                        </div>
+                                      )
+                                    })}
                                   </div>
                                 </>
                               )}
@@ -267,6 +305,34 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                                     value={filters[filter.key]}
                                     onChange={(e) => handleFilterChange(filter.key, e.target.value)}
                                   />
+                                </>
+                              )}
+                              {filter.type === 'dropdown' && (
+                                <>
+                                  <label htmlFor={filter.key} className='mb-1 block font-medium'>
+                                    {filter.label}
+                                  </label>
+                                  <select
+                                    id={filter.key}
+                                    className='w-full rounded border p-2 dark:bg-blueAccent dark:text-white'
+                                    value={filters[filter.key] || ''}
+                                    onChange={(e) => handleFilterChange(filter.key, e.target.value)}
+                                  >
+                                    <option value=''>Select {filter.label}</option>
+                                    {filter.options?.map((option) => {
+                                      if (typeof option === 'string')
+                                        return (
+                                          <option key={option} value={option}>
+                                            {capitalizeFirstLetter(option)}
+                                          </option>
+                                        )
+                                      return (
+                                        <option key={option.value} value={option.value}>
+                                          {option.label}
+                                        </option>
+                                      )
+                                    })}
+                                  </select>
                                 </>
                               )}
                             </li>

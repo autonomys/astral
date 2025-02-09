@@ -1411,19 +1411,6 @@ CREATE TABLE staking.operator_rewards (
 );
 ALTER TABLE staking.operator_rewards OWNER TO postgres;
 
-CREATE TABLE staking.operator_tax_collections (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    operator_id text NOT NULL,
-    amount numeric NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.operator_tax_collections OWNER TO postgres;
-
 CREATE TABLE staking.operator_staking_histories (
     id text NOT NULL,
     operator_id text NOT NULL,
@@ -1442,6 +1429,19 @@ CREATE TABLE staking.operator_staking_histories (
     _block_range int8range NOT NULL
 );
 ALTER TABLE staking.operator_staking_histories OWNER TO postgres;
+
+CREATE TABLE staking.operator_tax_collections (
+    id text NOT NULL,
+    domain_id text NOT NULL,
+    operator_id text NOT NULL,
+    amount numeric NOT NULL,
+    block_height numeric NOT NULL,
+    extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.operator_tax_collections OWNER TO postgres;
 
 CREATE TABLE staking.operators (
     id text NOT NULL,
@@ -1503,8 +1503,37 @@ CREATE TABLE staking.runtime_creations (
 );
 ALTER TABLE staking.runtime_creations OWNER TO postgres;
 
+CREATE TABLE staking.withdraw_events (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    account_id text NOT NULL,
+    domain_id text NOT NULL,
+    operator_id text NOT NULL,
+    nominator_id text NOT NULL,
+    to_withdraw text NOT NULL,
+    amount1 numeric NOT NULL,
+    amount2 numeric NOT NULL,
+    total_amount numeric NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    block_height numeric NOT NULL,
+    extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.withdraw_events OWNER TO postgres;
+
 CREATE TABLE staking.withdrawal_histories (
     id text NOT NULL,
+    domain_id text NOT NULL,
+    account_id text NOT NULL,
+    operator_id text NOT NULL,
+    nominator_id text NOT NULL,
+    total_withdrawal_amount numeric NOT NULL,
+    domain_epoch integer NOT NULL,
+    unlock_at_confirmed_domain_block_number numeric NOT NULL,
+    shares numeric NOT NULL,
+    storage_fee_refund numeric NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
@@ -1869,17 +1898,20 @@ ALTER TABLE ONLY staking.operator_registrations
 ALTER TABLE ONLY staking.operator_rewards
     ADD CONSTRAINT operator_rewards_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.operator_tax_collections
-    ADD CONSTRAINT operator_tax_collections_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY staking.operator_staking_histories
     ADD CONSTRAINT operator_staking_histories_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.operator_tax_collections
+    ADD CONSTRAINT operator_tax_collections_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY staking.operators
     ADD CONSTRAINT operators_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.runtime_creations
     ADD CONSTRAINT runtime_creations_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.withdraw_events
+    ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY staking.withdrawal_histories
     ADD CONSTRAINT withdrawal_histories_pkey PRIMARY KEY (_id);
@@ -2057,25 +2089,26 @@ CREATE INDEX "0xd5509466634aea27" ON files.chunks USING btree (id);
 CREATE INDEX "0xd9be8718ef6c7984" ON files.folder_cids USING btree (id);
 CREATE INDEX "files_folder_cids_parent_cid" ON files.folder_cids USING btree (parent_cid);
 
-CREATE INDEX "0x2e3c877df846cf68" ON staking.operators USING btree (id);
-CREATE INDEX "0x37bedb20b3490374" ON staking.withdrawals USING btree (id);
 CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
 CREATE INDEX "0x3a7ed99d2776ff11" ON staking.operator_tax_collections USING btree (id);
-CREATE INDEX "0x4cb388e53e3e30f3" ON staking.accounts USING btree (id);
-CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (id);
 CREATE INDEX "0x59e52a1d9c35dee5" ON staking.domain_block_histories USING btree (id);
-CREATE INDEX "0x5a29da535e66d318" ON staking.deposits USING btree (id);
-CREATE INDEX "0x6e9918d3935710b0" ON staking.nominators USING btree (id);
+CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (id);
+CREATE INDEX "0x72774937664e8211" ON staking.withdraw_events USING btree (id);
 CREATE INDEX "0x9addf36a4bded44f" ON staking.deposit_events USING btree (id);
 CREATE INDEX "0xa3309c82ddfd9389" ON staking.operator_registrations USING btree (id);
 CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING btree (id);
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
 CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btree (id);
-CREATE INDEX "0xc145a7f38e7f82ec" ON staking.domains USING btree (id);
-CREATE INDEX "0xce8aa0eadbbe994d" ON staking.domain_epochs USING btree (id);
 CREATE INDEX "0xd3486d6b21c11e22" ON staking.withdrawal_histories USING btree (id);
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
 CREATE INDEX "0xdca5e6b13feac3f6" ON staking.deposit_histories USING btree (id);
+CREATE INDEX "staking_accounts_id" ON staking.accounts USING btree (id);
+CREATE INDEX "staking_deposits_id" ON staking.deposits USING btree (id);
+CREATE INDEX "staking_domain_epochs_id" ON staking.domain_epochs USING btree (id);
+CREATE INDEX "staking_domains_id" ON staking.domains USING btree (id);
+CREATE INDEX "staking_nominators_id" ON staking.nominators USING btree (id);
+CREATE INDEX "staking_operators_id" ON staking.operators USING btree (id);
+CREATE INDEX "staking_withdrawals_id" ON staking.withdrawals USING btree (id);
 
 CREATE INDEX "stats_hourly_end_date" ON stats.hourly USING btree ("end_date" DESC);
 CREATE INDEX "stats_daily_end_date" ON stats.daily USING btree ("end_date" DESC);
@@ -2113,6 +2146,10 @@ CREATE FUNCTION consensus.insert_event_module() RETURNS trigger
     INSERT INTO consensus.event_modules (id, section, method)
     VALUES (NEW.name, NEW.section, NEW.module)
     ON CONFLICT (id) DO NOTHING;
+
+    INSERT INTO consensus.sections (id, section)
+    VALUES (NEW.section, NEW.section)
+    ON CONFLICT (id) DO NOTHING;
     
     RETURN NEW;
   END;
@@ -2129,7 +2166,11 @@ CREATE FUNCTION consensus.insert_extrinsic_module() RETURNS trigger
     AS $$
   BEGIN
     INSERT INTO consensus.extrinsic_modules (id, section, method)
-    VALUES (NEW.name, NEW.section, NEW.name)
+    VALUES (NEW.name, NEW.section, NEW.module)
+    ON CONFLICT (id) DO NOTHING;
+
+    INSERT INTO consensus.sections (id, section)
+    VALUES (NEW.section, NEW.section)
     ON CONFLICT (id) DO NOTHING;
     
     RETURN NEW;
@@ -2141,29 +2182,6 @@ CREATE TRIGGER ensure_extrinsic_module
     BEFORE INSERT ON consensus.extrinsics
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_extrinsic_module();
-
-CREATE FUNCTION consensus.insert_section() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    INSERT INTO consensus.sections (id, section)
-    VALUES (NEW.section, NEW.section)
-    ON CONFLICT (id) DO NOTHING;
-    
-    RETURN NEW;
-  END;
-  $$;
-ALTER FUNCTION consensus.insert_section() OWNER TO postgres;
-
-CREATE TRIGGER ensure_extrinsic_section
-    BEFORE INSERT ON consensus.extrinsics
-    FOR EACH ROW
-    EXECUTE FUNCTION consensus.insert_section();
-
-CREATE TRIGGER ensure_event_section
-    BEFORE INSERT ON consensus.events
-    FOR EACH ROW
-    EXECUTE FUNCTION consensus.insert_section();
 
 CREATE FUNCTION consensus.update_account() RETURNS trigger
     LANGUAGE plpgsql
@@ -2396,8 +2414,6 @@ CREATE TRIGGER prevent_withdrawal_histories_duplicate
 BEFORE INSERT ON staking.withdrawal_histories
 FOR EACH ROW
 EXECUTE FUNCTION staking.prevent_withdrawal_histories_duplicate();
-
--- Staking triggers
 
 CREATE OR REPLACE FUNCTION staking.insert_new_domain() RETURNS TRIGGER
     LANGUAGE plpgsql

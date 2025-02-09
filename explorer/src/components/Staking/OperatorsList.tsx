@@ -24,12 +24,7 @@ import { useTableSettings } from 'states/tables'
 import { useViewStates } from 'states/view'
 import type { Cell, OperatorsFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import {
-  bigNumberToFormattedString,
-  bigNumberToNumber,
-  formatUnitsToNumber,
-  numberFormattedString,
-} from 'utils/number'
+import { bigNumberToFormattedString, bigNumberToNumber, numberFormattedString } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { allCapsToNormal } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
@@ -37,8 +32,8 @@ import { AccountIcon, AccountIconWithLink } from '../common/AccountIcon'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
-import { DomainBlockTime } from '../Domain/DomainBlockTime'
-import { DomainProgress } from '../Domain/DomainProgress'
+// import { DomainBlockTime } from '../Domain/DomainBlockTime'
+// import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -62,10 +57,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   const {
     pagination,
     sorting,
-    availableColumns,
     selectedColumns,
     filters,
     orderBy,
+    whereForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<OperatorsFilters>(TABLE)
@@ -107,7 +102,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           ),
           accountId: ({ row }: Cell<Row>) => (
             <AccountIconWithLink
-              address={row.original.id}
+              address={row.original.accountId}
               network={network}
               section={Routes.consensus}
             />
@@ -167,7 +162,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           currentTotalShares: ({ row }: Cell<Row>) =>
             bigNumberToFormattedString(row.original.currentTotalShares),
           currentSharePrice: ({ row }: Cell<Row>) =>
-            `${formatUnitsToNumber((row.original.currentSharePrice * 1000000).toString())} ${tokenSymbol}`,
+            `${bigNumberToFormattedString(row.original.currentSharePrice)} ${tokenSymbol}`,
           totalDeposits: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.totalDeposits)} ${tokenSymbol}`,
           totalEstimatedWithdrawals: ({ row }: Cell<Row>) =>
@@ -209,9 +204,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           activeEpochCount: ({ row }: Cell<Row>) =>
             numberFormattedString(row.original.activeEpochCount),
           bundleCount: ({ row }: Cell<Row>) => numberFormattedString(row.original.bundleCount),
-          status: ({ row }: Cell<Row>) => allCapsToNormal(row.original.status),
-          rawStatus: ({ row }: Cell<Row>) =>
-            allCapsToNormal(operatorStatus(JSON.parse(row.original.rawStatus ?? '{}'))),
+          status: ({ row }: Cell<Row>) =>
+            allCapsToNormal(operatorStatus(JSON.parse(row.original.status ?? '{}'))),
+          rawStatus: ({ row }: Cell<Row>) => allCapsToNormal(row.original.rawStatus),
           pendingAction: ({ row }: Cell<Row>) => allCapsToNormal(row.original.pendingAction),
           lastBundleAt: ({ row }: Cell<Row>) => (
             <Link
@@ -349,7 +344,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
+    const conditions: Record<string, any> = whereForSearch
 
     if (domainId) {
       conditions['domain_id'] = {}
@@ -364,17 +359,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         { nominators: { account_id: { _eq: subspaceAccount } } },
       ]
     }
-
-    // Dynamic search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof OperatorsFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
 
     // Total Stake
     if (filters.totalStakeMin || filters.totalStakeMax) {
@@ -486,7 +470,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     }
 
     return conditions
-  }, [domainId, subspaceAccount, myPositionOnly, availableColumns, filters, tokenDecimals])
+  }, [domainId, subspaceAccount, myPositionOnly, whereForSearch, filters, tokenDecimals])
 
   const variables: OperatorsListQueryVariables = useMemo(
     () => ({
@@ -556,14 +540,14 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='flex flex-col sm:flex-row sm:justify-between'>
+      {/* <div className='flex flex-col sm:flex-row sm:justify-between'>
         <div className='mb-4 sm:mb-0'>
           <DomainBlockTime />
         </div>
         <div>
           <DomainProgress />
         </div>
-      </div>
+      </div> */}
       <div className='my-4' ref={ref}>
         <TableSettings
           table={TABLE}
