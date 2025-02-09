@@ -1,53 +1,87 @@
 'use client'
 
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-import { FC, useCallback, useMemo, useState } from 'react'
+import { cn } from '@/utils/cn'
+import { FC, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 interface TooltipProps {
   text: string | React.ReactNode
   children: React.ReactNode
-  direction?: 'top' | 'bottom' | 'left' | 'right' // New prop for tooltip direction
+  direction?: 'top' | 'bottom' | 'left' | 'right'
+  className?: string
 }
 
-export const Tooltip: FC<TooltipProps> = ({ text, children, direction = 'top' }) => {
+export const Tooltip: FC<TooltipProps> = ({ text, children, direction = 'top', className }) => {
   const [isVisible, setIsVisible] = useState(false)
+  const [position, setPosition] = useState({ top: 0, left: 0 })
+  const triggerRef = useRef<HTMLDivElement | null>(null)
+  const tooltipRef = useRef<HTMLDivElement | null>(null)
 
-  const toggleVisibility = useCallback(() => setIsVisible(!isVisible), [isVisible])
-  const className = useMemo(
-    () =>
-      `absolute ${direction === 'top' ? 'bottom-full' : 'top-full'} ${direction === 'left' && 'right-full'} ${direction === 'right' && 'left-full'} bg-primaryAccent z-10 mt-2 w-auto rounded-md p-2 text-sm text-white shadow-lg`,
-    [direction],
-  )
-  const tooltip = useMemo(() => {
-    return (
-      <div
-        className={className}
-        onMouseOver={() => setIsVisible(true)}
-        onMouseOut={() => setIsVisible(false)}
-        onFocus={() => setIsVisible(true)}
-        onBlur={() => setIsVisible(false)}
-      >
-        {text}
-      </div>
-    )
-  }, [className, text])
+  useEffect(() => {
+    if (!isVisible || !triggerRef.current || !tooltipRef.current) return
+
+    const triggerRect = triggerRef.current.getBoundingClientRect()
+    const tooltipRect = tooltipRef.current.getBoundingClientRect()
+
+    let top = triggerRect.top + window.scrollY
+    let left = triggerRect.left + window.scrollX
+
+    if (direction === 'bottom') {
+      top += triggerRect.height + 8 // Small gap for better visibility
+      left += triggerRect.width / 2 - tooltipRect.width / 2
+    } else if (direction === 'top') {
+      top -= tooltipRect.height + 8
+      left += triggerRect.width / 2 - tooltipRect.width / 2
+    } else if (direction === 'left') {
+      top += triggerRect.height / 2 - tooltipRect.height / 2
+      left -= tooltipRect.width + 8
+    } else if (direction === 'right') {
+      top += triggerRect.height / 2 - tooltipRect.height / 2
+      left += triggerRect.width + 8
+    }
+
+    // Ensure tooltip does not overflow viewport
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+
+    if (left < 8) left = 8
+    if (left + tooltipRect.width > viewportWidth - 8) left = viewportWidth - tooltipRect.width - 8
+    if (top < 8) top = 8
+    if (top + tooltipRect.height > viewportHeight - 8) top = viewportHeight - tooltipRect.height - 8
+
+    setPosition({ top, left })
+  }, [isVisible, direction])
 
   return (
-    <div className='group relative flex flex-col items-center'>
-      {isVisible && tooltip}
+    <>
       <div
-        onClick={toggleVisibility}
+        ref={triggerRef}
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onFocus={() => setIsVisible(true)}
         onBlur={() => setIsVisible(false)}
-        tabIndex={0}
-        className='cursor-pointer'
+        className='inline-block cursor-pointer'
       >
         {children}
       </div>
-    </div>
+
+      {isVisible &&
+        createPortal(
+          <div
+            ref={tooltipRef}
+            className={cn(
+              'absolute z-[1000] rounded-md bg-primaryAccent p-2 text-sm text-white shadow-lg transition-opacity duration-200 ease-in-out',
+              className,
+            )}
+            style={{
+              top: `${position.top}px`,
+              left: `${position.left}px`,
+            }}
+          >
+            {text}
+          </div>,
+          document.body,
+        )}
+    </>
   )
 }
