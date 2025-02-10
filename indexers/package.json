@@ -4,7 +4,9 @@
   "private": true,
   "main": "index.js",
   "license": "MIT",
-  "workspaces": ["*"],
+  "workspaces": [
+    "*"
+  ],
   "scripts": {
     "postinstall": "git submodule update --init --recursive",
     "bootstrap": "lerna run bootstrap",
@@ -24,18 +26,18 @@
     "docker:prod:bootstrap": "yarn docker:prod up --remove-orphans",
     "docker:dev:down": "yarn docker:dev down",
     "docker:prod:down": "yarn docker:prod down",
-    "dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:dev:up",
-    "dev-bootstrap": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:dev:bootstrap",
-    "console:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run console",
-    "metadata:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run metadata",
-    "migrate:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run migrate",
-    "apply-seeds:mainnet:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run apply-seeds:mainnet",
-    "prod": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:prod:up",
-    "prod-bootstrap": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:prod:bootstrap",
-    "console": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run console",
-    "metadata": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run metadata",
-    "migrate": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run migrate",
-    "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run apply-seeds:mainnet"
+    "dev": "yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:dev:up",
+    "dev-bootstrap": "yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:dev:bootstrap",
+    "console:dev": "lerna run console",
+    "metadata:dev": "lerna run metadata",
+    "migrate:dev": "lerna run migrate",
+    "apply-seeds:mainnet:dev": "lerna run apply-seeds:mainnet",
+    "prod": "yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:prod:up",
+    "prod-bootstrap": "yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:prod:bootstrap",
+    "console": "lerna run console",
+    "metadata": "lerna run metadata",
+    "migrate": "lerna run migrate",
+    "apply-seeds:mainnet": "lerna run apply-seeds:mainnet"
   },
   "dependencies": {
     "lerna": "^8.1.8"
