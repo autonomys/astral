@@ -6,6 +6,7 @@ import {
   unlockFunds,
   unlockNominator,
   withdrawStake,
+  WithdrawStakeParams,
 } from '@autonomys/auto-consensus'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
@@ -39,7 +40,6 @@ export const ActionsInRed = [
 export type OperatorAction = {
   type: OperatorActionType
   operatorId: number | null
-  maxShares: bigint | null
 }
 
 type Props = {
@@ -77,10 +77,6 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         : 0,
     [walletBalance],
   )
-  const maxSharesToWithdraw = useMemo(
-    () => (action.maxShares ? action.maxShares : BigInt(0)),
-    [action.maxShares],
-  )
 
   const addFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
@@ -91,11 +87,11 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
   const withdrawFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
-      .moreThan(0, 'Amount need to be greater than 0 shares')
-      .test('max', `Amount need to be less than ${maxSharesToWithdraw} shares`, function (value) {
-        return typeof value === 'number' && BigInt(value) <= maxSharesToWithdraw
+      .moreThan(0, 'Amount need to be greater than 0%')
+      .test('max', 'Amount need to be less than 100%', function (value) {
+        return typeof value === 'number' && value <= 100
       })
-      .required('Amount of shares to withdraw is required'),
+      .required('Percentage to withdraw is required'),
   })
 
   const loadData = useCallback(async () => {
@@ -184,12 +180,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       try {
         const operatorId = action.operatorId.toString()
-        const shares = values.amount.toString()
-        const tx = await withdrawStake({
+        const percent = values.amount.toString()
+        const params: WithdrawStakeParams = {
           api,
           operatorId,
-          shares,
-        })
+          ...(percent === '100' ? { all: true } : { percent }),
+        }
+        const tx = await withdrawStake(params)
         await sendAndSaveTx({
           call: 'withdrawStake',
           tx,
@@ -421,6 +418,48 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     name='dischargeNorms'
                     render={() => (
                       <div className='relative w-[400px]'>
+                        <div className='mb-4 flex w-full items-center justify-between'>
+                          <button
+                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            type='button'
+                            onClick={() => {
+                              setSliderValue(25)
+                              setFieldValue('amount', 25)
+                            }}
+                          >
+                            25%
+                          </button>
+                          <button
+                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            type='button'
+                            onClick={() => {
+                              setSliderValue(50)
+                              setFieldValue('amount', 50)
+                            }}
+                          >
+                            50%
+                          </button>
+                          <button
+                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            type='button'
+                            onClick={() => {
+                              setSliderValue(75)
+                              setFieldValue('amount', 75)
+                            }}
+                          >
+                            75%
+                          </button>
+                          <button
+                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            type='button'
+                            onClick={() => {
+                              setSliderValue(100)
+                              setFieldValue('amount', 100)
+                            }}
+                          >
+                            All
+                          </button>
+                        </div>
                         <div className='flex items-center'>
                           <Slider
                             min={0}
@@ -430,12 +469,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             onChange={(value) => {
                               const newValue = Array.isArray(value) ? value[0] : value
                               setSliderValue(newValue)
-                              const newAmount =
-                                (maxSharesToWithdraw * BigInt(newValue)) / BigInt(100)
-                              setFieldValue(
-                                'amount',
-                                newAmount > maxSharesToWithdraw ? maxSharesToWithdraw : newAmount,
-                              )
+                              setFieldValue('amount', newValue)
                             }}
                             style={{ flexGrow: 1, marginRight: '10px' }} // Added margin to the right
                           />
@@ -444,14 +478,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             type='button'
                             onClick={() => {
                               setSliderValue(100)
-                              setFieldValue('amount', maxSharesToWithdraw)
+                              setFieldValue('amount', 100)
                             }}
                           >
                             Max
                           </button>
                         </div>
                         <div className='mt-2 text-center text-sm font-medium dark:text-white'>
-                          {sliderValue.toFixed(0)}% of your shares
+                          {sliderValue.toFixed(0)}% of your stake
                         </div>
                       </div>
                     )}
@@ -542,7 +576,6 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     maxAmountToAdd,
     actingAccount,
     sliderValue,
-    maxSharesToWithdraw,
   ])
 
   useEffect(() => {

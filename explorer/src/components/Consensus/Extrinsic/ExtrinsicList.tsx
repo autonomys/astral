@@ -8,6 +8,7 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { FILTERS_OPTIONS } from 'constants/tables'
 import { ExtrinsicsDocument, ExtrinsicsQuery, ExtrinsicsQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
@@ -30,48 +31,32 @@ export const ExtrinsicList: FC = () => {
   const {
     pagination,
     sorting,
-    availableColumns,
     selectedColumns,
     filters,
     orderBy,
+    whereForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<ExtrinsicsFilters>(TABLE)
 
-  const where = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof ExtrinsicsFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
-
-    // Block Height
-    if (filters.blockHeightMin || filters.blockHeightMax) {
-      conditions['block_height'] = {}
-      if (filters.blockHeightMin) conditions.block_height._gte = filters.blockHeightMin
-      if (filters.blockHeightMax) conditions.block_height._lte = filters.blockHeightMax
-    }
-
-    // Section
-    if (filters.section) {
-      conditions['section'] = { _ilike: `%${filters.section}%` }
-    }
-
-    // Module
-    if (filters.module) {
-      conditions['module'] = { _ilike: `%${filters.module}%` }
-    }
-
-    return conditions
-  }, [filters, availableColumns])
+  const where = useMemo(
+    () => ({
+      ...whereForSearch,
+      // Block Height
+      ...((filters.blockHeightMin || filters.blockHeightMax) && {
+        // eslint-disable-next-line camelcase
+        block_height: {
+          ...(filters.blockHeightMin && { _gte: filters.blockHeightMin }),
+          ...(filters.blockHeightMax && { _lte: filters.blockHeightMax }),
+        },
+      }),
+      // Section
+      ...(filters.section && { section: { _eq: `%${filters.section}%` } }),
+      // Module
+      ...(filters.module && { module: { _eq: `%${filters.module}%` } }),
+    }),
+    [filters, whereForSearch],
+  )
 
   const variables = useMemo(
     () => ({
@@ -100,6 +85,24 @@ export const ExtrinsicList: FC = () => {
   }, [consensusEntry])
 
   const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
+  const filtersOptions = useMemo(
+    () =>
+      data
+        ? FILTERS_OPTIONS[TABLE].map((filter) => ({
+            ...filter,
+            ...(filter.key === 'section' && {
+              options: [...new Set(data.consensus_extrinsic_modules.map((m) => m.section))],
+            }),
+            ...(filter.key === 'module' && {
+              options: data.consensus_extrinsic_modules.map((m) => ({
+                value: m.method,
+                label: m.method + ' (' + m.section + ')',
+              })),
+            }),
+          }))
+        : undefined,
+    [data],
+  )
   const totalCount = useMemo(
     () =>
       data && data.consensus_extrinsics_aggregate.aggregate
@@ -181,7 +184,12 @@ export const ExtrinsicList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
-        <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
+        <TableSettings
+          table={TABLE}
+          totalCount={totalCount}
+          filters={filters}
+          overrideFiltersOptions={filtersOptions}
+        />
         {!loading && extrinsics ? (
           <SortedTable
             data={extrinsics}

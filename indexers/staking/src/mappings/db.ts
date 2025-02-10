@@ -10,6 +10,8 @@ import {
   OperatorStakingHistory,
   OperatorTaxCollection,
   RuntimeCreation,
+  WithdrawEvent,
+  WithdrawalHistory,
 } from "../types";
 import { getSortId } from "./utils";
 
@@ -25,6 +27,8 @@ export type Cache = {
   operatorReward: OperatorReward[];
   operatorTaxCollection: OperatorTaxCollection[];
   runtimeCreation: RuntimeCreation[];
+  withdrawEvent: WithdrawEvent[];
+  withdrawalHistory: WithdrawalHistory[];
 };
 
 export const initializeCache = (): Cache => ({
@@ -39,6 +43,8 @@ export const initializeCache = (): Cache => ({
   operatorReward: [],
   operatorTaxCollection: [],
   runtimeCreation: [],
+  withdrawEvent: [],
+  withdrawalHistory: [],
 });
 
 export const saveCache = async (cache: Cache) => {
@@ -54,6 +60,8 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(`OperatorReward`, cache.operatorReward),
     store.bulkCreate(`OperatorTaxCollection`, cache.operatorTaxCollection),
     store.bulkCreate(`RuntimeCreation`, cache.runtimeCreation),
+    store.bulkCreate(`WithdrawEvent`, cache.withdrawEvent),
+    store.bulkCreate(`WithdrawalHistory`, cache.withdrawalHistory),
   ]);
 };
 
@@ -135,6 +143,7 @@ export function createDepositEvent(
   operatorId: string,
   amount: bigint,
   storageFeeDeposit: bigint,
+  totalAmount: bigint,
   timestamp: Date,
   blockHeight: bigint,
   extrinsicId: string,
@@ -149,7 +158,38 @@ export function createDepositEvent(
     nominatorId: accountId + "-" + domainId + "-" + operatorId,
     amount,
     storageFeeDeposit,
-    totalAmount: amount + storageFeeDeposit,
+    totalAmount,
+    timestamp,
+    blockHeight,
+    extrinsicId,
+    eventId,
+  });
+}
+
+export function createWithdrawEvent(
+  accountId: string,
+  domainId: string,
+  operatorId: string,
+  toWithdraw: string,
+  amount1: bigint,
+  amount2: bigint,
+  totalAmount: bigint,
+  timestamp: Date,
+  blockHeight: bigint,
+  extrinsicId: string,
+  eventId: string
+): WithdrawEvent {
+  return WithdrawEvent.create({
+    id: extrinsicId + "-" + accountId + "-" + domainId + "-" + operatorId,
+    sortId: getSortId(blockHeight, extrinsicId),
+    accountId,
+    domainId,
+    operatorId,
+    nominatorId: accountId + "-" + domainId + "-" + operatorId,
+    toWithdraw,
+    amount1,
+    amount2,
+    totalAmount,
     timestamp,
     blockHeight,
     extrinsicId,
@@ -255,12 +295,14 @@ export function createDomainBlockHistory(
   hash: string,
   domainId: string,
   domainBlockNumber: bigint,
+  timestamp: Date,
   blockHeight: bigint
 ): DomainBlockHistory {
   return DomainBlockHistory.create({
     id: hash,
     domainId,
     domainBlockNumber,
+    timestamp,
     blockHeight,
   });
 }
@@ -270,6 +312,7 @@ export function createDomainStakingHistory(
   domainId: string,
   currentEpochIndex: number,
   currentTotalStake: bigint,
+  timestamp: Date,
   blockHeight: bigint
 ): DomainStakingHistory {
   return DomainStakingHistory.create({
@@ -277,6 +320,7 @@ export function createDomainStakingHistory(
     domainId,
     currentEpochIndex,
     currentTotalStake,
+    timestamp,
     blockHeight,
   });
 }
@@ -340,6 +384,33 @@ export function createDepositHistory(
     effectiveDomainEpochPending,
     amountPending,
     storageFeeDepositPending,
+    blockHeight,
+  });
+}
+
+export function createWithdrawalHistoryHistory(
+  hash: string,
+  domainId: string,
+  accountId: string,
+  operatorId: string,
+  totalWithdrawalAmount: bigint,
+  domainEpoch: number,
+  unlockAtConfirmedDomainBlockNumber: bigint,
+  shares: bigint,
+  storageFeeRefund: bigint,
+  blockHeight: bigint
+): WithdrawalHistory {
+  return WithdrawalHistory.create({
+    id: hash,
+    domainId,
+    accountId,
+    operatorId,
+    nominatorId: accountId + "-" + operatorId,
+    totalWithdrawalAmount,
+    domainEpoch,
+    unlockAtConfirmedDomainBlockNumber,
+    shares,
+    storageFeeRefund,
     blockHeight,
   });
 }

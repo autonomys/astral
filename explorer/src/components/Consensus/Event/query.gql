@@ -22,7 +22,8 @@ query Events(
     timestamp
     phase
   }
-  consensus_event_modules(limit: 300) {
+  consensus_event_modules(order_by: { section: asc, method: asc }, limit: 50) {
+    section
     method
   }
 }

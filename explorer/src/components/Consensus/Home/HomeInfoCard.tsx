@@ -1,9 +1,10 @@
+import AnimatedCount from '@/components/common/AnimatedCount'
 import Image from 'next/image'
 import { FC, ReactElement, useMemo } from 'react'
 
 type Props = {
   title: string
-  value: string
+  value: number | string
   icon?: ReactElement
   imagePath?: string
   tooltip?: string | React.ReactNode
@@ -42,7 +43,8 @@ export const HomeInfoCard: FC<Props> = ({
           <h2 className='mb-2.5 text-center text-xs font-normal text-gray-900 dark:text-white'>
             {title}
           </h2>
-          {text}
+
+          {typeof value === 'string' ? text : <AnimatedCount value={value} />}
         </div>
       </div>
     </div>

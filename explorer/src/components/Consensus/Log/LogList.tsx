@@ -30,43 +30,30 @@ export const LogList: FC = () => {
   const {
     pagination,
     sorting,
-    availableColumns,
     selectedColumns,
     filters,
     orderBy,
+    whereForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<LogsFilters>(TABLE)
 
-  const where = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof LogsFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
-
-    // Block Height
-    if (filters.blockHeightMin || filters.blockHeightMax) {
-      conditions['block_height'] = {}
-      if (filters.blockHeightMin) conditions.block_height._gte = filters.blockHeightMin
-      if (filters.blockHeightMax) conditions.block_height._lte = filters.blockHeightMax
-    }
-
-    // Log Kind
-    if (filters.kind) {
-      conditions['kind'] = { _ilike: `%${filters.kind}%` }
-    }
-
-    return conditions
-  }, [filters, availableColumns])
+  const where = useMemo(
+    () => ({
+      ...whereForSearch,
+      // Block Height
+      ...((filters.blockHeightMin || filters.blockHeightMax) && {
+        // eslint-disable-next-line camelcase
+        block_height: {
+          ...(filters.blockHeightMin && { _gte: filters.blockHeightMin }),
+          ...(filters.blockHeightMax && { _lte: filters.blockHeightMax }),
+        },
+      }),
+      // Log Kind
+      ...(filters.kind && { kind: { _ilike: `%${filters.kind}%` } }),
+    }),
+    [filters, whereForSearch],
+  )
 
   const variables = useMemo(
     () => ({
