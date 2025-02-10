@@ -17,7 +17,10 @@ import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 're
 import { logError } from 'utils/log'
 import { getTokenDecimals, getTokenSymbol } from 'utils/network'
 
-const IGNORED_NETWORK_ERRORS = ['TypeError: NetworkError when attempting to fetch resource.']
+const IGNORED_NETWORK_ERRORS = [
+  'TypeError: NetworkError when attempting to fetch resource.',
+  'TypeError: Failed to fetch',
+]
 
 export type IndexersContextValue = {
   indexerSet: Indexer
