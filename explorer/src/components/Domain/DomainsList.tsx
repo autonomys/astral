@@ -78,6 +78,7 @@ export const DomainsList: FC = () => {
                 </span>
               }
               direction='bottom'
+              className='max-w-[650px]'
             >
               <div>{capitalizeFirstLetter(row.original.name)}</div>
             </Tooltip>
