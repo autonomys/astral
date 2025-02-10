@@ -1,53 +1,57 @@
 'use client'
 
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-import { FC, useCallback, useMemo, useState } from 'react'
+import { cn } from '@/utils/cn'
+import { flip, FloatingPortal, offset, shift, useFloating } from '@floating-ui/react'
+import { FC, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 interface TooltipProps {
   text: string | React.ReactNode
   children: React.ReactNode
-  direction?: 'top' | 'bottom' | 'left' | 'right' // New prop for tooltip direction
+  direction?: 'top' | 'bottom' | 'left' | 'right'
+  className?: string
 }
 
-export const Tooltip: FC<TooltipProps> = ({ text, children, direction = 'top' }) => {
+export const Tooltip: FC<TooltipProps> = ({ text, children, direction = 'top', className }) => {
   const [isVisible, setIsVisible] = useState(false)
 
-  const toggleVisibility = useCallback(() => setIsVisible(!isVisible), [isVisible])
-  const className = useMemo(
-    () =>
-      `absolute ${direction === 'top' ? 'bottom-full' : 'top-full'} ${direction === 'left' && 'right-full'} ${direction === 'right' && 'left-full'} bg-primaryAccent z-10 mt-2 w-auto rounded-md p-2 text-sm text-white shadow-lg`,
-    [direction],
-  )
-  const tooltip = useMemo(() => {
-    return (
-      <div
-        className={className}
-        onMouseOver={() => setIsVisible(true)}
-        onMouseOut={() => setIsVisible(false)}
-        onFocus={() => setIsVisible(true)}
-        onBlur={() => setIsVisible(false)}
-      >
-        {text}
-      </div>
-    )
-  }, [className, text])
+  // Floating UI for precise positioning
+  const { refs, floatingStyles } = useFloating({
+    placement: direction,
+    middleware: [offset(8), flip(), shift()],
+  })
 
   return (
-    <div className='group relative flex flex-col items-center'>
-      {isVisible && tooltip}
+    <>
+      {/* Tooltip Trigger */}
       <div
-        onClick={toggleVisibility}
+        ref={refs.setReference}
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onFocus={() => setIsVisible(true)}
         onBlur={() => setIsVisible(false)}
-        tabIndex={0}
-        className='cursor-pointer'
+        className='inline-block cursor-pointer'
       >
         {children}
       </div>
-    </div>
+
+      {/* Tooltip Content (Using FloatingPortal) */}
+      {isVisible &&
+        createPortal(
+          <FloatingPortal>
+            <div
+              ref={refs.setFloating}
+              style={floatingStyles}
+              className={cn(
+                'z-[1000] rounded-md bg-primaryAccent p-2 text-sm text-white shadow-lg transition-opacity duration-200 ease-in-out',
+                className,
+              )}
+            >
+              {text}
+            </div>
+          </FloatingPortal>,
+          document.body,
+        )}
+    </>
   )
 }
