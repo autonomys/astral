@@ -3,6 +3,7 @@ global.TextDecoder = require("util").TextDecoder;
 global.Buffer = require("buffer/").Buffer;
 
 import {
+  blake3HashFromCid,
   cidOfNode,
   cidToString,
   decodeNode,
@@ -15,22 +16,17 @@ import { Bytes } from "@polkadot/types";
 import { compactStripLength } from "@polkadot/util";
 import { SubstrateExtrinsic } from "@subql/types";
 import {
-  createAndSaveChunk,
-  createAndSaveCid,
-  createAndSaveError,
-  createAndSaveFile,
-  createAndSaveFolder,
-  createAndSaveMetadata,
+  createChunk,
+  createCid,
+  createError,
+  createFile,
+  createFolder,
+  createMetadata,
+  initializeCache,
+  saveCache,
 } from "./db";
 import { ExtrinsicPrimitive } from "./types";
-
-const hexToUint8Array = (hex: string): Uint8Array => {
-  if (hex.length % 2 !== 0)
-    throw new Error("Hex string must have an even length");
-  return new Uint8Array(
-    hex.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || []
-  );
-};
+import { hexToUint8Array } from "./utils";
 
 export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
   const {
@@ -38,7 +34,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     block: {
       timestamp,
       block: {
-        header: { number, hash: blockHash },
+        header: { number, hash: _blockHash },
       },
     },
     extrinsic: { method, hash },
@@ -47,6 +43,13 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
   // Skip if extrinsic failed
   if (!success) return;
 
+  const height = BigInt(number.toString());
+  const blockHash = _blockHash.toString();
+  const extrinsicId = `${height}-${idx}`;
+  const extrinsicHash = hash.toString();
+  const blockTimestamp = timestamp ? timestamp : new Date(0);
+
+  let cache = initializeCache();
   const methodToPrimitive = method.toPrimitive() as ExtrinsicPrimitive;
   try {
     const data = methodToPrimitive.args.remark;
@@ -64,18 +67,24 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     } catch (error) {
       node = decodeNode(buffer);
     }
-    const cid = cidToString(cidOfNode(node));
+    const cidObject = cidOfNode(node);
+    const cid = cidToString(cidObject);
+    const blake3HashArrayBuffer = blake3HashFromCid(cidObject);
+    const blake3Hash = Buffer.from(blake3HashArrayBuffer).toString("hex");
     const links = node.Links.map((l) => cidToString(l.Hash));
     if (cid) {
-      await createAndSaveCid(
-        cid,
-        BigInt(number.toString()),
-        blockHash.toString(),
-        `${number}-${idx}`,
-        hash.toString(),
-        idx,
-        links,
-        timestamp ? timestamp : new Date(0)
+      cache.cid.push(
+        createCid(
+          cid,
+          height,
+          blockHash,
+          extrinsicId,
+          extrinsicHash,
+          idx,
+          links,
+          blake3Hash,
+          blockTimestamp
+        )
       );
 
       if (node.Data) {
@@ -90,26 +99,55 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
         } catch {
           stringifyData = stringify(nodeData.data);
         }
-        await createAndSaveChunk(
-          cid,
-          nodeData.type,
-          nodeData.linkDepth,
-          nodeData.size,
-          nodeData.name,
-          stringifyData,
-          stringify(nodeData.uploadOptions)
+        cache.chunk.push(
+          createChunk(
+            cid,
+            nodeData.type,
+            nodeData.linkDepth,
+            nodeData.size,
+            nodeData.name,
+            stringifyData,
+            stringify(nodeData.uploadOptions)
+          )
         );
 
         switch (nodeData.type) {
-          case MetadataType.Metadata:
-            await createAndSaveMetadata(cid, links, nodeData.name);
+          case MetadataType.Metadata: {
+            const { metadata, relations } = createMetadata(
+              cid,
+              links,
+              nodeData.name ?? "",
+              height,
+              extrinsicId
+            );
+            cache.metadata.push(metadata);
+            cache.metadataCid.push(...relations);
             break;
-          case MetadataType.Folder:
-            await createAndSaveFolder(cid, links, nodeData.name);
+          }
+          case MetadataType.Folder: {
+            const { folder, relations } = createFolder(
+              cid,
+              links,
+              nodeData.name ?? "",
+              height,
+              extrinsicId
+            );
+            cache.folder.push(folder);
+            cache.folderCid.push(...relations);
             break;
-          case MetadataType.File:
-            await createAndSaveFile(cid, links, nodeData.name);
+          }
+          case MetadataType.File: {
+            const { file, relations } = createFile(
+              cid,
+              links,
+              nodeData.name ?? "",
+              height,
+              extrinsicId
+            );
+            cache.file.push(file);
+            cache.fileCid.push(...relations);
             break;
+          }
           // Skip inlinks and chunks as they are already saved in chunks table
           case MetadataType.FileInlink:
           case MetadataType.FileChunk:
@@ -126,14 +164,19 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
   } catch (error: any) {
     logger.error("Error decoding remark or seedHistory extrinsic");
     logger.error(error);
-    await createAndSaveError(
-      BigInt(number.toString()),
-      blockHash.toString(),
-      `${number}-${idx}`,
-      hash.toString(),
-      idx,
-      stringify(error),
-      timestamp ? timestamp : new Date(0)
+    cache.error.push(
+      createError(
+        height,
+        blockHash,
+        extrinsicId,
+        extrinsicHash,
+        idx,
+        stringify(error),
+        blockTimestamp
+      )
     );
   }
+
+  // Save cache
+  await saveCache(cache);
 }

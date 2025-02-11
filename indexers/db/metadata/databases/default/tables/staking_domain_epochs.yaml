@@ -1,0 +1,24 @@
+table:
+  name: domain_epochs
+  schema: staking
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - consensus_block_count
+        - consensus_block_number_end
+        - consensus_block_number_start
+        - created_at
+        - domain_block_count
+        - domain_block_number_end
+        - domain_block_number_start
+        - epoch
+        - epoch_duration
+        - updated_at
+        - domain_id
+        - id
+        - timestamp_end
+        - timestamp_start
+      filter: {}
+      limit: 50
+    comment: ""

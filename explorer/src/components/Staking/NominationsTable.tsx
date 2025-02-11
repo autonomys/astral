@@ -10,6 +10,7 @@ import { BIGINT_ZERO } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
 import {
+  NominationsListDocument,
   NominationsListQuery,
   NominationsListQueryVariables,
   Order_By as OrderBy,
@@ -26,7 +27,6 @@ import { utcToLocalRelativeTime } from 'utils/time'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { QUERY_NOMINATIONS_LIST } from './query'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const columnHelper = createColumnHelper<any>()
@@ -42,7 +42,6 @@ export const NominationsTable: FC = () => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: null,
-    maxShares: null,
   })
 
   const handleAction = useCallback((value: OperatorAction) => {
@@ -56,7 +55,7 @@ export const NominationsTable: FC = () => {
 
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
+    setAction({ type: OperatorActionType.None, operatorId: null })
   }, [])
 
   const orderBy = useMemo(
@@ -78,7 +77,7 @@ export const NominationsTable: FC = () => {
   const { loading, data, setIsVisible } = useIndexersQuery<
     NominationsListQuery,
     NominationsListQueryVariables
-  >(QUERY_NOMINATIONS_LIST, {
+  >(NominationsListDocument, {
     variables,
     skip: !inView,
     pollInterval: 6000,
@@ -193,14 +192,14 @@ export const NominationsTable: FC = () => {
                   <div className='mb-2 sm:mb-0'>
                     <span className='mr-2'>Operator # {nominator.operator_id}</span>
                     {nominator.domain && (
-                      <span className='text-blueLighterAccent dark:text-blueShade ml-2 text-sm'>
+                      <span className='text-blueLighterAccent ml-2 text-sm dark:text-blueShade'>
                         on {capitalizeFirstLetter(nominator.domain.name)}
                       </span>
                     )}
                   </div>
                   <div className='text-sm font-normal'>
                     Operator Status:{' '}
-                    <span className='dark:text-blueLight text-grayDark'>
+                    <span className='text-grayDark dark:text-blueLight'>
                       {nominator.operator?.status || 'N/A'}
                     </span>
                   </div>
@@ -249,9 +248,6 @@ export const NominationsTable: FC = () => {
                             } as ActionsDropdownRow
                           }
                           excludeActions={excludeActions}
-                          nominatorMaxShares={
-                            nominator ? BigInt(nominator.known_shares) : BIGINT_ZERO
-                          }
                         />
                       )
                     })()}
@@ -259,7 +255,7 @@ export const NominationsTable: FC = () => {
                 </div>
                 <div className='flex flex-col justify-between sm:flex-row'>
                   <div className='w-full sm:w-1/2 sm:pr-4'>
-                    <h4 className='text-md dark:text-blueLight mb-2 font-medium text-grayDark'>
+                    <h4 className='text-md mb-2 font-medium text-grayDark dark:text-blueLight'>
                       Deposits
                     </h4>
                     <SortedTable
@@ -271,7 +267,7 @@ export const NominationsTable: FC = () => {
                     />
                   </div>
                   <div className='w-full sm:mt-0 sm:w-1/2 sm:pl-4'>
-                    <h4 className='text-md dark:text-blueLight mb-2 font-medium text-grayDark'>
+                    <h4 className='text-md mb-2 font-medium text-grayDark dark:text-blueLight'>
                       Withdrawals
                     </h4>
                     <SortedTable

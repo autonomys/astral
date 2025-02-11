@@ -1,4 +1,34 @@
+import { Entity } from "@subql/types-core";
+import { ZERO_BIGINT } from "./constants";
 import { getSortId, moduleName } from "./utils";
+
+export type Cache = {
+  rewards: Entity[];
+  transfers: Entity[];
+
+  addressToUpdate: Set<string>;
+  // Totals
+  totalBlockRewardsCount: number;
+  totalVoteRewardsCount: number;
+  totalTransferValue: bigint;
+  totalRewardValue: bigint;
+  totalBlockRewardValue: bigint;
+  totalVoteRewardValue: bigint;
+};
+
+export const initializeCache = (): Cache => ({
+  rewards: [],
+  transfers: [],
+
+  addressToUpdate: new Set<string>(),
+  // Totals
+  totalBlockRewardsCount: 0,
+  totalVoteRewardsCount: 0,
+  totalTransferValue: ZERO_BIGINT,
+  totalRewardValue: ZERO_BIGINT,
+  totalBlockRewardValue: ZERO_BIGINT,
+  totalVoteRewardValue: ZERO_BIGINT,
+});
 
 // Core Consensus DB Functions
 
@@ -14,6 +44,7 @@ export function createBlock(
   blockchainSize: bigint,
   extrinsicsCount: number,
   eventsCount: number,
+  logsCount: number,
   transfersCount: number,
   rewardsCount: number,
   blockRewardsCount: number,
@@ -24,11 +55,9 @@ export function createBlock(
   voteRewardValue: bigint,
   authorId: string
 ) {
-  const id = height.toString();
-  const sortId = getSortId(height);
   return {
-    id,
-    sortId,
+    id: height.toString(),
+    sortId: getSortId(height),
     height,
     hash,
     timestamp,
@@ -40,6 +69,7 @@ export function createBlock(
     blockchainSize,
     extrinsicsCount,
     eventsCount,
+    logsCount,
     transfersCount,
     rewardsCount,
     blockRewardsCount,
@@ -52,7 +82,7 @@ export function createBlock(
   };
 }
 
-export function createAndSaveLog(
+export function createLog(
   blockHeight: bigint,
   blockHash: string,
   indexInBlock: number,
@@ -60,11 +90,9 @@ export function createAndSaveLog(
   value: string,
   timestamp: Date
 ) {
-  const id = `${blockHeight}-${indexInBlock}`;
-  const sortId = getSortId(blockHeight, BigInt(indexInBlock));
   return {
-    id,
-    sortId,
+    id: blockHeight + "-" + indexInBlock,
+    sortId: getSortId(blockHeight, BigInt(indexInBlock)),
     blockHeight,
     blockHash,
     indexInBlock,
@@ -86,6 +114,7 @@ export function createExtrinsic(
   nonce: bigint,
   signer: string,
   signature: string,
+  eventsCount: number,
   args: string,
   error: string,
   tip: bigint,
@@ -93,11 +122,9 @@ export function createExtrinsic(
   pos: number,
   cid?: string
 ) {
-  const extrinsicId = `${blockHeight}-${indexInBlock}`;
-  const sortId = getSortId(blockHeight, BigInt(indexInBlock));
   return {
-    id: extrinsicId,
-    sortId,
+    id: blockHeight + "-" + indexInBlock,
+    sortId: getSortId(blockHeight, BigInt(indexInBlock)),
     hash,
     blockHeight,
     blockHash,
@@ -110,6 +137,7 @@ export function createExtrinsic(
     nonce,
     signer,
     signature,
+    eventsCount,
     args,
     error,
     tip,
@@ -133,11 +161,9 @@ export function createEvent(
   args: string,
   cid?: string
 ) {
-  const id = `${blockHeight}-${indexInBlock.toString()}`;
-  const sortId = getSortId(blockHeight, BigInt(indexInBlock));
   return {
-    id,
-    sortId,
+    id: blockHeight + "-" + indexInBlock.toString(),
+    sortId: getSortId(blockHeight, indexInBlock),
     blockHeight,
     blockHash,
     extrinsicId,
@@ -181,21 +207,24 @@ export function createTransfer(
   extrinsicId: string,
   eventId: string,
   from: string,
+  fromChain: string,
   to: string,
+  toChain: string,
   value: bigint,
   fee: bigint,
   success: boolean,
   timestamp: Date
 ) {
-  const id = extrinsicId + "-" + eventId;
   return {
-    id,
+    id: extrinsicId + "-" + eventId,
     blockHeight,
     blockHash,
     extrinsicId,
     eventId,
     from,
+    fromChain,
     to,
+    toChain,
     value,
     fee,
     success,
@@ -213,9 +242,8 @@ export function createReward(
   amount: bigint,
   timestamp: Date
 ) {
-  const id = accountId + "-" + eventId;
   return {
-    id,
+    id: accountId + "-" + eventId,
     blockHeight,
     blockHash,
     extrinsicId,

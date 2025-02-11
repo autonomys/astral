@@ -6,6 +6,8 @@ type Cid @entity {
   extrinsicHash: String!
   indexInBlock: Int!
   links: [String]!
+  blake3Hash: String!
+  isArchived: Boolean!
   timestamp: Date!
 }
 
@@ -21,8 +23,11 @@ type Chunk @entity {
 
 type Metadata @entity {
   id: ID!
+  sortId: String!
   size: BigInt!
   name: String
+  blockHeight: BigInt!
+  extrinsicId: String!
 }
 
 type MetadataCid @entity {
@@ -33,8 +38,11 @@ type MetadataCid @entity {
 
 type Folder @entity {
   id: ID!
+  sortId: String!
   size: BigInt!
   name: String
+  blockHeight: BigInt!
+  extrinsicId: String!
 }
 
 type FolderCid @entity {
@@ -45,8 +53,11 @@ type FolderCid @entity {
 
 type File @entity {
   id: ID!
+  sortId: String!
   size: BigInt!
   name: String
+  blockHeight: BigInt!
+  extrinsicId: String!
 }
 
 type FileCid @entity {

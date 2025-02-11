@@ -11,15 +11,18 @@ import type { ApiAtBlockHash } from "@autonomys/auto-utils";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { Entity } from "@subql/types-core";
+import { ZERO_BIGINT } from "./constants";
 import {
   createAccountHistory,
-  createAndSaveLog,
   createBlock,
   createEvent,
   createExtrinsic,
+  createLog,
   createReward,
   createTransfer,
+  initializeCache,
 } from "./db";
+import { EVENT_HANDLERS } from "./eventHandler";
 import { getBlockAuthor, parseDataToCid } from "./helper";
 import { ExtrinsicPrimitive, LogValue } from "./types";
 
@@ -41,19 +44,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const eventsCount = events.length;
   const extrinsicsCount = extrinsics.length;
 
+  let cache = initializeCache();
   const newExtrinsics = new Array<Entity>(extrinsics.length);
   const newEvents = new Array<Entity>(events.length);
-  const newTransfers: Entity[] = [];
-  const newRewards: Entity[] = [];
-  const addressToUpdate = new Set<string>();
-
   let eventIndex = 0;
-  let totalBlockRewardsCount = 0;
-  let totalVoteRewardsCount = 0;
-  let totalTransferValue = BigInt(0);
-  let totalRewardValue = BigInt(0);
-  let totalBlockRewardValue = BigInt(0);
-  let totalVoteRewardValue = BigInt(0);
 
   // Calculate space pledged and blockchain size concurrently
   const [_spacePledged, _blockchainSize] = await Promise.all([
@@ -125,7 +119,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     // Calculate fee
     const fee = feeEvent?.event?.data[1]
       ? BigInt(feeEvent.event.data[1].toString())
-      : BigInt(0);
+      : ZERO_BIGINT;
     const error = errorEvent ? stringify(errorEvent.event.data) : "";
 
     const pos = extrinsicEvents ? extrinsicIdx : 0;
@@ -133,7 +127,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
     // Detect data storage extrinsics and parse args to cid
     let cid: string | undefined = "";
-    let args: string = stringify(extrinsicMethodToPrimitive.args);
+    let extrinsicArgs: string = stringify(extrinsicMethodToPrimitive.args);
     if (
       (extrinsic.method.section === "historySeeding" &&
         extrinsic.method.method === "seedHistory") ||
@@ -144,7 +138,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       const parsedArgs = parseDataToCid(extrinsicMethodToPrimitive.args.remark);
       cid = parsedArgs.cid;
       // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
-      args = parsedArgs.modifiedArgs ?? args;
+      extrinsicArgs = parsedArgs.modifiedArgs ?? extrinsicArgs;
     }
 
     newExtrinsics.push(
@@ -160,7 +154,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         BigInt(extrinsic.nonce.toString()),
         extrinsicSigner,
         extrinsic.signature.toString(),
-        args,
+        extrinsicEvents.length,
+        extrinsicArgs,
         error,
         BigInt(extrinsic.tip.toString()),
         fee,
@@ -168,7 +163,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         cid
       )
     );
-    addressToUpdate.add(extrinsicSigner);
+    cache.addressToUpdate.add(extrinsicSigner);
 
     // Process extrinsic events
     extrinsicEvents.forEach((event) => {
@@ -178,7 +173,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
       // Detect data storage extrinsics and parse args to cid
       let cid: string | undefined = "";
-      let args: string = stringify(event.event.data);
+      let eventsArgs: string = stringify(event.event.data);
       if (
         event.event.section === "system" &&
         event.event.method === "Remarked"
@@ -186,7 +181,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         const parsedArgs = parseDataToCid(event.event.data[1].toString());
         cid = parsedArgs.cid;
         // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
-        args = parsedArgs.modifiedArgs ?? args;
+        eventsArgs = parsedArgs.modifiedArgs ?? eventsArgs;
       }
 
       newEvents.push(
@@ -201,42 +196,28 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           blockTimestamp,
           event.phase.type,
           pos,
-          args,
+          eventsArgs,
           cid
         )
       );
 
       // Process specific events
-      switch (`${event.event.section}.${event.event.method}`) {
-        case "balances.Transfer": {
-          const from = event.event.data[0].toString();
-          const to = event.event.data[1].toString();
-          const amount = BigInt(event.event.data[2].toString());
-
-          addressToUpdate.add(from);
-          addressToUpdate.add(to);
-
-          totalTransferValue += amount;
-
-          const newTransfer = createTransfer(
-            height,
-            blockHash,
-            extrinsicId,
-            height + "-" + eventIndex,
-            from,
-            to,
-            amount,
-            fee,
-            successEvent ? true : false,
-            blockTimestamp
-          );
-          newTransfers.push(newTransfer);
-
-          break;
-        }
-        default:
-          break;
-      }
+      const eventKey = event.event.section + "." + event.event.method;
+      const handler = EVENT_HANDLERS[eventKey];
+      if (handler)
+        handler({
+          event,
+          cache,
+          height,
+          blockHash,
+          blockTimestamp,
+          extrinsicId,
+          eventId: height + "-" + eventIndex,
+          fee,
+          successEvent: successEvent ? true : false,
+          extrinsicSigner,
+          extrinsicMethodToPrimitive,
+        });
 
       // Increment event index
       eventIndex++;
@@ -263,60 +244,22 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
 
     // Process specific events
-    switch (`${event.event.section}.${event.event.method}`) {
-      case "rewards.VoteReward": {
-        const voter = event.event.data[0].toString();
-        const reward = BigInt(event.event.data[1].toString());
-
-        addressToUpdate.add(voter);
-
-        totalVoteRewardsCount++;
-        totalRewardValue += reward;
-        totalVoteRewardValue += reward;
-
-        newRewards.push(
-          createReward(
-            height,
-            blockHash,
-            height + "-" + event.phase.type,
-            height + "-" + eventIndex,
-            voter,
-            "rewards.VoteReward",
-            reward,
-            blockTimestamp
-          )
-        );
-
-        break;
-      }
-      case "rewards.BlockReward": {
-        const blockAuthor = event.event.data[0].toString();
-        const reward = BigInt(event.event.data[1].toString());
-
-        addressToUpdate.add(blockAuthor);
-
-        totalBlockRewardsCount++;
-        totalRewardValue += reward;
-        totalBlockRewardValue += reward;
-
-        newRewards.push(
-          createReward(
-            height,
-            blockHash,
-            height + "-" + event.phase.type,
-            height + "-" + eventIndex,
-            blockAuthor,
-            "rewards.BlockReward",
-            reward,
-            blockTimestamp
-          )
-        );
-
-        break;
-      }
-      default:
-        break;
-    }
+    const eventKey = event.event.section + "." + event.event.method;
+    const handler = EVENT_HANDLERS[eventKey];
+    if (handler)
+      handler({
+        event,
+        cache,
+        height,
+        blockHash,
+        blockTimestamp,
+        extrinsicId: height + "-" + event.phase.type,
+        eventId: height + "-" + eventIndex,
+        fee: ZERO_BIGINT,
+        successEvent: true,
+        extrinsicSigner: "",
+        extrinsicMethodToPrimitive: {},
+      });
 
     // Increment event index
     eventIndex++;
@@ -334,7 +277,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         ? { data: _value[1], engine: _value[0] }
         : { data: _value };
 
-    return createAndSaveLog(
+    return createLog(
       height,
       blockHash,
       i,
@@ -345,7 +288,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   });
 
   // Update accounts
-  const uniqueAddresses = Array.from(addressToUpdate);
+  const uniqueAddresses = Array.from(cache.addressToUpdate);
   const accounts = await Promise.all(
     uniqueAddresses.map((address) => account(api as any, address))
   );
@@ -370,8 +313,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     store.bulkCreate(`Log`, newLogs),
 
     // Save transfers and rewards
-    store.bulkCreate(`Transfer`, newTransfers),
-    store.bulkCreate(`Reward`, newRewards),
+    store.bulkCreate(`Transfer`, cache.transfers),
+    store.bulkCreate(`Reward`, cache.rewards),
 
     // Save account
     store.bulkCreate(`AccountHistory`, accountHistories),
@@ -390,14 +333,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         _blockchainSize,
         extrinsicsCount,
         eventsCount,
-        newTransfers.length,
-        newRewards.length,
-        totalBlockRewardsCount,
-        totalVoteRewardsCount,
-        totalTransferValue,
-        totalRewardValue,
-        totalBlockRewardValue,
-        totalVoteRewardValue,
+        newLogs.length,
+        cache.transfers.length,
+        cache.rewards.length,
+        cache.totalBlockRewardsCount,
+        cache.totalVoteRewardsCount,
+        cache.totalTransferValue,
+        cache.totalRewardValue,
+        cache.totalBlockRewardValue,
+        cache.totalVoteRewardValue,
         authorId
       ),
     ]),

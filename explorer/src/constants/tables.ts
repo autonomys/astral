@@ -1,3 +1,15 @@
+import {
+  Consensus_Accounts_Select_Column as AccountsColumns,
+  Consensus_Blocks_Select_Column as BlocksColumns,
+  Staking_Domains_Select_Column as DomainsColumns,
+  Consensus_Events_Select_Column as EventsColumns,
+  Consensus_Extrinsics_Select_Column as ExtrinsicsColumns,
+  Files_Files_Select_Column as FilesColumns,
+  Files_Folders_Select_Column as FoldersColumns,
+  Leaderboard_Account_Extrinsic_Failed_Total_Counts_Select_Column as LeaderboardsColumns,
+  Consensus_Logs_Select_Column as LogsColumns,
+  Staking_Operators_Select_Column as OperatorsColumns,
+} from 'gql/graphql'
 import { AvailableColumns, FiltersOptions, InitialTables } from 'types/table'
 import { allCapsToNormal } from 'utils/string'
 import { PAGE_SIZE } from './general'
@@ -6,9 +18,8 @@ import { OperatorStatus } from './staking'
 export const AVAILABLE_COLUMNS: AvailableColumns = {
   accounts: [
     { name: 'id', label: 'Account', isSelected: true, searchable: true },
-    { name: 'nonce', label: 'Nonce', isSelected: false },
-    { name: 'extrinsicsCount', label: 'Extrinsics', isSelected: true },
-    { name: 'free', label: 'Free', isSelected: false },
+    { name: 'nonce', label: 'Nonce', isSelected: true },
+    { name: 'free', label: 'Free', isSelected: true },
     { name: 'reserved', label: 'Locked', isSelected: true },
     { name: 'total', label: 'Balance', isSelected: true },
     { name: 'createdAt', label: 'Created At', isSelected: false },
@@ -35,7 +46,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
     { name: 'section', label: 'Section', isSelected: false, searchable: true },
     { name: 'module', label: 'Module', isSelected: true, searchable: true },
-    { name: 'name', label: 'Action', isSelected: false, searchable: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: false },
     { name: 'success', label: 'Status', isSelected: true, searchable: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
@@ -53,7 +63,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: false, searchable: true },
     { name: 'section', label: 'Section', isSelected: true, searchable: true },
     { name: 'module', label: 'Module', isSelected: true, searchable: true },
-    { name: 'name', label: 'Action', isSelected: false, searchable: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],
@@ -73,7 +82,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       label: 'Block Height',
       isSelected: true,
       searchable: true,
-      accessorKey: 'cid.block_height',
+      accessorKey: FilesColumns.BlockRange,
     },
     {
       name: 'extrinsicId',
@@ -82,7 +91,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       searchable: true,
       accessorKey: 'cid.extrinsic_id',
     },
-    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: 'cid.timestamp' },
+    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: FilesColumns.BlockRange },
   ],
   folders: [
     { name: 'id', label: 'CID', isSelected: true, searchable: true },
@@ -92,7 +101,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       label: 'Block Height',
       isSelected: true,
       searchable: true,
-      accessorKey: 'cid.block_height',
+      accessorKey: FoldersColumns.BlockRange,
     },
     {
       name: 'extrinsicId',
@@ -101,15 +110,14 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       searchable: true,
       accessorKey: 'cid.extrinsic_id',
     },
-    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: 'cid.timestamp' },
+    { name: 'timestamp', label: 'Time', isSelected: true, accessorKey: FoldersColumns.BlockRange },
   ],
   domains: [
-    { name: 'id', label: 'Id', isSelected: true, searchable: true },
+    { name: 'sortId', label: 'Id', isSelected: true, searchable: true },
     { name: 'accountId', label: 'Owner', isSelected: true, searchable: true },
     { name: 'name', label: 'Name', isSelected: true, searchable: true },
     { name: 'runtimeId', label: 'Runtime Id', isSelected: false },
     { name: 'runtime', label: 'Runtime', isSelected: true },
-    { name: 'runtimeInfo', label: 'Runtime Info', isSelected: false },
     { name: 'completedEpoch', label: 'Completed Epoch', isSelected: true },
     { name: 'lastDomainBlockNumber', label: 'Last Domain Block Number', isSelected: false },
     { name: 'totalDeposits', label: 'Total Deposits', isSelected: true },
@@ -162,11 +170,11 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'accumulatedEpochRewards', label: 'Accumulated Epoch Rewards', isSelected: false },
     { name: 'accumulatedEpochShares', label: 'Accumulated Epoch Shares', isSelected: false },
     { name: 'bundleCount', label: 'Bundle Count', isSelected: true },
-    { name: 'currentEpochDuration', label: 'Current Epoch Duration', isSelected: false },
-    { name: 'lastEpochDuration', label: 'Last Epoch Duration', isSelected: false },
-    { name: 'last6EpochsDuration', label: 'Last 6 Epochs Duration', isSelected: false },
-    { name: 'last144EpochDuration', label: 'Last 144 Epoch Duration', isSelected: false },
-    { name: 'last1kEpochDuration', label: 'Last 1K Epoch Duration', isSelected: false },
+    // { name: 'currentEpochDuration', label: 'Current Epoch Duration', isSelected: false },
+    // { name: 'lastEpochDuration', label: 'Last Epoch Duration', isSelected: false },
+    // { name: 'last6EpochsDuration', label: 'Last 6 Epochs Duration', isSelected: false },
+    // { name: 'last144EpochDuration', label: 'Last 144 Epoch Duration', isSelected: false },
+    // { name: 'last1kEpochDuration', label: 'Last 1K Epoch Duration', isSelected: false },
     { name: 'lastBundleAt', label: 'Last Bundle At', isSelected: false },
     { name: 'createdAt', label: 'Created At', isSelected: false },
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
@@ -249,6 +257,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'depositsAggregate', label: 'Deposit Count', isSelected: false },
     { name: 'createdAt', label: 'Created At', isSelected: false },
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
+    { name: 'actions', label: 'Actions', isSelected: true },
   ],
   leaderboard: [
     { name: 'id', label: 'Id', isSelected: true, searchable: true },
@@ -274,13 +283,13 @@ export const FILTERS_OPTIONS: FiltersOptions = {
   ],
   extrinsics: [
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
-    { type: 'text', label: 'Section', key: 'section' },
-    { type: 'text', label: 'Module', key: 'module' },
+    { type: 'dropdown', label: 'Section', key: 'section', options: [] },
+    { type: 'dropdown', label: 'Module', key: 'module', options: [] },
   ],
   events: [
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
-    { type: 'text', label: 'Section', key: 'section' },
-    { type: 'text', label: 'Module', key: 'module' },
+    { type: 'dropdown', label: 'Section', key: 'section', options: [] },
+    { type: 'dropdown', label: 'Module', key: 'module', options: [] },
   ],
   logs: [
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
@@ -356,8 +365,8 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'id',
-        desc: false,
+        id: AccountsColumns.Total,
+        desc: true,
       },
     ],
   },
@@ -379,7 +388,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'sort_id',
+        id: BlocksColumns.SortId,
         desc: true,
       },
     ],
@@ -400,7 +409,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'sort_id',
+        id: ExtrinsicsColumns.SortId,
         desc: true,
       },
     ],
@@ -421,7 +430,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'sort_id',
+        id: EventsColumns.SortId,
         desc: true,
       },
     ],
@@ -441,7 +450,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'sort_id',
+        id: LogsColumns.SortId,
         desc: true,
       },
     ],
@@ -455,14 +464,14 @@ export const INITIAL_TABLES: InitialTables = {
       .map((column) => column.name),
     filtersOptions: FILTERS_OPTIONS.files,
     filters: {
-      cid: '',
+      id: '',
       name: '',
       blockHeightMin: '',
       blockHeightMax: '',
     },
     sorting: [
       {
-        id: 'cid_timestamp',
+        id: FilesColumns.BlockRange,
         desc: true,
       },
     ],
@@ -476,14 +485,14 @@ export const INITIAL_TABLES: InitialTables = {
       .map((column) => column.name),
     filtersOptions: FILTERS_OPTIONS.folders,
     filters: {
-      cid: '',
+      id: '',
       name: '',
       blockHeightMin: '',
       blockHeightMax: '',
     },
     sorting: [
       {
-        id: 'cid_timestamp',
+        id: FoldersColumns.BlockRange,
         desc: true,
       },
     ],
@@ -512,7 +521,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'id',
+        id: DomainsColumns.SortId,
         desc: false,
       },
     ],
@@ -546,7 +555,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'id',
+        id: OperatorsColumns.SortId,
         desc: false,
       },
     ],
@@ -567,7 +576,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: 'rank',
+        id: LeaderboardsColumns.Rank,
         desc: false,
       },
     ],

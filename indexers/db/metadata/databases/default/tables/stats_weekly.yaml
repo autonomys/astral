@@ -1,0 +1,18 @@
+table:
+  name: weekly
+  schema: stats
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - cumulated_history_size
+        - delta_history_size
+        - end_block
+        - start_block
+        - id
+        - end_date
+        - start_date
+        - updated_at
+      filter: {}
+      limit: 50
+    comment: ""

@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import type { DomainByIdQuery, DomainByIdQueryVariables } from 'gql/graphql'
+import { DomainByIdDocument, DomainByIdQuery, DomainByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams, useRouter } from 'next/navigation'
@@ -12,29 +12,24 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { OperatorsList } from '../Staking/OperatorsList'
 import { DomainDetailsCard } from './DomainDetailsCard'
-import { QUERY_DOMAIN_BY_ID } from './query'
 
 export const Domain: FC = () => {
   const { ref, inView } = useInView()
   const { domainId } = useParams<{ domainId?: string }>()
   const { push } = useRouter()
   const inFocus = useWindowFocus()
-
-  // eslint
   const variables = useMemo(() => ({ domainId: domainId ?? '' }), [domainId])
   const { setIsVisible } = useIndexersQuery<DomainByIdQuery, DomainByIdQueryVariables>(
-    QUERY_DOMAIN_BY_ID,
+    DomainByIdDocument,
     {
       variables,
       skip: !inFocus,
-      context: { clientName: 'staking' },
     },
     Routes.domains,
     'domain',
   )
 
   const domain = useQueryStates((state) => state.domains.domain)
-
   const domainDetails = useMemo(
     () => hasValue(domain) && domain.value.staking_domains_by_pk,
     [domain],

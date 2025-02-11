@@ -27,9 +27,9 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
             <div className='block rounded-full bg-buttonDarkTo px-5 py-3 text-xs font-semibold leading-normal text-white'>
               <Link
                 className='flex gap-1'
-                href={INTERNAL_ROUTES.blocks.id.page(network, section, event.block?.height)}
+                href={INTERNAL_ROUTES.blocks.id.page(network, section, event.block_height)}
               >
-                #{event.block?.height}
+                #{event.block_height}
               </Link>
             </div>
           </div>
@@ -41,22 +41,14 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
                   {utcToLocalRelativeTime(event.timestamp)}
                 </StyledListItem>
                 <StyledListItem title='Extrinsic'>
-                  {event.extrinsic ? (
-                    <Link
-                      href={INTERNAL_ROUTES.extrinsics.id.page(
-                        network,
-                        section,
-                        event.extrinsic?.id,
-                      )}
-                    >
-                      {event.extrinsic?.id}
-                    </Link>
-                  ) : (
-                    '-'
-                  )}
+                  <Link
+                    href={INTERNAL_ROUTES.extrinsics.id.page(network, section, event.extrinsic_id)}
+                  >
+                    {event.extrinsic_id}
+                  </Link>
                 </StyledListItem>
-                <StyledListItem title='Module'>{event.name.split('.')[0]}</StyledListItem>
-                <StyledListItem title='Call'>{event.name.split('.')[1]}</StyledListItem>
+                <StyledListItem title='Module'>{event.module}</StyledListItem>
+                <StyledListItem title='Section'>{event.section}</StyledListItem>
               </List>
             </div>
             <div className='mb-4 w-full break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>

@@ -54,11 +54,13 @@ interface InboxedBundle {
   extrinsicsRoot: Uint8Array;
 }
 
+export type Transfer = [ChainId, bigint];
+
 interface Transfers {
-  transfersIn: [ChainId, bigint][];
-  transfersOut: [ChainId, bigint][];
-  rejectedTransfersClaimed: [ChainId, bigint][];
-  transfersRejected: [ChainId, bigint][];
+  transfersIn: Transfer[];
+  transfersOut: Transfer[];
+  rejectedTransfersClaimed: Transfer[];
+  transfersRejected: Transfer[];
 }
 
 interface BlockFees {

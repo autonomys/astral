@@ -35,21 +35,19 @@ select_permissions:
       columns:
         - amount
         - created_at
-        - domain_block_number_deposited_at
-        - epoch_deposited_at
-        - staked_at
         - storage_fee_deposit
         - total_amount
         - total_withdrawn
         - updated_at
         - account_id
         - domain_id
-        - extrinsic_hash
+        - extrinsic_id
         - id
         - nominator_id
         - operator_id
         - status
         - timestamp
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

@@ -50,3 +50,78 @@ export const updateLeaderboardRanking = (
   ON CONFLICT (id) 
   DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, updated_at = EXCLUDED.updated_at;
 `;
+
+export const STATS_TABLES = ["hourly", "daily", "weekly", "monthly"] as const;
+type StatsTableType = (typeof STATS_TABLES)[number];
+
+const getPostgresTimeUnit = (timeFrame: StatsTableType): string => {
+  const timeUnits = {
+    hourly: "hour",
+    daily: "day",
+    weekly: "week",
+    monthly: "month",
+  } as const;
+
+  return timeUnits[timeFrame];
+};
+
+export const generateStatsQuery = (timeFrame: StatsTableType) => `
+WITH last_completed_${getPostgresTimeUnit(timeFrame)} AS (
+    SELECT start_date as last_date, cumulated_history_size as last_history_size
+    FROM stats.${timeFrame}
+    WHERE start_date < DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', NOW())
+    ORDER BY start_date DESC
+    LIMIT 2
+), 
+${timeFrame}_stats AS (
+    SELECT 
+        DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', "timestamp") AS ${getPostgresTimeUnit(timeFrame)},
+        MAX(blockchain_size) AS max_blockchain_size,
+        MIN(height) AS start_block,
+        MAX(height) AS end_block,
+        MIN("timestamp") AS start_date,
+        MAX("timestamp") AS end_date,
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM last_completed_${getPostgresTimeUnit(timeFrame)}) THEN
+                MAX(blockchain_size) - (SELECT last_history_size FROM last_completed_${getPostgresTimeUnit(timeFrame)} ORDER BY last_history_size DESC OFFSET 1 LIMIT 1)
+            ELSE MAX(blockchain_size)
+        END AS delta_size
+    FROM consensus.blocks
+    WHERE 
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM last_completed_${getPostgresTimeUnit(timeFrame)}) THEN
+                "timestamp" >= (SELECT last_date FROM last_completed_${getPostgresTimeUnit(timeFrame)} ORDER BY last_date DESC LIMIT 1)
+            ELSE true
+        END
+    GROUP BY DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', "timestamp")
+)
+INSERT INTO stats.${timeFrame} (
+    id,
+    cumulated_history_size,
+    delta_history_size,
+    start_date,
+    start_block,
+    end_date,
+    end_block,
+    updated_at
+)
+SELECT 
+    ${getPostgresTimeUnit(timeFrame)}::text AS id,
+    max_blockchain_size AS cumulated_history_size,
+    COALESCE(delta_size, 0) AS delta_history_size,
+    start_date,
+    start_block,
+    end_date,
+    end_block,
+    NOW() AS updated_at
+FROM ${timeFrame}_stats
+ON CONFLICT (id) DO UPDATE 
+SET 
+    cumulated_history_size = EXCLUDED.cumulated_history_size,
+    delta_history_size = EXCLUDED.delta_history_size,
+    start_date = EXCLUDED.start_date,
+    start_block = EXCLUDED.start_block,
+    end_date = EXCLUDED.end_date,
+    end_block = EXCLUDED.end_block,
+    updated_at = NOW();
+`;

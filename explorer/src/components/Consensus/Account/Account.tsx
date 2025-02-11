@@ -6,7 +6,7 @@ import { Spinner } from 'components/common/Spinner'
 import { Tab } from 'components/common/Tabs'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { AccountByIdQuery, AccountByIdQueryVariables } from 'gql/graphql'
+import { AccountByIdDocument, AccountByIdQuery, AccountByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -22,7 +22,6 @@ import { AccountGraphs } from './AccountGraphs'
 import { AccountRewardsHistory } from './AccountRewardsHistory'
 import { AccountTransfersList } from './AccountTransfersList'
 import { BalanceHistory } from './BalanceHistory'
-import { QUERY_ACCOUNT_BY_ID } from './query'
 
 export const Account: FC = () => {
   const { ref, inView } = useInView()
@@ -32,7 +31,7 @@ export const Account: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const { loading, setIsVisible } = useIndexersQuery<AccountByIdQuery, AccountByIdQueryVariables>(
-    QUERY_ACCOUNT_BY_ID,
+    AccountByIdDocument,
     {
       variables: { accountId: accountId ?? '' },
       skip: !inFocus,
@@ -47,7 +46,7 @@ export const Account: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const account = useMemo(() => data && data.consensus_account_histories[0], [data])
+  const account = useMemo(() => data && data.consensus_accounts_by_pk, [data])
   const rewards = useMemo(() => (data ? data.consensus_rewards : []), [data])
 
   useEffect(() => {

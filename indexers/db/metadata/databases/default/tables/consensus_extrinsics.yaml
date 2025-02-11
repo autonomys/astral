@@ -50,28 +50,30 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - success
         - _block_range
-        - index_in_block
-        - pos
-        - block_height
-        - fee
-        - nonce
-        - tip
+        - _id
         - args
         - block_hash
+        - block_height
         - cid
         - error
+        - events_count
+        - fee
         - hash
         - id
+        - index_in_block
         - module
         - name
+        - nonce
+        - pos
         - section
         - signature
         - signer
         - sort_id
+        - success
         - timestamp
-        - _id
+        - tip
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

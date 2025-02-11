@@ -14,6 +14,7 @@ type Block @entity {
   blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
+  logsCount: Int!
   transfersCount: Int!
   rewardsCount: Int!
   blockRewardsCount: Int!
@@ -51,6 +52,7 @@ type Extrinsic @entity {
   nonce: BigInt!
   signer: String!
   signature: String!
+  eventsCount: Int!
   args: String!
   error: String!
   tip: BigInt!
@@ -95,7 +97,9 @@ type Transfer @entity {
   extrinsicId: String!
   eventId: String!
   from: String!
+  fromChain: String!
   to: String!
+  toChain: String!
   value: BigInt!
   fee: BigInt!
   success: Boolean!

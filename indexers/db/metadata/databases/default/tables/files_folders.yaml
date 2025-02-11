@@ -42,10 +42,14 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - size
+        - _id
+        - block_height
+        - extrinsic_id
         - id
         - name
-        - _id
+        - size
+        - sort_id
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

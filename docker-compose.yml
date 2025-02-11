@@ -82,7 +82,7 @@ services:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_MAX_CONNECTIONS: 100
+      POSTGRES_MAX_CONNECTIONS: 500
       POSTGRES_HOST_AUTH_METHOD: md5
       POSTGRES_INITDB_ARGS: --auth=md5
     ports:
@@ -94,7 +94,7 @@ services:
       retries: 5
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
-# PGCat Proxy
+  # PGCat Proxy
   pgcat:
     image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
     command:
@@ -118,8 +118,6 @@ services:
   hasura:
     image: hasura/graphql-engine:v2.40.0
     depends_on:
-      pgcat:
-        condition: service_healthy
       postgres:
         condition: service_healthy
     volumes:
@@ -128,8 +126,8 @@ services:
     restart: unless-stopped
     environment:
       # Essential Environment Variables
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@pgcat:6432/${DB_DATABASE}
-      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@pgcat:6432/${DB_DATABASE} # Main database connection
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE} # Main database connection
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET} # Admin access secret
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET} # JWT authentication secret
 
@@ -276,13 +274,10 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
-      dictionary_subquery_node:
-        condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: ${DICTIONARY_URL}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -316,8 +311,6 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
-      dictionary_subquery_node:
-        condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${RPC_URLS}
@@ -336,9 +329,10 @@ services:
       - --db-schema=staking
       - --workers=1
       - --unsafe
-      - --batch-size=100
+      - --batch-size=125
       - --scale-batch-size
-      - --disable-historical=true
+      - --unfinalized-blocks=true
+      - --disable-historical=false
       #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]

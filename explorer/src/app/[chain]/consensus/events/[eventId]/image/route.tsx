@@ -1,10 +1,8 @@
 /* eslint-disable react/no-unknown-property */
-import { shortString } from '@autonomys/auto-utils'
-import { QUERY_EVENT_BY_ID } from 'components/Consensus/Event/query'
 import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { EventByIdQuery } from 'gql/graphql'
+import { EventByIdDocument, EventByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -32,7 +30,7 @@ export async function GET(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_EVENT_BY_ID['loc']?.source.body,
+      query: EventByIdDocument['loc']?.source.body,
       variables: { eventId },
     }),
   }).then((res) => res.json())
@@ -63,11 +61,12 @@ function Screen({
   eventById: EventByIdQuery['consensus_events'][number]
 }) {
   const event = {
-    name: eventById?.name ?? '0',
-    phase: eventById?.phase ?? '0',
+    id: eventById?.id ?? '0',
+    extrinsicId: eventById?.extrinsic_id ?? '0',
+    blockHeight: eventById?.block_height ?? '0',
+    section: eventById?.section ?? '0',
+    module: eventById?.module ?? '0',
     timestamp: eventById?.timestamp ?? '0',
-    eventsCount: eventById?.name ?? '0',
-    eventAuthor: eventById?.extrinsic?.signer ?? '',
   }
   const title = `${metadata.title} - ${chainMatch.title} - Event`
 
@@ -120,7 +119,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Phase {event.phase}
+              Block {event.blockHeight}
             </span>
             <span
               style={{
@@ -146,7 +145,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Event {event.name}
+              Event {event.section}.{event.module}
             </span>
             <span
               style={{
@@ -154,7 +153,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
             >
-              Signer {shortString(event.eventAuthor)}
+              Extrinsic {event.extrinsicId}
             </span>
           </div>
         </div>

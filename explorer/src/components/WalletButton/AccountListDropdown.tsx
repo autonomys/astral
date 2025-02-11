@@ -85,6 +85,16 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
     [disconnectWallet],
   )
 
+  const accountAddress: string = useMemo(() => {
+    if (subspaceAccount) {
+      return shortString(subspaceAccount)
+    }
+    if (actingAccount) {
+      return shortString(actingAccount.address)
+    }
+    return ''
+  }, [subspaceAccount, actingAccount])
+
   return (
     <Listbox value={actingAccount} onChange={changeAccount}>
       <div className='relative'>
@@ -103,11 +113,7 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
             <span
               className={cn('ml-2 hidden w-5 truncate text-sm sm:block md:w-full', labelClassName)}
             >
-              {subspaceAccount
-                ? shortString(subspaceAccount)
-                : actingAccount
-                  ? shortString(actingAccount.address)
-                  : ''}
+              {accountAddress}
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon

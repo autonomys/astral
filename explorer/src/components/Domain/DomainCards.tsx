@@ -1,22 +1,26 @@
 import { Spinner } from 'components/common/Spinner'
-import { BlockIcon, DocIcon } from 'components/icons'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import {
+  DomainsStatusDocument,
+  DomainsStatusQuery,
+  DomainsStatusQueryVariables,
+  Order_By as OrderBy,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
+import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
-import { QUERY_DOMAIN_STATUS } from './query'
 
 interface CardData {
   title: string
   description: string
   href: string
-  icon: JSX.Element
+  imagePath: string
   darkBgClass: string
   currentEpoch: number
   progress: number
@@ -30,7 +34,7 @@ export const DomainCards: FC = () => {
   const { data, loading, error, setIsVisible } = useIndexersQuery<
     DomainsStatusQuery,
     DomainsStatusQueryVariables
-  >(QUERY_DOMAIN_STATUS, {
+  >(DomainsStatusDocument, {
     variables: {
       limit: 10,
       orderBy: [{ id: OrderBy.Asc }],
@@ -46,13 +50,12 @@ export const DomainCards: FC = () => {
 
     return data.staking_domains.map((domain) => ({
       title: domain.name,
-      description: domain.name === 'Nova' ? 'EVM domain' : 'Identity domain',
-      href: `/${network}/${domain.name === 'nova' ? Routes.autoevm : Routes.autoid}`,
-      icon: domain.name === 'nova' ? <BlockIcon /> : <DocIcon />,
-      darkBgClass:
-        domain.name === 'nova'
-          ? 'dark:bg-gradient-to-b dark:from-blueLighterAccent dark:via-blueShade dark:to-pastelPurple'
-          : 'dark:bg-gradient-to-b dark:from-blueUndertone dark:to-pastelBlue',
+      description: domain.name.includes('evm') ? 'EVM domain' : 'Identity domain',
+      href: `/${network}/${domain.name.includes('evm') ? Routes.autoevm : Routes.autoid}`,
+      imagePath: domain.name.includes('evm')
+        ? '/images/icons/processed-blocks.webp'
+        : '/images/icons/total-extrinsics.webp',
+      darkBgClass: 'dark:bg-boxDark',
       currentEpoch: domain.completed_epoch,
       progress: Math.min(domain.last_domain_block_number % 100, 100),
     }))
@@ -72,7 +75,10 @@ export const DomainCards: FC = () => {
     <div className='flex w-full items-center justify-center gap-5 overflow-x-auto' ref={ref}>
       {data
         ? cards.map(
-            ({ title, description, href, icon, darkBgClass, currentEpoch, progress }, index) => (
+            (
+              { title, description, href, imagePath, darkBgClass, currentEpoch, progress },
+              index,
+            ) => (
               <Link key={index} href={href}>
                 <div
                   className={'h-[280px] w-1/5 min-w-[200px] grow cursor-pointer md:min-w-[228px]'}
@@ -81,8 +87,8 @@ export const DomainCards: FC = () => {
                     className={`flex h-full flex-col justify-between rounded-[20px] bg-white p-4 ${darkBgClass}`}
                   >
                     <div>
-                      <div className='mb-4 flex w-full items-center justify-center align-middle'>
-                        {icon}
+                      <div className='mb-2 mt-2 flex w-full items-center justify-center align-middle'>
+                        <Image src={imagePath} alt={title} width={96} height={96} />
                       </div>
                       <div className='flex w-full flex-col items-center justify-center align-middle'>
                         <h2 className='mb-2 text-center text-2xl font-normal text-gray-900 dark:text-white'>
@@ -99,12 +105,12 @@ export const DomainCards: FC = () => {
                       </div>
                       <div className='mt-2 h-2 w-full rounded-full bg-grayLight dark:bg-grayDarker'>
                         <div
-                          className='to-blueUndertone h-2 rounded-full bg-gradient-to-r from-primaryAccent dark:from-primaryAccent dark:to-pastelBlue'
+                          className='h-2 rounded-full bg-gradient-to-r from-primaryAccent to-blueUndertone dark:from-primaryAccent dark:to-pastelBlue'
                           style={{ width: `${progress}%` }}
                         ></div>
                       </div>
                       <div className='mt-1 text-right text-sm text-grayDarker dark:text-white'>
-                        {progress}%
+                        {progress}% of current epoch
                       </div>
                     </div>
                   </div>

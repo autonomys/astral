@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/graphql'
+import { OperatorByIdDocument, OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -14,7 +14,6 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { OperatorDetailsCard } from './OperatorDetailsCard'
 import { OperatorNominatorTable } from './OperatorNominatorTable'
-import { QUERY_OPERATOR_BY_ID } from './query'
 
 export const Operator: FC = () => {
   const { ref, inView } = useInView()
@@ -26,7 +25,7 @@ export const Operator: FC = () => {
 
   const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
   const { loading, setIsVisible } = useIndexersQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
-    QUERY_OPERATOR_BY_ID,
+    OperatorByIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -78,7 +77,7 @@ export const Operator: FC = () => {
                 Next Operator
               </button>
             </div>
-            <div className='mt-5 flex w-full flex-col rounded-[20px] bg-white p-5 dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:mt-0'>
+            <div className='mt-5 flex w-full flex-col rounded-[20px] bg-white p-5 dark:bg-boxDark sm:mt-0'>
               <OperatorNominatorTable operator={operatorDetails} />
             </div>
           </div>
