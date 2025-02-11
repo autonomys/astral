@@ -502,7 +502,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, OperatorsListDocument, 'operator', {
+      downloadFullData(apolloClient, OperatorsListDocument, 'staking_operators', {
         orderBy,
       }),
     [apolloClient, orderBy],
