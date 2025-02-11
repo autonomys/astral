@@ -448,6 +448,10 @@ services:
         condition: service_healthy
       hasura:
         condition: service_started
+    volumes:
+      - ./indexers/api:/app
+      - api_dependencies:/app/node_modules
+    hostname: api
     restart: unless-stopped
     ports:
       - "${API_PORT}:3000"
@@ -458,7 +462,3 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
-    hostname: api
-    volumes:
-      - ./indexers/api:/app
-      - /app/node_modules
