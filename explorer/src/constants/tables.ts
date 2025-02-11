@@ -180,10 +180,10 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
   ],
   operators: [
-    { name: 'id', label: 'Id', isSelected: true, searchable: true },
+    { name: 'sortId', label: 'Id', isSelected: true, searchable: true },
     { name: 'accountId', label: 'Owner', isSelected: true, searchable: true },
     { name: 'domainId', label: 'Domain', isSelected: true, searchable: true },
-    { name: 'signingKey', label: 'Signing Key', isSelected: true, searchable: true },
+    { name: 'signingKey', label: 'Signing Key', isSelected: false, searchable: true },
     { name: 'minimumNominatorStake', label: 'Minimum Nominator Stake', isSelected: true },
     { name: 'nominationTax', label: 'Nomination Tax', isSelected: true },
     // { name: 'name', label: 'Name', isSelected: true },

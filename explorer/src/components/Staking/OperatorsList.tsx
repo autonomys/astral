@@ -92,7 +92,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         TABLE,
         selectedColumns,
         {
-          id: ({ row }: Cell<Row>) => (
+          sortId: ({ row }: Cell<Row>) => (
             <Link
               className='hover:text-primaryAccent'
               href={INTERNAL_ROUTES.operators.id.page(network, Routes.staking, row.original.id)}
@@ -105,6 +105,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               address={row.original.accountId}
               network={network}
               section={Routes.consensus}
+              forceShortString
             />
           ),
           domainId: ({ row }: Cell<Row>) => {
