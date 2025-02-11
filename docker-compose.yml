@@ -1,9 +1,10 @@
 volumes:
-  node-data: {}
+  node_data: {}
   postgres_db: {}
   redis_db: {}
   caddy_config: {}
   caddy_data: {}
+  api_dependencies: {}
 
 services:
   # Caddy Reverse Proxy with CORS enabled
@@ -27,7 +28,7 @@ services:
   node:
     image: ghcr.io/autonomys/node:${NODE_DOCKER_TAG}
     volumes:
-      - node-data:/var/subspace:rw
+      - node_data:/var/subspace:rw
     ports:
       - "30333:30333/tcp"
       - "30433:30433/tcp"
@@ -448,6 +449,10 @@ services:
         condition: service_healthy
       hasura:
         condition: service_started
+    volumes:
+      - ./indexers/api:/app
+      - api_dependencies:/app/node_modules
+    hostname: api
     restart: unless-stopped
     ports:
       - "${API_PORT}:3000"
@@ -458,7 +463,3 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
-    hostname: api
-    volumes:
-      - ./indexers/api:/app
-      - /app/node_modules
