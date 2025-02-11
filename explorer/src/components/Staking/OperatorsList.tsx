@@ -359,7 +359,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         // eslint-disable-next-line camelcase
         { nominators: { account_id: { _eq: subspaceAccount } } },
       ]
-    }
+    } else if (conditions._or) delete conditions._or
 
     // Total Stake
     if (filters.totalStakeMin || filters.totalStakeMax) {
