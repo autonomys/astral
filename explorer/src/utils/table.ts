@@ -35,14 +35,9 @@ export const getTableColumns = <T>(
   return columns.map((c) => getTableColumn(table, c, cells[c], headers?.[c], enableSorting?.[c]))
 }
 
-export const sortBy = (sorting: SortingState) => {
-  if (!sorting || sorting.length === 0) return undefined
-  return Object.fromEntries(
-    sorting.map((sort) => [sort.id, sort.desc ? OrderBy.Desc : OrderBy.Asc]),
-  )
-}
+export const sortBy = (sorting: SortingState) =>
+  Object.fromEntries(sorting.map((sort) => [sort.id, sort.desc ? OrderBy.Desc : OrderBy.Asc]))
 
-export const sortByAggregate = (sorting: SortingState) => {
-  if (!sorting || sorting.length === 0) return undefined
-  return { [sorting[0].id]: { count: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc } }
-}
+export const sortByAggregate = (sorting: SortingState) => ({
+  [sorting[0].id]: { count: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc },
+})
