@@ -5,11 +5,13 @@ import {
   DomainBlockHistory,
   DomainInstantiation,
   DomainStakingHistory,
+  OperatorDeregistration,
   OperatorRegistration,
   OperatorReward,
   OperatorStakingHistory,
   OperatorTaxCollection,
   RuntimeCreation,
+  StakedUnlockedEvent,
   WithdrawEvent,
   WithdrawalHistory,
 } from "../types";
@@ -26,9 +28,11 @@ export type Cache = {
   operatorStakingHistory: OperatorStakingHistory[];
   operatorReward: OperatorReward[];
   operatorTaxCollection: OperatorTaxCollection[];
+  operatorDeregistration: OperatorDeregistration[];
   runtimeCreation: RuntimeCreation[];
   withdrawEvent: WithdrawEvent[];
   withdrawalHistory: WithdrawalHistory[];
+  stakedUnlockedEvent: StakedUnlockedEvent[];
 };
 
 export const initializeCache = (): Cache => ({
@@ -42,9 +46,11 @@ export const initializeCache = (): Cache => ({
   operatorStakingHistory: [],
   operatorReward: [],
   operatorTaxCollection: [],
+  operatorDeregistration: [],
   runtimeCreation: [],
   withdrawEvent: [],
   withdrawalHistory: [],
+  stakedUnlockedEvent: [],
 });
 
 export const saveCache = async (cache: Cache) => {
@@ -59,9 +65,11 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(`OperatorStakingHistory`, cache.operatorStakingHistory),
     store.bulkCreate(`OperatorReward`, cache.operatorReward),
     store.bulkCreate(`OperatorTaxCollection`, cache.operatorTaxCollection),
+    store.bulkCreate(`OperatorDeregistration`, cache.operatorDeregistration),
     store.bulkCreate(`RuntimeCreation`, cache.runtimeCreation),
     store.bulkCreate(`WithdrawEvent`, cache.withdrawEvent),
     store.bulkCreate(`WithdrawalHistory`, cache.withdrawalHistory),
+    store.bulkCreate(`StakedUnlockedEvent`, cache.stakedUnlockedEvent),
   ]);
 };
 
@@ -231,6 +239,47 @@ export function createOperatorTaxCollection(
     domainId,
     operatorId,
     amount,
+    blockHeight,
+    extrinsicId,
+    eventId,
+  });
+}
+
+export function createStakedUnlockedEvent(
+  domainId: string,
+  operatorId: string,
+  accountId: string,
+  amount: bigint,
+  storageFee: bigint,
+  blockHeight: bigint,
+  extrinsicId: string,
+  eventId: string
+): StakedUnlockedEvent {
+  return StakedUnlockedEvent.create({
+    id: extrinsicId,
+    domainId,
+    operatorId,
+    accountId,
+    amount,
+    storageFee,
+    blockHeight,
+    extrinsicId,
+    eventId,
+  });
+}
+
+export function createOperatorDeregistration(
+  operatorId: string,
+  owner: string,
+  domainId: string,
+  blockHeight: bigint,
+  extrinsicId: string,
+  eventId: string
+): OperatorDeregistration {
+  return OperatorDeregistration.create({
+    id: operatorId,
+    owner,
+    domainId,
     blockHeight,
     extrinsicId,
     eventId,
