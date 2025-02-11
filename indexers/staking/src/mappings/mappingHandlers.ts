@@ -143,7 +143,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
   withdrawals.forEach((w: any) => {
     const data = parseWithdrawal(w);
-    logger.info(`withdrawals: ${stringify(data)}`);
     cache.withdrawalHistory.push(
       db.createWithdrawalHistoryHistory(
         createHashId(data),
