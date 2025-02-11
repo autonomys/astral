@@ -11988,7 +11988,7 @@ export type Query_RootStaking_Operator_DeregistrationsArgs = {
 
 
 export type Query_RootStaking_Operator_Deregistrations_By_PkArgs = {
-  _id: Scalars['uuid']['input'];
+  uuid: Scalars['uuid']['input'];
 };
 
 
@@ -12095,7 +12095,7 @@ export type Query_RootStaking_Staked_Unlocked_EventsArgs = {
 
 
 export type Query_RootStaking_Staked_Unlocked_Events_By_PkArgs = {
-  _id: Scalars['uuid']['input'];
+  uuid: Scalars['uuid']['input'];
 };
 
 
@@ -15623,20 +15623,19 @@ export type Staking_Nominators_Variance_Order_By = {
 export type Staking_Operator_Deregistrations = {
   __typename?: 'staking_operator_deregistrations';
   _block_range: Scalars['int8range']['output'];
-  _id: Scalars['uuid']['output'];
   block_height: Scalars['numeric']['output'];
   domain_id: Scalars['String']['output'];
   event_id: Scalars['String']['output'];
   extrinsic_id: Scalars['String']['output'];
   id: Scalars['String']['output'];
   owner: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
 };
 
 /** Boolean expression to filter rows from the table "staking.operator_deregistrations". All fields are combined with a logical 'AND'. */
 export type Staking_Operator_Deregistrations_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Operator_Deregistrations_Bool_Exp>>;
   _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _id?: InputMaybe<Uuid_Comparison_Exp>;
   _not?: InputMaybe<Staking_Operator_Deregistrations_Bool_Exp>;
   _or?: InputMaybe<Array<Staking_Operator_Deregistrations_Bool_Exp>>;
   block_height?: InputMaybe<Numeric_Comparison_Exp>;
@@ -15645,26 +15644,25 @@ export type Staking_Operator_Deregistrations_Bool_Exp = {
   extrinsic_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
   owner?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** Ordering options when selecting data from "staking.operator_deregistrations". */
 export type Staking_Operator_Deregistrations_Order_By = {
   _block_range?: InputMaybe<Order_By>;
-  _id?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   event_id?: InputMaybe<Order_By>;
   extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   owner?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "staking.operator_deregistrations" */
 export enum Staking_Operator_Deregistrations_Select_Column {
   /** column name */
   BlockRange = '_block_range',
-  /** column name */
-  Id = '_id',
   /** column name */
   BlockHeight = 'block_height',
   /** column name */
@@ -15676,7 +15674,9 @@ export enum Staking_Operator_Deregistrations_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  Owner = 'owner'
+  Owner = 'owner',
+  /** column name */
+  Uuid = 'uuid'
 }
 
 /** Streaming cursor of the table "staking_operator_deregistrations" */
@@ -15690,13 +15690,13 @@ export type Staking_Operator_Deregistrations_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Staking_Operator_Deregistrations_Stream_Cursor_Value_Input = {
   _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  _id?: InputMaybe<Scalars['uuid']['input']>;
   block_height?: InputMaybe<Scalars['numeric']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
   event_id?: InputMaybe<Scalars['String']['input']>;
   extrinsic_id?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   owner?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
 };
 
 /** columns and relationships of "staking.operator_registrations" */
@@ -17414,7 +17414,6 @@ export type Staking_Runtime_Creations_Stream_Cursor_Value_Input = {
 export type Staking_Staked_Unlocked_Events = {
   __typename?: 'staking_staked_unlocked_events';
   _block_range: Scalars['int8range']['output'];
-  _id: Scalars['uuid']['output'];
   account_id: Scalars['String']['output'];
   amount: Scalars['numeric']['output'];
   block_height: Scalars['numeric']['output'];
@@ -17424,13 +17423,13 @@ export type Staking_Staked_Unlocked_Events = {
   id: Scalars['String']['output'];
   operator_id: Scalars['String']['output'];
   storage_fee: Scalars['numeric']['output'];
+  uuid: Scalars['uuid']['output'];
 };
 
 /** Boolean expression to filter rows from the table "staking.staked_unlocked_events". All fields are combined with a logical 'AND'. */
 export type Staking_Staked_Unlocked_Events_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Staked_Unlocked_Events_Bool_Exp>>;
   _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _id?: InputMaybe<Uuid_Comparison_Exp>;
   _not?: InputMaybe<Staking_Staked_Unlocked_Events_Bool_Exp>;
   _or?: InputMaybe<Array<Staking_Staked_Unlocked_Events_Bool_Exp>>;
   account_id?: InputMaybe<String_Comparison_Exp>;
@@ -17442,12 +17441,12 @@ export type Staking_Staked_Unlocked_Events_Bool_Exp = {
   id?: InputMaybe<String_Comparison_Exp>;
   operator_id?: InputMaybe<String_Comparison_Exp>;
   storage_fee?: InputMaybe<Numeric_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** Ordering options when selecting data from "staking.staked_unlocked_events". */
 export type Staking_Staked_Unlocked_Events_Order_By = {
   _block_range?: InputMaybe<Order_By>;
-  _id?: InputMaybe<Order_By>;
   account_id?: InputMaybe<Order_By>;
   amount?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
@@ -17457,14 +17456,13 @@ export type Staking_Staked_Unlocked_Events_Order_By = {
   id?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
   storage_fee?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "staking.staked_unlocked_events" */
 export enum Staking_Staked_Unlocked_Events_Select_Column {
   /** column name */
   BlockRange = '_block_range',
-  /** column name */
-  Id = '_id',
   /** column name */
   AccountId = 'account_id',
   /** column name */
@@ -17482,7 +17480,9 @@ export enum Staking_Staked_Unlocked_Events_Select_Column {
   /** column name */
   OperatorId = 'operator_id',
   /** column name */
-  StorageFee = 'storage_fee'
+  StorageFee = 'storage_fee',
+  /** column name */
+  Uuid = 'uuid'
 }
 
 /** Streaming cursor of the table "staking_staked_unlocked_events" */
@@ -17496,7 +17496,6 @@ export type Staking_Staked_Unlocked_Events_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Staking_Staked_Unlocked_Events_Stream_Cursor_Value_Input = {
   _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  _id?: InputMaybe<Scalars['uuid']['input']>;
   account_id?: InputMaybe<Scalars['String']['input']>;
   amount?: InputMaybe<Scalars['numeric']['input']>;
   block_height?: InputMaybe<Scalars['numeric']['input']>;
@@ -17506,6 +17505,7 @@ export type Staking_Staked_Unlocked_Events_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['String']['input']>;
   operator_id?: InputMaybe<Scalars['String']['input']>;
   storage_fee?: InputMaybe<Scalars['numeric']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
 };
 
 /** columns and relationships of "staking.withdraw_events" */
@@ -20968,7 +20968,7 @@ export type Subscription_RootStaking_Operator_DeregistrationsArgs = {
 
 
 export type Subscription_RootStaking_Operator_Deregistrations_By_PkArgs = {
-  _id: Scalars['uuid']['input'];
+  uuid: Scalars['uuid']['input'];
 };
 
 
@@ -21124,7 +21124,7 @@ export type Subscription_RootStaking_Staked_Unlocked_EventsArgs = {
 
 
 export type Subscription_RootStaking_Staked_Unlocked_Events_By_PkArgs = {
-  _id: Scalars['uuid']['input'];
+  uuid: Scalars['uuid']['input'];
 };
 
 
