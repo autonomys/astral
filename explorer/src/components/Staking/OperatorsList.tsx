@@ -290,6 +290,17 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               </div>
             )
           },
+          yourStake: ({ row }: Cell<Row>) => {
+            const nominator = row.original.nominators.find(
+              (nominator) => nominator.account_id === subspaceAccount,
+            )
+            if (!nominator) return <></>
+            return (
+              <div>
+                {bigNumberToFormattedString(nominator?.current_total_stake)} {tokenSymbol}
+              </div>
+            )
+          },
           actions: ({ row }: Cell<Row>) => {
             const isOperator = row.original.accountId === subspaceAccount
             const nominator = row.original.nominators.find(
@@ -479,8 +490,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
       where,
+      accountId: subspaceAccount ?? '',
     }),
-    [pagination, orderBy, where],
+    [pagination, orderBy, where, subspaceAccount],
   )
 
   const { loading, setIsVisible } = useIndexersQuery<

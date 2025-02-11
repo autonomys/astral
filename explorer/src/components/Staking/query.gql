@@ -73,6 +73,7 @@ query OperatorsList(
   $offset: Int
   $orderBy: [staking_operators_order_by!]!
   $where: staking_operators_bool_exp
+  $accountId: String!
 ) {
   staking_operators_aggregate(where: $where) {
     aggregate {
@@ -132,11 +133,12 @@ query OperatorsList(
         count
       }
     }
-    nominators(limit: 256) {
+    nominators(limit: 256, where: { account_id: { _eq: $accountId } }) {
       id
       account_id
       known_shares
       unlock_at_confirmed_domain_block_number
+      current_total_stake
     }
     createdAt: created_at
     updatedAt: updated_at
