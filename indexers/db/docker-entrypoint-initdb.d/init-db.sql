@@ -3038,3 +3038,43 @@ CREATE TRIGGER update_operator_on_deregistration_trigger
 AFTER INSERT ON staking.operator_deregistrations
 FOR EACH ROW
 EXECUTE FUNCTION staking.update_operator_on_deregistration();
+
+CREATE OR REPLACE FUNCTION staking.handle_unlocked_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.domains
+    SET 
+        total_withdrawals = staking.domains.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        updated_at = NEW.block_height
+    WHERE id = NEW.domain_id;
+
+    UPDATE staking.operators
+    SET 
+        total_withdrawals = staking.operators.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        updated_at = NEW.block_height
+    WHERE id = NEW.operator_id;
+
+    UPDATE staking.nominators
+    SET
+        total_withdrawal_amounts = staking.nominators.total_withdrawal_amounts::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        total_storage_fee_refund = staking.nominators.total_storage_fee_refund::NUMERIC(78) + NEW.storage_fee::NUMERIC(78),
+        total_withdrawals = staking.nominators.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        updated_at = NEW.block_height
+    WHERE id = NEW.nominator_id;
+
+    UPDATE staking.accounts
+    SET
+        total_withdrawals = staking.accounts.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        updated_at = NEW.block_height
+    WHERE id = NEW.account_id;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_unlocked_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_unlocked_events
+AFTER INSERT ON staking.staked_unlocked_events
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_unlocked_events();
