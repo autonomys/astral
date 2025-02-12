@@ -6,13 +6,19 @@ import DiscordProvider from 'next-auth/providers/discord'
 import { findUserByID, saveUser, updateUser } from 'utils/fauna'
 import {
   getUserRoles,
-  giveDiscordFarmerRole,
-  giveDiscordNominatorRole,
-  giveDiscordOperatorRole,
-  verifyDiscordFarmerRole,
+  giveMainnetDiscordFarmerRole,
+  giveMainnetDiscordNominatorRole,
+  giveMainnetDiscordOperatorRole,
+  giveTaurusDiscordFarmerRole,
+  giveTaurusDiscordNominatorRole,
+  giveTaurusDiscordOperatorRole,
   verifyDiscordGuildMember,
-  verifyDiscordNominatorRole,
-  verifyDiscordOperatorRole,
+  verifyMainnetDiscordFarmerRole,
+  verifyMainnetDiscordNominatorRole,
+  verifyMainnetDiscordOperatorRole,
+  verifyTaurusDiscordFarmerRole,
+  verifyTaurusDiscordNominatorRole,
+  verifyTaurusDiscordOperatorRole,
 } from '../vcs/discord'
 import { verifyToken } from '../verifyToken'
 
@@ -37,9 +43,12 @@ export const Discord = () => {
 
         const member = await verifyDiscordGuildMember(token.access_token)
         const roles = await getUserRoles(token.access_token)
-        let farmer = await verifyDiscordFarmerRole(roles)
-        let operator = await verifyDiscordOperatorRole(roles)
-        let nominator = await verifyDiscordNominatorRole(roles)
+        let mainnetFarmer = await verifyMainnetDiscordFarmerRole(roles)
+        let mainnetOperator = await verifyMainnetDiscordOperatorRole(roles)
+        let mainnetNominator = await verifyMainnetDiscordNominatorRole(roles)
+        let taurusFarmer = await verifyTaurusDiscordFarmerRole(roles)
+        let taurusOperator = await verifyTaurusDiscordOperatorRole(roles)
+        let taurusNominator = await verifyTaurusDiscordNominatorRole(roles)
 
         let newRolesAdded = false
         const savedUser = await findUserByID(did)
@@ -47,23 +56,38 @@ export const Discord = () => {
         if (savedUser && savedUser[0].data.discord?.id !== profile.id)
           throw new Error('Discord ID does not match')
 
-        if (session.subspace?.vcs.farmer && !farmer) {
-          await giveDiscordFarmerRole(profile.id)
+        if (session.subspace?.vcs.mainnetFarmer && !mainnetFarmer) {
+          await giveMainnetDiscordFarmerRole(profile.id)
           newRolesAdded = true
         }
-        if (session.subspace?.vcs.operator && !operator) {
-          await giveDiscordOperatorRole(profile.id)
+        if (session.subspace?.vcs.mainnetOperator && !mainnetOperator) {
+          await giveMainnetDiscordOperatorRole(profile.id)
           newRolesAdded = true
         }
-        if (session.subspace?.vcs.nominator && !nominator) {
-          await giveDiscordNominatorRole(profile.id)
+        if (session.subspace?.vcs.mainnetNominator && !mainnetNominator) {
+          await giveMainnetDiscordNominatorRole(profile.id)
+          newRolesAdded = true
+        }
+        if (session.subspace?.vcs.taurusFarmer && !taurusFarmer) {
+          await giveTaurusDiscordFarmerRole(profile.id)
+          newRolesAdded = true
+        }
+        if (session.subspace?.vcs.taurusOperator && !taurusOperator) {
+          await giveTaurusDiscordOperatorRole(profile.id)
+          newRolesAdded = true
+        }
+        if (session.subspace?.vcs.taurusNominator && !taurusNominator) {
+          await giveTaurusDiscordNominatorRole(profile.id)
           newRolesAdded = true
         }
         if (newRolesAdded) {
           const newRoles = await getUserRoles(token.access_token)
-          farmer = await verifyDiscordFarmerRole(newRoles)
-          operator = await verifyDiscordOperatorRole(newRoles)
-          nominator = await verifyDiscordNominatorRole(newRoles)
+          mainnetFarmer = await verifyMainnetDiscordFarmerRole(newRoles)
+          mainnetOperator = await verifyMainnetDiscordOperatorRole(newRoles)
+          mainnetNominator = await verifyMainnetDiscordNominatorRole(newRoles)
+          taurusFarmer = await verifyTaurusDiscordFarmerRole(newRoles)
+          taurusOperator = await verifyTaurusDiscordOperatorRole(newRoles)
+          taurusNominator = await verifyTaurusDiscordNominatorRole(newRoles)
         }
 
         const user: User = {
@@ -76,9 +100,12 @@ export const Discord = () => {
             vcs: {
               member,
               roles: {
-                farmer,
-                operator,
-                nominator,
+                mainnetFarmer,
+                mainnetOperator,
+                mainnetNominator,
+                taurusFarmer,
+                taurusOperator,
+                taurusNominator,
               },
             },
           },
