@@ -31,13 +31,24 @@ export const useLeaderboard = (subspaceAccount: string) => {
   const { get } = useSearchParams()
   const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
 
+  const where = useMemo(
+    () => ({
+      id: {
+        _eq: subspaceAccount,
+      },
+    }),
+    [subspaceAccount],
+  )
+
   const variables = useMemo(
     () => ({
-      first: 100,
+      whereFarmerBlockTotalCounts: where,
+      whereOperatorDepositsTotalValues: where,
+      whereNominatorDepositsTotalValues: where,
     }),
-    [],
+    [where],
   )
-  const { setIsVisible } = useIndexersQuery<
+  const { setIsVisible, data: leaderboardData } = useIndexersQuery<
     AccountsTopLeaderboardQuery,
     AccountsTopLeaderboardQueryVariables
   >(
@@ -51,33 +62,52 @@ export const useLeaderboard = (subspaceAccount: string) => {
     'leaderboard',
   )
 
+  console.log('leaderboardData', leaderboardData)
+
   const leaderboard = useQueryStates((state) => state.walletSidekick.leaderboard)
 
   const loading = useMemo(() => isLoading(leaderboard), [leaderboard])
   const data = useMemo(() => hasValue(leaderboard) && leaderboard.value, [leaderboard])
   const error = useMemo(() => isError(leaderboard), [leaderboard])
 
+  console.log('data', data)
+
   // TODO: change this for the right logic
   const topFarmers = useMemo(() => {
-    if (!data || !data.farmers) return 0
-    const account = data.farmers.find((edge) => edge.id === subspaceAccount)
-    if (!account) return 0
-    return parseInt(account.id)
-  }, [data, subspaceAccount])
+    if (
+      !data ||
+      !data.leaderboard_farmer_block_total_counts ||
+      data.leaderboard_farmer_block_total_counts.length === 0
+    )
+      return 0
+    const rank = data.leaderboard_farmer_block_total_counts[0].rank
+    if (!rank) return 0
+    return rank
+  }, [data])
 
   const topOperators = useMemo(() => {
-    if (!data || !data.operators) return 0
-    const account = data.operators.find((edge) => edge.id === subspaceAccount)
-    if (!account) return 0
-    return parseInt(account.id)
-  }, [data, subspaceAccount])
+    if (
+      !data ||
+      !data.leaderboard_operator_deposits_total_values ||
+      data.leaderboard_operator_deposits_total_values.length === 0
+    )
+      return 0
+    const rank = data.leaderboard_operator_deposits_total_values[0].rank
+    if (!rank) return 0
+    return rank
+  }, [data])
 
   const topNominators = useMemo(() => {
-    if (!data || !data.nominators) return 0
-    const account = data.nominators.find((edge) => edge.id === subspaceAccount)
-    if (!account) return 0
-    return parseInt(account.id)
-  }, [data, subspaceAccount])
+    if (
+      !data ||
+      !data.leaderboard_nominator_deposits_total_values ||
+      data.leaderboard_nominator_deposits_total_values.length === 0
+    )
+      return 0
+    const rank = data.leaderboard_nominator_deposits_total_values[0].rank
+    if (!rank) return 0
+    return rank
+  }, [data])
 
   const hasTopPositions = useMemo(
     () => topFarmers > 0 || topOperators > 0 || topNominators > 0,

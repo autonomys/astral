@@ -1,41 +1,28 @@
-query AccountsTopLeaderboard($first: Int!) {
-  farmers: consensus_rewards(
-    order_by: { amount: desc }
-    limit: $first
-    where: {
-      _or: [
-        { reward_type: { _eq: "Rewards.VoteReward" } }
-        { reward_type: { _eq: "Rewards.BlockReward" } }
-      ]
-    }
+query AccountsTopLeaderboard(
+  $whereFarmerBlockTotalCounts: leaderboard_farmer_block_total_counts_bool_exp
+  $whereOperatorDepositsTotalValues: leaderboard_operator_deposits_total_values_bool_exp
+  $whereNominatorDepositsTotalValues: leaderboard_nominator_deposits_total_values_bool_exp
+) {
+  leaderboard_farmer_block_total_counts(
+    order_by: { rank: asc }
+    where: $whereFarmerBlockTotalCounts
+    limit: 1
   ) {
-    id
+    rank
   }
-  # TODO: change this for operators
-  operators: consensus_rewards(
-    order_by: { amount: desc }
-    limit: $first
-    where: {
-      _or: [
-        { reward_type: { _eq: "Rewards.VoteReward" } }
-        { reward_type: { _eq: "Rewards.BlockReward" } }
-      ]
-    }
+  leaderboard_operator_deposits_total_values(
+    order_by: { rank: asc }
+    where: $whereOperatorDepositsTotalValues
+    limit: 1
   ) {
-    id
+    rank
   }
-  # TODO: change this for nominators
-  nominators: consensus_rewards(
-    order_by: { amount: desc }
-    limit: $first
-    where: {
-      _or: [
-        { reward_type: { _eq: "Rewards.VoteReward" } }
-        { reward_type: { _eq: "Rewards.BlockReward" } }
-      ]
-    }
+  leaderboard_nominator_deposits_total_values(
+    order_by: { rank: asc }
+    where: $whereNominatorDepositsTotalValues
+    limit: 1
   ) {
-    id
+    rank
   }
 }
 
