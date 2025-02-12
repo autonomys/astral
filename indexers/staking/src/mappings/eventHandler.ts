@@ -278,6 +278,71 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
+  "domains.NominatedStakedUnlocked": ({
+    event,
+    cache,
+    height,
+    extrinsicEvents,
+    extrinsicId,
+    eventId,
+  }) => {
+    const operatorId = event.event.data[0].toString();
+    const accountId = event.event.data[1].toString();
+    const amount = BigInt(event.event.data[2].toString());
+    const opFromCache = cache.operatorStakingHistory.find(
+      (o) => o.operatorId === operatorId
+    );
+    if (!opFromCache) throw new Error("Operator from cache not found");
+    const domainId = opFromCache.currentDomainId;
+
+    const StorageFeeUnlockedEvent = findOneExtrinsicEvent(
+      extrinsicEvents,
+      "domains",
+      "StorageFeeUnlocked"
+    );
+    const storageFee = BigInt(
+      StorageFeeUnlockedEvent?.event.data[2].toString() ?? 0
+    );
+
+    cache.stakedUnlockedEvent.push(
+      db.createStakedUnlockedEvent(
+        domainId,
+        operatorId,
+        accountId,
+        amount,
+        storageFee,
+        height,
+        extrinsicId,
+        eventId
+      )
+    );
+  },
+  "domains.OperatorDeregistered": ({
+    event,
+    cache,
+    extrinsicSigner,
+    height,
+    extrinsicId,
+    eventId,
+  }) => {
+    const operatorId = event.event.data[0].toString();
+    const opFromCache = cache.operatorStakingHistory.find(
+      (o) => o.operatorId === operatorId
+    );
+    if (!opFromCache) throw new Error("Operator from cache not found");
+    const domainId = opFromCache.currentDomainId;
+
+    cache.operatorDeregistration.push(
+      db.createOperatorDeregistration(
+        operatorId,
+        extrinsicSigner,
+        domainId,
+        height,
+        extrinsicId,
+        eventId
+      )
+    );
+  },
   "domains.BundleStored": ({
     event,
     cache,
