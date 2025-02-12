@@ -3,9 +3,12 @@ export type SubspaceToken = {
   message: string
   signature: string
   vcs: {
-    farmer: boolean
-    operator: boolean
-    nominator: boolean
+    mainnetFarmer: boolean
+    mainnetOperator: boolean
+    mainnetNominator: boolean
+    taurusFarmer: boolean
+    taurusOperator: boolean
+    taurusNominator: boolean
   }
   disbursements?: {
     stakeWars2: boolean
@@ -18,9 +21,12 @@ export type DiscordToken = {
   vcs: {
     member: boolean
     roles: {
-      farmer: boolean
-      operator: boolean
-      nominator: boolean
+      mainnetFarmer: boolean
+      mainnetOperator: boolean
+      mainnetNominator: boolean
+      taurusFarmer: boolean
+      taurusOperator: boolean
+      taurusNominator: boolean
     }
   }
 }
