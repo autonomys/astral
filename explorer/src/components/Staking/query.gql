@@ -139,6 +139,7 @@ query OperatorsList(
       known_shares
       unlock_at_confirmed_domain_block_number
       current_total_stake
+      current_storage_fee_deposit
     }
     createdAt: created_at
     updatedAt: updated_at

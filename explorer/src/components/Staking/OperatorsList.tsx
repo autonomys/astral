@@ -295,9 +295,11 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               (nominator) => nominator.account_id === subspaceAccount,
             )
             if (!nominator) return <></>
+            const totalStake =
+              BigInt(nominator.current_total_stake) + BigInt(nominator.current_storage_fee_deposit)
             return (
               <div>
-                {bigNumberToFormattedString(nominator?.current_total_stake)} {tokenSymbol}
+                {bigNumberToFormattedString(totalStake)} {tokenSymbol}
               </div>
             )
           },
