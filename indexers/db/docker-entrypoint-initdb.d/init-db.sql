@@ -2831,6 +2831,65 @@ AFTER INSERT ON staking.deposit_events
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_deposit_events();
 
+CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+
+    INSERT INTO staking.withdrawals (
+        id,
+        account_id,
+        domain_id,
+        operator_id,
+        nominator_id,
+        shares,
+        estimated_amount,
+        unlocked_amount,
+        unlocked_storage_fee,
+        total_amount,
+        status,
+        "timestamp",
+        withdraw_extrinsic_hash,
+        unlock_extrinsic_hash,
+        epoch_withdrawal_requested_at,
+        domain_block_number_withdrawal_requested_at,
+        created_at,
+        ready_at,
+        unlocked_at,
+        updated_at
+    ) VALUES (
+        NEW.id,                      -- id
+        NEW.account_id,              -- account_id
+        NEW.domain_id,               -- domain_id
+        NEW.operator_id,             -- operator_id
+        NEW.nominator_id,            -- nominator_id
+        0,                           -- shares
+        0,                           -- estimated_amount
+        0,                           -- unlocked_amount
+        0,                           -- unlocked_storage_fee
+        0,                           -- total_amount
+        'ACTIVE',                    -- status
+        NEW."timestamp",             -- timestamp
+        NEW.extrinsic_id,            -- withdraw_extrinsic_hash
+        '',                          -- unlock_extrinsic_hash
+        '',                          -- epoch_withdrawal_requested_at
+        '',                          -- domain_block_number_withdrawal_requested_at
+        NEW.block_height,            -- created_at
+        '',                          -- ready_at
+        '',                          -- unlocked_at
+        NEW.block_height             -- updated_at
+    );
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_withdraw_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_withdraw_events
+AFTER INSERT ON staking.withdraw_events
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_withdraw_events();
+
 CREATE OR REPLACE FUNCTION staking.handle_operator_tax_collections_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
@@ -3061,6 +3120,7 @@ BEGIN
         total_withdrawal_amounts = staking.nominators.total_withdrawal_amounts::NUMERIC(78) + NEW.amount::NUMERIC(78),
         total_storage_fee_refund = staking.nominators.total_storage_fee_refund::NUMERIC(78) + NEW.storage_fee::NUMERIC(78),
         total_withdrawals = staking.nominators.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        total_withdrawals_count = staking.domains.total_withdrawal_amounts::NUMERIC(78) + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.nominator_id;
 
