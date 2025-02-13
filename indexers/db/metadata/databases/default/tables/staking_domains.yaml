@@ -12,6 +12,15 @@ object_relationships:
           name: accounts
           schema: staking
 array_relationships:
+  - name: deposit_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: deposit_events
+          schema: staking
   - name: deposits
     using:
       manual_configuration:
@@ -38,6 +47,15 @@ array_relationships:
         insertion_order: null
         remote_table:
           name: operators
+          schema: staking
+  - name: withdraw_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: withdraw_events
           schema: staking
   - name: withdrawals
     using:
