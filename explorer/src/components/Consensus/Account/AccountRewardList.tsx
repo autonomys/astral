@@ -48,8 +48,9 @@ export const AccountRewardList: FC = () => {
   })
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
-  const { accountId } = useParams<AccountIdParam>()
+  const { accountId: rawAccountId } = useParams<AccountIdParam>()
   const inFocus = useWindowFocus()
+  const accountId = formatAddress(rawAccountId)
   const lastNetworkBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
   const lastBlockNumber = useMemo(
     () => lastNetworkBlockNumber[network],
@@ -109,7 +110,6 @@ export const AccountRewardList: FC = () => {
         : undefined,
     [rewards],
   )
-  const convertedAddress = useMemo(() => (account ? formatAddress(account.id) : ''), [account])
 
   const columns = useMemo(
     () => [
@@ -229,9 +229,7 @@ export const AccountRewardList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {convertedAddress && (
-        <AccountDetailsCard account={account} accountAddress={convertedAddress} />
-      )}
+      {accountId && <AccountDetailsCard account={account} accountAddress={accountId} />}
 
       <div className='mt-5 flex w-full justify-between'>
         <div className='text-base font-medium text-grayDark dark:text-white'>{`Rewards (${totalLabel})`}</div>
