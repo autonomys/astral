@@ -64,6 +64,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
         value: rewardsValue,
         darkBgClass: 'dark:bg-boxDark',
         unit: tokenSymbol,
+        decimal: 2,
       },
     ],
     [eventsCount, transfersCount, transferValue, rewardsCount, rewardsValue, tokenSymbol],
@@ -109,13 +110,14 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
               />
             </SwiperSlide>
           ))
-        : listOfCards.map(({ title, value, unit, darkBgClass }, index) => (
+        : listOfCards.map(({ title, value, unit, decimal, darkBgClass }, index) => (
             <SwiperSlide key={`${title}-${index}`}>
               <HomeInfoCard
                 key={`${title}-${index}`}
                 title={title}
                 value={value}
                 unit={unit}
+                decimal={decimal}
                 darkBgClass={darkBgClass}
               />
             </SwiperSlide>
