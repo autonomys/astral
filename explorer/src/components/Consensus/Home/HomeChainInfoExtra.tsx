@@ -8,7 +8,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { bigNumberToNumber } from 'utils/number'
 import { HomeInfoCard } from './HomeInfoCard'
 
 type Props = {
@@ -18,7 +18,6 @@ type Props = {
 
 export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   const { tokenSymbol } = useIndexers()
-
   const isDesktop = useMediaQuery('(min-width: 1536px)')
 
   const eventsCount = data
@@ -28,17 +27,13 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
     ? Number(data.consensus_blocks[0].cumulative?.cumulative_transfers_count)
     : 'error'
   const transferValue = data
-    ? numberWithCommas(
-        bigNumberToNumber(data.consensus_blocks[0].cumulative?.cumulative_transfer_value),
-      ) + ` ${tokenSymbol}`
+    ? bigNumberToNumber(data.consensus_blocks[0].cumulative?.cumulative_transfer_value)
     : 'error'
   const rewardsCount = data
     ? Number(data.consensus_blocks[0].cumulative?.cumulative_rewards_count)
     : 'error'
   const rewardsValue = data
-    ? numberWithCommas(
-        bigNumberToNumber(data.consensus_blocks[0].cumulative?.cumulative_reward_value),
-      ) + ` ${tokenSymbol}`
+    ? bigNumberToNumber(data.consensus_blocks[0].cumulative?.cumulative_reward_value)
     : 'error'
 
   const listOfCards = useMemo(
@@ -57,6 +52,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
         title: 'Total Transfers Value',
         value: transferValue,
         darkBgClass: 'dark:bg-boxDark',
+        unit: tokenSymbol,
       },
       {
         title: 'Total Rewards',
@@ -67,9 +63,10 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
         title: 'Total Rewards Value',
         value: rewardsValue,
         darkBgClass: 'dark:bg-boxDark',
+        unit: tokenSymbol,
       },
     ],
-    [eventsCount, transfersCount, transferValue, rewardsCount, rewardsValue],
+    [eventsCount, transfersCount, transferValue, rewardsCount, rewardsValue, tokenSymbol],
   )
 
   return (
@@ -112,12 +109,13 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
               />
             </SwiperSlide>
           ))
-        : listOfCards.map(({ title, value, darkBgClass }, index) => (
+        : listOfCards.map(({ title, value, unit, darkBgClass }, index) => (
             <SwiperSlide key={`${title}-${index}`}>
               <HomeInfoCard
                 key={`${title}-${index}`}
                 title={title}
                 value={value}
+                unit={unit}
                 darkBgClass={darkBgClass}
               />
             </SwiperSlide>

@@ -5,6 +5,8 @@ import { FC, ReactElement, useMemo } from 'react'
 type Props = {
   title: string
   value: number | string
+  unit?: string
+  decimal?: number
   icon?: ReactElement
   imagePath?: string
   tooltip?: string | React.ReactNode
@@ -17,6 +19,8 @@ export const HomeInfoCard: FC<Props> = ({
   icon,
   imagePath,
   value,
+  unit,
+  decimal,
   darkBgClass,
   additionalClass = '',
 }) => {
@@ -26,6 +30,7 @@ export const HomeInfoCard: FC<Props> = ({
     ),
     [value],
   )
+
   return (
     <div
       className={`h-[${icon || imagePath ? '216px' : '120px'}] w-full min-w-[200px] grow md:min-w-[228px] ${additionalClass}`}
@@ -44,7 +49,11 @@ export const HomeInfoCard: FC<Props> = ({
             {title}
           </h2>
 
-          {typeof value === 'string' ? text : <AnimatedCount value={value} />}
+          {typeof value === 'string' ? (
+            text
+          ) : (
+            <AnimatedCount value={value} unit={unit} decimals={decimal} />
+          )}
         </div>
       </div>
     </div>
