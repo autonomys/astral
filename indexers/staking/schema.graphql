@@ -123,11 +123,12 @@ type BundleSubmission @entity {
   eventId: String!
 }
 
-type StakedUnlockedEvent @entity {
+type UnlockedEvent @entity {
   id: ID!
   domainId: String!
   operatorId: String!
   accountId: String!
+  nominatorId: String!
   amount: BigInt!
   storageFee: BigInt!
   blockHeight: BigInt!
