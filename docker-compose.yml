@@ -1,5 +1,5 @@
 volumes:
-  node-data: {}
+  node_data: {}
   postgres_db: {}
   redis_db: {}
   caddy_config: {}
@@ -28,7 +28,7 @@ services:
   node:
     image: ghcr.io/autonomys/node:${NODE_DOCKER_TAG}
     volumes:
-      - node-data:/var/subspace:rw
+      - node_data:/var/subspace:rw
     ports:
       - "30333:30333/tcp"
       - "30433:30433/tcp"
