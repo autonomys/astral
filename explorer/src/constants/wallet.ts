@@ -31,6 +31,7 @@ export enum ExtrinsicsSupportedModule {
 export enum SupportedWalletExtension {
   PolkadotJs = 'polkadot-js',
   SubwalletJs = 'subwallet-js',
+  Talisman = 'talisman',
   Nova = 'nova',
 }
 
