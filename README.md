@@ -58,7 +58,6 @@
 
 - [Explorer](./explorer/README.md) - Next.js app based on React and Tailwind CSS, uses Apollo Client to fetch data from Astral Indexers
 - [Indexers](./indexers/README.md) - Includes various SubQuery indexers organized by network and functionality
-- [Health check](./health-check/README.md) - utility service to check health status of an internal service and expose it as a REST API endpoint
 
 ## Development
 
