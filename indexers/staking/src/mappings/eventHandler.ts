@@ -304,8 +304,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       StorageFeeUnlockedEvent?.event.data[2].toString() ?? 0
     );
 
-    cache.stakedUnlockedEvent.push(
-      db.createStakedUnlockedEvent(
+    cache.unlockedEvent.push(
+      db.createUnlockedEvent(
         domainId,
         operatorId,
         accountId,

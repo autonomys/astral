@@ -1,5 +1,5 @@
 table:
-  name: staked_unlocked_events
+  name: unlocked_events
   schema: staking
 configuration:
   column_config:
