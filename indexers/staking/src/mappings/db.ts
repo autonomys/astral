@@ -11,7 +11,7 @@ import {
   OperatorStakingHistory,
   OperatorTaxCollection,
   RuntimeCreation,
-  StakedUnlockedEvent,
+  UnlockedEvent,
   WithdrawEvent,
   WithdrawalHistory,
 } from "../types";
@@ -32,7 +32,7 @@ export type Cache = {
   runtimeCreation: RuntimeCreation[];
   withdrawEvent: WithdrawEvent[];
   withdrawalHistory: WithdrawalHistory[];
-  stakedUnlockedEvent: StakedUnlockedEvent[];
+  unlockedEvent: UnlockedEvent[];
 };
 
 export const initializeCache = (): Cache => ({
@@ -50,7 +50,7 @@ export const initializeCache = (): Cache => ({
   runtimeCreation: [],
   withdrawEvent: [],
   withdrawalHistory: [],
-  stakedUnlockedEvent: [],
+  unlockedEvent: [],
 });
 
 export const saveCache = async (cache: Cache) => {
@@ -69,7 +69,7 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(`RuntimeCreation`, cache.runtimeCreation),
     store.bulkCreate(`WithdrawEvent`, cache.withdrawEvent),
     store.bulkCreate(`WithdrawalHistory`, cache.withdrawalHistory),
-    store.bulkCreate(`StakedUnlockedEvent`, cache.stakedUnlockedEvent),
+    store.bulkCreate(`UnlockedEvent`, cache.unlockedEvent),
   ]);
 };
 
@@ -245,7 +245,7 @@ export function createOperatorTaxCollection(
   });
 }
 
-export function createStakedUnlockedEvent(
+export function createUnlockedEvent(
   domainId: string,
   operatorId: string,
   accountId: string,
@@ -254,12 +254,13 @@ export function createStakedUnlockedEvent(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string
-): StakedUnlockedEvent {
-  return StakedUnlockedEvent.create({
+): UnlockedEvent {
+  return UnlockedEvent.create({
     id: extrinsicId,
     domainId,
     operatorId,
     accountId,
+    nominatorId: accountId + "-" + operatorId,
     amount,
     storageFee,
     blockHeight,

@@ -1515,11 +1515,12 @@ CREATE TABLE staking.runtime_creations (
 );
 ALTER TABLE staking.runtime_creations OWNER TO postgres;
 
-CREATE TABLE staking.staked_unlocked_events (
+CREATE TABLE staking.unlocked_events (
     id text NOT NULL,
     domain_id text NOT NULL,
     operator_id text NOT NULL,
     account_id text NOT NULL,
+    nominator_id text NOT NULL,
     amount numeric NOT NULL,
     storage_fee numeric NOT NULL,
     block_height numeric NOT NULL,
@@ -1528,7 +1529,7 @@ CREATE TABLE staking.staked_unlocked_events (
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
-ALTER TABLE staking.staked_unlocked_events OWNER TO postgres;
+ALTER TABLE staking.unlocked_events OWNER TO postgres;
 
 CREATE TABLE staking.withdraw_events (
     id text NOT NULL,
@@ -1940,8 +1941,8 @@ ALTER TABLE ONLY staking.operators
 ALTER TABLE ONLY staking.runtime_creations
     ADD CONSTRAINT runtime_creations_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.staked_unlocked_events
-    ADD CONSTRAINT staked_unlocked_events_pkey PRIMARY KEY (_id);
+ALTER TABLE ONLY staking.unlocked_events
+    ADD CONSTRAINT unlocked_events_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY staking.withdraw_events
     ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
@@ -2122,7 +2123,7 @@ CREATE INDEX "0xd5509466634aea27" ON files.chunks USING btree (id);
 CREATE INDEX "0xd9be8718ef6c7984" ON files.folder_cids USING btree (id);
 CREATE INDEX "files_folder_cids_parent_cid" ON files.folder_cids USING btree (parent_cid);
 
-CREATE INDEX "0x095f76af1e0896c7" ON staking.staked_unlocked_events USING btree (id);
+CREATE INDEX "0x095f76af1e0896c7" ON staking.unlocked_events USING btree (id);
 CREATE INDEX "0x17ee75861ab4beba" ON staking.operator_deregistrations USING btree (id);
 CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
 CREATE INDEX "0x3a7ed99d2776ff11" ON staking.operator_tax_collections USING btree (id);
@@ -2830,6 +2831,65 @@ AFTER INSERT ON staking.deposit_events
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_deposit_events();
 
+CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+
+    INSERT INTO staking.withdrawals (
+        id,
+        account_id,
+        domain_id,
+        operator_id,
+        nominator_id,
+        shares,
+        estimated_amount,
+        unlocked_amount,
+        unlocked_storage_fee,
+        total_amount,
+        status,
+        "timestamp",
+        withdraw_extrinsic_hash,
+        unlock_extrinsic_hash,
+        epoch_withdrawal_requested_at,
+        domain_block_number_withdrawal_requested_at,
+        created_at,
+        ready_at,
+        unlocked_at,
+        updated_at
+    ) VALUES (
+        NEW.id,                      -- id
+        NEW.account_id,              -- account_id
+        NEW.domain_id,               -- domain_id
+        NEW.operator_id,             -- operator_id
+        NEW.nominator_id,            -- nominator_id
+        0,                           -- shares
+        0,                           -- estimated_amount
+        0,                           -- unlocked_amount
+        0,                           -- unlocked_storage_fee
+        0,                           -- total_amount
+        'ACTIVE',                    -- status
+        NEW."timestamp",             -- timestamp
+        NEW.extrinsic_id,            -- withdraw_extrinsic_hash
+        '',                          -- unlock_extrinsic_hash
+        '',                          -- epoch_withdrawal_requested_at
+        '',                          -- domain_block_number_withdrawal_requested_at
+        NEW.block_height,            -- created_at
+        '',                          -- ready_at
+        '',                          -- unlocked_at
+        NEW.block_height             -- updated_at
+    );
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_withdraw_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_withdraw_events
+AFTER INSERT ON staking.withdraw_events
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_withdraw_events();
+
 CREATE OR REPLACE FUNCTION staking.handle_operator_tax_collections_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
@@ -3060,6 +3120,7 @@ BEGIN
         total_withdrawal_amounts = staking.nominators.total_withdrawal_amounts::NUMERIC(78) + NEW.amount::NUMERIC(78),
         total_storage_fee_refund = staking.nominators.total_storage_fee_refund::NUMERIC(78) + NEW.storage_fee::NUMERIC(78),
         total_withdrawals = staking.nominators.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        total_withdrawals_count = staking.domains.total_withdrawal_amounts::NUMERIC(78) + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.nominator_id;
 
@@ -3075,6 +3136,6 @@ $$;
 ALTER FUNCTION staking.handle_unlocked_events() OWNER TO postgres;
 
 CREATE TRIGGER handle_unlocked_events
-AFTER INSERT ON staking.staked_unlocked_events
+AFTER INSERT ON staking.unlocked_events
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_unlocked_events();
