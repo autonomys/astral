@@ -146,14 +146,24 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     cache.withdrawalHistory.push(
       db.createWithdrawalHistoryHistory(
         createHashId(data),
-        data.withdrawalInShares.domainEpoch[0].toString(),
+        data.withdrawalInShares === null
+          ? ""
+          : data.withdrawalInShares.domainEpoch[0].toString(),
         data.account,
         data.operatorId.toString(),
         data.totalWithdrawalAmount,
-        data.withdrawalInShares.domainEpoch[1],
-        BigInt(data.withdrawalInShares.unlockAtConfirmedDomainBlockNumber),
-        data.withdrawalInShares.shares,
-        data.withdrawalInShares.storageFeeRefund,
+        data.withdrawalInShares === null
+          ? 0
+          : data.withdrawalInShares.domainEpoch[1],
+        data.withdrawalInShares === null
+          ? ZERO_BIGINT
+          : BigInt(data.withdrawalInShares.unlockAtConfirmedDomainBlockNumber),
+        data.withdrawalInShares === null
+          ? ZERO_BIGINT
+          : data.withdrawalInShares.shares,
+        data.withdrawalInShares === null
+          ? ZERO_BIGINT
+          : data.withdrawalInShares.storageFeeRefund,
         height
       )
     );
