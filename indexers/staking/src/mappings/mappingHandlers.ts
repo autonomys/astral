@@ -8,7 +8,7 @@ import { SubstrateBlock } from "@subql/types";
 import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
 import * as db from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
-import { createHashId } from "./utils";
+import { createHashId, findDomainIdFromOperatorsCache } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -128,15 +128,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   deposits.forEach((d: any) => {
     const data = parseDeposit(d);
     const operatorId = data.operatorId.toString();
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
     cache.depositHistory.push(
       db.createDepositHistory(
         createHashId(data),
-        domainId,
+        findDomainIdFromOperatorsCache(cache, operatorId),
         data.account,
         operatorId,
         data.shares,
@@ -164,15 +159,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   withdrawals.forEach((w: any) => {
     const data = parseWithdrawal(w);
     const operatorId = data.operatorId.toString();
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
     cache.withdrawalHistory.push(
       db.createWithdrawalHistory(
         createHashId(data),
-        domainId,
+        findDomainIdFromOperatorsCache(cache, operatorId),
         data.account,
         operatorId,
         data.totalWithdrawalAmount,
