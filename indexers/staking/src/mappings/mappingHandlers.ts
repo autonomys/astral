@@ -13,7 +13,7 @@ import { createHashId } from "./utils";
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
     block: {
-      header: { number },
+      header: { number, parentHash },
       extrinsics,
     },
     timestamp,
@@ -33,13 +33,22 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         )
       : api;
 
-  const [domainStakingSummary, headDomainNumber, operatorIdOwner, operators] =
-    await Promise.all([
-      api.query.domains.domainStakingSummary.entries(),
-      api.query.domains.headDomainNumber.entries(),
-      api.query.domains.operatorIdOwner.entries(),
-      apiPatched.query.domains.operators.entries(),
-    ]);
+  // Use to find the operator link to a the last unlock of a operator
+  const parentBlockApi = unsafeApi ? await unsafeApi.at(parentHash) : api;
+
+  const [
+    domainStakingSummary,
+    headDomainNumber,
+    operatorIdOwner,
+    operators,
+    parentBlockOperators,
+  ] = await Promise.all([
+    api.query.domains.domainStakingSummary.entries(),
+    api.query.domains.headDomainNumber.entries(),
+    api.query.domains.operatorIdOwner.entries(),
+    apiPatched.query.domains.operators.entries(),
+    parentBlockApi.query.domains.operators.entries(),
+  ]);
 
   domainStakingSummary.forEach((data) => {
     const keyPrimitive = data[0].toPrimitive() as any;
@@ -101,6 +110,11 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         height
       )
     );
+  });
+
+  parentBlockOperators.forEach((o: any) => {
+    const operator = parseOperator(o);
+    cache.parentBlockOperators.push(operator);
   });
 
   const deposits = (

@@ -1,3 +1,4 @@
+import { Operator } from "@autonomys/auto-consensus";
 import {
   BundleSubmission,
   DepositEvent,
@@ -33,6 +34,8 @@ export type Cache = {
   withdrawEvent: WithdrawEvent[];
   withdrawalHistory: WithdrawalHistory[];
   unlockedEvent: UnlockedEvent[];
+  // only for caching purposes
+  parentBlockOperators: Operator[];
 };
 
 export const initializeCache = (): Cache => ({
@@ -51,6 +54,8 @@ export const initializeCache = (): Cache => ({
   withdrawEvent: [],
   withdrawalHistory: [],
   unlockedEvent: [],
+  // only for caching purposes
+  parentBlockOperators: [],
 });
 
 export const saveCache = async (cache: Cache) => {

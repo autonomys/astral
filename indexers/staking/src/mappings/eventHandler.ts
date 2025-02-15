@@ -289,11 +289,19 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
+    let domainId = null;
     const opFromCache = cache.operatorStakingHistory.find(
       (o) => o.operatorId === operatorId
     );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    if (!opFromCache) {
+      const parentOpFromCache = cache.parentBlockOperators.find(
+        (o) => o.operatorId.toString() === operatorId
+      );
+      if (!parentOpFromCache) throw new Error("Operator from cache not found");
+      domainId = parentOpFromCache.operatorDetails.currentDomainId.toString();
+    } else {
+      domainId = opFromCache.currentDomainId;
+    }
 
     const StorageFeeUnlockedEvent = findOneExtrinsicEvent(
       extrinsicEvents,
