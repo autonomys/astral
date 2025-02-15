@@ -33,7 +33,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         )
       : api;
 
-  // Use to find the operator link to a the last unlock of a operator
+  // Use to query the parent block operators (for the last unlock of an operator (unlockNominator))
   const parentBlockApi = unsafeApi ? await unsafeApi.at(parentHash) : api;
 
   const [
