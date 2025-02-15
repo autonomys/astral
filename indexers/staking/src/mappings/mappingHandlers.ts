@@ -112,10 +112,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
   });
 
-  parentBlockOperators.forEach((o: any) => {
-    const operator = parseOperator(o);
-    cache.parentBlockOperators.push(operator);
-  });
+  parentBlockOperators.forEach((o: any) =>
+    cache.parentBlockOperators.push(parseOperator(o))
+  );
 
   const deposits = (
     await Promise.all(
