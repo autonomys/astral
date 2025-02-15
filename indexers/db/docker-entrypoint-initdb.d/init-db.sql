@@ -3087,7 +3087,7 @@ BEGIN
     SET 
         status = 'DEREGISTERED',
         updated_at = NEW.block_height
-    WHERE id = NEW.operator_id;
+    WHERE id = NEW.id;
 
     RETURN NEW;
 END;
