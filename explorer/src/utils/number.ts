@@ -104,3 +104,25 @@ export const bigIntDeserializer = (key: string, value: string | unknown): bigint
   typeof value === 'string' && /^\d+n$/.test(value as string)
     ? BigInt(value.toString().slice(0, -1))
     : value
+
+export const formatNumberWithUnit = (value: number): { value: number; unit: string } => {
+  let unit = ''
+  let formattedValue: number = value
+
+  switch (true) {
+    case value >= 1_000_000_000:
+      formattedValue = parseFloat((value / 1_000_000_000).toFixed(2))
+      unit = 'B'
+      break
+    case value >= 1_000_000:
+      formattedValue = parseFloat((value / 1_000_000).toFixed(2))
+      unit = 'M'
+      break
+    case value >= 1_000:
+      formattedValue = parseFloat((value / 1_000).toFixed(2))
+      unit = 'K'
+      break
+  }
+
+  return { value: formattedValue, unit }
+}
