@@ -114,11 +114,18 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   ).flat();
   deposits.forEach((d: any) => {
     const data = parseDeposit(d);
+    const operatorId = data.operatorId.toString();
+    const opFromCache = cache.operatorStakingHistory.find(
+      (o) => o.operatorId === operatorId
+    );
+    if (!opFromCache) throw new Error("Operator from cache not found");
+    const domainId = opFromCache.currentDomainId;
     cache.depositHistory.push(
       db.createDepositHistory(
         createHashId(data),
+        domainId,
         data.account,
-        data.operatorId.toString(),
+        operatorId,
         data.shares,
         data.storageFeeDeposit,
         data.known.shares,
@@ -143,14 +150,18 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
   withdrawals.forEach((w: any) => {
     const data = parseWithdrawal(w);
+    const operatorId = data.operatorId.toString();
+    const opFromCache = cache.operatorStakingHistory.find(
+      (o) => o.operatorId === operatorId
+    );
+    if (!opFromCache) throw new Error("Operator from cache not found");
+    const domainId = opFromCache.currentDomainId;
     cache.withdrawalHistory.push(
       db.createWithdrawalHistory(
         createHashId(data),
-        data.withdrawalInShares === null
-          ? ""
-          : data.withdrawalInShares.domainEpoch[0].toString(),
+        domainId,
         data.account,
-        data.operatorId.toString(),
+        operatorId,
         data.totalWithdrawalAmount,
         data.withdrawalInShares === null
           ? 0
