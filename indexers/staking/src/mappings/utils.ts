@@ -13,6 +13,12 @@ export const getSortId = (
   return str1 + "-" + str2;
 };
 
+export const getNominationId = (
+  accountId: string,
+  domainId: string,
+  operatorId: string
+): string => accountId + "-" + domainId + "-" + operatorId;
+
 export const createHashId = (data: any): string =>
   createHash("sha256").update(stringify(data)).digest("hex");
 
