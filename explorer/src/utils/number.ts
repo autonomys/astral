@@ -105,6 +105,13 @@ export const bigIntDeserializer = (key: string, value: string | unknown): bigint
     ? BigInt(value.toString().slice(0, -1))
     : value
 
+export const safeDivide = (numerator: number, denominator: number): number => {
+  if (numerator === 0 || denominator === 0) {
+    return 0
+  }
+  return numerator / denominator
+}
+
 export const formatNumberWithUnit = (value: number): { value: number; unit: string } => {
   let unit = ''
   let formattedValue: number = value

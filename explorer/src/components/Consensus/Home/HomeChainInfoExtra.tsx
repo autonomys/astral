@@ -8,7 +8,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { bigNumberToNumber, formatNumberWithUnit } from 'utils/number'
+import { bigNumberToNumber, formatNumberWithUnit, safeDivide } from 'utils/number'
 import { HomeInfoCard } from './HomeInfoCard'
 
 type Props = {
@@ -37,7 +37,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
     : 'error'
   const spacePledgedVal = data ? Number(data.consensus_blocks[0].space_pledged) : 0
   const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
-  const replicationFactor = formatNumberWithUnit(spacePledgedVal / historySizeVal)
+  const replicationFactor = formatNumberWithUnit(safeDivide(spacePledgedVal, historySizeVal))
 
   const listOfCards = useMemo(
     () => [
@@ -87,8 +87,6 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
       replicationFactor,
     ],
   )
-
-  console.log(listOfCards)
 
   return (
     <Swiper
