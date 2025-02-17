@@ -3120,7 +3120,7 @@ BEGIN
         total_withdrawal_amounts = staking.nominators.total_withdrawal_amounts::NUMERIC(78) + NEW.amount::NUMERIC(78),
         total_storage_fee_refund = staking.nominators.total_storage_fee_refund::NUMERIC(78) + NEW.storage_fee::NUMERIC(78),
         total_withdrawals = staking.nominators.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
-        total_withdrawals_count = staking.domains.total_withdrawal_amounts::NUMERIC(78) + 1,
+        total_withdrawals_count = staking.nominators.total_withdrawal_amounts::NUMERIC(78) + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.nominator_id;
 
