@@ -33,7 +33,7 @@ import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 // import { DomainBlockTime } from '../Domain/DomainBlockTime'
-// import { DomainProgress } from '../Domain/DomainProgress'
+import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -92,7 +92,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         TABLE,
         selectedColumns,
         {
-          id: ({ row }: Cell<Row>) => (
+          sortId: ({ row }: Cell<Row>) => (
             <Link
               className='hover:text-primaryAccent'
               href={INTERNAL_ROUTES.operators.id.page(network, Routes.staking, row.original.id)}
@@ -105,6 +105,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               address={row.original.accountId}
               network={network}
               section={Routes.consensus}
+              forceShortString
             />
           ),
           domainId: ({ row }: Cell<Row>) => {
@@ -289,6 +290,19 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               </div>
             )
           },
+          yourStake: ({ row }: Cell<Row>) => {
+            const nominator = row.original.nominators.find(
+              (nominator) => nominator.account_id === subspaceAccount,
+            )
+            if (!nominator) return <></>
+            const totalStake =
+              BigInt(nominator.current_total_stake) + BigInt(nominator.current_storage_fee_deposit)
+            return (
+              <div>
+                {bigNumberToFormattedString(totalStake)} {tokenSymbol}
+              </div>
+            )
+          },
           actions: ({ row }: Cell<Row>) => {
             const isOperator = row.original.accountId === subspaceAccount
             const nominator = row.original.nominators.find(
@@ -358,7 +372,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         // eslint-disable-next-line camelcase
         { nominators: { account_id: { _eq: subspaceAccount } } },
       ]
-    }
+    } else if (conditions._or) delete conditions._or
 
     // Total Stake
     if (filters.totalStakeMin || filters.totalStakeMax) {
@@ -478,8 +492,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
       where,
+      accountId: subspaceAccount ?? '',
     }),
-    [pagination, orderBy, where],
+    [pagination, orderBy, where, subspaceAccount],
   )
 
   const { loading, setIsVisible } = useIndexersQuery<
@@ -501,10 +516,11 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, OperatorsListDocument, 'operator', {
+      downloadFullData(apolloClient, OperatorsListDocument, 'staking_' + TABLE, {
         orderBy,
+        where,
       }),
-    [apolloClient, orderBy],
+    [apolloClient, orderBy, where],
   )
 
   const operatorsList = useMemo(() => {
@@ -540,14 +556,14 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {/* <div className='flex flex-col sm:flex-row sm:justify-between'>
-        <div className='mb-4 sm:mb-0'>
+      <div className='flex flex-col sm:flex-row sm:justify-between'>
+        {/* <div className='mb-4 sm:mb-0'>
           <DomainBlockTime />
-        </div>
+        </div> */}
         <div>
           <DomainProgress />
         </div>
-      </div> */}
+      </div>
       <div className='my-4' ref={ref}>
         <TableSettings
           table={TABLE}

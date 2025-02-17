@@ -73,10 +73,7 @@ export const DomainProgress: FC = () => {
         currentEpoch: domain.completed_epoch,
         lastBlock: domain.last_domain_block_number,
         progress,
-        estimatedRemainingTime:
-          progress < 100
-            ? (BigInt(domain.last_epoch_duration) / BigInt(100 * 1000)) * BigInt(100 - progress)
-            : BigInt(0),
+        estimatedRemainingTime: progress < 100 ? BigInt(100 - progress) * BigInt(6) : BigInt(0),
       }
     })
   }, [data, loading, error, network])
