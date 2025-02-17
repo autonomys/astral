@@ -23,12 +23,12 @@ export const getNominationId = (
 export const createHashId = (data: any): string =>
   createHash("sha256").update(stringify(data)).digest("hex");
 
-export const calculateTransfer = (transfers: Transfer[]) => {
-  if (!Array.isArray(transfers)) return [ZERO_BIGINT, ZERO_BIGINT];
+export const calculateTransfer = (transfers: Transfer) => {
+  if (!transfers) return [ZERO_BIGINT, ZERO_BIGINT];
   let total = ZERO_BIGINT;
-  const length = transfers.length;
-  for (let i = 0; i < length; i++) {
-    total += BigInt(transfers[i][1]);
+  const length = Object.keys(transfers).length;
+  for (const key in transfers) {
+    total += BigInt(transfers[key]);
   }
   return [total, BigInt(length)];
 };
