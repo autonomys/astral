@@ -21,6 +21,24 @@ object_relationships:
           name: domains
           schema: staking
 array_relationships:
+  - name: deposit_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: deposit_events
+          schema: staking
+  - name: deposit_histories
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: deposit_histories
+          schema: staking
   - name: deposits
     using:
       manual_configuration:
@@ -38,6 +56,24 @@ array_relationships:
         insertion_order: null
         remote_table:
           name: nominators
+          schema: staking
+  - name: withdraw_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: withdraw_events
+          schema: staking
+  - name: withdrawal_histories
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: withdrawal_histories
           schema: staking
   - name: withdrawals
     using:

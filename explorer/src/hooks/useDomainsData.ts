@@ -15,7 +15,7 @@ export const useDomainsData = () => {
     try {
       const domainsLastBlockNumbers = new Map()
       const domainsBlocks = await Promise.all(
-        Object.values(domainsApis).map((d) => d.rpc.chain.getBlock()),
+        Object.values(domainsApis).map((d) => d.api.rpc.chain.getBlock()),
       )
       domainsBlocks.map((block, index) =>
         domainsLastBlockNumbers.set(

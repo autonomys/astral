@@ -116,7 +116,7 @@ export const ROUTES: Route[] = [
       {
         name: RoutesStaking.nominations,
         title: 'Nominations',
-        networks: [],
+        networks: [NetworkId.TAURUS],
       },
     ],
   },
@@ -188,7 +188,7 @@ export const EXTERNAL_ROUTES = {
     linkedin: 'https://www.linkedin.com/company/autonomys/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
-  novaExplorer: 'https://nova.subspace.network/',
+  taurusEvmExplorer: 'https://blockscout.taurus.autonomys.xyz/',
   polkadot: (network: NetworkId): string =>
     `https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.${network}.subspace.network%2Fws#/explorer`,
   subscan: 'https://autonomys.subscan.io/',

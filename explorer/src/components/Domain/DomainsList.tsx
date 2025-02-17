@@ -360,10 +360,11 @@ export const DomainsList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, DomainsListDocument, TABLE, {
+      downloadFullData(apolloClient, DomainsListDocument, 'staking_' + TABLE, {
         orderBy,
+        where,
       }),
-    [apolloClient, orderBy],
+    [apolloClient, orderBy, where],
   )
 
   const domainsList = useMemo(

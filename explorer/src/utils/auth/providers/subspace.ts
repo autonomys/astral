@@ -4,7 +4,10 @@ import { User } from 'next-auth'
 import type { Provider } from 'next-auth/providers'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { findUserByID, saveUser, updateUser } from 'utils/fauna'
-import { verifySubspaceAccountRoles } from '../vcs/subspace'
+import {
+  verifySubspaceMainnetAccountRoles,
+  verifySubspaceTaurusAccountRoles,
+} from '../vcs/subspace'
 
 export const Subspace = () => {
   return CredentialsProvider({
@@ -35,8 +38,19 @@ export const Subspace = () => {
 
         const did = `did:subspace:${account}`
 
-        // Verify Subspace VCs
-        const { farmer, operator, nominator } = await verifySubspaceAccountRoles(account)
+        // Verify Subspace VCs for mainnet
+        const {
+          farmer: mainnetFarmer,
+          operator: mainnetOperator,
+          nominator: mainnetNominator,
+        } = await verifySubspaceMainnetAccountRoles(account)
+
+        // Verify Subspace VCs for testnet
+        const {
+          farmer: taurusFarmer,
+          operator: taurusOperator,
+          nominator: taurusNominator,
+        } = await verifySubspaceTaurusAccountRoles(account)
 
         const savedUser = await findUserByID(did)
 
@@ -49,9 +63,12 @@ export const Subspace = () => {
             message,
             signature,
             vcs: {
-              farmer,
-              operator,
-              nominator,
+              mainnetFarmer,
+              mainnetOperator,
+              mainnetNominator,
+              taurusFarmer,
+              taurusOperator,
+              taurusNominator,
             },
           },
           discord: DEFAULT_DISCORD_TOKEN,

@@ -1,10 +1,10 @@
 import { PaginationState, SortingState } from '@tanstack/react-table'
 import { INITIAL_TABLES } from 'constants/tables'
-import { Order_By as OrderBy } from 'gql/graphql'
 import { snakeCase } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { Filters, Table, TableSettingsTabs } from 'types/table'
 import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
+import { sortBy, sortByAggregate } from 'utils/table'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
@@ -219,7 +219,7 @@ export const usePersistentTableStates = create<PersistentTableStatesAndFn>()(
     }),
     {
       name: 'table-storage',
-      version: 9,
+      version: 10,
       storage: createJSONStorage(() => localStorage),
       serialize: (state) => JSON.stringify(state, bigIntSerializer),
       deserialize: (str) => JSON.parse(str, bigIntDeserializer),
@@ -275,13 +275,10 @@ export const useTableSettings = <TFilter>(table: TableName) => {
   const resetSettings = usePersistentTableStates((state) => state.resetSettings)
   const _showReset = usePersistentTableStates((state) => state.showReset)
 
-  const orderBy = useMemo(
-    () =>
-      sorting[0].id.endsWith('aggregate')
-        ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
-        : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc },
-    [sorting],
-  )
+  const orderBy = useMemo(() => {
+    if (!sorting || sorting.length === 0) return sortBy(INITIAL_TABLES[table].sorting)
+    return sorting[0].id.endsWith('aggregate') ? sortByAggregate(sorting) : sortBy(sorting)
+  }, [sorting, table])
 
   const whereForSearch = useMemo(
     () =>

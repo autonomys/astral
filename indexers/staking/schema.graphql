@@ -123,6 +123,28 @@ type BundleSubmission @entity {
   eventId: String!
 }
 
+type UnlockedEvent @entity {
+  id: ID!
+  domainId: String!
+  operatorId: String!
+  accountId: String!
+  nominatorId: String!
+  amount: BigInt!
+  storageFee: BigInt!
+  blockHeight: BigInt!
+  extrinsicId: String!
+  eventId: String!
+}
+
+type OperatorDeregistration @entity {
+  id: ID!
+  owner: String!
+  domainId: String!
+  blockHeight: BigInt!
+  extrinsicId: String!
+  eventId: String!
+}
+
 # Chain states entities
 
 type DomainBlockHistory @entity {
@@ -160,6 +182,7 @@ type OperatorStakingHistory @entity {
 
 type DepositHistory @entity {
   id: ID!
+  domainId: String!
   accountId: String!
   operatorId: String!
   nominatorId: String!
