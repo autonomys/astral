@@ -438,7 +438,7 @@ export function createDepositHistory(
   });
 }
 
-export function createWithdrawalHistoryHistory(
+export function createWithdrawalHistory(
   hash: string,
   domainId: string,
   accountId: string,
