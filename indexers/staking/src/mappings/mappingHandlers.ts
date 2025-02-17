@@ -8,12 +8,12 @@ import { SubstrateBlock } from "@subql/types";
 import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
 import * as db from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
-import { createHashId } from "./utils";
+import { createHashId, findDomainIdFromOperatorsCache } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
     block: {
-      header: { number },
+      header: { number, parentHash },
       extrinsics,
     },
     timestamp,
@@ -33,13 +33,22 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         )
       : api;
 
-  const [domainStakingSummary, headDomainNumber, operatorIdOwner, operators] =
-    await Promise.all([
-      api.query.domains.domainStakingSummary.entries(),
-      api.query.domains.headDomainNumber.entries(),
-      api.query.domains.operatorIdOwner.entries(),
-      apiPatched.query.domains.operators.entries(),
-    ]);
+  // Use to query the parent block operators (for the last unlock of an operator (unlockNominator))
+  const parentBlockApi = unsafeApi ? await unsafeApi.at(parentHash) : api;
+
+  const [
+    domainStakingSummary,
+    headDomainNumber,
+    operatorIdOwner,
+    operators,
+    parentBlockOperators,
+  ] = await Promise.all([
+    api.query.domains.domainStakingSummary.entries(),
+    api.query.domains.headDomainNumber.entries(),
+    api.query.domains.operatorIdOwner.entries(),
+    apiPatched.query.domains.operators.entries(),
+    parentBlockApi.query.domains.operators.entries(),
+  ]);
 
   domainStakingSummary.forEach((data) => {
     const keyPrimitive = data[0].toPrimitive() as any;
@@ -103,6 +112,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
   });
 
+  parentBlockOperators.forEach((o: any) =>
+    cache.parentBlockOperators.push(parseOperator(o))
+  );
+
   const deposits = (
     await Promise.all(
       operatorIdOwner.map((o) =>
@@ -115,15 +128,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   deposits.forEach((d: any) => {
     const data = parseDeposit(d);
     const operatorId = data.operatorId.toString();
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
     cache.depositHistory.push(
       db.createDepositHistory(
         createHashId(data),
-        domainId,
+        findDomainIdFromOperatorsCache(cache, operatorId),
         data.account,
         operatorId,
         data.shares,
@@ -151,15 +159,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   withdrawals.forEach((w: any) => {
     const data = parseWithdrawal(w);
     const operatorId = data.operatorId.toString();
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
     cache.withdrawalHistory.push(
       db.createWithdrawalHistory(
         createHashId(data),
-        domainId,
+        findDomainIdFromOperatorsCache(cache, operatorId),
         data.account,
         operatorId,
         data.totalWithdrawalAmount,
