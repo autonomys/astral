@@ -182,6 +182,7 @@ type OperatorStakingHistory @entity {
 
 type DepositHistory @entity {
   id: ID!
+  domainId: String!
   accountId: String!
   operatorId: String!
   nominatorId: String!

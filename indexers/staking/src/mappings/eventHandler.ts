@@ -6,7 +6,11 @@ import {
 import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
-import { calculateTransfer, findOneExtrinsicEvent } from "./utils";
+import {
+  calculateTransfer,
+  findDomainIdFromOperatorsCache,
+  findOneExtrinsicEvent,
+} from "./utils";
 
 type EventHandler = (params: {
   event: EventRecord;
@@ -144,6 +148,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     const storageFeeDepositedEvent = findOneExtrinsicEvent(
       extrinsicEvents,
@@ -153,11 +158,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const storageFeeDeposit = BigInt(
       storageFeeDepositedEvent?.event.data[2].toString() ?? 0
     );
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
 
     cache.depositEvent.push(
       db.createDepositEvent(
@@ -201,11 +201,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     );
     const amount2 =
       amount1 - BigInt(amount2Event?.event.data[0].toString() ?? 0);
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
@@ -234,11 +230,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const operatorId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
     const atBlockNumber = BigInt(bundleDetails.bundle.atBlockNumber.toString());
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     cache.operatorReward.push(
       db.createOperatorReward(
@@ -261,11 +253,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const tax = BigInt(event.event.data[1].toString());
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     cache.operatorTaxCollection.push(
       db.createOperatorTaxCollection(
@@ -289,11 +277,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     const StorageFeeUnlockedEvent = findOneExtrinsicEvent(
       extrinsicEvents,
@@ -326,11 +310,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     eventId,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     cache.operatorDeregistration.push(
       db.createOperatorDeregistration(

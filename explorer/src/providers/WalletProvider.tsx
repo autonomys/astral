@@ -1,12 +1,7 @@
 'use client'
 
-import {
-  activate,
-  ApiPromise,
-  createConnection,
-  DomainRuntime,
-  networks,
-} from '@autonomys/auto-utils'
+import { activate, ApiPromise, createConnection, networks } from '@autonomys/auto-utils'
+import { Domain } from '@autonomys/auto-utils/dist/types/domain'
 import { sendGAEvent } from '@next/third-parties/google'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
@@ -19,7 +14,10 @@ import type { ChainParam } from 'types/app'
 import type { WalletAccountWithType } from 'types/wallet'
 import { formatAddress } from 'utils/formatAddress'
 
-export type DomainsApis = { [key: string]: ApiPromise }
+interface DomainWithApi extends Domain {
+  api: ApiPromise
+}
+export type DomainsApis = { [key: string]: DomainWithApi }
 
 export type WalletContextValue = {
   api: ApiPromise | undefined
@@ -73,25 +71,22 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const prepareDomainsApis = useCallback(async () => {
     try {
       const network = networks.find((network) => network.id === chain)
-      if (!network) return
+      if (!network || !network.domains || network.domains.length === 0) return
+      const domains = network.domains
 
-      const autoEvmRpc = network.domains.find((domain) => domain.runtime === DomainRuntime.AUTO_EVM)
-        ?.rpcUrls[0]
-      const autoIdRpc = network.domains.find((domain) => domain.runtime === DomainRuntime.AUTO_ID)
-        ?.rpcUrls[0]
-      if (!autoEvmRpc || !autoIdRpc) return
-
-      const domainsRpcs = network.domains.map((domain) =>
-        domain.rpcUrls[0].replace('https://', 'wss://'),
+      const domainApis = await Promise.all(
+        domains.map((d) =>
+          createConnection(d.rpcUrls.map((rpc) => rpc.replace('https://', 'wss://'))),
+        ),
       )
 
-      const [autoEvm, autoId] = await Promise.all(
-        domainsRpcs.flatMap((rpc) => createConnection(rpc)),
+      return domains.reduce(
+        (acc, d, index) => ({
+          ...acc,
+          [d.name]: { ...d, api: domainApis[index] },
+        }),
+        {},
       )
-      return {
-        autoEvm,
-        autoId,
-      }
     } catch (error) {
       console.error('Failed to prepare domains API for chain', chain, 'error:', error)
     }

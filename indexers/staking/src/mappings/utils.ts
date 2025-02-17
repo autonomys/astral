@@ -1,6 +1,7 @@
 import { EventRecord, stringify } from "@autonomys/auto-utils";
 import { createHash } from "crypto";
 import { PAD_ZEROS, ZERO_BIGINT } from "./constants";
+import { Cache } from "./db";
 import { Transfer } from "./types";
 
 export const getSortId = (
@@ -12,6 +13,12 @@ export const getSortId = (
   const str2 = indexInBlock.toString().padStart(32, PAD_ZEROS);
   return str1 + "-" + str2;
 };
+
+export const getNominationId = (
+  accountId: string,
+  domainId: string,
+  operatorId: string
+): string => accountId + "-" + domainId + "-" + operatorId;
 
 export const createHashId = (data: any): string =>
   createHash("sha256").update(stringify(data)).digest("hex");
@@ -37,4 +44,21 @@ export const findOneExtrinsicEvent = (
       e.event.section === section &&
       e.event.method === method
   );
+};
+
+export const findDomainIdFromOperatorsCache = (
+  cache: Cache,
+  operatorId: string
+): string => {
+  const opFromCache = cache.operatorStakingHistory.find(
+    (o) => o.operatorId === operatorId
+  );
+  if (!opFromCache) {
+    const parentOpFromCache = cache.parentBlockOperators.find(
+      (o) => o.operatorId.toString() === operatorId
+    );
+    if (!parentOpFromCache) throw new Error("Operator from cache not found");
+    return parentOpFromCache.operatorDetails.currentDomainId.toString();
+  }
+  return opFromCache.currentDomainId;
 };
