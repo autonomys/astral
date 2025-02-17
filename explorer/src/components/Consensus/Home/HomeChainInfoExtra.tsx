@@ -8,7 +8,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { bigNumberToNumber } from 'utils/number'
+import { bigNumberToNumber, formatNumberWithUnit, safeDivide } from 'utils/number'
 import { HomeInfoCard } from './HomeInfoCard'
 
 type Props = {
@@ -35,6 +35,9 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   const rewardsValue = data
     ? bigNumberToNumber(data.consensus_blocks[0].cumulative?.cumulative_reward_value)
     : 'error'
+  const spacePledgedVal = data ? Number(data.consensus_blocks[0].space_pledged) : 0
+  const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
+  const replicationFactor = formatNumberWithUnit(safeDivide(spacePledgedVal, historySizeVal))
 
   const listOfCards = useMemo(
     () => [
@@ -66,8 +69,23 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
         unit: tokenSymbol,
         decimal: 2,
       },
+      {
+        title: 'Data Replication Factor',
+        value: replicationFactor.value,
+        darkBgClass: 'dark:bg-boxDark',
+        unit: replicationFactor.unit,
+        decimal: 2,
+      },
     ],
-    [eventsCount, transfersCount, transferValue, rewardsCount, rewardsValue, tokenSymbol],
+    [
+      eventsCount,
+      transfersCount,
+      transferValue,
+      rewardsCount,
+      rewardsValue,
+      tokenSymbol,
+      replicationFactor,
+    ],
   )
 
   return (
@@ -77,7 +95,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
       pagination={{
         clickable: true,
         renderBullet: (index, className) =>
-          `<span class="${className}" style="background-color: #1949D2;"></span>`,
+          `<span key="${index}" class="${className}" style="background-color: #1949D2;"></span>`,
       }}
       breakpoints={{
         460: {
@@ -93,7 +111,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
           spaceBetween: 20,
         },
         1536: {
-          slidesPerView: 5,
+          slidesPerView: 6,
           spaceBetween: 20,
         },
       }}
@@ -101,7 +119,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
       className={cn('flex w-full items-center gap-5', isDesktop ? '!p-0' : '!pb-10')}
     >
       {!data || loading
-        ? Array.from({ length: 5 }).map((_, index) => (
+        ? Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={`loader-${index}`}>
               <HomeInfoCardSkeleton
                 key={index}
