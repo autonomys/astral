@@ -205,9 +205,13 @@ query OperatorNominatorsById(
   }
   staking_nominators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
-    known_shares
     account_id
     domain_id
+    known_shares
+    current_total_stake
+    current_storage_fee_deposit
+    total_deposits
+    total_withdrawals
   }
 }
 
