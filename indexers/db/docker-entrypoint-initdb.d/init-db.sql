@@ -1206,6 +1206,7 @@ ALTER TABLE staking.deposit_events OWNER TO postgres;
 
 CREATE TABLE staking.deposit_histories (
     id text NOT NULL,
+    domain_id text NOT NULL,
     account_id text NOT NULL,
     operator_id text NOT NULL,
     nominator_id text NOT NULL,
