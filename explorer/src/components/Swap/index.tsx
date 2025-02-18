@@ -10,15 +10,16 @@ import {
 import { sendGAEvent } from '@next/third-parties/google'
 import { Routes } from 'constants/routes'
 import { SwapDirection } from 'constants/transaction'
+import { AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT, WalletType } from 'constants/wallet'
 import { FieldArray, Form, Formik } from 'formik'
 import useIndexers from 'hooks/useIndexers'
 import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
-import { floatToStringWithDecimals } from 'utils/number'
+import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import { WalletButton } from '../WalletButton'
 import { AmountField } from './AmountField'
 import { NetworkSelector } from './NetworkSelector'
@@ -26,6 +27,7 @@ import { ReceiverField } from './ReceiverField'
 
 type DirectionBlockProps = {
   direction: SwapDirection
+  maxAmount?: number
 }
 
 interface FormValues {
@@ -35,7 +37,7 @@ interface FormValues {
   receiver: string
 }
 
-const DirectionBlock: FC<DirectionBlockProps> = ({ direction }) => {
+const DirectionBlock: FC<DirectionBlockProps> = ({ direction, maxAmount }) => {
   const { network } = useIndexers()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -69,16 +71,14 @@ const DirectionBlock: FC<DirectionBlockProps> = ({ direction }) => {
         )}
       </div>
       {direction === SwapDirection.TO && pathname.includes(Routes.transfer) && <ReceiverField />}
-      <AmountField
-        maxAmount={direction === SwapDirection.FROM ? 0 : undefined}
-        disabled={direction === SwapDirection.TO}
-      />
+      <AmountField maxAmount={maxAmount} disabled={direction === SwapDirection.TO} />
     </div>
   )
 }
 
 export const Swap: FC = () => {
   const [hash, setHash] = useState<Hash | undefined>(undefined)
+  const [walletBalance, setWalletBalance] = useState<number>(0)
   const { actingAccount, injector, api, subspaceAccount } = useWallet()
   const searchParams = useSearchParams()
   const { tokenDecimals } = useIndexers()
@@ -246,6 +246,25 @@ export const Swap: FC = () => {
     [api, handleTxError, injector, sendAndSaveTx, subspaceAccount, tokenDecimals],
   )
 
+  const loadWalletBalance = useCallback(async () => {
+    if (!api || !actingAccount) return
+
+    if (actingAccount.type === WalletType.subspace) {
+      const balance = await api.query.system.account(actingAccount.address)
+      setWalletBalance(
+        formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
+      )
+    }
+  }, [api, actingAccount])
+
+  const maxAmount = useMemo(
+    () =>
+      walletBalance > AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT
+        ? parseFloat((walletBalance - AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT).toFixed(5))
+        : 0,
+    [walletBalance],
+  )
+
   const initialValues: FormValues = useMemo(
     () => ({
       from: from || '',
@@ -255,6 +274,10 @@ export const Swap: FC = () => {
     }),
     [from, to, amount, receiver],
   )
+
+  useEffect(() => {
+    loadWalletBalance()
+  }, [api, actingAccount, loadWalletBalance])
 
   return (
     <div className='w-full max-w-xl'>
@@ -298,7 +321,7 @@ export const Swap: FC = () => {
                       name='dischargeNorms'
                       render={() => (
                         <div className='relative'>
-                          <DirectionBlock direction={SwapDirection.FROM} />
+                          <DirectionBlock direction={SwapDirection.FROM} maxAmount={maxAmount} />
                           <DirectionBlock direction={SwapDirection.TO} />
                         </div>
                       )}
