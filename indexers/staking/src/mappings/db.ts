@@ -1,3 +1,4 @@
+import { Operator } from "@autonomys/auto-consensus";
 import {
   BundleSubmission,
   DepositEvent,
@@ -15,7 +16,7 @@ import {
   WithdrawEvent,
   WithdrawalHistory,
 } from "../types";
-import { getSortId } from "./utils";
+import { getNominationId, getSortId } from "./utils";
 
 export type Cache = {
   bundleSubmission: BundleSubmission[];
@@ -33,6 +34,8 @@ export type Cache = {
   withdrawEvent: WithdrawEvent[];
   withdrawalHistory: WithdrawalHistory[];
   unlockedEvent: UnlockedEvent[];
+  // only for caching purposes
+  parentBlockOperators: Operator[];
 };
 
 export const initializeCache = (): Cache => ({
@@ -51,6 +54,8 @@ export const initializeCache = (): Cache => ({
   withdrawEvent: [],
   withdrawalHistory: [],
   unlockedEvent: [],
+  // only for caching purposes
+  parentBlockOperators: [],
 });
 
 export const saveCache = async (cache: Cache) => {
@@ -158,12 +163,12 @@ export function createDepositEvent(
   eventId: string
 ): DepositEvent {
   return DepositEvent.create({
-    id: extrinsicId + "-" + accountId + "-" + domainId + "-" + operatorId,
+    id: extrinsicId + "-" + getNominationId(accountId, domainId, operatorId),
     sortId: getSortId(blockHeight, extrinsicId),
     accountId,
     domainId,
     operatorId,
-    nominatorId: accountId + "-" + domainId + "-" + operatorId,
+    nominatorId: getNominationId(accountId, domainId, operatorId),
     amount,
     storageFeeDeposit,
     totalAmount,
@@ -188,12 +193,12 @@ export function createWithdrawEvent(
   eventId: string
 ): WithdrawEvent {
   return WithdrawEvent.create({
-    id: extrinsicId + "-" + accountId + "-" + domainId + "-" + operatorId,
+    id: extrinsicId + "-" + getNominationId(accountId, domainId, operatorId),
     sortId: getSortId(blockHeight, extrinsicId),
     accountId,
     domainId,
     operatorId,
-    nominatorId: accountId + "-" + domainId + "-" + operatorId,
+    nominatorId: getNominationId(accountId, domainId, operatorId),
     toWithdraw,
     amount1,
     amount2,
@@ -260,7 +265,7 @@ export function createUnlockedEvent(
     domainId,
     operatorId,
     accountId,
-    nominatorId: accountId + "-" + operatorId,
+    nominatorId: getNominationId(accountId, domainId, operatorId),
     amount,
     storageFee,
     blockHeight,
@@ -409,6 +414,7 @@ export function createOperatorStakingHistory(
 
 export function createDepositHistory(
   hash: string,
+  domainId: string,
   accountId: string,
   operatorId: string,
   shares: bigint,
@@ -423,9 +429,10 @@ export function createDepositHistory(
 ): DepositHistory {
   return DepositHistory.create({
     id: hash,
+    domainId,
     accountId,
     operatorId,
-    nominatorId: accountId + "-" + operatorId,
+    nominatorId: getNominationId(accountId, domainId, operatorId),
     shares,
     storageFeeDeposit,
     sharesKnown,
@@ -438,7 +445,7 @@ export function createDepositHistory(
   });
 }
 
-export function createWithdrawalHistoryHistory(
+export function createWithdrawalHistory(
   hash: string,
   domainId: string,
   accountId: string,
@@ -455,7 +462,7 @@ export function createWithdrawalHistoryHistory(
     domainId,
     accountId,
     operatorId,
-    nominatorId: accountId + "-" + operatorId,
+    nominatorId: getNominationId(accountId, domainId, operatorId),
     totalWithdrawalAmount,
     domainEpoch,
     unlockAtConfirmedDomainBlockNumber,

@@ -1206,6 +1206,7 @@ ALTER TABLE staking.deposit_events OWNER TO postgres;
 
 CREATE TABLE staking.deposit_histories (
     id text NOT NULL,
+    domain_id text NOT NULL,
     account_id text NOT NULL,
     operator_id text NOT NULL,
     nominator_id text NOT NULL,
@@ -3085,9 +3086,9 @@ CREATE OR REPLACE FUNCTION staking.update_operator_on_deregistration() RETURNS T
 BEGIN
     UPDATE staking.operators
     SET 
-        status = 'DEREGISTERED',
+        raw_status = 'DEREGISTERED',
         updated_at = NEW.block_height
-    WHERE id = NEW.operator_id;
+    WHERE id = NEW.id;
 
     RETURN NEW;
 END;
@@ -3120,7 +3121,7 @@ BEGIN
         total_withdrawal_amounts = staking.nominators.total_withdrawal_amounts::NUMERIC(78) + NEW.amount::NUMERIC(78),
         total_storage_fee_refund = staking.nominators.total_storage_fee_refund::NUMERIC(78) + NEW.storage_fee::NUMERIC(78),
         total_withdrawals = staking.nominators.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
-        total_withdrawals_count = staking.domains.total_withdrawal_amounts::NUMERIC(78) + 1,
+        total_withdrawals_count = staking.nominators.total_withdrawal_amounts::NUMERIC(78) + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.nominator_id;
 

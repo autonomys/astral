@@ -21,10 +21,8 @@ import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { useViewStates } from 'states/view'
 import { bigNumberToFormattedString, numberWithCommas } from 'utils/number'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 
@@ -37,7 +35,6 @@ export const NominationsTable: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { network, tokenSymbol } = useIndexers()
   const [sorting] = useState<SortingState>([{ id: 'operator_id', desc: false }])
-  const { myPositionOnly } = useViewStates()
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -69,9 +66,9 @@ export const NominationsTable: FC = () => {
       offset: undefined,
       orderBy,
       // eslint-disable-next-line camelcase
-      where: myPositionOnly && subspaceAccount ? { account_id: { _eq: subspaceAccount } } : {},
+      where: subspaceAccount ? { account_id: { _eq: subspaceAccount } } : {},
     }),
-    [myPositionOnly, orderBy, subspaceAccount],
+    [orderBy, subspaceAccount],
   )
 
   const { loading, data, setIsVisible } = useIndexersQuery<
@@ -174,11 +171,6 @@ export const NominationsTable: FC = () => {
             <span className='flex items-center'>Nominations ({totalLabel})</span>
           </div>
         </h2>
-        {subspaceAccount && (
-          <div className='flex w-48 items-center'>
-            <MyPositionSwitch labels={['My nominations', 'All nominations']} />
-          </div>
-        )}
       </div>
       <div className='my-2' ref={ref}>
         {!loading ? (

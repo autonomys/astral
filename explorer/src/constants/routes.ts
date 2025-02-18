@@ -123,7 +123,7 @@ export const ROUTES: Route[] = [
       {
         name: RoutesStaking.nominations,
         title: 'Nominations',
-        networks: [],
+        networks: [NetworkId.TAURUS],
       },
     ],
   },
