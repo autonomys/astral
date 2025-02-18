@@ -10,7 +10,7 @@ import {
 import { sendGAEvent } from '@next/third-parties/google'
 import { Routes } from 'constants/routes'
 import { SwapDirection } from 'constants/transaction'
-import { AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT, WalletType } from 'constants/wallet'
+import { AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM, WalletType } from 'constants/wallet'
 import { FieldArray, Form, Formik } from 'formik'
 import useIndexers from 'hooks/useIndexers'
 import { useTxHelper } from 'hooks/useTxHelper'
@@ -83,7 +83,7 @@ export const Swap: FC = () => {
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const { actingAccount, injector, api, domainsApis, subspaceAccount } = useWallet()
   const searchParams = useSearchParams()
-  const { tokenDecimals } = useIndexers()
+  const { tokenDecimals, tokenSymbol } = useIndexers()
   const { sendAndSaveTx, handleTxError } = useTxHelper()
 
   const from = searchParams.get('from')
@@ -250,7 +250,7 @@ export const Swap: FC = () => {
           break
       }
     },
-    [api, handleTxError, injector, sendAndSaveTx, subspaceAccount, tokenDecimals],
+    [api, domainsApis, handleTxError, injector, sendAndSaveTx, subspaceAccount, tokenDecimals],
   )
 
   const loadWalletBalance = useCallback(async () => {
@@ -266,8 +266,8 @@ export const Swap: FC = () => {
 
   const maxAmount = useMemo(
     () =>
-      walletBalance > AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT
-        ? parseFloat((walletBalance - AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT).toFixed(5))
+      walletBalance > AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM
+        ? parseFloat((walletBalance - AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM).toFixed(5))
         : 0,
     [walletBalance],
   )
@@ -333,6 +333,12 @@ export const Swap: FC = () => {
                         </div>
                       )}
                     />
+                    <div className='flex justify-between text-grayDark dark:text-white'>
+                      <span className='text-sm'>Fees (approx.)</span>
+                      <span className='font-medium'>
+                        {AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM} {tokenSymbol}
+                      </span>
+                    </div>
                     <div className='flex flex-col items-center pb-4 text-grayDark dark:text-white'>
                       <span className='text-sm'>Estimated wait time</span>
                       <span className='font-medium'>14400 domain blocks (approx. 24 hours)</span>
