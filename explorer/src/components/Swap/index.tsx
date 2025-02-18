@@ -256,13 +256,29 @@ export const Swap: FC = () => {
   const loadWalletBalance = useCallback(async () => {
     if (!api || !actingAccount) return
 
-    if (actingAccount.type === WalletType.subspace) {
-      const balance = await api.query.system.account(actingAccount.address)
-      setWalletBalance(
-        formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
-      )
+    switch (true) {
+      case from === 'consensus': {
+        if (actingAccount.type === WalletType.subspace) {
+          const balance = await api.query.system.account(actingAccount.address)
+          setWalletBalance(
+            formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
+          )
+        }
+        break
+      }
+      case from && from.startsWith('domain'): {
+        const domainApi = domainsApis[from.replace('domainId', '')]
+        if (!domainApi) return
+        const balance = await domainApi.api.query.system.account(actingAccount.address)
+        setWalletBalance(
+          formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
+        )
+        break
+      }
+      default:
+        break
     }
-  }, [api, actingAccount])
+  }, [api, actingAccount, domainsApis, from])
 
   const maxAmount = useMemo(
     () =>
@@ -281,6 +297,10 @@ export const Swap: FC = () => {
     }),
     [from, to, amount, receiver],
   )
+
+  const isWalletBalanceEnough = useMemo(() => {
+    return walletBalance > AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM + parseFloat(amount || '0')
+  }, [walletBalance, amount])
 
   useEffect(() => {
     loadWalletBalance()
@@ -347,12 +367,18 @@ export const Swap: FC = () => {
                       {!actingAccount ? (
                         <WalletButton />
                       ) : (
-                        <button
-                          className='block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
-                          type='submit'
-                        >
-                          Send token
-                        </button>
+                        <>
+                          {!isWalletBalanceEnough ? (
+                            <span className='text-red-500'>Insufficient wallet balance</span>
+                          ) : (
+                            <button
+                              className='block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
+                              type='submit'
+                            >
+                              Send token
+                            </button>
+                          )}
+                        </>
                       )}
                     </div>
                   </>
