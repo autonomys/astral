@@ -1,8 +1,8 @@
-import { useConsensusStates } from '@/states/consensus'
-import { limitNumberDecimals } from '@/utils/number'
 import { Field, Form, Formik } from 'formik'
+import { useIndexers } from 'hooks/useIndexers'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useMemo } from 'react'
+import { limitNumberDecimals } from 'utils/number'
 import * as Yup from 'yup'
 
 interface AmountFieldProps {
@@ -18,7 +18,7 @@ export const AmountField: FC<AmountFieldProps> = ({ maxAmount, disabled }) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { tokenSymbol } = useConsensusStates()
+  const { tokenSymbol } = useIndexers()
 
   const initialValues: FormValues = useMemo(() => {
     try {
