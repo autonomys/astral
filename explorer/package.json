@@ -34,6 +34,7 @@
     "@autonomys/auto-consensus": "^1.2.8",
     "@autonomys/auto-drive": "^1.2.8",
     "@autonomys/auto-utils": "^1.2.8",
+    "@autonomys/auto-xdm": "^1.2.8",
     "@floating-ui/react": "^0.27.4",
     "@headlessui/react": "^1.7.18",
     "@headlessui/tailwindcss": "^0.2.0",
