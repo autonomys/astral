@@ -43,7 +43,9 @@ const DirectionBlock: FC<DirectionBlockProps> = ({ direction, maxAmount }) => {
   const searchParams = useSearchParams()
 
   const linkToSwapOrTransfer = useMemo(() => {
-    let href = `/${network}/${Routes.swap}?${searchParams.toString()}`
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('receiver')
+    let href = `/${network}/${Routes.swap}?${params.toString()}`
     let text = 'Send to your wallet?'
     if (pathname.includes(Routes.swap)) {
       href = `/${network}/${Routes.transfer}?${searchParams.toString()}`
