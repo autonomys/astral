@@ -13,6 +13,7 @@ export enum WalletAction {
 }
 
 export const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT = 0.0001
+export const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM = 2
 
 export enum ExtrinsicsSupportedModule {
   Balances = 'balances',

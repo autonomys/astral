@@ -6,3 +6,8 @@ export enum TransactionStatus {
 
 export const successfulTxEvent = 'system.ExtrinsicSuccess'
 export const failedTxEvent = 'system.ExtrinsicFailed'
+
+export enum SwapDirection {
+  FROM = 'From',
+  TO = 'To',
+}

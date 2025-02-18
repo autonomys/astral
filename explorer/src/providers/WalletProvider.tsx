@@ -83,7 +83,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       return domains.reduce(
         (acc, d, index) => ({
           ...acc,
-          [d.name]: { ...d, api: domainApis[index] },
+          [d.domainId]: { ...d, api: domainApis[index] },
         }),
         {},
       )
