@@ -81,7 +81,7 @@ const DirectionBlock: FC<DirectionBlockProps> = ({ direction, maxAmount }) => {
 export const Swap: FC = () => {
   const [hash, setHash] = useState<Hash | undefined>(undefined)
   const [walletBalance, setWalletBalance] = useState<number>(0)
-  const { actingAccount, injector, api, subspaceAccount } = useWallet()
+  const { actingAccount, injector, api, domainsApis, subspaceAccount } = useWallet()
   const searchParams = useSearchParams()
   const { tokenDecimals } = useIndexers()
   const { sendAndSaveTx, handleTxError } = useTxHelper()
@@ -209,14 +209,19 @@ export const Swap: FC = () => {
           }
           break
         }
-        case values.from.startsWith('domain') && values.to === 'consensus':
-          console.log('domain-consensus')
+        case values.from.startsWith('domain') && values.to === 'consensus': {
           if (values.receiver.startsWith('0x')) {
             toast.error('Receiver must be a consensus address', { position: 'bottom-center' })
             break
           }
+          const sourceDomainId = values.from.replace('domainId', '')
+          const domainApi = domainsApis[sourceDomainId]
+          if (!domainApi) {
+            toast.error('Domain API not found', { position: 'bottom-center' })
+            break
+          }
           try {
-            const tx = await transferToConsensus(api, to, amount)
+            const tx = await transferToConsensus(domainApi.api, to, amount)
             const hash = await sendAndSaveTx({
               call: 'transporter.transfer',
               tx,
@@ -239,7 +244,7 @@ export const Swap: FC = () => {
             )
           }
           break
-
+        }
         default:
           toast.error('Invalid swap', { position: 'bottom-center' })
           break
