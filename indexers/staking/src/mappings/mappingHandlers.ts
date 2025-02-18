@@ -107,6 +107,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         operator.operatorDetails.totalStorageFeeDeposit,
         sharePrice,
         stringify(operator.operatorDetails.partialStatus),
+        blockTimestamp,
         height
       )
     );
@@ -142,6 +143,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         data.pending?.effectiveDomainEpoch ?? 0,
         data.pending?.amount ?? ZERO_BIGINT,
         data.pending?.storageFeeDeposit ?? ZERO_BIGINT,
+        blockTimestamp,
         height
       )
     );
@@ -178,6 +180,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         data.withdrawalInShares === null
           ? ZERO_BIGINT
           : data.withdrawalInShares.storageFeeRefund,
+        blockTimestamp,
         height
       )
     );

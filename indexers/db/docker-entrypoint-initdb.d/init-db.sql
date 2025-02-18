@@ -1218,6 +1218,7 @@ CREATE TABLE staking.deposit_histories (
     effective_domain_epoch_pending integer NOT NULL,
     amount_pending numeric NOT NULL,
     storage_fee_deposit_pending numeric NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
@@ -1437,6 +1438,7 @@ CREATE TABLE staking.operator_staking_histories (
     total_storage_fee_deposit numeric NOT NULL,
     share_price numeric NOT NULL,
     partial_status text NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
@@ -1563,6 +1565,7 @@ CREATE TABLE staking.withdrawal_histories (
     unlock_at_confirmed_domain_block_number numeric NOT NULL,
     shares numeric NOT NULL,
     storage_fee_refund numeric NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
