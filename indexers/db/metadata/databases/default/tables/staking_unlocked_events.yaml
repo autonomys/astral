@@ -21,6 +21,7 @@ select_permissions:
         - event_id
         - extrinsic_id
         - id
+        - nominator_id
         - operator_id
         - _id
       filter: {}
