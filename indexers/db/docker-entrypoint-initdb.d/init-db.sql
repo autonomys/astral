@@ -2351,7 +2351,7 @@ CREATE TRIGGER ensure_cumulative_blocks
 CREATE OR REPLACE FUNCTION staking.prevent_domain_block_histories_duplicate() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
-BEGIN
+  BEGIN
     IF EXISTS (
         SELECT 1 
         FROM staking.domain_block_histories 
@@ -2366,7 +2366,7 @@ BEGIN
     WHERE id = NEW.domain_id;
     
     RETURN NEW;
-END;
+  END;
   $$;
 ALTER FUNCTION staking.prevent_domain_block_histories_duplicate() OWNER TO postgres;
 
@@ -3052,7 +3052,22 @@ EXECUTE FUNCTION staking.update_operator_stakes();
 CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
-BEGIN
+  DECLARE
+    last_domain_block_histories_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+  BEGIN
+    SELECT domain_block_number
+    INTO last_domain_block_histories_domain_block_number
+    FROM staking.domain_block_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY block_height DESC
+    LIMIT 1;
+
+    IF NOT FOUND THEN
+        SELECT
+          0 as domain_block_number
+        INTO last_domain_block_histories_domain_block_number;
+    END IF;
+
     UPDATE staking.domains
     SET 
         current_total_stake = NEW.current_total_stake,
@@ -3078,7 +3093,7 @@ BEGIN
         NEW.domain_id || '-' || NEW.current_epoch_index,
         NEW.domain_id,
         NEW.current_epoch_index,
-        0,
+        last_domain_block_histories_domain_block_number,  -- Fixed this line
         0,
         0,
         NEW.timestamp,
@@ -3097,7 +3112,7 @@ BEGIN
         updated_at = NEW.block_height;
     
     RETURN NEW;
-END;
+  END;
 $$;
 ALTER FUNCTION staking.update_domain_stakes() OWNER TO postgres;
 
