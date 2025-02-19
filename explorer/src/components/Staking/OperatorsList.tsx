@@ -290,19 +290,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               </div>
             )
           },
-          yourStake: ({ row }: Cell<Row>) => {
-            const nominator = row.original.nominators.find(
-              (nominator) => nominator.account_id === subspaceAccount,
-            )
-            if (!nominator) return <></>
-            const totalStake =
-              BigInt(nominator.current_total_stake) + BigInt(nominator.current_storage_fee_deposit)
-            return (
-              <div>
-                {bigNumberToFormattedString(totalStake)} {tokenSymbol}
-              </div>
-            )
-          },
           actions: ({ row }: Cell<Row>) => {
             const isOperator = row.original.accountId === subspaceAccount
             const nominator = row.original.nominators.find(
