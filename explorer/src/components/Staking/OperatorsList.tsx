@@ -35,8 +35,9 @@ import { Tooltip } from '../common/Tooltip'
 // import { DomainBlockTime } from '../Domain/DomainBlockTime'
 import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
-import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
+import { NominationButton, NominationButtonRow } from './NominationButton'
+import { OperatorActions, OperatorActionsRow } from './OperatorActions'
 
 type Row = OperatorsListQuery['staking_operators'][0] & { nominatorsCount: number }
 const TABLE = 'operators'
@@ -310,20 +311,35 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               excludeActions.push(OperatorActionType.UnlockFunds)
             if (row.original.status === OperatorStatus.SLASHED) return <></>
             return (
-              <ActionsDropdown
-                action={action}
-                handleAction={handleAction}
-                row={
-                  {
-                    original: {
-                      ...row.original,
-                      // eslint-disable-next-line camelcase
-                      current_total_shares: row.original.currentTotalShares,
-                    },
-                  } as ActionsDropdownRow
-                }
-                excludeActions={excludeActions}
-              />
+              <div className='flex gap-2'>
+                <OperatorActions
+                  handleAction={handleAction}
+                  row={
+                    {
+                      original: {
+                        ...row.original,
+                        // eslint-disable-next-line camelcase
+                        current_total_shares: row.original.currentTotalShares,
+                      },
+                    } as OperatorActionsRow
+                  }
+                  excludeActions={excludeActions}
+                />
+                {!excludeActions.includes(OperatorActionType.Nominating) && (
+                  <NominationButton
+                    handleAction={handleAction}
+                    row={
+                      {
+                        original: {
+                          ...row.original,
+                          // eslint-disable-next-line camelcase
+                          current_total_shares: row.original.currentTotalShares,
+                        },
+                      } as NominationButtonRow
+                    }
+                  />
+                )}
+              </div>
             )
           },
         },
@@ -337,7 +353,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       network,
       domainRegistry,
       rpcOperators,
-      action,
       handleAction,
       tokenSymbol,
     ],
