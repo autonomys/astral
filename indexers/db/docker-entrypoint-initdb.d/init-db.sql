@@ -2141,6 +2141,7 @@ CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
 CREATE INDEX "0x3a7ed99d2776ff11" ON staking.operator_tax_collections USING btree (id);
 CREATE INDEX "0x59e52a1d9c35dee5" ON staking.domain_block_histories USING btree (id);
 CREATE INDEX "staking_domain_block_histories_domain_id" ON staking.domain_block_histories USING btree (domain_id);
+CREATE INDEX "staking_domain_block_histories_domain_block_height" ON staking.domain_block_histories USING btree (domain_id, block_height DESC);
 CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (id);
 CREATE INDEX "0x72774937664e8211" ON staking.withdraw_events USING btree (id);
 CREATE INDEX "staking_withdraw_events_domain_id" ON staking.withdraw_events USING btree (domain_id);
