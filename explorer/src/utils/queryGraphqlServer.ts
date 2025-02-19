@@ -1,7 +1,7 @@
 import { indexers } from 'constants/indexers'
 import { cookies, headers } from 'next/headers'
 
-export const queryGraphqlServer = async (query: string, variables: object, network?: string) => {
+export const queryGraphqlServer = async <T>(query: string, variables: object, network?: string) => {
   try {
     // Get the selected chain from the cookies
     const { get } = cookies()
@@ -31,7 +31,7 @@ export const queryGraphqlServer = async (query: string, variables: object, netwo
     const { data } = await request.json()
 
     // Return the data
-    return data
+    return data as T
   } catch (error) {
     console.error('Failed to fetch Astral Subsquid:', error)
     throw new Error('Failed to fetch Astral Subsquid')
