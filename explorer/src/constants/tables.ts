@@ -182,9 +182,9 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
   operators: [
     { name: 'sortId', label: 'Id', isSelected: true, searchable: true },
     { name: 'accountId', label: 'Owner', isSelected: true, searchable: true },
-    { name: 'domainId', label: 'Domain', isSelected: true, searchable: true },
+    { name: 'domainId', label: 'Domain', isSelected: false, searchable: true },
     { name: 'signingKey', label: 'Signing Key', isSelected: false, searchable: true },
-    { name: 'minimumNominatorStake', label: 'Minimum Nominator Stake', isSelected: true },
+    { name: 'minimumNominatorStake', label: 'Min. Nominator Stake', isSelected: true },
     { name: 'nominationTax', label: 'Nomination Tax', isSelected: true },
     // { name: 'name', label: 'Name', isSelected: true },
     // { name: 'description', label: 'Description', isSelected: false },
@@ -253,7 +253,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'accumulatedEpochShares', label: 'Accumulated Epoch Shares', isSelected: false },
     { name: 'activeEpochCount', label: 'Active Epoch Count', isSelected: false },
     { name: 'bundleCount', label: 'Bundle Count', isSelected: false },
-    { name: 'status', label: 'Status', isSelected: true },
+    { name: 'status', label: 'Status', isSelected: false },
     { name: 'rawStatus', label: 'Raw Status', isSelected: false },
     { name: 'pendingAction', label: 'Pending Action', isSelected: false },
     { name: 'lastBundleAt', label: 'Last Bundle At', isSelected: false },
@@ -262,7 +262,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'createdAt', label: 'Created At', isSelected: false },
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
     { name: 'myStake', label: 'My Stake', isSelected: true },
-    { name: 'yourStake', label: 'Your Stake', isSelected: true },
     { name: 'actions', label: 'Actions', isSelected: true },
   ],
   leaderboard: [
