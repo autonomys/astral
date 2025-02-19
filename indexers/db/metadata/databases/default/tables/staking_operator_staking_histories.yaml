@@ -26,6 +26,7 @@ select_permissions:
         - operator_owner
         - partial_status
         - signing_key
+        - timestamp
         - _id
       filter: {}
       limit: 50

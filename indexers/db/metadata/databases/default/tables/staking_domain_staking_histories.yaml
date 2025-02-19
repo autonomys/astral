@@ -18,6 +18,7 @@ select_permissions:
         - current_total_stake
         - domain_id
         - id
+        - timestamp
         - _id
       filter: {}
       limit: 50
