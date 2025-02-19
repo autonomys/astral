@@ -1,4 +1,4 @@
-import { LogoIcon } from 'components/icons'
+import { LogoIcon } from 'components/icons/LogoIcon'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import Link from 'next/link'
 import type { FC } from 'react'

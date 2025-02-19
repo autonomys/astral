@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { sendGAEvent } from '@next/third-parties/google'
-import { LogoIcon } from 'components/icons'
+import { LogoIcon } from 'components/icons/LogoIcon'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
 import {
   ROUTE_EXTRA_FLAGS,
