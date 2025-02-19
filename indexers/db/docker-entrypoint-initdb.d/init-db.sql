@@ -1141,6 +1141,8 @@ CREATE TABLE staking.accounts (
     total_deposits numeric NOT NULL,
     total_estimated_withdrawals numeric NOT NULL,
     total_withdrawals numeric NOT NULL,
+    total_deposits_count numeric NOT NULL,
+    total_withdrawals_count numeric NOT NULL,
     total_tax_collected numeric NOT NULL,
     current_total_stake numeric NOT NULL,
     current_storage_fee_deposit numeric NOT NULL,
@@ -1315,6 +1317,8 @@ CREATE TABLE staking.domains (
     total_deposits numeric NOT NULL,
     total_estimated_withdrawals numeric NOT NULL,
     total_withdrawals numeric NOT NULL,
+    total_deposits_count numeric NOT NULL,
+    total_withdrawals_count numeric NOT NULL,
     total_tax_collected numeric NOT NULL,
     total_rewards_collected numeric NOT NULL,
     total_transfers_in numeric NOT NULL,
@@ -1477,6 +1481,8 @@ CREATE TABLE staking.operators (
     total_deposits numeric NOT NULL,
     total_estimated_withdrawals numeric NOT NULL,
     total_withdrawals numeric NOT NULL,
+    total_deposits_count numeric NOT NULL,
+    total_withdrawals_count numeric NOT NULL,
     total_tax_collected numeric NOT NULL,
     total_rewards_collected numeric NOT NULL,
     total_transfers_in numeric NOT NULL,
@@ -2474,6 +2480,8 @@ BEGIN
         total_deposits,
         total_estimated_withdrawals,
         total_withdrawals,
+        total_deposits_count,
+        total_withdrawals_count,
         total_tax_collected,
         total_rewards_collected,
         total_transfers_in,
@@ -2519,6 +2527,8 @@ BEGIN
         0,                         -- total_deposits
         0,                         -- total_estimated_withdrawals
         0,                         -- total_withdrawals
+        0,                         -- total_deposits_count
+        0,                         -- total_withdrawals_count
         0,                         -- total_tax_collected
         0,                         -- total_rewards_collected
         0,                         -- total_transfers_in
@@ -2584,6 +2594,8 @@ BEGIN
         total_deposits,
         total_estimated_withdrawals,
         total_withdrawals,
+        total_deposits_count,
+        total_withdrawals_count,
         total_tax_collected,
         total_rewards_collected,
         total_transfers_in,
@@ -2627,6 +2639,8 @@ BEGIN
         0,                                       -- total_deposits
         0,                                       -- total_estimated_withdrawals
         0,                                       -- total_withdrawals
+        0,                                       -- total_deposits_count
+        0,                                       -- total_withdrawals_count
         0,                                       -- total_tax_collected
         0,                                       -- total_rewards_collected
         0,                                       -- total_transfers_in
@@ -2671,12 +2685,14 @@ CREATE OR REPLACE FUNCTION staking.handle_deposit_events() RETURNS TRIGGER
 BEGIN
     UPDATE staking.domains
     SET 
-        total_deposits = staking.domains.total_deposits + NEW.amount
+        total_deposits = staking.domains.total_deposits + NEW.amount,
+        total_deposits_count = staking.domains.total_deposits_count + 1
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
-        total_deposits = staking.operators.total_deposits + NEW.amount
+        total_deposits = staking.operators.total_deposits + NEW.amount,
+        total_deposits_count = staking.operators.total_deposits_count + 1
     WHERE id = NEW.operator_id;
 
     IF NOT EXISTS (
@@ -2795,6 +2811,8 @@ BEGIN
         total_deposits,
         total_estimated_withdrawals,
         total_withdrawals,
+        total_deposits_count,
+        total_withdrawals_count,
         total_tax_collected,
         current_total_stake,
         current_storage_fee_deposit,
@@ -2810,6 +2828,8 @@ BEGIN
         NEW.total_amount,          -- total_deposits (start with the new deposit amount)
         0,                         -- total_estimated_withdrawals
         0,                         -- total_withdrawals
+        0,                         -- total_deposits_count
+        0,                         -- total_withdrawals_count
         0,                         -- total_tax_collected
         NEW.amount,                -- current_total_stake
         NEW.storage_fee_deposit,   -- current_storage_fee_deposit
@@ -2823,6 +2843,7 @@ BEGIN
     )
     ON CONFLICT (id) DO UPDATE SET
         total_deposits = staking.accounts.total_deposits + NEW.total_amount,
+        total_deposits_count = staking.accounts.total_deposits_count + 1,
         current_total_stake = staking.accounts.current_total_stake + NEW.amount,
         current_storage_fee_deposit = staking.accounts.current_storage_fee_deposit + NEW.storage_fee_deposit,
         updated_at = NEW.block_height;
@@ -3112,12 +3133,14 @@ BEGIN
     UPDATE staking.domains
     SET 
         total_withdrawals = staking.domains.total_withdrawals + NEW.amount,
+        total_withdrawals_count = staking.domains.total_withdrawals_count + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
         total_withdrawals = staking.operators.total_withdrawals + NEW.amount,
+        total_withdrawals_count = staking.operators.total_withdrawals_count + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
 
@@ -3126,13 +3149,14 @@ BEGIN
         total_withdrawal_amounts = staking.nominators.total_withdrawal_amounts + NEW.amount,
         total_storage_fee_refund = staking.nominators.total_storage_fee_refund + NEW.storage_fee,
         total_withdrawals = staking.nominators.total_withdrawals + NEW.amount,
-        total_withdrawals_count = staking.nominators.total_withdrawal_amounts + 1,
+        total_withdrawals_count = staking.nominators.total_withdrawals_count + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.nominator_id;
 
     UPDATE staking.accounts
     SET
         total_withdrawals = staking.accounts.total_withdrawals + NEW.amount,
+        total_withdrawals_count = staking.accounts.total_withdrawals_count + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.account_id;
     
