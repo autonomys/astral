@@ -326,9 +326,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   "domains.BundleStored": ({
     event,
     cache,
-    extrinsicSigner,
-    eventId,
     extrinsic,
+    extrinsicSigner,
+    height,
+    extrinsicId,
+    eventId,
   }) => {
     const bundleHash = event.event.data[1].toString();
     const _extrinsic = extrinsic.method.args[0].toPrimitive() as any;
@@ -388,6 +390,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         BigInt(consensusStorageFee),
         BigInt(domainExecutionFee),
         BigInt(burnedBalance),
+        height,
+        extrinsicId,
         eventId
       )
     );

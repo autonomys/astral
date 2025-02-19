@@ -120,6 +120,8 @@ type BundleSubmission @entity {
   consensusStorageFee: BigInt!
   domainExecutionFee: BigInt!
   burnedBalance: BigInt!
+  blockHeight: BigInt!
+  extrinsicId: String!
   eventId: String!
 }
 
@@ -177,6 +179,7 @@ type OperatorStakingHistory @entity {
   totalStorageFeeDeposit: BigInt!
   sharePrice: BigInt!
   partialStatus: String!
+  timestamp: Date!
   blockHeight: BigInt!
 }
 
@@ -194,6 +197,7 @@ type DepositHistory @entity {
   effectiveDomainEpochPending: Int!
   amountPending: BigInt!
   storageFeeDepositPending: BigInt!
+  timestamp: Date!
   blockHeight: BigInt!
 }
 
@@ -208,5 +212,6 @@ type WithdrawalHistory @entity {
   unlockAtConfirmedDomainBlockNumber: BigInt!
   shares: BigInt!
   storageFeeRefund: BigInt!
+  timestamp: Date!
   blockHeight: BigInt!
 }
