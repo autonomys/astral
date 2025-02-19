@@ -2671,12 +2671,12 @@ CREATE OR REPLACE FUNCTION staking.handle_deposit_events() RETURNS TRIGGER
 BEGIN
     UPDATE staking.domains
     SET 
-        total_deposits = staking.domains.total_deposits::NUMERIC(78) + NEW.amount::NUMERIC(78)
+        total_deposits = staking.domains.total_deposits + NEW.amount
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
-        total_deposits = staking.operators.total_deposits::NUMERIC(78) + NEW.amount::NUMERIC(78)
+        total_deposits = staking.operators.total_deposits + NEW.amount
     WHERE id = NEW.operator_id;
 
     IF NOT EXISTS (
@@ -2752,8 +2752,8 @@ BEGIN
     ELSE
         UPDATE staking.nominators
         SET
-            total_deposits = staking.nominators.total_deposits::NUMERIC(78) + NEW.amount::NUMERIC(78),
-            total_deposits_count = staking.nominators.total_deposits_count::NUMERIC(78) + 1,
+            total_deposits = staking.nominators.total_deposits + NEW.amount,
+            total_deposits_count = staking.nominators.total_deposits_count + 1,
             updated_at = NEW.block_height
         WHERE id = NEW.nominator_id;
     END IF;
@@ -2822,9 +2822,9 @@ BEGIN
         NEW.block_height             -- updated_at
     )
     ON CONFLICT (id) DO UPDATE SET
-        total_deposits = staking.accounts.total_deposits::NUMERIC(78) + NEW.total_amount::NUMERIC(78),
-        current_total_stake = staking.accounts.current_total_stake::NUMERIC(78) + NEW.amount::NUMERIC(78),
-        current_storage_fee_deposit = staking.accounts.current_storage_fee_deposit::NUMERIC(78) + NEW.storage_fee_deposit::NUMERIC(78),
+        total_deposits = staking.accounts.total_deposits + NEW.total_amount,
+        current_total_stake = staking.accounts.current_total_stake + NEW.amount,
+        current_storage_fee_deposit = staking.accounts.current_storage_fee_deposit + NEW.storage_fee_deposit,
         updated_at = NEW.block_height;
     
     RETURN NEW;
@@ -2908,17 +2908,17 @@ BEGIN
 
     UPDATE staking.domains
     SET 
-        total_tax_collected = staking.domains.total_tax_collected::NUMERIC(78) + NEW.amount::NUMERIC(78)
+        total_tax_collected = staking.domains.total_tax_collected + NEW.amount
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
-        total_tax_collected = staking.operators.total_tax_collected::NUMERIC(78) + NEW.amount::NUMERIC(78)
+        total_tax_collected = staking.operators.total_tax_collected + NEW.amount
     WHERE id = NEW.operator_id;
 
     UPDATE staking.accounts
     SET 
-        total_tax_collected = staking.accounts.total_tax_collected::NUMERIC(78) + NEW.amount::NUMERIC(78)
+        total_tax_collected = staking.accounts.total_tax_collected + NEW.amount
     WHERE id = operator_account_id;
     
     RETURN NEW;
@@ -2937,12 +2937,12 @@ CREATE OR REPLACE FUNCTION staking.handle_operator_rewards_events() RETURNS TRIG
 BEGIN
     UPDATE staking.domains
     SET 
-        total_rewards_collected = staking.domains.total_rewards_collected::NUMERIC(78) + NEW.amount::NUMERIC(78)
+        total_rewards_collected = staking.domains.total_rewards_collected + NEW.amount
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
-        total_rewards_collected = staking.operators.total_rewards_collected::NUMERIC(78) + NEW.amount::NUMERIC(78)
+        total_rewards_collected = staking.operators.total_rewards_collected + NEW.amount
     WHERE id = NEW.operator_id;
     
     RETURN NEW;
@@ -2961,37 +2961,37 @@ CREATE OR REPLACE FUNCTION staking.handle_bundle_submissions_events() RETURNS TR
 BEGIN
     UPDATE staking.domains
     SET 
-        total_transfers_in = staking.domains.total_transfers_in::NUMERIC(78) + NEW.total_transfers_in::NUMERIC(78),
-        transfers_in_count = staking.domains.transfers_in_count::NUMERIC(78) + NEW.transfers_in_count::NUMERIC(78),
-        total_transfers_out = staking.domains.total_transfers_out::NUMERIC(78) + NEW.total_transfers_out::NUMERIC(78),
-        transfers_out_count = staking.domains.transfers_out_count::NUMERIC(78) + NEW.transfers_out_count::NUMERIC(78),
-        total_rejected_transfers_claimed = staking.domains.total_rejected_transfers_claimed::NUMERIC(78) + NEW.total_rejected_transfers_claimed::NUMERIC(78),
-        rejected_transfers_claimed_count = staking.domains.rejected_transfers_claimed_count::NUMERIC(78) + NEW.rejected_transfers_claimed_count::NUMERIC(78),
-        total_transfers_rejected = staking.domains.total_transfers_rejected::NUMERIC(78) + NEW.total_transfers_rejected::NUMERIC(78),
-        transfers_rejected_count = staking.domains.transfers_rejected_count::NUMERIC(78) + NEW.transfers_rejected_count::NUMERIC(78),
-        total_volume = staking.domains.total_volume::NUMERIC(78) + NEW.total_volume::NUMERIC(78),
-        total_consensus_storage_fee = staking.domains.total_consensus_storage_fee::NUMERIC(78) + NEW.consensus_storage_fee::NUMERIC(78),
-        total_domain_execution_fee = staking.domains.total_domain_execution_fee::NUMERIC(78) + NEW.domain_execution_fee::NUMERIC(78),
-        total_burned_balance = staking.domains.total_burned_balance::NUMERIC(78) + NEW.burned_balance::NUMERIC(78)  ,
+        total_transfers_in = staking.domains.total_transfers_in + NEW.total_transfers_in,
+        transfers_in_count = staking.domains.transfers_in_count + NEW.transfers_in_count,
+        total_transfers_out = staking.domains.total_transfers_out + NEW.total_transfers_out,
+        transfers_out_count = staking.domains.transfers_out_count + NEW.transfers_out_count,
+        total_rejected_transfers_claimed = staking.domains.total_rejected_transfers_claimed + NEW.total_rejected_transfers_claimed,
+        rejected_transfers_claimed_count = staking.domains.rejected_transfers_claimed_count + NEW.rejected_transfers_claimed_count,
+        total_transfers_rejected = staking.domains.total_transfers_rejected + NEW.total_transfers_rejected,
+        transfers_rejected_count = staking.domains.transfers_rejected_count + NEW.transfers_rejected_count,
+        total_volume = staking.domains.total_volume + NEW.total_volume,
+        total_consensus_storage_fee = staking.domains.total_consensus_storage_fee + NEW.consensus_storage_fee,
+        total_domain_execution_fee = staking.domains.total_domain_execution_fee + NEW.domain_execution_fee,
+        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance  ,
         bundle_count = staking.domains.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
-        total_transfers_in = staking.operators.total_transfers_in::NUMERIC(78) + NEW.total_transfers_in::NUMERIC(78),
-        transfers_in_count = staking.operators.transfers_in_count::NUMERIC(78) + NEW.transfers_in_count::NUMERIC(78),
-        total_transfers_out = staking.operators.total_transfers_out::NUMERIC(78) + NEW.total_transfers_out::NUMERIC(78),
-        transfers_out_count = staking.operators.transfers_out_count::NUMERIC(78) + NEW.transfers_out_count::NUMERIC(78),
-        total_rejected_transfers_claimed = staking.operators.total_rejected_transfers_claimed::NUMERIC(78) + NEW.total_rejected_transfers_claimed::NUMERIC(78),
-        rejected_transfers_claimed_count = staking.operators.rejected_transfers_claimed_count::NUMERIC(78) + NEW.rejected_transfers_claimed_count::NUMERIC(78),
-        total_transfers_rejected = staking.operators.total_transfers_rejected::NUMERIC(78) + NEW.total_transfers_rejected::NUMERIC(78),
-        transfers_rejected_count = staking.operators.transfers_rejected_count::NUMERIC(78) + NEW.transfers_rejected_count::NUMERIC(78),
-        total_volume = staking.operators.total_volume::NUMERIC(78) + NEW.total_volume::NUMERIC(78),
-        total_consensus_storage_fee = staking.operators.total_consensus_storage_fee::NUMERIC(78) + NEW.consensus_storage_fee::NUMERIC(78),
-        total_domain_execution_fee = staking.operators.total_domain_execution_fee::NUMERIC(78) + NEW.domain_execution_fee::NUMERIC(78),
-        total_burned_balance = staking.operators.total_burned_balance::NUMERIC(78) + NEW.burned_balance::NUMERIC(78),
-        bundle_count = staking.operators.bundle_count::NUMERIC(78) + 1,
+        total_transfers_in = staking.operators.total_transfers_in + NEW.total_transfers_in,
+        transfers_in_count = staking.operators.transfers_in_count + NEW.transfers_in_count,
+        total_transfers_out = staking.operators.total_transfers_out + NEW.total_transfers_out,
+        transfers_out_count = staking.operators.transfers_out_count + NEW.transfers_out_count,
+        total_rejected_transfers_claimed = staking.operators.total_rejected_transfers_claimed + NEW.total_rejected_transfers_claimed,
+        rejected_transfers_claimed_count = staking.operators.rejected_transfers_claimed_count + NEW.rejected_transfers_claimed_count,
+        total_transfers_rejected = staking.operators.total_transfers_rejected + NEW.total_transfers_rejected,
+        transfers_rejected_count = staking.operators.transfers_rejected_count + NEW.transfers_rejected_count,
+        total_volume = staking.operators.total_volume + NEW.total_volume,
+        total_consensus_storage_fee = staking.operators.total_consensus_storage_fee + NEW.consensus_storage_fee,
+        total_domain_execution_fee = staking.operators.total_domain_execution_fee + NEW.domain_execution_fee,
+        total_burned_balance = staking.operators.total_burned_balance + NEW.burned_balance,
+        bundle_count = staking.operators.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number
     WHERE id = NEW.operator_id;
     
@@ -3111,28 +3111,28 @@ CREATE OR REPLACE FUNCTION staking.handle_unlocked_events() RETURNS TRIGGER
 BEGIN
     UPDATE staking.domains
     SET 
-        total_withdrawals = staking.domains.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        total_withdrawals = staking.domains.total_withdrawals + NEW.amount,
         updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
-        total_withdrawals = staking.operators.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        total_withdrawals = staking.operators.total_withdrawals + NEW.amount,
         updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
 
     UPDATE staking.nominators
     SET
-        total_withdrawal_amounts = staking.nominators.total_withdrawal_amounts::NUMERIC(78) + NEW.amount::NUMERIC(78),
-        total_storage_fee_refund = staking.nominators.total_storage_fee_refund::NUMERIC(78) + NEW.storage_fee::NUMERIC(78),
-        total_withdrawals = staking.nominators.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
-        total_withdrawals_count = staking.nominators.total_withdrawal_amounts::NUMERIC(78) + 1,
+        total_withdrawal_amounts = staking.nominators.total_withdrawal_amounts + NEW.amount,
+        total_storage_fee_refund = staking.nominators.total_storage_fee_refund + NEW.storage_fee,
+        total_withdrawals = staking.nominators.total_withdrawals + NEW.amount,
+        total_withdrawals_count = staking.nominators.total_withdrawal_amounts + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.nominator_id;
 
     UPDATE staking.accounts
     SET
-        total_withdrawals = staking.accounts.total_withdrawals::NUMERIC(78) + NEW.amount::NUMERIC(78),
+        total_withdrawals = staking.accounts.total_withdrawals + NEW.amount,
         updated_at = NEW.block_height
     WHERE id = NEW.account_id;
     
