@@ -22564,7 +22564,7 @@ export type CheckRoleQueryVariables = Exact<{
 }>;
 
 
-export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }> };
+export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }>, isOperator: Array<{ __typename?: 'staking_operators', id: string }>, isNominator: Array<{ __typename?: 'staking_accounts', id: string }> };
 
 export type StakingSummaryQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -26380,6 +26380,20 @@ export const CheckRoleDocument = gql`
     account {
       id
     }
+  }
+  isOperator: staking_operators(
+    where: {account_id: {_eq: $subspaceAccount}, raw_status: {_eq: "ACTIVE"}}
+    limit: 1
+    order_by: {id: asc}
+  ) {
+    id
+  }
+  isNominator: staking_accounts(
+    where: {id: {_eq: $subspaceAccount}, current_total_stake: {_gt: 0}}
+    limit: 1
+    order_by: {id: asc}
+  ) {
+    id
   }
 }
     `;
