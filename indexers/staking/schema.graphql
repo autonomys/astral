@@ -120,6 +120,8 @@ type BundleSubmission @entity {
   consensusStorageFee: BigInt!
   domainExecutionFee: BigInt!
   burnedBalance: BigInt!
+  blockHeight: BigInt!
+  extrinsicId: String!
   eventId: String!
 }
 

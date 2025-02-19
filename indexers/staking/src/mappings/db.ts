@@ -315,6 +315,8 @@ export function createBundleSubmission(
   consensusStorageFee: bigint,
   domainExecutionFee: bigint,
   burnedBalance: bigint,
+  blockHeight: bigint,
+  extrinsicId: string,
   eventId: string
 ): BundleSubmission {
   return BundleSubmission.create({
@@ -342,6 +344,8 @@ export function createBundleSubmission(
     consensusStorageFee,
     domainExecutionFee,
     burnedBalance,
+    blockHeight,
+    extrinsicId,
     eventId,
   });
 }

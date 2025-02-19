@@ -1179,6 +1179,8 @@ CREATE TABLE staking.bundle_submissions (
     consensus_storage_fee numeric NOT NULL,
     domain_execution_fee numeric NOT NULL,
     burned_balance numeric NOT NULL,
+    block_height numeric NOT NULL,
+    extrinsic_id text NOT NULL,
     event_id text NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
