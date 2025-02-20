@@ -8,7 +8,7 @@ import { useInView } from 'react-intersection-observer'
 import { HomeBlockList } from './HomeBlockList'
 import { HomeChainInfo } from './HomeChainInfo'
 import { HomeChainInfoExtra } from './HomeChainInfoExtra'
-import HomeCharts from './HomeCharts'
+import { HomeCharts } from './HomeCharts'
 import { HomeExtrinsicList } from './HomeExtrinsicList'
 
 export const Home: FC = () => {
@@ -25,8 +25,8 @@ export const Home: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <SearchBar />
       <div ref={ref}>
-        <HomeCharts />
         <HomeChainInfo data={data} loading={loading} />
+        <HomeCharts />
         <div className='mb-12 flex w-full flex-col items-center gap-5 xl:flex-row'>
           <HomeBlockList data={data} loading={loading} />
           <HomeExtrinsicList data={data} loading={loading} />
