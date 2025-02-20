@@ -13,9 +13,12 @@ export const DEFAULT_SUBSPACE_TOKEN: SubspaceToken = {
   message: '',
   signature: '',
   vcs: {
-    farmer: false,
-    operator: false,
-    nominator: false,
+    mainnetFarmer: false,
+    mainnetOperator: false,
+    mainnetNominator: false,
+    taurusFarmer: false,
+    taurusOperator: false,
+    taurusNominator: false,
   },
   disbursements: {
     stakeWars2: false,
@@ -28,9 +31,12 @@ export const DEFAULT_DISCORD_TOKEN: DiscordToken = {
   vcs: {
     member: false,
     roles: {
-      farmer: false,
-      operator: false,
-      nominator: false,
+      mainnetFarmer: false,
+      mainnetOperator: false,
+      mainnetNominator: false,
+      taurusFarmer: false,
+      taurusOperator: false,
+      taurusNominator: false,
     },
   },
 }

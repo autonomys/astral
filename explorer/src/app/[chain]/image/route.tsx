@@ -1,6 +1,10 @@
 /* eslint-disable react/no-unknown-property */
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { AutonomysSymbol, BlockIcon, LogoIcon, PieChartIcon, WalletIcon } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { BlockIcon } from 'components/icons/BlockIcon'
+import { LogoIcon } from 'components/icons/LogoIcon'
+import { PieChartIcon } from 'components/icons/PieChartIcon'
+import { WalletIcon } from 'components/icons/WalletIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { HomeDocument, type HomeQuery } from 'gql/graphql'

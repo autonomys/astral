@@ -22452,10 +22452,11 @@ export type OperatorsListQueryVariables = Exact<{
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<Staking_Operators_Order_By> | Staking_Operators_Order_By;
   where?: InputMaybe<Staking_Operators_Bool_Exp>;
+  accountId: Scalars['String']['input'];
 }>;
 
 
-export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, status: string, sortId: string, accountId: string, domainId: string, currentEpochRewards: any, currentTotalStake: any, currentTotalShares: any, currentSharePrice: any, currentStorageFeeDeposit: any, minimumNominatorStake: any, nominationTax: number, signingKey: string, rawStatus: string, pendingAction: string, totalDeposits: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, totalTaxCollected: any, totalRewardsCollected: any, totalTransfersIn: any, transfersInCount: any, totalTransfersOut: any, transfersOutCount: any, totalRejectedTransfersClaimed: any, rejectedTransfersClaimedCount: any, totalTransfersRejected: any, transfersRejectedCount: any, totalVolume: any, totalConsensusStorageFee: any, totalDomainExecutionFee: any, totalBurnedBalance: any, accumulatedEpochShares: any, accumulatedEpochStorageFeeDeposit: any, activeEpochCount: any, bundleCount: any, lastBundleAt: any, createdAt: any, updatedAt: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string, last_domain_block_number: any } | null, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, depositsAggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, known_shares: any, unlock_at_confirmed_domain_block_number: any }> }> };
+export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, status: string, sortId: string, accountId: string, domainId: string, currentEpochRewards: any, currentTotalStake: any, currentTotalShares: any, currentSharePrice: any, currentStorageFeeDeposit: any, minimumNominatorStake: any, nominationTax: number, signingKey: string, rawStatus: string, pendingAction: string, totalDeposits: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, totalTaxCollected: any, totalRewardsCollected: any, totalTransfersIn: any, transfersInCount: any, totalTransfersOut: any, transfersOutCount: any, totalRejectedTransfersClaimed: any, rejectedTransfersClaimedCount: any, totalTransfersRejected: any, transfersRejectedCount: any, totalVolume: any, totalConsensusStorageFee: any, totalDomainExecutionFee: any, totalBurnedBalance: any, accumulatedEpochShares: any, accumulatedEpochStorageFeeDeposit: any, activeEpochCount: any, bundleCount: any, lastBundleAt: any, createdAt: any, updatedAt: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string, last_domain_block_number: any } | null, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, depositsAggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, known_shares: any, unlock_at_confirmed_domain_block_number: any, current_total_stake: any, current_storage_fee_deposit: any }> }> };
 
 export type OperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['String']['input'];
@@ -22472,7 +22473,7 @@ export type OperatorNominatorsByIdQueryVariables = Exact<{
 }>;
 
 
-export type OperatorNominatorsByIdQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, known_shares: any, account_id: string, domain_id: string }> };
+export type OperatorNominatorsByIdQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, known_shares: any, current_total_stake: any, current_storage_fee_deposit: any, total_deposits: any, total_withdrawals: any }> };
 
 export type NominatorsConnectionQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -22568,7 +22569,7 @@ export type CheckRoleQueryVariables = Exact<{
 }>;
 
 
-export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }> };
+export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }>, isOperator: Array<{ __typename?: 'staking_operators', id: string }>, isNominator: Array<{ __typename?: 'staking_accounts', id: string }> };
 
 export type StakingSummaryQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -25553,7 +25554,7 @@ export type NominationsListLazyQueryHookResult = ReturnType<typeof useNomination
 export type NominationsListSuspenseQueryHookResult = ReturnType<typeof useNominationsListSuspenseQuery>;
 export type NominationsListQueryResult = Apollo.QueryResult<NominationsListQuery, NominationsListQueryVariables>;
 export const OperatorsListDocument = gql`
-    query OperatorsList($limit: Int!, $offset: Int, $orderBy: [staking_operators_order_by!]!, $where: staking_operators_bool_exp) {
+    query OperatorsList($limit: Int!, $offset: Int, $orderBy: [staking_operators_order_by!]!, $where: staking_operators_bool_exp, $accountId: String!) {
   staking_operators_aggregate(where: $where) {
     aggregate {
       count
@@ -25617,11 +25618,13 @@ export const OperatorsListDocument = gql`
         count
       }
     }
-    nominators(limit: 256) {
+    nominators(limit: 256, where: {account_id: {_eq: $accountId}}) {
       id
       account_id
       known_shares
       unlock_at_confirmed_domain_block_number
+      current_total_stake
+      current_storage_fee_deposit
     }
     createdAt: created_at
     updatedAt: updated_at
@@ -25645,6 +25648,7 @@ export const OperatorsListDocument = gql`
  *      offset: // value for 'offset'
  *      orderBy: // value for 'orderBy'
  *      where: // value for 'where'
+ *      accountId: // value for 'accountId'
  *   },
  * });
  */
@@ -25758,9 +25762,13 @@ export const OperatorNominatorsByIdDocument = gql`
     where: $where
   ) {
     id
-    known_shares
     account_id
     domain_id
+    known_shares
+    current_total_stake
+    current_storage_fee_deposit
+    total_deposits
+    total_withdrawals
   }
 }
     `;
@@ -26431,6 +26439,20 @@ export const CheckRoleDocument = gql`
     account {
       id
     }
+  }
+  isOperator: staking_operators(
+    where: {account_id: {_eq: $subspaceAccount}, raw_status: {_eq: "ACTIVE"}}
+    limit: 1
+    order_by: {id: asc}
+  ) {
+    id
+  }
+  isNominator: staking_accounts(
+    where: {id: {_eq: $subspaceAccount}, current_total_stake: {_gt: 0}}
+    limit: 1
+    order_by: {id: asc}
+  ) {
+    id
   }
 }
     `;

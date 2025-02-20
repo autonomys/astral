@@ -1,6 +1,8 @@
 /* eslint-disable react/no-unknown-property */
 import { shortString } from '@autonomys/auto-utils'
-import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { BlockIcon } from 'components/icons/BlockIcon'
+import { DocIcon } from 'components/icons/DocIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { BlockByIdDocument, BlockByIdQuery } from 'gql/graphql'

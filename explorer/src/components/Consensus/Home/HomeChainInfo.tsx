@@ -1,5 +1,5 @@
 import HomeInfoCardSkeleton from '@/components/common/HomeInfoCardSkeleton'
-import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
+import { formatSpaceToDecimalAsObject } from '@autonomys/auto-consensus'
 import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -21,9 +21,8 @@ type Props = {
 
 export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const { indexerSet } = useIndexers()
-  const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
-
   const isDesktop = useMediaQuery('(min-width: 1536px)')
+  const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
 
   const getTelemetryData = useCallback(async () => {
     if (!process.env.NEXT_PUBLIC_TELEMETRY_URL) return
@@ -67,9 +66,9 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   }, [telemetryData, indexerSet.telemetryNetworkName])
 
   const spacePledgedVal = data ? Number(data.consensus_blocks[0].space_pledged) : 0
-  const spacePledged = formatSpaceToDecimal(spacePledgedVal)
+  const spacePledged = formatSpaceToDecimalAsObject(spacePledgedVal)
   const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
-  const historySize = formatSpaceToDecimal(historySizeVal)
+  const historySize = formatSpaceToDecimalAsObject(historySizeVal)
   const blocksCount = data ? Number(data.consensus_blocks[0].height) : 'error'
   const accountsCount = data ? Number(data.consensus_accounts_aggregate?.aggregate?.count) : 'error'
   const extrinsicsCount = data
@@ -99,13 +98,17 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
       {
         title: 'Total Space Pledged',
         imagePath: '/images/icons/total-space-pledged.webp',
-        value: spacePledged,
+        value: spacePledged.value,
+        unit: spacePledged.unit,
+        decimal: 2,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
         title: 'Archived History Size',
         imagePath: '/images/icons/archived-history-size.webp',
-        value: historySize,
+        value: historySize.value,
+        unit: historySize.unit,
+        decimal: 2,
         darkBgClass: 'dark:bg-boxDark',
       },
       {
@@ -159,11 +162,13 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
               <HomeInfoCardSkeleton key={index} />
             </SwiperSlide>
           ))
-        : listOfCards.map(({ title, value, imagePath, darkBgClass }, index) => (
+        : listOfCards.map(({ title, value, unit, decimal, imagePath, darkBgClass }, index) => (
             <SwiperSlide key={`${title}-${index}`}>
               <HomeInfoCard
                 title={title}
                 value={value}
+                unit={unit}
+                decimal={decimal}
                 imagePath={imagePath}
                 darkBgClass={darkBgClass}
               />

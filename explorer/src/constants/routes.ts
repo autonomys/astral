@@ -115,8 +115,8 @@ export const ROUTES: Route[] = [
       },
       {
         name: RoutesStaking.nominations,
-        title: 'Nominations',
-        networks: [],
+        title: 'My Nominations',
+        networks: [NetworkId.TAURUS],
       },
     ],
   },
