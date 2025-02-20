@@ -41,7 +41,7 @@ export const HistoryIncreaseChart: FC<HistoryIncreaseChartProps> = ({ data, load
     // If all units are the same, return as is
     if (uniqueUnits.length === 1) {
       return {
-        data: mappedData,
+        data: mappedData.reverse(),
         unit: uniqueUnits[0],
       }
     }
@@ -63,15 +63,17 @@ export const HistoryIncreaseChart: FC<HistoryIncreaseChartProps> = ({ data, load
     )
 
     return {
-      data: mappedData.map((d) => ({
-        ...d,
-        increase:
-          d.unit === biggestUnit
-            ? d.increase
-            : d.increase /
-              (unitConversion[biggestUnit as keyof typeof unitConversion] /
-                unitConversion[d.unit as keyof typeof unitConversion]),
-      })),
+      data: mappedData
+        .map((d) => ({
+          ...d,
+          increase:
+            d.unit === biggestUnit
+              ? d.increase
+              : d.increase /
+                (unitConversion[biggestUnit as keyof typeof unitConversion] /
+                  unitConversion[d.unit as keyof typeof unitConversion]),
+        }))
+        .reverse(),
       unit: biggestUnit,
     }
   }, [data, timeFrame])
