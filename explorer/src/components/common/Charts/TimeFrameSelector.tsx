@@ -1,4 +1,4 @@
-export type TimeFrame = '1H' | '1D' | '1W' | '1M'
+export type TimeFrame = '1D' | '1W' | '1M' // '1H'
 
 export interface TimeFrameSelectorProps {
   selected: TimeFrame
@@ -6,7 +6,7 @@ export interface TimeFrameSelectorProps {
 }
 
 export function TimeFrameSelector({ selected, onChange }: TimeFrameSelectorProps) {
-  const timeFrames: TimeFrame[] = ['1H', '1D', '1W', '1M']
+  const timeFrames: TimeFrame[] = ['1D', '1W', '1M'] // '1H',
 
   return (
     <div className='flex w-fit gap-1 rounded-lg bg-gray-100 p-1 dark:bg-blueAccent'>

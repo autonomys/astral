@@ -2,12 +2,12 @@ import { TimeFrame } from '@/components/common/Charts'
 
 export function formatDate(date: Date, timeFrame: TimeFrame): string {
   switch (timeFrame) {
-    case '1H':
-      return date.toLocaleTimeString([], {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-      })
+    // case '1H':
+    //   return date.toLocaleTimeString([], {
+    //     hour: 'numeric',
+    //     minute: '2-digit',
+    //     hour12: true,
+    //   })
     case '1D':
       return date.toLocaleDateString([], { weekday: 'short', day: 'numeric' }) // Show "Mon 1"
     case '1W':
@@ -49,8 +49,8 @@ export function getLineChartTickValues(timeFrame: TimeFrame, data: { date: strin
  */
 function getTickCount(timeFrame: TimeFrame, dataLength: number) {
   switch (timeFrame) {
-    case '1H':
-      return Math.min(6, dataLength) // Show ~6 ticks max
+    // case '1H':
+    //   return Math.min(6, dataLength) // Show ~6 ticks max
     case '1D':
       return Math.min(8, dataLength) // Show ~8 ticks max (e.g., every 3 days)
     case '1W':
@@ -68,9 +68,9 @@ export function getBarChartTickValues(timeFrame: TimeFrame, data: { date: string
   let filterInterval = 1
 
   switch (timeFrame) {
-    case '1H':
-      filterInterval = Math.ceil(data.length / 6) // Keep ~6 ticks max
-      break
+    // case '1H':
+    //   filterInterval = Math.ceil(data.length / 6) // Keep ~6 ticks max
+    //   break
     case '1D':
       filterInterval = Math.ceil(data.length / 8) // Keep ~8 ticks max
       break
