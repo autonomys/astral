@@ -164,10 +164,6 @@ export const ROUTES: Route[] = [
     ],
   },
   {
-    name: Routes.stats,
-    title: 'Stats',
-  },
-  {
     name: Routes.testnetRewards,
     title: 'Testnet Rewards',
   },
