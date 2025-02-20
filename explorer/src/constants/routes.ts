@@ -10,6 +10,7 @@ export enum Routes {
   domains = 'domains',
   autoevm = 'auto-evm',
   autoid = 'auto-id',
+  stats = 'stats',
   testnetRewards = 'testnet-rewards',
 }
 
@@ -161,6 +162,10 @@ export const ROUTES: Route[] = [
         networks: [],
       },
     ],
+  },
+  {
+    name: Routes.stats,
+    title: 'Stats',
   },
   {
     name: Routes.testnetRewards,
