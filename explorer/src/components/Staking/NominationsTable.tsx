@@ -1,5 +1,7 @@
 'use client'
 
+import { operatorStatus } from '@/utils/operator'
+import { allCapsToNormal } from '@/utils/string'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState, createColumnHelper } from '@tanstack/react-table'
@@ -94,9 +96,13 @@ export const NominationsTable: FC = () => {
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const depositColumns = [
-    columnHelper.accessor('amount', {
+    columnHelper.accessor('amount_pending', {
       cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
-      header: 'Amount',
+      header: 'Pending Amount',
+    }),
+    columnHelper.accessor('storage_fee_deposit_pending', {
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
+      header: 'Pending Storage Fee',
     }),
     columnHelper.accessor('storage_fee_deposit', {
       cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
@@ -106,61 +112,60 @@ export const NominationsTable: FC = () => {
       cell: (info) => utcToLocalRelativeTime(info.getValue()),
       header: 'Time',
     }),
-    columnHelper.accessor('created_at', {
+    // columnHelper.accessor('shares', {
+    //   cell: (info) => info.getValue(),
+    //   header: 'Shares',
+    // }),
+    columnHelper.accessor('block_height', {
       cell: (info) => (
         <Link
-          key={`created_at-${info.getValue()}`}
-          data-testid={`created-at-${info.getValue()}`}
+          key={`block_height-${info.getValue()}`}
+          data-testid={`block_height-${info.getValue()}`}
           href={INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, info.getValue())}
           className='hover:text-primaryAccent'
         >
           <div>{info.getValue()}</div>
         </Link>
       ),
-      header: 'Created At',
-    }),
-    columnHelper.accessor('status', {
-      cell: (info) => info.getValue(),
-      header: 'Status',
+      header: 'Block Height',
     }),
   ]
 
   const withdrawalColumns = [
-    columnHelper.accessor('shares', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
-      header: 'Shares',
-    }),
-
-    columnHelper.accessor('estimated_amount', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
-      header: 'Estimated Amount',
-    }),
-    columnHelper.accessor('unlocked_amount', {
+    // columnHelper.accessor('estimated_amount', {
+    //   cell: (info) => `${info.getValue()}`,
+    //   header: 'Estimated Amount',
+    // }),
+    columnHelper.accessor('total_withdrawal_amount', {
       cell: (info) => (
-        <div>{`${bigNumberToFormattedString(info.getValue() + info.row.original.unlocked_storage_fee)} ${tokenSymbol}`}</div>
+        <div>{`${bigNumberToFormattedString(info.getValue() + info.row.original.total_withdrawal_amount)} ${tokenSymbol}`}</div>
       ),
-      header: 'Unlocked Total Amount',
+      header: 'Total Amount',
+    }),
+    columnHelper.accessor('storage_fee_refund', {
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
+      header: 'Storage Fee Refund',
     }),
     columnHelper.accessor('timestamp', {
       cell: (info) => utcToLocalRelativeTime(info.getValue()),
       header: 'Time',
     }),
-    columnHelper.accessor('created_at', {
+    columnHelper.accessor('shares', {
+      cell: (info) => info.getValue(),
+      header: 'Shares',
+    }),
+    columnHelper.accessor('block_height', {
       cell: (info) => (
         <Link
-          key={`created_at-${info.getValue()}`}
-          data-testid={`created-at-${info.getValue()}`}
+          key={`block_height-${info.getValue()}`}
+          data-testid={`block_height-${info.getValue()}`}
           href={INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, info.getValue())}
           className='hover:text-primaryAccent'
         >
           <div>{info.getValue()}</div>
         </Link>
       ),
-      header: 'Created At',
-    }),
-    columnHelper.accessor('status', {
-      cell: (info) => info.getValue(),
-      header: 'Status',
+      header: 'Block Height',
     }),
   ]
 
@@ -203,7 +208,9 @@ export const NominationsTable: FC = () => {
                         <div className='text-sm font-normal'>
                           Operator Status:{' '}
                           <span className='text-grayDark dark:text-blueLight'>
-                            {nominator.operator?.status || 'N/A'}
+                            {allCapsToNormal(
+                              operatorStatus(JSON.parse(nominator.operator?.status ?? '{}')),
+                            )}
                           </span>
                         </div>
                         <div className='mt-2 sm:mt-0'>
@@ -262,7 +269,7 @@ export const NominationsTable: FC = () => {
                             Deposits
                           </h4>
                           <SortedTable
-                            data={nominator.deposits}
+                            data={nominator.deposit_histories}
                             columns={depositColumns}
                             showNavigation={false}
                             pageCount={1}
@@ -274,7 +281,7 @@ export const NominationsTable: FC = () => {
                             Withdrawals
                           </h4>
                           <SortedTable
-                            data={nominator.withdrawals}
+                            data={nominator.withdrawal_histories}
                             columns={withdrawalColumns}
                             showNavigation={false}
                             pageCount={1}
