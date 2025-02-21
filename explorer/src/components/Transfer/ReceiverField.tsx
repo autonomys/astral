@@ -1,6 +1,7 @@
-import { shortString } from '@autonomys/auto-utils'
+import { DomainRuntime, isAddress, shortString } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { WalletType } from 'constants/wallet'
+import { isAddress as isEvmAddress } from 'ethers'
 import { Field, FieldArray, Form, Formik } from 'formik'
 import useWallet from 'hooks/useWallet'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -14,7 +15,7 @@ interface FormValues {
 }
 
 export const ReceiverField: FC = () => {
-  const { actingAccount, accounts } = useWallet()
+  const { actingAccount, accounts, domainsApis } = useWallet()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -22,6 +23,7 @@ export const ReceiverField: FC = () => {
   const { addresses } = useAddressBookStates()
 
   const receiver = searchParams.get('receiver')
+  const to = searchParams.get('to')
 
   const initialValues: FormValues = useMemo(
     () => ({
@@ -34,13 +36,32 @@ export const ReceiverField: FC = () => {
     address: Yup.string().required('Address is required'),
   })
 
-  const handleSetReceiver = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+  const warningReceiverFormatInvalidForDestination = useMemo(() => {
+    if (to && to === 'consensus' && receiver && !isAddress(receiver)) {
+      return 'Receiver must be a consensus address'
+    } else if (to && to.startsWith('domain') && receiver) {
+      const destinationChain = to.replace('domainId', '')
+      const domainApi = domainsApis[destinationChain]
+      if (!domainApi) return null
+      if (domainApi.runtime === DomainRuntime.AUTO_EVM && !isEvmAddress(receiver)) {
+        return 'Receiver must be a valid EVM address'
+      }
+    }
+    return null
+  }, [to, receiver, domainsApis])
+
+  const setReceiver = useCallback(
+    (address: string) => {
       const params = new URLSearchParams(searchParams.toString())
-      params.set('receiver', e.target.value)
+      params.set('receiver', address)
       router.push(`${pathname}?${params.toString()}`)
     },
     [pathname, router, searchParams],
+  )
+
+  const handleSetReceiver = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setReceiver(e.target.value),
+    [setReceiver],
   )
 
   return (
@@ -107,7 +128,7 @@ export const ReceiverField: FC = () => {
                                       }`
                                     }
                                     value={account}
-                                    onClick={() => setFieldValue('address', subAccount)}
+                                    onClick={() => subAccount && setReceiver(subAccount)}
                                   >
                                     {({ selected }) => {
                                       return (
@@ -165,6 +186,11 @@ export const ReceiverField: FC = () => {
                   )}
                 />
               </div>
+              {warningReceiverFormatInvalidForDestination && (
+                <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                  {warningReceiverFormatInvalidForDestination}
+                </div>
+              )}
               {errors.address && touched.address ? (
                 <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
                   {errors.address}

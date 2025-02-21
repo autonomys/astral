@@ -1,7 +1,7 @@
 'use client'
 
 import { transfer } from '@autonomys/auto-consensus'
-import { capitalizeFirstLetter, type Hash } from '@autonomys/auto-utils'
+import { capitalizeFirstLetter, DomainRuntime, isAddress, type Hash } from '@autonomys/auto-utils'
 import {
   transferToConsensus,
   transferToDomainAccount20Type,
@@ -10,6 +10,7 @@ import {
 import { sendGAEvent } from '@next/third-parties/google'
 import { SwapDirection } from 'constants/transaction'
 import { AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM, WalletType } from 'constants/wallet'
+import { isAddress as isEvmAddress } from 'ethers'
 import { FieldArray, Form, Formik } from 'formik'
 import useIndexers from 'hooks/useIndexers'
 import { useTxHelper } from 'hooks/useTxHelper'
@@ -55,14 +56,14 @@ export const Transfer: FC = () => {
   const [hash, setHash] = useState<Hash | undefined>(undefined)
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const { actingAccount, injector, api, domainsApis, subspaceAccount } = useWallet()
-  const searchParams = useSearchParams()
+  const { get } = useSearchParams()
   const { tokenDecimals, tokenSymbol } = useIndexers()
   const { sendAndSaveTx, handleTxError } = useTxHelper()
 
-  const from = searchParams.get('from')
-  const to = searchParams.get('to')
-  const amount = searchParams.get('amount')
-  const receiver = searchParams.get('receiver')
+  const from = get('from')
+  const to = get('to')
+  const amount = get('amount')
+  const receiver = get('receiver')
 
   const handleCopy = useCallback((value: string) => {
     navigator.clipboard.writeText(value)
@@ -96,9 +97,12 @@ export const Transfer: FC = () => {
           break
 
         case values.from === 'consensus' && values.to === 'consensus':
-          console.log('consensus-consensus')
           if (values.receiver === '') {
             toast.error('Receiver is required', { position: 'bottom-center' })
+            break
+          }
+          if (!isAddress(values.receiver)) {
+            toast.error('Receiver must be a valid Consensus address', { position: 'bottom-center' })
             break
           }
           try {
@@ -127,6 +131,12 @@ export const Transfer: FC = () => {
           break
         case values.from === 'consensus' && values.to.startsWith('domain'): {
           const destinationChain = values.to.replace('domainId', '')
+          const domainApi = domainsApis[destinationChain]
+          if (!domainApi) return null
+          if (domainApi.runtime === DomainRuntime.AUTO_EVM && !isEvmAddress(values.receiver)) {
+            toast.error('Receiver must be a valid EVM address', { position: 'bottom-center' })
+            break
+          }
           if (values.receiver.startsWith('0x')) {
             try {
               const tx = await transferToDomainAccount20Type(api, destinationChain, to, amount)
@@ -154,6 +164,12 @@ export const Transfer: FC = () => {
               )
             }
           } else {
+            if (!isAddress(values.receiver)) {
+              toast.error('Receiver must be a valid Consensus address', {
+                position: 'bottom-center',
+              })
+              break
+            }
             try {
               const tx = await transferToDomainAccount32Type(api, destinationChain, to, amount)
               const hash = await sendAndSaveTx({
@@ -183,8 +199,8 @@ export const Transfer: FC = () => {
           break
         }
         case values.from.startsWith('domain') && values.to === 'consensus': {
-          if (values.receiver.startsWith('0x')) {
-            toast.error('Receiver must be a consensus address', { position: 'bottom-center' })
+          if (values.receiver.startsWith('0x') || !isEvmAddress(values.receiver)) {
+            toast.error('Receiver must be a valid Consensus address', { position: 'bottom-center' })
             break
           }
           const sourceDomainId = values.from.replace('domainId', '')
