@@ -34,7 +34,11 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       : api;
 
   // Use to query the parent block operators (for the last unlock of an operator (unlockNominator))
-  const parentBlockApi = unsafeApi ? await unsafeApi.at(parentHash) : api;
+  const parentBlockApi = unsafeApi
+    ? height > 824013 && height <= 835748
+      ? apiPatched
+      : await unsafeApi.at(parentHash)
+    : api;
 
   const [
     domainStakingSummary,
