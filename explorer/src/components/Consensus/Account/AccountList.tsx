@@ -48,7 +48,8 @@ export const AccountList: FC = () => {
       ...availableColumns
         .filter((column) => column.searchable)
         .reduce((conditions, column) => {
-          const searchValue = `search-${column.name}` as keyof AccountsFilters
+          const searchKey = `search-${column.name}` as keyof AccountsFilters
+          const searchValue = filters[searchKey]
           return searchValue
             ? {
                 ...conditions,
