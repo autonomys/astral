@@ -9,7 +9,7 @@ export function formatDate(date: Date, timeFrame: TimeFrame): string {
     //     hour12: true,
     //   })
     case '1D':
-      return date.toLocaleDateString([], { weekday: 'short', day: 'numeric' }) // Show "Mon 1"
+      return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) // Show "Mon 1"
     case '1W':
       return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) // Show "Jan 1"
     case '1M':
