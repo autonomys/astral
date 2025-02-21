@@ -11,6 +11,7 @@ export enum Routes {
   autoevm = 'auto-evm',
   autoid = 'auto-id',
   transfer = 'transfer',
+  stats = 'stats',
   testnetRewards = 'testnet-rewards',
 }
 
@@ -116,7 +117,7 @@ export const ROUTES: Route[] = [
       },
       {
         name: RoutesStaking.nominations,
-        title: 'Nominations',
+        title: 'My Nominations',
         networks: [NetworkId.TAURUS],
       },
     ],

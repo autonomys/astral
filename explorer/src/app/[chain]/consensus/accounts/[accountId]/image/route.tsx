@@ -1,5 +1,7 @@
 /* eslint-disable react/no-unknown-property */
-import { AutonomysSymbol, DocIcon, WalletIcon } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { DocIcon } from 'components/icons/DocIcon'
+import { WalletIcon } from 'components/icons/WalletIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { AccountByIdDocument, AccountByIdQuery } from 'gql/graphql'

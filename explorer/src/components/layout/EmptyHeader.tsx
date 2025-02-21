@@ -1,7 +1,7 @@
 'use client'
 
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import { LogoIcon } from 'components/icons'
+import { LogoIcon } from 'components/icons/LogoIcon'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -36,7 +36,7 @@ export const EmptyHeader = () => {
             <HeaderChainDropdown />
             <button
               onClick={toggleTheme}
-              className='bg-buttonLightFrom ml-4 inline-flex items-center rounded-full p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
+              className='ml-4 inline-flex items-center rounded-full bg-buttonLightFrom p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
             >
               {isDark ? (
                 <SunIcon
@@ -69,7 +69,7 @@ export const EmptyHeader = () => {
           <div className='flex items-center gap-4'>
             <HeaderChainDropdown />
             <button
-              className='bg-buttonLightFrom items-center rounded-full p-3 text-white dark:bg-white dark:text-blueAccent'
+              className='items-center rounded-full bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
               onClick={() => setIsOpen(true)}
             >
               <Bars3BottomRightIcon className='size-4' fill='currentColor' stroke='currentColor' />

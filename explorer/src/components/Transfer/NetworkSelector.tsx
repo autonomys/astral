@@ -1,11 +1,11 @@
 import { networks } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
 import { SwapDirection } from 'constants/transaction'
 import useIndexers from 'hooks/useIndexers'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FC, Fragment, useCallback, useMemo } from 'react'
-import { AutonomysSymbol } from '../icons'
 
 interface NetworkSelectorProps {
   direction: SwapDirection

@@ -94,21 +94,20 @@ query CheckRole($subspaceAccount: String!) {
       id
     }
   }
-  # TODO: fix this
-  #  operator: consensus_rewards(
-  #    first: 1
-  #    where: { operatorOwner_eq: $subspaceAccount }
-  #    orderBy: id_ASC
-  #  ) {
-  #    totalCount
-  #  }
-  #  nominator: consensus_rewards(
-  #    first: 1
-  #    where: { account: { id_eq: $subspaceAccount } }
-  #    orderBy: id_ASC
-  #  ) {
-  #    totalCount
-  #  }
+  isOperator: staking_operators(
+    where: { account_id: { _eq: $subspaceAccount }, raw_status: { _eq: "ACTIVE" } }
+    limit: 1
+    order_by: { id: asc }
+  ) {
+    id
+  }
+  isNominator: staking_accounts(
+    where: { id: { _eq: $subspaceAccount }, current_total_stake: { _gt: 0 } }
+    limit: 1
+    order_by: { id: asc }
+  ) {
+    id
+  }
 }
 
 query StakingSummary($first: Int!, $subspaceAccount: String) {

@@ -13,20 +13,22 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - effective_domain_epoch_pending
-        - effective_domain_id_pending
+        - _id
+        - account_id
         - amount_pending
         - block_height
+        - domain_id
+        - effective_domain_epoch_pending
+        - effective_domain_id_pending
+        - id
+        - nominator_id
+        - operator_id
         - shares
         - shares_known
         - storage_fee_deposit
         - storage_fee_deposit_known
         - storage_fee_deposit_pending
-        - account_id
-        - id
-        - nominator_id
-        - operator_id
-        - _id
+        - timestamp
       filter: {}
       limit: 50
     comment: ""
