@@ -8,14 +8,13 @@ import {
   transferToDomainAccount32Type,
 } from '@autonomys/auto-xdm'
 import { sendGAEvent } from '@next/third-parties/google'
-import { Routes } from 'constants/routes'
 import { SwapDirection } from 'constants/transaction'
 import { AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM, WalletType } from 'constants/wallet'
 import { FieldArray, Form, Formik } from 'formik'
 import useIndexers from 'hooks/useIndexers'
 import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
@@ -37,8 +36,6 @@ interface FormValues {
 }
 
 const DirectionBlock: FC<DirectionBlockProps> = ({ direction, maxAmount }) => {
-  const pathname = usePathname()
-
   return (
     <div className='flex flex-col space-y-1'>
       <div className='flex items-center justify-between space-x-4'>
@@ -48,7 +45,7 @@ const DirectionBlock: FC<DirectionBlockProps> = ({ direction, maxAmount }) => {
         <NetworkSelector direction={direction} />
         <div className='w-1/2' />
       </div>
-      {direction === SwapDirection.TO && pathname.includes(Routes.transfer) && <ReceiverField />}
+      {direction === SwapDirection.TO && <ReceiverField />}
       <AmountField maxAmount={maxAmount} disabled={direction === SwapDirection.TO} />
     </div>
   )
