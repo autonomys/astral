@@ -1,5 +1,5 @@
+import { Transfer } from 'components/Transfer'
 import { NotFound } from 'components/layout/NotFound'
-import { Swap } from 'components/Swap'
 import { Routes } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
@@ -11,6 +11,6 @@ export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadat
   getMetadata(chain, 'Transfer', undefined)
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
-  isRouteSupportingNetwork(chain, Routes.transfer) ? <Swap /> : <NotFound />
+  isRouteSupportingNetwork(chain, Routes.transfer) ? <Transfer /> : <NotFound />
 
 export default Page

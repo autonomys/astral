@@ -10,7 +10,6 @@ export enum Routes {
   domains = 'domains',
   autoevm = 'auto-evm',
   autoid = 'auto-id',
-  swap = 'swap',
   transfer = 'transfer',
   testnetRewards = 'testnet-rewards',
 }
@@ -45,11 +44,6 @@ export enum RoutesLeaderboard {
 export enum RoutesDomains {
   autoevm = '/auto-evm',
   autoid = '/auto-id',
-}
-
-export enum RoutesSwap {
-  transfer = '/transfer',
-  swap = '/swap',
 }
 
 export type AnyRoutes =
@@ -170,22 +164,9 @@ export const ROUTES: Route[] = [
     ],
   },
   {
-    name: Routes.swap,
-    title: 'Transfer / Swap',
+    name: Routes.transfer,
+    title: 'Transfer',
     networks: [NetworkId.TAURUS],
-    children: [
-      {
-        name: RoutesSwap.swap,
-        title: 'Swap',
-        networks: [NetworkId.TAURUS],
-      },
-      {
-        name: RoutesSwap.transfer,
-        title: 'Transfer',
-        networks: [NetworkId.TAURUS],
-      },
-    ],
-    alias: [Routes.transfer],
   },
   {
     name: Routes.testnetRewards,

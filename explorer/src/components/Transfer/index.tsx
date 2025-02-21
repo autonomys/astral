@@ -15,7 +15,6 @@ import { FieldArray, Form, Formik } from 'formik'
 import useIndexers from 'hooks/useIndexers'
 import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
-import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
@@ -38,26 +37,7 @@ interface FormValues {
 }
 
 const DirectionBlock: FC<DirectionBlockProps> = ({ direction, maxAmount }) => {
-  const { network } = useIndexers()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
-
-  const linkToSwapOrTransfer = useMemo(() => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.delete('receiver')
-    let href = `/${network}/${Routes.swap}?${params.toString()}`
-    let text = 'Send to your wallet?'
-    if (pathname.includes(Routes.swap)) {
-      href = `/${network}/${Routes.transfer}?${searchParams.toString()}`
-      text = 'Send to a different address?'
-    }
-
-    return (
-      <Link href={href}>
-        <span className='text-sm text-grayDarker dark:text-white'>{text}</span>
-      </Link>
-    )
-  }, [network, pathname, searchParams])
 
   return (
     <div className='flex flex-col space-y-1'>
@@ -66,11 +46,7 @@ const DirectionBlock: FC<DirectionBlockProps> = ({ direction, maxAmount }) => {
           {capitalizeFirstLetter(direction)}
         </span>
         <NetworkSelector direction={direction} />
-        {direction === SwapDirection.TO ? (
-          <div className='w-1/2 pb-4'>{linkToSwapOrTransfer}</div>
-        ) : (
-          <div className='w-1/2' />
-        )}
+        <div className='w-1/2' />
       </div>
       {direction === SwapDirection.TO && pathname.includes(Routes.transfer) && <ReceiverField />}
       <AmountField maxAmount={maxAmount} disabled={direction === SwapDirection.TO} />
@@ -78,7 +54,7 @@ const DirectionBlock: FC<DirectionBlockProps> = ({ direction, maxAmount }) => {
   )
 }
 
-export const Swap: FC = () => {
+export const Transfer: FC = () => {
   const [hash, setHash] = useState<Hash | undefined>(undefined)
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const { actingAccount, injector, api, domainsApis, subspaceAccount } = useWallet()
@@ -246,7 +222,7 @@ export const Swap: FC = () => {
           break
         }
         default:
-          toast.error('Invalid swap', { position: 'bottom-center' })
+          toast.error('Invalid transfer', { position: 'bottom-center' })
           break
       }
     },

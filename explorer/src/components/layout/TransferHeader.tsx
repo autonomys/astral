@@ -13,14 +13,14 @@ import { useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
-export const SwapHeader = () => {
+export const TransferHeader = () => {
   const { isDark, toggleTheme } = useTheme()
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
   const { network } = useIndexers()
 
-  const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.swap), [network])
+  const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.transfer), [network])
 
   return (
     <header className='body-font z-9 py-[30px] text-gray-600'>

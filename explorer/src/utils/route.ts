@@ -2,8 +2,7 @@ import { NetworkId } from '@autonomys/auto-utils'
 import { AnyRoutes, Routes, ROUTES } from 'constants/routes'
 import { Route } from 'types/app'
 
-const findRoute = (route: Routes): Route | undefined =>
-  ROUTES.find((item) => item.name === route || item.alias?.includes(route))
+const findRoute = (route: Routes): Route | undefined => ROUTES.find((item) => item.name === route)
 
 const isRouteSupported = (currentNetwork: NetworkId, routeItem: Route): boolean =>
   !!currentNetwork &&
