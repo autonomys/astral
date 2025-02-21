@@ -22148,6 +22148,11 @@ export type HomeQueryVariables = Exact<{
 
 export type HomeQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, extrinsics_count: number, events_count: number, space_pledged: any, blockchain_size: any, extrinsicsCount: number, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, name: string, timestamp: any, success: boolean }>, cumulative?: { __typename?: 'consensus_cumulative_blocks', cumulative_extrinsics_count: any, cumulative_events_count: any, cumulative_transfers_count: any, cumulative_transfer_value: any, cumulative_rewards_count: any, cumulative_reward_value: any } | null }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null } };
 
+export type OnChainActivityChartsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OnChainActivityChartsQuery = { __typename?: 'query_root', stats_daily: Array<{ __typename?: 'stats_daily', cumulated_history_size: any, delta_history_size: any, start_date: any, end_date: any }>, stats_weekly: Array<{ __typename?: 'stats_weekly', cumulated_history_size: any, delta_history_size: any, start_date: any, end_date: any }>, stats_monthly: Array<{ __typename?: 'stats_monthly', cumulated_history_size: any, delta_history_size: any, start_date: any, end_date: any }> };
+
 export type LogsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -23626,6 +23631,60 @@ export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
 export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
 export type HomeSuspenseQueryHookResult = ReturnType<typeof useHomeSuspenseQuery>;
 export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
+export const OnChainActivityChartsDocument = gql`
+    query OnChainActivityCharts {
+  stats_daily(limit: 30, offset: 0, order_by: {end_block: desc}) {
+    cumulated_history_size
+    delta_history_size
+    start_date
+    end_date
+  }
+  stats_weekly(limit: 30, offset: 0, order_by: {end_block: desc}) {
+    cumulated_history_size
+    delta_history_size
+    start_date
+    end_date
+  }
+  stats_monthly(limit: 30, offset: 0, order_by: {end_block: desc}) {
+    cumulated_history_size
+    delta_history_size
+    start_date
+    end_date
+  }
+}
+    `;
+
+/**
+ * __useOnChainActivityChartsQuery__
+ *
+ * To run a query within a React component, call `useOnChainActivityChartsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOnChainActivityChartsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnChainActivityChartsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnChainActivityChartsQuery(baseOptions?: Apollo.QueryHookOptions<OnChainActivityChartsQuery, OnChainActivityChartsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OnChainActivityChartsQuery, OnChainActivityChartsQueryVariables>(OnChainActivityChartsDocument, options);
+      }
+export function useOnChainActivityChartsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OnChainActivityChartsQuery, OnChainActivityChartsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OnChainActivityChartsQuery, OnChainActivityChartsQueryVariables>(OnChainActivityChartsDocument, options);
+        }
+export function useOnChainActivityChartsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OnChainActivityChartsQuery, OnChainActivityChartsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OnChainActivityChartsQuery, OnChainActivityChartsQueryVariables>(OnChainActivityChartsDocument, options);
+        }
+export type OnChainActivityChartsQueryHookResult = ReturnType<typeof useOnChainActivityChartsQuery>;
+export type OnChainActivityChartsLazyQueryHookResult = ReturnType<typeof useOnChainActivityChartsLazyQuery>;
+export type OnChainActivityChartsSuspenseQueryHookResult = ReturnType<typeof useOnChainActivityChartsSuspenseQuery>;
+export type OnChainActivityChartsQueryResult = Apollo.QueryResult<OnChainActivityChartsQuery, OnChainActivityChartsQueryVariables>;
 export const LogsDocument = gql`
     query Logs($limit: Int!, $offset: Int, $orderBy: [consensus_logs_order_by!]!, $where: consensus_logs_bool_exp) {
   consensus_logs_aggregate(where: $where) {

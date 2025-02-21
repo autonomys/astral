@@ -10,6 +10,7 @@ export enum Routes {
   domains = 'domains',
   autoevm = 'auto-evm',
   autoid = 'auto-id',
+  stats = 'stats',
   testnetRewards = 'testnet-rewards',
 }
 
