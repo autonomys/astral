@@ -2919,12 +2919,12 @@ BEGIN
         'ACTIVE',                    -- status
         NEW."timestamp",             -- timestamp
         NEW.extrinsic_id,            -- withdraw_extrinsic_hash
-        '',                          -- unlock_extrinsic_hash
-        '',                          -- epoch_withdrawal_requested_at
-        '',                          -- domain_block_number_withdrawal_requested_at
+        0,                           -- unlock_extrinsic_hash
+        0,                           -- epoch_withdrawal_requested_at
+        0,                           -- domain_block_number_withdrawal_requested_at
         NEW.block_height,            -- created_at
-        '',                          -- ready_at
-        '',                          -- unlocked_at
+        0,                           -- ready_at
+        0,                           -- unlocked_at
         NEW.block_height             -- updated_at
     );
     
