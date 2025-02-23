@@ -24,6 +24,7 @@ query NominationsList(
       status
       pending_action
       current_total_shares
+      current_share_price
     }
     known_shares
     known_storage_fee_deposit

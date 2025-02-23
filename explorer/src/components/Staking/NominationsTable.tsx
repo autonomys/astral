@@ -88,7 +88,20 @@ export const NominationsTable: FC = () => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
 
-  const nominatorsList = useMemo(() => data?.staking_nominators || [], [data])
+  const nominatorsList = useMemo(
+    () =>
+      data
+        ? data.staking_nominators.map((n) => ({
+            ...n,
+            // eslint-disable-next-line camelcase
+            withdrawal_histories: n.withdrawal_histories.map((w) => ({
+              ...w,
+              operatorCurrentSharePrice: n.operator?.current_share_price,
+            })),
+          }))
+        : [],
+    [data],
+  )
   const totalCount = useMemo(
     () => (data && data.staking_nominators_aggregate.aggregate?.count) || 0,
     [data],
@@ -132,15 +145,13 @@ export const NominationsTable: FC = () => {
   ]
 
   const withdrawalColumns = [
-    // columnHelper.accessor('estimated_amount', {
-    //   cell: (info) => `${info.getValue()}`,
-    //   header: 'Estimated Amount',
-    // }),
-    columnHelper.accessor('total_withdrawal_amount', {
-      cell: (info) => (
-        <div>{`${bigNumberToFormattedString(info.getValue() + info.row.original.total_withdrawal_amount)} ${tokenSymbol}`}</div>
-      ),
-      header: 'Total Amount',
+    columnHelper.accessor('shares', {
+      cell: (info) =>
+        `${bigNumberToFormattedString(
+          (BigInt(info.row.original.shares) * BigInt(info.row.original.operatorCurrentSharePrice)) /
+            BigInt(10 ** 18),
+        )} ${tokenSymbol}`,
+      header: 'Estimated Amount',
     }),
     columnHelper.accessor('storage_fee_refund', {
       cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
@@ -149,10 +160,6 @@ export const NominationsTable: FC = () => {
     columnHelper.accessor('timestamp', {
       cell: (info) => utcToLocalRelativeTime(info.getValue()),
       header: 'Time',
-    }),
-    columnHelper.accessor('shares', {
-      cell: (info) => info.getValue(),
-      header: 'Shares',
     }),
     columnHelper.accessor('block_height', {
       cell: (info) => (
