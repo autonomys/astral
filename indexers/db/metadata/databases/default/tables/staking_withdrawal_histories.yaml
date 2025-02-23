@@ -13,18 +13,19 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - domain_epoch
-        - block_height
-        - shares
-        - storage_fee_refund
-        - total_withdrawal_amount
-        - unlock_at_confirmed_domain_block_number
+        - _id
         - account_id
+        - block_height
+        - domain_epoch
         - domain_id
         - id
         - nominator_id
         - operator_id
-        - _id
+        - shares
+        - storage_fee_refund
+        - timestamp
+        - total_withdrawal_amount
+        - unlock_at_confirmed_domain_block_number
       filter: {}
       limit: 50
     comment: ""

@@ -315,6 +315,8 @@ export function createBundleSubmission(
   consensusStorageFee: bigint,
   domainExecutionFee: bigint,
   burnedBalance: bigint,
+  blockHeight: bigint,
+  extrinsicId: string,
   eventId: string
 ): BundleSubmission {
   return BundleSubmission.create({
@@ -342,6 +344,8 @@ export function createBundleSubmission(
     consensusStorageFee,
     domainExecutionFee,
     burnedBalance,
+    blockHeight,
+    extrinsicId,
     eventId,
   });
 }
@@ -393,6 +397,7 @@ export function createOperatorStakingHistory(
   totalStorageFeeDeposit: bigint,
   sharePrice: bigint,
   partialStatus: string,
+  timestamp: Date,
   blockHeight: bigint
 ): OperatorStakingHistory {
   return OperatorStakingHistory.create({
@@ -408,6 +413,7 @@ export function createOperatorStakingHistory(
     totalStorageFeeDeposit,
     sharePrice,
     partialStatus,
+    timestamp,
     blockHeight,
   });
 }
@@ -425,6 +431,7 @@ export function createDepositHistory(
   effectiveDomainEpochPending: number,
   amountPending: bigint,
   storageFeeDepositPending: bigint,
+  timestamp: Date,
   blockHeight: bigint
 ): DepositHistory {
   return DepositHistory.create({
@@ -441,6 +448,7 @@ export function createDepositHistory(
     effectiveDomainEpochPending,
     amountPending,
     storageFeeDepositPending,
+    timestamp,
     blockHeight,
   });
 }
@@ -455,6 +463,7 @@ export function createWithdrawalHistory(
   unlockAtConfirmedDomainBlockNumber: bigint,
   shares: bigint,
   storageFeeRefund: bigint,
+  timestamp: Date,
   blockHeight: bigint
 ): WithdrawalHistory {
   return WithdrawalHistory.create({
@@ -468,6 +477,7 @@ export function createWithdrawalHistory(
     unlockAtConfirmedDomainBlockNumber,
     shares,
     storageFeeRefund,
+    timestamp,
     blockHeight,
   });
 }

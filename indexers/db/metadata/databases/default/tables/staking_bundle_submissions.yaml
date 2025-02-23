@@ -13,6 +13,7 @@ select_permissions:
     permission:
       columns:
         - _block_range
+        - block_height
         - burned_balance
         - consensus_block_number
         - consensus_storage_fee
@@ -36,6 +37,7 @@ select_permissions:
         - domain_block_id
         - domain_id
         - event_id
+        - extrinsic_id
         - id
         - operator_id
         - _id

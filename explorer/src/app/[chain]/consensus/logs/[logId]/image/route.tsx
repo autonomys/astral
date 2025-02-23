@@ -1,5 +1,7 @@
 /* eslint-disable react/no-unknown-property */
-import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { BlockIcon } from 'components/icons/BlockIcon'
+import { DocIcon } from 'components/icons/DocIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { LogByIdDocument, LogByIdQuery } from 'gql/graphql'

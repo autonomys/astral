@@ -1,5 +1,5 @@
 import { NetworkId } from '@autonomys/auto-utils'
-import { CheckRoleDocument } from 'gql/graphql'
+import { CheckRoleDocument, CheckRoleQuery } from 'gql/graphql'
 import { queryGraphqlServer } from 'utils/queryGraphqlServer'
 
 const verifySubspaceAccountRolesForNetwork = async (
@@ -9,7 +9,7 @@ const verifySubspaceAccountRolesForNetwork = async (
   try {
     if (!CheckRoleDocument.loc) throw new Error('No query')
 
-    const data = await queryGraphqlServer(
+    const data = await queryGraphqlServer<CheckRoleQuery>(
       CheckRoleDocument.loc.source.body,
       {
         subspaceAccount,
@@ -18,9 +18,9 @@ const verifySubspaceAccountRolesForNetwork = async (
     )
 
     return {
-      farmer: data.farmer.length > 0,
-      operator: data.operator.totalCount > 0,
-      nominator: data.nominator.totalCount > 0,
+      farmer: data.isFarmer.length > 0,
+      operator: data.isOperator.length > 0,
+      nominator: data.isNominator.length > 0,
     }
   } catch (error) {
     console.error('Failed to fetch if user has any related events:', error)

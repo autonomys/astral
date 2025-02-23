@@ -34,7 +34,11 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       : api;
 
   // Use to query the parent block operators (for the last unlock of an operator (unlockNominator))
-  const parentBlockApi = unsafeApi ? await unsafeApi.at(parentHash) : api;
+  const parentBlockApi = unsafeApi
+    ? height > 824013 && height <= 835748
+      ? apiPatched
+      : await unsafeApi.at(parentHash)
+    : api;
 
   const [
     domainStakingSummary,
@@ -107,6 +111,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         operator.operatorDetails.totalStorageFeeDeposit,
         sharePrice,
         stringify(operator.operatorDetails.partialStatus),
+        blockTimestamp,
         height
       )
     );
@@ -142,6 +147,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         data.pending?.effectiveDomainEpoch ?? 0,
         data.pending?.amount ?? ZERO_BIGINT,
         data.pending?.storageFeeDeposit ?? ZERO_BIGINT,
+        blockTimestamp,
         height
       )
     );
@@ -178,6 +184,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         data.withdrawalInShares === null
           ? ZERO_BIGINT
           : data.withdrawalInShares.storageFeeRefund,
+        blockTimestamp,
         height
       )
     );
