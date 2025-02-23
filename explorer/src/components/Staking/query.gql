@@ -24,6 +24,7 @@ query NominationsList(
       status
       pending_action
       current_total_shares
+      current_share_price
     }
     known_shares
     known_storage_fee_deposit
@@ -64,6 +65,28 @@ query NominationsList(
       ready_at
       unlocked_at
       updated_at
+    }
+    deposit_histories {
+      id
+      shares
+      storage_fee_deposit
+      shares_known
+      storage_fee_deposit_known
+      effective_domain_id_pending
+      effective_domain_epoch_pending
+      amount_pending
+      storage_fee_deposit_pending
+      timestamp
+      block_height
+    }
+    withdrawal_histories {
+      id
+      shares
+      total_withdrawal_amount
+      unlock_at_confirmed_domain_block_number
+      storage_fee_refund
+      timestamp
+      block_height
     }
   }
 }
