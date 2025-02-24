@@ -26,8 +26,8 @@ export const FarmingHeader = () => {
         link: `/${network}/${Routes.farming}`,
       },
       {
-        title: 'Advance CLI Documentation',
-        link: `${EXTERNAL_ROUTES.docs}farming/advanced-cli/install`,
+        title: 'CLI Documentation',
+        link: `${EXTERNAL_ROUTES.docs}farming/cli/install`,
       },
       {
         title: 'Space Acres Documentation',
