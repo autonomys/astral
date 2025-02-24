@@ -1,4 +1,4 @@
-import type { DiscordToken, SubspaceToken } from 'types/jwt'
+import type { DiscordToken, GitHubToken, SubspaceToken } from 'types/jwt'
 
 export const TOKEN_EXPIRATION = 60 * 60 * 24 // 1 day
 
@@ -39,4 +39,9 @@ export const DEFAULT_DISCORD_TOKEN: DiscordToken = {
       taurusNominator: false,
     },
   },
+}
+
+export const DEFAULT_GITHUB_TOKEN: GitHubToken = {
+  id: '',
+  username: '',
 }
