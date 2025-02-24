@@ -9,7 +9,7 @@ import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 import StorageBanner from './StorageBanner'
@@ -20,13 +20,12 @@ export const StorageHeader: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
   const { network, section } = useIndexers()
-  const [showBanner, setShowBanner]=useState(true);
 
   const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.storage), [network])
 
-  useEffect(() => {
+  const showBanner = useMemo(() => {
     const regex = /^\/(taurus|mainnet)\/permanent-storage(\/(files|folders)?)?$/;
-    setShowBanner(regex.test(pathname));
+    return regex.test(pathname);
   }, [pathname]);
 
   return (
@@ -72,7 +71,6 @@ export const StorageHeader: FC = () => {
           <nav className='flex flex-wrap items-center justify-center gap-10 text-sm py-5'>
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link)
-              {isCurrentPath}
               return (
                 <Link
                   key={index}
@@ -90,7 +88,7 @@ export const StorageHeader: FC = () => {
           </nav>
         </div>
       ) : (
-        <div>
+        <>
         <div className='flex flex-row items-center justify-between px-5 py-2'>
           <Link
             href={`/${network}/${section}`}
@@ -110,7 +108,7 @@ export const StorageHeader: FC = () => {
           <MobileHeader menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
         {showBanner && <StorageBanner/>}
-        </div>
+        </>
       )}
     </header>
   )
