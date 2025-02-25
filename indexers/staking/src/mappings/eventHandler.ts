@@ -9,6 +9,7 @@ import { SealedBundleHeader } from "./types";
 import {
   calculateTransfer,
   findDomainIdFromOperatorsCache,
+  findEpochFromDomainStakingHistoryCache,
   findOneExtrinsicEvent,
 } from "./utils";
 
@@ -366,6 +367,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       calculateTransfer(transfersRejected);
     const totalVolume = totalTransfersIn + totalTransfersOut;
 
+    const epoch = findEpochFromDomainStakingHistoryCache(cache, domainId);
+
     cache.bundleSubmission.push(
       db.createBundleSubmission(
         bundleHash,
@@ -376,6 +379,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         BigInt(domainBlockNumber),
         String(domainBlockHash),
         String(domainBlockExtrinsicRoot),
+        BigInt(epoch),
         BigInt(consensusBlockNumber),
         String(consensusBlockHash),
         totalTransfersIn,
