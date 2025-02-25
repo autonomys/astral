@@ -2886,7 +2886,23 @@ EXECUTE FUNCTION staking.handle_deposit_events();
 CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
-BEGIN
+  DECLARE
+    last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+    last_domain_epoch staking.domain_epochs.epoch%TYPE;
+  BEGIN
+    SELECT last_domain_block_number
+    INTO last_domain_block_histories_domain_block_number
+    FROM staking.domain_block_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY domain_block_number DESC
+    LIMIT 1;
+
+    SELECT last_domain_epoch
+    INTO last_domain_epoch
+    FROM staking.domain_epochs
+    WHERE domain_id = NEW.domain_id
+    ORDER BY epoch DESC
+    LIMIT 1;
 
     INSERT INTO staking.withdrawals (
         id,
@@ -2924,16 +2940,16 @@ BEGIN
         NEW."timestamp",             -- timestamp
         NEW.extrinsic_id,            -- withdraw_extrinsic_hash
         0,                           -- unlock_extrinsic_hash
-        0,                           -- epoch_withdrawal_requested_at
-        0,                           -- domain_block_number_withdrawal_requested_at
+        last_domain_epoch,           -- epoch_withdrawal_requested_at
+        last_domain_block_number,    -- domain_block_number_withdrawal_requested_at
         NEW.block_height,            -- created_at
-        0,                           -- domain_block_number_ready_at
+        last_domain_block_number + 14400, -- domain_block_number_ready_at
         0,                           -- unlocked_at
         NEW.block_height             -- updated_at
     );
     
     RETURN NEW;
-END;
+  END;
 $$;
 ALTER FUNCTION staking.handle_withdraw_events() OWNER TO postgres;
 
