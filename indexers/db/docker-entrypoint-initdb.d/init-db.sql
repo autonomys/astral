@@ -2656,7 +2656,7 @@ BEGIN
         0,                                       -- current_epoch_rewards
         0,                                       -- current_total_shares
         0,                                       -- current_share_price
-        'ACTIVE',                                -- raw_status
+        '{"registered":null}',                   -- raw_status
         0,                                       -- total_deposits
         0,                                       -- total_estimated_withdrawals
         0,                                       -- total_withdrawals
@@ -2682,7 +2682,7 @@ BEGIN
         0,                                       -- accumulated_epoch_shares
         0,                                       -- active_epoch_count
         0,                                       -- bundle_count
-        'ACTIVE',                                -- status
+        'PENDING',                               -- status
         '',                                      -- pending_action (empty string)
         0,                                       -- last_bundle_at
         NEW.extrinsic_id,                        -- extrinsic_id
@@ -2781,7 +2781,7 @@ BEGIN
             0,                               -- accumulated_epoch_storage_fee_deposit
             0,                               -- accumulated_epoch_shares
             0,                               -- active_epoch_count
-            'ACTIVE',                        -- status
+            'PENDING',                        -- status
             '',                              -- pending_action (empty string)
             NEW.block_height,                -- created_at
             NEW.block_height                 -- updated_at
@@ -2820,7 +2820,7 @@ BEGIN
         NEW.storage_fee_deposit,     -- storage_fee_deposit
         NEW.total_amount,            -- total_amount
         0,                           -- total_withdrawn (starts at 0)
-        'ACTIVE',                    -- status
+        'PENDING',                    -- status
         NEW."timestamp",             -- timestamp
         NEW.extrinsic_id,            -- extrinsic_id
         NEW.block_height,            -- created_at
@@ -2916,7 +2916,7 @@ BEGIN
         0,                           -- unlocked_amount
         0,                           -- unlocked_storage_fee
         0,                           -- total_amount
-        'ACTIVE',                    -- status
+        'PENDING',                    -- status
         NEW."timestamp",             -- timestamp
         NEW.extrinsic_id,            -- withdraw_extrinsic_hash
         0,                           -- unlock_extrinsic_hash
@@ -3057,7 +3057,7 @@ BEGIN
         current_storage_fee_deposit = NEW.total_storage_fee_deposit,
         current_total_shares = NEW.current_total_shares,
         current_share_price = NEW.share_price,
-        "status" = NEW.partial_status
+        raw_status = NEW.partial_status
     WHERE id = NEW.operator_id;
     
     RETURN NEW;
