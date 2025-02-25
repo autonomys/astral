@@ -1598,7 +1598,7 @@ CREATE TABLE staking.withdrawals (
     epoch_withdrawal_requested_at numeric NOT NULL,
     domain_block_number_withdrawal_requested_at numeric NOT NULL,
     created_at numeric NOT NULL,
-    ready_at numeric NOT NULL,
+    domain_block_number_ready_at numeric NOT NULL,
     unlocked_at numeric NOT NULL,
     updated_at numeric NOT NULL
 );
@@ -2906,7 +2906,7 @@ BEGIN
         epoch_withdrawal_requested_at,
         domain_block_number_withdrawal_requested_at,
         created_at,
-        ready_at,
+        domain_block_number_ready_at,
         unlocked_at,
         updated_at
     ) VALUES (
@@ -2927,7 +2927,7 @@ BEGIN
         0,                           -- epoch_withdrawal_requested_at
         0,                           -- domain_block_number_withdrawal_requested_at
         NEW.block_height,            -- created_at
-        0,                           -- ready_at
+        0,                           -- domain_block_number_ready_at
         0,                           -- unlocked_at
         NEW.block_height             -- updated_at
     );

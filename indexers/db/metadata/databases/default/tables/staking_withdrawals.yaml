@@ -42,7 +42,7 @@ select_permissions:
         - id
         - nominator_id
         - operator_id
-        - ready_at
+        - domain_block_number_ready_at
         - shares
         - status
         - timestamp
