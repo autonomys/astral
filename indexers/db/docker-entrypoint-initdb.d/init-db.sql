@@ -2167,17 +2167,21 @@ CREATE INDEX "staking_deposits_id" ON staking.deposits USING btree (id);
 CREATE INDEX "staking_deposits_domain_id" ON staking.deposits USING btree (domain_id);
 CREATE INDEX "staking_deposits_operator_id" ON staking.deposits USING btree (operator_id);
 CREATE INDEX "staking_deposits_nominator_id" ON staking.deposits USING btree (nominator_id);
+CREATE INDEX "staking_deposits_status" ON staking.deposits USING btree ("status");
 CREATE INDEX "staking_domain_epochs_id" ON staking.domain_epochs USING btree (id);
 CREATE INDEX "staking_domains_id" ON staking.domains USING btree (id);
 CREATE INDEX "staking_nominators_id" ON staking.nominators USING btree (id);
 CREATE INDEX "staking_nominators_domain_id" ON staking.nominators USING btree (domain_id);
 CREATE INDEX "staking_nominators_operator_id" ON staking.nominators USING btree (operator_id);
+CREATE INDEX "staking_nominators_status" ON staking.nominators USING btree ("status");
 CREATE INDEX "staking_operators_id" ON staking.operators USING btree (id);
 CREATE INDEX "staking_operators_domain_id" ON staking.operators USING btree (domain_id);
+CREATE INDEX "staking_operators_status" ON staking.operators USING btree ("status");
 CREATE INDEX "staking_withdrawals_id" ON staking.withdrawals USING btree (id);
 CREATE INDEX "staking_withdrawals_domain_id" ON staking.withdrawals USING btree (domain_id);
 CREATE INDEX "staking_withdrawals_operator_id" ON staking.withdrawals USING btree (operator_id);
 CREATE INDEX "staking_withdrawals_nominator_id" ON staking.withdrawals USING btree (nominator_id);
+CREATE INDEX "staking_withdrawals_status" ON staking.withdrawals USING btree ("status");
 
 CREATE INDEX "stats_hourly_end_date" ON stats.hourly USING btree ("end_date" DESC);
 CREATE INDEX "stats_daily_end_date" ON stats.daily USING btree ("end_date" DESC);
@@ -2682,7 +2686,7 @@ BEGIN
         0,                                       -- accumulated_epoch_shares
         0,                                       -- active_epoch_count
         0,                                       -- bundle_count
-        'PENDING',                               -- status
+        'PENDING_NEXT_EPOCH',                    -- status
         '',                                      -- pending_action (empty string)
         0,                                       -- last_bundle_at
         NEW.extrinsic_id,                        -- extrinsic_id
@@ -2781,7 +2785,7 @@ BEGIN
             0,                               -- accumulated_epoch_storage_fee_deposit
             0,                               -- accumulated_epoch_shares
             0,                               -- active_epoch_count
-            'PENDING',                        -- status
+            'PENDING_NEXT_EPOCH',            -- status
             '',                              -- pending_action (empty string)
             NEW.block_height,                -- created_at
             NEW.block_height                 -- updated_at
@@ -2820,7 +2824,7 @@ BEGIN
         NEW.storage_fee_deposit,     -- storage_fee_deposit
         NEW.total_amount,            -- total_amount
         0,                           -- total_withdrawn (starts at 0)
-        'PENDING',                    -- status
+        'PENDING_NEXT_EPOCH',        -- status
         NEW."timestamp",             -- timestamp
         NEW.extrinsic_id,            -- extrinsic_id
         NEW.block_height,            -- created_at
@@ -2916,7 +2920,7 @@ BEGIN
         0,                           -- unlocked_amount
         0,                           -- unlocked_storage_fee
         0,                           -- total_amount
-        'PENDING',                    -- status
+        'PENDING_NEXT_EPOCH',        -- status
         NEW."timestamp",             -- timestamp
         NEW.extrinsic_id,            -- withdraw_extrinsic_hash
         0,                           -- unlock_extrinsic_hash
@@ -3148,6 +3152,40 @@ CREATE TRIGGER update_domain_stakes_trigger
 AFTER INSERT ON staking.domain_staking_histories
 FOR EACH ROW
 EXECUTE FUNCTION staking.update_domain_stakes();
+
+CREATE OR REPLACE FUNCTION staking.handle_domain_epochs() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    UPDATE staking.operators
+    SET 
+        status = 'ACTIVE'
+    WHERE status = 'PENDING_NEXT_EPOCH';
+
+    UPDATE staking.nominators
+    SET 
+        status = 'ACTIVE'
+    WHERE status = 'PENDING_NEXT_EPOCH';
+
+    UPDATE staking.deposits
+    SET 
+        status = 'ACTIVE'
+    WHERE status = 'PENDING_NEXT_EPOCH';
+
+    UPDATE staking.withdrawals
+    SET 
+        status = 'PENDING_UNLOCK'
+    WHERE status = 'PENDING_NEXT_EPOCH';
+    
+    RETURN NEW;
+  END;
+$$;
+ALTER FUNCTION staking.handle_domain_epochs() OWNER TO postgres;
+
+CREATE TRIGGER handle_domain_epochs_trigger
+AFTER INSERT ON staking.domain_epochs
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_domain_epochs();
 
 CREATE OR REPLACE FUNCTION staking.update_operator_on_deregistration() RETURNS TRIGGER
     LANGUAGE plpgsql
