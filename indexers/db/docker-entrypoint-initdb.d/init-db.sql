@@ -3114,9 +3114,9 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
         NEW.domain_id || '-' || NEW.current_epoch_index,
         NEW.domain_id,
         NEW.current_epoch_index,
-        last_domain_block_histories_domain_block_number,  -- Fixed this line
-        0,
-        0,
+        last_domain_block_histories_domain_block_number,
+        last_domain_block_histories_domain_block_number,
+        1,
         NEW.timestamp,
         NEW.timestamp,
         0,
@@ -3126,6 +3126,13 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
         NEW.block_height,
         NEW.block_height
     ) ON CONFLICT (id) DO UPDATE SET
+        domain_block_number_start = CASE 
+            WHEN staking.domain_epochs.domain_block_number_start = 0 
+            THEN last_domain_block_histories_domain_block_number 
+            ELSE staking.domain_epochs.domain_block_number_start 
+        END,
+        domain_block_number_end = last_domain_block_histories_domain_block_number,
+        domain_block_count = staking.domain_epochs.domain_block_count + 1,
         timestamp_end = NEW.timestamp,
         epoch_duration = EXTRACT(EPOCH FROM (NEW.timestamp - staking.domain_epochs.timestamp_start)),
         consensus_block_number_end = NEW.block_height,
