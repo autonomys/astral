@@ -16,6 +16,7 @@ services:
     image: caddy:latest
     ports:
       - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8001:8001"
     volumes:
       - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
       - caddy_data:/data # Volume for Let's Encrypt certificates
