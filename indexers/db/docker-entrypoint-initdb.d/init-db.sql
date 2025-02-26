@@ -2995,7 +2995,7 @@ BEGIN
         total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance  ,
         bundle_count = staking.domains.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number
-    WHERE id = NEW.domain_id;
+    WHERE id = NEW.domain_id AND last_domain_block_number < NEW.domain_block_number;
 
     UPDATE staking.operators
     SET 
