@@ -2992,25 +2992,17 @@ BEGIN
         total_volume = staking.domains.total_volume + NEW.total_volume,
         total_consensus_storage_fee = staking.domains.total_consensus_storage_fee + NEW.consensus_storage_fee,
         total_domain_execution_fee = staking.domains.total_domain_execution_fee + NEW.domain_execution_fee,
-        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance  ,
+        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance,
+    WHERE id = NEW.domain_id AND last_domain_block_number < NEW.domain_block_number;
+
+    UPDATE staking.domains
+    SET 
         bundle_count = staking.domains.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number
     WHERE id = NEW.domain_id AND last_domain_block_number < NEW.domain_block_number;
 
     UPDATE staking.operators
     SET 
-        total_transfers_in = staking.operators.total_transfers_in + NEW.total_transfers_in,
-        transfers_in_count = staking.operators.transfers_in_count + NEW.transfers_in_count,
-        total_transfers_out = staking.operators.total_transfers_out + NEW.total_transfers_out,
-        transfers_out_count = staking.operators.transfers_out_count + NEW.transfers_out_count,
-        total_rejected_transfers_claimed = staking.operators.total_rejected_transfers_claimed + NEW.total_rejected_transfers_claimed,
-        rejected_transfers_claimed_count = staking.operators.rejected_transfers_claimed_count + NEW.rejected_transfers_claimed_count,
-        total_transfers_rejected = staking.operators.total_transfers_rejected + NEW.total_transfers_rejected,
-        transfers_rejected_count = staking.operators.transfers_rejected_count + NEW.transfers_rejected_count,
-        total_volume = staking.operators.total_volume + NEW.total_volume,
-        total_consensus_storage_fee = staking.operators.total_consensus_storage_fee + NEW.consensus_storage_fee,
-        total_domain_execution_fee = staking.operators.total_domain_execution_fee + NEW.domain_execution_fee,
-        total_burned_balance = staking.operators.total_burned_balance + NEW.burned_balance,
         bundle_count = staking.operators.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number
     WHERE id = NEW.operator_id;
