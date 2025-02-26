@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import { ConnectDiscord } from './Actions/ConnectDiscord'
+import { ConnectGitHub } from './Actions/ConnectGitHub'
 import { JoinDiscord } from './Actions/JoinDiscord'
 import { VerifyWalletOwnership } from './Actions/VerifyWalletOwnership'
 
@@ -105,6 +106,7 @@ export const GetDiscordRoles: FC = () => {
             )}
             <VerifyWalletOwnership />
             <ConnectDiscord />
+            <ConnectGitHub />
           </List>
         </Accordion>
         <ExplainerLinkAndModal />
@@ -118,6 +120,7 @@ export const GetDiscordRoles: FC = () => {
           <VerifyWalletOwnership />
           <JoinDiscord />
           <ConnectDiscord />
+          <ConnectGitHub />
         </List>
       </Accordion>
       <ExplainerLinkAndModal />

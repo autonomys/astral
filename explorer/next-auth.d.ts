@@ -11,6 +11,7 @@ declare module 'next-auth' {
     DIDs: string[]
     subspace?: SubspaceToken
     discord?: DiscordToken
+    github?: GitHubToken
   }
 
   export interface Session {
@@ -31,6 +32,7 @@ declare module 'next-auth/client' {
     DIDs: string[]
     subspace?: SubspaceToken
     discord?: DiscordToken
+    github?: GitHubToken
   }
 
   export interface Session {
@@ -46,6 +48,7 @@ declare module 'next-auth/jwt' {
     DIDs: string[]
     subspace?: SubspaceToken
     discord?: DiscordToken
+    github?: GitHubToken
   }
 
   interface JWT {
@@ -53,5 +56,6 @@ declare module 'next-auth/jwt' {
     DIDs: string[]
     subspace?: SubspaceToken
     discord?: DiscordToken
+    github?: GitHubToken
   }
 }
