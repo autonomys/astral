@@ -1528,6 +1528,18 @@ CREATE TABLE staking.unlocked_events (
 );
 ALTER TABLE staking.unlocked_events OWNER TO postgres;
 
+CREATE TABLE staking.nominators_unlocked_events (
+    id text NOT NULL,
+    domain_id text NOT NULL,
+    operator_id text NOT NULL,
+    block_height numeric NOT NULL,
+    extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.nominators_unlocked_events OWNER TO postgres;
+
 CREATE TABLE staking.withdraw_events (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -1941,6 +1953,9 @@ ALTER TABLE ONLY staking.runtime_creations
 
 ALTER TABLE ONLY staking.unlocked_events
     ADD CONSTRAINT unlocked_events_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.nominators_unlocked_events
+    ADD CONSTRAINT nominators_unlocked_events_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY staking.withdraw_events
     ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
@@ -3248,3 +3263,24 @@ CREATE TRIGGER handle_unlocked_events
 AFTER INSERT ON staking.unlocked_events
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_unlocked_events();
+
+
+CREATE OR REPLACE FUNCTION staking.handle_nominators_unlocked_events() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE staking.operators
+    SET 
+        status = 'NOMINATORS_UNLOCKED',
+        updated_at = NEW.block_height
+    WHERE id = NEW.operator_id;
+
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION staking.handle_nominators_unlocked_events() OWNER TO postgres;
+
+CREATE TRIGGER handle_nominators_unlocked_events
+AFTER INSERT ON staking.nominators_unlocked_events
+FOR EACH ROW
+EXECUTE FUNCTION staking.handle_nominators_unlocked_events();

@@ -302,6 +302,26 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
+  "domains.NominatorUnlocked": ({
+    event,
+    cache,
+    height,
+    extrinsicId,
+    eventId,
+  }) => {
+    const operatorId = event.event.data[0].toString();
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+
+    cache.nominatorsUnlockedEvent.push(
+      db.createNominatorsUnlockedEvent(
+        domainId,
+        operatorId,
+        height,
+        extrinsicId,
+        eventId
+      )
+    );
+  },
   "domains.OperatorDeregistered": ({
     event,
     cache,

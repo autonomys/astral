@@ -6,6 +6,7 @@ import {
   DomainBlockHistory,
   DomainInstantiation,
   DomainStakingHistory,
+  NominatorsUnlockedEvent,
   OperatorDeregistration,
   OperatorRegistration,
   OperatorReward,
@@ -34,6 +35,7 @@ export type Cache = {
   withdrawEvent: WithdrawEvent[];
   withdrawalHistory: WithdrawalHistory[];
   unlockedEvent: UnlockedEvent[];
+  nominatorsUnlockedEvent: NominatorsUnlockedEvent[];
   // only for caching purposes
   parentBlockOperators: Operator[];
 };
@@ -54,6 +56,7 @@ export const initializeCache = (): Cache => ({
   withdrawEvent: [],
   withdrawalHistory: [],
   unlockedEvent: [],
+  nominatorsUnlockedEvent: [],
   // only for caching purposes
   parentBlockOperators: [],
 });
@@ -75,6 +78,7 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(`WithdrawEvent`, cache.withdrawEvent),
     store.bulkCreate(`WithdrawalHistory`, cache.withdrawalHistory),
     store.bulkCreate(`UnlockedEvent`, cache.unlockedEvent),
+    store.bulkCreate(`NominatorsUnlockedEvent`, cache.nominatorsUnlockedEvent),
   ]);
 };
 
@@ -268,6 +272,23 @@ export function createUnlockedEvent(
     nominatorId: getNominationId(accountId, domainId, operatorId),
     amount,
     storageFee,
+    blockHeight,
+    extrinsicId,
+    eventId,
+  });
+}
+
+export function createNominatorsUnlockedEvent(
+  domainId: string,
+  operatorId: string,
+  blockHeight: bigint,
+  extrinsicId: string,
+  eventId: string
+): NominatorsUnlockedEvent {
+  return NominatorsUnlockedEvent.create({
+    id: extrinsicId,
+    domainId,
+    operatorId,
     blockHeight,
     extrinsicId,
     eventId,
