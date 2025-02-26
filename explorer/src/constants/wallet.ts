@@ -36,6 +36,19 @@ export enum SupportedWalletExtension {
   Nova = 'nova',
 }
 
+export enum SubstrateAndEVMWalletExtension {
+  SubwalletJs = 'subwallet-js',
+  Talisman = 'talisman',
+}
+
+export enum SubstrateWalletExtension {
+  PolkadotJs = 'polkadot-js',
+}
+
+export enum EVMWalletExtension {
+  MetaMask = 'metamask',
+}
+
 export enum AccountPreferenceSection {
   None = 'None',
   AddressBook = 'addressBook',
