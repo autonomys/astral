@@ -3237,7 +3237,7 @@ BEGIN
         status = 'FUNDS_UNLOCKED',
         unlocked_at = NEW.block_height,
         updated_at = NEW.block_height
-    WHERE status = 'PENDING_UNLOCK_FUNDS';
+    WHERE status = 'PENDING_UNLOCK_FUNDS' AND operator_id = NEW.operator_id;
 
     RETURN NEW;
 END;
