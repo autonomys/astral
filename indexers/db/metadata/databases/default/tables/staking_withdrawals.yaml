@@ -47,12 +47,12 @@ select_permissions:
         - status
         - timestamp
         - total_amount
-        - unlock_extrinsic_hash
+        - unlock_extrinsic_id
         - unlocked_amount
         - unlocked_at
         - unlocked_storage_fee
         - updated_at
-        - withdraw_extrinsic_hash
+        - withdraw_extrinsic_id
       filter: {}
       limit: 50
       allow_aggregations: true

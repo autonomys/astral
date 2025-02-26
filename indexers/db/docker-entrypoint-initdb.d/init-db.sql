@@ -1579,8 +1579,8 @@ CREATE TABLE staking.withdrawals (
     total_amount numeric NOT NULL,
     status text NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
-    withdraw_extrinsic_hash text NOT NULL,
-    unlock_extrinsic_hash text NOT NULL,
+    withdraw_extrinsic_id text NOT NULL,
+    unlock_extrinsic_id text NOT NULL,
     epoch_withdrawal_requested_at numeric NOT NULL,
     domain_block_number_withdrawal_requested_at numeric NOT NULL,
     created_at numeric NOT NULL,
@@ -2671,13 +2671,15 @@ BEGIN
     UPDATE staking.domains
     SET 
         total_deposits = staking.domains.total_deposits + NEW.amount,
-        total_deposits_count = staking.domains.total_deposits_count + 1
+        total_deposits_count = staking.domains.total_deposits_count + 1,
+        updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
         total_deposits = staking.operators.total_deposits + NEW.amount,
-        total_deposits_count = staking.operators.total_deposits_count + 1
+        total_deposits_count = staking.operators.total_deposits_count + 1,
+        updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
 
     IF NOT EXISTS (
@@ -2875,8 +2877,8 @@ CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
         total_amount,
         status,
         "timestamp",
-        withdraw_extrinsic_hash,
-        unlock_extrinsic_hash,
+        withdraw_extrinsic_id,
+        unlock_extrinsic_id,
         epoch_withdrawal_requested_at,
         domain_block_number_withdrawal_requested_at,
         created_at,
@@ -2896,8 +2898,8 @@ CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
         0,                           -- total_amount
         'PENDING_NEXT_EPOCH',        -- status
         NEW."timestamp",             -- timestamp
-        NEW.extrinsic_id,            -- withdraw_extrinsic_hash
-        0,                           -- unlock_extrinsic_hash
+        NEW.extrinsic_id,            -- withdraw_extrinsic_id
+        0,                           -- unlock_extrinsic_id
         last_domain_epoch,           -- epoch_withdrawal_requested_at
         last_domain_block_number,    -- domain_block_number_withdrawal_requested_at
         NEW.block_height,            -- created_at
@@ -2928,17 +2930,20 @@ BEGIN
 
     UPDATE staking.domains
     SET 
-        total_tax_collected = staking.domains.total_tax_collected + NEW.amount
+        total_tax_collected = staking.domains.total_tax_collected + NEW.amount,
+        updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
-        total_tax_collected = staking.operators.total_tax_collected + NEW.amount
+        total_tax_collected = staking.operators.total_tax_collected + NEW.amount,
+        updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
 
     UPDATE staking.accounts
     SET 
-        total_tax_collected = staking.accounts.total_tax_collected + NEW.amount
+        total_tax_collected = staking.accounts.total_tax_collected + NEW.amount,
+        updated_at = NEW.block_height
     WHERE id = operator_account_id;
     
     RETURN NEW;
@@ -2957,12 +2962,14 @@ CREATE OR REPLACE FUNCTION staking.handle_operator_rewards_events() RETURNS TRIG
 BEGIN
     UPDATE staking.domains
     SET 
-        total_rewards_collected = staking.domains.total_rewards_collected + NEW.amount
+        total_rewards_collected = staking.domains.total_rewards_collected + NEW.amount,
+        updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
-        total_rewards_collected = staking.operators.total_rewards_collected + NEW.amount
+        total_rewards_collected = staking.operators.total_rewards_collected + NEW.amount,
+        updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
     
     RETURN NEW;
@@ -2998,13 +3005,15 @@ BEGIN
     UPDATE staking.domains
     SET 
         bundle_count = staking.domains.bundle_count + 1,
-        last_bundle_at = NEW.consensus_block_number
+        last_bundle_at = NEW.consensus_block_number,
+        updated_at = NEW.block_height
     WHERE id = NEW.domain_id AND last_domain_block_number < NEW.domain_block_number;
 
     UPDATE staking.operators
     SET 
         bundle_count = staking.operators.bundle_count + 1,
-        last_bundle_at = NEW.consensus_block_number
+        last_bundle_at = NEW.consensus_block_number,
+        updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
     
     RETURN NEW;
@@ -3027,7 +3036,8 @@ BEGIN
         current_storage_fee_deposit = NEW.total_storage_fee_deposit,
         current_total_shares = NEW.current_total_shares,
         current_share_price = NEW.share_price,
-        raw_status = NEW.partial_status
+        raw_status = NEW.partial_status,
+        updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
     
     RETURN NEW;
@@ -3062,7 +3072,8 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     UPDATE staking.domains
     SET 
         current_total_stake = NEW.current_total_stake,
-        completed_epoch = NEW.current_epoch_index
+        completed_epoch = NEW.current_epoch_index,
+        updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
     INSERT INTO staking.domain_epochs (
@@ -3111,7 +3122,8 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
 
     UPDATE staking.withdrawals
     SET 
-        status = 'PENDING_UNLOCK_FUNDS'
+        status = 'PENDING_UNLOCK_FUNDS',
+        updated_at = NEW.block_height
     WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at >= last_domain_block_number;
     
     RETURN NEW;
@@ -3130,22 +3142,26 @@ CREATE OR REPLACE FUNCTION staking.handle_domain_epochs() RETURNS TRIGGER
   BEGIN
     UPDATE staking.operators
     SET 
-        status = 'ACTIVE'
+        status = 'ACTIVE',
+        updated_at = NEW.block_height
     WHERE status = 'PENDING_NEXT_EPOCH';
 
     UPDATE staking.nominators
     SET 
-        status = 'ACTIVE'
+        status = 'ACTIVE',
+        updated_at = NEW.block_height
     WHERE status = 'PENDING_NEXT_EPOCH';
 
     UPDATE staking.deposits
     SET 
-        status = 'ACTIVE'
+        status = 'ACTIVE',
+        updated_at = NEW.block_height
     WHERE status = 'PENDING_NEXT_EPOCH';
 
     UPDATE staking.withdrawals
     SET 
-        status = 'PENDING_CHALLENGE_PERIOD'
+        status = 'PENDING_CHALLENGE_PERIOD',
+        updated_at = NEW.block_height
     WHERE status = 'PENDING_NEXT_EPOCH';
     
     RETURN NEW;
@@ -3211,7 +3227,18 @@ BEGIN
         total_withdrawals_count = staking.accounts.total_withdrawals_count + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.account_id;
-    
+
+    UPDATE staking.withdrawals
+    SET
+        unlocked_amount = NEW.amount,
+        unlocked_storage_fee = NEW.storage_fee,
+        total_amount = NEW.amount + NEW.storage_fee,
+        unlock_extrinsic_id = NEW.extrinsic_id,
+        status = 'FUNDS_UNLOCKED',
+        unlocked_at = NEW.block_height,
+        updated_at = NEW.block_height
+    WHERE status = 'PENDING_UNLOCK_FUNDS';
+
     RETURN NEW;
 END;
 $$;
