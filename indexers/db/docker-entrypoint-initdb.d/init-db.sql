@@ -3052,10 +3052,10 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
   DECLARE
-    last_domain_block_histories_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+    last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
   BEGIN
     SELECT domain_block_number
-    INTO last_domain_block_histories_domain_block_number
+    INTO last_domain_block_number
     FROM staking.domain_block_histories
     WHERE domain_id = NEW.domain_id
     ORDER BY block_height DESC
@@ -3064,7 +3064,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     IF NOT FOUND THEN
         SELECT
           0 as domain_block_number
-        INTO last_domain_block_histories_domain_block_number;
+        INTO last_domain_block_number;
     END IF;
 
     UPDATE staking.domains
@@ -3092,8 +3092,8 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
         NEW.domain_id || '-' || NEW.current_epoch_index,
         NEW.domain_id,
         NEW.current_epoch_index,
-        last_domain_block_histories_domain_block_number,
-        last_domain_block_histories_domain_block_number,
+        last_domain_block_number,
+        last_domain_block_number,
         1,
         NEW.timestamp,
         NEW.timestamp,
@@ -3106,10 +3106,10 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     ) ON CONFLICT (id) DO UPDATE SET
         domain_block_number_start = CASE 
             WHEN staking.domain_epochs.domain_block_number_start = 0 
-            THEN last_domain_block_histories_domain_block_number 
+            THEN last_domain_block_number 
             ELSE staking.domain_epochs.domain_block_number_start 
         END,
-        domain_block_number_end = last_domain_block_histories_domain_block_number,
+        domain_block_number_end = last_domain_block_number,
         domain_block_count = staking.domain_epochs.domain_block_count + 1,
         timestamp_end = NEW.timestamp,
         epoch_duration = EXTRACT(EPOCH FROM (NEW.timestamp - staking.domain_epochs.timestamp_start)),
@@ -3120,7 +3120,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     UPDATE staking.withdrawals
     SET 
         status = 'PENDING_UNLOCK_FUNDS'
-    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at >= last_domain_block_histories_domain_block_number;
+    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at >= last_domain_block_number;
     
     RETURN NEW;
   END;
