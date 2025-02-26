@@ -1383,7 +1383,6 @@ CREATE TABLE staking.nominators (
     accumulated_epoch_shares numeric NOT NULL,
     active_epoch_count numeric NOT NULL,
     status text NOT NULL,
-    pending_action text NOT NULL,
     created_at numeric NOT NULL,
     updated_at numeric NOT NULL
 );
@@ -1485,18 +1484,6 @@ CREATE TABLE staking.operators (
     total_withdrawals_count numeric NOT NULL,
     total_tax_collected numeric NOT NULL,
     total_rewards_collected numeric NOT NULL,
-    total_transfers_in numeric NOT NULL,
-    transfers_in_count numeric NOT NULL,
-    total_transfers_out numeric NOT NULL,
-    transfers_out_count numeric NOT NULL,
-    total_rejected_transfers_claimed numeric NOT NULL,
-    rejected_transfers_claimed_count numeric NOT NULL,
-    total_transfers_rejected numeric NOT NULL,
-    transfers_rejected_count numeric NOT NULL,
-    total_volume numeric NOT NULL,
-    total_consensus_storage_fee numeric NOT NULL,
-    total_domain_execution_fee numeric NOT NULL,
-    total_burned_balance numeric NOT NULL,
     accumulated_epoch_stake numeric NOT NULL,
     accumulated_epoch_storage_fee_deposit numeric NOT NULL,
     accumulated_epoch_rewards numeric NOT NULL,
@@ -1504,7 +1491,6 @@ CREATE TABLE staking.operators (
     active_epoch_count numeric NOT NULL,
     bundle_count numeric NOT NULL,
     status text NOT NULL,
-    pending_action text NOT NULL,
     last_bundle_at numeric NOT NULL,
     extrinsic_id text NOT NULL,
     created_at numeric NOT NULL,
@@ -2623,18 +2609,6 @@ BEGIN
         total_withdrawals_count,
         total_tax_collected,
         total_rewards_collected,
-        total_transfers_in,
-        transfers_in_count,
-        total_transfers_out,
-        transfers_out_count,
-        total_rejected_transfers_claimed,
-        rejected_transfers_claimed_count,
-        total_transfers_rejected,
-        transfers_rejected_count,
-        total_volume,
-        total_consensus_storage_fee,
-        total_domain_execution_fee,
-        total_burned_balance,
         accumulated_epoch_stake,
         accumulated_epoch_storage_fee_deposit,
         accumulated_epoch_rewards,
@@ -2642,7 +2616,6 @@ BEGIN
         active_epoch_count,
         bundle_count,
         status,
-        pending_action,
         last_bundle_at,
         extrinsic_id,
         created_at,
@@ -2668,18 +2641,6 @@ BEGIN
         0,                                       -- total_withdrawals_count
         0,                                       -- total_tax_collected
         0,                                       -- total_rewards_collected
-        0,                                       -- total_transfers_in
-        0,                                       -- transfers_in_count
-        0,                                       -- total_transfers_out
-        0,                                       -- transfers_out_count
-        0,                                       -- total_rejected_transfers_claimed
-        0,                                       -- rejected_transfers_claimed_count
-        0,                                       -- total_transfers_rejected
-        0,                                       -- transfers_rejected_count
-        0,                                       -- total_volume
-        0,                                       -- total_consensus_storage_fee
-        0,                                       -- total_domain_execution_fee
-        0,                                       -- total_burned_balance
         0,                                       -- accumulated_epoch_stake
         0,                                       -- accumulated_epoch_storage_fee_deposit
         0,                                       -- accumulated_epoch_rewards
@@ -2687,7 +2648,6 @@ BEGIN
         0,                                       -- active_epoch_count
         0,                                       -- bundle_count
         'PENDING_NEXT_EPOCH',                    -- status
-        '',                                      -- pending_action (empty string)
         0,                                       -- last_bundle_at
         NEW.extrinsic_id,                        -- extrinsic_id
         NEW.block_height,                        -- created_at
@@ -2754,7 +2714,6 @@ BEGIN
             accumulated_epoch_shares,
             active_epoch_count,
             status,
-            pending_action,
             created_at,
             updated_at
         ) VALUES (
@@ -2786,7 +2745,6 @@ BEGIN
             0,                               -- accumulated_epoch_shares
             0,                               -- active_epoch_count
             'PENDING_NEXT_EPOCH',            -- status
-            '',                              -- pending_action (empty string)
             NEW.block_height,                -- created_at
             NEW.block_height                 -- updated_at
         );
@@ -3190,7 +3148,7 @@ CREATE OR REPLACE FUNCTION staking.handle_domain_epochs() RETURNS TRIGGER
 
     UPDATE staking.withdrawals
     SET 
-        status = 'PENDING_UNLOCK'
+        status = 'PENDING_CHALLENGE_PERIOD'
     WHERE status = 'PENDING_NEXT_EPOCH';
     
     RETURN NEW;
