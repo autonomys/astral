@@ -3116,6 +3116,11 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
         consensus_block_number_end = NEW.block_height,
         consensus_block_count = staking.domain_epochs.consensus_block_count + 1,
         updated_at = NEW.block_height;
+
+    UPDATE staking.withdrawals
+    SET 
+        status = 'PENDING_UNLOCK_FUNDS'
+    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at >= last_domain_block_histories_domain_block_number;
     
     RETURN NEW;
   END;
