@@ -3026,7 +3026,7 @@ BEGIN
         total_volume = staking.domains.total_volume + NEW.total_volume,
         total_consensus_storage_fee = staking.domains.total_consensus_storage_fee + NEW.consensus_storage_fee,
         total_domain_execution_fee = staking.domains.total_domain_execution_fee + NEW.domain_execution_fee,
-        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance,
+        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance
     WHERE id = NEW.domain_id AND last_domain_block_number < NEW.domain_block_number;
 
     UPDATE staking.domains
@@ -3102,6 +3102,11 @@ CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
 
     -- For 30-day: (new_price - old_price) / old_price * (365/30)
     yield_30d_calc := CASE 
+      WHEN share_price_30d_old::NUMERIC > 0 THEN 
+        ((NEW.share_price::NUMERIC - share_price_30d_old::NUMERIC) / share_price_30d_old::NUMERIC) * (365.0/30.0)
+      ELSE 0
+    END;
+
     UPDATE staking.operators
     SET 
         current_total_stake = NEW.current_total_stake,
