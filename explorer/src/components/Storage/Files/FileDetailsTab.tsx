@@ -6,8 +6,9 @@ import { FileByIdQuery, GetCidDocument, GetCidQuery, GetCidQueryVariables } from
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useCallback, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { useInView } from 'react-intersection-observer'
-import { detectFileType, extractFileData, FileData } from 'utils/file'
+import { decryptFileData, detectFileType, extractFileData, FileData } from 'utils/file'
 import { FilePreview } from './FilePreview'
 import { FileRawData } from './FileRawData'
 import { FileUploadOptions } from './FileUploadOptions'
@@ -23,34 +24,59 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
   const [fileData, setFileData] = useState<FileData | null>(null)
   const [fileType, setFileType] = useState<string | null>(null)
   const [fileUrl, setFileUrl] = useState<string | null>(null)
-
+//
   const { loading, data } = useIndexersQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, {
     variables: { cid: file.id ?? '' },
     skip: !inFocus || !inView,
   })
 
+  const handleConfirm = useCallback(async (password: string) => {
+    console.log('34', password, fileData);
+    if (!fileData) return;
+    console.log('35', password);
+  
+    let decryptedFileData;
+    try {
+      decryptedFileData = await decryptFileData(password, fileData);
+    } catch (error) {
+      toast.error('Decryption failed: Incorrect password', { position: 'bottom-center' });
+      return;
+    }
+  
+    if (!decryptedFileData) return;
+    await processFileData(decryptedFileData);
+  }, [fileUrl, fileData, fileType]);
+  
   const getDataDetails = useCallback(async () => {
     if (!data) return
+    console.log('data',data);
+
     const _fileData = extractFileData(data)
-    const _fileType = await detectFileType(_fileData.dataArrayBuffer)
+    if(!_fileData) return;
+    await processFileData(_fileData);
+  }, [data])
+  const processFileData = useCallback(async (fileData: FileData) => {
+    const _fileType = await detectFileType(fileData.dataArrayBuffer)
+
+    console.log('_filedata',fileData,_fileType);
     const type = _fileType === 'unknown' ? 'application/json' : _fileType
-    setFileData(_fileData)
+    setFileData(fileData)
     setFileType(type)
-    if (_fileData) {
+    if (fileData) {
       if (type?.startsWith('image/svg')) {
-        const url = `data:${type};charset=utf-8,${encodeURIComponent(Buffer.from(_fileData.dataArrayBuffer).toString('utf-8'))}`
+        const url = `data:${type};charset=utf-8,${encodeURIComponent(Buffer.from(fileData.dataArrayBuffer).toString('utf-8'))}`
         setFileUrl(url)
         return () => {}
       } else {
-        const url = URL.createObjectURL(new Blob([_fileData.dataArrayBuffer], { type }))
+        const url = URL.createObjectURL(new Blob([fileData.dataArrayBuffer], { type }))
         setFileUrl(url)
         return () => {
           URL.revokeObjectURL(url)
         }
       }
     }
-  }, [data])
-
+  }, []);
+  
   const downloadFile = useCallback(async () => {
     if (!fileData || !fileUrl) return
     const a = document.createElement('a')
@@ -73,7 +99,7 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
       <PageTabs isDesktop={isDesktop}>
         {fileType && fileUrl ? (
           <Tab title='File Preview'>
-            <FilePreview fileData={fileData} fileType={fileType} fileUrl={fileUrl} />
+            <FilePreview fileData={fileData} fileType={fileType} fileUrl={fileUrl} onConfirm={handleConfirm}/>
           </Tab>
         ) : (
           <></>
