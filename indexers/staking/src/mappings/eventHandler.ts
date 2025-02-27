@@ -187,22 +187,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
-    const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
-
-    const amount1Event = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "balances",
-      "Withdraw"
-    );
-    const amount1 = BigInt(amount1Event?.event.data[1].toString() ?? 0);
-    const amount2Event = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "balances",
-      "Rescinded"
-    );
-    const amount2 =
-      amount1 - BigInt(amount2Event?.event.data[0].toString() ?? 0);
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+    const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
@@ -210,9 +196,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         domainId,
         operatorId,
         stringify(toWithdraw),
-        amount1,
-        amount2,
-        amount1 + amount2,
         blockTimestamp,
         height,
         extrinsicId,

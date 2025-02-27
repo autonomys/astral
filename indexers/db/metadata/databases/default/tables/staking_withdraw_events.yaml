@@ -13,10 +13,7 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - amount1
-        - amount2
         - block_height
-        - total_amount
         - account_id
         - domain_id
         - event_id
