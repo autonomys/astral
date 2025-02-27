@@ -1550,6 +1550,7 @@ CREATE TABLE staking.withdraw_events (
     to_withdraw text NOT NULL,
     shares numeric NOT NULL,
     storage_fee_refund numeric NOT NULL,
+    estimated_withdrawal_amount numeric NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,

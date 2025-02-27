@@ -3,6 +3,7 @@ import {
   EventRecord,
   stringify,
 } from "@autonomys/auto-utils";
+import { SHARES_CALCULATION_MULTIPLIER } from "./constants";
 import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
@@ -11,6 +12,7 @@ import {
   findDomainIdFromOperatorsCache,
   findEpochFromDomainStakingHistoryCache,
   findOneExtrinsicEvent,
+  findOperatorFromOperatorsCache,
   findWithdrawalHistoryFromCache,
 } from "./utils";
 
@@ -195,6 +197,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       operatorId,
       accountId
     );
+    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
+    const estimatedWithdrawalAmount =
+      (shares * sharePrice) / SHARES_CALCULATION_MULTIPLIER + storageFeeRefund;
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
@@ -204,6 +209,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         stringify(toWithdraw),
         shares,
         storageFeeRefund,
+        estimatedWithdrawalAmount,
         blockTimestamp,
         height,
         extrinsicId,
