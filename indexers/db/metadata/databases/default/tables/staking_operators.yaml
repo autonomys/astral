@@ -103,31 +103,21 @@ select_permissions:
         - current_total_stake
         - last_bundle_at
         - minimum_nominator_stake
-        - rejected_transfers_claimed_count
-        - total_burned_balance
-        - total_consensus_storage_fee
         - total_deposits
         - total_deposits_count
-        - total_domain_execution_fee
         - total_estimated_withdrawals
-        - total_rejected_transfers_claimed
         - total_rewards_collected
         - total_tax_collected
-        - total_transfers_in
-        - total_transfers_out
-        - total_transfers_rejected
-        - total_volume
         - total_withdrawals
         - total_withdrawals_count
-        - transfers_in_count
-        - transfers_out_count
-        - transfers_rejected_count
         - updated_at
+        - yield_1d
+        - yield_30d
+        - yield_7d
         - account_id
         - domain_id
         - extrinsic_id
         - id
-        - pending_action
         - raw_status
         - signing_key
         - sort_id
