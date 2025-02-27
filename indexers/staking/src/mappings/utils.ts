@@ -1,5 +1,6 @@
 import { EventRecord, stringify } from "@autonomys/auto-utils";
 import { createHash } from "crypto";
+import { WithdrawalHistory } from "../types";
 import { PAD_ZEROS, ZERO_BIGINT } from "./constants";
 import { Cache } from "./db";
 import { Transfer } from "./types";
@@ -72,4 +73,17 @@ export const findEpochFromDomainStakingHistoryCache = (
   );
   if (!domainFromCache) throw new Error("Domain from cache not found");
   return domainFromCache.currentEpochIndex;
+};
+
+export const findWithdrawalHistoryFromCache = (
+  cache: Cache,
+  operatorId: string,
+  accountId: string
+): WithdrawalHistory => {
+  const withdrawalHistoryFromCache = cache.withdrawalHistory.find(
+    (o) => o.operatorId === operatorId && o.accountId === accountId
+  );
+  if (!withdrawalHistoryFromCache)
+    throw new Error("WithdrawalHistory from cache not found");
+  return withdrawalHistoryFromCache;
 };

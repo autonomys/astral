@@ -65,6 +65,8 @@ type WithdrawEvent @entity {
   operatorId: String!
   nominatorId: String!
   toWithdraw: String!
+  shares: BigInt!
+  storageFeeRefund: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
   extrinsicId: String!

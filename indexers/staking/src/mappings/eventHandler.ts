@@ -11,6 +11,7 @@ import {
   findDomainIdFromOperatorsCache,
   findEpochFromDomainStakingHistoryCache,
   findOneExtrinsicEvent,
+  findWithdrawalHistoryFromCache,
 } from "./utils";
 
 type EventHandler = (params: {
@@ -189,6 +190,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const accountId = event.event.data[1].toString();
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
     const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
+    const { shares, storageFeeRefund } = findWithdrawalHistoryFromCache(
+      cache,
+      operatorId,
+      accountId
+    );
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
@@ -196,6 +202,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         domainId,
         operatorId,
         stringify(toWithdraw),
+        shares,
+        storageFeeRefund,
         blockTimestamp,
         height,
         extrinsicId,
