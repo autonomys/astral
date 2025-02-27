@@ -3,13 +3,17 @@ import {
   EventRecord,
   stringify,
 } from "@autonomys/auto-utils";
+import { SHARES_CALCULATION_MULTIPLIER } from "./constants";
 import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
 import {
   calculateTransfer,
   findDomainIdFromOperatorsCache,
+  findEpochFromDomainStakingHistoryCache,
   findOneExtrinsicEvent,
+  findOperatorFromOperatorsCache,
+  findWithdrawalHistoryFromCache,
 } from "./utils";
 
 type EventHandler = (params: {
@@ -186,22 +190,16 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
-    const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
-
-    const amount1Event = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "balances",
-      "Withdraw"
-    );
-    const amount1 = BigInt(amount1Event?.event.data[1].toString() ?? 0);
-    const amount2Event = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "balances",
-      "Rescinded"
-    );
-    const amount2 =
-      amount1 - BigInt(amount2Event?.event.data[0].toString() ?? 0);
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+    const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
+    const { shares, storageFeeRefund } = findWithdrawalHistoryFromCache(
+      cache,
+      operatorId,
+      accountId
+    );
+    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
+    const estimatedAmount =
+      (shares * sharePrice) / SHARES_CALCULATION_MULTIPLIER + storageFeeRefund;
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
@@ -209,9 +207,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         domainId,
         operatorId,
         stringify(toWithdraw),
-        amount1,
-        amount2,
-        amount1 + amount2,
+        shares,
+        storageFeeRefund,
+        estimatedAmount,
         blockTimestamp,
         height,
         extrinsicId,
@@ -301,6 +299,26 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
+  "domains.NominatorUnlocked": ({
+    event,
+    cache,
+    height,
+    extrinsicId,
+    eventId,
+  }) => {
+    const operatorId = event.event.data[0].toString();
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+
+    cache.nominatorsUnlockedEvent.push(
+      db.createNominatorsUnlockedEvent(
+        domainId,
+        operatorId,
+        height,
+        extrinsicId,
+        eventId
+      )
+    );
+  },
   "domains.OperatorDeregistered": ({
     event,
     cache,
@@ -366,6 +384,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       calculateTransfer(transfersRejected);
     const totalVolume = totalTransfersIn + totalTransfersOut;
 
+    const epoch = findEpochFromDomainStakingHistoryCache(cache, domainId);
+
     cache.bundleSubmission.push(
       db.createBundleSubmission(
         bundleHash,
@@ -376,6 +396,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         BigInt(domainBlockNumber),
         String(domainBlockHash),
         String(domainBlockExtrinsicRoot),
+        BigInt(epoch),
         BigInt(consensusBlockNumber),
         String(consensusBlockHash),
         totalTransfersIn,

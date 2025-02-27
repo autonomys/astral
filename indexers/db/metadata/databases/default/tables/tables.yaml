@@ -88,6 +88,7 @@
 - "!include staking_domain_staking_histories.yaml"
 - "!include staking_domains.yaml"
 - "!include staking_nominators.yaml"
+- "!include staking_nominators_unlocked_events.yaml"
 - "!include staking_operator_deregistrations.yaml"
 - "!include staking_operator_registrations.yaml"
 - "!include staking_operator_rewards.yaml"
