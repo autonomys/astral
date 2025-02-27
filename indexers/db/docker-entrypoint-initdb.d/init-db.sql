@@ -1550,7 +1550,7 @@ CREATE TABLE staking.withdraw_events (
     to_withdraw text NOT NULL,
     shares numeric NOT NULL,
     storage_fee_refund numeric NOT NULL,
-    estimated_withdrawal_amount numeric NOT NULL,
+    estimated_amount numeric NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
@@ -1585,6 +1585,7 @@ CREATE TABLE staking.withdrawals (
     operator_id text NOT NULL,
     nominator_id text NOT NULL,
     shares numeric NOT NULL,
+    storage_fee_refund numeric NOT NULL,
     estimated_amount numeric NOT NULL,
     unlocked_amount numeric NOT NULL,
     unlocked_storage_fee numeric NOT NULL,
@@ -2886,6 +2887,7 @@ CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
         operator_id,
         nominator_id,
         shares,
+        storage_fee_refund,
         estimated_amount,
         unlocked_amount,
         unlocked_storage_fee,
@@ -2906,8 +2908,9 @@ CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
         NEW.domain_id,               -- domain_id
         NEW.operator_id,             -- operator_id
         NEW.nominator_id,            -- nominator_id
-        0,                           -- shares
-        0,                           -- estimated_amount
+        NEW.shares,                  -- shares
+        NEW.storage_fee_refund,      -- storage_fee_refund
+        NEW.estimated_amount,        -- estimated_amount
         0,                           -- unlocked_amount
         0,                           -- unlocked_storage_fee
         0,                           -- total_amount

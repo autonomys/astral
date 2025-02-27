@@ -67,7 +67,7 @@ type WithdrawEvent @entity {
   toWithdraw: String!
   shares: BigInt!
   storageFeeRefund: BigInt!
-  estimatedWithdrawalAmount: BigInt!
+  estimatedAmount: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
   extrinsicId: String!

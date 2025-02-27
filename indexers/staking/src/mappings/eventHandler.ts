@@ -198,7 +198,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       accountId
     );
     const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
-    const estimatedWithdrawalAmount =
+    const estimatedAmount =
       (shares * sharePrice) / SHARES_CALCULATION_MULTIPLIER + storageFeeRefund;
 
     cache.withdrawEvent.push(
@@ -209,7 +209,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         stringify(toWithdraw),
         shares,
         storageFeeRefund,
-        estimatedWithdrawalAmount,
+        estimatedAmount,
         blockTimestamp,
         height,
         extrinsicId,
