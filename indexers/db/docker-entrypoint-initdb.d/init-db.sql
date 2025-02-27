@@ -3218,25 +3218,25 @@ CREATE OR REPLACE FUNCTION staking.handle_domain_epochs() RETURNS TRIGGER
     UPDATE staking.operators
     SET 
         status = 'ACTIVE',
-        updated_at = NEW.block_height
+        updated_at = NEW.created_at
     WHERE status = 'PENDING_NEXT_EPOCH';
 
     UPDATE staking.nominators
     SET 
         status = 'ACTIVE',
-        updated_at = NEW.block_height
+        updated_at = NEW.created_at
     WHERE status = 'PENDING_NEXT_EPOCH';
 
     UPDATE staking.deposits
     SET 
         status = 'ACTIVE',
-        updated_at = NEW.block_height
+        updated_at = NEW.created_at
     WHERE status = 'PENDING_NEXT_EPOCH';
 
     UPDATE staking.withdrawals
     SET 
         status = 'PENDING_CHALLENGE_PERIOD',
-        updated_at = NEW.block_height
+        updated_at = NEW.created_at
     WHERE status = 'PENDING_NEXT_EPOCH';
     
     RETURN NEW;
