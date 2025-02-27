@@ -1490,6 +1490,9 @@ CREATE TABLE staking.operators (
     accumulated_epoch_shares numeric NOT NULL,
     active_epoch_count numeric NOT NULL,
     bundle_count numeric NOT NULL,
+    yield_1d numeric NOT NULL,
+    yield_7d numeric NOT NULL,
+    yield_30d numeric NOT NULL,
     status text NOT NULL,
     last_bundle_at numeric NOT NULL,
     extrinsic_id text NOT NULL,
@@ -2631,6 +2634,9 @@ BEGIN
         accumulated_epoch_shares,
         active_epoch_count,
         bundle_count,
+        yield_1d,
+        yield_7d,
+        yield_30d,
         status,
         last_bundle_at,
         extrinsic_id,
@@ -2663,6 +2669,9 @@ BEGIN
         0,                                       -- accumulated_epoch_shares
         0,                                       -- active_epoch_count
         0,                                       -- bundle_count
+        0,                                       -- yield_1d
+        0,                                       -- yield_7d
+        0,                                       -- yield_30d
         'PENDING_NEXT_EPOCH',                    -- status
         0,                                       -- last_bundle_at
         NEW.extrinsic_id,                        -- extrinsic_id
@@ -3047,7 +3056,52 @@ EXECUTE FUNCTION staking.handle_bundle_submissions_events();
 CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
-BEGIN
+  DECLARE
+    share_price_1d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
+    share_price_7d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
+    share_price_30d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
+    yield_1d_calc NUMERIC;
+    yield_7d_calc NUMERIC;
+    yield_30d_calc NUMERIC;
+  BEGIN
+    SELECT share_price
+    INTO share_price_1d_old
+    FROM staking.operator_staking_histories
+    WHERE operator_id = NEW.operator_id
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '1 day'))))
+    LIMIT 1;
+
+    SELECT share_price
+    INTO share_price_7d_old
+    FROM staking.operator_staking_histories
+    WHERE operator_id = NEW.operator_id
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '7 days'))))
+    LIMIT 1;
+
+    SELECT share_price
+    INTO share_price_30d_old
+    FROM staking.operator_staking_histories
+    WHERE operator_id = NEW.operator_id
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '30 days'))))
+    LIMIT 1;
+
+    -- Calculate annualized yields
+    -- For 1-day: (new_price - old_price) / old_price * 365
+    yield_1d_calc := CASE 
+      WHEN share_price_1d_old::NUMERIC > 0 THEN 
+        ((NEW.share_price::NUMERIC - share_price_1d_old::NUMERIC) / share_price_1d_old::NUMERIC) * 365
+      ELSE 0
+    END;
+
+    -- For 7-day: (new_price - old_price) / old_price * (365/7)
+    yield_7d_calc := CASE 
+      WHEN share_price_7d_old::NUMERIC > 0 THEN 
+        ((NEW.share_price::NUMERIC - share_price_7d_old::NUMERIC) / share_price_7d_old::NUMERIC) * (365.0/7.0)
+      ELSE 0
+    END;
+
+    -- For 30-day: (new_price - old_price) / old_price * (365/30)
+    yield_30d_calc := CASE 
     UPDATE staking.operators
     SET 
         current_total_stake = NEW.current_total_stake,
@@ -3055,11 +3109,14 @@ BEGIN
         current_total_shares = NEW.current_total_shares,
         current_share_price = NEW.share_price,
         raw_status = NEW.partial_status,
+        yield_1d = yield_1d_calc,
+        yield_7d = yield_7d_calc,
+        yield_30d = yield_30d_calc,
         updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
     
     RETURN NEW;
-END;
+  END;
 $$;
 ALTER FUNCTION staking.update_operator_stakes() OWNER TO postgres;
 
