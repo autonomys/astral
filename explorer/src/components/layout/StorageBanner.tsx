@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const StorageBanner = () => {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 shadow-lg p-6">
+    <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 shadow-lg p-6 py-16">
       <div className="absolute inset-0 bg-grid-white/10" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
       
@@ -29,7 +29,7 @@ const StorageBanner = () => {
             { title: 'NPM Support', desc: 'Auto-Drive\'s secure storage via @autonomys/auto-drive', route:EXTERNAL_ROUTES.autoDrivePackage },
             { title: 'Auto-DAG Data Structure', desc: 'Uses the Auto-DAG data structure to store data on chain', route:EXTERNAL_ROUTES.autoDagPackage }
           ].map((feature, i) => (
-            <Link key={i} href={feature.route}>
+            <Link key={i} href={feature.route} target="_blank" rel="noopener noreferrer">
               <div 
                 className="p-4 transition-all duration-200 bg-white/5 backdrop-blur-sm rounded-lg hover:bg-white/10 border border-white/10"
               >
