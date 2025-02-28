@@ -1,8 +1,9 @@
 'use client'
 
+import { getSupportedHeaderLinks } from '@/utils/route'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons/LogoIcon'
-import { EXTERNAL_ROUTES, INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
@@ -12,37 +13,21 @@ import { useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
-export const FarmingHeader = () => {
+export const TransferHeader = () => {
   const { isDark, toggleTheme } = useTheme()
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
   const { network } = useIndexers()
 
-  const menuList = useMemo(
-    () => [
-      {
-        title: 'Download Space Acres',
-        link: `/${network}/${Routes.farming}`,
-      },
-      {
-        title: 'CLI Documentation',
-        link: `${EXTERNAL_ROUTES.docs}farming/cli/install`,
-      },
-      {
-        title: 'Space Acres Documentation',
-        link: `${EXTERNAL_ROUTES.docs}farming/space-acres/install`,
-      },
-    ],
-    [network],
-  )
+  const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.transfer), [network])
 
   return (
     <header className='body-font z-9 py-[30px] text-gray-600'>
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
-            href={`/${network}/${Routes.farming}`}
+            href={`/${network}/${Routes.staking}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
             <span className='text-xl text-grayDark dark:text-white'>

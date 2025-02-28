@@ -65,9 +65,9 @@ type WithdrawEvent @entity {
   operatorId: String!
   nominatorId: String!
   toWithdraw: String!
-  amount1: BigInt!
-  amount2: BigInt!
-  totalAmount: BigInt!
+  shares: BigInt!
+  storageFeeRefund: BigInt!
+  estimatedAmount: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
   extrinsicId: String!
@@ -133,6 +133,15 @@ type UnlockedEvent @entity {
   nominatorId: String!
   amount: BigInt!
   storageFee: BigInt!
+  blockHeight: BigInt!
+  extrinsicId: String!
+  eventId: String!
+}
+
+type NominatorsUnlockedEvent @entity {
+  id: ID!
+  domainId: String!
+  operatorId: String!
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
