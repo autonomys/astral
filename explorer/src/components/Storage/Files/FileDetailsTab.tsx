@@ -24,16 +24,14 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
   const [fileData, setFileData] = useState<FileData | null>(null)
   const [fileType, setFileType] = useState<string | null>(null)
   const [fileUrl, setFileUrl] = useState<string | null>(null)
-//
+
   const { loading, data } = useIndexersQuery<GetCidQuery, GetCidQueryVariables>(GetCidDocument, {
     variables: { cid: file.id ?? '' },
     skip: !inFocus || !inView,
   })
 
-  const handleConfirm = useCallback(async (password: string) => {
-    console.log('34', password, fileData);
-    if (!fileData) return;
-    console.log('35', password);
+  const handleConfirm = async (password: string) => {
+    if (!fileData) return;  
   
     let decryptedFileData;
     try {
@@ -45,20 +43,11 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
   
     if (!decryptedFileData) return;
     await processFileData(decryptedFileData);
-  }, [fileUrl, fileData, fileType]);
+  };
   
-  const getDataDetails = useCallback(async () => {
-    if (!data) return
-    console.log('data',data);
-
-    const _fileData = extractFileData(data)
-    if(!_fileData) return;
-    await processFileData(_fileData);
-  }, [data])
   const processFileData = useCallback(async (fileData: FileData) => {
     const _fileType = await detectFileType(fileData.dataArrayBuffer)
 
-    console.log('_filedata',fileData,_fileType);
     const type = _fileType === 'unknown' ? 'application/json' : _fileType
     setFileData(fileData)
     setFileType(type)
@@ -76,6 +65,14 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
       }
     }
   }, []);
+  
+  const getDataDetails = useCallback(async () => {
+    if (!data) return
+    const _fileData = extractFileData(data)
+    if(!_fileData) return;
+    await processFileData(_fileData);
+  }, [data])
+
   
   const downloadFile = useCallback(async () => {
     if (!fileData || !fileUrl) return

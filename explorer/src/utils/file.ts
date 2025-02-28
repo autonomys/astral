@@ -92,26 +92,6 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'):
       uploadOptions = JSON.parse(
         data['files_' + type + 's'][0].chunk?.uploadOptions,
       ) as FileUploadOptions
-      if (uploadOptions.encryption && uploadOptions.encryption.algorithm){
-        if (data['files_' + type + 's'][0][type + '_cids'].length === 0){
-           rawData = data['files_' + type + 's'][0].chunk?.data ?? ''
-           dataArrayBuffer = new Uint8Array(Object.values(JSON.parse(rawData)) as number[]).buffer;
-        }else{
-          depth = data['files_' + type + 's'][0][type + '_cids'].length
-          let index = 0
-          while (depth > index) {
-            const _data = data['files_' + type + 's'][0][type + '_cids'][index].chunk?.data ?? ''
-            const newData = Object.values(JSON.parse(_data)) as unknown as ArrayBuffer
-            dataArrayBuffer = new Uint8Array([
-            ...new Uint8Array(dataArrayBuffer),
-            ...new Uint8Array(newData),
-            ])
-            rawData = _data
-            index++
-        }
-      }
-        return { name, rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
-      }
     }
   } catch (error) {
     console.error('Error checking uploadOptions:', error)
@@ -135,6 +115,9 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'):
     }
   }
   try {
+    if (uploadOptions.encryption && uploadOptions.encryption.algorithm){
+      return {name, rawData, dataArrayBuffer, isEncrypted: true, uploadOptions};
+    }
     if (uploadOptions.compression && uploadOptions.compression.algorithm === 'ZLIB') {
       dataArrayBuffer = inflate(new Uint8Array(dataArrayBuffer))
     }

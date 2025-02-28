@@ -1,7 +1,8 @@
 import { LockClosedIcon } from '@heroicons/react/24/outline'
 import { Arguments } from 'components/common/Arguments'
+import { Modal } from 'components/common/Modal'
 import Image from 'next/image'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { FileData } from 'utils/file'
 type Props = {
   fileData: FileData
@@ -10,52 +11,41 @@ type Props = {
   onConfirm: (password: string) => void
 }
 
-const Modal: FC<{ isOpen: boolean; onClose: () => void, onConfirm: (password: string) => void }> = ({ isOpen, onClose, onConfirm }) => {
-  const [password,setPassword]=useState('');
-  if (!isOpen) return null;
+const PasswordModal: FC<{ isOpen: boolean; onClose: () => void, onConfirm: (password: string) => void }> = ({ isOpen, onClose, onConfirm }) => {
+  const [password, setPassword] = useState('');
+
+  const handleConfirm = () => {
+    onConfirm(password);
+    onClose();
+    setPassword('');
+  };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      onClick={onClose}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          onClose();
-        }
-      }}
+    <Modal
+      title="Enter Decrypting Password"
+      isOpen={isOpen}
+      onClose={onClose}
     >
-      <div
-        className="rounded-lg border border-gray-300 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:shadow-xl text-center"
-        onClick={(e) => e.stopPropagation()}
-        role="presentation"
-      >
-        <h4 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
-          Enter Decrypting Password
-        </h4>
+      <div className="text-center">
         <input
           id="password"
           type="password"
           placeholder="Enter Password"
-          className="w-full rounded border p-2 dark:border-gray-700 dark:bg-gray-900 dark:shadow-xl"
+          className="w-full rounded border p-2 dark:border-gray-700 dark:bg-gray-900 dark:shadow-xl dark:text-white"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
           className="mt-4 rounded-lg px-4 py-2 text-white bg-buttonLightFrom font-semibold leading-4 dark:bg-primaryAccent"
-          onClick={() => {
-            onConfirm(password); // Send password back to parent
-            onClose(); // Close the modal
-            setPassword('');
-          }}
+          onClick={handleConfirm}
         >
           Confirm
         </button>
       </div>
-    </div>
+    </Modal>
   );
 };
+
 export const FilePreview: FC<Props> = ({ fileData, fileType, fileUrl, onConfirm }) => {
   const [isModalOpen, setModalOpen] = useState(false)
   const preview = useMemo(() => {
@@ -108,9 +98,6 @@ export const FilePreview: FC<Props> = ({ fileData, fileType, fileUrl, onConfirm 
         return <div>No preview available</div>
     }
   }, [fileUrl, fileData, fileType])
-  useEffect(()=>{
-    // console.trace();
-  })
   return (
     <>
     <div className='flex justify-center'>
@@ -129,7 +116,7 @@ export const FilePreview: FC<Props> = ({ fileData, fileType, fileUrl, onConfirm 
       )}
       </div>
     </div>
-    <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onConfirm={onConfirm}/>
+    <PasswordModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onConfirm={onConfirm}/>
     </>
   )
 }
