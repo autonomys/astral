@@ -2875,14 +2875,14 @@ CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
     last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
     last_domain_epoch staking.domain_epochs.epoch%TYPE;
   BEGIN
-    SELECT last_domain_block_number
-    INTO last_domain_block_histories_domain_block_number
+    SELECT domain_block_number
+    INTO last_domain_block_number
     FROM staking.domain_block_histories
     WHERE domain_id = NEW.domain_id
     ORDER BY domain_block_number DESC
     LIMIT 1;
 
-    SELECT last_domain_epoch
+    SELECT epoch
     INTO last_domain_epoch
     FROM staking.domain_epochs
     WHERE domain_id = NEW.domain_id
