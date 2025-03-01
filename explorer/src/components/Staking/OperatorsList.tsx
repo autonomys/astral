@@ -277,6 +277,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
             if (row.original.status === OperatorStatus.DEREGISTERED)
               excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
+            else excludeActions.push(OperatorActionType.UnlockNominator)
 
             if (!nominator)
               excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)
