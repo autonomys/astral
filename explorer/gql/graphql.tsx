@@ -12003,7 +12003,7 @@ export type Query_RootStaking_Nominators_Unlocked_Events_AggregateArgs = {
 
 
 export type Query_RootStaking_Nominators_Unlocked_Events_By_PkArgs = {
-  _id: Scalars['uuid']['input'];
+  uuid: Scalars['uuid']['input'];
 };
 
 
@@ -15923,13 +15923,13 @@ export type Staking_Nominators_Sum_Order_By = {
 export type Staking_Nominators_Unlocked_Events = {
   __typename?: 'staking_nominators_unlocked_events';
   _block_range: Scalars['int8range']['output'];
-  _id: Scalars['uuid']['output'];
   block_height: Scalars['numeric']['output'];
   domain_id: Scalars['String']['output'];
   event_id: Scalars['String']['output'];
   extrinsic_id: Scalars['String']['output'];
   id: Scalars['String']['output'];
   operator_id: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
 };
 
 /** aggregated selection of "staking.nominators_unlocked_events" */
@@ -15972,7 +15972,6 @@ export type Staking_Nominators_Unlocked_Events_Avg_Fields = {
 export type Staking_Nominators_Unlocked_Events_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Bool_Exp>>;
   _block_range?: InputMaybe<Int8range_Comparison_Exp>;
-  _id?: InputMaybe<Uuid_Comparison_Exp>;
   _not?: InputMaybe<Staking_Nominators_Unlocked_Events_Bool_Exp>;
   _or?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Bool_Exp>>;
   block_height?: InputMaybe<Numeric_Comparison_Exp>;
@@ -15981,50 +15980,49 @@ export type Staking_Nominators_Unlocked_Events_Bool_Exp = {
   extrinsic_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
   operator_id?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** aggregate max on columns */
 export type Staking_Nominators_Unlocked_Events_Max_Fields = {
   __typename?: 'staking_nominators_unlocked_events_max_fields';
-  _id?: Maybe<Scalars['uuid']['output']>;
   block_height?: Maybe<Scalars['numeric']['output']>;
   domain_id?: Maybe<Scalars['String']['output']>;
   event_id?: Maybe<Scalars['String']['output']>;
   extrinsic_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   operator_id?: Maybe<Scalars['String']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
 };
 
 /** aggregate min on columns */
 export type Staking_Nominators_Unlocked_Events_Min_Fields = {
   __typename?: 'staking_nominators_unlocked_events_min_fields';
-  _id?: Maybe<Scalars['uuid']['output']>;
   block_height?: Maybe<Scalars['numeric']['output']>;
   domain_id?: Maybe<Scalars['String']['output']>;
   event_id?: Maybe<Scalars['String']['output']>;
   extrinsic_id?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   operator_id?: Maybe<Scalars['String']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
 };
 
 /** Ordering options when selecting data from "staking.nominators_unlocked_events". */
 export type Staking_Nominators_Unlocked_Events_Order_By = {
   _block_range?: InputMaybe<Order_By>;
-  _id?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   event_id?: InputMaybe<Order_By>;
   extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "staking.nominators_unlocked_events" */
 export enum Staking_Nominators_Unlocked_Events_Select_Column {
   /** column name */
   BlockRange = '_block_range',
-  /** column name */
-  Id = '_id',
   /** column name */
   BlockHeight = 'block_height',
   /** column name */
@@ -16036,7 +16034,9 @@ export enum Staking_Nominators_Unlocked_Events_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  OperatorId = 'operator_id'
+  OperatorId = 'operator_id',
+  /** column name */
+  Uuid = 'uuid'
 }
 
 /** aggregate stddev on columns */
@@ -16068,13 +16068,13 @@ export type Staking_Nominators_Unlocked_Events_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Staking_Nominators_Unlocked_Events_Stream_Cursor_Value_Input = {
   _block_range?: InputMaybe<Scalars['int8range']['input']>;
-  _id?: InputMaybe<Scalars['uuid']['input']>;
   block_height?: InputMaybe<Scalars['numeric']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
   event_id?: InputMaybe<Scalars['String']['input']>;
   extrinsic_id?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   operator_id?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -21792,7 +21792,7 @@ export type Subscription_RootStaking_Nominators_Unlocked_Events_AggregateArgs = 
 
 
 export type Subscription_RootStaking_Nominators_Unlocked_Events_By_PkArgs = {
-  _id: Scalars['uuid']['input'];
+  uuid: Scalars['uuid']['input'];
 };
 
 
