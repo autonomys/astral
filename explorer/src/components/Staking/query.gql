@@ -22,7 +22,6 @@ query NominationsList(
       id
       account_id
       status
-      pending_action
       current_total_shares
       current_share_price
     }
@@ -38,7 +37,6 @@ query NominationsList(
     pending_storage_fee_refund
     total_deposits
     status
-    pending_action
     created_at
     updated_at
     deposits {
@@ -58,11 +56,11 @@ query NominationsList(
       unlocked_amount
       unlocked_storage_fee
       timestamp
-      withdraw_extrinsic_hash
-      unlock_extrinsic_hash
+      withdraw_extrinsic_id
+      unlock_extrinsic_id
       status
       created_at
-      ready_at
+      domain_block_number_ready_at
       unlocked_at
       updated_at
     }
@@ -123,24 +121,11 @@ query OperatorsList(
     signingKey: signing_key
     status
     rawStatus: raw_status
-    pendingAction: pending_action
     totalDeposits: total_deposits
     totalEstimatedWithdrawals: total_estimated_withdrawals
     totalWithdrawals: total_withdrawals
     totalTaxCollected: total_tax_collected
     totalRewardsCollected: total_rewards_collected
-    totalTransfersIn: total_transfers_in
-    transfersInCount: transfers_in_count
-    totalTransfersOut: total_transfers_out
-    transfersOutCount: transfers_out_count
-    totalRejectedTransfersClaimed: total_rejected_transfers_claimed
-    rejectedTransfersClaimedCount: rejected_transfers_claimed_count
-    totalTransfersRejected: total_transfers_rejected
-    transfersRejectedCount: transfers_rejected_count
-    totalVolume: total_volume
-    totalConsensusStorageFee: total_consensus_storage_fee
-    totalDomainExecutionFee: total_domain_execution_fee
-    totalBurnedBalance: total_burned_balance
     accumulatedEpochShares: accumulated_epoch_shares
     accumulatedEpochStorageFeeDeposit: accumulated_epoch_storage_fee_deposit
     activeEpochCount: active_epoch_count
@@ -186,15 +171,11 @@ query OperatorById($operatorId: String!) {
     current_storage_fee_deposit
     minimum_nominator_stake
     total_rewards_collected
-    total_consensus_storage_fee
-    total_domain_execution_fee
-    total_burned_balance
     total_tax_collected
     nomination_tax
     signing_key
     status
     raw_status
-    pending_action
     last_bundle_at
     updated_at
     nominators_aggregate {
@@ -267,7 +248,6 @@ query NominatorsConnection(
       signing_key
       status
       raw_status
-      pending_action
       updated_at
     }
     updated_at
