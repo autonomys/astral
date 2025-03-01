@@ -7,7 +7,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
+import { OperatorStatus } from 'constants/staking'
 import { OperatorsListDocument, OperatorsListQuery, OperatorsListQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
@@ -175,30 +175,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             `${bigNumberToFormattedString(row.original.totalTaxCollected)} ${tokenSymbol}`,
           totalRewardsCollected: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.totalRewardsCollected)} ${tokenSymbol}`,
-          totalTransfersIn: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalTransfersIn)} ${tokenSymbol}`,
-          transfersInCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.transfersInCount),
-          totalTransfersOut: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalTransfersOut)} ${tokenSymbol}`,
-          transfersOutCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.transfersOutCount),
-          totalTransfersRejected: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalTransfersRejected)} ${tokenSymbol}`,
-          totalRejectedTransfersClaimed: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalRejectedTransfersClaimed)} ${tokenSymbol}`,
-          rejectedTransfersClaimedCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.rejectedTransfersClaimedCount),
-          transfersRejectedCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.transfersRejectedCount),
-          totalVolume: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalVolume)} ${tokenSymbol}`,
-          totalConsensusStorageFee: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalConsensusStorageFee)} ${tokenSymbol}`,
-          totalDomainExecutionFee: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalDomainExecutionFee)} ${tokenSymbol}`,
-          totalBurnedBalance: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalBurnedBalance)} ${tokenSymbol}`,
           accumulatedEpochShares: ({ row }: Cell<Row>) =>
             bigNumberToFormattedString(row.original.accumulatedEpochShares),
           accumulatedEpochStorageFeeDeposit: ({ row }: Cell<Row>) =>
@@ -209,7 +185,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           status: ({ row }: Cell<Row>) =>
             allCapsToNormal(operatorStatus(JSON.parse(row.original.status ?? '{}'))),
           rawStatus: ({ row }: Cell<Row>) => allCapsToNormal(row.original.rawStatus),
-          pendingAction: ({ row }: Cell<Row>) => allCapsToNormal(row.original.pendingAction),
           lastBundleAt: ({ row }: Cell<Row>) => (
             <Link
               key={`created_at-${row.original.id}`}
@@ -302,8 +277,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
             if (row.original.status === OperatorStatus.DEREGISTERED)
               excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
-            if (row.original.pendingAction !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
-              excludeActions.push(OperatorActionType.UnlockNominator)
 
             if (!nominator)
               excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)

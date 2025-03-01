@@ -74,15 +74,6 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
             <StyledListItem title='Total rewards collected'>
               {bigNumberToFormattedString(operator.total_rewards_collected)} {tokenSymbol}
             </StyledListItem>
-            <StyledListItem title='Total consensus storage fee'>
-              {bigNumberToFormattedString(operator.total_consensus_storage_fee)} {tokenSymbol}
-            </StyledListItem>
-            <StyledListItem title='Total domain execution fee'>
-              {bigNumberToFormattedString(operator.total_domain_execution_fee)} {tokenSymbol}
-            </StyledListItem>
-            <StyledListItem title='Total burned balance'>
-              {bigNumberToFormattedString(operator.total_burned_balance)} {tokenSymbol}
-            </StyledListItem>
             <StyledListItem title='Total tax collected'>
               {bigNumberToFormattedString(operator.total_tax_collected)} {tokenSymbol}
             </StyledListItem>

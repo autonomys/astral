@@ -10,7 +10,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
+import { OperatorStatus } from 'constants/staking'
 import {
   NominationsListDocument,
   NominationsListQuery,
@@ -232,11 +232,6 @@ export const NominationsTable: FC = () => {
                                 OperatorActionType.Nominating,
                                 OperatorActionType.Deregister,
                               )
-                            if (
-                              nominator.operator?.pending_action !==
-                              OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR
-                            )
-                              excludeActions.push(OperatorActionType.UnlockNominator)
 
                             if (!nominator)
                               excludeActions.push(
@@ -301,9 +296,6 @@ export const NominationsTable: FC = () => {
                         <div className='text-sm text-grayDarker dark:text-white'>
                           <div className='mb-4'>
                             <strong>Status:</strong> {nominator.status}
-                          </div>
-                          <div className='mb-4'>
-                            <strong>Pending Action:</strong> {nominator.pending_action}
                           </div>
                           <div className='flex flex-col sm:flex-row'>
                             <div className='w-full sm:w-1/2 sm:pr-2'>
