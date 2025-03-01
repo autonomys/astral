@@ -3068,42 +3068,42 @@ CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
     INTO share_price_1d_old
     FROM staking.operator_staking_histories
     WHERE operator_id = NEW.operator_id
-    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '1 day'))))
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '1 day'))))
     LIMIT 1;
 
     SELECT share_price
     INTO share_price_7d_old
     FROM staking.operator_staking_histories
     WHERE operator_id = NEW.operator_id
-    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '7 days'))))
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '7 days'))))
     LIMIT 1;
 
     SELECT share_price
     INTO share_price_30d_old
     FROM staking.operator_staking_histories
     WHERE operator_id = NEW.operator_id
-    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '30 days'))))
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '30 days'))))
     LIMIT 1;
 
     -- Calculate annualized yields
-    -- For 1-day: (new_price - old_price) / old_price * 365
+    -- For 1-day: (new_price - old_price) * 365 / 10^18
     yield_1d_calc := CASE 
       WHEN share_price_1d_old::NUMERIC > 0 THEN 
-        ((NEW.share_price::NUMERIC - share_price_1d_old::NUMERIC) / share_price_1d_old::NUMERIC) * 365
+        ((NEW.share_price::NUMERIC - share_price_1d_old::NUMERIC) * 365) / 1000000000000000000
       ELSE 0
     END;
 
-    -- For 7-day: (new_price - old_price) / old_price * (365/7)
+    -- For 7-day: (new_price - old_price) * 365 / (10^18 * 7)
     yield_7d_calc := CASE 
       WHEN share_price_7d_old::NUMERIC > 0 THEN 
-        ((NEW.share_price::NUMERIC - share_price_7d_old::NUMERIC) / share_price_7d_old::NUMERIC) * (365.0/7.0)
+        ((NEW.share_price::NUMERIC - share_price_7d_old::NUMERIC) * 365) / (1000000000000000000 * 7)
       ELSE 0
     END;
 
-    -- For 30-day: (new_price - old_price) / old_price * (365/30)
+    -- For 30-day: (new_price - old_price) * 365 / (10^18 * 30)
     yield_30d_calc := CASE 
       WHEN share_price_30d_old::NUMERIC > 0 THEN 
-        ((NEW.share_price::NUMERIC - share_price_30d_old::NUMERIC) / share_price_30d_old::NUMERIC) * (365.0/30.0)
+        ((NEW.share_price::NUMERIC - share_price_30d_old::NUMERIC) * 365) / (1000000000000000000 * 30)
       ELSE 0
     END;
 
