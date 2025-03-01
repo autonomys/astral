@@ -30,21 +30,26 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
     skip: !inFocus || !inView,
   })
 
-  const handleConfirm = async (password: string) => {
-    if (!fileData) return;  
-  
-    let decryptedFileData;
-    try {
-      decryptedFileData = await decryptFileData(password, fileData);
-    } catch (error) {
-      toast.error('Decryption failed: Incorrect password', { position: 'bottom-center' });
-      return;
-    }
-  
-    if (!decryptedFileData) return;
-    await processFileData(decryptedFileData);
-  };
-  
+  const handleConfirm = useCallback(
+    async (password: string) => {
+      if (!fileData) return
+
+      let decryptedFileData
+      try {
+        decryptedFileData = await decryptFileData(password, fileData)
+        if (!decryptedFileData) {
+          throw new Error('Decryption failed: Incorrect password')
+        }
+      } catch (error) {
+        toast.error('Decryption failed: Incorrect password', { position: 'bottom-center' })
+        return
+      }
+
+      await processFileData(decryptedFileData)
+    },
+    [fileData],
+  )
+
   const processFileData = useCallback(async (fileData: FileData) => {
     const _fileType = await detectFileType(fileData.dataArrayBuffer)
 
@@ -64,16 +69,15 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
         }
       }
     }
-  }, []);
-  
+  }, [])
+
   const getDataDetails = useCallback(async () => {
     if (!data) return
     const _fileData = extractFileData(data)
-    if(!_fileData) return;
-    await processFileData(_fileData);
+    if (!_fileData) return
+    await processFileData(_fileData)
   }, [data])
 
-  
   const downloadFile = useCallback(async () => {
     if (!fileData || !fileUrl) return
     const a = document.createElement('a')
@@ -96,7 +100,12 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
       <PageTabs isDesktop={isDesktop}>
         {fileType && fileUrl ? (
           <Tab title='File Preview'>
-            <FilePreview fileData={fileData} fileType={fileType} fileUrl={fileUrl} onConfirm={handleConfirm}/>
+            <FilePreview
+              fileData={fileData}
+              fileType={fileType}
+              fileUrl={fileUrl}
+              onConfirm={handleConfirm}
+            />
           </Tab>
         ) : (
           <></>
