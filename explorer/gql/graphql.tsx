@@ -23803,19 +23803,19 @@ export type HomeSuspenseQueryHookResult = ReturnType<typeof useHomeSuspenseQuery
 export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
 export const OnChainActivityChartsDocument = gql`
     query OnChainActivityCharts {
-  stats_daily(limit: 30, offset: 0, order_by: {end_block: desc}) {
+  stats_daily(limit: 30, offset: 1, order_by: {end_block: desc}) {
     cumulated_history_size
     delta_history_size
     start_date
     end_date
   }
-  stats_weekly(limit: 30, offset: 0, order_by: {end_block: desc}) {
+  stats_weekly(limit: 30, offset: 1, order_by: {end_block: desc}) {
     cumulated_history_size
     delta_history_size
     start_date
     end_date
   }
-  stats_monthly(limit: 30, offset: 0, order_by: {end_block: desc}) {
+  stats_monthly(limit: 30, offset: 1, order_by: {end_block: desc}) {
     cumulated_history_size
     delta_history_size
     start_date
