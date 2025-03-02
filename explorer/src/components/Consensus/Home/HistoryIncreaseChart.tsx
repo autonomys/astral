@@ -97,7 +97,7 @@ export const HistoryIncreaseChart: FC<HistoryIncreaseChartProps> = ({ data, load
           axisLeft={{
             tickSize: 5,
             tickPadding: 5,
-            legend: `Increase (${singleTimeFrameData.unit})`,
+            legend: `Size (${singleTimeFrameData.unit})`,
             legendOffset: -50,
             legendPosition: 'middle',
           }}
