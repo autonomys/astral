@@ -22654,7 +22654,7 @@ export type OperatorByIdQueryVariables = Exact<{
 }>;
 
 
-export type OperatorByIdQuery = { __typename?: 'query_root', staking_operators_by_pk?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, bundle_count: any, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_share_price: any, current_storage_fee_deposit: any, minimum_nominator_stake: any, total_rewards_collected: any, total_tax_collected: any, nomination_tax: number, signing_key: string, status: string, raw_status: string, last_bundle_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string } | null, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, deposits_aggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, withdrawals_aggregate: { __typename?: 'staking_withdrawals_aggregate', aggregate?: { __typename?: 'staking_withdrawals_aggregate_fields', count: number } | null } } | null };
+export type OperatorByIdQuery = { __typename?: 'query_root', staking_operators_by_pk?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, bundle_count: any, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_share_price: any, current_storage_fee_deposit: any, minimum_nominator_stake: any, total_rewards_collected: any, total_tax_collected: any, nomination_tax: number, signing_key: string, status: string, raw_status: string, last_bundle_at: any, updated_at: any, total_deposits_count: any, total_withdrawals_count: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string } | null, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } } | null };
 
 export type OperatorNominatorsByIdQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -25897,16 +25897,8 @@ export const OperatorByIdDocument = gql`
         count
       }
     }
-    deposits_aggregate {
-      aggregate {
-        count
-      }
-    }
-    withdrawals_aggregate {
-      aggregate {
-        count
-      }
-    }
+    total_deposits_count
+    total_withdrawals_count
   }
 }
     `;

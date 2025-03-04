@@ -183,16 +183,8 @@ query OperatorById($operatorId: String!) {
         count
       }
     }
-    deposits_aggregate {
-      aggregate {
-        count
-      }
-    }
-    withdrawals_aggregate {
-      aggregate {
-        count
-      }
-    }
+    total_deposits_count
+    total_withdrawals_count
   }
 }
 
