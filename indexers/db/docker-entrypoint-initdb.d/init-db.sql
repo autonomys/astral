@@ -2533,6 +2533,12 @@ BEGIN
         current_storage_fee_deposit,
         current_total_shares,
         current_share_price,
+        calc_1d_yield,
+        calc_7d_yield,
+        calc_30d_yield,
+        calc_1d_apy,
+        calc_7d_apy,
+        calc_30d_apy,
         accumulated_epoch_stake,
         accumulated_epoch_storage_fee_deposit,
         accumulated_epoch_rewards,
@@ -2580,6 +2586,12 @@ BEGIN
         0,                         -- current_storage_fee_deposit
         0,                         -- current_total_shares
         0,                         -- current_share_price
+        0,                         -- calc_1d_yield
+        0,                         -- calc_7d_yield
+        0,                         -- calc_30d_yield
+        0,                         -- calc_1d_apy
+        0,                         -- calc_7d_apy
+        0,                         -- calc_30d_apy
         0,                         -- accumulated_epoch_stake
         0,                         -- accumulated_epoch_storage_fee_deposit
         0,                         -- accumulated_epoch_rewards
@@ -3043,7 +3055,7 @@ BEGIN
         bundle_count = staking.domains.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number,
         updated_at = NEW.block_height
-    WHERE id = NEW.domain_id AND last_domain_block_number < NEW.domain_block_number;
+    WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
@@ -3173,6 +3185,9 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     AS $$
   DECLARE
     last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+    domain_total_stake NUMERIC;
+    domain_total_shares NUMERIC;
+    domain_share_price NUMERIC;
   BEGIN
     SELECT domain_block_number
     INTO last_domain_block_number
@@ -3180,6 +3195,14 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     WHERE domain_id = NEW.domain_id
     ORDER BY block_height DESC
     LIMIT 1;
+
+    SELECT 
+        SUM(current_total_stake) AS domain_total_stake,
+        SUM(current_total_shares) AS domain_total_shares,
+        SUM(current_total_stake) / SUM(current_total_shares) AS domain_share_price
+    INTO domain_total_stake, domain_total_shares, domain_share_price
+    FROM staking.operators
+    WHERE domain_id = NEW.domain_id;
 
     IF NOT FOUND THEN
         SELECT
@@ -3191,6 +3214,14 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     SET 
         current_total_stake = NEW.current_total_stake,
         completed_epoch = NEW.current_epoch_index,
+        current_total_shares = domain_total_shares,
+        current_share_price = domain_share_price,
+        calc_1d_yield = 0,
+        calc_7d_yield = 0,
+        calc_30d_yield = 0,
+        calc_1d_apy = 0,
+        calc_7d_apy = 0,
+        calc_30d_apy = 0,
         updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
