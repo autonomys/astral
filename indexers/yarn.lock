@@ -88,16 +88,7 @@
     protons "^7.6.0"
     protons-runtime "^5.5.0"
 
-"@autonomys/auto-utils@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.3.1.tgz#72c5a2500dcc6f2f8262d842246a81cc6252a0f4"
-  integrity sha512-9PwOmHtm8c/wLDipyyi+v3rJM1UVFQsrGIyf7er+mGjZpN5ToLbSE6okf6wjCz3FV/M+yr0YmO3AC5EFQB8ZVw==
-  dependencies:
-    "@polkadot/api" "^14.3.1"
-    "@polkadot/extension-dapp" "^0.56.2"
-    fs "^0.0.1-security"
-
-"@autonomys/auto-utils@^1.3.3":
+"@autonomys/auto-utils@^1.3.1", "@autonomys/auto-utils@^1.3.3":
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.3.3.tgz#a369a5342a94a37e852181dc0d577b09b582735d"
   integrity sha512-PfT6ei4tD7moaOjtvM3i0OcyjX7ujSeJcgSQ4CgvmO8uZW39AHeQHgqXdwN8YeAkYI+reVyBIOZKfUFa+1iaZg==
