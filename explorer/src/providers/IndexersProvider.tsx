@@ -57,7 +57,11 @@ export const IndexersProvider: FC<Props> = ({ children }) => {
           `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, [Network]: ${indexerSet.network}, [Section]: ${section}`,
         ),
       )
-    if (networkError && !IGNORED_NETWORK_ERRORS.includes(networkError.message))
+    if (
+      networkError &&
+      !IGNORED_NETWORK_ERRORS.includes(networkError.toString()) &&
+      !IGNORED_NETWORK_ERRORS.includes(networkError.message)
+    )
       logError(
         pathname,
         `[Network error]: ${networkError}, [Network]: ${indexerSet.network}, [Section]: ${section}`,
