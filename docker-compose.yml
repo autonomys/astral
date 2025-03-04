@@ -16,6 +16,7 @@ services:
     image: caddy:latest
     ports:
       - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8001:8001"
     volumes:
       - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
       - caddy_data:/data # Volume for Let's Encrypt certificates
@@ -32,7 +33,9 @@ services:
     ports:
       - "30333:30333/tcp"
       - "30433:30433/tcp"
+      - "30334:30334/tcp"
       - "127.0.0.1:9944:9944/tcp"
+      - "127.0.0.1:8944:8944/tcp"
     restart: unless-stopped
     command:
       [
@@ -63,6 +66,19 @@ services:
         "astral",
         "--sync",
         "full",
+        "--",
+        "--domain-id", "${DOMAIN_ID}",
+        "--state-pruning", "archive",
+        "--blocks-pruning", "archive",
+        "--listen-on", "/ip4/0.0.0.0/tcp/30334",
+        "--rpc-cors", "all",
+        "--rpc-methods", "safe",
+        "--rpc-listen-on", "0.0.0.0:8944",
+        "--rpc-max-connections", "500",
+        "--reserved-peer",
+        "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
+        "--bootstrap-node",
+        "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
       ]
     healthcheck:
       timeout: 5s
