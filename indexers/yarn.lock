@@ -73,9 +73,9 @@
     "@autonomys/auto-utils" "^1.3.3"
 
 "@autonomys/auto-dag-data@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.3.1.tgz#1af9bfddf3e873d8fd01f3385487ec7113669a3e"
-  integrity sha512-s7xmmLGHm//i4jF7jUz7pQFu39nk8uGUAqYrJbYK84lisIwHK03ESWm5aRJGNDyeWFFk49+BoxyJ14TEGr5JFQ==
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.3.3.tgz#9a61d975ec460e2ba2f48d997c9d11f9a14ea2ae"
+  integrity sha512-eBkugXh8wue6EjdSA4ZP4QVWAqdh6IE6RxsnkNmoXItUppBxT1Km8jLrzkP+cY+mDQtLXC8R6Yqb6C1l8MqT8A==
   dependencies:
     "@ipld/dag-pb" "^4.1.2"
     "@peculiar/webcrypto" "^1.5.0"
