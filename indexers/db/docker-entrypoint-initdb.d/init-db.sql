@@ -2875,14 +2875,14 @@ CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
     last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
     last_domain_epoch staking.domain_epochs.epoch%TYPE;
   BEGIN
-    SELECT last_domain_block_number
-    INTO last_domain_block_histories_domain_block_number
+    SELECT domain_block_number
+    INTO last_domain_block_number
     FROM staking.domain_block_histories
     WHERE domain_id = NEW.domain_id
     ORDER BY domain_block_number DESC
     LIMIT 1;
 
-    SELECT last_domain_epoch
+    SELECT epoch
     INTO last_domain_epoch
     FROM staking.domain_epochs
     WHERE domain_id = NEW.domain_id
@@ -3063,47 +3063,48 @@ CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
     yield_1d_calc NUMERIC;
     yield_7d_calc NUMERIC;
     yield_30d_calc NUMERIC;
+    divisor NUMERIC := 1000000000000000000;
   BEGIN
     SELECT share_price
     INTO share_price_1d_old
     FROM staking.operator_staking_histories
     WHERE operator_id = NEW.operator_id
-    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '1 day'))))
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '1 day'))))
     LIMIT 1;
 
     SELECT share_price
     INTO share_price_7d_old
     FROM staking.operator_staking_histories
     WHERE operator_id = NEW.operator_id
-    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '7 days'))))
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '7 days'))))
     LIMIT 1;
 
     SELECT share_price
     INTO share_price_30d_old
     FROM staking.operator_staking_histories
     WHERE operator_id = NEW.operator_id
-    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '30 days'))))
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '30 days'))))
     LIMIT 1;
 
-    -- Calculate annualized yields
-    -- For 1-day: (new_price - old_price) / old_price * 365
+    -- Calculate annualized yields with explicit NUMERIC casts to avoid overflow
+    -- For 1-day: (new_price - old_price) * 365 / 10^18
     yield_1d_calc := CASE 
-      WHEN share_price_1d_old::NUMERIC > 0 THEN 
-        ((NEW.share_price::NUMERIC - share_price_1d_old::NUMERIC) / share_price_1d_old::NUMERIC) * 365
+      WHEN CAST(share_price_1d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) - CAST(share_price_1d_old AS NUMERIC)) * 365.0) / divisor
       ELSE 0
     END;
 
-    -- For 7-day: (new_price - old_price) / old_price * (365/7)
+    -- For 7-day: (new_price - old_price) * 365 / (10^18 * 7)
     yield_7d_calc := CASE 
-      WHEN share_price_7d_old::NUMERIC > 0 THEN 
-        ((NEW.share_price::NUMERIC - share_price_7d_old::NUMERIC) / share_price_7d_old::NUMERIC) * (365.0/7.0)
+      WHEN CAST(share_price_7d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) - CAST(share_price_7d_old AS NUMERIC)) * 365.0) / (divisor * 7.0)
       ELSE 0
     END;
 
-    -- For 30-day: (new_price - old_price) / old_price * (365/30)
+    -- For 30-day: (new_price - old_price) * 365 / (10^18 * 30)
     yield_30d_calc := CASE 
-      WHEN share_price_30d_old::NUMERIC > 0 THEN 
-        ((NEW.share_price::NUMERIC - share_price_30d_old::NUMERIC) / share_price_30d_old::NUMERIC) * (365.0/30.0)
+      WHEN CAST(share_price_30d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) - CAST(share_price_30d_old AS NUMERIC)) * 365.0) / (divisor * 30.0)
       ELSE 0
     END;
 
