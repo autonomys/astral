@@ -5,60 +5,29 @@
 ![build](https://github.com/autonomys/astral/actions/workflows/build.yaml/badge.svg)
 
 - [Astral Block Explorer](https://explorer.autonomys.xyz/) Astral Block Explorer
-- [Health Check](https://uptime.subspace.network/status/network) Subspace Network Status Page
 
 ## Astral Block Explorer
 
-<table width="100%" border="0">
-    <tr>
-        <td width="50%" valign="top" border="0">
-        <picture>
-          <source 
-              srcset="https://github.com/autonomys/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
-              media="(prefers-color-scheme: dark)"
-          />
-          <source
-              srcset="https://github.com/autonomys/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
-              media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
-          />
-          <img
-            alt="Astral Block Explorer"
-            src="https://github.com/autonomys/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
-            align="left"
-            width="100%"
-        />
-        </picture>
-      </td>
-    <td width="50%" valign="top" border="0">
-      <picture>
-      <source 
-          srcset="https://github.com/autonomys/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
-          media="(prefers-color-scheme: dark)"
-      />
-      <source
-          srcset="https://github.com/autonomys/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
-          media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
-      />
-      <img
-          alt="Astral Block Explorer"
-          src="https://github.com/autonomys/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
-          align="left"
-          width="100%"
-      />
+<picture>
+   <source 
+      srcset="https://github.com/autonomys/astral/blob/main/.github/images/explorer-dark.png"
+      media="(prefers-color-scheme: dark)"
+   />
+   <source
+      srcset="https://github.com/autonomys/astral/blob/main/.github/images/explorer-light.png"
+      media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+   />
+   <img
+      alt="Autonomys Network Explorer"
+      src="https://github.com/autonomys/astral/blob/main/.github/images/explorer-light.png"
+      width="100%"
+   />
 </picture>
-        </td>
-    <tr>
-</table>
-
-## Subspace Network Status Page
-
-![Subspace Network Status Page](https://github.com/autonomys/astral/assets/82244926/0b1a171f-d266-4d1f-8eaf-3814032ca735)
 
 ## Overview
 
 - [Explorer](./explorer/README.md) - Next.js app based on React and Tailwind CSS, uses Apollo Client to fetch data from Astral Indexers
 - [Indexers](./indexers/README.md) - Includes various SubQuery indexers organized by network and functionality
-- [Health check](./health-check/README.md) - utility service to check health status of an internal service and expose it as a REST API endpoint
 
 ## Development
 

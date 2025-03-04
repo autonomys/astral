@@ -3,10 +3,18 @@ import {
   EventRecord,
   stringify,
 } from "@autonomys/auto-utils";
+import { SHARES_CALCULATION_MULTIPLIER } from "./constants";
 import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
-import { calculateTransfer, findOneExtrinsicEvent } from "./utils";
+import {
+  calculateTransfer,
+  findDomainIdFromOperatorsCache,
+  findEpochFromDomainStakingHistoryCache,
+  findOneExtrinsicEvent,
+  findOperatorFromOperatorsCache,
+  findWithdrawalHistoryFromCache,
+} from "./utils";
 
 type EventHandler = (params: {
   event: EventRecord;
@@ -144,6 +152,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     const storageFeeDepositedEvent = findOneExtrinsicEvent(
       extrinsicEvents,
@@ -153,11 +162,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const storageFeeDeposit = BigInt(
       storageFeeDepositedEvent?.event.data[2].toString() ?? 0
     );
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
 
     cache.depositEvent.push(
       db.createDepositEvent(
@@ -186,26 +190,16 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
     const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
-
-    const amount1Event = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "balances",
-      "Withdraw"
+    const { shares, storageFeeRefund } = findWithdrawalHistoryFromCache(
+      cache,
+      operatorId,
+      accountId
     );
-    const amount1 = BigInt(amount1Event?.event.data[1].toString() ?? 0);
-    const amount2Event = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "balances",
-      "Rescinded"
-    );
-    const amount2 =
-      amount1 - BigInt(amount2Event?.event.data[0].toString() ?? 0);
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
+    const estimatedAmount =
+      (shares * sharePrice) / SHARES_CALCULATION_MULTIPLIER + storageFeeRefund;
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
@@ -213,9 +207,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         domainId,
         operatorId,
         stringify(toWithdraw),
-        amount1,
-        amount2,
-        amount1 + amount2,
+        shares,
+        storageFeeRefund,
+        estimatedAmount,
         blockTimestamp,
         height,
         extrinsicId,
@@ -234,11 +228,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const operatorId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
     const atBlockNumber = BigInt(bundleDetails.bundle.atBlockNumber.toString());
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     cache.operatorReward.push(
       db.createOperatorReward(
@@ -261,11 +251,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const tax = BigInt(event.event.data[1].toString());
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     cache.operatorTaxCollection.push(
       db.createOperatorTaxCollection(
@@ -289,11 +275,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     const StorageFeeUnlockedEvent = findOneExtrinsicEvent(
       extrinsicEvents,
@@ -304,13 +286,33 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       StorageFeeUnlockedEvent?.event.data[2].toString() ?? 0
     );
 
-    cache.stakedUnlockedEvent.push(
-      db.createStakedUnlockedEvent(
+    cache.unlockedEvent.push(
+      db.createUnlockedEvent(
         domainId,
         operatorId,
         accountId,
         amount,
         storageFee,
+        height,
+        extrinsicId,
+        eventId
+      )
+    );
+  },
+  "domains.NominatorUnlocked": ({
+    event,
+    cache,
+    height,
+    extrinsicId,
+    eventId,
+  }) => {
+    const operatorId = event.event.data[0].toString();
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+
+    cache.nominatorsUnlockedEvent.push(
+      db.createNominatorsUnlockedEvent(
+        domainId,
+        operatorId,
         height,
         extrinsicId,
         eventId
@@ -326,11 +328,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     eventId,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const opFromCache = cache.operatorStakingHistory.find(
-      (o) => o.operatorId === operatorId
-    );
-    if (!opFromCache) throw new Error("Operator from cache not found");
-    const domainId = opFromCache.currentDomainId;
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     cache.operatorDeregistration.push(
       db.createOperatorDeregistration(
@@ -346,9 +344,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   "domains.BundleStored": ({
     event,
     cache,
-    extrinsicSigner,
-    eventId,
     extrinsic,
+    extrinsicSigner,
+    height,
+    extrinsicId,
+    eventId,
   }) => {
     const bundleHash = event.event.data[1].toString();
     const _extrinsic = extrinsic.method.args[0].toPrimitive() as any;
@@ -384,6 +384,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       calculateTransfer(transfersRejected);
     const totalVolume = totalTransfersIn + totalTransfersOut;
 
+    const epoch = findEpochFromDomainStakingHistoryCache(cache, domainId);
+
     cache.bundleSubmission.push(
       db.createBundleSubmission(
         bundleHash,
@@ -394,6 +396,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         BigInt(domainBlockNumber),
         String(domainBlockHash),
         String(domainBlockExtrinsicRoot),
+        BigInt(epoch),
         BigInt(consensusBlockNumber),
         String(consensusBlockHash),
         totalTransfersIn,
@@ -408,6 +411,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         BigInt(consensusStorageFee),
         BigInt(domainExecutionFee),
         BigInt(burnedBalance),
+        height,
+        extrinsicId,
         eventId
       )
     );

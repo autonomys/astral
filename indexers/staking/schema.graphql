@@ -65,9 +65,9 @@ type WithdrawEvent @entity {
   operatorId: String!
   nominatorId: String!
   toWithdraw: String!
-  amount1: BigInt!
-  amount2: BigInt!
-  totalAmount: BigInt!
+  shares: BigInt!
+  storageFeeRefund: BigInt!
+  estimatedAmount: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
   extrinsicId: String!
@@ -120,16 +120,28 @@ type BundleSubmission @entity {
   consensusStorageFee: BigInt!
   domainExecutionFee: BigInt!
   burnedBalance: BigInt!
+  blockHeight: BigInt!
+  extrinsicId: String!
   eventId: String!
 }
 
-type StakedUnlockedEvent @entity {
+type UnlockedEvent @entity {
   id: ID!
   domainId: String!
   operatorId: String!
   accountId: String!
+  nominatorId: String!
   amount: BigInt!
   storageFee: BigInt!
+  blockHeight: BigInt!
+  extrinsicId: String!
+  eventId: String!
+}
+
+type NominatorsUnlockedEvent @entity {
+  id: ID!
+  domainId: String!
+  operatorId: String!
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
@@ -159,6 +171,8 @@ type DomainStakingHistory @entity {
   domainId: String!
   currentEpochIndex: Int!
   currentTotalStake: BigInt!
+  currentTotalShares: BigInt!
+  sharePrice: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
 }
@@ -176,11 +190,13 @@ type OperatorStakingHistory @entity {
   totalStorageFeeDeposit: BigInt!
   sharePrice: BigInt!
   partialStatus: String!
+  timestamp: Date!
   blockHeight: BigInt!
 }
 
 type DepositHistory @entity {
   id: ID!
+  domainId: String!
   accountId: String!
   operatorId: String!
   nominatorId: String!
@@ -192,6 +208,7 @@ type DepositHistory @entity {
   effectiveDomainEpochPending: Int!
   amountPending: BigInt!
   storageFeeDepositPending: BigInt!
+  timestamp: Date!
   blockHeight: BigInt!
 }
 
@@ -206,5 +223,6 @@ type WithdrawalHistory @entity {
   unlockAtConfirmedDomainBlockNumber: BigInt!
   shares: BigInt!
   storageFeeRefund: BigInt!
+  timestamp: Date!
   blockHeight: BigInt!
 }

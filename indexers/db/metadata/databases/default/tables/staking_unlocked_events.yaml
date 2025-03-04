@@ -1,5 +1,5 @@
 table:
-  name: staked_unlocked_events
+  name: unlocked_events
   schema: staking
 configuration:
   column_config:
@@ -21,6 +21,7 @@ select_permissions:
         - event_id
         - extrinsic_id
         - id
+        - nominator_id
         - operator_id
         - _id
       filter: {}

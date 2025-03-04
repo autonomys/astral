@@ -24,6 +24,7 @@ query NominationsList(
       status
       pending_action
       current_total_shares
+      current_share_price
     }
     known_shares
     known_storage_fee_deposit
@@ -65,6 +66,28 @@ query NominationsList(
       unlocked_at
       updated_at
     }
+    deposit_histories {
+      id
+      shares
+      storage_fee_deposit
+      shares_known
+      storage_fee_deposit_known
+      effective_domain_id_pending
+      effective_domain_epoch_pending
+      amount_pending
+      storage_fee_deposit_pending
+      timestamp
+      block_height
+    }
+    withdrawal_histories {
+      id
+      shares
+      total_withdrawal_amount
+      unlock_at_confirmed_domain_block_number
+      storage_fee_refund
+      timestamp
+      block_height
+    }
   }
 }
 
@@ -73,6 +96,7 @@ query OperatorsList(
   $offset: Int
   $orderBy: [staking_operators_order_by!]!
   $where: staking_operators_bool_exp
+  $accountId: String!
 ) {
   staking_operators_aggregate(where: $where) {
     aggregate {
@@ -132,11 +156,13 @@ query OperatorsList(
         count
       }
     }
-    nominators(limit: 256) {
+    nominators(limit: 256, where: { account_id: { _eq: $accountId } }) {
       id
       account_id
       known_shares
       unlock_at_confirmed_domain_block_number
+      current_total_stake
+      current_storage_fee_deposit
     }
     createdAt: created_at
     updatedAt: updated_at
@@ -202,9 +228,13 @@ query OperatorNominatorsById(
   }
   staking_nominators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
-    known_shares
     account_id
     domain_id
+    known_shares
+    current_total_stake
+    current_storage_fee_deposit
+    total_deposits
+    total_withdrawals
   }
 }
 

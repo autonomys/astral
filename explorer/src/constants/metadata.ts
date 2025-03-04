@@ -7,7 +7,7 @@ export const url = process.env.NEXTAUTH_URL || 'https://explorer.autonomys.xyz'
 const twitter = '@AutonomysNet'
 const images = {
   url: url + '/images/share.png',
-  secureUrl: url + 'image/png',
+  secureUrl: url + '/image/png',
   width: 900,
   height: 600,
   alt: title,

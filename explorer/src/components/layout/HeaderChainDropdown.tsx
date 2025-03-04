@@ -1,7 +1,7 @@
 import { NetworkId } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
-import { AutonomysSymbol } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
 import { Indexer, indexers } from 'constants/indexers'
 import useIndexers from 'hooks/useIndexers'
 import { useRouter } from 'next/navigation'

@@ -1,7 +1,7 @@
 'use client'
 
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import { LogoIcon } from 'components/icons'
+import { LogoIcon } from 'components/icons/LogoIcon'
 import { EXTERNAL_ROUTES, INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -26,8 +26,8 @@ export const FarmingHeader = () => {
         link: `/${network}/${Routes.farming}`,
       },
       {
-        title: 'Advance CLI Documentation',
-        link: `${EXTERNAL_ROUTES.docs}farming/advanced-cli/install`,
+        title: 'CLI Documentation',
+        link: `${EXTERNAL_ROUTES.docs}farming/cli/install`,
       },
       {
         title: 'Space Acres Documentation',
@@ -59,7 +59,7 @@ export const FarmingHeader = () => {
                   key={index}
                   className={
                     isCurrentPath || isInitialPath
-                      ? 'bg-buttonLightFrom block rounded-full px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
+                      ? 'block rounded-full bg-buttonLightFrom px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
                       : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }
                   href={item.link}
@@ -73,7 +73,7 @@ export const FarmingHeader = () => {
             <HeaderChainDropdown />
             <button
               onClick={toggleTheme}
-              className='bg-buttonLightFrom ml-4 inline-flex items-center rounded-full p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
+              className='ml-4 inline-flex items-center rounded-full bg-buttonLightFrom p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
             >
               {isDark ? (
                 <SunIcon

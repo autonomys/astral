@@ -36,6 +36,8 @@ const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose }) => {
         return '/images/wallets/polkadot.svg'
       case SupportedWalletExtension.SubwalletJs:
         return '/images/wallets/subwallet.svg'
+      case SupportedWalletExtension.Talisman:
+        return '/images/wallets/talisman.svg'
       case SupportedWalletExtension.Nova:
         return '/images/wallets/nova.svg'
       default:
