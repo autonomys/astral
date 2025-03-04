@@ -200,6 +200,8 @@ export const EXTERNAL_ROUTES = {
     `https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.${network}.subspace.network%2Fws#/explorer`,
   subscan: 'https://autonomys.subscan.io/',
   spaceAcres: 'https://api.github.com/repos/autonomys/space-acres/releases/latest',
+  autoDrivePackage: 'https://www.npmjs.com/package/@autonomys/auto-drive',
+  autoDagPackage:'https://www.npmjs.com/package/@autonomys/auto-dag-data'
 }
 
 export const INTERNAL_ROUTES = {
