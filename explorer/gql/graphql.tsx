@@ -22647,7 +22647,7 @@ export type OperatorsListQueryVariables = Exact<{
 }>;
 
 
-export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, status: string, sortId: string, accountId: string, domainId: string, currentEpochRewards: any, currentTotalStake: any, currentTotalShares: any, currentSharePrice: any, currentStorageFeeDeposit: any, minimumNominatorStake: any, nominationTax: number, signingKey: string, rawStatus: string, totalDeposits: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, totalTaxCollected: any, totalRewardsCollected: any, accumulatedEpochShares: any, accumulatedEpochStorageFeeDeposit: any, activeEpochCount: any, bundleCount: any, lastBundleAt: any, createdAt: any, updatedAt: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string, last_domain_block_number: any } | null, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, depositsAggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, known_shares: any, unlock_at_confirmed_domain_block_number: any, current_total_stake: any, current_storage_fee_deposit: any }> }> };
+export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, status: string, sortId: string, accountId: string, domainId: string, currentEpochRewards: any, currentTotalStake: any, currentTotalShares: any, currentSharePrice: any, currentStorageFeeDeposit: any, minimumNominatorStake: any, nominationTax: number, signingKey: string, rawStatus: string, totalDeposits: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, totalTaxCollected: any, totalRewardsCollected: any, accumulatedEpochShares: any, accumulatedEpochStorageFeeDeposit: any, activeEpochCount: any, bundleCount: any, lastBundleAt: any, depositsCount: any, withdrawalsCount: any, yield30d: any, yield7d: any, yield1d: any, createdAt: any, updatedAt: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string, last_domain_block_number: any } | null, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, known_shares: any, unlock_at_confirmed_domain_block_number: any, current_total_stake: any, current_storage_fee_deposit: any }> }> };
 
 export type OperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['String']['input'];
@@ -25812,11 +25812,11 @@ export const OperatorsListDocument = gql`
         count
       }
     }
-    depositsAggregate: deposits_aggregate {
-      aggregate {
-        count
-      }
-    }
+    depositsCount: total_deposits_count
+    withdrawalsCount: total_withdrawals_count
+    yield30d: yield_30d
+    yield7d: yield_7d
+    yield1d: yield_1d
     nominators(limit: 256, where: {account_id: {_eq: $accountId}}) {
       id
       account_id

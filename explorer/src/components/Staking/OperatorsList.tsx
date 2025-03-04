@@ -161,6 +161,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           ),
           currentTotalStake: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.currentTotalStake)} ${tokenSymbol}`,
+          yield30d: ({ row }: Cell<Row>) =>
+            `${numberFormattedString(row.original.yield30d * 100)}%`,
+          yield7d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.yield7d * 100)}%`,
+          yield1d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.yield1d * 100)}%`,
           currentTotalShares: ({ row }: Cell<Row>) =>
             bigNumberToFormattedString(row.original.currentTotalShares),
           currentSharePrice: ({ row }: Cell<Row>) =>
@@ -232,6 +236,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           nominationTax: ({ row }: Cell<Row>) => `${row.original.nominationTax}%`,
           nominatorsAggregate: ({ row }: Cell<Row>) =>
             numberFormattedString(row.original.nominatorsCount),
+          depositsCount: ({ row }: Cell<Row>) => numberFormattedString(row.original.depositsCount),
+          withdrawalsCount: ({ row }: Cell<Row>) =>
+            numberFormattedString(row.original.withdrawalsCount),
           myStake: ({ row }: Cell<Row>) => {
             const deposit = deposits.find(
               (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,

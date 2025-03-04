@@ -136,11 +136,11 @@ query OperatorsList(
         count
       }
     }
-    depositsAggregate: deposits_aggregate {
-      aggregate {
-        count
-      }
-    }
+    depositsCount: total_deposits_count
+    withdrawalsCount: total_withdrawals_count
+    yield30d: yield_30d
+    yield7d: yield_7d
+    yield1d: yield_1d
     nominators(limit: 256, where: { account_id: { _eq: $accountId } }) {
       id
       account_id
