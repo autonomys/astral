@@ -1,4 +1,5 @@
 import { NetworkId } from '@autonomys/auto-utils'
+import { url } from 'constants/metadata'
 import fs from 'fs'
 import type { MetadataRoute } from 'next'
 import path from 'path'
@@ -62,14 +63,12 @@ export function expandChainRoutes(routes: string[]): string[] {
 
 // sitemap generator function
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const url = process.env.NEXTAUTH_URL || 'https://explorer.autonomys.xyz'
-
   // Get routes directly instead of fetching
   const dynamicRoutes = expandChainRoutes(filterRoutes(getStaticRoutes()))
 
   // Format the sitemap with correct type
   const sitemapEntries: MetadataRoute.Sitemap = dynamicRoutes.map((route) => ({
-    url: `${url}${route}`,
+    url: `${url}/${route}`,
     lastModified: new Date(),
     changeFrequency: 'monthly',
     priority: 0.8,

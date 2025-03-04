@@ -1490,9 +1490,12 @@ CREATE TABLE staking.operators (
     accumulated_epoch_shares numeric NOT NULL,
     active_epoch_count numeric NOT NULL,
     bundle_count numeric NOT NULL,
-    yield_1d numeric NOT NULL,
-    yield_7d numeric NOT NULL,
-    yield_30d numeric NOT NULL,
+    calc_1d_yield numeric NOT NULL,
+    calc_7d_yield numeric NOT NULL,
+    calc_30d_yield numeric NOT NULL,
+    calc_1d_apy numeric NOT NULL,
+    calc_7d_apy numeric NOT NULL,
+    calc_30d_apy numeric NOT NULL,
     status text NOT NULL,
     last_bundle_at numeric NOT NULL,
     extrinsic_id text NOT NULL,
@@ -2634,9 +2637,12 @@ BEGIN
         accumulated_epoch_shares,
         active_epoch_count,
         bundle_count,
-        yield_1d,
-        yield_7d,
-        yield_30d,
+        calc_1d_yield,
+        calc_7d_yield,
+        calc_30d_yield,
+        calc_1d_apy,
+        calc_7d_apy,
+        calc_30d_apy,
         status,
         last_bundle_at,
         extrinsic_id,
@@ -2669,9 +2675,12 @@ BEGIN
         0,                                       -- accumulated_epoch_shares
         0,                                       -- active_epoch_count
         0,                                       -- bundle_count
-        0,                                       -- yield_1d
-        0,                                       -- yield_7d
-        0,                                       -- yield_30d
+        0,                                       -- calc_1d_yield
+        0,                                       -- calc_7d_yield
+        0,                                       -- calc_30d_yield
+        0,                                       -- calc_1d_apy
+        0,                                       -- calc_7d_apy
+        0,                                       -- calc_30d_apy
         'PENDING_NEXT_EPOCH',                    -- status
         0,                                       -- last_bundle_at
         NEW.extrinsic_id,                        -- extrinsic_id
@@ -3060,9 +3069,12 @@ CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
     share_price_1d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
     share_price_7d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
     share_price_30d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
-    yield_1d_calc NUMERIC;
-    yield_7d_calc NUMERIC;
-    yield_30d_calc NUMERIC;
+    calc_1d_yield NUMERIC;
+    calc_7d_yield NUMERIC;
+    calc_30d_yield NUMERIC;
+    calc_1d_apy NUMERIC;
+    calc_7d_apy NUMERIC;
+    calc_30d_apy NUMERIC;
     divisor NUMERIC := 1000000000000000000;
   BEGIN
     SELECT share_price
@@ -3086,25 +3098,47 @@ CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
     ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '30 days'))))
     LIMIT 1;
 
-    -- Calculate annualized yields with explicit NUMERIC casts to avoid overflow
-    -- For 1-day: (new_price - old_price) * 365 / 10^18
-    yield_1d_calc := CASE 
+    -- Calculate yields with explicit NUMERIC casts to avoid overflow
+    -- For 1-day: (NEW.share_price / share_price_1d_old - 1)
+    calc_1d_yield := CASE 
       WHEN CAST(share_price_1d_old AS NUMERIC) > 0 THEN 
-        ((CAST(NEW.share_price AS NUMERIC) - CAST(share_price_1d_old AS NUMERIC)) * 365.0) / divisor
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_1d_old AS NUMERIC)) - 1.0)
       ELSE 0
     END;
 
-    -- For 7-day: (new_price - old_price) * 365 / (10^18 * 7)
-    yield_7d_calc := CASE 
+    -- For 7-day: (NEW.share_price / share_price_7d_old - 1)
+    calc_7d_yield := CASE 
       WHEN CAST(share_price_7d_old AS NUMERIC) > 0 THEN 
-        ((CAST(NEW.share_price AS NUMERIC) - CAST(share_price_7d_old AS NUMERIC)) * 365.0) / (divisor * 7.0)
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_7d_old AS NUMERIC)) - 1.0)
       ELSE 0
     END;
 
-    -- For 30-day: (new_price - old_price) * 365 / (10^18 * 30)
-    yield_30d_calc := CASE 
+    -- For 30-day: (NEW.share_price / share_price_30d_old - 1)
+    calc_30d_yield := CASE 
       WHEN CAST(share_price_30d_old AS NUMERIC) > 0 THEN 
-        ((CAST(NEW.share_price AS NUMERIC) - CAST(share_price_30d_old AS NUMERIC)) * 365.0) / (divisor * 30.0)
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_30d_old AS NUMERIC)) - 1.0)
+      ELSE 0
+    END;
+
+    -- Calculate APYs with explicit NUMERIC casts to avoid overflow
+    -- For 1-day: (1 + 1d_yield_calc) ^ 365 - 1
+    calc_1d_apy := CASE 
+      WHEN calc_1d_yield >= 0 THEN 
+        ((1.0 + calc_1d_yield) ^ 365.0) - 1.0
+      ELSE 0
+    END;
+
+    -- For 7-day: (1 + 7d_yield_calc) ^ 365 - 1
+    calc_7d_apy := CASE 
+      WHEN calc_7d_yield >= 0 THEN 
+        ((1.0 + calc_7d_yield) ^ (365.0 / 7.0)) - 1.0
+      ELSE 0
+    END;
+
+    -- For 30-day: (1 + 30d_yield_calc) ^ 365 - 1
+    calc_30d_apy := CASE 
+      WHEN calc_30d_yield >= 0 THEN 
+        ((1.0 + calc_30d_yield) ^ (365.0 / 30.0)) - 1.0
       ELSE 0
     END;
 
@@ -3115,9 +3149,12 @@ CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
         current_total_shares = NEW.current_total_shares,
         current_share_price = NEW.share_price,
         raw_status = NEW.partial_status,
-        yield_1d = yield_1d_calc,
-        yield_7d = yield_7d_calc,
-        yield_30d = yield_30d_calc,
+        calc_1d_yield = calc_1d_yield,
+        calc_7d_yield = calc_7d_yield,
+        calc_30d_yield = calc_30d_yield,
+        calc_1d_apy = calc_1d_apy,
+        calc_7d_apy = calc_7d_apy,
+        calc_30d_apy = calc_30d_apy,
         updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
     
