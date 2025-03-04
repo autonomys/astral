@@ -62,7 +62,7 @@ export function expandChainRoutes(routes: string[]): string[] {
 
 // sitemap generator function
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const url = process.env.NEXTAUTH_URL || 'https://explorer.autonomys.xyz'
+  const url = (process.env.NEXTAUTH_URL || 'https://explorer.autonomys.xyz') + '/'
 
   // Get routes directly instead of fetching
   const dynamicRoutes = expandChainRoutes(filterRoutes(getStaticRoutes()))
