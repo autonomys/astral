@@ -3218,21 +3218,21 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
 
     SELECT share_price
     INTO share_price_1d_old
-    FROM staking.domain_block_histories
+    FROM staking.domain_staking_histories
     WHERE domain_id = NEW.domain_id
     ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '1 day'))))
     LIMIT 1;
 
     SELECT share_price
     INTO share_price_7d_old
-    FROM staking.domain_block_histories
+    FROM staking.domain_staking_histories
     WHERE domain_id = NEW.domain_id
     ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '7 days'))))
     LIMIT 1;
 
     SELECT share_price
     INTO share_price_30d_old
-    FROM staking.domain_block_histories
+    FROM staking.domain_staking_histories
     WHERE domain_id = NEW.domain_id
     ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '30 days'))))
     LIMIT 1;
