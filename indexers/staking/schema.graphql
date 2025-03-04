@@ -172,7 +172,7 @@ type DomainStakingHistory @entity {
   currentEpochIndex: Int!
   currentTotalStake: BigInt!
   currentTotalShares: BigInt!
-  currentSharePrice: BigInt!
+  sharePrice: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
 }

@@ -1298,7 +1298,7 @@ CREATE TABLE staking.domain_staking_histories (
     current_epoch_index integer NOT NULL,
     current_total_stake numeric NOT NULL,
     current_total_shares numeric NOT NULL,
-    current_share_price numeric NOT NULL,
+    share_price numeric NOT NULL,
     timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
@@ -1339,6 +1339,12 @@ CREATE TABLE staking.domains (
     current_storage_fee_deposit numeric NOT NULL,
     current_total_shares numeric NOT NULL,
     current_share_price numeric NOT NULL,
+    calc_1d_yield numeric NOT NULL,
+    calc_7d_yield numeric NOT NULL,
+    calc_30d_yield numeric NOT NULL,
+    calc_1d_apy numeric NOT NULL,
+    calc_7d_apy numeric NOT NULL,
+    calc_30d_apy numeric NOT NULL,
     accumulated_epoch_stake numeric NOT NULL,
     accumulated_epoch_storage_fee_deposit numeric NOT NULL,
     accumulated_epoch_rewards numeric NOT NULL,
@@ -3187,9 +3193,15 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     AS $$
   DECLARE
     last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
-    domain_total_stake NUMERIC;
-    domain_total_shares NUMERIC;
-    domain_share_price NUMERIC;
+    share_price_1d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
+    share_price_7d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
+    share_price_30d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
+    calc_1d_yield NUMERIC;
+    calc_7d_yield NUMERIC;
+    calc_30d_yield NUMERIC;
+    calc_1d_apy NUMERIC;
+    calc_7d_apy NUMERIC;
+    calc_30d_apy NUMERIC;
   BEGIN
     SELECT domain_block_number
     INTO last_domain_block_number
@@ -3198,32 +3210,89 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     ORDER BY block_height DESC
     LIMIT 1;
 
-    SELECT 
-        SUM(current_total_stake) AS domain_total_stake,
-        SUM(current_total_shares) AS domain_total_shares,
-        SUM(current_total_stake) / SUM(current_total_shares) AS domain_share_price
-    INTO domain_total_stake, domain_total_shares, domain_share_price
-    FROM staking.operators
-    WHERE domain_id = NEW.domain_id;
-
     IF NOT FOUND THEN
         SELECT
           0 as domain_block_number
         INTO last_domain_block_number;
     END IF;
 
+    SELECT share_price
+    INTO share_price_1d_old
+    FROM staking.domain_block_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '1 day'))))
+    LIMIT 1;
+
+    SELECT share_price
+    INTO share_price_7d_old
+    FROM staking.domain_block_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '7 days'))))
+    LIMIT 1;
+
+    SELECT share_price
+    INTO share_price_30d_old
+    FROM staking.domain_block_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '30 days'))))
+    LIMIT 1;
+
+    -- Calculate yields with explicit NUMERIC casts to avoid overflow
+    -- For 1-day: (NEW.share_price / share_price_1d_old - 1)
+    calc_1d_yield := CASE 
+      WHEN CAST(share_price_1d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_1d_old AS NUMERIC)) - 1.0)
+      ELSE 0
+    END;
+
+    -- For 7-day: (NEW.share_price / share_price_7d_old - 1)
+    calc_7d_yield := CASE 
+      WHEN CAST(share_price_7d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_7d_old AS NUMERIC)) - 1.0)
+      ELSE 0
+    END;
+
+    -- For 30-day: (NEW.share_price / share_price_30d_old - 1)
+    calc_30d_yield := CASE 
+      WHEN CAST(share_price_30d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_30d_old AS NUMERIC)) - 1.0)
+      ELSE 0
+    END;
+
+    -- Calculate APYs with explicit NUMERIC casts to avoid overflow
+    -- For 1-day: (1 + 1d_yield_calc) ^ 365 - 1
+    calc_1d_apy := CASE 
+      WHEN calc_1d_yield >= 0 THEN 
+        ((1.0 + calc_1d_yield) ^ 365.0) - 1.0
+      ELSE 0
+    END;
+
+    -- For 7-day: (1 + 7d_yield_calc) ^ 365 - 1
+    calc_7d_apy := CASE 
+      WHEN calc_7d_yield >= 0 THEN 
+        ((1.0 + calc_7d_yield) ^ (365.0 / 7.0)) - 1.0
+      ELSE 0
+    END;
+
+    -- For 30-day: (1 + 30d_yield_calc) ^ 365 - 1
+    calc_30d_apy := CASE 
+      WHEN calc_30d_yield >= 0 THEN 
+        ((1.0 + calc_30d_yield) ^ (365.0 / 30.0)) - 1.0
+      ELSE 0
+    END;
+
     UPDATE staking.domains
     SET 
         current_total_stake = NEW.current_total_stake,
         completed_epoch = NEW.current_epoch_index,
-        current_total_shares = domain_total_shares,
-        current_share_price = domain_share_price,
-        calc_1d_yield = 0,
-        calc_7d_yield = 0,
-        calc_30d_yield = 0,
-        calc_1d_apy = 0,
-        calc_7d_apy = 0,
-        calc_30d_apy = 0,
+        current_total_shares = NEW.current_total_shares,
+        current_share_price = NEW.share_price,
+        calc_1d_yield = calc_1d_yield,
+        calc_7d_yield = calc_7d_yield,
+        calc_30d_yield = calc_30d_yield,
+        calc_1d_apy = calc_1d_apy,
+        calc_7d_apy = calc_7d_apy,
+        calc_30d_apy = calc_30d_apy,
         updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 

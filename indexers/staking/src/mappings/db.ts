@@ -394,7 +394,7 @@ export function createDomainStakingHistory(
   currentEpochIndex: number,
   currentTotalStake: bigint,
   currentTotalShares: bigint,
-  currentSharePrice: bigint,
+  sharePrice: bigint,
   timestamp: Date,
   blockHeight: bigint
 ): DomainStakingHistory {
@@ -404,7 +404,7 @@ export function createDomainStakingHistory(
     currentEpochIndex,
     currentTotalStake,
     currentTotalShares,
-    currentSharePrice,
+    sharePrice,
     timestamp,
     blockHeight,
   });
