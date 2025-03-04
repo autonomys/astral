@@ -16,6 +16,7 @@ services:
     image: caddy:latest
     ports:
       - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8001:8001"
     volumes:
       - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
       - caddy_data:/data # Volume for Let's Encrypt certificates
@@ -32,7 +33,9 @@ services:
     ports:
       - "30333:30333/tcp"
       - "30433:30433/tcp"
+      - "30334:30334/tcp"
       - "127.0.0.1:9944:9944/tcp"
+      - "127.0.0.1:8944:8944/tcp"
     restart: unless-stopped
     command:
       [
@@ -63,6 +66,7 @@ services:
         "astral",
         "--sync",
         "full",
+        "${NODE_EXTRA_ARGS}"
       ]
     healthcheck:
       timeout: 5s
