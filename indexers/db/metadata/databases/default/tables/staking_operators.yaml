@@ -111,9 +111,12 @@ select_permissions:
         - total_withdrawals
         - total_withdrawals_count
         - updated_at
-        - yield_1d
-        - yield_30d
-        - yield_7d
+        - calc_1d_yield
+        - calc_30d_yield
+        - calc_7d_yield
+        - calc_1d_apy
+        - calc_30d_apy
+        - calc_7d_apy
         - account_id
         - domain_id
         - extrinsic_id
