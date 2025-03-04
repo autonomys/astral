@@ -1339,12 +1339,12 @@ CREATE TABLE staking.domains (
     current_storage_fee_deposit numeric NOT NULL,
     current_total_shares numeric NOT NULL,
     current_share_price numeric NOT NULL,
-    calc_1d_yield numeric NOT NULL,
-    calc_7d_yield numeric NOT NULL,
-    calc_30d_yield numeric NOT NULL,
-    calc_1d_apy numeric NOT NULL,
-    calc_7d_apy numeric NOT NULL,
-    calc_30d_apy numeric NOT NULL,
+    current_1d_yield numeric NOT NULL,
+    current_7d_yield numeric NOT NULL,
+    current_30d_yield numeric NOT NULL,
+    current_1d_apy numeric NOT NULL,
+    current_7d_apy numeric NOT NULL,
+    current_30d_apy numeric NOT NULL,
     accumulated_epoch_stake numeric NOT NULL,
     accumulated_epoch_storage_fee_deposit numeric NOT NULL,
     accumulated_epoch_rewards numeric NOT NULL,
@@ -1498,12 +1498,12 @@ CREATE TABLE staking.operators (
     accumulated_epoch_shares numeric NOT NULL,
     active_epoch_count numeric NOT NULL,
     bundle_count numeric NOT NULL,
-    calc_1d_yield numeric NOT NULL,
-    calc_7d_yield numeric NOT NULL,
-    calc_30d_yield numeric NOT NULL,
-    calc_1d_apy numeric NOT NULL,
-    calc_7d_apy numeric NOT NULL,
-    calc_30d_apy numeric NOT NULL,
+    current_1d_yield numeric NOT NULL,
+    current_7d_yield numeric NOT NULL,
+    current_30d_yield numeric NOT NULL,
+    current_1d_apy numeric NOT NULL,
+    current_7d_apy numeric NOT NULL,
+    current_30d_apy numeric NOT NULL,
     status text NOT NULL,
     last_bundle_at numeric NOT NULL,
     extrinsic_id text NOT NULL,
@@ -2541,12 +2541,12 @@ BEGIN
         current_storage_fee_deposit,
         current_total_shares,
         current_share_price,
-        calc_1d_yield,
-        calc_7d_yield,
-        calc_30d_yield,
-        calc_1d_apy,
-        calc_7d_apy,
-        calc_30d_apy,
+        current_1d_yield,
+        current_7d_yield,
+        current_30d_yield,
+        current_1d_apy,
+        current_7d_apy,
+        current_30d_apy,
         accumulated_epoch_stake,
         accumulated_epoch_storage_fee_deposit,
         accumulated_epoch_rewards,
@@ -2594,12 +2594,12 @@ BEGIN
         0,                         -- current_storage_fee_deposit
         0,                         -- current_total_shares
         0,                         -- current_share_price
-        0,                         -- calc_1d_yield
-        0,                         -- calc_7d_yield
-        0,                         -- calc_30d_yield
-        0,                         -- calc_1d_apy
-        0,                         -- calc_7d_apy
-        0,                         -- calc_30d_apy
+        0,                         -- current_1d_yield
+        0,                         -- current_7d_yield
+        0,                         -- current_30d_yield
+        0,                         -- current_1d_apy
+        0,                         -- current_7d_apy
+        0,                         -- current_30d_apy
         0,                         -- accumulated_epoch_stake
         0,                         -- accumulated_epoch_storage_fee_deposit
         0,                         -- accumulated_epoch_rewards
@@ -2657,12 +2657,12 @@ BEGIN
         accumulated_epoch_shares,
         active_epoch_count,
         bundle_count,
-        calc_1d_yield,
-        calc_7d_yield,
-        calc_30d_yield,
-        calc_1d_apy,
-        calc_7d_apy,
-        calc_30d_apy,
+        current_1d_yield,
+        current_7d_yield,
+        current_30d_yield,
+        current_1d_apy,
+        current_7d_apy,
+        current_30d_apy,
         status,
         last_bundle_at,
         extrinsic_id,
@@ -2695,12 +2695,12 @@ BEGIN
         0,                                       -- accumulated_epoch_shares
         0,                                       -- active_epoch_count
         0,                                       -- bundle_count
-        0,                                       -- calc_1d_yield
-        0,                                       -- calc_7d_yield
-        0,                                       -- calc_30d_yield
-        0,                                       -- calc_1d_apy
-        0,                                       -- calc_7d_apy
-        0,                                       -- calc_30d_apy
+        0,                                       -- current_1d_yield
+        0,                                       -- current_7d_yield
+        0,                                       -- current_30d_yield
+        0,                                       -- current_1d_apy
+        0,                                       -- current_7d_apy
+        0,                                       -- current_30d_apy
         'PENDING_NEXT_EPOCH',                    -- status
         0,                                       -- last_bundle_at
         NEW.extrinsic_id,                        -- extrinsic_id
@@ -3169,12 +3169,12 @@ CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
         current_total_shares = NEW.current_total_shares,
         current_share_price = NEW.share_price,
         raw_status = NEW.partial_status,
-        calc_1d_yield = calc_1d_yield,
-        calc_7d_yield = calc_7d_yield,
-        calc_30d_yield = calc_30d_yield,
-        calc_1d_apy = calc_1d_apy,
-        calc_7d_apy = calc_7d_apy,
-        calc_30d_apy = calc_30d_apy,
+        current_1d_yield = calc_1d_yield,
+        current_7d_yield = calc_7d_yield,
+        current_30d_yield = calc_30d_yield,
+        current_1d_apy = calc_1d_apy,
+        current_7d_apy = calc_7d_apy,
+        current_30d_apy = calc_30d_apy,
         updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
     
@@ -3287,12 +3287,12 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
         completed_epoch = NEW.current_epoch_index,
         current_total_shares = NEW.current_total_shares,
         current_share_price = NEW.share_price,
-        calc_1d_yield = calc_1d_yield,
-        calc_7d_yield = calc_7d_yield,
-        calc_30d_yield = calc_30d_yield,
-        calc_1d_apy = calc_1d_apy,
-        calc_7d_apy = calc_7d_apy,
-        calc_30d_apy = calc_30d_apy,
+        current_1d_yield = calc_1d_yield,
+        current_7d_yield = calc_7d_yield,
+        current_30d_yield = calc_30d_yield,
+        current_1d_apy = calc_1d_apy,
+        current_7d_apy = calc_7d_apy,
+        current_30d_apy = calc_30d_apy,
         updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
