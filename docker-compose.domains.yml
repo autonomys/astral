@@ -1,29 +1,9 @@
-volumes:
-  node-data: {}
-  caddy_config: {}
-  caddy_data: {}
-
 services:
-  # Caddy Reverse Proxy with CORS enabled
-  caddy:
-    ulimits:
-      nofile:
-        soft: 65536 # Soft limit for open files (WebSocket connections count)
-        hard: 65536 # Hard limit for open files
-    image: caddy:latest
-    ports:
-      - "127.0.0.1:8000:8000"
-      - "127.0.0.1:8001:8001"
-    volumes:
-      - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
-      - caddy_data:/data # Volume for Let's Encrypt certificates
-      - caddy_config:/config
-    depends_on:
-      - node
-    restart: unless-stopped
-
   # Subspace Node
   node:
+    extends:
+      file: ../docker-compose.yml
+      service: node
     image: ghcr.io/autonomys/node:${NODE_DOCKER_TAG}
     volumes:
       - node-data:/var/subspace:rw
@@ -64,15 +44,24 @@ services:
         "--sync",
         "full",
         "--",
-        "--domain-id", "${DOMAIN_ID}",
-        "--state-pruning", "archive",
-        "--blocks-pruning", "archive",
-        "--listen-on", "/ip4/0.0.0.0/tcp/30334",
-        "--listen-on", "/ip6/::/tcp/30334",
-        "--rpc-cors", "all",
-        "--rpc-methods", "safe",
-        "--rpc-listen-on", "0.0.0.0:8944",
-        "--rpc-max-connections", "500",
+        "--domain-id",
+        "${DOMAIN_ID}",
+        "--state-pruning",
+        "archive",
+        "--blocks-pruning",
+        "archive",
+        "--listen-on",
+        "/ip4/0.0.0.0/tcp/30334",
+        "--listen-on",
+        "/ip6/::/tcp/30334",
+        "--rpc-cors",
+        "all",
+        "--rpc-methods",
+        "safe",
+        "--rpc-listen-on",
+        "0.0.0.0:8944",
+        "--rpc-max-connections",
+        "500",
         "--reserved-peer",
         "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
         "--bootstrap-node",
