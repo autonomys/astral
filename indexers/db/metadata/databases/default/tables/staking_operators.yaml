@@ -96,6 +96,12 @@ select_permissions:
         - active_epoch_count
         - bundle_count
         - created_at
+        - current_1d_apy
+        - current_1d_yield
+        - current_30d_apy
+        - current_30d_yield
+        - current_7d_apy
+        - current_7d_yield
         - current_epoch_rewards
         - current_share_price
         - current_storage_fee_deposit
@@ -111,12 +117,6 @@ select_permissions:
         - total_withdrawals
         - total_withdrawals_count
         - updated_at
-        - calc_1d_yield
-        - calc_30d_yield
-        - calc_7d_yield
-        - calc_1d_apy
-        - calc_30d_apy
-        - calc_7d_apy
         - account_id
         - domain_id
         - extrinsic_id
