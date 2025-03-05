@@ -36,7 +36,7 @@ import { Tooltip } from '../common/Tooltip'
 import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { NominationButton, NominationButtonRow } from './NominationButton'
+import { NominationButton } from './NominationButton'
 import { OperatorActions, OperatorActionsRow } from './OperatorActions'
 
 type Row = OperatorsListQuery['staking_operators'][0] & { nominatorsCount: number }
@@ -277,51 +277,32 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             )
           },
           actions: ({ row }: Cell<Row>) => {
-            const isOperator = row.original.accountId === subspaceAccount
-            const nominator = row.original.nominators.find(
-              (nominator) => nominator.account_id === subspaceAccount,
-            )
             const excludeActions = []
-            if (!isOperator)
+            if (row.original.accountId !== subspaceAccount)
               excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockNominator)
-
+            if (row.original.status === OperatorStatus.PENDING_NEXT_EPOCH)
+              excludeActions.push(OperatorActionType.Nominating)
+            if (row.original.status === OperatorStatus.ACTIVE)
+              excludeActions.push(OperatorActionType.UnlockNominator)
             if (row.original.status === OperatorStatus.DEREGISTERED)
               excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
-            else excludeActions.push(OperatorActionType.UnlockNominator)
-
-            if (!nominator)
-              excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)
-            if (!nominator || nominator.unlock_at_confirmed_domain_block_number.length === 0)
-              excludeActions.push(OperatorActionType.UnlockFunds)
             if (row.original.status === OperatorStatus.SLASHED) return <></>
+            const rowData = {
+              original: {
+                ...row.original,
+                // eslint-disable-next-line camelcase
+                current_total_shares: row.original.currentTotalShares,
+              },
+            } as OperatorActionsRow
             return (
               <div className='flex gap-2'>
                 <OperatorActions
                   handleAction={handleAction}
-                  row={
-                    {
-                      original: {
-                        ...row.original,
-                        // eslint-disable-next-line camelcase
-                        current_total_shares: row.original.currentTotalShares,
-                      },
-                    } as OperatorActionsRow
-                  }
+                  row={rowData}
                   excludeActions={excludeActions}
                 />
                 {!excludeActions.includes(OperatorActionType.Nominating) && (
-                  <NominationButton
-                    handleAction={handleAction}
-                    row={
-                      {
-                        original: {
-                          ...row.original,
-                          // eslint-disable-next-line camelcase
-                          current_total_shares: row.original.currentTotalShares,
-                        },
-                      } as NominationButtonRow
-                    }
-                  />
+                  <NominationButton handleAction={handleAction} row={rowData} />
                 )}
               </div>
             )

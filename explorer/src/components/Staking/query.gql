@@ -144,14 +144,6 @@ query OperatorsList(
     apy30d: current_30d_apy
     apy7d: current_7d_apy
     apy1d: current_1d_apy
-    nominators(limit: 256, where: { account_id: { _eq: $accountId } }) {
-      id
-      account_id
-      known_shares
-      unlock_at_confirmed_domain_block_number
-      current_total_stake
-      current_storage_fee_deposit
-    }
     createdAt: created_at
     updatedAt: updated_at
   }
