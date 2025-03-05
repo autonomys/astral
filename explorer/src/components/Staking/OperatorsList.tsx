@@ -161,17 +161,21 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           ),
           currentTotalStake: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.currentTotalStake)} ${tokenSymbol}`,
+          currentStorageFeeDeposit: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.currentStorageFeeDeposit)} ${tokenSymbol}`,
+          currentTotalShares: ({ row }: Cell<Row>) =>
+            bigNumberToFormattedString(row.original.currentTotalShares),
           yield30d: ({ row }: Cell<Row>) =>
-            `${numberFormattedString(row.original.yield30d * 100)}%`,
-          yield7d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.yield7d * 100)}%`,
-          yield1d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.yield1d * 100)}%`,
+            `${numberFormattedString(row.original.yield30d * 1000, 6)} ${tokenSymbol}`,
+          yield7d: ({ row }: Cell<Row>) =>
+            `${numberFormattedString(row.original.yield7d * 1000, 6)} ${tokenSymbol}`,
+          yield1d: ({ row }: Cell<Row>) =>
+            `${numberFormattedString(row.original.yield1d * 1000, 6)} ${tokenSymbol}`,
           apy30d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.apy30d * 100)}%`,
           apy7d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.apy7d * 100)}%`,
           apy1d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.apy1d * 100)}%`,
-          currentTotalShares: ({ row }: Cell<Row>) =>
-            bigNumberToFormattedString(row.original.currentTotalShares),
           currentSharePrice: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.currentSharePrice)} ${tokenSymbol}`,
+            `${bigNumberToFormattedString(row.original.currentSharePrice, 6)} ${tokenSymbol}`,
           totalDeposits: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.totalDeposits)} ${tokenSymbol}`,
           totalEstimatedWithdrawals: ({ row }: Cell<Row>) =>
@@ -179,19 +183,13 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           totalWithdrawals: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.totalWithdrawals)} ${tokenSymbol}`,
           totalTaxCollected: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalTaxCollected)} ${tokenSymbol}`,
+            `${bigNumberToFormattedString(row.original.totalTaxCollected, 6)} ${tokenSymbol}`,
           totalRewardsCollected: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.totalRewardsCollected, 6)} ${tokenSymbol}`,
-          accumulatedEpochShares: ({ row }: Cell<Row>) =>
-            bigNumberToFormattedString(row.original.accumulatedEpochShares),
-          accumulatedEpochStorageFeeDeposit: ({ row }: Cell<Row>) =>
-            bigNumberToFormattedString(row.original.accumulatedEpochStorageFeeDeposit),
-          activeEpochCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.activeEpochCount),
           bundleCount: ({ row }: Cell<Row>) => numberFormattedString(row.original.bundleCount),
-          status: ({ row }: Cell<Row>) =>
-            allCapsToNormal(operatorStatus(JSON.parse(row.original.status ?? '{}'))),
-          rawStatus: ({ row }: Cell<Row>) => allCapsToNormal(row.original.rawStatus),
+          status: ({ row }: Cell<Row>) => allCapsToNormal(row.original.status),
+          rawStatus: ({ row }: Cell<Row>) =>
+            allCapsToNormal(operatorStatus(JSON.parse(row.original.rawStatus ?? '{}'))),
           lastBundleAt: ({ row }: Cell<Row>) => (
             <Link
               key={`created_at-${row.original.id}`}

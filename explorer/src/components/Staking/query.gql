@@ -22,6 +22,7 @@ query NominationsList(
       id
       account_id
       status
+      raw_status
       current_total_shares
       current_share_price
     }
@@ -94,7 +95,7 @@ query OperatorsList(
   $offset: Int
   $orderBy: [staking_operators_order_by!]!
   $where: staking_operators_bool_exp
-  $accountId: String!
+  $accountId: String
 ) {
   staking_operators_aggregate(where: $where) {
     aggregate {
@@ -111,11 +112,16 @@ query OperatorsList(
       sort_id
       last_domain_block_number
     }
-    currentEpochRewards: current_epoch_rewards
     currentTotalStake: current_total_stake
-    currentTotalShares: current_total_shares
-    currentSharePrice: current_share_price
     currentStorageFeeDeposit: current_storage_fee_deposit
+    currentTotalShares: current_total_shares
+    yield30d: current_30d_yield
+    yield7d: current_7d_yield
+    yield1d: current_1d_yield
+    apy30d: current_30d_apy
+    apy7d: current_7d_apy
+    apy1d: current_1d_apy
+    currentSharePrice: current_share_price
     minimumNominatorStake: minimum_nominator_stake
     nominationTax: nomination_tax
     signingKey: signing_key
@@ -126,9 +132,6 @@ query OperatorsList(
     totalWithdrawals: total_withdrawals
     totalTaxCollected: total_tax_collected
     totalRewardsCollected: total_rewards_collected
-    accumulatedEpochShares: accumulated_epoch_shares
-    accumulatedEpochStorageFeeDeposit: accumulated_epoch_storage_fee_deposit
-    activeEpochCount: active_epoch_count
     bundleCount: bundle_count
     lastBundleAt: last_bundle_at
     nominatorsAggregate: nominators_aggregate {
@@ -138,12 +141,6 @@ query OperatorsList(
     }
     depositsCount: total_deposits_count
     withdrawalsCount: total_withdrawals_count
-    yield30d: current_30d_yield
-    yield7d: current_7d_yield
-    yield1d: current_1d_yield
-    apy30d: current_30d_apy
-    apy7d: current_7d_apy
-    apy1d: current_1d_apy
     createdAt: created_at
     updatedAt: updated_at
   }
