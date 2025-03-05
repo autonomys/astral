@@ -6,12 +6,17 @@ type Row<T> = {
 }
 export type Cell<T> = { row: Row<T> }
 
+export type ColumnMeta = {
+  tooltip?: string
+}
+
 export type AvailableColumn = {
   name: string
   label: string
   isSelected: boolean
   searchable?: true
   accessorKey?: string
+  tooltip?: string
 }
 
 export type AvailableColumns = {

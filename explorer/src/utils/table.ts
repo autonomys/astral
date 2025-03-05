@@ -22,6 +22,7 @@ const getTableColumn = <T>(
     header: header ?? columnFound.label,
     enableSorting: enableSorting ?? true,
     cell,
+    meta: { tooltip: columnFound.tooltip },
   }
 }
 
