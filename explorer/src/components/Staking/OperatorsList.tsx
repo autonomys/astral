@@ -234,7 +234,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               <div>{row.original.updatedAt}</div>
             </Link>
           ),
-          minimumNominatorStake: ({ row }: Cell<Row>) =>
+          minimumStake: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.minimumNominatorStake)} ${tokenSymbol}`,
           nominationTax: ({ row }: Cell<Row>) => `${row.original.nominationTax}%`,
           nominatorsAggregate: ({ row }: Cell<Row>) =>
