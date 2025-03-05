@@ -138,9 +138,12 @@ query OperatorsList(
     }
     depositsCount: total_deposits_count
     withdrawalsCount: total_withdrawals_count
-    yield30d: yield_30d
-    yield7d: yield_7d
-    yield1d: yield_1d
+    yield30d: current_30d_yield
+    yield7d: current_7d_yield
+    yield1d: current_1d_yield
+    apy30d: current_30d_apy
+    apy7d: current_7d_apy
+    apy1d: current_1d_apy
     nominators(limit: 256, where: { account_id: { _eq: $accountId } }) {
       id
       account_id

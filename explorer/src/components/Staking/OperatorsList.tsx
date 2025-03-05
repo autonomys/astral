@@ -165,6 +165,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             `${numberFormattedString(row.original.yield30d * 100)}%`,
           yield7d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.yield7d * 100)}%`,
           yield1d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.yield1d * 100)}%`,
+          apy30d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.apy30d * 100)}%`,
+          apy7d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.apy7d * 100)}%`,
+          apy1d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.apy1d * 100)}%`,
           currentTotalShares: ({ row }: Cell<Row>) =>
             bigNumberToFormattedString(row.original.currentTotalShares),
           currentSharePrice: ({ row }: Cell<Row>) =>
@@ -178,7 +181,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           totalTaxCollected: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.totalTaxCollected)} ${tokenSymbol}`,
           totalRewardsCollected: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalRewardsCollected)} ${tokenSymbol}`,
+            `${bigNumberToFormattedString(row.original.totalRewardsCollected, 6)} ${tokenSymbol}`,
           accumulatedEpochShares: ({ row }: Cell<Row>) =>
             bigNumberToFormattedString(row.original.accumulatedEpochShares),
           accumulatedEpochStorageFeeDeposit: ({ row }: Cell<Row>) =>
