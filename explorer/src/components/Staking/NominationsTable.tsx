@@ -215,8 +215,11 @@ export const NominationsTable: FC = () => {
                         <div className='text-sm font-normal'>
                           Operator Status:{' '}
                           <span className='text-grayDark dark:text-blueLight'>
+                            {allCapsToNormal(nominator.operator?.status ?? '')}
+                          </span>
+                          <span className='text-grayDark dark:text-blueLight'>
                             {allCapsToNormal(
-                              operatorStatus(JSON.parse(nominator.operator?.status ?? '{}')),
+                              operatorStatus(JSON.parse(nominator.operator?.raw_status ?? '{}')),
                             )}
                           </span>
                         </div>
