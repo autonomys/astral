@@ -5368,11 +5368,11 @@ crc-32@~1.2.0, crc-32@~1.2.1:
   integrity sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==
 
 cross-fetch@^3.1.5:
-  version "3.1.8"
-  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.8.tgz#0327eba65fd68a7d119f8fb2bf9334a1a7956f82"
-  integrity sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.2.0.tgz#34e9192f53bc757d6614304d9e5e6fb4edb782e3"
+  integrity sha512-Q+xVJLoGOeIMXZmbUK4HYk+69cQH6LudR0Vu/pRm2YlU/hDV9CiS0gKUMaWY5f2NeUH9C1nV3bsTlCo0FsTV1Q==
   dependencies:
-    node-fetch "^2.6.12"
+    node-fetch "^2.7.0"
 
 cross-inspect@1.0.0:
   version "1.0.0"
@@ -6646,9 +6646,9 @@ fastq@^1.6.0:
     reusify "^1.0.4"
 
 faunadb@^4.8.0:
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/faunadb/-/faunadb-4.8.0.tgz#7adc5312dd5a508942ba1ad567c869e4f874b177"
-  integrity sha512-pjl5WUYQ8GqM4ESk3mv0RXfxtQMHWb92XWkxjf3nWiAkf2HVtsENfTbyGPunzw4zDbdhn9aQSSxbwahaLLDR7Q==
+  version "4.8.2"
+  resolved "https://registry.yarnpkg.com/faunadb/-/faunadb-4.8.2.tgz#566ee81618845e53556009b39bcfb4456e26923a"
+  integrity sha512-6pyyNKcYQkZLDzqBMOk6kQEjcOnkEqIXb2ze5f6T7AT+BxkUxWM8TIeLXnPyc5oozgIkLUuU/Yn0ntezlVTghQ==
   dependencies:
     base64-js "^1.2.0"
     boxen "^5.0.1"
@@ -8538,7 +8538,7 @@ node-domexception@^1.0.0:
   resolved "https://registry.yarnpkg.com/node-domexception/-/node-domexception-1.0.0.tgz#6888db46a1f71c0b76b3f7555016b63fe64766e5"
   integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
 
-node-fetch@^2.6.1, node-fetch@^2.6.12:
+node-fetch@^2.6.1, node-fetch@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
