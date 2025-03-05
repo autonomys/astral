@@ -58,7 +58,8 @@ export const limitNumberDecimals = (number: number | string, precision = 4): num
 
   if (!decimals) return Number(integer)
 
-  const decimalsToUse = Number(integer) >= 1 ? decimals.slice(0, 2) : decimals.slice(0, precision)
+  const decimalsToUse =
+    Number(integer) >= 1 ? decimals.slice(0, precision) : decimals.slice(0, precision)
 
   return Number(integer + '.' + decimalsToUse)
 }
