@@ -16,6 +16,7 @@ query NominationsList(
     domain {
       id
       name
+      last_domain_block_number
     }
     operator_id
     operator {
@@ -23,8 +24,12 @@ query NominationsList(
       account_id
       status
       raw_status
+      current_total_stake
       current_total_shares
       current_share_price
+      apy30d: current_30d_apy
+      apy7d: current_7d_apy
+      apy1d: current_1d_apy
     }
     known_shares
     known_storage_fee_deposit
@@ -44,6 +49,7 @@ query NominationsList(
       id
       amount
       storage_fee_deposit
+      total_amount
       timestamp
       extrinsic_id
       status
@@ -53,6 +59,7 @@ query NominationsList(
     withdrawals {
       id
       shares
+      storage_fee_refund
       estimated_amount
       unlocked_amount
       unlocked_storage_fee
