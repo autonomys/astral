@@ -1,3 +1,4 @@
+import { Operator } from "@autonomys/auto-consensus";
 import { EventRecord, stringify } from "@autonomys/auto-utils";
 import { createHash } from "crypto";
 import { OperatorStakingHistory, WithdrawalHistory } from "../types";
@@ -97,4 +98,27 @@ export const findWithdrawalHistoryFromCache = (
   if (!withdrawalHistoryFromCache)
     throw new Error("WithdrawalHistory from cache not found");
   return withdrawalHistoryFromCache;
+};
+
+export const aggregateByDomainId = (
+  operators: Operator[],
+  targetDomainId: bigint
+) => {
+  const filteredOperators = operators.filter(
+    (operator) => operator.operatorDetails.currentDomainId === targetDomainId
+  );
+
+  let totalStakeSum = BigInt(0);
+  let totalSharesSum = BigInt(0);
+
+  for (const operator of filteredOperators) {
+    totalStakeSum += operator.operatorDetails.currentTotalStake;
+    totalSharesSum += operator.operatorDetails.currentTotalShares;
+  }
+
+  return {
+    domainId: targetDomainId,
+    totalStake: totalStakeSum,
+    totalShares: totalSharesSum,
+  };
 };

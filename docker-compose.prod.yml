@@ -39,18 +39,6 @@ services:
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  dictionary_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  dictionary_graphql_engine:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
   consensus_subquery_node:
     logging:
       driver: loki
