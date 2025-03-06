@@ -186,12 +186,17 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'signingKey', label: 'Signing Key', isSelected: false, searchable: true },
     {
       name: 'minimumStake',
-      label: 'Min. Nominator Stake',
+      label: 'Min. Stake',
       isSelected: true,
       accessorKey: 'minimum_nominator_stake',
       tooltip: 'Minimum stake required to nominate an operator',
     },
-    { name: 'nominationTax', label: 'Nomination Tax', isSelected: true },
+    {
+      name: 'nominationTax',
+      label: 'Tax',
+      isSelected: true,
+      tooltip: 'Nomination tax percentage collected on rewards',
+    },
     // { name: 'name', label: 'Name', isSelected: true },
     // { name: 'description', label: 'Description', isSelected: false },
     // { name: 'icon', label: 'Icon', isSelected: false },
@@ -335,7 +340,12 @@ export const FILTERS_OPTIONS: FiltersOptions = {
   operators: [
     { type: 'range', label: 'Total Stake', key: 'totalStake' },
     { type: 'range', label: 'Nomination Tax', key: 'nominationTax' },
-    { type: 'range', label: 'Minimum Nominator Stake', key: 'minimumNominatorStake' },
+    {
+      type: 'range',
+      label: 'Min. Stake',
+      key: 'minimumNominatorStake',
+      tooltip: 'Minimum stake required to nominate an operator',
+    },
     { type: 'range', label: 'Total Rewards Collected', key: 'totalRewardsCollected' },
     { type: 'range', label: 'Nominator Count', key: 'nominatorsCount' },
     { type: 'range', label: 'Deposit Count', key: 'depositsCount' },
