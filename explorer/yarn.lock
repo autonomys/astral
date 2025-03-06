@@ -99,11 +99,11 @@
     node-fetch "^2.6.1"
 
 "@autonomys/auto-consensus@^1.3.1", "@autonomys/auto-consensus@^1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.3.3.tgz#5cbb6f42f557e1230a1c0acf5d57a17c48857556"
-  integrity sha512-Z2ajIepEO8W3qN22ZRDfsIENlfVac3O45spDoBPNY6xzXCAHn+AE0W8z5OOqHhwuJ2sE44p0kHPYd7/NEtfV3A==
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.3.4.tgz#7c9c7993ab033c7eef02376dc56887bb0b2602cc"
+  integrity sha512-xd4W+H78p1CwhTRL0SNpf1RNuF9pLqSFTWwccauP52jQp9DOvcyqgccvJ0FqDof48DIz9uON80CF2RLGJERg4w==
   dependencies:
-    "@autonomys/auto-utils" "^1.3.3"
+    "@autonomys/auto-utils" "^1.3.4"
 
 "@autonomys/auto-dag-data@^1.3.4":
   version "1.3.4"
