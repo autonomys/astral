@@ -344,7 +344,6 @@ export const FILTERS_OPTIONS: FiltersOptions = {
       type: 'range',
       label: 'Min. Stake',
       key: 'minimumNominatorStake',
-      tooltip: 'Minimum stake required to nominate an operator',
     },
     { type: 'range', label: 'Total Rewards Collected', key: 'totalRewardsCollected' },
     { type: 'range', label: 'Nominator Count', key: 'nominatorsCount' },
