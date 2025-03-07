@@ -52,6 +52,6 @@
     "typescript": "^5.2.2"
   },
   "resolutions": {
-    "ipfs-unixfs": "6.0.6"
+    "ipfs-unixfs": "6.0.9"
   }
 }
