@@ -33,13 +33,15 @@ export const bigNumberToNumber = (bigNumber: string | bigint | number, precision
   return limitNumberDecimals(number, precision)
 }
 
-export const numberFormattedString = (number: number): string =>
-  new Intl.NumberFormat('en-US').format(number)
+export const numberFormattedString = (number: number, precision = 4): string =>
+  new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: precision,
+  }).format(number)
 
 export const bigNumberToFormattedString = (
   bigNumber: string | bigint | number,
   precision = 4,
-): string => numberFormattedString(bigNumberToNumber(bigNumber, precision))
+): string => numberFormattedString(bigNumberToNumber(bigNumber, precision), precision)
 
 export const bigNumberToString = (bigNumber: string, precision = 4): string => {
   const number = formatUnits(bigNumber)
@@ -56,7 +58,8 @@ export const limitNumberDecimals = (number: number | string, precision = 4): num
 
   if (!decimals) return Number(integer)
 
-  const decimalsToUse = Number(integer) >= 1 ? decimals.slice(0, 2) : decimals.slice(0, precision)
+  const decimalsToUse =
+    Number(integer) >= 1 ? decimals.slice(0, precision) : decimals.slice(0, precision)
 
   return Number(integer + '.' + decimalsToUse)
 }
