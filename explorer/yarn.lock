@@ -98,7 +98,7 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@autonomys/auto-consensus@^1.3.1", "@autonomys/auto-consensus@^1.3.3":
+"@autonomys/auto-consensus@^1.3.1", "@autonomys/auto-consensus@^1.3.4":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.3.4.tgz#7c9c7993ab033c7eef02376dc56887bb0b2602cc"
   integrity sha512-xd4W+H78p1CwhTRL0SNpf1RNuF9pLqSFTWwccauP52jQp9DOvcyqgccvJ0FqDof48DIz9uON80CF2RLGJERg4w==
@@ -134,16 +134,7 @@
     stream "^0.0.3"
     zod "^3.23.8"
 
-"@autonomys/auto-utils@^1.3.1", "@autonomys/auto-utils@^1.3.3":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.3.4.tgz#111df76efe409750ecc1f91ebaa8e8a2666d20ee"
-  integrity sha512-tnOAPEtGxFpgAqwmlTxwVmBHUQPcMG7zsZef7eYpE5EKYykWHW5NBm2JcoTxOx1mTezgK3efvvWUK3gqNcNqrg==
-  dependencies:
-    "@polkadot/api" "^14.3.1"
-    "@polkadot/extension-dapp" "^0.56.2"
-    fs "^0.0.1-security"
-
-"@autonomys/auto-utils@^1.3.4":
+"@autonomys/auto-utils@^1.3.1", "@autonomys/auto-utils@^1.3.4":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.3.4.tgz#111df76efe409750ecc1f91ebaa8e8a2666d20ee"
   integrity sha512-tnOAPEtGxFpgAqwmlTxwVmBHUQPcMG7zsZef7eYpE5EKYykWHW5NBm2JcoTxOx1mTezgK3efvvWUK3gqNcNqrg==
@@ -153,12 +144,12 @@
     fs "^0.0.1-security"
 
 "@autonomys/auto-xdm@^1.3.1":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-xdm/-/auto-xdm-1.3.3.tgz#ac2c2ea23bddc5b5473757a5d044acd987be7a77"
-  integrity sha512-9hOT4L6+rVXKKd9Zu6f9ze++EZ3NgViUYTamFQmT3G0dtPLeujFr9F/S0wn9EQZmuXXKFQR1X1Uqc32WCtglKg==
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-xdm/-/auto-xdm-1.3.4.tgz#11cf99df9dbdc0eebd0400e6a110ee211ceaf370"
+  integrity sha512-OsKtAzqjoPqE18ZpKhuY/uFgbj1xQG3mexqLP83UQ1L7pGARJCuHcz2rZxib5m8m5OHsSdu59o0SdVNxrYhyog==
   dependencies:
-    "@autonomys/auto-consensus" "^1.3.3"
-    "@autonomys/auto-utils" "^1.3.3"
+    "@autonomys/auto-consensus" "^1.3.4"
+    "@autonomys/auto-utils" "^1.3.4"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.23.5":
   version "7.23.5"
