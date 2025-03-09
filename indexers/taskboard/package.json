@@ -18,7 +18,7 @@
     "@polkadot/keyring": "^13.2.2",
     "@polkadot/util": "^13.2.2",
     "@polkadot/util-crypto": "^13.2.2",
-    "body-parser": "^1.20.0",
+    "body-parser": "^1.20.3",
     "bullmq": "^4.6.0",
     "connect-redis": "^7.1.1",
     "express": "^4.21.0",
