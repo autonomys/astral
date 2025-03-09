@@ -8262,7 +8262,7 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-lottie-react@^2.4.0:
+lottie-react@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/lottie-react/-/lottie-react-2.4.1.tgz#4bd3f2a8a5e48edbd43c05ca5080fdd50f049d31"
   integrity sha512-LQrH7jlkigIIv++wIyrOYFLHSKQpEY4zehPicL9bQsrt1rnoKRYCYgpCUe5maqylNtacy58/sQDZTkwMcTRxZw==
