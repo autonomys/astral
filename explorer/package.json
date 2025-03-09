@@ -68,7 +68,7 @@
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.1",
     "next": "^14.1.2",
-    "next-auth": "^4.24.6",
+    "next-auth": "^4.24.11",
     "next-pwa": "^5.6.0",
     "pako": "^2.1.0",
     "qrcode.react": "^3.1.0",
