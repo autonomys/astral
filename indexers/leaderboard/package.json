@@ -31,7 +31,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@apollo/client": "^3.7.16",
+    "@apollo/client": "^3.13.2",
     "@polkadot/api": "^12.4.2",
     "@polkadot/types": "^14.3.1",
     "@polkadot/util": "^13.2.2",
