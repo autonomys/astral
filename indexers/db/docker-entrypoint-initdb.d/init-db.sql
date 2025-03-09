@@ -2186,6 +2186,7 @@ CREATE INDEX "staking_deposits_nominator_id" ON staking.deposits USING btree (no
 CREATE INDEX "staking_deposits_status" ON staking.deposits USING btree ("status");
 CREATE INDEX "staking_domain_epochs_id" ON staking.domain_epochs USING btree (id);
 CREATE INDEX "staking_domains_id" ON staking.domains USING btree (id);
+CREATE INDEX "staking_domains_id_last_domain_block_number" ON staking.domains (id, last_domain_block_number);
 CREATE INDEX "staking_nominators_id" ON staking.nominators USING btree (id);
 CREATE INDEX "staking_nominators_domain_id" ON staking.nominators USING btree (domain_id);
 CREATE INDEX "staking_nominators_operator_id" ON staking.nominators USING btree (operator_id);
@@ -2198,6 +2199,7 @@ CREATE INDEX "staking_withdrawals_domain_id" ON staking.withdrawals USING btree 
 CREATE INDEX "staking_withdrawals_operator_id" ON staking.withdrawals USING btree (operator_id);
 CREATE INDEX "staking_withdrawals_nominator_id" ON staking.withdrawals USING btree (nominator_id);
 CREATE INDEX "staking_withdrawals_status" ON staking.withdrawals USING btree ("status");
+CREATE INDEX "staking_withdrawals_status_domain_block_number_withdrawal_requested_at" ON staking.withdrawals (status, domain_block_number_withdrawal_requested_at);
 
 CREATE INDEX "stats_hourly_end_date" ON stats.hourly USING btree ("end_date" DESC);
 CREATE INDEX "stats_daily_end_date" ON stats.daily USING btree ("end_date" DESC);
