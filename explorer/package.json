@@ -38,7 +38,7 @@
     "@floating-ui/react": "^0.27.5",
     "@headlessui/react": "^1.7.19",
     "@headlessui/tailwindcss": "^0.2.2",
-    "@heroicons/react": "^2.1.1",
+    "@heroicons/react": "^2.2.0",
     "@netlify/edge-functions": "^2.11.1",
     "@next/third-parties": "^14.2.3",
     "@nivo/bar": "^0.88.0",
