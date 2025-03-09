@@ -4172,7 +4172,7 @@ bull@*:
     semver "^7.5.2"
     uuid "^8.3.0"
 
-bullmq@^4.6.0:
+bullmq@^4.18.2:
   version "4.18.2"
   resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-4.18.2.tgz#a9f89b57a6656faef1c7dd3b97fdfce9be5ce9ff"
   integrity sha512-Cx0O98IlGiFw7UBa+zwGz+nH0Pcl1wfTvMVBlsMna3s0219hXroVovh1xPRgomyUcbyciHiugGCkW0RRNZDHYQ==
