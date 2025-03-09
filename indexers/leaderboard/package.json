@@ -33,7 +33,7 @@
   "devDependencies": {
     "@apollo/client": "^3.7.16",
     "@polkadot/api": "^12.4.2",
-    "@polkadot/types": "^14.1.1",
+    "@polkadot/types": "^14.3.1",
     "@polkadot/util": "^13.2.2",
     "@polkadot/util-crypto": "^13.2.2",
     "@subql/cli": "^5.7.0",
