@@ -1216,7 +1216,7 @@
     jsonc-parser "3.3.1"
     pluralize "8.0.0"
 
-"@nestjs/swagger@^8.1.0":
+"@nestjs/swagger@^8.1.1":
   version "8.1.1"
   resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-8.1.1.tgz#18d61a995b6b17759bca361474904d69c4406093"
   integrity sha512-5Mda7H1DKnhKtlsb0C7PYshcvILv8UFyUotHzxmWh0G65Z21R3LZH/J8wmpnlzL4bmXIfr42YwbEwRxgzpJ5sQ==
@@ -2731,7 +2731,7 @@
     yaml "^2.5.0"
     yaml-loader "^0.8.1"
 
-"@subql/common-substrate@4.3.7", "@subql/common-substrate@^4.3.5":
+"@subql/common-substrate@4.3.7", "@subql/common-substrate@^4.3.7":
   version "4.3.7"
   resolved "https://registry.yarnpkg.com/@subql/common-substrate/-/common-substrate-4.3.7.tgz#4334fce4035507cf558aa119ca2e9e8aa809a1e8"
   integrity sha512-veJaGhT70krFXg1IzjW7Ta4vBEZfwKtm+k6uHQKG0HVcZ9ygOL/BYS3h6dk9xJ6O5+bGiTS9CUYNWWoESw+CyA==
