@@ -6685,7 +6685,7 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
-faunadb@^4.8.0:
+faunadb@^4.8.2:
   version "4.8.2"
   resolved "https://registry.yarnpkg.com/faunadb/-/faunadb-4.8.2.tgz#566ee81618845e53556009b39bcfb4456e26923a"
   integrity sha512-6pyyNKcYQkZLDzqBMOk6kQEjcOnkEqIXb2ze5f6T7AT+BxkUxWM8TIeLXnPyc5oozgIkLUuU/Yn0ntezlVTghQ==
