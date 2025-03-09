@@ -61,7 +61,7 @@
     "dayjs": "^1.11.13",
     "ethers": "^6.11.1",
     "faunadb": "^4.8.0",
-    "formik": "^2.4.5",
+    "formik": "^2.4.6",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.16.0",
     "jsonwebtoken": "^9.0.2",
