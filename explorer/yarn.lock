@@ -98,7 +98,7 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@autonomys/auto-consensus@^1.3.3", "@autonomys/auto-consensus@^1.3.4":
+"@autonomys/auto-consensus@^1.3.4":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.3.4.tgz#7c9c7993ab033c7eef02376dc56887bb0b2602cc"
   integrity sha512-xd4W+H78p1CwhTRL0SNpf1RNuF9pLqSFTWwccauP52jQp9DOvcyqgccvJ0FqDof48DIz9uON80CF2RLGJERg4w==
@@ -121,7 +121,7 @@
     protons "^7.6.0"
     protons-runtime "^5.5.0"
 
-"@autonomys/auto-drive@^1.3.3":
+"@autonomys/auto-drive@^1.3.4":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-drive/-/auto-drive-1.3.4.tgz#5fa39a1972af3280de8dda3ea1c44f0bb2beb8d7"
   integrity sha512-PTCiA3AMIT+IvhHWC86XwZzG7dJNUZ2wj0OQ5JvQbmQWjFaWmiryohfDtB9qD/QjerZCqpvohI9gGNrUWfokKA==
@@ -134,7 +134,7 @@
     stream "^0.0.3"
     zod "^3.23.8"
 
-"@autonomys/auto-utils@^1.3.3", "@autonomys/auto-utils@^1.3.4":
+"@autonomys/auto-utils@^1.3.4":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.3.4.tgz#111df76efe409750ecc1f91ebaa8e8a2666d20ee"
   integrity sha512-tnOAPEtGxFpgAqwmlTxwVmBHUQPcMG7zsZef7eYpE5EKYykWHW5NBm2JcoTxOx1mTezgK3efvvWUK3gqNcNqrg==
@@ -143,7 +143,7 @@
     "@polkadot/extension-dapp" "^0.56.2"
     fs "^0.0.1-security"
 
-"@autonomys/auto-xdm@^1.3.3":
+"@autonomys/auto-xdm@^1.3.4":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-xdm/-/auto-xdm-1.3.4.tgz#11cf99df9dbdc0eebd0400e6a110ee211ceaf370"
   integrity sha512-OsKtAzqjoPqE18ZpKhuY/uFgbj1xQG3mexqLP83UQ1L7pGARJCuHcz2rZxib5m8m5OHsSdu59o0SdVNxrYhyog==
