@@ -26,7 +26,7 @@
     "ioredis": "^5.4.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.13.0"
+    "pg": "^8.13.3"
   },
   "devDependencies": {
     "@types/bull": "^4.10.4",
