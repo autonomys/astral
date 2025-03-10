@@ -7,7 +7,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
+import { OperatorStatus } from 'constants/staking'
 import { OperatorsListDocument, OperatorsListQuery, OperatorsListQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
@@ -36,7 +36,7 @@ import { Tooltip } from '../common/Tooltip'
 import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { NominationButton, NominationButtonRow } from './NominationButton'
+import { NominationButton } from './NominationButton'
 import { OperatorActions, OperatorActionsRow } from './OperatorActions'
 
 type Row = OperatorsListQuery['staking_operators'][0] & { nominatorsCount: number }
@@ -161,10 +161,21 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           ),
           currentTotalStake: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.currentTotalStake)} ${tokenSymbol}`,
+          currentStorageFeeDeposit: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.currentStorageFeeDeposit)} ${tokenSymbol}`,
           currentTotalShares: ({ row }: Cell<Row>) =>
             bigNumberToFormattedString(row.original.currentTotalShares),
+          yield30d: ({ row }: Cell<Row>) =>
+            `${numberFormattedString(row.original.yield30d * 1000, 6)} ${tokenSymbol}`,
+          yield7d: ({ row }: Cell<Row>) =>
+            `${numberFormattedString(row.original.yield7d * 1000, 6)} ${tokenSymbol}`,
+          yield1d: ({ row }: Cell<Row>) =>
+            `${numberFormattedString(row.original.yield1d * 1000, 6)} ${tokenSymbol}`,
+          apy30d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.apy30d * 100)}%`,
+          apy7d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.apy7d * 100)}%`,
+          apy1d: ({ row }: Cell<Row>) => `${numberFormattedString(row.original.apy1d * 100)}%`,
           currentSharePrice: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.currentSharePrice)} ${tokenSymbol}`,
+            `${bigNumberToFormattedString(row.original.currentSharePrice, 6)} ${tokenSymbol}`,
           totalDeposits: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.totalDeposits)} ${tokenSymbol}`,
           totalEstimatedWithdrawals: ({ row }: Cell<Row>) =>
@@ -172,44 +183,13 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           totalWithdrawals: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.totalWithdrawals)} ${tokenSymbol}`,
           totalTaxCollected: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalTaxCollected)} ${tokenSymbol}`,
+            `${bigNumberToFormattedString(row.original.totalTaxCollected, 6)} ${tokenSymbol}`,
           totalRewardsCollected: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalRewardsCollected)} ${tokenSymbol}`,
-          totalTransfersIn: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalTransfersIn)} ${tokenSymbol}`,
-          transfersInCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.transfersInCount),
-          totalTransfersOut: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalTransfersOut)} ${tokenSymbol}`,
-          transfersOutCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.transfersOutCount),
-          totalTransfersRejected: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalTransfersRejected)} ${tokenSymbol}`,
-          totalRejectedTransfersClaimed: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalRejectedTransfersClaimed)} ${tokenSymbol}`,
-          rejectedTransfersClaimedCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.rejectedTransfersClaimedCount),
-          transfersRejectedCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.transfersRejectedCount),
-          totalVolume: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalVolume)} ${tokenSymbol}`,
-          totalConsensusStorageFee: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalConsensusStorageFee)} ${tokenSymbol}`,
-          totalDomainExecutionFee: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalDomainExecutionFee)} ${tokenSymbol}`,
-          totalBurnedBalance: ({ row }: Cell<Row>) =>
-            `${bigNumberToFormattedString(row.original.totalBurnedBalance)} ${tokenSymbol}`,
-          accumulatedEpochShares: ({ row }: Cell<Row>) =>
-            bigNumberToFormattedString(row.original.accumulatedEpochShares),
-          accumulatedEpochStorageFeeDeposit: ({ row }: Cell<Row>) =>
-            bigNumberToFormattedString(row.original.accumulatedEpochStorageFeeDeposit),
-          activeEpochCount: ({ row }: Cell<Row>) =>
-            numberFormattedString(row.original.activeEpochCount),
+            `${bigNumberToFormattedString(row.original.totalRewardsCollected, 6)} ${tokenSymbol}`,
           bundleCount: ({ row }: Cell<Row>) => numberFormattedString(row.original.bundleCount),
-          status: ({ row }: Cell<Row>) =>
-            allCapsToNormal(operatorStatus(JSON.parse(row.original.status ?? '{}'))),
-          rawStatus: ({ row }: Cell<Row>) => allCapsToNormal(row.original.rawStatus),
-          pendingAction: ({ row }: Cell<Row>) => allCapsToNormal(row.original.pendingAction),
+          status: ({ row }: Cell<Row>) => allCapsToNormal(row.original.status),
+          rawStatus: ({ row }: Cell<Row>) =>
+            allCapsToNormal(operatorStatus(JSON.parse(row.original.rawStatus ?? '{}'))),
           lastBundleAt: ({ row }: Cell<Row>) => (
             <Link
               key={`created_at-${row.original.id}`}
@@ -252,11 +232,14 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               <div>{row.original.updatedAt}</div>
             </Link>
           ),
-          minimumNominatorStake: ({ row }: Cell<Row>) =>
+          minimumStake: ({ row }: Cell<Row>) =>
             `${bigNumberToFormattedString(row.original.minimumNominatorStake)} ${tokenSymbol}`,
           nominationTax: ({ row }: Cell<Row>) => `${row.original.nominationTax}%`,
           nominatorsAggregate: ({ row }: Cell<Row>) =>
             numberFormattedString(row.original.nominatorsCount),
+          depositsCount: ({ row }: Cell<Row>) => numberFormattedString(row.original.depositsCount),
+          withdrawalsCount: ({ row }: Cell<Row>) =>
+            numberFormattedString(row.original.withdrawalsCount),
           myStake: ({ row }: Cell<Row>) => {
             const deposit = deposits.find(
               (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
@@ -292,52 +275,32 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             )
           },
           actions: ({ row }: Cell<Row>) => {
-            const isOperator = row.original.accountId === subspaceAccount
-            const nominator = row.original.nominators.find(
-              (nominator) => nominator.account_id === subspaceAccount,
-            )
             const excludeActions = []
-            if (!isOperator)
+            if (row.original.accountId !== subspaceAccount)
               excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockNominator)
-
+            if (row.original.status === OperatorStatus.PENDING_NEXT_EPOCH)
+              excludeActions.push(OperatorActionType.Nominating)
+            if (row.original.status === OperatorStatus.ACTIVE)
+              excludeActions.push(OperatorActionType.UnlockNominator)
             if (row.original.status === OperatorStatus.DEREGISTERED)
               excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
-            if (row.original.pendingAction !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
-              excludeActions.push(OperatorActionType.UnlockNominator)
-
-            if (!nominator)
-              excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)
-            if (!nominator || nominator.unlock_at_confirmed_domain_block_number.length === 0)
-              excludeActions.push(OperatorActionType.UnlockFunds)
             if (row.original.status === OperatorStatus.SLASHED) return <></>
+            const rowData = {
+              original: {
+                ...row.original,
+                // eslint-disable-next-line camelcase
+                current_total_shares: row.original.currentTotalShares,
+              },
+            } as OperatorActionsRow
             return (
               <div className='flex gap-2'>
                 <OperatorActions
                   handleAction={handleAction}
-                  row={
-                    {
-                      original: {
-                        ...row.original,
-                        // eslint-disable-next-line camelcase
-                        current_total_shares: row.original.currentTotalShares,
-                      },
-                    } as OperatorActionsRow
-                  }
+                  row={rowData}
                   excludeActions={excludeActions}
                 />
                 {!excludeActions.includes(OperatorActionType.Nominating) && (
-                  <NominationButton
-                    handleAction={handleAction}
-                    row={
-                      {
-                        original: {
-                          ...row.original,
-                          // eslint-disable-next-line camelcase
-                          current_total_shares: row.original.currentTotalShares,
-                        },
-                      } as NominationButtonRow
-                    }
-                  />
+                  <NominationButton handleAction={handleAction} row={rowData} />
                 )}
               </div>
             )
