@@ -60,7 +60,7 @@
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
 
-"@apollo/experimental-nextjs-app-support@^0.11.9":
+"@apollo/experimental-nextjs-app-support@^0.11.10":
   version "0.11.10"
   resolved "https://registry.yarnpkg.com/@apollo/experimental-nextjs-app-support/-/experimental-nextjs-app-support-0.11.10.tgz#2c63d227d94cf586cdbde40b03329552d9b84794"
   integrity sha512-rVckSnc9yPu7+YruagG5Hz+xetku9soIhjOQ3F7Bqv1p7OXZSECt2nO0FVMbHwTJuq6In7J1HzK6zjf1XuiTvA==
