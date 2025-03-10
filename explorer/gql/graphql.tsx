@@ -15258,6 +15258,8 @@ export type Staking_Nominators = {
   total_withdrawals: Scalars['numeric']['output'];
   total_withdrawals_count: Scalars['numeric']['output'];
   unlock_at_confirmed_domain_block_number: Scalars['jsonb']['output'];
+  /** An array relationship */
+  unlocked_events: Array<Staking_Unlocked_Events>;
   updated_at: Scalars['numeric']['output'];
   /** An array relationship */
   withdraw_events: Array<Staking_Withdraw_Events>;
@@ -15313,6 +15315,16 @@ export type Staking_NominatorsDeposits_AggregateArgs = {
 /** columns and relationships of "staking.nominators" */
 export type Staking_NominatorsUnlock_At_Confirmed_Domain_Block_NumberArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** columns and relationships of "staking.nominators" */
+export type Staking_NominatorsUnlocked_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Unlocked_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Unlocked_Events_Order_By>>;
+  where?: InputMaybe<Staking_Unlocked_Events_Bool_Exp>;
 };
 
 
@@ -15509,6 +15521,7 @@ export type Staking_Nominators_Bool_Exp = {
   total_withdrawals?: InputMaybe<Numeric_Comparison_Exp>;
   total_withdrawals_count?: InputMaybe<Numeric_Comparison_Exp>;
   unlock_at_confirmed_domain_block_number?: InputMaybe<Jsonb_Comparison_Exp>;
+  unlocked_events?: InputMaybe<Staking_Unlocked_Events_Bool_Exp>;
   updated_at?: InputMaybe<Numeric_Comparison_Exp>;
   withdraw_events?: InputMaybe<Staking_Withdraw_Events_Bool_Exp>;
   withdrawal_histories?: InputMaybe<Staking_Withdrawal_Histories_Bool_Exp>;
@@ -15687,6 +15700,7 @@ export type Staking_Nominators_Order_By = {
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
   unlock_at_confirmed_domain_block_number?: InputMaybe<Order_By>;
+  unlocked_events_aggregate?: InputMaybe<Staking_Unlocked_Events_Aggregate_Order_By>;
   updated_at?: InputMaybe<Order_By>;
   withdraw_events_aggregate?: InputMaybe<Staking_Withdraw_Events_Aggregate_Order_By>;
   withdrawal_histories_aggregate?: InputMaybe<Staking_Withdrawal_Histories_Aggregate_Order_By>;
@@ -18136,6 +18150,28 @@ export type Staking_Unlocked_Events = {
   uuid: Scalars['uuid']['output'];
 };
 
+/** order by aggregate values of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Aggregate_Order_By = {
+  avg?: InputMaybe<Staking_Unlocked_Events_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Staking_Unlocked_Events_Max_Order_By>;
+  min?: InputMaybe<Staking_Unlocked_Events_Min_Order_By>;
+  stddev?: InputMaybe<Staking_Unlocked_Events_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Staking_Unlocked_Events_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Staking_Unlocked_Events_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Staking_Unlocked_Events_Sum_Order_By>;
+  var_pop?: InputMaybe<Staking_Unlocked_Events_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Staking_Unlocked_Events_Var_Samp_Order_By>;
+  variance?: InputMaybe<Staking_Unlocked_Events_Variance_Order_By>;
+};
+
+/** order by avg() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Avg_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "staking.unlocked_events". All fields are combined with a logical 'AND'. */
 export type Staking_Unlocked_Events_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Unlocked_Events_Bool_Exp>>;
@@ -18153,6 +18189,36 @@ export type Staking_Unlocked_Events_Bool_Exp = {
   operator_id?: InputMaybe<String_Comparison_Exp>;
   storage_fee?: InputMaybe<Numeric_Comparison_Exp>;
   uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Max_Order_By = {
+  account_id?: InputMaybe<Order_By>;
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  event_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nominator_id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Min_Order_By = {
+  account_id?: InputMaybe<Order_By>;
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  event_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nominator_id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "staking.unlocked_events". */
@@ -18199,6 +18265,27 @@ export enum Staking_Unlocked_Events_Select_Column {
   Uuid = 'uuid'
 }
 
+/** order by stddev() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Stddev_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Stddev_Pop_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Stddev_Samp_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
 /** Streaming cursor of the table "staking_unlocked_events" */
 export type Staking_Unlocked_Events_Stream_Cursor_Input = {
   /** Stream column input with initial value */
@@ -18221,6 +18308,34 @@ export type Staking_Unlocked_Events_Stream_Cursor_Value_Input = {
   operator_id?: InputMaybe<Scalars['String']['input']>;
   storage_fee?: InputMaybe<Scalars['numeric']['input']>;
   uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** order by sum() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Sum_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by var_pop() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Var_Pop_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Var_Samp_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Variance_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "staking.withdraw_events" */
@@ -22822,7 +22937,7 @@ export type NominationsListQueryVariables = Exact<{
 }>;
 
 
-export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string, last_domain_block_number: any } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, raw_status: string, current_total_stake: any, current_total_shares: any, current_share_price: any, apy30d: any, apy7d: any, apy1d: any } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, total_amount: any, timestamp: any, extrinsic_id: string, status: string, created_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, storage_fee_refund: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, timestamp: any, withdraw_extrinsic_id: string, unlock_extrinsic_id: string, status: string, created_at: any, domain_block_number_ready_at: any, unlocked_at: any, updated_at: any }>, deposit_histories: Array<{ __typename?: 'staking_deposit_histories', id: string, shares: any, storage_fee_deposit: any, shares_known: any, storage_fee_deposit_known: any, effective_domain_id_pending: number, effective_domain_epoch_pending: number, amount_pending: any, storage_fee_deposit_pending: any, timestamp: any, block_height: any }>, withdrawal_histories: Array<{ __typename?: 'staking_withdrawal_histories', id: string, shares: any, total_withdrawal_amount: any, unlock_at_confirmed_domain_block_number: any, storage_fee_refund: any, timestamp: any, block_height: any }> }> };
+export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string, last_domain_block_number: any } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, raw_status: string, current_total_stake: any, current_total_shares: any, current_share_price: any, apy30d: any, apy7d: any, apy1d: any } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, total_amount: any, timestamp: any, extrinsic_id: string, status: string, created_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, storage_fee_refund: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, timestamp: any, withdraw_extrinsic_id: string, unlock_extrinsic_id: string, status: string, created_at: any, domain_block_number_ready_at: any, unlocked_at: any, updated_at: any }>, deposit_histories: Array<{ __typename?: 'staking_deposit_histories', id: string, shares: any, storage_fee_deposit: any, shares_known: any, storage_fee_deposit_known: any, effective_domain_id_pending: number, effective_domain_epoch_pending: number, amount_pending: any, storage_fee_deposit_pending: any, timestamp: any, block_height: any }>, withdrawal_histories: Array<{ __typename?: 'staking_withdrawal_histories', id: string, shares: any, total_withdrawal_amount: any, unlock_at_confirmed_domain_block_number: any, storage_fee_refund: any, timestamp: any, block_height: any }>, unlocked_events: Array<{ __typename?: 'staking_unlocked_events', id: string, amount: any, storage_fee: any, block_height: any, extrinsic_id: string }> }> };
 
 export type OperatorsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -25919,6 +26034,13 @@ export const NominationsListDocument = gql`
       storage_fee_refund
       timestamp
       block_height
+    }
+    unlocked_events {
+      id
+      amount
+      storage_fee
+      block_height
+      extrinsic_id
     }
   }
 }
