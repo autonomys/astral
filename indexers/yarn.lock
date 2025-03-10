@@ -2386,7 +2386,7 @@
     "@scure/base" "^1.1.7"
     tslib "^2.8.0"
 
-"@polkadot/util@13.2.3", "@polkadot/util@^13.0.2", "@polkadot/util@^13.2.2", "@polkadot/util@^13.2.3":
+"@polkadot/util@13.2.3", "@polkadot/util@^13.0.2", "@polkadot/util@^13.2.3":
   version "13.2.3"
   resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-13.2.3.tgz#2bdd753f920d466ca8fb1f812f913304471dd38c"
   integrity sha512-pioNnsig3qHXrfOKMe4Yqos8B8N3/EZUpS+WfTpWnn1VjYban/0GrTXeavPlAwggnY27b8fS6rBzQBhnVYDw8g==
