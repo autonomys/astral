@@ -15,7 +15,7 @@
     "@bull-board/api": "^5.23.0",
     "@bull-board/express": "^5.23.0",
     "@bull-board/ui": "^5.23.0",
-    "@polkadot/keyring": "^13.2.2",
+    "@polkadot/keyring": "^13.4.3",
     "@polkadot/util": "^13.2.2",
     "@polkadot/util-crypto": "^13.2.2",
     "body-parser": "^1.20.3",
