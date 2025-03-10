@@ -31,7 +31,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@apollo/client": "^3.7.16",
+    "@apollo/client": "^3.13.2",
     "@autonomys/auto-consensus": "^1.3.4",
     "@autonomys/auto-dag-data": "^1.3.4",
     "@autonomys/auto-utils": "^1.3.4",
