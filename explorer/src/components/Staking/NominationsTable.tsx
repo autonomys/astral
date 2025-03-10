@@ -4,7 +4,6 @@ import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { CheckBadgeIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState, createColumnHelper } from '@tanstack/react-table'
-// import { Accordion } from 'components/common/Accordion'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO } from 'constants/general'
@@ -116,17 +115,14 @@ export const NominationsTable: FC = () => {
       data
         ? data.staking_nominators.map((n) => ({
             ...n,
-            // eslint-disable-next-line camelcase
             withdrawals: n.withdrawals.map((w) => ({
               ...w,
               operatorCurrentSharePrice: n.operator?.current_share_price,
               lastDomainBlockNumber: n.domain?.last_domain_block_number,
+              unlockedEvents: n.unlocked_events.filter(
+                (u) => u.block_height >= w.created_at + 14400,
+              ),
             })),
-            // eslint-disable-next-line camelcase
-            // withdrawal_histories: n.withdrawal_histories.map((w) => ({
-            //   ...w,
-            //   operatorCurrentSharePrice: n.operator?.current_share_price,
-            // })),
           }))
         : [],
     [data],
@@ -138,22 +134,10 @@ export const NominationsTable: FC = () => {
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const depositColumns = [
-    // columnHelper.accessor('amount', {
-    //   cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
-    //   header: 'Amount',
-    // }),
-    // columnHelper.accessor('storage_fee_deposit', {
-    //   cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
-    //   header: ' Storage Fee',
-    // }),
     columnHelper.accessor('total_amount', {
       cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
       header: 'Total Amount',
     }),
-    // columnHelper.accessor('shares', {
-    //   cell: (info) => info.getValue(),
-    //   header: 'Shares',
-    // }),
     columnHelper.accessor('status', {
       cell: (info) => {
         const status = info.getValue()
@@ -211,10 +195,6 @@ export const NominationsTable: FC = () => {
         } ${tokenSymbol}`,
       header: 'Estimated Amount',
     }),
-    // columnHelper.accessor('storage_fee_refund', {
-    //   cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
-    //   header: 'Storage Fee Refund',
-    // }),
     columnHelper.accessor('status', {
       cell: (info) => {
         const status = info.getValue()
@@ -277,6 +257,7 @@ export const NominationsTable: FC = () => {
         const domainBlockNumberReadyAt = BigInt(info.row.original.domain_block_number_ready_at)
         const estimatedRemainingTime =
           (domainBlockNumberReadyAt - lastDomainBlockNumber) * BigInt(6)
+        if (info.row.original.unlockedEvents.length > 0) return <>Unlocked</>
         if (estimatedRemainingTime <= BigInt(0)) return <>Ready to unlock</>
         if (unlockedAt === '0')
           return (
@@ -296,6 +277,40 @@ export const NominationsTable: FC = () => {
         )
       },
       header: 'Unlocked on',
+    }),
+  ]
+
+  const unlockedEventColumns = [
+    columnHelper.accessor('amount', {
+      cell: (info) =>
+        `${bigNumberToFormattedString(
+          BigInt(info.getValue()) + BigInt(info.row.original.storage_fee),
+        )} ${tokenSymbol}`,
+      header: 'Total',
+    }),
+    columnHelper.accessor('amount', {
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
+      header: 'Staked',
+    }),
+    columnHelper.accessor('storage_fee', {
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
+      header: 'Storage Fee',
+    }),
+    columnHelper.accessor('block_height', {
+      cell: (info) => (
+        <Link href={INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, info.getValue())}>
+          <div>{info.getValue()}</div>
+        </Link>
+      ),
+      header: 'Block height',
+    }),
+    columnHelper.accessor('extrinsic_id', {
+      cell: (info) => (
+        <Link href={INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, info.getValue())}>
+          <div>{info.getValue()}</div>
+        </Link>
+      ),
+      header: 'Extrinsic',
     }),
   ]
 
@@ -438,7 +453,7 @@ export const NominationsTable: FC = () => {
                         <div className='w-full sm:mt-0 sm:w-1/2 sm:pl-4'>
                           <div className='mb-2 flex items-center justify-between'>
                             <h4 className='text-md font-medium text-grayDark dark:text-blueLight'>
-                              Withdrawals
+                              Withdrawals Requested
                             </h4>
                             <div className='flex gap-2'>
                               {nominator.operator?.status === OperatorStatus.ACTIVE && (
@@ -459,8 +474,9 @@ export const NominationsTable: FC = () => {
                               )}
                               {nominator.withdrawals.find(
                                 (w) =>
-                                  w.status === WithdrawalStatus.PENDING_UNLOCK_FUNDS ||
-                                  w.lastDomainBlockNumber >= w.domain_block_number_ready_at,
+                                  (w.status === WithdrawalStatus.PENDING_UNLOCK_FUNDS ||
+                                    w.lastDomainBlockNumber >= w.domain_block_number_ready_at) &&
+                                  w.unlockedEvents.length === 0,
                               ) && (
                                 <UnlockFundsButton
                                   handleAction={handleAction}
@@ -488,66 +504,20 @@ export const NominationsTable: FC = () => {
                           />
                         </div>
                       </div>
-                      {/* <hr className='my-2' />
-                      <Accordion title='Additional Info' defaultOpen={false}>
-                        <div className='text-sm text-grayDarker dark:text-white'>
-                          <div className='mb-2'>
-                            <strong>Operator Status:</strong>{' '}
-                            {allCapsToNormal(
-                              operatorStatus(nominator.operator?.raw_status || '{}'),
-                            )}
-                          </div>
-                          <div className='flex flex-col sm:flex-row'>
-                            <div className='w-full sm:w-1/2 sm:pr-2'>
-                              <h5 className='mb-2 font-medium'>Deposits</h5>
-                              <div>
-                                <strong>Total Deposits:</strong>{' '}
-                                {bigNumberToFormattedString(nominator.total_deposits)} {tokenSymbol}
-                              </div>
-                              <div>
-                                <strong>Known Storage Fee Deposit:</strong>{' '}
-                                {bigNumberToFormattedString(nominator.known_storage_fee_deposit)}{' '}
-                                {tokenSymbol}
-                              </div>
-                              <div>
-                                <strong>Pending Amount:</strong>{' '}
-                                {bigNumberToFormattedString(nominator.pending_amount)} {tokenSymbol}
-                              </div>
-                              <div>
-                                <strong>Pending Storage Fee Deposit:</strong>{' '}
-                                {bigNumberToFormattedString(nominator.pending_storage_fee_deposit)}{' '}
-                                {tokenSymbol}
-                              </div>
-                            </div>
-                            <div className='mt-4 w-full sm:mt-0 sm:w-1/2 sm:pl-2'>
-                              <h5 className='mb-2 font-medium'>Withdrawals</h5>
-                              <div>
-                                <strong>Known Shares:</strong>{' '}
-                                {bigNumberToFormattedString(nominator.known_shares)}
-                              </div>
-                              <div>
-                                <strong>Total Withdrawal Amounts:</strong>{' '}
-                                {bigNumberToFormattedString(nominator.total_withdrawal_amounts)}{' '}
-                                {tokenSymbol}
-                              </div>
-                              <div>
-                                <strong>Total Storage Fee Refund:</strong>{' '}
-                                {bigNumberToFormattedString(nominator.total_storage_fee_refund)}{' '}
-                                {tokenSymbol}
-                              </div>
-                              <div>
-                                <strong>Estimated Withdrawal:</strong>{' '}
-                                {bigNumberToFormattedString(nominator.pending_shares)} {tokenSymbol}
-                              </div>
-                              <div>
-                                <strong>Pending Storage Fee Refund:</strong>{' '}
-                                {bigNumberToFormattedString(nominator.pending_storage_fee_refund)}{' '}
-                                {tokenSymbol}
-                              </div>
-                            </div>
-                          </div>
+                      {nominator.unlocked_events.length > 0 && (
+                        <div className='flex flex-col gap-2'>
+                          <h4 className='text-md font-medium text-grayDark dark:text-blueLight'>
+                            Unlocked Funds
+                          </h4>
+                          <SortedTable
+                            data={nominator.unlocked_events}
+                            columns={unlockedEventColumns}
+                            showNavigation={false}
+                            pageCount={1}
+                            emptyMessage='No unlocked events to show'
+                          />
                         </div>
-                      </Accordion> */}
+                      )}
                     </div>
                   ))
                 ) : (

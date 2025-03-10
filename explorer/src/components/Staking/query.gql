@@ -94,6 +94,13 @@ query NominationsList(
       timestamp
       block_height
     }
+    unlocked_events {
+      id
+      amount
+      storage_fee
+      block_height
+      extrinsic_id
+    }
   }
 }
 
