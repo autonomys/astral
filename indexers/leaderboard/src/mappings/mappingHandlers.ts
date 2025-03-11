@@ -41,7 +41,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
     const successEventId = successEvent?.event.index.toString() || "";
     const extrinsicId = extrinsic ? height + "-" + extrinsicIdx.toString() : "";
-    const extrinsicSigner = extrinsic.signer.toString();
+    const extrinsicSigner = extrinsic.isSigned
+      ? extrinsic.signer.toString()
+      : "";
 
     cache.accountExtrinsicTotalCountHistory.push(
       db.createAccountExtrinsicTotalCount(
