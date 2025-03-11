@@ -11,7 +11,7 @@ import type { ApiAtBlockHash } from "@autonomys/auto-utils";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { Entity } from "@subql/types-core";
-import { ZERO_BIGINT } from "./constants";
+import { EMPTY_SIGNATURE, ZERO_BIGINT } from "./constants";
 import {
   createAccountHistory,
   createBlock,
@@ -123,7 +123,12 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     const error = errorEvent ? stringify(errorEvent.event.data) : "";
 
     const pos = extrinsicEvents ? extrinsicIdx : 0;
-    const extrinsicSigner = extrinsic.signer.toString();
+    const extrinsicSigner = extrinsic.isSigned
+      ? extrinsic.signer.toString()
+      : "";
+    const extrinsicSignature = extrinsic.isSigned
+      ? extrinsic.signature.toString()
+      : EMPTY_SIGNATURE;
 
     // Detect data storage extrinsics and parse args to cid
     let cid: string | undefined = "";
@@ -153,7 +158,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         blockTimestamp,
         BigInt(extrinsic.nonce.toString()),
         extrinsicSigner,
-        extrinsic.signature.toString(),
+        extrinsicSignature,
         extrinsicEvents.length,
         extrinsicArgs,
         error,
