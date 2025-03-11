@@ -1297,6 +1297,8 @@ CREATE TABLE staking.domain_staking_histories (
     domain_id text NOT NULL,
     current_epoch_index integer NOT NULL,
     current_total_stake numeric NOT NULL,
+    current_total_shares numeric NOT NULL,
+    share_price numeric NOT NULL,
     timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
@@ -1337,6 +1339,12 @@ CREATE TABLE staking.domains (
     current_storage_fee_deposit numeric NOT NULL,
     current_total_shares numeric NOT NULL,
     current_share_price numeric NOT NULL,
+    current_1d_yield numeric NOT NULL,
+    current_7d_yield numeric NOT NULL,
+    current_30d_yield numeric NOT NULL,
+    current_1d_apy numeric NOT NULL,
+    current_7d_apy numeric NOT NULL,
+    current_30d_apy numeric NOT NULL,
     accumulated_epoch_stake numeric NOT NULL,
     accumulated_epoch_storage_fee_deposit numeric NOT NULL,
     accumulated_epoch_rewards numeric NOT NULL,
@@ -1490,9 +1498,12 @@ CREATE TABLE staking.operators (
     accumulated_epoch_shares numeric NOT NULL,
     active_epoch_count numeric NOT NULL,
     bundle_count numeric NOT NULL,
-    yield_1d numeric NOT NULL,
-    yield_7d numeric NOT NULL,
-    yield_30d numeric NOT NULL,
+    current_1d_yield numeric NOT NULL,
+    current_7d_yield numeric NOT NULL,
+    current_30d_yield numeric NOT NULL,
+    current_1d_apy numeric NOT NULL,
+    current_7d_apy numeric NOT NULL,
+    current_30d_apy numeric NOT NULL,
     status text NOT NULL,
     last_bundle_at numeric NOT NULL,
     extrinsic_id text NOT NULL,
@@ -2175,6 +2186,7 @@ CREATE INDEX "staking_deposits_nominator_id" ON staking.deposits USING btree (no
 CREATE INDEX "staking_deposits_status" ON staking.deposits USING btree ("status");
 CREATE INDEX "staking_domain_epochs_id" ON staking.domain_epochs USING btree (id);
 CREATE INDEX "staking_domains_id" ON staking.domains USING btree (id);
+CREATE INDEX "staking_domains_id_last_domain_block_number" ON staking.domains (id, last_domain_block_number);
 CREATE INDEX "staking_nominators_id" ON staking.nominators USING btree (id);
 CREATE INDEX "staking_nominators_domain_id" ON staking.nominators USING btree (domain_id);
 CREATE INDEX "staking_nominators_operator_id" ON staking.nominators USING btree (operator_id);
@@ -2187,6 +2199,7 @@ CREATE INDEX "staking_withdrawals_domain_id" ON staking.withdrawals USING btree 
 CREATE INDEX "staking_withdrawals_operator_id" ON staking.withdrawals USING btree (operator_id);
 CREATE INDEX "staking_withdrawals_nominator_id" ON staking.withdrawals USING btree (nominator_id);
 CREATE INDEX "staking_withdrawals_status" ON staking.withdrawals USING btree ("status");
+CREATE INDEX "staking_withdrawals_status_domain_block_number_withdrawal_requested_at" ON staking.withdrawals (status, domain_block_number_withdrawal_requested_at);
 
 CREATE INDEX "stats_hourly_end_date" ON stats.hourly USING btree ("end_date" DESC);
 CREATE INDEX "stats_daily_end_date" ON stats.daily USING btree ("end_date" DESC);
@@ -2530,6 +2543,12 @@ BEGIN
         current_storage_fee_deposit,
         current_total_shares,
         current_share_price,
+        current_1d_yield,
+        current_7d_yield,
+        current_30d_yield,
+        current_1d_apy,
+        current_7d_apy,
+        current_30d_apy,
         accumulated_epoch_stake,
         accumulated_epoch_storage_fee_deposit,
         accumulated_epoch_rewards,
@@ -2577,6 +2596,12 @@ BEGIN
         0,                         -- current_storage_fee_deposit
         0,                         -- current_total_shares
         0,                         -- current_share_price
+        0,                         -- current_1d_yield
+        0,                         -- current_7d_yield
+        0,                         -- current_30d_yield
+        0,                         -- current_1d_apy
+        0,                         -- current_7d_apy
+        0,                         -- current_30d_apy
         0,                         -- accumulated_epoch_stake
         0,                         -- accumulated_epoch_storage_fee_deposit
         0,                         -- accumulated_epoch_rewards
@@ -2634,9 +2659,12 @@ BEGIN
         accumulated_epoch_shares,
         active_epoch_count,
         bundle_count,
-        yield_1d,
-        yield_7d,
-        yield_30d,
+        current_1d_yield,
+        current_7d_yield,
+        current_30d_yield,
+        current_1d_apy,
+        current_7d_apy,
+        current_30d_apy,
         status,
         last_bundle_at,
         extrinsic_id,
@@ -2669,9 +2697,12 @@ BEGIN
         0,                                       -- accumulated_epoch_shares
         0,                                       -- active_epoch_count
         0,                                       -- bundle_count
-        0,                                       -- yield_1d
-        0,                                       -- yield_7d
-        0,                                       -- yield_30d
+        0,                                       -- current_1d_yield
+        0,                                       -- current_7d_yield
+        0,                                       -- current_30d_yield
+        0,                                       -- current_1d_apy
+        0,                                       -- current_7d_apy
+        0,                                       -- current_30d_apy
         'PENDING_NEXT_EPOCH',                    -- status
         0,                                       -- last_bundle_at
         NEW.extrinsic_id,                        -- extrinsic_id
@@ -2875,14 +2906,14 @@ CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
     last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
     last_domain_epoch staking.domain_epochs.epoch%TYPE;
   BEGIN
-    SELECT last_domain_block_number
-    INTO last_domain_block_histories_domain_block_number
+    SELECT domain_block_number
+    INTO last_domain_block_number
     FROM staking.domain_block_histories
     WHERE domain_id = NEW.domain_id
     ORDER BY domain_block_number DESC
     LIMIT 1;
 
-    SELECT last_domain_epoch
+    SELECT epoch
     INTO last_domain_epoch
     FROM staking.domain_epochs
     WHERE domain_id = NEW.domain_id
@@ -3034,7 +3065,7 @@ BEGIN
         bundle_count = staking.domains.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number,
         updated_at = NEW.block_height
-    WHERE id = NEW.domain_id AND last_domain_block_number < NEW.domain_block_number;
+    WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
@@ -3060,50 +3091,76 @@ CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
     share_price_1d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
     share_price_7d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
     share_price_30d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
-    yield_1d_calc NUMERIC;
-    yield_7d_calc NUMERIC;
-    yield_30d_calc NUMERIC;
+    calc_1d_yield NUMERIC;
+    calc_7d_yield NUMERIC;
+    calc_30d_yield NUMERIC;
+    calc_1d_apy NUMERIC;
+    calc_7d_apy NUMERIC;
+    calc_30d_apy NUMERIC;
+    divisor NUMERIC := 1000000000000000000;
   BEGIN
     SELECT share_price
     INTO share_price_1d_old
     FROM staking.operator_staking_histories
     WHERE operator_id = NEW.operator_id
-    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '1 day'))))
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '1 day'))))
     LIMIT 1;
 
     SELECT share_price
     INTO share_price_7d_old
     FROM staking.operator_staking_histories
     WHERE operator_id = NEW.operator_id
-    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '7 days'))))
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '7 days'))))
     LIMIT 1;
 
     SELECT share_price
     INTO share_price_30d_old
     FROM staking.operator_staking_histories
     WHERE operator_id = NEW.operator_id
-    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NOW() - INTERVAL '30 days'))))
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '30 days'))))
     LIMIT 1;
 
-    -- Calculate annualized yields
-    -- For 1-day: (new_price - old_price) / old_price * 365
-    yield_1d_calc := CASE 
-      WHEN share_price_1d_old::NUMERIC > 0 THEN 
-        ((NEW.share_price::NUMERIC - share_price_1d_old::NUMERIC) / share_price_1d_old::NUMERIC) * 365
+    -- Calculate yields with explicit NUMERIC casts to avoid overflow
+    -- For 1-day: (NEW.share_price / share_price_1d_old - 1)
+    calc_1d_yield := CASE 
+      WHEN CAST(share_price_1d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_1d_old AS NUMERIC)) - 1.0)
       ELSE 0
     END;
 
-    -- For 7-day: (new_price - old_price) / old_price * (365/7)
-    yield_7d_calc := CASE 
-      WHEN share_price_7d_old::NUMERIC > 0 THEN 
-        ((NEW.share_price::NUMERIC - share_price_7d_old::NUMERIC) / share_price_7d_old::NUMERIC) * (365.0/7.0)
+    -- For 7-day: (NEW.share_price / share_price_7d_old - 1)
+    calc_7d_yield := CASE 
+      WHEN CAST(share_price_7d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_7d_old AS NUMERIC)) - 1.0)
       ELSE 0
     END;
 
-    -- For 30-day: (new_price - old_price) / old_price * (365/30)
-    yield_30d_calc := CASE 
-      WHEN share_price_30d_old::NUMERIC > 0 THEN 
-        ((NEW.share_price::NUMERIC - share_price_30d_old::NUMERIC) / share_price_30d_old::NUMERIC) * (365.0/30.0)
+    -- For 30-day: (NEW.share_price / share_price_30d_old - 1)
+    calc_30d_yield := CASE 
+      WHEN CAST(share_price_30d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_30d_old AS NUMERIC)) - 1.0)
+      ELSE 0
+    END;
+
+    -- Calculate APYs with explicit NUMERIC casts to avoid overflow
+    -- For 1-day: (1 + 1d_yield_calc) ^ 365 - 1
+    calc_1d_apy := CASE 
+      WHEN calc_1d_yield >= 0 THEN 
+        ((1.0 + calc_1d_yield) ^ 365.0) - 1.0
+      ELSE 0
+    END;
+
+    -- For 7-day: (1 + 7d_yield_calc) ^ 365 - 1
+    calc_7d_apy := CASE 
+      WHEN calc_7d_yield >= 0 THEN 
+        ((1.0 + calc_7d_yield) ^ (365.0 / 7.0)) - 1.0
+      ELSE 0
+    END;
+
+    -- For 30-day: (1 + 30d_yield_calc) ^ 365 - 1
+    calc_30d_apy := CASE 
+      WHEN calc_30d_yield >= 0 THEN 
+        ((1.0 + calc_30d_yield) ^ (365.0 / 30.0)) - 1.0
       ELSE 0
     END;
 
@@ -3114,9 +3171,12 @@ CREATE OR REPLACE FUNCTION staking.update_operator_stakes() RETURNS TRIGGER
         current_total_shares = NEW.current_total_shares,
         current_share_price = NEW.share_price,
         raw_status = NEW.partial_status,
-        yield_1d = yield_1d_calc,
-        yield_7d = yield_7d_calc,
-        yield_30d = yield_30d_calc,
+        current_1d_yield = calc_1d_yield,
+        current_7d_yield = calc_7d_yield,
+        current_30d_yield = calc_30d_yield,
+        current_1d_apy = calc_1d_apy,
+        current_7d_apy = calc_7d_apy,
+        current_30d_apy = calc_30d_apy,
         updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
     
@@ -3135,6 +3195,15 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     AS $$
   DECLARE
     last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+    share_price_1d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
+    share_price_7d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
+    share_price_30d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
+    calc_1d_yield NUMERIC;
+    calc_7d_yield NUMERIC;
+    calc_30d_yield NUMERIC;
+    calc_1d_apy NUMERIC;
+    calc_7d_apy NUMERIC;
+    calc_30d_apy NUMERIC;
   BEGIN
     SELECT domain_block_number
     INTO last_domain_block_number
@@ -3149,10 +3218,83 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
         INTO last_domain_block_number;
     END IF;
 
+    SELECT share_price
+    INTO share_price_1d_old
+    FROM staking.domain_staking_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '1 day'))))
+    LIMIT 1;
+
+    SELECT share_price
+    INTO share_price_7d_old
+    FROM staking.domain_staking_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '7 days'))))
+    LIMIT 1;
+
+    SELECT share_price
+    INTO share_price_30d_old
+    FROM staking.domain_staking_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY ABS(EXTRACT(EPOCH FROM (timestamp - (NEW.timestamp - INTERVAL '30 days'))))
+    LIMIT 1;
+
+    -- Calculate yields with explicit NUMERIC casts to avoid overflow
+    -- For 1-day: (NEW.share_price / share_price_1d_old - 1)
+    calc_1d_yield := CASE 
+      WHEN CAST(share_price_1d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_1d_old AS NUMERIC)) - 1.0)
+      ELSE 0
+    END;
+
+    -- For 7-day: (NEW.share_price / share_price_7d_old - 1)
+    calc_7d_yield := CASE 
+      WHEN CAST(share_price_7d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_7d_old AS NUMERIC)) - 1.0)
+      ELSE 0
+    END;
+
+    -- For 30-day: (NEW.share_price / share_price_30d_old - 1)
+    calc_30d_yield := CASE 
+      WHEN CAST(share_price_30d_old AS NUMERIC) > 0 THEN 
+        ((CAST(NEW.share_price AS NUMERIC) / CAST(share_price_30d_old AS NUMERIC)) - 1.0)
+      ELSE 0
+    END;
+
+    -- Calculate APYs with explicit NUMERIC casts to avoid overflow
+    -- For 1-day: (1 + 1d_yield_calc) ^ 365 - 1
+    calc_1d_apy := CASE 
+      WHEN calc_1d_yield >= 0 THEN 
+        ((1.0 + calc_1d_yield) ^ 365.0) - 1.0
+      ELSE 0
+    END;
+
+    -- For 7-day: (1 + 7d_yield_calc) ^ 365 - 1
+    calc_7d_apy := CASE 
+      WHEN calc_7d_yield >= 0 THEN 
+        ((1.0 + calc_7d_yield) ^ (365.0 / 7.0)) - 1.0
+      ELSE 0
+    END;
+
+    -- For 30-day: (1 + 30d_yield_calc) ^ 365 - 1
+    calc_30d_apy := CASE 
+      WHEN calc_30d_yield >= 0 THEN 
+        ((1.0 + calc_30d_yield) ^ (365.0 / 30.0)) - 1.0
+      ELSE 0
+    END;
+
     UPDATE staking.domains
     SET 
         current_total_stake = NEW.current_total_stake,
         completed_epoch = NEW.current_epoch_index,
+        current_total_shares = NEW.current_total_shares,
+        current_share_price = NEW.share_price,
+        current_1d_yield = calc_1d_yield,
+        current_7d_yield = calc_7d_yield,
+        current_30d_yield = calc_30d_yield,
+        current_1d_apy = calc_1d_apy,
+        current_7d_apy = calc_7d_apy,
+        current_30d_apy = calc_30d_apy,
         updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 

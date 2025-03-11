@@ -8,7 +8,11 @@ import { SubstrateBlock } from "@subql/types";
 import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
 import * as db from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
-import { createHashId, findDomainIdFromOperatorsCache } from "./utils";
+import {
+  aggregateByDomainId,
+  createHashId,
+  findDomainIdFromOperatorsCache,
+} from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -44,7 +48,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     domainStakingSummary,
     headDomainNumber,
     operatorIdOwner,
-    operators,
+    operatorsSummary,
     parentBlockOperators,
   ] = await Promise.all([
     api.query.domains.domainStakingSummary.entries(),
@@ -54,15 +58,25 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     parentBlockApi.query.domains.operators.entries(),
   ]);
 
+  const operators = operatorsSummary.map((o: any) => parseOperator(o));
+
   domainStakingSummary.forEach((data) => {
     const keyPrimitive = data[0].toPrimitive() as any;
     const valuePrimitive = data[1].toPrimitive() as any;
+    const domainId = keyPrimitive[0].toString();
+    const { totalStake, totalShares } = aggregateByDomainId(
+      operators,
+      BigInt(domainId)
+    );
+    const sharePrice = totalStake > 0 ? totalStake / totalShares : ZERO_BIGINT;
     cache.domainStakingHistory.push(
       db.createDomainStakingHistory(
         createHashId(data),
         keyPrimitive[0].toString(),
         valuePrimitive.currentEpochIndex.toString(),
         valuePrimitive.currentTotalStake.toString(),
+        totalShares,
+        sharePrice,
         blockTimestamp,
         height
       )
@@ -88,8 +102,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       value.toPrimitive() as string,
     ])
   );
-  operators.forEach((o: any) => {
-    const operator = parseOperator(o);
+  operators.forEach((operator) => {
     const operatorOwner = operatorOwnerMap.get(operator.operatorId.toString());
     const sharePrice = operator.operatorDetails.currentTotalShares
       ? BigInt(

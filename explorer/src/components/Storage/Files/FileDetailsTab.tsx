@@ -30,26 +30,6 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
     skip: !inFocus || !inView,
   })
 
-  const handleConfirm = useCallback(
-    async (password: string) => {
-      if (!fileData) return
-
-      let decryptedFileData
-      try {
-        decryptedFileData = await decryptFileData(password, fileData)
-        if (!decryptedFileData) {
-          throw new Error('Decryption failed: Incorrect password')
-        }
-      } catch (error) {
-        toast.error('Decryption failed: Incorrect password', { position: 'bottom-center' })
-        return
-      }
-
-      await processFileData(decryptedFileData)
-    },
-    [fileData],
-  )
-
   const processFileData = useCallback(async (fileData: FileData) => {
     const _fileType = await detectFileType(fileData.dataArrayBuffer)
 
@@ -71,12 +51,32 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
     }
   }, [])
 
+  const handleConfirm = useCallback(
+    async (password: string) => {
+      if (!fileData) return
+
+      let decryptedFileData
+      try {
+        decryptedFileData = await decryptFileData(password, fileData)
+        if (!decryptedFileData) {
+          throw new Error('Decryption failed: Incorrect password')
+        }
+      } catch (error) {
+        toast.error('Decryption failed: Incorrect password', { position: 'bottom-center' })
+        return
+      }
+
+      await processFileData(decryptedFileData)
+    },
+    [fileData, processFileData],
+  )
+
   const getDataDetails = useCallback(async () => {
     if (!data) return
     const _fileData = extractFileData(data)
     if (!_fileData) return
     await processFileData(_fileData)
-  }, [data])
+  }, [data, processFileData])
 
   const downloadFile = useCallback(async () => {
     if (!fileData || !fileUrl) return

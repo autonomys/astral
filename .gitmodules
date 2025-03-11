@@ -1,3 +1,0 @@
-[submodule "indexers/dictionary"]
-	path = indexers/dictionary
-	url = https://github.com/autonomys/subql-dictionary

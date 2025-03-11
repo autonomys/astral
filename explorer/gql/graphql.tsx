@@ -10606,6 +10606,12 @@ export type Query_Root = {
   staking_nominators_aggregate: Staking_Nominators_Aggregate;
   /** fetch data from the table: "staking.nominators" using primary key columns */
   staking_nominators_by_pk?: Maybe<Staking_Nominators>;
+  /** fetch data from the table: "staking.nominators_unlocked_events" */
+  staking_nominators_unlocked_events: Array<Staking_Nominators_Unlocked_Events>;
+  /** fetch aggregated fields from the table: "staking.nominators_unlocked_events" */
+  staking_nominators_unlocked_events_aggregate: Staking_Nominators_Unlocked_Events_Aggregate;
+  /** fetch data from the table: "staking.nominators_unlocked_events" using primary key columns */
+  staking_nominators_unlocked_events_by_pk?: Maybe<Staking_Nominators_Unlocked_Events>;
   /** fetch data from the table: "staking.operator_deregistrations" */
   staking_operator_deregistrations: Array<Staking_Operator_Deregistrations>;
   /** fetch data from the table: "staking.operator_deregistrations" using primary key columns */
@@ -11975,6 +11981,29 @@ export type Query_RootStaking_Nominators_AggregateArgs = {
 
 export type Query_RootStaking_Nominators_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStaking_Nominators_Unlocked_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Order_By>>;
+  where?: InputMaybe<Staking_Nominators_Unlocked_Events_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Nominators_Unlocked_Events_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Order_By>>;
+  where?: InputMaybe<Staking_Nominators_Unlocked_Events_Bool_Exp>;
+};
+
+
+export type Query_RootStaking_Nominators_Unlocked_Events_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
 };
 
 
@@ -14077,9 +14106,11 @@ export type Staking_Domain_Staking_Histories = {
   _block_range: Scalars['int8range']['output'];
   block_height: Scalars['numeric']['output'];
   current_epoch_index: Scalars['Int']['output'];
+  current_total_shares: Scalars['numeric']['output'];
   current_total_stake: Scalars['numeric']['output'];
   domain_id: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  share_price: Scalars['numeric']['output'];
   timestamp: Scalars['timestamptz']['output'];
   uuid: Scalars['uuid']['output'];
 };
@@ -14092,9 +14123,11 @@ export type Staking_Domain_Staking_Histories_Bool_Exp = {
   _or?: InputMaybe<Array<Staking_Domain_Staking_Histories_Bool_Exp>>;
   block_height?: InputMaybe<Numeric_Comparison_Exp>;
   current_epoch_index?: InputMaybe<Int_Comparison_Exp>;
+  current_total_shares?: InputMaybe<Numeric_Comparison_Exp>;
   current_total_stake?: InputMaybe<Numeric_Comparison_Exp>;
   domain_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
+  share_price?: InputMaybe<Numeric_Comparison_Exp>;
   timestamp?: InputMaybe<Timestamptz_Comparison_Exp>;
   uuid?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -14104,9 +14137,11 @@ export type Staking_Domain_Staking_Histories_Order_By = {
   _block_range?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
   current_epoch_index?: InputMaybe<Order_By>;
+  current_total_shares?: InputMaybe<Order_By>;
   current_total_stake?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  share_price?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
   uuid?: InputMaybe<Order_By>;
 };
@@ -14120,11 +14155,15 @@ export enum Staking_Domain_Staking_Histories_Select_Column {
   /** column name */
   CurrentEpochIndex = 'current_epoch_index',
   /** column name */
+  CurrentTotalShares = 'current_total_shares',
+  /** column name */
   CurrentTotalStake = 'current_total_stake',
   /** column name */
   DomainId = 'domain_id',
   /** column name */
   Id = 'id',
+  /** column name */
+  SharePrice = 'share_price',
   /** column name */
   Timestamp = 'timestamp',
   /** column name */
@@ -14144,9 +14183,11 @@ export type Staking_Domain_Staking_Histories_Stream_Cursor_Value_Input = {
   _block_range?: InputMaybe<Scalars['int8range']['input']>;
   block_height?: InputMaybe<Scalars['numeric']['input']>;
   current_epoch_index?: InputMaybe<Scalars['Int']['input']>;
+  current_total_shares?: InputMaybe<Scalars['numeric']['input']>;
   current_total_stake?: InputMaybe<Scalars['numeric']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  share_price?: InputMaybe<Scalars['numeric']['input']>;
   timestamp?: InputMaybe<Scalars['timestamptz']['input']>;
   uuid?: InputMaybe<Scalars['uuid']['input']>;
 };
@@ -14164,6 +14205,12 @@ export type Staking_Domains = {
   bundle_count: Scalars['numeric']['output'];
   completed_epoch: Scalars['numeric']['output'];
   created_at: Scalars['numeric']['output'];
+  current_1d_apy: Scalars['numeric']['output'];
+  current_1d_yield: Scalars['numeric']['output'];
+  current_7d_apy: Scalars['numeric']['output'];
+  current_7d_yield: Scalars['numeric']['output'];
+  current_30d_apy: Scalars['numeric']['output'];
+  current_30d_yield: Scalars['numeric']['output'];
   current_epoch_duration: Scalars['numeric']['output'];
   current_share_price: Scalars['numeric']['output'];
   current_storage_fee_deposit: Scalars['numeric']['output'];
@@ -14364,6 +14411,12 @@ export type Staking_Domains_Avg_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -14411,6 +14464,12 @@ export type Staking_Domains_Bool_Exp = {
   bundle_count?: InputMaybe<Numeric_Comparison_Exp>;
   completed_epoch?: InputMaybe<Numeric_Comparison_Exp>;
   created_at?: InputMaybe<Numeric_Comparison_Exp>;
+  current_1d_apy?: InputMaybe<Numeric_Comparison_Exp>;
+  current_1d_yield?: InputMaybe<Numeric_Comparison_Exp>;
+  current_7d_apy?: InputMaybe<Numeric_Comparison_Exp>;
+  current_7d_yield?: InputMaybe<Numeric_Comparison_Exp>;
+  current_30d_apy?: InputMaybe<Numeric_Comparison_Exp>;
+  current_30d_yield?: InputMaybe<Numeric_Comparison_Exp>;
   current_epoch_duration?: InputMaybe<Numeric_Comparison_Exp>;
   current_share_price?: InputMaybe<Numeric_Comparison_Exp>;
   current_storage_fee_deposit?: InputMaybe<Numeric_Comparison_Exp>;
@@ -14472,6 +14531,12 @@ export type Staking_Domains_Max_Fields = {
   bundle_count?: Maybe<Scalars['numeric']['output']>;
   completed_epoch?: Maybe<Scalars['numeric']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
+  current_1d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_1d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_7d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_7d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_30d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_30d_yield?: Maybe<Scalars['numeric']['output']>;
   current_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   current_share_price?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
@@ -14523,6 +14588,12 @@ export type Staking_Domains_Min_Fields = {
   bundle_count?: Maybe<Scalars['numeric']['output']>;
   completed_epoch?: Maybe<Scalars['numeric']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
+  current_1d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_1d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_7d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_7d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_30d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_30d_yield?: Maybe<Scalars['numeric']['output']>;
   current_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   current_share_price?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
@@ -14574,6 +14645,12 @@ export type Staking_Domains_Order_By = {
   bundle_count?: InputMaybe<Order_By>;
   completed_epoch?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_duration?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -14638,6 +14715,18 @@ export enum Staking_Domains_Select_Column {
   CompletedEpoch = 'completed_epoch',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  Current_1dApy = 'current_1d_apy',
+  /** column name */
+  Current_1dYield = 'current_1d_yield',
+  /** column name */
+  Current_7dApy = 'current_7d_apy',
+  /** column name */
+  Current_7dYield = 'current_7d_yield',
+  /** column name */
+  Current_30dApy = 'current_30d_apy',
+  /** column name */
+  Current_30dYield = 'current_30d_yield',
   /** column name */
   CurrentEpochDuration = 'current_epoch_duration',
   /** column name */
@@ -14726,6 +14815,12 @@ export type Staking_Domains_Stddev_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -14769,6 +14864,12 @@ export type Staking_Domains_Stddev_Pop_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -14812,6 +14913,12 @@ export type Staking_Domains_Stddev_Samp_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -14863,6 +14970,12 @@ export type Staking_Domains_Stream_Cursor_Value_Input = {
   bundle_count?: InputMaybe<Scalars['numeric']['input']>;
   completed_epoch?: InputMaybe<Scalars['numeric']['input']>;
   created_at?: InputMaybe<Scalars['numeric']['input']>;
+  current_1d_apy?: InputMaybe<Scalars['numeric']['input']>;
+  current_1d_yield?: InputMaybe<Scalars['numeric']['input']>;
+  current_7d_apy?: InputMaybe<Scalars['numeric']['input']>;
+  current_7d_yield?: InputMaybe<Scalars['numeric']['input']>;
+  current_30d_apy?: InputMaybe<Scalars['numeric']['input']>;
+  current_30d_yield?: InputMaybe<Scalars['numeric']['input']>;
   current_epoch_duration?: InputMaybe<Scalars['numeric']['input']>;
   current_share_price?: InputMaybe<Scalars['numeric']['input']>;
   current_storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
@@ -14913,6 +15026,12 @@ export type Staking_Domains_Sum_Fields = {
   bundle_count?: Maybe<Scalars['numeric']['output']>;
   completed_epoch?: Maybe<Scalars['numeric']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
+  current_1d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_1d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_7d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_7d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_30d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_30d_yield?: Maybe<Scalars['numeric']['output']>;
   current_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   current_share_price?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
@@ -14956,6 +15075,12 @@ export type Staking_Domains_Var_Pop_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -14999,6 +15124,12 @@ export type Staking_Domains_Var_Samp_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -15042,6 +15173,12 @@ export type Staking_Domains_Variance_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -15107,7 +15244,6 @@ export type Staking_Nominators = {
   /** An object relationship */
   operator?: Maybe<Staking_Operators>;
   operator_id: Scalars['String']['output'];
-  pending_action: Scalars['String']['output'];
   pending_amount: Scalars['numeric']['output'];
   pending_effective_domain_epoch: Scalars['numeric']['output'];
   pending_shares: Scalars['numeric']['output'];
@@ -15122,6 +15258,8 @@ export type Staking_Nominators = {
   total_withdrawals: Scalars['numeric']['output'];
   total_withdrawals_count: Scalars['numeric']['output'];
   unlock_at_confirmed_domain_block_number: Scalars['jsonb']['output'];
+  /** An array relationship */
+  unlocked_events: Array<Staking_Unlocked_Events>;
   updated_at: Scalars['numeric']['output'];
   /** An array relationship */
   withdraw_events: Array<Staking_Withdraw_Events>;
@@ -15177,6 +15315,16 @@ export type Staking_NominatorsDeposits_AggregateArgs = {
 /** columns and relationships of "staking.nominators" */
 export type Staking_NominatorsUnlock_At_Confirmed_Domain_Block_NumberArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** columns and relationships of "staking.nominators" */
+export type Staking_NominatorsUnlocked_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Unlocked_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Unlocked_Events_Order_By>>;
+  where?: InputMaybe<Staking_Unlocked_Events_Bool_Exp>;
 };
 
 
@@ -15359,7 +15507,6 @@ export type Staking_Nominators_Bool_Exp = {
   known_storage_fee_deposit?: InputMaybe<Numeric_Comparison_Exp>;
   operator?: InputMaybe<Staking_Operators_Bool_Exp>;
   operator_id?: InputMaybe<String_Comparison_Exp>;
-  pending_action?: InputMaybe<String_Comparison_Exp>;
   pending_amount?: InputMaybe<Numeric_Comparison_Exp>;
   pending_effective_domain_epoch?: InputMaybe<Numeric_Comparison_Exp>;
   pending_shares?: InputMaybe<Numeric_Comparison_Exp>;
@@ -15374,6 +15521,7 @@ export type Staking_Nominators_Bool_Exp = {
   total_withdrawals?: InputMaybe<Numeric_Comparison_Exp>;
   total_withdrawals_count?: InputMaybe<Numeric_Comparison_Exp>;
   unlock_at_confirmed_domain_block_number?: InputMaybe<Jsonb_Comparison_Exp>;
+  unlocked_events?: InputMaybe<Staking_Unlocked_Events_Bool_Exp>;
   updated_at?: InputMaybe<Numeric_Comparison_Exp>;
   withdraw_events?: InputMaybe<Staking_Withdraw_Events_Bool_Exp>;
   withdrawal_histories?: InputMaybe<Staking_Withdrawal_Histories_Bool_Exp>;
@@ -15399,7 +15547,6 @@ export type Staking_Nominators_Max_Fields = {
   known_shares?: Maybe<Scalars['numeric']['output']>;
   known_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   operator_id?: Maybe<Scalars['String']['output']>;
-  pending_action?: Maybe<Scalars['String']['output']>;
   pending_amount?: Maybe<Scalars['numeric']['output']>;
   pending_effective_domain_epoch?: Maybe<Scalars['numeric']['output']>;
   pending_shares?: Maybe<Scalars['numeric']['output']>;
@@ -15433,7 +15580,6 @@ export type Staking_Nominators_Max_Order_By = {
   known_shares?: InputMaybe<Order_By>;
   known_storage_fee_deposit?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
-  pending_action?: InputMaybe<Order_By>;
   pending_amount?: InputMaybe<Order_By>;
   pending_effective_domain_epoch?: InputMaybe<Order_By>;
   pending_shares?: InputMaybe<Order_By>;
@@ -15468,7 +15614,6 @@ export type Staking_Nominators_Min_Fields = {
   known_shares?: Maybe<Scalars['numeric']['output']>;
   known_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   operator_id?: Maybe<Scalars['String']['output']>;
-  pending_action?: Maybe<Scalars['String']['output']>;
   pending_amount?: Maybe<Scalars['numeric']['output']>;
   pending_effective_domain_epoch?: Maybe<Scalars['numeric']['output']>;
   pending_shares?: Maybe<Scalars['numeric']['output']>;
@@ -15502,7 +15647,6 @@ export type Staking_Nominators_Min_Order_By = {
   known_shares?: InputMaybe<Order_By>;
   known_storage_fee_deposit?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
-  pending_action?: InputMaybe<Order_By>;
   pending_amount?: InputMaybe<Order_By>;
   pending_effective_domain_epoch?: InputMaybe<Order_By>;
   pending_shares?: InputMaybe<Order_By>;
@@ -15542,7 +15686,6 @@ export type Staking_Nominators_Order_By = {
   known_storage_fee_deposit?: InputMaybe<Order_By>;
   operator?: InputMaybe<Staking_Operators_Order_By>;
   operator_id?: InputMaybe<Order_By>;
-  pending_action?: InputMaybe<Order_By>;
   pending_amount?: InputMaybe<Order_By>;
   pending_effective_domain_epoch?: InputMaybe<Order_By>;
   pending_shares?: InputMaybe<Order_By>;
@@ -15557,6 +15700,7 @@ export type Staking_Nominators_Order_By = {
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
   unlock_at_confirmed_domain_block_number?: InputMaybe<Order_By>;
+  unlocked_events_aggregate?: InputMaybe<Staking_Unlocked_Events_Aggregate_Order_By>;
   updated_at?: InputMaybe<Order_By>;
   withdraw_events_aggregate?: InputMaybe<Staking_Withdraw_Events_Aggregate_Order_By>;
   withdrawal_histories_aggregate?: InputMaybe<Staking_Withdrawal_Histories_Aggregate_Order_By>;
@@ -15595,8 +15739,6 @@ export enum Staking_Nominators_Select_Column {
   KnownStorageFeeDeposit = 'known_storage_fee_deposit',
   /** column name */
   OperatorId = 'operator_id',
-  /** column name */
-  PendingAction = 'pending_action',
   /** column name */
   PendingAmount = 'pending_amount',
   /** column name */
@@ -15825,7 +15967,6 @@ export type Staking_Nominators_Stream_Cursor_Value_Input = {
   known_shares?: InputMaybe<Scalars['numeric']['input']>;
   known_storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
   operator_id?: InputMaybe<Scalars['String']['input']>;
-  pending_action?: InputMaybe<Scalars['String']['input']>;
   pending_amount?: InputMaybe<Scalars['numeric']['input']>;
   pending_effective_domain_epoch?: InputMaybe<Scalars['numeric']['input']>;
   pending_shares?: InputMaybe<Scalars['numeric']['input']>;
@@ -15898,6 +16039,188 @@ export type Staking_Nominators_Sum_Order_By = {
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "staking.nominators_unlocked_events" */
+export type Staking_Nominators_Unlocked_Events = {
+  __typename?: 'staking_nominators_unlocked_events';
+  _block_range: Scalars['int8range']['output'];
+  block_height: Scalars['numeric']['output'];
+  domain_id: Scalars['String']['output'];
+  event_id: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  operator_id: Scalars['String']['output'];
+  uuid: Scalars['uuid']['output'];
+};
+
+/** aggregated selection of "staking.nominators_unlocked_events" */
+export type Staking_Nominators_Unlocked_Events_Aggregate = {
+  __typename?: 'staking_nominators_unlocked_events_aggregate';
+  aggregate?: Maybe<Staking_Nominators_Unlocked_Events_Aggregate_Fields>;
+  nodes: Array<Staking_Nominators_Unlocked_Events>;
+};
+
+/** aggregate fields of "staking.nominators_unlocked_events" */
+export type Staking_Nominators_Unlocked_Events_Aggregate_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_aggregate_fields';
+  avg?: Maybe<Staking_Nominators_Unlocked_Events_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Staking_Nominators_Unlocked_Events_Max_Fields>;
+  min?: Maybe<Staking_Nominators_Unlocked_Events_Min_Fields>;
+  stddev?: Maybe<Staking_Nominators_Unlocked_Events_Stddev_Fields>;
+  stddev_pop?: Maybe<Staking_Nominators_Unlocked_Events_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Staking_Nominators_Unlocked_Events_Stddev_Samp_Fields>;
+  sum?: Maybe<Staking_Nominators_Unlocked_Events_Sum_Fields>;
+  var_pop?: Maybe<Staking_Nominators_Unlocked_Events_Var_Pop_Fields>;
+  var_samp?: Maybe<Staking_Nominators_Unlocked_Events_Var_Samp_Fields>;
+  variance?: Maybe<Staking_Nominators_Unlocked_Events_Variance_Fields>;
+};
+
+
+/** aggregate fields of "staking.nominators_unlocked_events" */
+export type Staking_Nominators_Unlocked_Events_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Staking_Nominators_Unlocked_Events_Avg_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_avg_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "staking.nominators_unlocked_events". All fields are combined with a logical 'AND'. */
+export type Staking_Nominators_Unlocked_Events_Bool_Exp = {
+  _and?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Bool_Exp>>;
+  _block_range?: InputMaybe<Int8range_Comparison_Exp>;
+  _not?: InputMaybe<Staking_Nominators_Unlocked_Events_Bool_Exp>;
+  _or?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  event_id?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  operator_id?: InputMaybe<String_Comparison_Exp>;
+  uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Staking_Nominators_Unlocked_Events_Max_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_max_fields';
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  domain_id?: Maybe<Scalars['String']['output']>;
+  event_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  operator_id?: Maybe<Scalars['String']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** aggregate min on columns */
+export type Staking_Nominators_Unlocked_Events_Min_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_min_fields';
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  domain_id?: Maybe<Scalars['String']['output']>;
+  event_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  operator_id?: Maybe<Scalars['String']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** Ordering options when selecting data from "staking.nominators_unlocked_events". */
+export type Staking_Nominators_Unlocked_Events_Order_By = {
+  _block_range?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  event_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "staking.nominators_unlocked_events" */
+export enum Staking_Nominators_Unlocked_Events_Select_Column {
+  /** column name */
+  BlockRange = '_block_range',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  EventId = 'event_id',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  OperatorId = 'operator_id',
+  /** column name */
+  Uuid = 'uuid'
+}
+
+/** aggregate stddev on columns */
+export type Staking_Nominators_Unlocked_Events_Stddev_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_stddev_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Staking_Nominators_Unlocked_Events_Stddev_Pop_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_stddev_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Staking_Nominators_Unlocked_Events_Stddev_Samp_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_stddev_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "staking_nominators_unlocked_events" */
+export type Staking_Nominators_Unlocked_Events_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Staking_Nominators_Unlocked_Events_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Staking_Nominators_Unlocked_Events_Stream_Cursor_Value_Input = {
+  _block_range?: InputMaybe<Scalars['int8range']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  event_id?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  operator_id?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Staking_Nominators_Unlocked_Events_Sum_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_sum_fields';
+  block_height?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Staking_Nominators_Unlocked_Events_Var_Pop_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_var_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Staking_Nominators_Unlocked_Events_Var_Samp_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_var_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Staking_Nominators_Unlocked_Events_Variance_Fields = {
+  __typename?: 'staking_nominators_unlocked_events_variance_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
 };
 
 /** aggregate var_pop on columns */
@@ -16574,6 +16897,12 @@ export type Staking_Operators = {
   active_epoch_count: Scalars['numeric']['output'];
   bundle_count: Scalars['numeric']['output'];
   created_at: Scalars['numeric']['output'];
+  current_1d_apy: Scalars['numeric']['output'];
+  current_1d_yield: Scalars['numeric']['output'];
+  current_7d_apy: Scalars['numeric']['output'];
+  current_7d_yield: Scalars['numeric']['output'];
+  current_30d_apy: Scalars['numeric']['output'];
+  current_30d_yield: Scalars['numeric']['output'];
   current_epoch_rewards: Scalars['numeric']['output'];
   current_share_price: Scalars['numeric']['output'];
   current_storage_fee_deposit: Scalars['numeric']['output'];
@@ -16599,30 +16928,17 @@ export type Staking_Operators = {
   nominators: Array<Staking_Nominators>;
   /** An aggregate relationship */
   nominators_aggregate: Staking_Nominators_Aggregate;
-  pending_action: Scalars['String']['output'];
   raw_status: Scalars['String']['output'];
-  rejected_transfers_claimed_count: Scalars['numeric']['output'];
   signing_key: Scalars['String']['output'];
   sort_id: Scalars['String']['output'];
   status: Scalars['String']['output'];
-  total_burned_balance: Scalars['numeric']['output'];
-  total_consensus_storage_fee: Scalars['numeric']['output'];
   total_deposits: Scalars['numeric']['output'];
   total_deposits_count: Scalars['numeric']['output'];
-  total_domain_execution_fee: Scalars['numeric']['output'];
   total_estimated_withdrawals: Scalars['numeric']['output'];
-  total_rejected_transfers_claimed: Scalars['numeric']['output'];
   total_rewards_collected: Scalars['numeric']['output'];
   total_tax_collected: Scalars['numeric']['output'];
-  total_transfers_in: Scalars['numeric']['output'];
-  total_transfers_out: Scalars['numeric']['output'];
-  total_transfers_rejected: Scalars['numeric']['output'];
-  total_volume: Scalars['numeric']['output'];
   total_withdrawals: Scalars['numeric']['output'];
   total_withdrawals_count: Scalars['numeric']['output'];
-  transfers_in_count: Scalars['numeric']['output'];
-  transfers_out_count: Scalars['numeric']['output'];
-  transfers_rejected_count: Scalars['numeric']['output'];
   updated_at: Scalars['numeric']['output'];
   /** An array relationship */
   withdraw_events: Array<Staking_Withdraw_Events>;
@@ -16800,6 +17116,12 @@ export type Staking_Operators_Avg_Fields = {
   active_epoch_count?: Maybe<Scalars['Float']['output']>;
   bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -16808,25 +17130,13 @@ export type Staking_Operators_Avg_Fields = {
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  total_burned_balance?: Maybe<Scalars['Float']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
   total_deposits_count?: Maybe<Scalars['Float']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['Float']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['Float']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['Float']['output']>;
   total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
-  total_transfers_in?: Maybe<Scalars['Float']['output']>;
-  total_transfers_out?: Maybe<Scalars['Float']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['Float']['output']>;
-  total_volume?: Maybe<Scalars['Float']['output']>;
   total_withdrawals?: Maybe<Scalars['Float']['output']>;
   total_withdrawals_count?: Maybe<Scalars['Float']['output']>;
-  transfers_in_count?: Maybe<Scalars['Float']['output']>;
-  transfers_out_count?: Maybe<Scalars['Float']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -16839,6 +17149,12 @@ export type Staking_Operators_Avg_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -16847,25 +17163,13 @@ export type Staking_Operators_Avg_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -16883,6 +17187,12 @@ export type Staking_Operators_Bool_Exp = {
   active_epoch_count?: InputMaybe<Numeric_Comparison_Exp>;
   bundle_count?: InputMaybe<Numeric_Comparison_Exp>;
   created_at?: InputMaybe<Numeric_Comparison_Exp>;
+  current_1d_apy?: InputMaybe<Numeric_Comparison_Exp>;
+  current_1d_yield?: InputMaybe<Numeric_Comparison_Exp>;
+  current_7d_apy?: InputMaybe<Numeric_Comparison_Exp>;
+  current_7d_yield?: InputMaybe<Numeric_Comparison_Exp>;
+  current_30d_apy?: InputMaybe<Numeric_Comparison_Exp>;
+  current_30d_yield?: InputMaybe<Numeric_Comparison_Exp>;
   current_epoch_rewards?: InputMaybe<Numeric_Comparison_Exp>;
   current_share_price?: InputMaybe<Numeric_Comparison_Exp>;
   current_storage_fee_deposit?: InputMaybe<Numeric_Comparison_Exp>;
@@ -16901,30 +17211,17 @@ export type Staking_Operators_Bool_Exp = {
   nomination_tax?: InputMaybe<Int_Comparison_Exp>;
   nominators?: InputMaybe<Staking_Nominators_Bool_Exp>;
   nominators_aggregate?: InputMaybe<Staking_Nominators_Aggregate_Bool_Exp>;
-  pending_action?: InputMaybe<String_Comparison_Exp>;
   raw_status?: InputMaybe<String_Comparison_Exp>;
-  rejected_transfers_claimed_count?: InputMaybe<Numeric_Comparison_Exp>;
   signing_key?: InputMaybe<String_Comparison_Exp>;
   sort_id?: InputMaybe<String_Comparison_Exp>;
   status?: InputMaybe<String_Comparison_Exp>;
-  total_burned_balance?: InputMaybe<Numeric_Comparison_Exp>;
-  total_consensus_storage_fee?: InputMaybe<Numeric_Comparison_Exp>;
   total_deposits?: InputMaybe<Numeric_Comparison_Exp>;
   total_deposits_count?: InputMaybe<Numeric_Comparison_Exp>;
-  total_domain_execution_fee?: InputMaybe<Numeric_Comparison_Exp>;
   total_estimated_withdrawals?: InputMaybe<Numeric_Comparison_Exp>;
-  total_rejected_transfers_claimed?: InputMaybe<Numeric_Comparison_Exp>;
   total_rewards_collected?: InputMaybe<Numeric_Comparison_Exp>;
   total_tax_collected?: InputMaybe<Numeric_Comparison_Exp>;
-  total_transfers_in?: InputMaybe<Numeric_Comparison_Exp>;
-  total_transfers_out?: InputMaybe<Numeric_Comparison_Exp>;
-  total_transfers_rejected?: InputMaybe<Numeric_Comparison_Exp>;
-  total_volume?: InputMaybe<Numeric_Comparison_Exp>;
   total_withdrawals?: InputMaybe<Numeric_Comparison_Exp>;
   total_withdrawals_count?: InputMaybe<Numeric_Comparison_Exp>;
-  transfers_in_count?: InputMaybe<Numeric_Comparison_Exp>;
-  transfers_out_count?: InputMaybe<Numeric_Comparison_Exp>;
-  transfers_rejected_count?: InputMaybe<Numeric_Comparison_Exp>;
   updated_at?: InputMaybe<Numeric_Comparison_Exp>;
   withdraw_events?: InputMaybe<Staking_Withdraw_Events_Bool_Exp>;
   withdrawal_histories?: InputMaybe<Staking_Withdrawal_Histories_Bool_Exp>;
@@ -16943,6 +17240,12 @@ export type Staking_Operators_Max_Fields = {
   active_epoch_count?: Maybe<Scalars['numeric']['output']>;
   bundle_count?: Maybe<Scalars['numeric']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
+  current_1d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_1d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_7d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_7d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_30d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_30d_yield?: Maybe<Scalars['numeric']['output']>;
   current_epoch_rewards?: Maybe<Scalars['numeric']['output']>;
   current_share_price?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
@@ -16954,30 +17257,17 @@ export type Staking_Operators_Max_Fields = {
   last_bundle_at?: Maybe<Scalars['numeric']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['numeric']['output']>;
   nomination_tax?: Maybe<Scalars['Int']['output']>;
-  pending_action?: Maybe<Scalars['String']['output']>;
   raw_status?: Maybe<Scalars['String']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['numeric']['output']>;
   signing_key?: Maybe<Scalars['String']['output']>;
   sort_id?: Maybe<Scalars['String']['output']>;
   status?: Maybe<Scalars['String']['output']>;
-  total_burned_balance?: Maybe<Scalars['numeric']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['numeric']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
   total_deposits_count?: Maybe<Scalars['numeric']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['numeric']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['numeric']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['numeric']['output']>;
   total_rewards_collected?: Maybe<Scalars['numeric']['output']>;
   total_tax_collected?: Maybe<Scalars['numeric']['output']>;
-  total_transfers_in?: Maybe<Scalars['numeric']['output']>;
-  total_transfers_out?: Maybe<Scalars['numeric']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['numeric']['output']>;
-  total_volume?: Maybe<Scalars['numeric']['output']>;
   total_withdrawals?: Maybe<Scalars['numeric']['output']>;
   total_withdrawals_count?: Maybe<Scalars['numeric']['output']>;
-  transfers_in_count?: Maybe<Scalars['numeric']['output']>;
-  transfers_out_count?: Maybe<Scalars['numeric']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['numeric']['output']>;
 };
 
@@ -16991,6 +17281,12 @@ export type Staking_Operators_Max_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17002,30 +17298,17 @@ export type Staking_Operators_Max_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  pending_action?: InputMaybe<Order_By>;
   raw_status?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
   signing_key?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -17040,6 +17323,12 @@ export type Staking_Operators_Min_Fields = {
   active_epoch_count?: Maybe<Scalars['numeric']['output']>;
   bundle_count?: Maybe<Scalars['numeric']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
+  current_1d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_1d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_7d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_7d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_30d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_30d_yield?: Maybe<Scalars['numeric']['output']>;
   current_epoch_rewards?: Maybe<Scalars['numeric']['output']>;
   current_share_price?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
@@ -17051,30 +17340,17 @@ export type Staking_Operators_Min_Fields = {
   last_bundle_at?: Maybe<Scalars['numeric']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['numeric']['output']>;
   nomination_tax?: Maybe<Scalars['Int']['output']>;
-  pending_action?: Maybe<Scalars['String']['output']>;
   raw_status?: Maybe<Scalars['String']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['numeric']['output']>;
   signing_key?: Maybe<Scalars['String']['output']>;
   sort_id?: Maybe<Scalars['String']['output']>;
   status?: Maybe<Scalars['String']['output']>;
-  total_burned_balance?: Maybe<Scalars['numeric']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['numeric']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
   total_deposits_count?: Maybe<Scalars['numeric']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['numeric']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['numeric']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['numeric']['output']>;
   total_rewards_collected?: Maybe<Scalars['numeric']['output']>;
   total_tax_collected?: Maybe<Scalars['numeric']['output']>;
-  total_transfers_in?: Maybe<Scalars['numeric']['output']>;
-  total_transfers_out?: Maybe<Scalars['numeric']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['numeric']['output']>;
-  total_volume?: Maybe<Scalars['numeric']['output']>;
   total_withdrawals?: Maybe<Scalars['numeric']['output']>;
   total_withdrawals_count?: Maybe<Scalars['numeric']['output']>;
-  transfers_in_count?: Maybe<Scalars['numeric']['output']>;
-  transfers_out_count?: Maybe<Scalars['numeric']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['numeric']['output']>;
 };
 
@@ -17088,6 +17364,12 @@ export type Staking_Operators_Min_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17099,30 +17381,17 @@ export type Staking_Operators_Min_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  pending_action?: InputMaybe<Order_By>;
   raw_status?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
   signing_key?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -17137,6 +17406,12 @@ export type Staking_Operators_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17153,30 +17428,17 @@ export type Staking_Operators_Order_By = {
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
   nominators_aggregate?: InputMaybe<Staking_Nominators_Aggregate_Order_By>;
-  pending_action?: InputMaybe<Order_By>;
   raw_status?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
   signing_key?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
   withdraw_events_aggregate?: InputMaybe<Staking_Withdraw_Events_Aggregate_Order_By>;
   withdrawal_histories_aggregate?: InputMaybe<Staking_Withdrawal_Histories_Aggregate_Order_By>;
@@ -17202,6 +17464,18 @@ export enum Staking_Operators_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  Current_1dApy = 'current_1d_apy',
+  /** column name */
+  Current_1dYield = 'current_1d_yield',
+  /** column name */
+  Current_7dApy = 'current_7d_apy',
+  /** column name */
+  Current_7dYield = 'current_7d_yield',
+  /** column name */
+  Current_30dApy = 'current_30d_apy',
+  /** column name */
+  Current_30dYield = 'current_30d_yield',
+  /** column name */
   CurrentEpochRewards = 'current_epoch_rewards',
   /** column name */
   CurrentSharePrice = 'current_share_price',
@@ -17224,11 +17498,7 @@ export enum Staking_Operators_Select_Column {
   /** column name */
   NominationTax = 'nomination_tax',
   /** column name */
-  PendingAction = 'pending_action',
-  /** column name */
   RawStatus = 'raw_status',
-  /** column name */
-  RejectedTransfersClaimedCount = 'rejected_transfers_claimed_count',
   /** column name */
   SigningKey = 'signing_key',
   /** column name */
@@ -17236,41 +17506,19 @@ export enum Staking_Operators_Select_Column {
   /** column name */
   Status = 'status',
   /** column name */
-  TotalBurnedBalance = 'total_burned_balance',
-  /** column name */
-  TotalConsensusStorageFee = 'total_consensus_storage_fee',
-  /** column name */
   TotalDeposits = 'total_deposits',
   /** column name */
   TotalDepositsCount = 'total_deposits_count',
   /** column name */
-  TotalDomainExecutionFee = 'total_domain_execution_fee',
-  /** column name */
   TotalEstimatedWithdrawals = 'total_estimated_withdrawals',
-  /** column name */
-  TotalRejectedTransfersClaimed = 'total_rejected_transfers_claimed',
   /** column name */
   TotalRewardsCollected = 'total_rewards_collected',
   /** column name */
   TotalTaxCollected = 'total_tax_collected',
   /** column name */
-  TotalTransfersIn = 'total_transfers_in',
-  /** column name */
-  TotalTransfersOut = 'total_transfers_out',
-  /** column name */
-  TotalTransfersRejected = 'total_transfers_rejected',
-  /** column name */
-  TotalVolume = 'total_volume',
-  /** column name */
   TotalWithdrawals = 'total_withdrawals',
   /** column name */
   TotalWithdrawalsCount = 'total_withdrawals_count',
-  /** column name */
-  TransfersInCount = 'transfers_in_count',
-  /** column name */
-  TransfersOutCount = 'transfers_out_count',
-  /** column name */
-  TransfersRejectedCount = 'transfers_rejected_count',
   /** column name */
   UpdatedAt = 'updated_at'
 }
@@ -17285,6 +17533,12 @@ export type Staking_Operators_Stddev_Fields = {
   active_epoch_count?: Maybe<Scalars['Float']['output']>;
   bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -17293,25 +17547,13 @@ export type Staking_Operators_Stddev_Fields = {
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  total_burned_balance?: Maybe<Scalars['Float']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
   total_deposits_count?: Maybe<Scalars['Float']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['Float']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['Float']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['Float']['output']>;
   total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
-  total_transfers_in?: Maybe<Scalars['Float']['output']>;
-  total_transfers_out?: Maybe<Scalars['Float']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['Float']['output']>;
-  total_volume?: Maybe<Scalars['Float']['output']>;
   total_withdrawals?: Maybe<Scalars['Float']['output']>;
   total_withdrawals_count?: Maybe<Scalars['Float']['output']>;
-  transfers_in_count?: Maybe<Scalars['Float']['output']>;
-  transfers_out_count?: Maybe<Scalars['Float']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -17324,6 +17566,12 @@ export type Staking_Operators_Stddev_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17332,25 +17580,13 @@ export type Staking_Operators_Stddev_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -17364,6 +17600,12 @@ export type Staking_Operators_Stddev_Pop_Fields = {
   active_epoch_count?: Maybe<Scalars['Float']['output']>;
   bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -17372,25 +17614,13 @@ export type Staking_Operators_Stddev_Pop_Fields = {
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  total_burned_balance?: Maybe<Scalars['Float']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
   total_deposits_count?: Maybe<Scalars['Float']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['Float']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['Float']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['Float']['output']>;
   total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
-  total_transfers_in?: Maybe<Scalars['Float']['output']>;
-  total_transfers_out?: Maybe<Scalars['Float']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['Float']['output']>;
-  total_volume?: Maybe<Scalars['Float']['output']>;
   total_withdrawals?: Maybe<Scalars['Float']['output']>;
   total_withdrawals_count?: Maybe<Scalars['Float']['output']>;
-  transfers_in_count?: Maybe<Scalars['Float']['output']>;
-  transfers_out_count?: Maybe<Scalars['Float']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -17403,6 +17633,12 @@ export type Staking_Operators_Stddev_Pop_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17411,25 +17647,13 @@ export type Staking_Operators_Stddev_Pop_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -17443,6 +17667,12 @@ export type Staking_Operators_Stddev_Samp_Fields = {
   active_epoch_count?: Maybe<Scalars['Float']['output']>;
   bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -17451,25 +17681,13 @@ export type Staking_Operators_Stddev_Samp_Fields = {
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  total_burned_balance?: Maybe<Scalars['Float']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
   total_deposits_count?: Maybe<Scalars['Float']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['Float']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['Float']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['Float']['output']>;
   total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
-  total_transfers_in?: Maybe<Scalars['Float']['output']>;
-  total_transfers_out?: Maybe<Scalars['Float']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['Float']['output']>;
-  total_volume?: Maybe<Scalars['Float']['output']>;
   total_withdrawals?: Maybe<Scalars['Float']['output']>;
   total_withdrawals_count?: Maybe<Scalars['Float']['output']>;
-  transfers_in_count?: Maybe<Scalars['Float']['output']>;
-  transfers_out_count?: Maybe<Scalars['Float']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -17482,6 +17700,12 @@ export type Staking_Operators_Stddev_Samp_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17490,25 +17714,13 @@ export type Staking_Operators_Stddev_Samp_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -17530,6 +17742,12 @@ export type Staking_Operators_Stream_Cursor_Value_Input = {
   active_epoch_count?: InputMaybe<Scalars['numeric']['input']>;
   bundle_count?: InputMaybe<Scalars['numeric']['input']>;
   created_at?: InputMaybe<Scalars['numeric']['input']>;
+  current_1d_apy?: InputMaybe<Scalars['numeric']['input']>;
+  current_1d_yield?: InputMaybe<Scalars['numeric']['input']>;
+  current_7d_apy?: InputMaybe<Scalars['numeric']['input']>;
+  current_7d_yield?: InputMaybe<Scalars['numeric']['input']>;
+  current_30d_apy?: InputMaybe<Scalars['numeric']['input']>;
+  current_30d_yield?: InputMaybe<Scalars['numeric']['input']>;
   current_epoch_rewards?: InputMaybe<Scalars['numeric']['input']>;
   current_share_price?: InputMaybe<Scalars['numeric']['input']>;
   current_storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
@@ -17541,30 +17759,17 @@ export type Staking_Operators_Stream_Cursor_Value_Input = {
   last_bundle_at?: InputMaybe<Scalars['numeric']['input']>;
   minimum_nominator_stake?: InputMaybe<Scalars['numeric']['input']>;
   nomination_tax?: InputMaybe<Scalars['Int']['input']>;
-  pending_action?: InputMaybe<Scalars['String']['input']>;
   raw_status?: InputMaybe<Scalars['String']['input']>;
-  rejected_transfers_claimed_count?: InputMaybe<Scalars['numeric']['input']>;
   signing_key?: InputMaybe<Scalars['String']['input']>;
   sort_id?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
-  total_burned_balance?: InputMaybe<Scalars['numeric']['input']>;
-  total_consensus_storage_fee?: InputMaybe<Scalars['numeric']['input']>;
   total_deposits?: InputMaybe<Scalars['numeric']['input']>;
   total_deposits_count?: InputMaybe<Scalars['numeric']['input']>;
-  total_domain_execution_fee?: InputMaybe<Scalars['numeric']['input']>;
   total_estimated_withdrawals?: InputMaybe<Scalars['numeric']['input']>;
-  total_rejected_transfers_claimed?: InputMaybe<Scalars['numeric']['input']>;
   total_rewards_collected?: InputMaybe<Scalars['numeric']['input']>;
   total_tax_collected?: InputMaybe<Scalars['numeric']['input']>;
-  total_transfers_in?: InputMaybe<Scalars['numeric']['input']>;
-  total_transfers_out?: InputMaybe<Scalars['numeric']['input']>;
-  total_transfers_rejected?: InputMaybe<Scalars['numeric']['input']>;
-  total_volume?: InputMaybe<Scalars['numeric']['input']>;
   total_withdrawals?: InputMaybe<Scalars['numeric']['input']>;
   total_withdrawals_count?: InputMaybe<Scalars['numeric']['input']>;
-  transfers_in_count?: InputMaybe<Scalars['numeric']['input']>;
-  transfers_out_count?: InputMaybe<Scalars['numeric']['input']>;
-  transfers_rejected_count?: InputMaybe<Scalars['numeric']['input']>;
   updated_at?: InputMaybe<Scalars['numeric']['input']>;
 };
 
@@ -17578,6 +17783,12 @@ export type Staking_Operators_Sum_Fields = {
   active_epoch_count?: Maybe<Scalars['numeric']['output']>;
   bundle_count?: Maybe<Scalars['numeric']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
+  current_1d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_1d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_7d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_7d_yield?: Maybe<Scalars['numeric']['output']>;
+  current_30d_apy?: Maybe<Scalars['numeric']['output']>;
+  current_30d_yield?: Maybe<Scalars['numeric']['output']>;
   current_epoch_rewards?: Maybe<Scalars['numeric']['output']>;
   current_share_price?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
@@ -17586,25 +17797,13 @@ export type Staking_Operators_Sum_Fields = {
   last_bundle_at?: Maybe<Scalars['numeric']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['numeric']['output']>;
   nomination_tax?: Maybe<Scalars['Int']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['numeric']['output']>;
-  total_burned_balance?: Maybe<Scalars['numeric']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['numeric']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
   total_deposits_count?: Maybe<Scalars['numeric']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['numeric']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['numeric']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['numeric']['output']>;
   total_rewards_collected?: Maybe<Scalars['numeric']['output']>;
   total_tax_collected?: Maybe<Scalars['numeric']['output']>;
-  total_transfers_in?: Maybe<Scalars['numeric']['output']>;
-  total_transfers_out?: Maybe<Scalars['numeric']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['numeric']['output']>;
-  total_volume?: Maybe<Scalars['numeric']['output']>;
   total_withdrawals?: Maybe<Scalars['numeric']['output']>;
   total_withdrawals_count?: Maybe<Scalars['numeric']['output']>;
-  transfers_in_count?: Maybe<Scalars['numeric']['output']>;
-  transfers_out_count?: Maybe<Scalars['numeric']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['numeric']['output']>;
 };
 
@@ -17617,6 +17816,12 @@ export type Staking_Operators_Sum_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17625,25 +17830,13 @@ export type Staking_Operators_Sum_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -17657,6 +17850,12 @@ export type Staking_Operators_Var_Pop_Fields = {
   active_epoch_count?: Maybe<Scalars['Float']['output']>;
   bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -17665,25 +17864,13 @@ export type Staking_Operators_Var_Pop_Fields = {
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  total_burned_balance?: Maybe<Scalars['Float']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
   total_deposits_count?: Maybe<Scalars['Float']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['Float']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['Float']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['Float']['output']>;
   total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
-  total_transfers_in?: Maybe<Scalars['Float']['output']>;
-  total_transfers_out?: Maybe<Scalars['Float']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['Float']['output']>;
-  total_volume?: Maybe<Scalars['Float']['output']>;
   total_withdrawals?: Maybe<Scalars['Float']['output']>;
   total_withdrawals_count?: Maybe<Scalars['Float']['output']>;
-  transfers_in_count?: Maybe<Scalars['Float']['output']>;
-  transfers_out_count?: Maybe<Scalars['Float']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -17696,6 +17883,12 @@ export type Staking_Operators_Var_Pop_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17704,25 +17897,13 @@ export type Staking_Operators_Var_Pop_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -17736,6 +17917,12 @@ export type Staking_Operators_Var_Samp_Fields = {
   active_epoch_count?: Maybe<Scalars['Float']['output']>;
   bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -17744,25 +17931,13 @@ export type Staking_Operators_Var_Samp_Fields = {
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  total_burned_balance?: Maybe<Scalars['Float']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
   total_deposits_count?: Maybe<Scalars['Float']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['Float']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['Float']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['Float']['output']>;
   total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
-  total_transfers_in?: Maybe<Scalars['Float']['output']>;
-  total_transfers_out?: Maybe<Scalars['Float']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['Float']['output']>;
-  total_volume?: Maybe<Scalars['Float']['output']>;
   total_withdrawals?: Maybe<Scalars['Float']['output']>;
   total_withdrawals_count?: Maybe<Scalars['Float']['output']>;
-  transfers_in_count?: Maybe<Scalars['Float']['output']>;
-  transfers_out_count?: Maybe<Scalars['Float']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -17775,6 +17950,12 @@ export type Staking_Operators_Var_Samp_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17783,25 +17964,13 @@ export type Staking_Operators_Var_Samp_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -17815,6 +17984,12 @@ export type Staking_Operators_Variance_Fields = {
   active_epoch_count?: Maybe<Scalars['Float']['output']>;
   bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_1d_apy?: Maybe<Scalars['Float']['output']>;
+  current_1d_yield?: Maybe<Scalars['Float']['output']>;
+  current_7d_apy?: Maybe<Scalars['Float']['output']>;
+  current_7d_yield?: Maybe<Scalars['Float']['output']>;
+  current_30d_apy?: Maybe<Scalars['Float']['output']>;
+  current_30d_yield?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -17823,25 +17998,13 @@ export type Staking_Operators_Variance_Fields = {
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   minimum_nominator_stake?: Maybe<Scalars['Float']['output']>;
   nomination_tax?: Maybe<Scalars['Float']['output']>;
-  rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
-  total_burned_balance?: Maybe<Scalars['Float']['output']>;
-  total_consensus_storage_fee?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
   total_deposits_count?: Maybe<Scalars['Float']['output']>;
-  total_domain_execution_fee?: Maybe<Scalars['Float']['output']>;
   total_estimated_withdrawals?: Maybe<Scalars['Float']['output']>;
-  total_rejected_transfers_claimed?: Maybe<Scalars['Float']['output']>;
   total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
-  total_transfers_in?: Maybe<Scalars['Float']['output']>;
-  total_transfers_out?: Maybe<Scalars['Float']['output']>;
-  total_transfers_rejected?: Maybe<Scalars['Float']['output']>;
-  total_volume?: Maybe<Scalars['Float']['output']>;
   total_withdrawals?: Maybe<Scalars['Float']['output']>;
   total_withdrawals_count?: Maybe<Scalars['Float']['output']>;
-  transfers_in_count?: Maybe<Scalars['Float']['output']>;
-  transfers_out_count?: Maybe<Scalars['Float']['output']>;
-  transfers_rejected_count?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -17854,6 +18017,12 @@ export type Staking_Operators_Variance_Order_By = {
   active_epoch_count?: InputMaybe<Order_By>;
   bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_1d_apy?: InputMaybe<Order_By>;
+  current_1d_yield?: InputMaybe<Order_By>;
+  current_7d_apy?: InputMaybe<Order_By>;
+  current_7d_yield?: InputMaybe<Order_By>;
+  current_30d_apy?: InputMaybe<Order_By>;
+  current_30d_yield?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -17862,25 +18031,13 @@ export type Staking_Operators_Variance_Order_By = {
   last_bundle_at?: InputMaybe<Order_By>;
   minimum_nominator_stake?: InputMaybe<Order_By>;
   nomination_tax?: InputMaybe<Order_By>;
-  rejected_transfers_claimed_count?: InputMaybe<Order_By>;
-  total_burned_balance?: InputMaybe<Order_By>;
-  total_consensus_storage_fee?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
   total_deposits_count?: InputMaybe<Order_By>;
-  total_domain_execution_fee?: InputMaybe<Order_By>;
   total_estimated_withdrawals?: InputMaybe<Order_By>;
-  total_rejected_transfers_claimed?: InputMaybe<Order_By>;
   total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
-  total_transfers_in?: InputMaybe<Order_By>;
-  total_transfers_out?: InputMaybe<Order_By>;
-  total_transfers_rejected?: InputMaybe<Order_By>;
-  total_volume?: InputMaybe<Order_By>;
   total_withdrawals?: InputMaybe<Order_By>;
   total_withdrawals_count?: InputMaybe<Order_By>;
-  transfers_in_count?: InputMaybe<Order_By>;
-  transfers_out_count?: InputMaybe<Order_By>;
-  transfers_rejected_count?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -17993,6 +18150,28 @@ export type Staking_Unlocked_Events = {
   uuid: Scalars['uuid']['output'];
 };
 
+/** order by aggregate values of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Aggregate_Order_By = {
+  avg?: InputMaybe<Staking_Unlocked_Events_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Staking_Unlocked_Events_Max_Order_By>;
+  min?: InputMaybe<Staking_Unlocked_Events_Min_Order_By>;
+  stddev?: InputMaybe<Staking_Unlocked_Events_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Staking_Unlocked_Events_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Staking_Unlocked_Events_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Staking_Unlocked_Events_Sum_Order_By>;
+  var_pop?: InputMaybe<Staking_Unlocked_Events_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Staking_Unlocked_Events_Var_Samp_Order_By>;
+  variance?: InputMaybe<Staking_Unlocked_Events_Variance_Order_By>;
+};
+
+/** order by avg() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Avg_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "staking.unlocked_events". All fields are combined with a logical 'AND'. */
 export type Staking_Unlocked_Events_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Unlocked_Events_Bool_Exp>>;
@@ -18010,6 +18189,36 @@ export type Staking_Unlocked_Events_Bool_Exp = {
   operator_id?: InputMaybe<String_Comparison_Exp>;
   storage_fee?: InputMaybe<Numeric_Comparison_Exp>;
   uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Max_Order_By = {
+  account_id?: InputMaybe<Order_By>;
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  event_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nominator_id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Min_Order_By = {
+  account_id?: InputMaybe<Order_By>;
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  event_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nominator_id?: InputMaybe<Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+  uuid?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "staking.unlocked_events". */
@@ -18056,6 +18265,27 @@ export enum Staking_Unlocked_Events_Select_Column {
   Uuid = 'uuid'
 }
 
+/** order by stddev() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Stddev_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Stddev_Pop_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Stddev_Samp_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
 /** Streaming cursor of the table "staking_unlocked_events" */
 export type Staking_Unlocked_Events_Stream_Cursor_Input = {
   /** Stream column input with initial value */
@@ -18080,24 +18310,52 @@ export type Staking_Unlocked_Events_Stream_Cursor_Value_Input = {
   uuid?: InputMaybe<Scalars['uuid']['input']>;
 };
 
+/** order by sum() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Sum_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by var_pop() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Var_Pop_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Var_Samp_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "staking.unlocked_events" */
+export type Staking_Unlocked_Events_Variance_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  storage_fee?: InputMaybe<Order_By>;
+};
+
 /** columns and relationships of "staking.withdraw_events" */
 export type Staking_Withdraw_Events = {
   __typename?: 'staking_withdraw_events';
   _block_range: Scalars['int8range']['output'];
   account_id: Scalars['String']['output'];
-  amount1: Scalars['numeric']['output'];
-  amount2: Scalars['numeric']['output'];
   block_height: Scalars['numeric']['output'];
   domain_id: Scalars['String']['output'];
+  estimated_amount: Scalars['numeric']['output'];
   event_id: Scalars['String']['output'];
   extrinsic_id: Scalars['String']['output'];
   id: Scalars['String']['output'];
   nominator_id: Scalars['String']['output'];
   operator_id: Scalars['String']['output'];
+  shares: Scalars['numeric']['output'];
   sort_id: Scalars['String']['output'];
+  storage_fee_refund: Scalars['numeric']['output'];
   timestamp: Scalars['timestamptz']['output'];
   to_withdraw: Scalars['String']['output'];
-  total_amount: Scalars['numeric']['output'];
   uuid: Scalars['uuid']['output'];
 };
 
@@ -18118,10 +18376,10 @@ export type Staking_Withdraw_Events_Aggregate_Order_By = {
 
 /** order by avg() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Avg_Order_By = {
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "staking.withdraw_events". All fields are combined with a logical 'AND'. */
@@ -18131,57 +18389,57 @@ export type Staking_Withdraw_Events_Bool_Exp = {
   _not?: InputMaybe<Staking_Withdraw_Events_Bool_Exp>;
   _or?: InputMaybe<Array<Staking_Withdraw_Events_Bool_Exp>>;
   account_id?: InputMaybe<String_Comparison_Exp>;
-  amount1?: InputMaybe<Numeric_Comparison_Exp>;
-  amount2?: InputMaybe<Numeric_Comparison_Exp>;
   block_height?: InputMaybe<Numeric_Comparison_Exp>;
   domain_id?: InputMaybe<String_Comparison_Exp>;
+  estimated_amount?: InputMaybe<Numeric_Comparison_Exp>;
   event_id?: InputMaybe<String_Comparison_Exp>;
   extrinsic_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
   nominator_id?: InputMaybe<String_Comparison_Exp>;
   operator_id?: InputMaybe<String_Comparison_Exp>;
+  shares?: InputMaybe<Numeric_Comparison_Exp>;
   sort_id?: InputMaybe<String_Comparison_Exp>;
+  storage_fee_refund?: InputMaybe<Numeric_Comparison_Exp>;
   timestamp?: InputMaybe<Timestamptz_Comparison_Exp>;
   to_withdraw?: InputMaybe<String_Comparison_Exp>;
-  total_amount?: InputMaybe<Numeric_Comparison_Exp>;
   uuid?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** order by max() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Max_Order_By = {
   account_id?: InputMaybe<Order_By>;
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
   event_id?: InputMaybe<Order_By>;
   extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   nominator_id?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
   to_withdraw?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
   uuid?: InputMaybe<Order_By>;
 };
 
 /** order by min() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Min_Order_By = {
   account_id?: InputMaybe<Order_By>;
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
   event_id?: InputMaybe<Order_By>;
   extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   nominator_id?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
   to_withdraw?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
   uuid?: InputMaybe<Order_By>;
 };
 
@@ -18189,19 +18447,19 @@ export type Staking_Withdraw_Events_Min_Order_By = {
 export type Staking_Withdraw_Events_Order_By = {
   _block_range?: InputMaybe<Order_By>;
   account_id?: InputMaybe<Order_By>;
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
   event_id?: InputMaybe<Order_By>;
   extrinsic_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   nominator_id?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
   to_withdraw?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
   uuid?: InputMaybe<Order_By>;
 };
 
@@ -18212,13 +18470,11 @@ export enum Staking_Withdraw_Events_Select_Column {
   /** column name */
   AccountId = 'account_id',
   /** column name */
-  Amount1 = 'amount1',
-  /** column name */
-  Amount2 = 'amount2',
-  /** column name */
   BlockHeight = 'block_height',
   /** column name */
   DomainId = 'domain_id',
+  /** column name */
+  EstimatedAmount = 'estimated_amount',
   /** column name */
   EventId = 'event_id',
   /** column name */
@@ -18230,39 +18486,41 @@ export enum Staking_Withdraw_Events_Select_Column {
   /** column name */
   OperatorId = 'operator_id',
   /** column name */
+  Shares = 'shares',
+  /** column name */
   SortId = 'sort_id',
+  /** column name */
+  StorageFeeRefund = 'storage_fee_refund',
   /** column name */
   Timestamp = 'timestamp',
   /** column name */
   ToWithdraw = 'to_withdraw',
-  /** column name */
-  TotalAmount = 'total_amount',
   /** column name */
   Uuid = 'uuid'
 }
 
 /** order by stddev() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Stddev_Order_By = {
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
 };
 
 /** order by stddev_pop() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Stddev_Pop_Order_By = {
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
 };
 
 /** order by stddev_samp() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Stddev_Samp_Order_By = {
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "staking_withdraw_events" */
@@ -18277,52 +18535,52 @@ export type Staking_Withdraw_Events_Stream_Cursor_Input = {
 export type Staking_Withdraw_Events_Stream_Cursor_Value_Input = {
   _block_range?: InputMaybe<Scalars['int8range']['input']>;
   account_id?: InputMaybe<Scalars['String']['input']>;
-  amount1?: InputMaybe<Scalars['numeric']['input']>;
-  amount2?: InputMaybe<Scalars['numeric']['input']>;
   block_height?: InputMaybe<Scalars['numeric']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
+  estimated_amount?: InputMaybe<Scalars['numeric']['input']>;
   event_id?: InputMaybe<Scalars['String']['input']>;
   extrinsic_id?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   nominator_id?: InputMaybe<Scalars['String']['input']>;
   operator_id?: InputMaybe<Scalars['String']['input']>;
+  shares?: InputMaybe<Scalars['numeric']['input']>;
   sort_id?: InputMaybe<Scalars['String']['input']>;
+  storage_fee_refund?: InputMaybe<Scalars['numeric']['input']>;
   timestamp?: InputMaybe<Scalars['timestamptz']['input']>;
   to_withdraw?: InputMaybe<Scalars['String']['input']>;
-  total_amount?: InputMaybe<Scalars['numeric']['input']>;
   uuid?: InputMaybe<Scalars['uuid']['input']>;
 };
 
 /** order by sum() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Sum_Order_By = {
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
 };
 
 /** order by var_pop() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Var_Pop_Order_By = {
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
 };
 
 /** order by var_samp() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Var_Samp_Order_By = {
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
 };
 
 /** order by variance() on columns of table "staking.withdraw_events" */
 export type Staking_Withdraw_Events_Variance_Order_By = {
-  amount1?: InputMaybe<Order_By>;
-  amount2?: InputMaybe<Order_By>;
   block_height?: InputMaybe<Order_By>;
-  total_amount?: InputMaybe<Order_By>;
+  estimated_amount?: InputMaybe<Order_By>;
+  shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "staking.withdrawal_histories" */
@@ -18579,6 +18837,7 @@ export type Staking_Withdrawals = {
   created_at: Scalars['numeric']['output'];
   /** An object relationship */
   domain?: Maybe<Staking_Domains>;
+  domain_block_number_ready_at: Scalars['numeric']['output'];
   domain_block_number_withdrawal_requested_at: Scalars['numeric']['output'];
   domain_id: Scalars['String']['output'];
   epoch_withdrawal_requested_at: Scalars['numeric']['output'];
@@ -18588,17 +18847,17 @@ export type Staking_Withdrawals = {
   /** An object relationship */
   operator?: Maybe<Staking_Operators>;
   operator_id: Scalars['String']['output'];
-  ready_at: Scalars['numeric']['output'];
   shares: Scalars['numeric']['output'];
   status: Scalars['String']['output'];
+  storage_fee_refund: Scalars['numeric']['output'];
   timestamp: Scalars['timestamptz']['output'];
   total_amount: Scalars['numeric']['output'];
-  unlock_extrinsic_hash: Scalars['String']['output'];
+  unlock_extrinsic_id: Scalars['String']['output'];
   unlocked_amount: Scalars['numeric']['output'];
   unlocked_at: Scalars['numeric']['output'];
   unlocked_storage_fee: Scalars['numeric']['output'];
   updated_at: Scalars['numeric']['output'];
-  withdraw_extrinsic_hash: Scalars['String']['output'];
+  withdraw_extrinsic_id: Scalars['String']['output'];
 };
 
 /** aggregated selection of "staking.withdrawals" */
@@ -18661,11 +18920,12 @@ export type Staking_Withdrawals_Aggregate_Order_By = {
 export type Staking_Withdrawals_Avg_Fields = {
   __typename?: 'staking_withdrawals_avg_fields';
   created_at?: Maybe<Scalars['Float']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['Float']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   estimated_amount?: Maybe<Scalars['Float']['output']>;
-  ready_at?: Maybe<Scalars['Float']['output']>;
   shares?: Maybe<Scalars['Float']['output']>;
+  storage_fee_refund?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_at?: Maybe<Scalars['Float']['output']>;
@@ -18676,11 +18936,12 @@ export type Staking_Withdrawals_Avg_Fields = {
 /** order by avg() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Avg_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
   estimated_amount?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
@@ -18697,6 +18958,7 @@ export type Staking_Withdrawals_Bool_Exp = {
   account_id?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Numeric_Comparison_Exp>;
   domain?: InputMaybe<Staking_Domains_Bool_Exp>;
+  domain_block_number_ready_at?: InputMaybe<Numeric_Comparison_Exp>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Numeric_Comparison_Exp>;
   domain_id?: InputMaybe<String_Comparison_Exp>;
   epoch_withdrawal_requested_at?: InputMaybe<Numeric_Comparison_Exp>;
@@ -18705,17 +18967,17 @@ export type Staking_Withdrawals_Bool_Exp = {
   nominator_id?: InputMaybe<String_Comparison_Exp>;
   operator?: InputMaybe<Staking_Operators_Bool_Exp>;
   operator_id?: InputMaybe<String_Comparison_Exp>;
-  ready_at?: InputMaybe<Numeric_Comparison_Exp>;
   shares?: InputMaybe<Numeric_Comparison_Exp>;
   status?: InputMaybe<String_Comparison_Exp>;
+  storage_fee_refund?: InputMaybe<Numeric_Comparison_Exp>;
   timestamp?: InputMaybe<Timestamptz_Comparison_Exp>;
   total_amount?: InputMaybe<Numeric_Comparison_Exp>;
-  unlock_extrinsic_hash?: InputMaybe<String_Comparison_Exp>;
+  unlock_extrinsic_id?: InputMaybe<String_Comparison_Exp>;
   unlocked_amount?: InputMaybe<Numeric_Comparison_Exp>;
   unlocked_at?: InputMaybe<Numeric_Comparison_Exp>;
   unlocked_storage_fee?: InputMaybe<Numeric_Comparison_Exp>;
   updated_at?: InputMaybe<Numeric_Comparison_Exp>;
-  withdraw_extrinsic_hash?: InputMaybe<String_Comparison_Exp>;
+  withdraw_extrinsic_id?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** aggregate max on columns */
@@ -18723,6 +18985,7 @@ export type Staking_Withdrawals_Max_Fields = {
   __typename?: 'staking_withdrawals_max_fields';
   account_id?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['numeric']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['numeric']['output']>;
   domain_id?: Maybe<Scalars['String']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['numeric']['output']>;
@@ -18730,23 +18993,24 @@ export type Staking_Withdrawals_Max_Fields = {
   id?: Maybe<Scalars['String']['output']>;
   nominator_id?: Maybe<Scalars['String']['output']>;
   operator_id?: Maybe<Scalars['String']['output']>;
-  ready_at?: Maybe<Scalars['numeric']['output']>;
   shares?: Maybe<Scalars['numeric']['output']>;
   status?: Maybe<Scalars['String']['output']>;
+  storage_fee_refund?: Maybe<Scalars['numeric']['output']>;
   timestamp?: Maybe<Scalars['timestamptz']['output']>;
   total_amount?: Maybe<Scalars['numeric']['output']>;
-  unlock_extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  unlock_extrinsic_id?: Maybe<Scalars['String']['output']>;
   unlocked_amount?: Maybe<Scalars['numeric']['output']>;
   unlocked_at?: Maybe<Scalars['numeric']['output']>;
   unlocked_storage_fee?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['numeric']['output']>;
-  withdraw_extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  withdraw_extrinsic_id?: Maybe<Scalars['String']['output']>;
 };
 
 /** order by max() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Max_Order_By = {
   account_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
@@ -18754,17 +19018,17 @@ export type Staking_Withdrawals_Max_Order_By = {
   id?: InputMaybe<Order_By>;
   nominator_id?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
-  unlock_extrinsic_hash?: InputMaybe<Order_By>;
+  unlock_extrinsic_id?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
   unlocked_storage_fee?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  withdraw_extrinsic_hash?: InputMaybe<Order_By>;
+  withdraw_extrinsic_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
@@ -18772,6 +19036,7 @@ export type Staking_Withdrawals_Min_Fields = {
   __typename?: 'staking_withdrawals_min_fields';
   account_id?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['numeric']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['numeric']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['numeric']['output']>;
   domain_id?: Maybe<Scalars['String']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['numeric']['output']>;
@@ -18779,23 +19044,24 @@ export type Staking_Withdrawals_Min_Fields = {
   id?: Maybe<Scalars['String']['output']>;
   nominator_id?: Maybe<Scalars['String']['output']>;
   operator_id?: Maybe<Scalars['String']['output']>;
-  ready_at?: Maybe<Scalars['numeric']['output']>;
   shares?: Maybe<Scalars['numeric']['output']>;
   status?: Maybe<Scalars['String']['output']>;
+  storage_fee_refund?: Maybe<Scalars['numeric']['output']>;
   timestamp?: Maybe<Scalars['timestamptz']['output']>;
   total_amount?: Maybe<Scalars['numeric']['output']>;
-  unlock_extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  unlock_extrinsic_id?: Maybe<Scalars['String']['output']>;
   unlocked_amount?: Maybe<Scalars['numeric']['output']>;
   unlocked_at?: Maybe<Scalars['numeric']['output']>;
   unlocked_storage_fee?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['numeric']['output']>;
-  withdraw_extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  withdraw_extrinsic_id?: Maybe<Scalars['String']['output']>;
 };
 
 /** order by min() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Min_Order_By = {
   account_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
@@ -18803,17 +19069,17 @@ export type Staking_Withdrawals_Min_Order_By = {
   id?: InputMaybe<Order_By>;
   nominator_id?: InputMaybe<Order_By>;
   operator_id?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
-  unlock_extrinsic_hash?: InputMaybe<Order_By>;
+  unlock_extrinsic_id?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
   unlocked_storage_fee?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  withdraw_extrinsic_hash?: InputMaybe<Order_By>;
+  withdraw_extrinsic_id?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "staking.withdrawals". */
@@ -18822,6 +19088,7 @@ export type Staking_Withdrawals_Order_By = {
   account_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   domain?: InputMaybe<Staking_Domains_Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
@@ -18830,17 +19097,17 @@ export type Staking_Withdrawals_Order_By = {
   nominator_id?: InputMaybe<Order_By>;
   operator?: InputMaybe<Staking_Operators_Order_By>;
   operator_id?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
-  unlock_extrinsic_hash?: InputMaybe<Order_By>;
+  unlock_extrinsic_id?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
   unlocked_storage_fee?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  withdraw_extrinsic_hash?: InputMaybe<Order_By>;
+  withdraw_extrinsic_id?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "staking.withdrawals" */
@@ -18849,6 +19116,8 @@ export enum Staking_Withdrawals_Select_Column {
   AccountId = 'account_id',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  DomainBlockNumberReadyAt = 'domain_block_number_ready_at',
   /** column name */
   DomainBlockNumberWithdrawalRequestedAt = 'domain_block_number_withdrawal_requested_at',
   /** column name */
@@ -18864,17 +19133,17 @@ export enum Staking_Withdrawals_Select_Column {
   /** column name */
   OperatorId = 'operator_id',
   /** column name */
-  ReadyAt = 'ready_at',
-  /** column name */
   Shares = 'shares',
   /** column name */
   Status = 'status',
+  /** column name */
+  StorageFeeRefund = 'storage_fee_refund',
   /** column name */
   Timestamp = 'timestamp',
   /** column name */
   TotalAmount = 'total_amount',
   /** column name */
-  UnlockExtrinsicHash = 'unlock_extrinsic_hash',
+  UnlockExtrinsicId = 'unlock_extrinsic_id',
   /** column name */
   UnlockedAmount = 'unlocked_amount',
   /** column name */
@@ -18884,18 +19153,19 @@ export enum Staking_Withdrawals_Select_Column {
   /** column name */
   UpdatedAt = 'updated_at',
   /** column name */
-  WithdrawExtrinsicHash = 'withdraw_extrinsic_hash'
+  WithdrawExtrinsicId = 'withdraw_extrinsic_id'
 }
 
 /** aggregate stddev on columns */
 export type Staking_Withdrawals_Stddev_Fields = {
   __typename?: 'staking_withdrawals_stddev_fields';
   created_at?: Maybe<Scalars['Float']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['Float']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   estimated_amount?: Maybe<Scalars['Float']['output']>;
-  ready_at?: Maybe<Scalars['Float']['output']>;
   shares?: Maybe<Scalars['Float']['output']>;
+  storage_fee_refund?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_at?: Maybe<Scalars['Float']['output']>;
@@ -18906,11 +19176,12 @@ export type Staking_Withdrawals_Stddev_Fields = {
 /** order by stddev() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Stddev_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
   estimated_amount?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
@@ -18922,11 +19193,12 @@ export type Staking_Withdrawals_Stddev_Order_By = {
 export type Staking_Withdrawals_Stddev_Pop_Fields = {
   __typename?: 'staking_withdrawals_stddev_pop_fields';
   created_at?: Maybe<Scalars['Float']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['Float']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   estimated_amount?: Maybe<Scalars['Float']['output']>;
-  ready_at?: Maybe<Scalars['Float']['output']>;
   shares?: Maybe<Scalars['Float']['output']>;
+  storage_fee_refund?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_at?: Maybe<Scalars['Float']['output']>;
@@ -18937,11 +19209,12 @@ export type Staking_Withdrawals_Stddev_Pop_Fields = {
 /** order by stddev_pop() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Stddev_Pop_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
   estimated_amount?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
@@ -18953,11 +19226,12 @@ export type Staking_Withdrawals_Stddev_Pop_Order_By = {
 export type Staking_Withdrawals_Stddev_Samp_Fields = {
   __typename?: 'staking_withdrawals_stddev_samp_fields';
   created_at?: Maybe<Scalars['Float']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['Float']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   estimated_amount?: Maybe<Scalars['Float']['output']>;
-  ready_at?: Maybe<Scalars['Float']['output']>;
   shares?: Maybe<Scalars['Float']['output']>;
+  storage_fee_refund?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_at?: Maybe<Scalars['Float']['output']>;
@@ -18968,11 +19242,12 @@ export type Staking_Withdrawals_Stddev_Samp_Fields = {
 /** order by stddev_samp() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Stddev_Samp_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
   estimated_amount?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
@@ -18992,6 +19267,7 @@ export type Staking_Withdrawals_Stream_Cursor_Input = {
 export type Staking_Withdrawals_Stream_Cursor_Value_Input = {
   account_id?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['numeric']['input']>;
+  domain_block_number_ready_at?: InputMaybe<Scalars['numeric']['input']>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Scalars['numeric']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
   epoch_withdrawal_requested_at?: InputMaybe<Scalars['numeric']['input']>;
@@ -18999,28 +19275,29 @@ export type Staking_Withdrawals_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['String']['input']>;
   nominator_id?: InputMaybe<Scalars['String']['input']>;
   operator_id?: InputMaybe<Scalars['String']['input']>;
-  ready_at?: InputMaybe<Scalars['numeric']['input']>;
   shares?: InputMaybe<Scalars['numeric']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
+  storage_fee_refund?: InputMaybe<Scalars['numeric']['input']>;
   timestamp?: InputMaybe<Scalars['timestamptz']['input']>;
   total_amount?: InputMaybe<Scalars['numeric']['input']>;
-  unlock_extrinsic_hash?: InputMaybe<Scalars['String']['input']>;
+  unlock_extrinsic_id?: InputMaybe<Scalars['String']['input']>;
   unlocked_amount?: InputMaybe<Scalars['numeric']['input']>;
   unlocked_at?: InputMaybe<Scalars['numeric']['input']>;
   unlocked_storage_fee?: InputMaybe<Scalars['numeric']['input']>;
   updated_at?: InputMaybe<Scalars['numeric']['input']>;
-  withdraw_extrinsic_hash?: InputMaybe<Scalars['String']['input']>;
+  withdraw_extrinsic_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate sum on columns */
 export type Staking_Withdrawals_Sum_Fields = {
   __typename?: 'staking_withdrawals_sum_fields';
   created_at?: Maybe<Scalars['numeric']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['numeric']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['numeric']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['numeric']['output']>;
   estimated_amount?: Maybe<Scalars['numeric']['output']>;
-  ready_at?: Maybe<Scalars['numeric']['output']>;
   shares?: Maybe<Scalars['numeric']['output']>;
+  storage_fee_refund?: Maybe<Scalars['numeric']['output']>;
   total_amount?: Maybe<Scalars['numeric']['output']>;
   unlocked_amount?: Maybe<Scalars['numeric']['output']>;
   unlocked_at?: Maybe<Scalars['numeric']['output']>;
@@ -19031,11 +19308,12 @@ export type Staking_Withdrawals_Sum_Fields = {
 /** order by sum() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Sum_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
   estimated_amount?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
@@ -19047,11 +19325,12 @@ export type Staking_Withdrawals_Sum_Order_By = {
 export type Staking_Withdrawals_Var_Pop_Fields = {
   __typename?: 'staking_withdrawals_var_pop_fields';
   created_at?: Maybe<Scalars['Float']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['Float']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   estimated_amount?: Maybe<Scalars['Float']['output']>;
-  ready_at?: Maybe<Scalars['Float']['output']>;
   shares?: Maybe<Scalars['Float']['output']>;
+  storage_fee_refund?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_at?: Maybe<Scalars['Float']['output']>;
@@ -19062,11 +19341,12 @@ export type Staking_Withdrawals_Var_Pop_Fields = {
 /** order by var_pop() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Var_Pop_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
   estimated_amount?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
@@ -19078,11 +19358,12 @@ export type Staking_Withdrawals_Var_Pop_Order_By = {
 export type Staking_Withdrawals_Var_Samp_Fields = {
   __typename?: 'staking_withdrawals_var_samp_fields';
   created_at?: Maybe<Scalars['Float']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['Float']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   estimated_amount?: Maybe<Scalars['Float']['output']>;
-  ready_at?: Maybe<Scalars['Float']['output']>;
   shares?: Maybe<Scalars['Float']['output']>;
+  storage_fee_refund?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_at?: Maybe<Scalars['Float']['output']>;
@@ -19093,11 +19374,12 @@ export type Staking_Withdrawals_Var_Samp_Fields = {
 /** order by var_samp() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Var_Samp_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
   estimated_amount?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
@@ -19109,11 +19391,12 @@ export type Staking_Withdrawals_Var_Samp_Order_By = {
 export type Staking_Withdrawals_Variance_Fields = {
   __typename?: 'staking_withdrawals_variance_fields';
   created_at?: Maybe<Scalars['Float']['output']>;
+  domain_block_number_ready_at?: Maybe<Scalars['Float']['output']>;
   domain_block_number_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   epoch_withdrawal_requested_at?: Maybe<Scalars['Float']['output']>;
   estimated_amount?: Maybe<Scalars['Float']['output']>;
-  ready_at?: Maybe<Scalars['Float']['output']>;
   shares?: Maybe<Scalars['Float']['output']>;
+  storage_fee_refund?: Maybe<Scalars['Float']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_amount?: Maybe<Scalars['Float']['output']>;
   unlocked_at?: Maybe<Scalars['Float']['output']>;
@@ -19124,11 +19407,12 @@ export type Staking_Withdrawals_Variance_Fields = {
 /** order by variance() on columns of table "staking.withdrawals" */
 export type Staking_Withdrawals_Variance_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  domain_block_number_ready_at?: InputMaybe<Order_By>;
   domain_block_number_withdrawal_requested_at?: InputMaybe<Order_By>;
   epoch_withdrawal_requested_at?: InputMaybe<Order_By>;
   estimated_amount?: InputMaybe<Order_By>;
-  ready_at?: InputMaybe<Order_By>;
   shares?: InputMaybe<Order_By>;
+  storage_fee_refund?: InputMaybe<Order_By>;
   total_amount?: InputMaybe<Order_By>;
   unlocked_amount?: InputMaybe<Order_By>;
   unlocked_at?: InputMaybe<Order_By>;
@@ -19932,6 +20216,14 @@ export type Subscription_Root = {
   staking_nominators_by_pk?: Maybe<Staking_Nominators>;
   /** fetch data from the table in a streaming manner: "staking.nominators" */
   staking_nominators_stream: Array<Staking_Nominators>;
+  /** fetch data from the table: "staking.nominators_unlocked_events" */
+  staking_nominators_unlocked_events: Array<Staking_Nominators_Unlocked_Events>;
+  /** fetch aggregated fields from the table: "staking.nominators_unlocked_events" */
+  staking_nominators_unlocked_events_aggregate: Staking_Nominators_Unlocked_Events_Aggregate;
+  /** fetch data from the table: "staking.nominators_unlocked_events" using primary key columns */
+  staking_nominators_unlocked_events_by_pk?: Maybe<Staking_Nominators_Unlocked_Events>;
+  /** fetch data from the table in a streaming manner: "staking.nominators_unlocked_events" */
+  staking_nominators_unlocked_events_stream: Array<Staking_Nominators_Unlocked_Events>;
   /** fetch data from the table: "staking.operator_deregistrations" */
   staking_operator_deregistrations: Array<Staking_Operator_Deregistrations>;
   /** fetch data from the table: "staking.operator_deregistrations" using primary key columns */
@@ -21782,6 +22074,36 @@ export type Subscription_RootStaking_Nominators_StreamArgs = {
 };
 
 
+export type Subscription_RootStaking_Nominators_Unlocked_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Order_By>>;
+  where?: InputMaybe<Staking_Nominators_Unlocked_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Nominators_Unlocked_Events_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Staking_Nominators_Unlocked_Events_Order_By>>;
+  where?: InputMaybe<Staking_Nominators_Unlocked_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootStaking_Nominators_Unlocked_Events_By_PkArgs = {
+  uuid: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootStaking_Nominators_Unlocked_Events_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Staking_Nominators_Unlocked_Events_Stream_Cursor_Input>>;
+  where?: InputMaybe<Staking_Nominators_Unlocked_Events_Bool_Exp>;
+};
+
+
 export type Subscription_RootStaking_Operator_DeregistrationsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Operator_Deregistrations_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -22615,25 +22937,25 @@ export type NominationsListQueryVariables = Exact<{
 }>;
 
 
-export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, pending_action: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, pending_action: string, current_total_shares: any, current_share_price: any } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, timestamp: any, extrinsic_id: string, status: string, created_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, timestamp: any, withdraw_extrinsic_hash: string, unlock_extrinsic_hash: string, status: string, created_at: any, ready_at: any, unlocked_at: any, updated_at: any }>, deposit_histories: Array<{ __typename?: 'staking_deposit_histories', id: string, shares: any, storage_fee_deposit: any, shares_known: any, storage_fee_deposit_known: any, effective_domain_id_pending: number, effective_domain_epoch_pending: number, amount_pending: any, storage_fee_deposit_pending: any, timestamp: any, block_height: any }>, withdrawal_histories: Array<{ __typename?: 'staking_withdrawal_histories', id: string, shares: any, total_withdrawal_amount: any, unlock_at_confirmed_domain_block_number: any, storage_fee_refund: any, timestamp: any, block_height: any }> }> };
+export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string, last_domain_block_number: any } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, raw_status: string, current_total_stake: any, current_total_shares: any, current_share_price: any, apy30d: any, apy7d: any, apy1d: any } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, total_amount: any, timestamp: any, extrinsic_id: string, status: string, created_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, storage_fee_refund: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, timestamp: any, withdraw_extrinsic_id: string, unlock_extrinsic_id: string, status: string, created_at: any, domain_block_number_ready_at: any, unlocked_at: any, updated_at: any }>, deposit_histories: Array<{ __typename?: 'staking_deposit_histories', id: string, shares: any, storage_fee_deposit: any, shares_known: any, storage_fee_deposit_known: any, effective_domain_id_pending: number, effective_domain_epoch_pending: number, amount_pending: any, storage_fee_deposit_pending: any, timestamp: any, block_height: any }>, withdrawal_histories: Array<{ __typename?: 'staking_withdrawal_histories', id: string, shares: any, total_withdrawal_amount: any, unlock_at_confirmed_domain_block_number: any, storage_fee_refund: any, timestamp: any, block_height: any }>, unlocked_events: Array<{ __typename?: 'staking_unlocked_events', id: string, amount: any, storage_fee: any, block_height: any, extrinsic_id: string }> }> };
 
 export type OperatorsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<Staking_Operators_Order_By> | Staking_Operators_Order_By;
   where?: InputMaybe<Staking_Operators_Bool_Exp>;
-  accountId: Scalars['String']['input'];
+  accountId?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, status: string, sortId: string, accountId: string, domainId: string, currentEpochRewards: any, currentTotalStake: any, currentTotalShares: any, currentSharePrice: any, currentStorageFeeDeposit: any, minimumNominatorStake: any, nominationTax: number, signingKey: string, rawStatus: string, pendingAction: string, totalDeposits: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, totalTaxCollected: any, totalRewardsCollected: any, totalTransfersIn: any, transfersInCount: any, totalTransfersOut: any, transfersOutCount: any, totalRejectedTransfersClaimed: any, rejectedTransfersClaimedCount: any, totalTransfersRejected: any, transfersRejectedCount: any, totalVolume: any, totalConsensusStorageFee: any, totalDomainExecutionFee: any, totalBurnedBalance: any, accumulatedEpochShares: any, accumulatedEpochStorageFeeDeposit: any, activeEpochCount: any, bundleCount: any, lastBundleAt: any, createdAt: any, updatedAt: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string, last_domain_block_number: any } | null, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, depositsAggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, known_shares: any, unlock_at_confirmed_domain_block_number: any, current_total_stake: any, current_storage_fee_deposit: any }> }> };
+export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, status: string, sortId: string, accountId: string, domainId: string, currentTotalStake: any, currentStorageFeeDeposit: any, currentTotalShares: any, yield30d: any, yield7d: any, yield1d: any, apy30d: any, apy7d: any, apy1d: any, currentSharePrice: any, minimumNominatorStake: any, nominationTax: number, signingKey: string, rawStatus: string, totalDeposits: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, totalTaxCollected: any, totalRewardsCollected: any, bundleCount: any, lastBundleAt: any, depositsCount: any, withdrawalsCount: any, createdAt: any, updatedAt: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string, last_domain_block_number: any } | null, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } }> };
 
 export type OperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['String']['input'];
 }>;
 
 
-export type OperatorByIdQuery = { __typename?: 'query_root', staking_operators_by_pk?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, bundle_count: any, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_share_price: any, current_storage_fee_deposit: any, minimum_nominator_stake: any, total_rewards_collected: any, total_consensus_storage_fee: any, total_domain_execution_fee: any, total_burned_balance: any, total_tax_collected: any, nomination_tax: number, signing_key: string, status: string, raw_status: string, pending_action: string, last_bundle_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string } | null, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, deposits_aggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, withdrawals_aggregate: { __typename?: 'staking_withdrawals_aggregate', aggregate?: { __typename?: 'staking_withdrawals_aggregate_fields', count: number } | null } } | null };
+export type OperatorByIdQuery = { __typename?: 'query_root', staking_operators_by_pk?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, bundle_count: any, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_share_price: any, current_storage_fee_deposit: any, minimum_nominator_stake: any, total_rewards_collected: any, total_tax_collected: any, nomination_tax: number, signing_key: string, status: string, raw_status: string, last_bundle_at: any, updated_at: any, total_deposits_count: any, total_withdrawals_count: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: string } | null, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } } | null };
 
 export type OperatorNominatorsByIdQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -22653,7 +22975,7 @@ export type NominatorsConnectionQueryVariables = Exact<{
 }>;
 
 
-export type NominatorsConnectionQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, known_shares: any, account_id: string, domain_id: string, updated_at: any, operator?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_share_price: any, minimum_nominator_stake: any, nomination_tax: number, signing_key: string, status: string, raw_status: string, pending_action: string, updated_at: any } | null }> };
+export type NominatorsConnectionQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, known_shares: any, account_id: string, domain_id: string, updated_at: any, operator?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_share_price: any, minimum_nominator_stake: any, nomination_tax: number, signing_key: string, status: string, raw_status: string, updated_at: any } | null }> };
 
 export type DomainsLastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -23803,19 +24125,19 @@ export type HomeSuspenseQueryHookResult = ReturnType<typeof useHomeSuspenseQuery
 export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
 export const OnChainActivityChartsDocument = gql`
     query OnChainActivityCharts {
-  stats_daily(limit: 30, offset: 0, order_by: {end_block: desc}) {
+  stats_daily(limit: 30, offset: 1, order_by: {end_block: desc}) {
     cumulated_history_size
     delta_history_size
     start_date
     end_date
   }
-  stats_weekly(limit: 30, offset: 0, order_by: {end_block: desc}) {
+  stats_weekly(limit: 30, offset: 1, order_by: {end_block: desc}) {
     cumulated_history_size
     delta_history_size
     start_date
     end_date
   }
-  stats_monthly(limit: 30, offset: 0, order_by: {end_block: desc}) {
+  stats_monthly(limit: 30, offset: 1, order_by: {end_block: desc}) {
     cumulated_history_size
     delta_history_size
     start_date
@@ -25635,15 +25957,20 @@ export const NominationsListDocument = gql`
     domain {
       id
       name
+      last_domain_block_number
     }
     operator_id
     operator {
       id
       account_id
       status
-      pending_action
+      raw_status
+      current_total_stake
       current_total_shares
       current_share_price
+      apy30d: current_30d_apy
+      apy7d: current_7d_apy
+      apy1d: current_1d_apy
     }
     known_shares
     known_storage_fee_deposit
@@ -25657,13 +25984,13 @@ export const NominationsListDocument = gql`
     pending_storage_fee_refund
     total_deposits
     status
-    pending_action
     created_at
     updated_at
     deposits {
       id
       amount
       storage_fee_deposit
+      total_amount
       timestamp
       extrinsic_id
       status
@@ -25673,15 +26000,16 @@ export const NominationsListDocument = gql`
     withdrawals {
       id
       shares
+      storage_fee_refund
       estimated_amount
       unlocked_amount
       unlocked_storage_fee
       timestamp
-      withdraw_extrinsic_hash
-      unlock_extrinsic_hash
+      withdraw_extrinsic_id
+      unlock_extrinsic_id
       status
       created_at
-      ready_at
+      domain_block_number_ready_at
       unlocked_at
       updated_at
     }
@@ -25706,6 +26034,13 @@ export const NominationsListDocument = gql`
       storage_fee_refund
       timestamp
       block_height
+    }
+    unlocked_events {
+      id
+      amount
+      storage_fee
+      block_height
+      extrinsic_id
     }
   }
 }
@@ -25747,7 +26082,7 @@ export type NominationsListLazyQueryHookResult = ReturnType<typeof useNomination
 export type NominationsListSuspenseQueryHookResult = ReturnType<typeof useNominationsListSuspenseQuery>;
 export type NominationsListQueryResult = Apollo.QueryResult<NominationsListQuery, NominationsListQueryVariables>;
 export const OperatorsListDocument = gql`
-    query OperatorsList($limit: Int!, $offset: Int, $orderBy: [staking_operators_order_by!]!, $where: staking_operators_bool_exp, $accountId: String!) {
+    query OperatorsList($limit: Int!, $offset: Int, $orderBy: [staking_operators_order_by!]!, $where: staking_operators_bool_exp, $accountId: String) {
   staking_operators_aggregate(where: $where) {
     aggregate {
       count
@@ -25768,37 +26103,26 @@ export const OperatorsListDocument = gql`
       sort_id
       last_domain_block_number
     }
-    currentEpochRewards: current_epoch_rewards
     currentTotalStake: current_total_stake
-    currentTotalShares: current_total_shares
-    currentSharePrice: current_share_price
     currentStorageFeeDeposit: current_storage_fee_deposit
+    currentTotalShares: current_total_shares
+    yield30d: current_30d_yield
+    yield7d: current_7d_yield
+    yield1d: current_1d_yield
+    apy30d: current_30d_apy
+    apy7d: current_7d_apy
+    apy1d: current_1d_apy
+    currentSharePrice: current_share_price
     minimumNominatorStake: minimum_nominator_stake
     nominationTax: nomination_tax
     signingKey: signing_key
     status
     rawStatus: raw_status
-    pendingAction: pending_action
     totalDeposits: total_deposits
     totalEstimatedWithdrawals: total_estimated_withdrawals
     totalWithdrawals: total_withdrawals
     totalTaxCollected: total_tax_collected
     totalRewardsCollected: total_rewards_collected
-    totalTransfersIn: total_transfers_in
-    transfersInCount: transfers_in_count
-    totalTransfersOut: total_transfers_out
-    transfersOutCount: transfers_out_count
-    totalRejectedTransfersClaimed: total_rejected_transfers_claimed
-    rejectedTransfersClaimedCount: rejected_transfers_claimed_count
-    totalTransfersRejected: total_transfers_rejected
-    transfersRejectedCount: transfers_rejected_count
-    totalVolume: total_volume
-    totalConsensusStorageFee: total_consensus_storage_fee
-    totalDomainExecutionFee: total_domain_execution_fee
-    totalBurnedBalance: total_burned_balance
-    accumulatedEpochShares: accumulated_epoch_shares
-    accumulatedEpochStorageFeeDeposit: accumulated_epoch_storage_fee_deposit
-    activeEpochCount: active_epoch_count
     bundleCount: bundle_count
     lastBundleAt: last_bundle_at
     nominatorsAggregate: nominators_aggregate {
@@ -25806,19 +26130,8 @@ export const OperatorsListDocument = gql`
         count
       }
     }
-    depositsAggregate: deposits_aggregate {
-      aggregate {
-        count
-      }
-    }
-    nominators(limit: 256, where: {account_id: {_eq: $accountId}}) {
-      id
-      account_id
-      known_shares
-      unlock_at_confirmed_domain_block_number
-      current_total_stake
-      current_storage_fee_deposit
-    }
+    depositsCount: total_deposits_count
+    withdrawalsCount: total_withdrawals_count
     createdAt: created_at
     updatedAt: updated_at
   }
@@ -25879,15 +26192,11 @@ export const OperatorByIdDocument = gql`
     current_storage_fee_deposit
     minimum_nominator_stake
     total_rewards_collected
-    total_consensus_storage_fee
-    total_domain_execution_fee
-    total_burned_balance
     total_tax_collected
     nomination_tax
     signing_key
     status
     raw_status
-    pending_action
     last_bundle_at
     updated_at
     nominators_aggregate {
@@ -25895,16 +26204,8 @@ export const OperatorByIdDocument = gql`
         count
       }
     }
-    deposits_aggregate {
-      aggregate {
-        count
-      }
-    }
-    withdrawals_aggregate {
-      aggregate {
-        count
-      }
-    }
+    total_deposits_count
+    total_withdrawals_count
   }
 }
     `;
@@ -26031,7 +26332,6 @@ export const NominatorsConnectionDocument = gql`
       signing_key
       status
       raw_status
-      pending_action
       updated_at
     }
     updated_at
