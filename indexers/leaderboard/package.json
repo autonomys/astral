@@ -32,8 +32,8 @@
   "license": "MIT",
   "devDependencies": {
     "@apollo/client": "^3.13.2",
-    "@polkadot/api": "^12.4.2",
-    "@polkadot/types": "^14.3.1",
+    "@polkadot/api": "^15.8.1",
+    "@polkadot/types": "^15.8.1",
     "@polkadot/util": "^13.2.2",
     "@polkadot/util-crypto": "^13.4.3",
     "@subql/cli": "^5.7.0",
