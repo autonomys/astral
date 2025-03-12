@@ -18,6 +18,7 @@ import useWallet from 'hooks/useWallet'
 import { useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
+import { log } from 'utils/log'
 import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import { WalletButton } from '../WalletButton'
 import { AmountField } from './AmountField'
@@ -72,10 +73,13 @@ export const Transfer: FC = () => {
 
   const handleSubmit = useCallback(
     async (values: FormValues) => {
+      log('transfer', 'handleSubmit', 'values', values)
       if (!injector || !api)
         return toast.error('We are not able to connect to the blockchain', {
           position: 'bottom-center',
         })
+      log('transfer', 'handleSubmit', 'injector', injector)
+      log('transfer', 'handleSubmit', 'api', api)
 
       const to = values.receiver || subspaceAccount
       if (!to) return toast.error('Receiver is required', { position: 'bottom-center' })
