@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { blockNumber } from '@autonomys/auto-consensus'
+// import { blockNumber } from '@autonomys/auto-consensus' // To re-implement as soon as the fix is released
 import { activate, NetworkId } from '@autonomys/auto-utils'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { LastBlockDocument, LastBlockQuery } from 'gql/graphql'
@@ -60,7 +60,9 @@ export const useOutOfSyncBanner = () => {
   const getChainLastBlock = useCallback(async () => {
     try {
       const api = await activate({ networkId: network })
-      setLastBlockNumber(network, await blockNumber(api))
+      const block = await api.rpc.chain.getBlock()
+      const lastBlock = parseInt(block.block.header.number.toString())
+      setLastBlockNumber(network, lastBlock)
       await api.disconnect()
     } catch (error) {
       console.error('Error getting chain last block', error)

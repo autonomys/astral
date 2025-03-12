@@ -7,6 +7,9 @@
   "workspaces": [
     "*"
   ],
+  "engines": {
+    "node": ">=20.8.0"
+  },
   "scripts": {
     "bootstrap": "lerna run bootstrap",
     "prepack": "lerna run prepack",
