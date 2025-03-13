@@ -32,8 +32,8 @@
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
-    "@apollo/client": "^3.13.2",
-    "@apollo/experimental-nextjs-app-support": "^0.11.9",
+    "@apollo/client": "^3.13.4",
+    "@apollo/experimental-nextjs-app-support": "^0.11.10",
     "@autonomys/auto-consensus": "^1.4.0",
     "@autonomys/auto-drive": "^1.4.0",
     "@autonomys/auto-utils": "^1.4.0",
