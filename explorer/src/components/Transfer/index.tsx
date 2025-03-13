@@ -79,6 +79,8 @@ export const Transfer: FC = () => {
           position: 'bottom-center',
         })
       log('transfer', 'handleSubmit', 'injector', injector)
+      log('transfer', 'handleSubmit', 'injector.signer', injector.signer)
+      log('transfer', 'handleSubmit', 'injector.accounts', injector.accounts)
       log('transfer', 'handleSubmit', 'api', api)
 
       const to = values.receiver || subspaceAccount
@@ -111,6 +113,7 @@ export const Transfer: FC = () => {
           }
           try {
             const tx = await transfer(api, to, amount)
+            log('transfer', 'handleSubmit', 'tx', tx)
             const hash = await sendAndSaveTx({
               call: 'balances.transferKeepAlive',
               tx,
@@ -118,6 +121,7 @@ export const Transfer: FC = () => {
               to,
               amount,
             })
+            log('transfer', 'handleSubmit', 'hash', hash)
             if (hash) {
               setHash(hash)
               toast.success('The transaction was sent successfully', { position: 'bottom-center' })
