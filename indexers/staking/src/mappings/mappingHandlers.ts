@@ -1,18 +1,10 @@
-import {
-  parseDeposit,
-  parseOperator,
-  parseWithdrawal,
-} from "@autonomys/auto-consensus";
+import { parseOperator } from "@autonomys/auto-consensus";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
 import * as db from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
-import {
-  aggregateByDomainId,
-  createHashId,
-  findDomainIdFromOperatorsCache,
-} from "./utils";
+import { aggregateByDomainId, createHashId } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
