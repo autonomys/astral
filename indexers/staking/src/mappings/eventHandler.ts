@@ -13,7 +13,7 @@ import {
   findEpochFromDomainStakingHistoryCache,
   findOneExtrinsicEvent,
   findOperatorFromOperatorsCache,
-  findWithdrawalHistoryFromCache,
+  findWithdrawalHistory,
 } from "./utils";
 
 type EventHandler = (params: {
@@ -29,7 +29,7 @@ type EventHandler = (params: {
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
-  "domains.DomainRuntimeCreated": ({
+  "domains.DomainRuntimeCreated": async ({
     event,
     cache,
     extrinsicSigner,
@@ -55,7 +55,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.DomainInstantiated": ({
+  "domains.DomainInstantiated": async ({
     event,
     cache,
     extrinsicSigner,
@@ -83,7 +83,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorRegistered": ({
+  "domains.OperatorRegistered": async ({
     event,
     cache,
     extrinsicSigner,
@@ -140,7 +140,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorNominated": ({
+  "domains.OperatorNominated": async ({
     event,
     cache,
     height,
@@ -178,7 +178,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.WithdrewStake": ({
+  "domains.WithdrewStake": async ({
     event,
     cache,
     height,
@@ -192,11 +192,12 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const accountId = event.event.data[1].toString();
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
     const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
-    const { shares, storageFeeRefund } = findWithdrawalHistoryFromCache(
-      cache,
+    const withdrawalInShares = await findWithdrawalHistory(
       operatorId,
       accountId
     );
+    if (!withdrawalInShares) return;
+    const { shares, storageFeeRefund } = withdrawalInShares;
     const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
     const estimatedAmount =
       (shares * sharePrice) / SHARES_CALCULATION_MULTIPLIER + storageFeeRefund;
@@ -217,7 +218,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorRewarded": ({
+  "domains.OperatorRewarded": async ({
     event,
     cache,
     height,
@@ -242,7 +243,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorTaxCollected": ({
+  "domains.OperatorTaxCollected": async ({
     event,
     cache,
     height,
@@ -264,7 +265,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.NominatedStakedUnlocked": ({
+  "domains.NominatedStakedUnlocked": async ({
     event,
     cache,
     height,
@@ -299,7 +300,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.NominatorUnlocked": ({
+  "domains.NominatorUnlocked": async ({
     event,
     cache,
     height,
@@ -319,7 +320,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorDeregistered": ({
+  "domains.OperatorDeregistered": async ({
     event,
     cache,
     extrinsicSigner,
@@ -341,7 +342,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.BundleStored": ({
+  "domains.BundleStored": async ({
     event,
     cache,
     extrinsic,

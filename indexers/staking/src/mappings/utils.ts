@@ -1,7 +1,11 @@
-import { Operator } from "@autonomys/auto-consensus";
+import {
+  Operator,
+  parseWithdrawal,
+  Withdrawal,
+} from "@autonomys/auto-consensus";
 import { EventRecord, stringify } from "@autonomys/auto-utils";
 import { createHash } from "crypto";
-import { OperatorStakingHistory, WithdrawalHistory } from "../types";
+import { OperatorStakingHistory } from "../types";
 import { PAD_ZEROS, ZERO_BIGINT } from "./constants";
 import { Cache } from "./db";
 import { Transfer } from "./types";
@@ -87,17 +91,15 @@ export const findEpochFromDomainStakingHistoryCache = (
   return domainFromCache.currentEpochIndex;
 };
 
-export const findWithdrawalHistoryFromCache = (
-  cache: Cache,
+export const findWithdrawalHistory = async (
   operatorId: string,
   accountId: string
-): WithdrawalHistory => {
-  const withdrawalHistoryFromCache = cache.withdrawalHistory.find(
-    (o) => o.operatorId === operatorId && o.accountId === accountId
+): Promise<Withdrawal["withdrawalInShares"]> => {
+  const withdrawals = await api.query.domains.withdrawals.entries(
+    operatorId,
+    accountId
   );
-  if (!withdrawalHistoryFromCache)
-    throw new Error("WithdrawalHistory from cache not found");
-  return withdrawalHistoryFromCache;
+  return parseWithdrawal(withdrawals[0]).withdrawalInShares;
 };
 
 export const aggregateByDomainId = (

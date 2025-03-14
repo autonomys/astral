@@ -14,7 +14,6 @@ import {
   RuntimeCreation,
   UnlockedEvent,
   WithdrawEvent,
-  WithdrawalHistory,
 } from "../types";
 import { getNominationId, getSortId } from "./utils";
 
@@ -31,7 +30,6 @@ export type Cache = {
   operatorDeregistration: OperatorDeregistration[];
   runtimeCreation: RuntimeCreation[];
   withdrawEvent: WithdrawEvent[];
-  withdrawalHistory: WithdrawalHistory[];
   unlockedEvent: UnlockedEvent[];
   nominatorsUnlockedEvent: NominatorsUnlockedEvent[];
   // only for caching purposes
@@ -51,7 +49,6 @@ export const initializeCache = (): Cache => ({
   operatorDeregistration: [],
   runtimeCreation: [],
   withdrawEvent: [],
-  withdrawalHistory: [],
   unlockedEvent: [],
   nominatorsUnlockedEvent: [],
   // only for caching purposes
@@ -72,7 +69,6 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(`OperatorDeregistration`, cache.operatorDeregistration),
     store.bulkCreate(`RuntimeCreation`, cache.runtimeCreation),
     store.bulkCreate(`WithdrawEvent`, cache.withdrawEvent),
-    store.bulkCreate(`WithdrawalHistory`, cache.withdrawalHistory),
     store.bulkCreate(`UnlockedEvent`, cache.unlockedEvent),
     store.bulkCreate(`NominatorsUnlockedEvent`, cache.nominatorsUnlockedEvent),
   ]);
@@ -435,35 +431,6 @@ export function createOperatorStakingHistory(
     totalStorageFeeDeposit,
     sharePrice,
     partialStatus,
-    timestamp,
-    blockHeight,
-  });
-}
-
-export function createWithdrawalHistory(
-  hash: string,
-  domainId: string,
-  accountId: string,
-  operatorId: string,
-  totalWithdrawalAmount: bigint,
-  domainEpoch: number,
-  unlockAtConfirmedDomainBlockNumber: bigint,
-  shares: bigint,
-  storageFeeRefund: bigint,
-  timestamp: Date,
-  blockHeight: bigint
-): WithdrawalHistory {
-  return WithdrawalHistory.create({
-    id: hash,
-    domainId,
-    accountId,
-    operatorId,
-    nominatorId: getNominationId(accountId, domainId, operatorId),
-    totalWithdrawalAmount,
-    domainEpoch,
-    unlockAtConfirmedDomainBlockNumber,
-    shares,
-    storageFeeRefund,
     timestamp,
     blockHeight,
   });

@@ -57,15 +57,6 @@ array_relationships:
         remote_table:
           name: withdraw_events
           schema: staking
-  - name: withdrawal_histories
-    using:
-      manual_configuration:
-        column_mapping:
-          id: operator_id
-        insertion_order: null
-        remote_table:
-          name: withdrawal_histories
-          schema: staking
   - name: withdrawals
     using:
       manual_configuration:

@@ -134,44 +134,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     cache.parentBlockOperators.push(parseOperator(o))
   );
 
-  const withdrawals = (
-    await Promise.all(
-      operatorIdOwner.map((o) =>
-        api.query.domains.withdrawals.entries(
-          (o[0].toHuman() as any)[0].toString()
-        )
-      )
-    )
-  ).flat();
-
-  withdrawals.forEach((w: any) => {
-    const data = parseWithdrawal(w);
-    const operatorId = data.operatorId.toString();
-    cache.withdrawalHistory.push(
-      db.createWithdrawalHistory(
-        createHashId(data),
-        findDomainIdFromOperatorsCache(cache, operatorId),
-        data.account,
-        operatorId,
-        data.totalWithdrawalAmount,
-        data.withdrawalInShares === null
-          ? 0
-          : data.withdrawalInShares.domainEpoch[1],
-        data.withdrawalInShares === null
-          ? ZERO_BIGINT
-          : BigInt(data.withdrawalInShares.unlockAtConfirmedDomainBlockNumber),
-        data.withdrawalInShares === null
-          ? ZERO_BIGINT
-          : data.withdrawalInShares.shares,
-        data.withdrawalInShares === null
-          ? ZERO_BIGINT
-          : data.withdrawalInShares.storageFeeRefund,
-        blockTimestamp,
-        height
-      )
-    );
-  });
-
   const eventsByExtrinsic = new Map<number, typeof events>();
   for (const event of events) {
     if (event.phase.isApplyExtrinsic) {
@@ -199,14 +161,14 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
     if (successEvent) {
       // Process extrinsic events
-      extrinsicEvents.forEach((event) => {
+      extrinsicEvents.forEach(async (event) => {
         const eventId = height + "-" + eventIndex;
 
         // Process specific events
         const eventKey = event.event.section + "." + event.event.method;
         const handler = EVENT_HANDLERS[eventKey];
         if (handler) {
-          handler({
+          await handler({
             event,
             extrinsic,
             cache,

@@ -97,7 +97,6 @@
 - "!include staking_runtime_creations.yaml"
 - "!include staking_unlocked_events.yaml"
 - "!include staking_withdraw_events.yaml"
-- "!include staking_withdrawal_histories.yaml"
 - "!include staking_withdrawals.yaml"
 - "!include stats_daily.yaml"
 - "!include stats_hourly.yaml"

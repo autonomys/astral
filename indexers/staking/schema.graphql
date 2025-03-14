@@ -193,18 +193,3 @@ type OperatorStakingHistory @entity {
   timestamp: Date!
   blockHeight: BigInt!
 }
-
-type WithdrawalHistory @entity {
-  id: ID!
-  domainId: String!
-  accountId: String!
-  operatorId: String!
-  nominatorId: String!
-  totalWithdrawalAmount: BigInt!
-  domainEpoch: Int!
-  unlockAtConfirmedDomainBlockNumber: BigInt!
-  shares: BigInt!
-  storageFeeRefund: BigInt!
-  timestamp: Date!
-  blockHeight: BigInt!
-}

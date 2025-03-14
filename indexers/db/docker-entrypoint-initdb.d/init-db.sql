@@ -1553,24 +1553,6 @@ CREATE TABLE staking.withdraw_events (
 );
 ALTER TABLE staking.withdraw_events OWNER TO postgres;
 
-CREATE TABLE staking.withdrawal_histories (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    account_id text NOT NULL,
-    operator_id text NOT NULL,
-    nominator_id text NOT NULL,
-    total_withdrawal_amount numeric NOT NULL,
-    domain_epoch integer NOT NULL,
-    unlock_at_confirmed_domain_block_number numeric NOT NULL,
-    shares numeric NOT NULL,
-    storage_fee_refund numeric NOT NULL,
-    timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.withdrawal_histories OWNER TO postgres;
-
 CREATE TABLE staking.withdrawals (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -1951,9 +1933,6 @@ ALTER TABLE ONLY staking.nominators_unlocked_events
 ALTER TABLE ONLY staking.withdraw_events
     ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.withdrawal_histories
-    ADD CONSTRAINT withdrawal_histories_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY staking.withdrawals
     ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id);
 
@@ -2147,9 +2126,6 @@ CREATE INDEX "0xa3309c82ddfd9389" ON staking.operator_registrations USING btree 
 CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING btree (id);
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
 CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btree (id);
-CREATE INDEX "0xd3486d6b21c11e22" ON staking.withdrawal_histories USING btree (id);
-CREATE INDEX "staking_withdrawal_histories_operator_id" ON staking.withdrawal_histories USING btree (operator_id);
-CREATE INDEX "staking_withdrawal_histories_nominator_id" ON staking.withdrawal_histories USING btree (nominator_id);
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
 CREATE INDEX "staking_accounts_id" ON staking.accounts USING btree (id);
 CREATE INDEX "staking_deposits_id" ON staking.deposits USING btree (id);
@@ -2434,28 +2410,6 @@ CREATE TRIGGER prevent_operator_staking_histories_duplicate
 BEFORE INSERT ON staking.operator_staking_histories
 FOR EACH ROW
 EXECUTE FUNCTION staking.prevent_operator_staking_histories_duplicate();
-
-CREATE OR REPLACE FUNCTION staking.prevent_withdrawal_histories_duplicate() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    IF EXISTS (
-        SELECT 1 
-        FROM staking.withdrawal_histories 
-        WHERE id = NEW.id
-    ) THEN
-        RETURN NULL;
-    END IF;
-    
-    RETURN NEW;
-END;
-$$;
-ALTER FUNCTION staking.prevent_withdrawal_histories_duplicate() OWNER TO postgres;
-
-CREATE TRIGGER prevent_withdrawal_histories_duplicate
-BEFORE INSERT ON staking.withdrawal_histories
-FOR EACH ROW
-EXECUTE FUNCTION staking.prevent_withdrawal_histories_duplicate();
 
 CREATE OR REPLACE FUNCTION staking.insert_new_domain() RETURNS TRIGGER
     LANGUAGE plpgsql
