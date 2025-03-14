@@ -2,7 +2,6 @@ import { Operator } from "@autonomys/auto-consensus";
 import {
   BundleSubmission,
   DepositEvent,
-  DepositHistory,
   DomainBlockHistory,
   DomainInstantiation,
   DomainStakingHistory,
@@ -22,7 +21,6 @@ import { getNominationId, getSortId } from "./utils";
 export type Cache = {
   bundleSubmission: BundleSubmission[];
   depositEvent: DepositEvent[];
-  depositHistory: DepositHistory[];
   domainBlockHistory: DomainBlockHistory[];
   domainInstantiation: DomainInstantiation[];
   domainStakingHistory: DomainStakingHistory[];
@@ -43,7 +41,6 @@ export type Cache = {
 export const initializeCache = (): Cache => ({
   bundleSubmission: [],
   depositEvent: [],
-  depositHistory: [],
   domainBlockHistory: [],
   domainInstantiation: [],
   domainStakingHistory: [],
@@ -65,7 +62,6 @@ export const saveCache = async (cache: Cache) => {
   await Promise.all([
     store.bulkCreate(`BundleSubmission`, cache.bundleSubmission),
     store.bulkCreate(`DepositEvent`, cache.depositEvent),
-    store.bulkCreate(`DepositHistory`, cache.depositHistory),
     store.bulkCreate(`DomainBlockHistory`, cache.domainBlockHistory),
     store.bulkCreate(`DomainInstantiation`, cache.domainInstantiation),
     store.bulkCreate(`DomainStakingHistory`, cache.domainStakingHistory),
@@ -439,41 +435,6 @@ export function createOperatorStakingHistory(
     totalStorageFeeDeposit,
     sharePrice,
     partialStatus,
-    timestamp,
-    blockHeight,
-  });
-}
-
-export function createDepositHistory(
-  hash: string,
-  domainId: string,
-  accountId: string,
-  operatorId: string,
-  shares: bigint,
-  storageFeeDeposit: bigint,
-  sharesKnown: bigint,
-  storageFeeDepositKnown: bigint,
-  effectiveDomainIdPending: number,
-  effectiveDomainEpochPending: number,
-  amountPending: bigint,
-  storageFeeDepositPending: bigint,
-  timestamp: Date,
-  blockHeight: bigint
-): DepositHistory {
-  return DepositHistory.create({
-    id: hash,
-    domainId,
-    accountId,
-    operatorId,
-    nominatorId: getNominationId(accountId, domainId, operatorId),
-    shares,
-    storageFeeDeposit,
-    sharesKnown,
-    storageFeeDepositKnown,
-    effectiveDomainIdPending,
-    effectiveDomainEpochPending,
-    amountPending,
-    storageFeeDepositPending,
     timestamp,
     blockHeight,
   });

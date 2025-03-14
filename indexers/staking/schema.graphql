@@ -194,24 +194,6 @@ type OperatorStakingHistory @entity {
   blockHeight: BigInt!
 }
 
-type DepositHistory @entity {
-  id: ID!
-  domainId: String!
-  accountId: String!
-  operatorId: String!
-  nominatorId: String!
-  shares: BigInt!
-  storageFeeDeposit: BigInt!
-  sharesKnown: BigInt!
-  storageFeeDepositKnown: BigInt!
-  effectiveDomainIdPending: Int!
-  effectiveDomainEpochPending: Int!
-  amountPending: BigInt!
-  storageFeeDepositPending: BigInt!
-  timestamp: Date!
-  blockHeight: BigInt!
-}
-
 type WithdrawalHistory @entity {
   id: ID!
   domainId: String!

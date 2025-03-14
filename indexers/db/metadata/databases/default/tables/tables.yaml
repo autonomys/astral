@@ -80,7 +80,6 @@
 - "!include staking_accounts.yaml"
 - "!include staking_bundle_submissions.yaml"
 - "!include staking_deposit_events.yaml"
-- "!include staking_deposit_histories.yaml"
 - "!include staking_deposits.yaml"
 - "!include staking_domain_block_histories.yaml"
 - "!include staking_domain_epochs.yaml"

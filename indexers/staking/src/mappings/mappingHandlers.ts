@@ -134,37 +134,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     cache.parentBlockOperators.push(parseOperator(o))
   );
 
-  const deposits = (
-    await Promise.all(
-      operatorIdOwner.map((o) =>
-        api.query.domains.deposits.entries(
-          (o[0].toHuman() as any)[0].toString()
-        )
-      )
-    )
-  ).flat();
-  deposits.forEach((d: any) => {
-    const data = parseDeposit(d);
-    const operatorId = data.operatorId.toString();
-    cache.depositHistory.push(
-      db.createDepositHistory(
-        createHashId(data),
-        findDomainIdFromOperatorsCache(cache, operatorId),
-        data.account,
-        operatorId,
-        data.shares,
-        data.storageFeeDeposit,
-        data.known.shares,
-        data.known.storageFeeDeposit,
-        data.pending?.effectiveDomainId ?? 0,
-        data.pending?.effectiveDomainEpoch ?? 0,
-        data.pending?.amount ?? ZERO_BIGINT,
-        data.pending?.storageFeeDeposit ?? ZERO_BIGINT,
-        blockTimestamp,
-        height
-      )
-    );
-  });
   const withdrawals = (
     await Promise.all(
       operatorIdOwner.map((o) =>

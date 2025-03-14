@@ -39,15 +39,6 @@ array_relationships:
         remote_table:
           name: deposit_events
           schema: staking
-  - name: deposit_histories
-    using:
-      manual_configuration:
-        column_mapping:
-          id: nominator_id
-        insertion_order: null
-        remote_table:
-          name: deposit_histories
-          schema: staking
   - name: deposits
     using:
       manual_configuration:
