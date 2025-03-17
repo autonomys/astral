@@ -95,11 +95,14 @@ export const findWithdrawalHistory = async (
   operatorId: string,
   accountId: string
 ): Promise<Withdrawal["withdrawalInShares"]> => {
-  const withdrawals = await api.query.domains.withdrawals.entries(
-    operatorId,
-    accountId
+  const withdrawalsHistory =
+    await api.query.domains.withdrawals.entries(operatorId);
+  const withdrawals = withdrawalsHistory.map((w) => parseWithdrawal(w));
+  const withdrawal = withdrawals.find(
+    (w) => w.operatorId.toString() === operatorId && w.account === accountId
   );
-  return parseWithdrawal(withdrawals[0]).withdrawalInShares;
+  if (!withdrawal) throw new Error("Withdrawal not found");
+  return withdrawal.withdrawalInShares;
 };
 
 export const aggregateByDomainId = (
