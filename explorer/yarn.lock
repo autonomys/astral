@@ -6618,10 +6618,10 @@ eslint-plugin-react@^7.34.0:
     semver "^6.3.1"
     string.prototype.matchall "^4.0.10"
 
-eslint-plugin-tailwindcss@^3.14.3:
-  version "3.14.3"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-tailwindcss/-/eslint-plugin-tailwindcss-3.14.3.tgz#7d845869da1485e7f74226ccbc2c05e278f2a48e"
-  integrity sha512-1MKT8CrVuqVJleHxb7ICHsF2QwO0G+VJ28athTtlcOkccp0qmwK7nCUa1C9paCZ+VVgQU4fonsjLz/wUxoMHJQ==
+eslint-plugin-tailwindcss@^3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-tailwindcss/-/eslint-plugin-tailwindcss-3.18.0.tgz#00b020f6360e616d592c477a9abdc7d18970715d"
+  integrity sha512-PQDU4ZMzFH0eb2DrfHPpbgo87Zgg2EXSMOj1NSfzdZm+aJzpuwGerfowMIaVehSREEa0idbf/eoNYAOHSJoDAQ==
   dependencies:
     fast-glob "^3.2.5"
     postcss "^8.4.4"
