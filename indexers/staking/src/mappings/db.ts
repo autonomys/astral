@@ -1,4 +1,4 @@
-import { Operator } from "@autonomys/auto-consensus";
+import { Operator, Withdrawal } from "@autonomys/auto-consensus";
 import {
   BundleSubmission,
   DepositEvent,
@@ -34,6 +34,7 @@ export type Cache = {
   nominatorsUnlockedEvent: NominatorsUnlockedEvent[];
   // only for caching purposes
   parentBlockOperators: Operator[];
+  currentWithdrawal: Withdrawal[];
 };
 
 export const initializeCache = (): Cache => ({
@@ -53,6 +54,7 @@ export const initializeCache = (): Cache => ({
   nominatorsUnlockedEvent: [],
   // only for caching purposes
   parentBlockOperators: [],
+  currentWithdrawal: [],
 });
 
 export const saveCache = async (cache: Cache) => {
@@ -153,6 +155,7 @@ export function createDepositEvent(
   amount: bigint,
   storageFeeDeposit: bigint,
   totalAmount: bigint,
+  estimatedShares: bigint,
   timestamp: Date,
   blockHeight: bigint,
   extrinsicId: string,
@@ -168,6 +171,7 @@ export function createDepositEvent(
     amount,
     storageFeeDeposit,
     totalAmount,
+    estimatedShares,
     timestamp,
     blockHeight,
     extrinsicId,

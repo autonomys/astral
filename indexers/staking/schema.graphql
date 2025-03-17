@@ -51,6 +51,7 @@ type DepositEvent @entity {
   amount: BigInt!
   storageFeeDeposit: BigInt!
   totalAmount: BigInt!
+  estimatedShares: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
   extrinsicId: String!

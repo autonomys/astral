@@ -91,14 +91,12 @@ export const findEpochFromDomainStakingHistoryCache = (
   return domainFromCache.currentEpochIndex;
 };
 
-export const findWithdrawalHistory = async (
+export const findWithdrawalFromWithdrawalCache = (
+  cache: Cache,
   operatorId: string,
   accountId: string
-): Promise<Withdrawal["withdrawalInShares"]> => {
-  const withdrawalsHistory =
-    await api.query.domains.withdrawals.entries(operatorId);
-  const withdrawals = withdrawalsHistory.map((w) => parseWithdrawal(w));
-  const withdrawal = withdrawals.find(
+): Withdrawal["withdrawalInShares"] => {
+  const withdrawal = cache.currentWithdrawal.find(
     (w) => w.operatorId.toString() === operatorId && w.account === accountId
   );
   if (!withdrawal) throw new Error("Withdrawal not found");

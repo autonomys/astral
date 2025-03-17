@@ -1,4 +1,4 @@
-import { parseOperator } from "@autonomys/auto-consensus";
+import { parseOperator, parseWithdrawal } from "@autonomys/auto-consensus";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
@@ -36,23 +36,40 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       : await unsafeApi.at(parentHash)
     : api;
 
-  const [
-    domainStakingSummary,
-    headDomainNumber,
-    operatorIdOwner,
-    operatorsSummary,
-    parentBlockOperators,
-  ] = await Promise.all([
+  const query = [
+    apiPatched.query.domains.operators.entries(),
     api.query.domains.domainStakingSummary.entries(),
     api.query.domains.headDomainNumber.entries(),
     api.query.domains.operatorIdOwner.entries(),
-    apiPatched.query.domains.operators.entries(),
-    parentBlockApi.query.domains.operators.entries(),
-  ]);
+  ];
+  let blockHasUnlockNominator = false;
+  let blockHasWithdrawals = false;
+  if (extrinsics.length > 0) {
+    if (
+      extrinsics.find(
+        (e) =>
+          e.method.section === "domains" &&
+          e.method.method === "unlockNominator"
+      )
+    ) {
+      blockHasUnlockNominator = true;
+      query.push(parentBlockApi.query.domains.operators.entries());
+    }
+    if (
+      extrinsics.find(
+        (e) =>
+          e.method.section === "domains" && e.method.method === "withdrawStake"
+      )
+    ) {
+      blockHasWithdrawals = true;
+      query.push(api.query.domains.withdrawals.entries());
+    }
+  }
+  const queriesResults = await Promise.all(query);
 
-  const operators = operatorsSummary.map((o: any) => parseOperator(o));
+  const operators = queriesResults[0].map((o) => parseOperator(o));
 
-  domainStakingSummary.forEach((data) => {
+  queriesResults[1].forEach((data) => {
     const keyPrimitive = data[0].toPrimitive() as any;
     const valuePrimitive = data[1].toPrimitive() as any;
     const domainId = keyPrimitive[0].toString();
@@ -74,7 +91,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     );
   });
-  headDomainNumber.forEach((data) => {
+  queriesResults[2].forEach((data) => {
     const domainId = (data[0].toHuman() as any)[0].toString();
     const domainBlockNumber = BigInt((data[1].toPrimitive() as any).toString());
     cache.domainBlockHistory.push(
@@ -89,7 +106,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   });
 
   const operatorOwnerMap = new Map(
-    operatorIdOwner.map(([key, value]) => [
+    queriesResults[3].map(([key, value]) => [
       (key.toHuman() as any)[0].toString(),
       value.toPrimitive() as string,
     ])
@@ -122,9 +139,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
   });
 
-  parentBlockOperators.forEach((o: any) =>
-    cache.parentBlockOperators.push(parseOperator(o))
-  );
+  if (blockHasUnlockNominator)
+    queriesResults[4].forEach((o) =>
+      cache.parentBlockOperators.push(parseOperator(o))
+    );
+
+  if (blockHasWithdrawals)
+    queriesResults[5].forEach((o) =>
+      cache.currentWithdrawal.push(parseWithdrawal(o))
+    );
 
   const eventsByExtrinsic = new Map<number, typeof events>();
   for (const event of events) {
@@ -153,14 +176,14 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
     if (successEvent) {
       // Process extrinsic events
-      extrinsicEvents.forEach(async (event) => {
+      extrinsicEvents.forEach((event) => {
         const eventId = height + "-" + eventIndex;
 
         // Process specific events
         const eventKey = event.event.section + "." + event.event.method;
         const handler = EVENT_HANDLERS[eventKey];
-        if (handler) {
-          await handler({
+        if (handler)
+          handler({
             event,
             extrinsic,
             cache,
@@ -171,7 +194,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
             extrinsicSigner,
             extrinsicEvents,
           });
-        }
 
         // Increment event index
         eventIndex++;

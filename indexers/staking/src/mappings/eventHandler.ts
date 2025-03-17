@@ -13,7 +13,7 @@ import {
   findEpochFromDomainStakingHistoryCache,
   findOneExtrinsicEvent,
   findOperatorFromOperatorsCache,
-  findWithdrawalHistory,
+  findWithdrawalFromWithdrawalCache,
 } from "./utils";
 
 type EventHandler = (params: {
@@ -29,7 +29,7 @@ type EventHandler = (params: {
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
-  "domains.DomainRuntimeCreated": async ({
+  "domains.DomainRuntimeCreated": ({
     event,
     cache,
     extrinsicSigner,
@@ -55,7 +55,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.DomainInstantiated": async ({
+  "domains.DomainInstantiated": ({
     event,
     cache,
     extrinsicSigner,
@@ -83,7 +83,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorRegistered": async ({
+  "domains.OperatorRegistered": ({
     event,
     cache,
     extrinsicSigner,
@@ -96,7 +96,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const domainId = event.event.data[1].toString();
-    const amount = BigInt(String(extrinsic.method.args[1].toPrimitive()));
+    const totalAmount = BigInt(String(extrinsic.method.args[1].toPrimitive()));
     const operatorDetails = extrinsic.method.args[2].toPrimitive() as any;
 
     const signingKey = operatorDetails.signingKey;
@@ -111,6 +111,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const storageFeeDeposit = BigInt(
       storageFeeDepositedEvent?.event.data[2].toString() ?? 0
     );
+    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
+    const stakeAmount = totalAmount - storageFeeDeposit;
+    const estimatedShares = stakeAmount / sharePrice;
 
     cache.operatorRegistration.push(
       db.createOperatorRegistration(
@@ -130,9 +133,10 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         extrinsicSigner,
         domainId,
         operatorId,
-        amount - storageFeeDeposit,
+        stakeAmount,
         storageFeeDeposit,
-        amount,
+        totalAmount,
+        estimatedShares,
         blockTimestamp,
         height,
         extrinsicId,
@@ -140,7 +144,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorNominated": async ({
+  "domains.OperatorNominated": ({
     event,
     cache,
     height,
@@ -178,7 +182,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.WithdrewStake": async ({
+  "domains.WithdrewStake": ({
     event,
     cache,
     height,
@@ -192,7 +196,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const accountId = event.event.data[1].toString();
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
     const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
-    const withdrawalInShares = await findWithdrawalHistory(
+    const withdrawalInShares = findWithdrawalFromWithdrawalCache(
+      cache,
       operatorId,
       accountId
     );
@@ -218,7 +223,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorRewarded": async ({
+  "domains.OperatorRewarded": ({
     event,
     cache,
     height,
@@ -243,7 +248,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorTaxCollected": async ({
+  "domains.OperatorTaxCollected": ({
     event,
     cache,
     height,
@@ -265,7 +270,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.NominatedStakedUnlocked": async ({
+  "domains.NominatedStakedUnlocked": ({
     event,
     cache,
     height,
@@ -300,7 +305,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.NominatorUnlocked": async ({
+  "domains.NominatorUnlocked": ({
     event,
     cache,
     height,
@@ -320,7 +325,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.OperatorDeregistered": async ({
+  "domains.OperatorDeregistered": ({
     event,
     cache,
     extrinsicSigner,
@@ -342,7 +347,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.BundleStored": async ({
+  "domains.BundleStored": ({
     event,
     cache,
     extrinsic,

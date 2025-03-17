@@ -1199,6 +1199,7 @@ CREATE TABLE staking.deposit_events (
     amount numeric NOT NULL,
     storage_fee_deposit numeric NOT NULL,
     total_amount numeric NOT NULL,
+    estimated_shares numeric NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
