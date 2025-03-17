@@ -3,7 +3,7 @@ import {
   EventRecord,
   stringify,
 } from "@autonomys/auto-utils";
-import { SHARES_CALCULATION_MULTIPLIER } from "./constants";
+import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
 import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
@@ -113,7 +113,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     );
     const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
     const stakeAmount = totalAmount - storageFeeDeposit;
-    const estimatedShares = stakeAmount / sharePrice;
+    const estimatedShares =
+      stakeAmount /
+      (sharePrice > ZERO_BIGINT ? sharePrice : SHARES_CALCULATION_MULTIPLIER);
 
     cache.operatorRegistration.push(
       db.createOperatorRegistration(
@@ -168,7 +170,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     );
     const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
     const stakeAmount = totalAmount - storageFeeDeposit;
-    const estimatedShares = stakeAmount / sharePrice;
+    const estimatedShares =
+      stakeAmount /
+      (sharePrice > ZERO_BIGINT ? sharePrice : SHARES_CALCULATION_MULTIPLIER);
 
     cache.depositEvent.push(
       db.createDepositEvent(
