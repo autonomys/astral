@@ -1,6 +1,6 @@
 # Autonomys Astral Explorer Domain Auto-EVM
 
-The Autonomys Astral Explorer Consensus is a specialized SubQuery project that indexes all Auto-EVM-related events on the Autonomys. This project is designed to support the Auto EVM tracking functionality for the Astral Explorer, providing real-time data on validator activities and domain network.
+The Autonomys Astral Explorer Consensus is a specialized SubQuery project that indexes all Auto-EVM-related events on the Autonomys Network. This project is designed to support the Auto EVM tracking functionality for the Astral Explorer, providing real-time data on validator activities and domain network.
 
 ## Overview
 
