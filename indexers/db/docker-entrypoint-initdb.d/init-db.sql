@@ -3252,7 +3252,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     SET 
         status = 'PENDING_UNLOCK_FUNDS',
         updated_at = NEW.block_height
-    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at >= last_domain_block_number;
+    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at <= last_domain_block_number;
     
     RETURN NEW;
   END;
