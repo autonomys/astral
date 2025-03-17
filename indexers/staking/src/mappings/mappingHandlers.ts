@@ -15,6 +15,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     timestamp,
     events,
   } = _block;
+  if (!extrinsics.find((e) => e.method.section === "domains")) return;
+
   const height = BigInt(number.toString());
   const blockTimestamp = timestamp ? timestamp : new Date();
 
