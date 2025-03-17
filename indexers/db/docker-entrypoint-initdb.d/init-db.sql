@@ -3307,7 +3307,7 @@ CREATE OR REPLACE FUNCTION staking.update_operator_on_deregistration() RETURNS T
 BEGIN
     UPDATE staking.operators
     SET 
-        raw_status = 'DEREGISTERED',
+        status = 'DEREGISTERED',
         updated_at = NEW.block_height
     WHERE id = NEW.id;
 
