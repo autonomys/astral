@@ -1,11 +1,14 @@
 table:
-  name: _metadata
+  name: extrinsic_modules
   schema: domain_auto_evm
 select_permissions:
   - role: user
     permission:
       columns:
-        - key
-        - value
+        - id
+        - method
+        - section
       filter: {}
+      limit: 50
+      allow_aggregations: true
     comment: ""

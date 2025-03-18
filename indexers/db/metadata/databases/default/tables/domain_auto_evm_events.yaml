@@ -1,3 +1,27 @@
 table:
   name: events
-  schema: domain-auto-evm
+  schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - pos
+        - block_height
+        - index_in_block
+        - args
+        - block_hash
+        - extrinsic_hash
+        - extrinsic_id
+        - id
+        - module
+        - name
+        - phase
+        - section
+        - sort_id
+        - timestamp
+        - _id
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""

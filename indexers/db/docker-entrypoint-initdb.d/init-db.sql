@@ -1625,6 +1625,17 @@ CREATE TABLE domain_auto_evm.account_histories (
 );
 ALTER TABLE domain_auto_evm.account_histories OWNER TO postgres;
 
+CREATE TABLE domain_auto_evm.accounts (
+    id text NOT NULL,
+    nonce numeric NOT NULL,
+    free numeric NOT NULL,
+    reserved numeric NOT NULL,
+    total numeric,
+    created_at numeric NOT NULL,
+    updated_at numeric NOT NULL
+);
+ALTER TABLE domain_auto_evm.accounts OWNER TO postgres;
+
 CREATE TABLE domain_auto_evm.blocks (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -1646,6 +1657,23 @@ CREATE TABLE domain_auto_evm.blocks (
 );
 ALTER TABLE domain_auto_evm.blocks OWNER TO postgres;
 
+CREATE TABLE domain_auto_evm.cumulative_blocks (
+    id text NOT NULL,
+    cumulative_extrinsics_count numeric NOT NULL,
+    cumulative_events_count numeric NOT NULL,
+    cumulative_logs_count numeric NOT NULL,
+    cumulative_transfers_count numeric NOT NULL,
+    cumulative_transfer_value numeric NOT NULL
+);
+ALTER TABLE domain_auto_evm.cumulative_blocks OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.event_modules (
+    id text NOT NULL,
+    section text NOT NULL,
+    method text NOT NULL
+);
+ALTER TABLE domain_auto_evm.event_modules OWNER TO postgres;
+
 CREATE TABLE domain_auto_evm.events (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -1665,6 +1693,13 @@ CREATE TABLE domain_auto_evm.events (
     _block_range int8range NOT NULL
 );
 ALTER TABLE domain_auto_evm.events OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.extrinsic_modules (
+    id text NOT NULL,
+    section text NOT NULL,
+    method text NOT NULL
+);
+ALTER TABLE domain_auto_evm.extrinsic_modules OWNER TO postgres;
 
 CREATE TABLE domain_auto_evm.extrinsics (
     id text NOT NULL,
@@ -1692,6 +1727,12 @@ CREATE TABLE domain_auto_evm.extrinsics (
 );
 ALTER TABLE domain_auto_evm.extrinsics OWNER TO postgres;
 
+CREATE TABLE domain_auto_evm.log_kinds (
+    id text NOT NULL,
+    kind text NOT NULL
+);
+ALTER TABLE domain_auto_evm.log_kinds OWNER TO postgres;
+
 CREATE TABLE domain_auto_evm.logs (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -1705,6 +1746,12 @@ CREATE TABLE domain_auto_evm.logs (
     _block_range int8range NOT NULL
 );
 ALTER TABLE domain_auto_evm.logs OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.sections (
+    id text NOT NULL,
+    section text NOT NULL
+);
+ALTER TABLE domain_auto_evm.sections OWNER TO postgres;
 
 CREATE TABLE domain_auto_evm.transfers (
     id text NOT NULL,
@@ -2072,7 +2119,7 @@ ALTER TABLE ONLY staking.withdraw_events
     ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY staking.withdrawals
-    ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id)
+    ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id);
     
 ALTER TABLE ONLY domain_auto_evm._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
@@ -2080,17 +2127,35 @@ ALTER TABLE ONLY domain_auto_evm._metadata
 ALTER TABLE ONLY domain_auto_evm.account_histories
     ADD CONSTRAINT account_histories_pkey PRIMARY KEY (_id);
 
+ALTER TABLE ONLY domain_auto_evm.accounts
+    ADD CONSTRAINT accounts_id_key PRIMARY KEY (id);
+
 ALTER TABLE ONLY domain_auto_evm.blocks
     ADD CONSTRAINT blocks_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.cumulative_blocks
+    ADD CONSTRAINT cumulative_blocks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY domain_auto_evm.event_modules
+    ADD CONSTRAINT event_modules_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.events
     ADD CONSTRAINT events_pkey PRIMARY KEY (_id);
 
+ALTER TABLE ONLY domain_auto_evm.extrinsic_modules
+    ADD CONSTRAINT extrinsic_modules_id_key PRIMARY KEY (id);
+
 ALTER TABLE ONLY domain_auto_evm.extrinsics
     ADD CONSTRAINT extrinsics_pkey PRIMARY KEY (_id);
 
+ALTER TABLE ONLY domain_auto_evm.log_kinds
+    ADD CONSTRAINT log_kinds_id_key PRIMARY KEY (id);
+
 ALTER TABLE ONLY domain_auto_evm.logs
     ADD CONSTRAINT logs_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.sections
+    ADD CONSTRAINT sections_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.transfers
     ADD CONSTRAINT transfers_pkey PRIMARY KEY (_id);
@@ -2111,6 +2176,7 @@ CREATE INDEX "0xccedb032815757ed" ON consensus.blocks USING btree (id);
 CREATE INDEX "consensus_blocks_sort_id" ON consensus.blocks USING btree (sort_id DESC);
 CREATE INDEX "consensus_blocks_hash" ON consensus.blocks USING btree (hash);
 CREATE INDEX "consensus_blocks_id_hash" ON consensus.blocks (id, hash);
+CREATE INDEX "consensus_cumulative_blocks_id" ON consensus.cumulative_blocks USING btree (id);
 CREATE INDEX "0xd8db4c8313621519" ON consensus.extrinsics USING btree (id);
 CREATE INDEX "consensus_extrinsics_sort_id" ON consensus.extrinsics USING btree (sort_id DESC);
 CREATE INDEX "consensus_extrinsics_hash" ON consensus.extrinsics USING btree (hash);
@@ -2313,6 +2379,7 @@ CREATE INDEX "0xccedb032815757ed" ON domain_auto_evm.blocks USING btree (id);
 CREATE INDEX "domain_auto_evm_blocks_sort_id" ON domain_auto_evm.blocks USING btree (sort_id DESC);
 CREATE INDEX "domain_auto_evm_blocks_hash" ON domain_auto_evm.blocks USING btree (hash);
 CREATE INDEX "domain_auto_evm_blocks_id_hash" ON domain_auto_evm.blocks (id, hash);
+CREATE INDEX "domain_auto_evm_cumulative_blocks_id" ON domain_auto_evm.cumulative_blocks USING btree (id);
 CREATE INDEX "0xd8db4c8313621519" ON domain_auto_evm.extrinsics USING btree (id);
 CREATE INDEX "domain_auto_evm_extrinsics_sort_id" ON domain_auto_evm.extrinsics USING btree (sort_id DESC);
 CREATE INDEX "domain_auto_evm_extrinsics_hash" ON domain_auto_evm.extrinsics USING btree (hash);
@@ -2326,10 +2393,18 @@ CREATE INDEX "domain_auto_evm_events_extrinsic_id" ON domain_auto_evm.events USI
 CREATE INDEX "domain_auto_evm_events_block_height" ON domain_auto_evm.events USING btree (block_height);
 CREATE INDEX "domain_auto_evm_events_section" ON domain_auto_evm.events USING btree (section);
 CREATE INDEX "domain_auto_evm_events_module" ON domain_auto_evm.events USING btree (module);
+CREATE INDEX "domain_auto_evm_accounts_id" ON domain_auto_evm.accounts USING btree (id);
+CREATE INDEX "domain_auto_evm_accounts_free" ON domain_auto_evm.accounts USING btree (free DESC);
+CREATE INDEX "domain_auto_evm_accounts_reserved" ON domain_auto_evm.accounts USING btree (reserved DESC);
+CREATE INDEX "domain_auto_evm_accounts_total" ON domain_auto_evm.accounts USING btree (total DESC);
 CREATE INDEX "0xd21b20c334f80c2e" ON domain_auto_evm.account_histories USING btree (id);
 CREATE INDEX "0xb91efc8ed4021e6e" ON domain_auto_evm.transfers USING btree (id);
 CREATE INDEX "domain_auto_evm_transfers_from" ON domain_auto_evm.transfers USING btree ("from");
 CREATE INDEX "domain_auto_evm_transfers_to" ON domain_auto_evm.transfers USING btree ("to");
+CREATE INDEX "domain_auto_evm_extrinsic_modules_id" ON domain_auto_evm.extrinsic_modules USING btree (id);
+CREATE INDEX "domain_auto_evm_event_modules_id" ON domain_auto_evm.event_modules USING btree (id);
+CREATE INDEX "domain_auto_evm_log_kinds_id" ON domain_auto_evm.log_kinds USING btree (id);
+CREATE INDEX "domain_auto_evm_sections_id" ON domain_auto_evm.sections USING btree (id);
 CREATE INDEX "0x09a98aa53fa2c2e3" ON domain_auto_evm.logs USING btree (id);
 CREATE INDEX "domain_auto_evm_logs_sort_id" ON domain_auto_evm.logs USING btree (sort_id DESC);
 CREATE INDEX "domain_auto_evm_logs_block_height" ON domain_auto_evm.logs USING btree (block_height);
@@ -2346,6 +2421,8 @@ CREATE TRIGGER "0x22152f0c663c5f9e" AFTER UPDATE ON files._metadata FOR EACH ROW
 CREATE TRIGGER "0x36531371aced88b2" AFTER UPDATE ON staking._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION staking.schema_notification();
 CREATE TRIGGER "0x8741811e70475b76" AFTER UPDATE ON domain_auto_evm._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION domain_auto_evm.schema_notification();
 
+-- Consensus triggers
+
 CREATE FUNCTION consensus.insert_log_kind() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2359,7 +2436,7 @@ CREATE FUNCTION consensus.insert_log_kind() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.insert_log_kind() OWNER TO postgres;
 
-CREATE TRIGGER ensure_log_kind
+CREATE TRIGGER ensure_consensus_log_kind
     BEFORE INSERT ON consensus.logs
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_log_kind();
@@ -2381,7 +2458,7 @@ CREATE FUNCTION consensus.insert_event_module() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.insert_event_module() OWNER TO postgres;
 
-CREATE TRIGGER ensure_event_module
+CREATE TRIGGER ensure_consensus_event_module
     BEFORE INSERT ON consensus.events
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_event_module();
@@ -2403,7 +2480,7 @@ CREATE FUNCTION consensus.insert_extrinsic_module() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.insert_extrinsic_module() OWNER TO postgres;
 
-CREATE TRIGGER ensure_extrinsic_module
+CREATE TRIGGER ensure_consensus_extrinsic_module
     BEFORE INSERT ON consensus.extrinsics
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_extrinsic_module();
@@ -2442,7 +2519,7 @@ CREATE FUNCTION consensus.update_account() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.update_account() OWNER TO postgres;
 
-CREATE TRIGGER ensure_account_updated
+CREATE TRIGGER ensure_consensus_account_updated
     BEFORE INSERT ON consensus.account_histories
     FOR EACH ROW
     EXECUTE FUNCTION consensus.update_account();
@@ -2518,7 +2595,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.update_cumulative_blocks() OWNER TO postgres;
 
-CREATE TRIGGER ensure_cumulative_blocks
+CREATE TRIGGER ensure_consensus_cumulative_blocks
     BEFORE INSERT ON consensus.blocks
     FOR EACH ROW
     EXECUTE FUNCTION consensus.update_cumulative_blocks();
@@ -3579,3 +3656,157 @@ CREATE TRIGGER handle_nominators_unlocked_events
 AFTER INSERT ON staking.nominators_unlocked_events
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_nominators_unlocked_events();
+
+
+CREATE FUNCTION domain_auto_evm.insert_log_kind() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO domain_auto_evm.log_kinds (id, kind)
+    VALUES (NEW.kind, NEW.kind)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.insert_log_kind() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_log_kind
+    BEFORE INSERT ON domain_auto_evm.logs
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.insert_log_kind();
+
+CREATE FUNCTION domain_auto_evm.insert_event_module() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO domain_auto_evm.event_modules (id, section, method)
+    VALUES (NEW.name, NEW.section, NEW.module)
+    ON CONFLICT (id) DO NOTHING;
+
+    INSERT INTO domain_auto_evm.sections (id, section)
+    VALUES (NEW.section, NEW.section)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.insert_event_module() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_event_module
+    BEFORE INSERT ON domain_auto_evm.events
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.insert_event_module();
+
+CREATE FUNCTION domain_auto_evm.insert_extrinsic_module() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO domain_auto_evm.extrinsic_modules (id, section, method)
+    VALUES (NEW.name, NEW.section, NEW.module)
+    ON CONFLICT (id) DO NOTHING;
+
+    INSERT INTO domain_auto_evm.sections (id, section)
+    VALUES (NEW.section, NEW.section)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.insert_extrinsic_module() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_extrinsic_module
+    BEFORE INSERT ON domain_auto_evm.extrinsics
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.insert_extrinsic_module();
+
+CREATE FUNCTION domain_auto_evm.update_account() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO domain_auto_evm.accounts (
+      id,
+      nonce,
+      free,
+      reserved,
+      total,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      NEW.id,
+      NEW.nonce,
+      NEW.free,
+      NEW.reserved,
+      NEW.total,
+      NEW.created_at,
+      EXTRACT(EPOCH FROM NOW())
+    )
+    ON CONFLICT (id) DO UPDATE SET
+      nonce = EXCLUDED.nonce,
+      free = EXCLUDED.free,
+      reserved = EXCLUDED.reserved,
+      total = EXCLUDED.total,
+      updated_at = EXTRACT(EPOCH FROM NOW());
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.update_account() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_account_updated
+    BEFORE INSERT ON domain_auto_evm.account_histories
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.update_account();
+
+CREATE FUNCTION domain_auto_evm.update_cumulative_blocks() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  DECLARE
+    prev_cumulative domain_auto_evm.cumulative_blocks%ROWTYPE;
+  BEGIN
+    SELECT *
+    INTO prev_cumulative
+    FROM domain_auto_evm.cumulative_blocks
+    WHERE id = text(NEW.height - 1);
+
+    IF prev_cumulative IS NULL THEN
+      prev_cumulative.cumulative_extrinsics_count := 0;
+      prev_cumulative.cumulative_events_count := 0;
+      prev_cumulative.cumulative_logs_count := 0;
+      prev_cumulative.cumulative_transfers_count := 0;
+      prev_cumulative.cumulative_transfer_value := 0;
+    END IF;
+
+    INSERT INTO domain_auto_evm.cumulative_blocks (
+      id,
+      cumulative_extrinsics_count,
+      cumulative_events_count,
+      cumulative_logs_count,
+      cumulative_transfers_count,
+      cumulative_transfer_value
+    )
+    VALUES (
+      NEW.id,
+      prev_cumulative.cumulative_extrinsics_count + NEW.extrinsics_count,
+      prev_cumulative.cumulative_events_count + NEW.events_count,
+      prev_cumulative.cumulative_logs_count + NEW.logs_count,
+      prev_cumulative.cumulative_transfers_count + NEW.transfers_count,
+      prev_cumulative.cumulative_transfer_value + NEW.transfer_value
+    )
+    ON CONFLICT (id) DO UPDATE SET
+      cumulative_extrinsics_count = prev_cumulative.cumulative_extrinsics_count + NEW.extrinsics_count,
+      cumulative_events_count = prev_cumulative.cumulative_events_count + NEW.events_count,
+      cumulative_logs_count = prev_cumulative.cumulative_logs_count + NEW.logs_count,
+      cumulative_transfers_count = prev_cumulative.cumulative_transfers_count + NEW.transfers_count,
+      cumulative_transfer_value = prev_cumulative.cumulative_transfer_value + NEW.transfer_value;
+
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.update_cumulative_blocks() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_cumulative_blocks
+    BEFORE INSERT ON domain_auto_evm.blocks
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.update_cumulative_blocks();

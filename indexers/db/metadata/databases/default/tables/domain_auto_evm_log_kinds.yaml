@@ -1,11 +1,13 @@
 table:
-  name: _metadata
+  name: log_kinds
   schema: domain_auto_evm
 select_permissions:
   - role: user
     permission:
       columns:
-        - key
-        - value
+        - id
+        - kind
       filter: {}
+      limit: 50
+      allow_aggregations: true
     comment: ""

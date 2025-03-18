@@ -1,3 +1,33 @@
 table:
   name: extrinsics
-  schema: domain-auto-evm
+  schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - success
+        - _block_range
+        - events_count
+        - index_in_block
+        - pos
+        - block_height
+        - fee
+        - nonce
+        - tip
+        - args
+        - block_hash
+        - error
+        - hash
+        - id
+        - module
+        - name
+        - section
+        - signature
+        - signer
+        - sort_id
+        - timestamp
+        - _id
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""

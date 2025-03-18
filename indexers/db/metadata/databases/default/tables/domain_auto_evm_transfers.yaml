@@ -1,3 +1,26 @@
 table:
   name: transfers
-  schema: domain-auto-evm
+  schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - success
+        - _block_range
+        - block_height
+        - fee
+        - value
+        - block_hash
+        - event_id
+        - extrinsic_id
+        - from
+        - from_chain
+        - id
+        - to
+        - to_chain
+        - timestamp
+        - _id
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""
