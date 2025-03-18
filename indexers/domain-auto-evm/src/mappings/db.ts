@@ -7,8 +7,12 @@ export type Cache = {
   transfers: Entity[];
 
   addressToUpdate: Set<string>;
+  evmTransactionsList: string[];
   // Totals
   totalTransferValue: bigint;
+
+  evmTransactions: Entity[];
+  evmCodes: Entity[];
 };
 
 export const initializeCache = (): Cache => ({
@@ -16,8 +20,12 @@ export const initializeCache = (): Cache => ({
   transfers: [],
 
   addressToUpdate: new Set<string>(),
+  evmTransactionsList: [],
   // Totals
   totalTransferValue: ZERO_BIGINT,
+
+  evmTransactions: [],
+  evmCodes: [],
 });
 
 // Core Consensus DB Functions
@@ -203,5 +211,116 @@ export function createTransfer(
     fee,
     success,
     timestamp,
+  };
+}
+
+export function createEvmBlock(
+  hash: string,
+  height: bigint,
+  timestamp: Date,
+  blockTimestamp: number,
+  parentHash: string,
+  stateRoot: string,
+  transactionsRoot: string,
+  receiptsRoot: string,
+  transactionsCount: number,
+  transfersCount: number,
+  transferValue: bigint,
+  authorId: string,
+  gasUsed: bigint,
+  gasLimit: bigint,
+  extraData: string,
+  difficulty: bigint,
+  totalDifficulty: bigint,
+  size: bigint
+) {
+  return {
+    id: height.toString(),
+    sortId: getSortId(height),
+    height,
+    hash,
+    timestamp,
+    blockTimestamp,
+    parentHash,
+    stateRoot,
+    transactionsRoot,
+    receiptsRoot,
+    transactionsCount,
+    transfersCount,
+    transferValue,
+    authorId,
+    gasUsed,
+    gasLimit,
+    extraData,
+    difficulty,
+    totalDifficulty,
+    size,
+  };
+}
+
+export function createEvmTransaction(
+  hash: string,
+  nonce: bigint,
+  blockHash: string,
+  blockNumber: bigint,
+  timestamp: Date,
+  blockTimestamp: number,
+  transactionIndex: bigint,
+  from: string,
+  to: string,
+  value: bigint,
+  gasPrice: bigint,
+  maxFeePerGas: bigint,
+  maxPriorityFeePerGas: bigint,
+  gas: bigint,
+  input: string,
+  creates: string,
+  raw: string,
+  publicKey: string,
+  chainId: bigint,
+  standardV: bigint,
+  v: string,
+  r: string,
+  s: string,
+  accessList: string,
+  transactionType: bigint
+) {
+  return {
+    id: hash,
+    sortId: getSortId(blockNumber),
+    hash,
+    nonce,
+    blockHash,
+    blockNumber,
+    timestamp,
+    blockTimestamp,
+    transactionIndex,
+    from,
+    to,
+    value,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    gas,
+    input,
+    creates,
+    raw,
+    publicKey,
+    chainId,
+    standardV,
+    v,
+    r,
+    s,
+    accessList,
+    transactionType,
+  };
+}
+
+export function createEvmCode(address: string, code: string, abi: string) {
+  return {
+    id: address,
+    address,
+    code,
+    abi,
   };
 }

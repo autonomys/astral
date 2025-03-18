@@ -7,6 +7,9 @@ import {
   createAccountHistory,
   createBlock,
   createEvent,
+  createEvmBlock,
+  createEvmCode,
+  createEvmTransaction,
   createExtrinsic,
   createLog,
   initializeCache,
@@ -56,6 +59,12 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
   // Process extrinsics
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
+    // Add EVM transaction hash to array
+    if (
+      extrinsic.method.section === "ethereum" &&
+      extrinsic.method.method === "transact"
+    )
+      cache.evmTransactionsList.push(extrinsic.hash.toString());
     const extrinsicHash = extrinsic.hash.toString();
     const extrinsicMethodToPrimitive =
       extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
@@ -244,8 +253,62 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
   });
 
+  const evmBlock = await unsafeApi?.rpc.eth.getBlockByNumber(height, true);
+  const evmBlockData = evmBlock?.unwrap();
+  const evmTransactions = evmBlockData?.transactions;
+  const codesToFetch: string[] = [];
+  if (evmTransactions && evmTransactions?.length > 0) {
+    evmTransactions.forEach((transaction) => {
+      cache.evmTransactions.push(
+        createEvmTransaction(
+          transaction.hash.toString(),
+          BigInt(transaction.nonce.toString()),
+          blockHash,
+          height,
+          blockTimestamp,
+          evmBlockData?.timestamp.toNumber() ?? 0,
+          BigInt(transaction.transactionIndex.toString()),
+          transaction.from.toString(),
+          transaction.to.toString(),
+          BigInt(transaction.value.toString()),
+          BigInt(transaction.gasPrice.toString()),
+          BigInt(transaction.maxFeePerGas.toString()),
+          BigInt(transaction.maxPriorityFeePerGas.toString()),
+          BigInt(transaction.gas.toString()),
+          transaction.input.toString(),
+          transaction.creates.toString(),
+          transaction.raw.toString(),
+          transaction.publicKey.toString(),
+          BigInt(transaction.chainId.toString()),
+          BigInt(transaction.standardV.toString()),
+          transaction.v.toString(),
+          transaction.r.toString(),
+          transaction.s.toString(),
+          transaction.accessList.toString(),
+          BigInt(transaction.transactionType.toString())
+        )
+      );
+      const contractAddress = transaction.creates?.toString();
+      if (contractAddress) codesToFetch.push(contractAddress);
+      cache.addressToUpdate.add(transaction.from.toString());
+      cache.addressToUpdate.add(transaction.to.toString());
+    });
+    if (codesToFetch.length > 0) {
+      const codes = await Promise.all(
+        codesToFetch.map((code) => unsafeApi?.rpc.eth.getCode(code))
+      );
+      codes.forEach((code, i) =>
+        cache.evmCodes.push(
+          createEvmCode(codesToFetch[i], code?.toString() ?? "0x", "[]")
+        )
+      );
+    }
+  }
+
   // Update accounts
-  const uniqueAddresses = Array.from(cache.addressToUpdate);
+  const uniqueAddresses = Array.from(cache.addressToUpdate).filter(
+    (address) => address !== ""
+  );
   const accounts = await Promise.all(
     uniqueAddresses.map((address) => account(api as any, address))
   );
@@ -293,5 +356,39 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         authorId
       ),
     ]),
+    // Create and save block
+    store.bulkCreate(`EvmBlock`, [
+      createEvmBlock(
+        evmBlockData?.hash.toString() ?? "",
+        height,
+        blockTimestamp,
+        evmBlockData?.timestamp.toNumber() ?? 0,
+        evmBlockData?.parentHash.toString() ?? "",
+        evmBlockData?.stateRoot.toString() ?? "",
+        evmBlockData?.transactionsRoot.toString() ?? "",
+        evmBlockData?.receiptsRoot.toString() ?? "",
+        evmBlockData?.transactions.length ?? 0,
+        evmBlockData?.transactions.filter(
+          (tx) =>
+            BigInt(tx.value.toString() ?? "0") > ZERO_BIGINT &&
+            tx.to.toString() !== ""
+        ).length ?? 0,
+        evmBlockData?.transactions.reduce(
+          (sum, tx) => sum + BigInt(tx.value.toString() ?? "0"),
+          ZERO_BIGINT
+        ) ?? ZERO_BIGINT,
+        evmBlockData?.author?.toString() ?? "",
+        BigInt(evmBlockData?.gasUsed?.toString() ?? "0"),
+        BigInt(evmBlockData?.gasLimit?.toString() ?? "0"),
+        evmBlockData?.extraData?.toString() ?? "",
+        BigInt(evmBlockData?.difficulty.toString() ?? "0"),
+        BigInt(evmBlockData?.totalDifficulty.toString() ?? "0"),
+        BigInt(evmBlockData?.size.toString() ?? "0")
+      ),
+    ]),
+    // Create and save evm transactions
+    store.bulkCreate(`EvmTransaction`, cache.evmTransactions),
+    // Create and save evm codes
+    store.bulkCreate(`EvmCode`, cache.evmCodes),
   ]);
 }

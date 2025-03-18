@@ -1,4 +1,4 @@
-# Core Consensus Entities
+# Core Substrate Entities
 
 type Block @entity {
   id: ID!
@@ -94,4 +94,64 @@ type Transfer @entity {
   fee: BigInt!
   success: Boolean!
   timestamp: Date!
+}
+
+type EvmBlock @entity {
+  id: ID!
+  sortId: String!
+  height: BigInt!
+  hash: String!
+  timestamp: Date!
+  blockTimestamp: Int!
+  parentHash: String!
+  stateRoot: String!
+  transactionsRoot: String!
+  receiptsRoot: String!
+  transactionsCount: Int!
+  transfersCount: Int!
+  transferValue: BigInt!
+  authorId: String!
+  gasUsed: BigInt!
+  gasLimit: BigInt!
+  extraData: String!
+  difficulty: BigInt!
+  totalDifficulty: BigInt!
+  size: BigInt!
+}
+
+type EvmTransaction @entity {
+  id: ID!
+  sortId: String!
+  hash: String!
+  nonce: BigInt!
+  blockHash: String!
+  blockNumber: BigInt!
+  timestamp: Date!
+  blockTimestamp: Int!
+  transactionIndex: Int!
+  from: String!
+  to: String!
+  value: BigInt!
+  gasPrice: BigInt!
+  maxFeePerGas: BigInt!
+  maxPriorityFeePerGas: BigInt!
+  gas: BigInt!
+  input: String!
+  creates: String!
+  raw: String!
+  publicKey: String!
+  chainId: BigInt!
+  standardV: BigInt!
+  v: String!
+  r: String!
+  s: String!
+  accessList: String!
+  transactionType: BigInt!
+}
+
+type EvmCode @entity {
+  id: ID!
+  address: String!
+  code: String!
+  abi: String!
 }
