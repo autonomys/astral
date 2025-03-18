@@ -7,27 +7,31 @@ export interface Indexer {
   telemetryNetworkName?: string
 }
 
-const LOCAL_INDEXER = 'https://subql.green.taurus.subspace.network/v1/graphql'
-
-export const indexers: Indexer[] = [
-  {
+export const indexers: Indexer[] = []
+if (process.env.NEXT_PUBLIC_MAINNET_INDEXERS)
+  indexers.push({
     title: NetworkName.MAINNET,
     network: NetworkId.MAINNET,
-    indexer: process.env.NEXT_PUBLIC_MAINNET_INDEXERS || LOCAL_INDEXER,
+    indexer: process.env.NEXT_PUBLIC_MAINNET_INDEXERS,
     telemetryNetworkName: 'Autonomys Mainnet',
-  },
-  {
+  })
+
+if (process.env.NEXT_PUBLIC_TAURUS_INDEXERS)
+  indexers.push({
     title: NetworkName.TAURUS,
     network: NetworkId.TAURUS,
-    indexer: process.env.NEXT_PUBLIC_TAURUS_INDEXERS || LOCAL_INDEXER,
+    indexer: process.env.NEXT_PUBLIC_TAURUS_INDEXERS,
     telemetryNetworkName: 'Autonomys Taurus Testnet',
-  },
-  {
+  })
+
+if (process.env.NEXT_PUBLIC_LOCALHOST_INDEXERS)
+  indexers.push({
     title: NetworkName.LOCALHOST,
     network: NetworkId.LOCALHOST,
-    indexer: LOCAL_INDEXER,
-  },
-]
+    indexer: process.env.NEXT_PUBLIC_LOCALHOST_INDEXERS,
+  })
+
+export const DEFAULT_INDEXER = 'https://subql.green.taurus.subspace.network/v1/graphql'
 
 export const networks = new Set(indexers.map((chain) => chain.network))
 
