@@ -122,7 +122,7 @@
     "eslint-plugin-promise": "^6.6.0",
     "eslint-plugin-react": "^7.34.0",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-tailwindcss": "^3.14.3",
+    "eslint-plugin-tailwindcss": "^3.18.0",
     "gh-pages": "^6.1.1",
     "jest-canvas-mock": "^2.5.2",
     "postcss": "^8.4.35",
