@@ -1,6 +1,16 @@
 table:
   name: extrinsic_modules
   schema: domain_auto_evm
+array_relationships:
+  - name: extrinsics
+    using:
+      manual_configuration:
+        column_mapping:
+          method: module
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: domain_auto_evm
 select_permissions:
   - role: user
     permission:
