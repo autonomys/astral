@@ -2661,7 +2661,7 @@
     "@polkadot/util-crypto" "^13.4.3"
     tslib "^2.8.1"
 
-"@polkadot/extension-inject@0.46.7", "@polkadot/extension-inject@^0.46.5", "@polkadot/extension-inject@^0.46.7":
+"@polkadot/extension-inject@0.46.7", "@polkadot/extension-inject@^0.46.5":
   version "0.46.7"
   resolved "https://registry.yarnpkg.com/@polkadot/extension-inject/-/extension-inject-0.46.7.tgz#270a3688af8fb9c6107837526aff603c419cc878"
   integrity sha512-yyuofhnZe2ss0Avf1CGAo+7jqvDc0bg5X1hw6Yuc79LHOS6WCjCduFLaHoFW1yJBGQb4bt/U17VnUCIKbHvryA==
@@ -2674,7 +2674,7 @@
     "@polkadot/x-global" "^12.6.2"
     tslib "^2.6.2"
 
-"@polkadot/extension-inject@0.58.5":
+"@polkadot/extension-inject@0.58.5", "@polkadot/extension-inject@^0.58.5":
   version "0.58.5"
   resolved "https://registry.yarnpkg.com/@polkadot/extension-inject/-/extension-inject-0.58.5.tgz#7d4c0fc6ad913175d8cb65a4ee74617da790166e"
   integrity sha512-CNsdO61/Ah9LzuU5IxDpyEDFYgv1VDgzGuRYuT8Av1ch1+GMWIPdD68DB9fkIZjNgrt8PFoMHJXhKRJWjQ1AHA==

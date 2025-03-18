@@ -49,7 +49,7 @@
     "@nivo/line": "^0.88.0",
     "@nivo/pie": "^0.88.0",
     "@polkadot/extension-dapp": "^0.46.7",
-    "@polkadot/extension-inject": "^0.46.7",
+    "@polkadot/extension-inject": "^0.58.5",
     "@polkadot/react-identicon": "^3.6.5",
     "@subwallet/wallet-connect": "^0.2.7",
     "@tailwindcss/forms": "^0.5.10",
