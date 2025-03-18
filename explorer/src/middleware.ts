@@ -1,5 +1,4 @@
 import { NetworkId } from '@autonomys/auto-utils'
-import { defaultIndexer } from 'constants/indexers'
 import { Routes } from 'constants/routes'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -22,19 +21,17 @@ export async function middleware(req: NextRequest) {
 
   if (req.nextUrl.pathname === '/') {
     return NextResponse.redirect(
-      new URL(`/${defaultIndexer.network}/${Routes.consensus}/${urlParams}`, req.url),
+      new URL(`/${NetworkId.MAINNET}/${Routes.consensus}/${urlParams}`, req.url),
     )
   }
 
   if (Object.values(Routes).find((route) => `/${route}` === pathname)) {
-    return NextResponse.redirect(
-      new URL(`/${defaultIndexer.network}${pathname}${urlParams}`, req.url),
-    )
+    return NextResponse.redirect(new URL(`/${NetworkId.MAINNET}${pathname}${urlParams}`, req.url))
   }
 
   if (Object.values(NetworkId).includes(req.nextUrl.pathname.replace('/', '') as NetworkId)) {
     return NextResponse.redirect(
-      new URL(`/${defaultIndexer.network}/${Routes.consensus}/${urlParams}`, req.url),
+      new URL(`/${NetworkId.MAINNET}/${Routes.consensus}/${urlParams}`, req.url),
     )
   }
 

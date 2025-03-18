@@ -13,20 +13,21 @@ select_permissions:
     permission:
       columns:
         - _block_range
+        - _id
+        - account_id
         - amount
         - block_height
-        - storage_fee_deposit
-        - total_amount
-        - account_id
         - domain_id
+        - estimated_shares
         - event_id
         - extrinsic_id
         - id
         - nominator_id
         - operator_id
         - sort_id
+        - storage_fee_deposit
         - timestamp
-        - _id
+        - total_amount
       filter: {}
       limit: 50
     comment: ""
