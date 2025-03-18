@@ -22,6 +22,6 @@
     "apply-seeds:mainnet": "hasura seeds apply --file genesis_allocation.sql --database-name default"
   },
   "devDependencies": {
-    "hasura-cli": "2.36.2"
+    "hasura-cli": "2.38.0"
   }
 }
