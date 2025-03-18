@@ -88,7 +88,7 @@ services:
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/domain-auto-evm
-      - --db-schema=domain-auto-evm
+      - --db-schema=domain_auto_evm
       - --workers=1
       - --unsafe
       - --batch-size=120

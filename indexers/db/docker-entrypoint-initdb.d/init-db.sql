@@ -27,6 +27,9 @@ ALTER SCHEMA files OWNER TO postgres;
 CREATE SCHEMA staking;
 ALTER SCHEMA staking OWNER TO postgres;
 
+CREATE SCHEMA domain_auto_evm;
+ALTER SCHEMA domain_auto_evm OWNER TO postgres;
+
 CREATE SCHEMA users;
 ALTER SCHEMA users OWNER TO postgres;
 
@@ -99,6 +102,20 @@ CREATE FUNCTION staking.schema_notification() RETURNS trigger
   $$;
 ALTER FUNCTION staking.schema_notification() OWNER TO postgres;
 
+CREATE FUNCTION domain_auto_evm.schema_notification() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    PERFORM pg_notify(
+            '0x49b290e816da6f48',
+            'schema_updated');
+    RETURN NULL;
+  END;
+  $$;
+
+
+ALTER FUNCTION domain_auto_evm.schema_notification() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -142,6 +159,14 @@ CREATE TABLE staking._metadata (
     "updatedAt" timestamp with time zone NOT NULL
 );
 ALTER TABLE staking._metadata OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm._metadata (
+    key character varying(255) NOT NULL,
+    value jsonb,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
+ALTER TABLE domain_auto_evm._metadata OWNER TO postgres;
 
 CREATE TABLE users.profiles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -1588,6 +1613,119 @@ CREATE TABLE files.metadata_cids (
 );
 ALTER TABLE files.metadata_cids OWNER TO postgres;
 
+CREATE TABLE domain_auto_evm.account_histories (
+    id text NOT NULL,
+    nonce numeric NOT NULL,
+    free numeric NOT NULL,
+    reserved numeric NOT NULL,
+    total numeric,
+    created_at numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.account_histories OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.blocks (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    height numeric NOT NULL,
+    hash text NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    parent_hash text NOT NULL,
+    spec_id text NOT NULL,
+    state_root text NOT NULL,
+    extrinsics_root text NOT NULL,
+    extrinsics_count integer NOT NULL,
+    events_count integer NOT NULL,
+    logs_count integer NOT NULL,
+    transfers_count integer NOT NULL,
+    transfer_value numeric NOT NULL,
+    author_id text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.blocks OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.events (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    extrinsic_id text NOT NULL,
+    extrinsic_hash text NOT NULL,
+    section text NOT NULL,
+    module text NOT NULL,
+    name text NOT NULL,
+    index_in_block numeric NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    phase text NOT NULL,
+    pos integer NOT NULL,
+    args text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.events OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.extrinsics (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    hash text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    section text NOT NULL,
+    module text NOT NULL,
+    name text NOT NULL,
+    index_in_block integer NOT NULL,
+    success boolean NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    nonce numeric NOT NULL,
+    signer text NOT NULL,
+    signature text NOT NULL,
+    events_count integer NOT NULL,
+    args text NOT NULL,
+    error text NOT NULL,
+    tip numeric NOT NULL,
+    fee numeric NOT NULL,
+    pos integer NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.extrinsics OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.logs (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    index_in_block integer NOT NULL,
+    kind text NOT NULL,
+    value text,
+    "timestamp" timestamp without time zone NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.logs OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.transfers (
+    id text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
+    "from" text NOT NULL,
+    from_chain text NOT NULL,
+    "to" text NOT NULL,
+    to_chain text NOT NULL,
+    value numeric NOT NULL,
+    fee numeric NOT NULL,
+    success boolean NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.transfers OWNER TO postgres;
+
+
 CREATE TABLE stats.hourly (
     id TEXT NOT NULL,
     cumulated_history_size numeric NOT NULL,
@@ -1695,7 +1833,6 @@ ALTER TABLE ONLY dictionary.extrinsics
 
 ALTER TABLE ONLY dictionary.spec_versions
     ADD CONSTRAINT spec_versions_pkey PRIMARY KEY (id);
-
 
 ALTER TABLE ONLY leaderboard._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
@@ -1935,7 +2072,28 @@ ALTER TABLE ONLY staking.withdraw_events
     ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY staking.withdrawals
-    ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id)
+    
+ALTER TABLE ONLY domain_auto_evm._metadata
+    ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
+
+ALTER TABLE ONLY domain_auto_evm.account_histories
+    ADD CONSTRAINT account_histories_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.blocks
+    ADD CONSTRAINT blocks_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.events
+    ADD CONSTRAINT events_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.extrinsics
+    ADD CONSTRAINT extrinsics_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.logs
+    ADD CONSTRAINT logs_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.transfers
+    ADD CONSTRAINT transfers_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY stats.hourly
     ADD CONSTRAINT hourly_pkey PRIMARY KEY (id);
@@ -2151,6 +2309,31 @@ CREATE INDEX "staking_withdrawals_nominator_id" ON staking.withdrawals USING btr
 CREATE INDEX "staking_withdrawals_status" ON staking.withdrawals USING btree ("status");
 CREATE INDEX "staking_withdrawals_status_domain_block_number_withdrawal_requested_at" ON staking.withdrawals (status, domain_block_number_withdrawal_requested_at);
 
+CREATE INDEX "0xccedb032815757ed" ON domain_auto_evm.blocks USING btree (id);
+CREATE INDEX "domain_auto_evm_blocks_sort_id" ON domain_auto_evm.blocks USING btree (sort_id DESC);
+CREATE INDEX "domain_auto_evm_blocks_hash" ON domain_auto_evm.blocks USING btree (hash);
+CREATE INDEX "domain_auto_evm_blocks_id_hash" ON domain_auto_evm.blocks (id, hash);
+CREATE INDEX "0xd8db4c8313621519" ON domain_auto_evm.extrinsics USING btree (id);
+CREATE INDEX "domain_auto_evm_extrinsics_sort_id" ON domain_auto_evm.extrinsics USING btree (sort_id DESC);
+CREATE INDEX "domain_auto_evm_extrinsics_hash" ON domain_auto_evm.extrinsics USING btree (hash);
+CREATE INDEX "domain_auto_evm_extrinsics_block_height" ON domain_auto_evm.extrinsics USING btree (block_height);
+CREATE INDEX "domain_auto_evm_extrinsics_signer" ON domain_auto_evm.extrinsics USING btree (signer);
+CREATE INDEX "domain_auto_evm_extrinsics_section" ON domain_auto_evm.extrinsics USING btree (section);
+CREATE INDEX "domain_auto_evm_extrinsics_module" ON domain_auto_evm.extrinsics USING btree (module);
+CREATE INDEX "0xe5bf5858bd35a276" ON domain_auto_evm.events USING btree (id);
+CREATE INDEX "domain_auto_evm_events_sort_id" ON domain_auto_evm.events USING btree (sort_id DESC);
+CREATE INDEX "domain_auto_evm_events_extrinsic_id" ON domain_auto_evm.events USING btree (extrinsic_id);
+CREATE INDEX "domain_auto_evm_events_block_height" ON domain_auto_evm.events USING btree (block_height);
+CREATE INDEX "domain_auto_evm_events_section" ON domain_auto_evm.events USING btree (section);
+CREATE INDEX "domain_auto_evm_events_module" ON domain_auto_evm.events USING btree (module);
+CREATE INDEX "0xd21b20c334f80c2e" ON domain_auto_evm.account_histories USING btree (id);
+CREATE INDEX "0xb91efc8ed4021e6e" ON domain_auto_evm.transfers USING btree (id);
+CREATE INDEX "domain_auto_evm_transfers_from" ON domain_auto_evm.transfers USING btree ("from");
+CREATE INDEX "domain_auto_evm_transfers_to" ON domain_auto_evm.transfers USING btree ("to");
+CREATE INDEX "0x09a98aa53fa2c2e3" ON domain_auto_evm.logs USING btree (id);
+CREATE INDEX "domain_auto_evm_logs_sort_id" ON domain_auto_evm.logs USING btree (sort_id DESC);
+CREATE INDEX "domain_auto_evm_logs_block_height" ON domain_auto_evm.logs USING btree (block_height);
+
 CREATE INDEX "stats_hourly_end_date" ON stats.hourly USING btree ("end_date" DESC);
 CREATE INDEX "stats_daily_end_date" ON stats.daily USING btree ("end_date" DESC);
 CREATE INDEX "stats_weekly_end_date" ON stats.weekly USING btree ("end_date" DESC);
@@ -2161,6 +2344,7 @@ CREATE TRIGGER "0xda8a29b0fa478533" AFTER UPDATE ON dictionary._metadata FOR EAC
 CREATE TRIGGER "0xf3241711d3af6c36" AFTER UPDATE ON leaderboard._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION leaderboard.schema_notification();
 CREATE TRIGGER "0x22152f0c663c5f9e" AFTER UPDATE ON files._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION files.schema_notification();
 CREATE TRIGGER "0x36531371aced88b2" AFTER UPDATE ON staking._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION staking.schema_notification();
+CREATE TRIGGER "0x8741811e70475b76" AFTER UPDATE ON domain_auto_evm._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION domain_auto_evm.schema_notification();
 
 CREATE FUNCTION consensus.insert_log_kind() RETURNS trigger
     LANGUAGE plpgsql
