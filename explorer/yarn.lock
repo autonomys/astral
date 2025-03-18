@@ -2641,7 +2641,7 @@
     rxjs "^7.8.1"
     tslib "^2.8.1"
 
-"@polkadot/extension-dapp@^0.46.5", "@polkadot/extension-dapp@^0.46.7":
+"@polkadot/extension-dapp@^0.46.5":
   version "0.46.7"
   resolved "https://registry.yarnpkg.com/@polkadot/extension-dapp/-/extension-dapp-0.46.7.tgz#0286ee6b61f13e150c0225a521ac72895b10cba1"
   integrity sha512-J/lGBwUfmXDHuzV14P3kBE8gPlWU0GCVvpfhw28qwaASgKHuWUxzoBoMnMT79VyXSsI5P7riU/x1pD/u1mjjyw==
