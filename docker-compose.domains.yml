@@ -1,4 +1,10 @@
 services:
+  caddy:
+    extends:
+      file: ./docker-compose.yml
+      service: caddy
+    ports:
+      - "127.0.0.1:8001:8001"
   # Subspace Node
   node:
     extends:
