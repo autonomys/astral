@@ -1959,7 +1959,7 @@
     "@scure/base" "^1.1.7"
     tslib "^2.8.0"
 
-"@polkadot/util@13.4.3", "@polkadot/util@^13.2.2", "@polkadot/util@^13.2.3", "@polkadot/util@^13.4.3":
+"@polkadot/util@13.4.3", "@polkadot/util@^13.2.3", "@polkadot/util@^13.4.3":
   version "13.4.3"
   resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-13.4.3.tgz#b17449e89455b1f63aeedd5e73b7634b2d47f5a9"
   integrity sha512-6v2zvg8l7W22XvjYf7qv9tPQdYl2E6aXY94M4TZKsXZxmlS5BoG+A9Aq0+Gw8zBUjupjEmUkA6Y//msO8Zisug==
