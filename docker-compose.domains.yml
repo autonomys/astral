@@ -2,7 +2,7 @@ services:
   # Subspace Node
   node:
     extends:
-      file: ../docker-compose.yml
+      file: ./docker-compose.yml
       service: node
     image: ghcr.io/autonomys/node:${NODE_DOCKER_TAG}
     volumes:
@@ -62,10 +62,6 @@ services:
         "0.0.0.0:8944",
         "--rpc-max-connections",
         "500",
-        "--reserved-peer",
-        "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
-        "--bootstrap-node",
-        "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
       ]
 
   domain_auto_evm_subquery_node:
