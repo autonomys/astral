@@ -1,18 +1,10 @@
-import {
-  parseDeposit,
-  parseOperator,
-  parseWithdrawal,
-} from "@autonomys/auto-consensus";
+import { parseOperator, parseWithdrawal } from "@autonomys/auto-consensus";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
 import * as db from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
-import {
-  aggregateByDomainId,
-  createHashId,
-  findDomainIdFromOperatorsCache,
-} from "./utils";
+import { aggregateByDomainId, createHashId } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -23,6 +15,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     timestamp,
     events,
   } = _block;
+  if (!extrinsics.find((e) => e.method.section === "domains")) return;
+
   const height = BigInt(number.toString());
   const blockTimestamp = timestamp ? timestamp : new Date();
 
@@ -44,23 +38,42 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       : await unsafeApi.at(parentHash)
     : api;
 
-  const [
-    domainStakingSummary,
-    headDomainNumber,
-    operatorIdOwner,
-    operatorsSummary,
-    parentBlockOperators,
-  ] = await Promise.all([
+  const query = [
+    apiPatched.query.domains.operators.entries(),
     api.query.domains.domainStakingSummary.entries(),
     api.query.domains.headDomainNumber.entries(),
     api.query.domains.operatorIdOwner.entries(),
-    apiPatched.query.domains.operators.entries(),
-    parentBlockApi.query.domains.operators.entries(),
-  ]);
+  ];
+  let blockHasUnlockNominator = false;
+  let blockHasWithdrawals = false;
+  let withdrawalsResultId = 4;
+  if (extrinsics.length > 0) {
+    if (
+      extrinsics.find(
+        (e) =>
+          e.method.section === "domains" &&
+          e.method.method === "unlockNominator"
+      )
+    ) {
+      blockHasUnlockNominator = true;
+      withdrawalsResultId = 5;
+      query.push(parentBlockApi.query.domains.operators.entries());
+    }
+    if (
+      extrinsics.find(
+        (e) =>
+          e.method.section === "domains" && e.method.method === "withdrawStake"
+      )
+    ) {
+      blockHasWithdrawals = true;
+      query.push(api.query.domains.withdrawals.entries());
+    }
+  }
+  const queriesResults = await Promise.all(query);
 
-  const operators = operatorsSummary.map((o: any) => parseOperator(o));
+  const operators = queriesResults[0].map((o) => parseOperator(o));
 
-  domainStakingSummary.forEach((data) => {
+  queriesResults[1].forEach((data) => {
     const keyPrimitive = data[0].toPrimitive() as any;
     const valuePrimitive = data[1].toPrimitive() as any;
     const domainId = keyPrimitive[0].toString();
@@ -82,7 +95,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     );
   });
-  headDomainNumber.forEach((data) => {
+  queriesResults[2].forEach((data) => {
     const domainId = (data[0].toHuman() as any)[0].toString();
     const domainBlockNumber = BigInt((data[1].toPrimitive() as any).toString());
     cache.domainBlockHistory.push(
@@ -97,7 +110,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   });
 
   const operatorOwnerMap = new Map(
-    operatorIdOwner.map(([key, value]) => [
+    queriesResults[3].map(([key, value]) => [
       (key.toHuman() as any)[0].toString(),
       value.toPrimitive() as string,
     ])
@@ -130,78 +143,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
   });
 
-  parentBlockOperators.forEach((o: any) =>
-    cache.parentBlockOperators.push(parseOperator(o))
-  );
-
-  const deposits = (
-    await Promise.all(
-      operatorIdOwner.map((o) =>
-        api.query.domains.deposits.entries(
-          (o[0].toHuman() as any)[0].toString()
-        )
-      )
-    )
-  ).flat();
-  deposits.forEach((d: any) => {
-    const data = parseDeposit(d);
-    const operatorId = data.operatorId.toString();
-    cache.depositHistory.push(
-      db.createDepositHistory(
-        createHashId(data),
-        findDomainIdFromOperatorsCache(cache, operatorId),
-        data.account,
-        operatorId,
-        data.shares,
-        data.storageFeeDeposit,
-        data.known.shares,
-        data.known.storageFeeDeposit,
-        data.pending?.effectiveDomainId ?? 0,
-        data.pending?.effectiveDomainEpoch ?? 0,
-        data.pending?.amount ?? ZERO_BIGINT,
-        data.pending?.storageFeeDeposit ?? ZERO_BIGINT,
-        blockTimestamp,
-        height
-      )
+  if (blockHasUnlockNominator)
+    queriesResults[4].forEach((o) =>
+      cache.parentBlockOperators.push(parseOperator(o))
     );
-  });
-  const withdrawals = (
-    await Promise.all(
-      operatorIdOwner.map((o) =>
-        api.query.domains.withdrawals.entries(
-          (o[0].toHuman() as any)[0].toString()
-        )
-      )
-    )
-  ).flat();
 
-  withdrawals.forEach((w: any) => {
-    const data = parseWithdrawal(w);
-    const operatorId = data.operatorId.toString();
-    cache.withdrawalHistory.push(
-      db.createWithdrawalHistory(
-        createHashId(data),
-        findDomainIdFromOperatorsCache(cache, operatorId),
-        data.account,
-        operatorId,
-        data.totalWithdrawalAmount,
-        data.withdrawalInShares === null
-          ? 0
-          : data.withdrawalInShares.domainEpoch[1],
-        data.withdrawalInShares === null
-          ? ZERO_BIGINT
-          : BigInt(data.withdrawalInShares.unlockAtConfirmedDomainBlockNumber),
-        data.withdrawalInShares === null
-          ? ZERO_BIGINT
-          : data.withdrawalInShares.shares,
-        data.withdrawalInShares === null
-          ? ZERO_BIGINT
-          : data.withdrawalInShares.storageFeeRefund,
-        blockTimestamp,
-        height
-      )
+  if (blockHasWithdrawals)
+    queriesResults[withdrawalsResultId].forEach((o) =>
+      cache.currentWithdrawal.push(parseWithdrawal(o))
     );
-  });
 
   const eventsByExtrinsic = new Map<number, typeof events>();
   for (const event of events) {
@@ -236,7 +186,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         // Process specific events
         const eventKey = event.event.section + "." + event.event.method;
         const handler = EVENT_HANDLERS[eventKey];
-        if (handler) {
+        if (handler)
           handler({
             event,
             extrinsic,
@@ -248,7 +198,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
             extrinsicSigner,
             extrinsicEvents,
           });
-        }
 
         // Increment event index
         eventIndex++;

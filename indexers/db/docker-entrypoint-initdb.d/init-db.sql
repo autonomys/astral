@@ -1199,6 +1199,7 @@ CREATE TABLE staking.deposit_events (
     amount numeric NOT NULL,
     storage_fee_deposit numeric NOT NULL,
     total_amount numeric NOT NULL,
+    estimated_shares numeric NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
@@ -1207,27 +1208,6 @@ CREATE TABLE staking.deposit_events (
     _block_range int8range NOT NULL
 );
 ALTER TABLE staking.deposit_events OWNER TO postgres;
-
-CREATE TABLE staking.deposit_histories (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    account_id text NOT NULL,
-    operator_id text NOT NULL,
-    nominator_id text NOT NULL,
-    shares numeric NOT NULL,
-    storage_fee_deposit numeric NOT NULL,
-    shares_known numeric NOT NULL,
-    storage_fee_deposit_known numeric NOT NULL,
-    effective_domain_id_pending integer NOT NULL,
-    effective_domain_epoch_pending integer NOT NULL,
-    amount_pending numeric NOT NULL,
-    storage_fee_deposit_pending numeric NOT NULL,
-    timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.deposit_histories OWNER TO postgres;
 
 CREATE TABLE staking.deposits (
     id text NOT NULL,
@@ -1238,6 +1218,7 @@ CREATE TABLE staking.deposits (
     amount numeric NOT NULL,
     storage_fee_deposit numeric NOT NULL,
     total_amount numeric NOT NULL,
+    estimated_shares numeric NOT NULL,
     total_withdrawn numeric NOT NULL,
     status text NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
@@ -1574,24 +1555,6 @@ CREATE TABLE staking.withdraw_events (
 );
 ALTER TABLE staking.withdraw_events OWNER TO postgres;
 
-CREATE TABLE staking.withdrawal_histories (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    account_id text NOT NULL,
-    operator_id text NOT NULL,
-    nominator_id text NOT NULL,
-    total_withdrawal_amount numeric NOT NULL,
-    domain_epoch integer NOT NULL,
-    unlock_at_confirmed_domain_block_number numeric NOT NULL,
-    shares numeric NOT NULL,
-    storage_fee_refund numeric NOT NULL,
-    timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.withdrawal_histories OWNER TO postgres;
-
 CREATE TABLE staking.withdrawals (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -1924,9 +1887,6 @@ ALTER TABLE ONLY staking.bundle_submissions
 ALTER TABLE ONLY staking.deposit_events
     ADD CONSTRAINT deposit_events_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.deposit_histories
-    ADD CONSTRAINT deposit_histories_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY staking.deposits
     ADD CONSTRAINT deposits_pkey PRIMARY KEY (id);
 
@@ -1974,9 +1934,6 @@ ALTER TABLE ONLY staking.nominators_unlocked_events
 
 ALTER TABLE ONLY staking.withdraw_events
     ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
-
-ALTER TABLE ONLY staking.withdrawal_histories
-    ADD CONSTRAINT withdrawal_histories_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY staking.withdrawals
     ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id);
@@ -2171,13 +2128,7 @@ CREATE INDEX "0xa3309c82ddfd9389" ON staking.operator_registrations USING btree 
 CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING btree (id);
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
 CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btree (id);
-CREATE INDEX "0xd3486d6b21c11e22" ON staking.withdrawal_histories USING btree (id);
-CREATE INDEX "staking_withdrawal_histories_operator_id" ON staking.withdrawal_histories USING btree (operator_id);
-CREATE INDEX "staking_withdrawal_histories_nominator_id" ON staking.withdrawal_histories USING btree (nominator_id);
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
-CREATE INDEX "0xdca5e6b13feac3f6" ON staking.deposit_histories USING btree (id);
-CREATE INDEX "staking_deposit_histories_operator_id" ON staking.deposit_histories USING btree (operator_id);
-CREATE INDEX "staking_deposit_histories_nominator_id" ON staking.deposit_histories USING btree (nominator_id);
 CREATE INDEX "staking_accounts_id" ON staking.accounts USING btree (id);
 CREATE INDEX "staking_deposits_id" ON staking.deposits USING btree (id);
 CREATE INDEX "staking_deposits_domain_id" ON staking.deposits USING btree (domain_id);
@@ -2461,50 +2412,6 @@ CREATE TRIGGER prevent_operator_staking_histories_duplicate
 BEFORE INSERT ON staking.operator_staking_histories
 FOR EACH ROW
 EXECUTE FUNCTION staking.prevent_operator_staking_histories_duplicate();
-
-CREATE OR REPLACE FUNCTION staking.prevent_deposit_histories_duplicate() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    IF EXISTS (
-        SELECT 1 
-        FROM staking.deposit_histories 
-        WHERE id = NEW.id
-    ) THEN
-        RETURN NULL;
-    END IF;
-    
-    RETURN NEW;
-END;
-$$;
-ALTER FUNCTION staking.prevent_deposit_histories_duplicate() OWNER TO postgres;
-
-CREATE TRIGGER prevent_deposit_histories_duplicate
-BEFORE INSERT ON staking.deposit_histories
-FOR EACH ROW
-EXECUTE FUNCTION staking.prevent_deposit_histories_duplicate();
-
-CREATE OR REPLACE FUNCTION staking.prevent_withdrawal_histories_duplicate() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    IF EXISTS (
-        SELECT 1 
-        FROM staking.withdrawal_histories 
-        WHERE id = NEW.id
-    ) THEN
-        RETURN NULL;
-    END IF;
-    
-    RETURN NEW;
-END;
-$$;
-ALTER FUNCTION staking.prevent_withdrawal_histories_duplicate() OWNER TO postgres;
-
-CREATE TRIGGER prevent_withdrawal_histories_duplicate
-BEFORE INSERT ON staking.withdrawal_histories
-FOR EACH ROW
-EXECUTE FUNCTION staking.prevent_withdrawal_histories_duplicate();
 
 CREATE OR REPLACE FUNCTION staking.insert_new_domain() RETURNS TRIGGER
     LANGUAGE plpgsql
@@ -2824,6 +2731,7 @@ BEGIN
         amount,
         storage_fee_deposit,
         total_amount,
+        estimated_shares,
         total_withdrawn,
         status,
         "timestamp",
@@ -2839,6 +2747,7 @@ BEGIN
         NEW.amount,                  -- amount
         NEW.storage_fee_deposit,     -- storage_fee_deposit
         NEW.total_amount,            -- total_amount
+        NEW.estimated_shares,        -- estimated_shares
         0,                           -- total_withdrawn (starts at 0)
         'PENDING_NEXT_EPOCH',        -- status
         NEW."timestamp",             -- timestamp
@@ -3346,7 +3255,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     SET 
         status = 'PENDING_UNLOCK_FUNDS',
         updated_at = NEW.block_height
-    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at >= last_domain_block_number;
+    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at <= last_domain_block_number;
     
     RETURN NEW;
   END;
@@ -3402,7 +3311,7 @@ CREATE OR REPLACE FUNCTION staking.update_operator_on_deregistration() RETURNS T
 BEGIN
     UPDATE staking.operators
     SET 
-        raw_status = 'DEREGISTERED',
+        status = 'DEREGISTERED',
         updated_at = NEW.block_height
     WHERE id = NEW.id;
 
