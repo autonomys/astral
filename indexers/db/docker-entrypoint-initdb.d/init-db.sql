@@ -3119,9 +3119,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     LIMIT 1;
 
     IF NOT FOUND THEN
-        SELECT
-          0 as domain_block_number
-        INTO last_domain_block_number;
+        last_domain_block_number := 0;
     END IF;
 
     SELECT share_price
