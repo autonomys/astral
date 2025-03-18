@@ -103,22 +103,22 @@ export const ROUTES: Route[] = [
   {
     name: Routes.staking,
     title: 'Staking',
-    networks: [NetworkId.TAURUS],
+    networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
     children: [
       {
         name: RoutesStaking.operators,
         title: 'Operators',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesStaking.register,
         title: 'Register Operator',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesStaking.nominations,
         title: 'My Nominations',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
     ],
   },
@@ -133,29 +133,29 @@ export const ROUTES: Route[] = [
       {
         name: RoutesLeaderboard.accounts,
         title: 'Top Accounts',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesLeaderboard.operators,
         title: 'Top Operators',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesLeaderboard.nominators,
         title: 'Top Nominators',
-        networks: [],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
     ],
   },
   {
     name: Routes.domains,
     title: 'Domains',
-    networks: [NetworkId.TAURUS],
+    networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
     children: [
       {
         name: RoutesDomains.autoevm,
         title: 'Auto EVM',
-        networks: [NetworkId.TAURUS],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
       {
         name: RoutesDomains.autoid,
@@ -167,7 +167,7 @@ export const ROUTES: Route[] = [
   {
     name: Routes.transfer,
     title: 'Transfer',
-    networks: [NetworkId.TAURUS],
+    networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
   },
   {
     name: Routes.testnetRewards,
@@ -201,7 +201,7 @@ export const EXTERNAL_ROUTES = {
   subscan: 'https://autonomys.subscan.io/',
   spaceAcres: 'https://api.github.com/repos/autonomys/space-acres/releases/latest',
   autoDrivePackage: 'https://www.npmjs.com/package/@autonomys/auto-drive',
-  autoDagPackage:'https://www.npmjs.com/package/@autonomys/auto-dag-data'
+  autoDagPackage: 'https://www.npmjs.com/package/@autonomys/auto-dag-data',
 }
 
 export const INTERNAL_ROUTES = {
