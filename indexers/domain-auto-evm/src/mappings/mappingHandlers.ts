@@ -280,9 +280,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     store.bulkCreate(`Event`, newEvents),
     store.bulkCreate(`Log`, newLogs),
 
-    // Save transfers and rewards
+    // Save transfers
     store.bulkCreate(`Transfer`, cache.transfers),
-    store.bulkCreate(`Reward`, cache.rewards),
 
     // Save account
     store.bulkCreate(`AccountHistory`, accountHistories),
