@@ -299,23 +299,25 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       if (to) {
         cache.addressToUpdate.add(to);
 
-        cache.totalTransferValue += value;
-        cache.transfers.push(
-          createTransfer(
-            height,
-            blockHash,
-            height + "-evm-tx-" + transactionIndex,
-            height + "-evm-tx-" + transactionIndex,
-            from,
-            DOMAIN_AUTO_EVM_CHAIN_TYPE,
-            to,
-            DOMAIN_AUTO_EVM_CHAIN_TYPE,
-            value,
-            gas,
-            true,
-            blockTimestamp
-          )
-        );
+        if (value > ZERO_BIGINT) {
+          cache.totalTransferValue += value;
+          cache.transfers.push(
+            createTransfer(
+              height,
+              blockHash,
+              height + "-evm-tx-" + transactionIndex,
+              height + "-evm-tx-" + transactionIndex,
+              from,
+              DOMAIN_AUTO_EVM_CHAIN_TYPE,
+              to,
+              DOMAIN_AUTO_EVM_CHAIN_TYPE,
+              value,
+              gas,
+              true,
+              blockTimestamp
+            )
+          );
+        }
       }
 
       if (!to && creates && input !== "0x")
