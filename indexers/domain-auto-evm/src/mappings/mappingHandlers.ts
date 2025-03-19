@@ -9,6 +9,7 @@ import {
   createEvent,
   createEvmBlock,
   createEvmCode,
+  createEvmCodeSelector,
   createEvmTransaction,
   createExtrinsic,
   createLog,
@@ -259,6 +260,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const codesToFetch: string[] = [];
   if (evmTransactions && evmTransactions?.length > 0) {
     evmTransactions.forEach((transaction) => {
+      const from = transaction.from.toString();
+      const to = transaction.to.toString();
+      const input = transaction.input.toString();
+      const creates = transaction.creates.toString();
       cache.evmTransactions.push(
         createEvmTransaction(
           transaction.hash.toString(),
@@ -268,15 +273,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           blockTimestamp,
           evmBlockData?.timestamp.toNumber() ?? 0,
           BigInt(transaction.transactionIndex.toString()),
-          transaction.from.toString(),
-          transaction.to.toString(),
+          from,
+          to,
           BigInt(transaction.value.toString()),
           BigInt(transaction.gasPrice.toString()),
           BigInt(transaction.maxFeePerGas.toString()),
           BigInt(transaction.maxPriorityFeePerGas.toString()),
           BigInt(transaction.gas.toString()),
-          transaction.input.toString(),
-          transaction.creates.toString(),
+          input,
+          creates,
           transaction.raw.toString(),
           transaction.publicKey.toString(),
           BigInt(transaction.chainId.toString()),
@@ -288,10 +293,13 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           BigInt(transaction.transactionType.toString())
         )
       );
-      const contractAddress = transaction.creates?.toString();
-      if (contractAddress) codesToFetch.push(contractAddress);
-      cache.addressToUpdate.add(transaction.from.toString());
-      cache.addressToUpdate.add(transaction.to.toString());
+      if (creates) codesToFetch.push(creates);
+      cache.addressToUpdate.add(from);
+      cache.addressToUpdate.add(to);
+      if (!to && creates && input !== "0x")
+        cache.evmCodeSelectors.push(
+          createEvmCodeSelector(creates, input.slice(0, 10))
+        );
     });
     if (codesToFetch.length > 0) {
       const codes = await Promise.all(
@@ -390,5 +398,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     store.bulkCreate(`EvmTransaction`, cache.evmTransactions),
     // Create and save evm codes
     store.bulkCreate(`EvmCode`, cache.evmCodes),
+    // Create and save evm code selectors
+    store.bulkCreate(`EvmCodeSelector`, cache.evmCodeSelectors),
   ]);
 }

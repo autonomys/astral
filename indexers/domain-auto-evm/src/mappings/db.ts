@@ -13,6 +13,7 @@ export type Cache = {
 
   evmTransactions: Entity[];
   evmCodes: Entity[];
+  evmCodeSelectors: Entity[];
 };
 
 export const initializeCache = (): Cache => ({
@@ -26,6 +27,7 @@ export const initializeCache = (): Cache => ({
 
   evmTransactions: [],
   evmCodes: [],
+  evmCodeSelectors: [],
 });
 
 // Core Consensus DB Functions
@@ -322,5 +324,15 @@ export function createEvmCode(address: string, code: string, abi: string) {
     address,
     code,
     abi,
+  };
+}
+
+export function createEvmCodeSelector(address: string, selector: string) {
+  return {
+    id: address + "-" + selector,
+    address,
+    selector,
+    name: "",
+    signature: "",
   };
 }

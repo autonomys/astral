@@ -155,3 +155,11 @@ type EvmCode @entity {
   code: String!
   abi: String!
 }
+
+type EvmCodeSelector @entity {
+  id: ID!
+  address: String!
+  selector: String!
+  name: String!
+  signature: String!
+}
