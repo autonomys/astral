@@ -264,6 +264,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       const gas = BigInt(transaction.gas.toString());
       const input = transaction.input.toString();
       const creates = transaction.creates.toString();
+      const transactionIndex = evmTransactions.indexOf(transaction).toString();
       cache.evmTransactions.push(
         createEvmTransaction(
           transaction.hash.toString(),
@@ -272,7 +273,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           height,
           blockTimestamp,
           evmBlockData?.timestamp.toNumber() ?? 0,
-          BigInt(transaction.transactionIndex.toString()),
+          BigInt(transactionIndex),
           from,
           to,
           value,
@@ -303,8 +304,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           createTransfer(
             height,
             blockHash,
-            "",
-            "",
+            height + "-evm-tx-" + transactionIndex,
+            height + "-evm-tx-" + transactionIndex,
             from,
             DOMAIN_AUTO_EVM_CHAIN_TYPE,
             to,
