@@ -2,7 +2,7 @@ import { account } from "@autonomys/auto-consensus";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { Entity } from "@subql/types-core";
-import { EMPTY_SIGNATURE, ZERO_BIGINT } from "./constants";
+import { DEFAULT_ACCOUNT_ID, EMPTY_SIGNATURE, ZERO_BIGINT } from "./constants";
 import {
   createAccountHistory,
   createBlock,
@@ -16,7 +16,6 @@ import {
   initializeCache,
 } from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
-import { getBlockAuthor } from "./helper";
 import { ExtrinsicPrimitive, LogValue } from "./types";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
@@ -33,7 +32,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const height = BigInt(number.toString());
   const blockHash = hash.toString();
   const blockTimestamp = timestamp ? timestamp : new Date(0);
-  const authorId = getBlockAuthor(_block);
   const eventsCount = events.length;
   const extrinsicsCount = extrinsics.length;
 
@@ -118,7 +116,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     const pos = extrinsicEvents ? extrinsicIdx : 0;
     const extrinsicSigner = extrinsic.isSigned
       ? extrinsic.signer.toString()
-      : "";
+      : DEFAULT_ACCOUNT_ID;
     const extrinsicSignature = extrinsic.isSigned
       ? extrinsic.signature.toString()
       : EMPTY_SIGNATURE;
@@ -315,7 +313,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
   // Update accounts
   const uniqueAddresses = Array.from(cache.addressToUpdate).filter(
-    (address) => address !== ""
+    (address) => address !== "" && address !== DEFAULT_ACCOUNT_ID
   );
   const accounts = await Promise.all(
     uniqueAddresses.map((address) => account(api as any, address))
@@ -361,7 +359,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         newLogs.length,
         cache.transfers.length,
         cache.totalTransferValue,
-        authorId
+        DEFAULT_ACCOUNT_ID
       ),
     ]),
     // Create and save block
