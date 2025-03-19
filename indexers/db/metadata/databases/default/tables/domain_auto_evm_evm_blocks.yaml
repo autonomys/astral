@@ -8,7 +8,6 @@ select_permissions:
         - _block_range
         - block_timestamp
         - transactions_count
-        - transfers_count
         - difficulty
         - gas_limit
         - gas_used

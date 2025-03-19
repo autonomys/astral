@@ -376,11 +376,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         evmBlockData?.transactionsRoot.toString() ?? "",
         evmBlockData?.receiptsRoot.toString() ?? "",
         evmBlockData?.transactions.length ?? 0,
-        evmBlockData?.transactions.filter(
-          (tx) =>
-            BigInt(tx.value.toString() ?? "0") > ZERO_BIGINT &&
-            tx.to.toString() !== ""
-        ).length ?? 0,
         evmBlockData?.transactions.reduce(
           (sum, tx) => sum + BigInt(tx.value.toString() ?? "0"),
           ZERO_BIGINT

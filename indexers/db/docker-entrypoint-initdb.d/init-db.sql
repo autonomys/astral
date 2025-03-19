@@ -1706,7 +1706,6 @@ CREATE TABLE domain_auto_evm.evm_blocks (
     transactions_root text NOT NULL,
     receipts_root text NOT NULL,
     transactions_count integer NOT NULL,
-    transfers_count integer NOT NULL,
     transfer_value numeric NOT NULL,
     author_id text NOT NULL,
     gas_used numeric NOT NULL,

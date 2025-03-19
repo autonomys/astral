@@ -108,7 +108,6 @@ type EvmBlock @entity {
   transactionsRoot: String!
   receiptsRoot: String!
   transactionsCount: Int!
-  transfersCount: Int!
   transferValue: BigInt!
   authorId: String!
   gasUsed: BigInt!
