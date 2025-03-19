@@ -1694,6 +1694,86 @@ CREATE TABLE domain_auto_evm.events (
 );
 ALTER TABLE domain_auto_evm.events OWNER TO postgres;
 
+CREATE TABLE domain_auto_evm.evm_blocks (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    height numeric NOT NULL,
+    hash text NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    block_timestamp integer NOT NULL,
+    parent_hash text NOT NULL,
+    state_root text NOT NULL,
+    transactions_root text NOT NULL,
+    receipts_root text NOT NULL,
+    transactions_count integer NOT NULL,
+    transfers_count integer NOT NULL,
+    transfer_value numeric NOT NULL,
+    author_id text NOT NULL,
+    gas_used numeric NOT NULL,
+    gas_limit numeric NOT NULL,
+    extra_data text NOT NULL,
+    difficulty numeric NOT NULL,
+    total_difficulty numeric NOT NULL,
+    size numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.evm_blocks OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.evm_code_selectors (
+    id text NOT NULL,
+    address text NOT NULL,
+    selector text NOT NULL,
+    name text NOT NULL,
+    signature text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.evm_code_selectors OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.evm_codes (
+    id text NOT NULL,
+    address text NOT NULL,
+    code text NOT NULL,
+    abi text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.evm_codes OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.evm_transactions (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    hash text NOT NULL,
+    nonce numeric NOT NULL,
+    block_hash text NOT NULL,
+    block_number numeric NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    block_timestamp integer NOT NULL,
+    transaction_index integer NOT NULL,
+    "from" text NOT NULL,
+    "to" text NOT NULL,
+    value numeric NOT NULL,
+    gas_price numeric NOT NULL,
+    max_fee_per_gas numeric NOT NULL,
+    max_priority_fee_per_gas numeric NOT NULL,
+    gas numeric NOT NULL,
+    input text NOT NULL,
+    creates text NOT NULL,
+    raw text NOT NULL,
+    public_key text NOT NULL,
+    chain_id numeric NOT NULL,
+    standard_v numeric NOT NULL,
+    v text NOT NULL,
+    r text NOT NULL,
+    s text NOT NULL,
+    access_list text NOT NULL,
+    transaction_type numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.evm_transactions OWNER TO postgres;
+
 CREATE TABLE domain_auto_evm.extrinsic_modules (
     id text NOT NULL,
     section text NOT NULL,
@@ -2142,6 +2222,18 @@ ALTER TABLE ONLY domain_auto_evm.event_modules
 ALTER TABLE ONLY domain_auto_evm.events
     ADD CONSTRAINT events_pkey PRIMARY KEY (_id);
 
+ALTER TABLE ONLY domain_auto_evm.evm_blocks
+    ADD CONSTRAINT evm_blocks_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.evm_code_selectors
+    ADD CONSTRAINT evm_code_selectors_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.evm_codes
+    ADD CONSTRAINT evm_codes_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.evm_transactions
+    ADD CONSTRAINT evm_transactions_pkey PRIMARY KEY (_id);
+
 ALTER TABLE ONLY domain_auto_evm.extrinsic_modules
     ADD CONSTRAINT extrinsic_modules_id_key PRIMARY KEY (id);
 
@@ -2408,6 +2500,10 @@ CREATE INDEX "domain_auto_evm_sections_id" ON domain_auto_evm.sections USING btr
 CREATE INDEX "0x09a98aa53fa2c2e3" ON domain_auto_evm.logs USING btree (id);
 CREATE INDEX "domain_auto_evm_logs_sort_id" ON domain_auto_evm.logs USING btree (sort_id DESC);
 CREATE INDEX "domain_auto_evm_logs_block_height" ON domain_auto_evm.logs USING btree (block_height);
+CREATE INDEX "0x3067863a57084527" ON domain_auto_evm.evm_code_selectors USING btree (id);
+CREATE INDEX "0x94656e42e9e36728" ON domain_auto_evm.evm_blocks USING btree (id);
+CREATE INDEX "0xee1355606a0eb5b7" ON domain_auto_evm.evm_transactions USING btree (id);
+CREATE INDEX "0xf54a20ed40ef7dea" ON domain_auto_evm.evm_codes USING btree (id);
 
 CREATE INDEX "stats_hourly_end_date" ON stats.hourly USING btree ("end_date" DESC);
 CREATE INDEX "stats_daily_end_date" ON stats.daily USING btree ("end_date" DESC);
@@ -3810,3 +3906,25 @@ CREATE TRIGGER ensure_domain_auto_evm_cumulative_blocks
     BEFORE INSERT ON domain_auto_evm.blocks
     FOR EACH ROW
     EXECUTE FUNCTION domain_auto_evm.update_cumulative_blocks();
+
+CREATE OR REPLACE FUNCTION domain_auto_evm.prevent_evm_code_selectors_duplicate() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 
+        FROM domain_auto_evm.evm_code_selectors 
+        WHERE id = NEW.id
+    ) THEN
+        RETURN NULL;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION domain_auto_evm.prevent_operator_staking_histories_duplicate() OWNER TO postgres;
+
+CREATE TRIGGER prevent_domain_auto_evm_evm_code_selectors_duplicate
+BEFORE INSERT ON domain_auto_evm.evm_code_selectors
+FOR EACH ROW
+EXECUTE FUNCTION domain_auto_evm.prevent_evm_code_selectors_duplicate();
