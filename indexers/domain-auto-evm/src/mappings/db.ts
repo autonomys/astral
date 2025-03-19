@@ -287,7 +287,7 @@ export function createEvmTransaction(
 ) {
   return {
     id: hash,
-    sortId: getSortId(blockNumber),
+    sortId: getSortId(blockNumber, transactionIndex),
     hash,
     nonce,
     blockHash,
