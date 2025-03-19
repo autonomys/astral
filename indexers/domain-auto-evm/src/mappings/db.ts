@@ -7,7 +7,6 @@ export type Cache = {
   transfers: Entity[];
 
   addressToUpdate: Set<string>;
-  evmTransactionsList: string[];
   // Totals
   totalTransferValue: bigint;
 
@@ -21,7 +20,6 @@ export const initializeCache = (): Cache => ({
   transfers: [],
 
   addressToUpdate: new Set<string>(),
-  evmTransactionsList: [],
   // Totals
   totalTransferValue: ZERO_BIGINT,
 

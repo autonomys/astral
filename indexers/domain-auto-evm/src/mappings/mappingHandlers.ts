@@ -58,12 +58,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
   // Process extrinsics
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
-    // Add EVM transaction hash to array
-    if (
-      extrinsic.method.section === "ethereum" &&
-      extrinsic.method.method === "transact"
-    )
-      cache.evmTransactionsList.push(extrinsic.hash.toString());
     const extrinsicHash = extrinsic.hash.toString();
     const extrinsicMethodToPrimitive =
       extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
