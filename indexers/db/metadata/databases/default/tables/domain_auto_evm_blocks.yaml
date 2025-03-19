@@ -1,0 +1,73 @@
+table:
+  name: blocks
+  schema: domain_auto_evm
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+object_relationships:
+  - name: cumulative
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: cumulative_blocks
+          schema: domain_auto_evm
+array_relationships:
+  - name: events
+    using:
+      manual_configuration:
+        column_mapping:
+          height: block_height
+        insertion_order: null
+        remote_table:
+          name: events
+          schema: domain_auto_evm
+  - name: extrinsics
+    using:
+      manual_configuration:
+        column_mapping:
+          height: block_height
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: domain_auto_evm
+  - name: logs
+    using:
+      manual_configuration:
+        column_mapping:
+          height: block_height
+        insertion_order: null
+        remote_table:
+          name: logs
+          schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - events_count
+        - extrinsics_count
+        - logs_count
+        - transfers_count
+        - height
+        - transfer_value
+        - author_id
+        - extrinsics_root
+        - hash
+        - id
+        - parent_hash
+        - sort_id
+        - spec_id
+        - state_root
+        - timestamp
+        - _id
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""

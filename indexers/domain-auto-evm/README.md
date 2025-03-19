@@ -1,12 +1,14 @@
-# Autonomys Astral Indexer - Files
+# Autonomys Astral Explorer Domain Auto-EVM
 
-The Autonomys Astral Indexer - Files is a specialized SubQuery project that indexes all files on the Autonomys Network. This project is designed to support the files tracking functionality for the Astral Explorer, providing real-time data on files.
+The Autonomys Astral Explorer Consensus is a specialized SubQuery project that indexes all Auto-EVM-related events on the Autonomys Network. This project is designed to support the Auto EVM tracking functionality for the Astral Explorer, providing real-time data on validator activities and domain network.
 
 ## Overview
 
 This SubQuery project is tailored specifically for the Autonomys Astral Explorer, focusing on:
 
-1. Indexing all files and CIDs on the Autonomys Mainnet
+1. Indexing all consensus-related events using the relevant pallets
+2. Capturing system remarks for additional consensus actions
+3. Tracking and updating validator performance and network consensus metrics
 
 ## Project Structure
 
@@ -29,7 +31,7 @@ To run this project locally:
 
 1. Ensure you have Node.js and Docker installed on your system.
 2. Clone the repository: `git clone https://github.com/autonomys/astral.git`
-3. Navigate to the project directory: `cd astral/indexers/files`
+3. Navigate to the project directory: `cd astral/indexers/domain-auto-evm`
 4. Install dependencies: `yarn install`
 5. Start the project: `yarn dev`
 
