@@ -2,7 +2,12 @@ import { account } from "@autonomys/auto-consensus";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { Entity } from "@subql/types-core";
-import { DEFAULT_ACCOUNT_ID, EMPTY_SIGNATURE, ZERO_BIGINT } from "./constants";
+import {
+  DEFAULT_ACCOUNT_ID,
+  DOMAIN_AUTO_EVM_CHAIN_TYPE,
+  EMPTY_SIGNATURE,
+  ZERO_BIGINT,
+} from "./constants";
 import {
   createAccountHistory,
   createBlock,
@@ -13,6 +18,7 @@ import {
   createEvmTransaction,
   createExtrinsic,
   createLog,
+  createTransfer,
   initializeCache,
 } from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
@@ -254,6 +260,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     evmTransactions.forEach((transaction) => {
       const from = transaction.from.toString();
       const to = transaction.to.toString();
+      const value = BigInt(transaction.value.toString());
+      const gas = BigInt(transaction.gas.toString());
       const input = transaction.input.toString();
       const creates = transaction.creates.toString();
       cache.evmTransactions.push(
@@ -267,11 +275,11 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           BigInt(transaction.transactionIndex.toString()),
           from,
           to,
-          BigInt(transaction.value.toString()),
+          value,
           BigInt(transaction.gasPrice.toString()),
           BigInt(transaction.maxFeePerGas.toString()),
           BigInt(transaction.maxPriorityFeePerGas.toString()),
-          BigInt(transaction.gas.toString()),
+          gas,
           input,
           creates,
           transaction.raw.toString(),
@@ -287,7 +295,28 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       );
       if (creates) codesToFetch.push(creates);
       cache.addressToUpdate.add(from);
-      cache.addressToUpdate.add(to);
+      if (to) {
+        cache.addressToUpdate.add(to);
+
+        cache.totalTransferValue += value;
+        cache.transfers.push(
+          createTransfer(
+            height,
+            blockHash,
+            "",
+            "",
+            from,
+            DOMAIN_AUTO_EVM_CHAIN_TYPE,
+            to,
+            DOMAIN_AUTO_EVM_CHAIN_TYPE,
+            value,
+            gas,
+            true,
+            blockTimestamp
+          )
+        );
+      }
+
       if (!to && creates && input !== "0x")
         cache.evmCodeSelectors.push(
           createEvmCodeSelector(creates, input.slice(0, 10))

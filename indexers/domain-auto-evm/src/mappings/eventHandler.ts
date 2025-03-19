@@ -40,22 +40,22 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     cache.addressToUpdate.add(to);
 
     cache.totalTransferValue += amount;
-
-    const newTransfer = createTransfer(
-      height,
-      blockHash,
-      extrinsicId,
-      eventId,
-      from,
-      DOMAIN_AUTO_EVM_CHAIN_TYPE,
-      to,
-      DOMAIN_AUTO_EVM_CHAIN_TYPE,
-      amount,
-      fee,
-      successEvent ? true : false,
-      blockTimestamp
+    cache.transfers.push(
+      createTransfer(
+        height,
+        blockHash,
+        extrinsicId,
+        eventId,
+        from,
+        DOMAIN_AUTO_EVM_CHAIN_TYPE,
+        to,
+        DOMAIN_AUTO_EVM_CHAIN_TYPE,
+        amount,
+        fee,
+        successEvent ? true : false,
+        blockTimestamp
+      )
     );
-    cache.transfers.push(newTransfer);
   },
   "transporter.OutgoingTransferInitiated": ({
     event,
@@ -82,22 +82,22 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     if (chainType === DOMAIN_AUTO_EVM_CHAIN_TYPE) cache.addressToUpdate.add(to);
 
     cache.totalTransferValue += amount;
-
-    const newTransfer = createTransfer(
-      height,
-      blockHash,
-      extrinsicId,
-      eventId,
-      extrinsicSigner,
-      DOMAIN_AUTO_EVM_CHAIN_TYPE,
-      to,
-      chainType + ":" + domainId,
-      amount,
-      fee,
-      successEvent ? true : false,
-      blockTimestamp
+    cache.transfers.push(
+      createTransfer(
+        height,
+        blockHash,
+        extrinsicId,
+        eventId,
+        extrinsicSigner,
+        DOMAIN_AUTO_EVM_CHAIN_TYPE,
+        to,
+        chainType + ":" + domainId,
+        amount,
+        fee,
+        successEvent ? true : false,
+        blockTimestamp
+      )
     );
-    cache.transfers.push(newTransfer);
   },
   "balances.Burned": ({ event, cache }) => {
     cache.addressToUpdate.add(event.event.data[0].toString());
