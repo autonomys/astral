@@ -1,5 +1,5 @@
 import { EventRecord } from "@autonomys/auto-utils";
-import { CONSENSUS_CHAIN_TYPE } from "./constants";
+import { DOMAIN_AUTO_EVM_CHAIN_TYPE } from "./constants";
 import { Cache, createTransfer } from "./db";
 
 type EventHandler = (params: {
@@ -47,9 +47,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       extrinsicId,
       eventId,
       from,
-      CONSENSUS_CHAIN_TYPE,
+      DOMAIN_AUTO_EVM_CHAIN_TYPE,
       to,
-      CONSENSUS_CHAIN_TYPE,
+      DOMAIN_AUTO_EVM_CHAIN_TYPE,
       amount,
       fee,
       successEvent ? true : false,
@@ -79,7 +79,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const amount = BigInt(extrinsicMethodToPrimitive.args.amount.toString());
 
     cache.addressToUpdate.add(extrinsicSigner);
-    if (chainType === CONSENSUS_CHAIN_TYPE) cache.addressToUpdate.add(to);
+    if (chainType === DOMAIN_AUTO_EVM_CHAIN_TYPE) cache.addressToUpdate.add(to);
 
     cache.totalTransferValue += amount;
 
@@ -89,7 +89,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       extrinsicId,
       eventId,
       extrinsicSigner,
-      CONSENSUS_CHAIN_TYPE,
+      DOMAIN_AUTO_EVM_CHAIN_TYPE,
       to,
       chainType + ":" + domainId,
       amount,

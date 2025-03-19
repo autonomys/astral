@@ -96,6 +96,8 @@ type Transfer @entity {
   timestamp: Date!
 }
 
+# EVM Entities
+
 type EvmBlock @entity {
   id: ID!
   sortId: String!
@@ -147,6 +149,8 @@ type EvmTransaction @entity {
   accessList: String!
   transactionType: BigInt!
 }
+
+# EVM Contract Entities
 
 type EvmCode @entity {
   id: ID!

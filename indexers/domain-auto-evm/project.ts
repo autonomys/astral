@@ -42,17 +42,6 @@ const project: SubstrateProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: process.env.DOMAIN_RPC_URL!?.split(",") as string[] | string,
-    // @ts-ignore
-    types: {
-      Solution: {
-        public_key: "AccountId32",
-        reward_address: "AccountId32",
-      },
-      SubPreDigest: {
-        slot: "u64",
-        solution: "Solution",
-      },
-    },
   },
   dataSources: [
     {
