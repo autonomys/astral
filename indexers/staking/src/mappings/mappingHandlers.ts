@@ -46,6 +46,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   ];
   let blockHasUnlockNominator = false;
   let blockHasWithdrawals = false;
+  let withdrawalsResultId = 4;
   if (extrinsics.length > 0) {
     if (
       extrinsics.find(
@@ -55,6 +56,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     ) {
       blockHasUnlockNominator = true;
+      withdrawalsResultId = 5;
       query.push(parentBlockApi.query.domains.operators.entries());
     }
     if (
@@ -147,7 +149,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
 
   if (blockHasWithdrawals)
-    queriesResults[5].forEach((o) =>
+    queriesResults[withdrawalsResultId].forEach((o) =>
       cache.currentWithdrawal.push(parseWithdrawal(o))
     );
 

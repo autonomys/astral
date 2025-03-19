@@ -1243,6 +1243,7 @@ CREATE TABLE staking.deposits (
     amount numeric NOT NULL,
     storage_fee_deposit numeric NOT NULL,
     total_amount numeric NOT NULL,
+    estimated_shares numeric NOT NULL,
     total_withdrawn numeric NOT NULL,
     status text NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
@@ -3086,6 +3087,7 @@ BEGIN
         amount,
         storage_fee_deposit,
         total_amount,
+        estimated_shares,
         total_withdrawn,
         status,
         "timestamp",
@@ -3101,6 +3103,7 @@ BEGIN
         NEW.amount,                  -- amount
         NEW.storage_fee_deposit,     -- storage_fee_deposit
         NEW.total_amount,            -- total_amount
+        NEW.estimated_shares,        -- estimated_shares
         0,                           -- total_withdrawn (starts at 0)
         'PENDING_NEXT_EPOCH',        -- status
         NEW."timestamp",             -- timestamp

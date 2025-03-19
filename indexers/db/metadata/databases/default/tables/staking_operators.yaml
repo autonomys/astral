@@ -48,6 +48,15 @@ array_relationships:
         remote_table:
           name: nominators
           schema: staking
+  - name: unlocked_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: unlocked_events
+          schema: staking
   - name: withdraw_events
     using:
       manual_configuration:
