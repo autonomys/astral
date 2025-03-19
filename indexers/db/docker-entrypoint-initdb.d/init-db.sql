@@ -3924,7 +3924,7 @@ BEGIN
     RETURN NEW;
 END;
 $$;
-ALTER FUNCTION domain_auto_evm.prevent_operator_staking_histories_duplicate() OWNER TO postgres;
+ALTER FUNCTION domain_auto_evm.prevent_evm_code_selectors_duplicate() OWNER TO postgres;
 
 CREATE TRIGGER prevent_domain_auto_evm_evm_code_selectors_duplicate
 BEFORE INSERT ON domain_auto_evm.evm_code_selectors
