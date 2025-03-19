@@ -1,6 +1,6 @@
 # Autonomys Astral Explorer Consensus
 
-The Autonomys Astral Explorer Consensus is a specialized SubQuery project that indexes all consensus-related events and system remarks on the Autonomys Gemini 3H Testnet. This project is designed to support the consensus tracking functionality for the Astral Explorer, providing real-time data on validator activities and network consensus.
+The Autonomys Astral Explorer Consensus is a specialized SubQuery project that indexes all consensus-related events on the Autonomys Network. This project is designed to support the consensus tracking functionality for the Astral Explorer, providing real-time data on validator activities and network consensus.
 
 ## Overview
 
