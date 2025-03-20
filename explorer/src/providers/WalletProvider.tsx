@@ -4,7 +4,7 @@ import { activate, ApiPromise, createConnection, networks } from '@autonomys/aut
 import { Domain } from '@autonomys/auto-utils/dist/types/domain'
 import { sendGAEvent } from '@next/third-parties/google'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
-import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
+import { getWalletBySource } from '@talismn/connect-wallets'
 import { WalletType } from 'constants/wallet'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
 import { getSession, signOut } from 'next-auth/react'
@@ -149,7 +149,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     async (source: string) => {
       const wallet = getWalletBySource(source)
       if (wallet) {
-        await wallet.enable()
+        await wallet.enable(process.env.NEXT_PUBLIC_TALESMAN_DAPP_NAME || 'Autonomy Block Explorer')
         if (wallet.extension) setInjector(wallet.extension)
         const walletAccounts = (await wallet.getAccounts()) as WalletAccountWithType[]
         setAccounts(walletAccounts)
