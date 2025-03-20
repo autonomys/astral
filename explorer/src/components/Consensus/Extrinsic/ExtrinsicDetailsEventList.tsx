@@ -26,12 +26,15 @@ import { countTablePages } from 'utils/table'
 
 type Row = EventsByExtrinsicIdQuery['consensus_events'][number]
 
-type Props = {
+type ExtrinsicDetailsEventListProps = {
   eventsCount: number
   extrinsicId: string
 }
 
-export const ExtrinsicDetailsEventList: FC<Props> = ({ eventsCount, extrinsicId }) => {
+export const ExtrinsicDetailsEventList: FC<ExtrinsicDetailsEventListProps> = ({
+  eventsCount,
+  extrinsicId,
+}) => {
   const { ref, inView } = useInView()
   const { network, section } = useIndexers()
   const apolloClient = useApolloClient()
