@@ -1,15 +1,24 @@
 'use client'
 
-import { activate, ApiPromise, createConnection, networks } from '@autonomys/auto-utils'
+import {
+  activate,
+  ApiPromise,
+  createConnection,
+  NetworkId,
+  networks,
+  TESTNET_TOKEN,
+} from '@autonomys/auto-utils'
 import { Domain } from '@autonomys/auto-utils/dist/types/domain'
 import { sendGAEvent } from '@next/third-parties/google'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
+import injectedModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
+import { init as initEVM, Web3OnboardProvider } from '@web3-onboard/react'
 import { WalletType } from 'constants/wallet'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
 import { getSession, signOut } from 'next-auth/react'
 import { useParams } from 'next/navigation'
-import { createContext, FC, ReactNode, useCallback, useEffect, useState } from 'react'
+import { createContext, FC, ReactNode, Suspense, useCallback, useEffect, useState } from 'react'
 import type { ChainParam } from 'types/app'
 import type { WalletAccountWithType } from 'types/wallet'
 import { formatAddress } from 'utils/formatAddress'
@@ -45,6 +54,39 @@ export const WalletContext = createContext<WalletContextValue>(
 type Props = {
   children?: ReactNode
 }
+
+const evmConnector = initEVM({
+  connect: {
+    autoConnectLastWallet: true,
+  },
+  wallets: [
+    injectedModule({
+      filter: {
+        [ProviderLabel.Brave]: false,
+      },
+    }),
+  ],
+  chains: [
+    {
+      id: `0x${parseInt('490000').toString(16)}`,
+      token: TESTNET_TOKEN.symbol,
+      label: TESTNET_TOKEN.name,
+      rpcUrl: networks.find((network) => network.id === NetworkId.TAURUS)?.domains[0].rpcUrls[0],
+    },
+  ],
+  appMetadata: {
+    name: 'Autonomys Explorer',
+    icon: 'https://explorer.autonomys.xyz/favicon/favicon.svg',
+    logo: 'https://explorer.autonomys.xyz/favicon/apple-icon.png',
+    description: 'Autonomys Explorer',
+    gettingStartedGuide: 'https://autonomys.xyz',
+  },
+  theme: 'dark',
+  accountCenter: {
+    desktop: { enabled: false },
+    mobile: { enabled: false },
+  },
+})
 
 export const WalletProvider: FC<Props> = ({ children }) => {
   const { chain } = useParams<ChainParam>()
@@ -257,7 +299,9 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         changeAccount,
       }}
     >
-      {children}
+      <Web3OnboardProvider web3Onboard={evmConnector}>
+        <Suspense>{children}</Suspense>
+      </Web3OnboardProvider>
     </WalletContext.Provider>
   )
 }

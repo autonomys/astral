@@ -1,8 +1,13 @@
 import { LinkIcon } from '@heroicons/react/24/outline'
 import { getWallets } from '@subwallet/wallet-connect/dotsama/wallets'
-import type { Wallet } from '@subwallet/wallet-connect/types'
+import type { Wallet as SubstrateWallet } from '@subwallet/wallet-connect/types'
 import { Modal } from 'components/common/Modal'
-import { SupportedWalletExtension } from 'constants/wallet'
+import {
+  EVMWalletExtension,
+  SubstrateAndEVMWalletExtension,
+  SubstrateWalletExtension,
+  SupportedWalletExtension,
+} from 'constants/wallet'
 import useWallet from 'hooks/useWallet'
 import Image from 'next/image'
 import React, { FC, useCallback, useMemo } from 'react'
@@ -11,6 +16,15 @@ type Props = {
   isOpen: boolean
   onClose: () => void
 }
+
+type EVMWallet = {
+  extensionName: EVMWalletExtension
+  title: string
+  installed: boolean
+  installUrl?: string
+}
+
+type Wallet = SubstrateWallet | EVMWallet
 
 type WalletOptionProps = {
   wallet: Wallet
@@ -40,6 +54,8 @@ const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose }) => {
         return '/images/wallets/talisman.svg'
       case SupportedWalletExtension.Nova:
         return '/images/wallets/nova.svg'
+      case EVMWalletExtension.MetaMask:
+        return '/images/wallets/metamask.svg'
       default:
         return ''
     }
@@ -76,37 +92,88 @@ const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose }) => {
 export const PreferredExtensionModal: FC<Props> = ({ isOpen, onClose }) => {
   const wallets = getWallets()
 
-  const uniqueWallets = useMemo(() => {
+  const uniqueSubstrateWallets = useMemo(() => {
     const set = new Set(wallets.map((extension) => extension.extensionName))
     return Array.from(set)
       .map((e) => wallets.find((w) => w.extensionName === e))
-      .filter((item): item is Wallet => item !== undefined)
+      .filter((item): item is SubstrateWallet => item !== undefined)
   }, [wallets])
-  const supportedWallets = useMemo(
+  const substrateAndEVMWallets = useMemo(
     () =>
-      uniqueWallets.filter(
+      uniqueSubstrateWallets.filter(
         (item) =>
-          (Object.values(SupportedWalletExtension) as string[]).includes(item.extensionName) &&
+          (Object.values(SubstrateAndEVMWalletExtension) as string[]).includes(
+            item.extensionName,
+          ) && item,
+      ),
+    [uniqueSubstrateWallets],
+  )
+  const substrateOnlyWallets = useMemo(
+    () =>
+      uniqueSubstrateWallets.filter(
+        (item) =>
+          (Object.values(SubstrateWalletExtension) as string[]).includes(item.extensionName) &&
           item,
       ),
-    [uniqueWallets],
+    [uniqueSubstrateWallets],
+  )
+  const evmOnlyWallets = useMemo(
+    () =>
+      [
+        {
+          extensionName: 'metamask',
+          title: 'MetaMask',
+          installed: true,
+        },
+      ] as EVMWallet[],
+    [],
   )
 
-  const WalletsOption = useMemo(
+  const SubstrateAndEVMWalletsOption = useMemo(
     () =>
-      supportedWallets.map((wallet, index) => (
+      substrateAndEVMWallets.map((wallet, index) => (
         <WalletOption key={index} wallet={wallet} index={index} onClose={onClose} />
       )),
-    [supportedWallets, onClose],
+    [substrateAndEVMWallets, onClose],
+  )
+
+  const SubstrateOnlyWalletsOption = useMemo(
+    () =>
+      substrateOnlyWallets.map((wallet, index) => (
+        <WalletOption key={index} wallet={wallet} index={index} onClose={onClose} />
+      )),
+    [substrateOnlyWallets, onClose],
+  )
+
+  const EVMOnlyWalletsOption = useMemo(
+    () =>
+      evmOnlyWallets.map((wallet, index) => (
+        <WalletOption key={index} wallet={wallet} index={index} onClose={onClose} />
+      )),
+    [evmOnlyWallets, onClose],
   )
 
   return (
     <Modal title='Select your extension' onClose={onClose} isOpen={isOpen}>
+      <h2 className='pb-2 text-sm'>Substrate and EVM extensions</h2>
       <div className='flex flex-col items-start gap-4'>
         <div className='flex flex-col items-center gap-4'>
-          <div className='grid grid-cols-2 gap-4'>{WalletsOption}</div>
+          <div className='grid grid-cols-2 gap-4'>{SubstrateAndEVMWalletsOption}</div>
         </div>
-
+      </div>
+      <h2 className='py-2 text-sm'>Substrate only extensions</h2>
+      <div className='flex flex-col items-start gap-4'>
+        <div className='flex flex-col items-center gap-4'>
+          <div className='grid grid-cols-2 gap-4'>{SubstrateOnlyWalletsOption}</div>
+        </div>
+      </div>
+      <h2 className='py-2 text-sm'>EVM only extensions</h2>
+      <div className='flex flex-col items-start gap-4'>
+        <div className='flex flex-col items-center gap-4'>
+          <div className='grid grid-cols-2 gap-4'>{EVMOnlyWalletsOption}</div>
+        </div>
+      </div>
+      <div className='flex flex-col items-start gap-4 pt-2'>
         <button
           className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
           onClick={onClose}
