@@ -86,7 +86,7 @@
     "react-json-view": "^1.21.3",
     "react-paginate": "^8.3.0",
     "react-spring": "^9.7.5",
-    "siwe": "^2.1.4",
+    "siwe": "^2.3.2",
     "swiper": "^11.2.5",
     "tailwind-datepicker-react": "^1.4.3",
     "tailwind-merge": "^2.6.0",
