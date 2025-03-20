@@ -3,8 +3,8 @@ import {
   decompressFile,
   decryptFile,
   EncryptionAlgorithm,
+  FileUploadOptions,
 } from '@autonomys/auto-dag-data'
-import type { FileUploadOptions } from '@autonomys/auto-drive'
 import { GetCidQuery } from 'gql/graphql'
 import { inflate } from 'pako'
 
@@ -115,7 +115,7 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'):
       dataArrayBuffer = new Uint8Array([
         ...new Uint8Array(dataArrayBuffer),
         ...new Uint8Array(newData),
-      ])
+      ]).buffer
       rawData = _data
       index++
     }
@@ -125,7 +125,7 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'):
       return { name, rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
     }
     if (uploadOptions.compression && uploadOptions.compression.algorithm === 'ZLIB') {
-      dataArrayBuffer = inflate(new Uint8Array(dataArrayBuffer))
+      dataArrayBuffer = inflate(new Uint8Array(dataArrayBuffer)).buffer as ArrayBuffer
     }
   } catch (error) {
     console.error('Error decompressing data:', error)

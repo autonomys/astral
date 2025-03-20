@@ -67,8 +67,8 @@ export const WalletSidekick: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const { replace } = useRouter()
-  const { get } = useSearchParams()
-  const search = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+  const searchParams = useSearchParams()
+  const search = searchParams.get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
   const sidebarRef = useRef<HTMLDivElement>(null)
 
   const onClick = useCallback(
@@ -128,7 +128,7 @@ export const WalletSidekick: FC = () => {
         />
       </button>
       {isOpen && (
-        <div className='fixed inset-0  z-20 bg-gray-900 bg-opacity-25' onClick={onCloseSidebar} />
+        <div className='fixed inset-0 z-20 bg-gray-900 bg-opacity-25' onClick={onCloseSidebar} />
       )}
       <div
         className={`fixed right-0 top-0 z-30 h-full w-screen max-w-lg transform bg-light transition-transform duration-300 ease-in-out dark:bg-dark ${

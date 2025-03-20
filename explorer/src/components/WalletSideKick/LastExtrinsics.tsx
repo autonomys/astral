@@ -34,8 +34,8 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
   const { ref, inView } = useInView()
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
-  const { get } = useSearchParams()
-  const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+  const searchParams = useSearchParams()
+  const isSideKickOpen = searchParams.get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
 
   const variables = useMemo(
     () => ({

@@ -56,14 +56,14 @@ export const Transfer: FC = () => {
   const [hash, setHash] = useState<Hash | undefined>(undefined)
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const { actingAccount, injector, api, domainsApis, subspaceAccount } = useWallet()
-  const { get } = useSearchParams()
+  const searchParams = useSearchParams()
   const { tokenDecimals, tokenSymbol } = useIndexers()
   const { sendAndSaveTx, handleTxError } = useTxHelper()
 
-  const from = get('from')
-  const to = get('to')
-  const amount = get('amount')
-  const receiver = get('receiver')
+  const from = searchParams.get('from')
+  const to = searchParams.get('to')
+  const amount = searchParams.get('amount')
+  const receiver = searchParams.get('receiver')
 
   const handleCopy = useCallback((value: string) => {
     navigator.clipboard.writeText(value)
