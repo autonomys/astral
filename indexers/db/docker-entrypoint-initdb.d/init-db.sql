@@ -3322,11 +3322,7 @@ BEGIN
         total_volume = staking.domains.total_volume + NEW.total_volume,
         total_consensus_storage_fee = staking.domains.total_consensus_storage_fee + NEW.consensus_storage_fee,
         total_domain_execution_fee = staking.domains.total_domain_execution_fee + NEW.domain_execution_fee,
-        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance
-    WHERE id = NEW.domain_id AND last_domain_block_number < NEW.domain_block_number;
-
-    UPDATE staking.domains
-    SET 
+        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance,
         bundle_count = staking.domains.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number,
         updated_at = NEW.block_height
