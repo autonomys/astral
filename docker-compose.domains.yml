@@ -1,29 +1,15 @@
-volumes:
-  node-data: {}
-  caddy_config: {}
-  caddy_data: {}
-
 services:
-  # Caddy Reverse Proxy with CORS enabled
   caddy:
-    ulimits:
-      nofile:
-        soft: 65536 # Soft limit for open files (WebSocket connections count)
-        hard: 65536 # Hard limit for open files
-    image: caddy:latest
+    extends:
+      file: ./docker-compose.yml
+      service: caddy
     ports:
-      - "127.0.0.1:8000:8000"
       - "127.0.0.1:8001:8001"
-    volumes:
-      - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
-      - caddy_data:/data # Volume for Let's Encrypt certificates
-      - caddy_config:/config
-    depends_on:
-      - node
-    restart: unless-stopped
-
   # Subspace Node
   node:
+    extends:
+      file: ./docker-compose.yml
+      service: node
     image: ghcr.io/autonomys/node:${NODE_DOCKER_TAG}
     volumes:
       - node-data:/var/subspace:rw
@@ -64,17 +50,64 @@ services:
         "--sync",
         "full",
         "--",
-        "--domain-id", "${DOMAIN_ID}",
-        "--state-pruning", "archive",
-        "--blocks-pruning", "archive",
-        "--listen-on", "/ip4/0.0.0.0/tcp/30334",
-        "--listen-on", "/ip6/::/tcp/30334",
-        "--rpc-cors", "all",
-        "--rpc-methods", "safe",
-        "--rpc-listen-on", "0.0.0.0:8944",
-        "--rpc-max-connections", "500",
+        "--domain-id",
+        "${DOMAIN_ID}",
+        "--state-pruning",
+        "archive",
+        "--blocks-pruning",
+        "archive",
+        "--listen-on",
+        "/ip4/0.0.0.0/tcp/30334",
+        "--listen-on",
+        "/ip6/::/tcp/30334",
+        "--rpc-cors",
+        "all",
+        "--rpc-methods",
+        "safe",
+        "--rpc-listen-on",
+        "0.0.0.0:8944",
+        "--rpc-max-connections",
+        "500",
         "--reserved-peer",
         "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
         "--bootstrap-node",
         "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
       ]
+
+  domain_auto_evm_subquery_node:
+    profiles: [indexers]
+    image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "127.0.0.1:3005:3000"
+    depends_on:
+      pgcat:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${DOMAIN_RPC_URL}
+      CHAIN_ID: ${DOMAIN_CHAIN_ID}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+    volumes:
+      - ./indexers/domain-auto-evm:/domain-auto-evm
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/domain-auto-evm
+      - --db-schema=domain_auto_evm
+      - --workers=1
+      - --unsafe
+      - --batch-size=120
+      - --scale-batch-size
+      - --unfinalized-blocks=true
+      - --disable-historical=false
+      #  - --profiler
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10

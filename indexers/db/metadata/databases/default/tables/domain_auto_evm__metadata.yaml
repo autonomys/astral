@@ -1,0 +1,11 @@
+table:
+  name: _metadata
+  schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - key
+        - value
+      filter: {}
+    comment: ""

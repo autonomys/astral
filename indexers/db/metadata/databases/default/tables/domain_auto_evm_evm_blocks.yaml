@@ -1,0 +1,31 @@
+table:
+  name: evm_blocks
+  schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - block_timestamp
+        - transactions_count
+        - difficulty
+        - gas_limit
+        - gas_used
+        - height
+        - size
+        - total_difficulty
+        - transfer_value
+        - author_id
+        - extra_data
+        - hash
+        - id
+        - parent_hash
+        - receipts_root
+        - sort_id
+        - state_root
+        - transactions_root
+        - timestamp
+        - _id
+      filter: {}
+      limit: 50
+    comment: ""
