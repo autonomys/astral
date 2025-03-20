@@ -63,7 +63,11 @@ export const Extrinsic: FC = () => {
         {!loading && extrinsic ? (
           <>
             <ExtrinsicDetailsCard extrinsic={extrinsic} isDesktop={isLargeDesktop} />
-            <ExtrinsicDetailsTab eventsCount={extrinsic.events_count} isDesktop={isDesktop} />
+            <ExtrinsicDetailsTab
+              eventsCount={extrinsic.events_count}
+              extrinsicId={extrinsic.id}
+              isDesktop={isDesktop}
+            />
           </>
         ) : (
           noData

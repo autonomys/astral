@@ -23,10 +23,10 @@
     "connect-redis": "^7.1.1",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "ioredis": "^5.4.1",
-    "passport": "^0.6.0",
+    "ioredis": "^5.6.0",
+    "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.13.3"
+    "pg": "^8.14.1"
   },
   "devDependencies": {
     "@types/bull": "^4.10.4",

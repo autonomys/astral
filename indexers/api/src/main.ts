@@ -6,6 +6,8 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.setGlobalPrefix('api');
+
   app.enableCors({
     origin: true, // or specify origins like ['http://localhost:3000']
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -70,7 +72,7 @@ async function bootstrap() {
     }
   `;
 
-  SwaggerModule.setup('api', app, document, {
+  SwaggerModule.setup('docs', app, document, {
     customCss,
     customfavIcon: '/assets/favicon.ico',
     customSiteTitle: 'Autonomys Astral API Documentation',

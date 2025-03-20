@@ -284,7 +284,11 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               excludeActions.push(OperatorActionType.UnlockNominator)
             if (row.original.status === OperatorStatus.DEREGISTERED)
               excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
-            if (row.original.status === OperatorStatus.SLASHED) return <></>
+            if (
+              row.original.status === OperatorStatus.SLASHED ||
+              row.original.status === OperatorStatus.NOMINATORS_UNLOCKED
+            )
+              return <></>
             const rowData = {
               original: {
                 ...row.original,

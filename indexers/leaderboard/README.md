@@ -1,6 +1,10 @@
 # Autonomys Astral Explorer Leaderboard
 
-The Autonomys Astral Explorer Leaderboard is a specialized SubQuery project that indexes all asset transfers and system remarks on the Autonomys Gemini 3H Testnet. This project is designed to support the leaderboard functionality for the Astral Explorer, providing real-time data on user activities and rankings.
+The Autonomys Astral Explorer Leaderboard is a specialized SubQuery project that indexes all assets needed to the leaderboard, on the Autonomys Network. This project is designed to support the leaderboard functionality for the Astral Explorer, providing real-time data on user activities and rankings.
+
+**Important**
+
+The ranking logic is perform by the taskboard service
 
 ## Overview
 

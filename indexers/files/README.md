@@ -1,6 +1,6 @@
 # Autonomys Astral Indexer - Files
 
-The Autonomys Astral Indexer - Files is a specialized SubQuery project that indexes all files on the Autonomys Mainnen. This project is designed to support the files tracking functionality for the Astral Explorer, providing real-time data on files.
+The Autonomys Astral Indexer - Files is a specialized SubQuery project that indexes all files on the Autonomys Network. This project is designed to support the files tracking functionality for the Astral Explorer, providing real-time data on files.
 
 ## Overview
 
@@ -29,7 +29,7 @@ To run this project locally:
 
 1. Ensure you have Node.js and Docker installed on your system.
 2. Clone the repository: `git clone https://github.com/autonomys/astral.git`
-3. Navigate to the project directory: `cd astral/indexers/consensus`
+3. Navigate to the project directory: `cd astral/indexers/files`
 4. Install dependencies: `yarn install`
 5. Start the project: `yarn dev`
 

@@ -1,0 +1,28 @@
+table:
+  name: accounts
+  schema: domain_auto_evm
+array_relationships:
+  - name: extrinsics
+    using:
+      manual_configuration:
+        column_mapping:
+          id: signer
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - created_at
+        - free
+        - nonce
+        - reserved
+        - total
+        - updated_at
+        - id
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""

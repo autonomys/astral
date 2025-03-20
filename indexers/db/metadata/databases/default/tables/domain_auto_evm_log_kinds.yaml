@@ -1,0 +1,23 @@
+table:
+  name: log_kinds
+  schema: domain_auto_evm
+array_relationships:
+  - name: logs
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: logs
+          schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - kind
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""

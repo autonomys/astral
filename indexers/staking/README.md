@@ -1,6 +1,6 @@
 # Autonomys Astral Explorer Staking
 
-The Autonomys Astral Explorer Staking is a specialized SubQuery project that indexes all staking-related events and system remarks on the Autonomys Gemini 3H Testnet. This project is designed to support the staking functionality for the Astral Explorer, providing real-time data on user staking activities and rewards.
+The Autonomys Astral Explorer Staking is a specialized SubQuery project that indexes all staking-related events on the Autonomys Network. This project is designed to support the staking functionality for the Astral Explorer, providing real-time data on user staking activities and rewards.
 
 ## Overview
 

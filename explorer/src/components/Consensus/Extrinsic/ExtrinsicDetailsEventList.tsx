@@ -17,25 +17,26 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { ExtrinsicIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
 
 type Row = EventsByExtrinsicIdQuery['consensus_events'][number]
 
-type Props = {
+type ExtrinsicDetailsEventListProps = {
   eventsCount: number
+  extrinsicId: string
 }
 
-export const ExtrinsicDetailsEventList: FC<Props> = ({ eventsCount }) => {
+export const ExtrinsicDetailsEventList: FC<ExtrinsicDetailsEventListProps> = ({
+  eventsCount,
+  extrinsicId,
+}) => {
   const { ref, inView } = useInView()
   const { network, section } = useIndexers()
-  const { extrinsicId } = useParams<ExtrinsicIdParam>()
   const apolloClient = useApolloClient()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({

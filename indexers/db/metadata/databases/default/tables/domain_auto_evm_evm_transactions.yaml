@@ -1,0 +1,39 @@
+table:
+  name: evm_transactions
+  schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - block_timestamp
+        - transaction_index
+        - block_number
+        - chain_id
+        - gas
+        - gas_price
+        - max_fee_per_gas
+        - max_priority_fee_per_gas
+        - nonce
+        - standard_v
+        - transaction_type
+        - value
+        - access_list
+        - block_hash
+        - creates
+        - from
+        - hash
+        - id
+        - input
+        - public_key
+        - r
+        - raw
+        - s
+        - sort_id
+        - to
+        - v
+        - timestamp
+        - _id
+      filter: {}
+      limit: 50
+    comment: ""

@@ -12,6 +12,7 @@ import useWallet from 'hooks/useWallet'
 import { Fragment, useCallback, useMemo } from 'react'
 import { formatAddress } from 'utils//formatAddress'
 import { limitText } from 'utils/string'
+import { TalismanIcon } from '../icons/TalismanIcon'
 
 interface AccountListDropdownProps {
   className?: string
@@ -26,17 +27,12 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
     if (!actingAccount) return null
     switch (actingAccount.source as SupportedWalletExtension) {
       case SupportedWalletExtension.PolkadotJs:
-        return (
-          <div className='size-5'>
-            <PolkadotIcon />
-          </div>
-        )
+        return <PolkadotIcon />
+      case SupportedWalletExtension.Talisman:
+        return <TalismanIcon />
+      case SupportedWalletExtension.SubwalletJs:
       default:
-        return (
-          <div className='size-6'>
-            <SubWalletIcon />
-          </div>
-        )
+        return <SubWalletIcon />
     }
   }, [actingAccount])
 
@@ -109,7 +105,7 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
           )}
         >
           <div className='flex items-center justify-center'>
-            {extensionIcon}
+            <div className='size-5'>{extensionIcon}</div>
             <span
               className={cn('ml-2 hidden w-5 truncate text-sm sm:block md:w-full', labelClassName)}
             >
