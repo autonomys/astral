@@ -1,4 +1,9 @@
-import type { ISubmittableResult, Signer, SubmittableExtrinsic } from '@autonomys/auto-utils'
+import type {
+  ApiPromise,
+  ISubmittableResult,
+  Signer,
+  SubmittableExtrinsic,
+} from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { TransactionStatus } from 'constants/transaction'
 import useIndexers from 'hooks/useIndexers'
@@ -18,12 +23,13 @@ interface SendAndSaveTx {
   amount?: string
   fee?: string
   nonce?: number
+  api?: ApiPromise
   error?: (error: string) => void
 }
 
 export const useTxHelper = () => {
   const { network } = useIndexers()
-  const { api, actingAccount, subspaceAccount, injector } = useWallet()
+  const { api, actingAccount, injector } = useWallet()
   const addPendingTransactions = useTransactionsStates((state) => state.addPendingTransactions)
   const getNextNonceForAccount = useTransactionsStates((state) => state.getNextNonceForAccount)
   const pathname = usePathname()
@@ -54,15 +60,19 @@ export const useTxHelper = () => {
       const { call, tx, signer, to, amount, fee, error } = input
       let { nonce } = input
 
-      if (!api || !actingAccount || !injector)
+      let currentApi = api
+      if (input.api) {
+        currentApi = input.api
+      }
+
+      if (!currentApi || !actingAccount || !injector)
         return handleTxError('We are not able to connect to the blockchain', call, error)
-      if (!subspaceAccount) return handleTxError('Not a subspace account connected', call, error)
 
       try {
         const from = actingAccount.address
         const [block, account] = await Promise.all([
-          api.rpc.chain.getBlock(),
-          api.query.system.account(from),
+          currentApi.rpc.chain.getBlock(),
+          currentApi.query.system.account(from),
         ])
         const txCount = (account.toJSON() as { nonce: number }).nonce
         const nextNonceFromPending = getNextNonceForAccount(from)
@@ -98,7 +108,6 @@ export const useTxHelper = () => {
       actingAccount,
       injector,
       handleTxError,
-      subspaceAccount,
       getNextNonceForAccount,
       addPendingTransactions,
       network,
