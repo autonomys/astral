@@ -2,6 +2,7 @@ import { shortString } from '@autonomys/auto-utils'
 import Identicon from '@polkadot/react-identicon'
 import { IconTheme } from '@polkadot/react-identicon/types'
 import { INTERNAL_ROUTES } from 'constants/routes'
+import { isAddress } from 'ethers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -49,15 +50,25 @@ export const AccountIconWithLink = ({
   forceShortString?: boolean
 }) => {
   const isDesktop = useMediaQuery('(min-width: 1440px)')
+  const isEthereumAddress = isAddress(address)
   return (
     <div className='flex items-center gap-2'>
-      <AccountIcon address={address} size={26} theme='beachball' {...props} />
-      <Link
-        href={link ?? INTERNAL_ROUTES.accounts.id.page(network, section, address)}
-        className='hover:text-primaryAccent'
-      >
-        <div>{!isDesktop || forceShortString ? shortString(address) : address}</div>
-      </Link>
+      {!isEthereumAddress ? (
+        <>
+          <AccountIcon address={address} size={26} theme='beachball' {...props} />
+          <Link
+            href={link ?? INTERNAL_ROUTES.accounts.id.page(network, section, address)}
+            className='hover:text-primaryAccent'
+          >
+            <div>{!isDesktop || forceShortString ? shortString(address) : address}</div>
+          </Link>
+        </>
+      ) : (
+        <>
+          <AccountIcon address={address} size={26} theme='ethereum' {...props} />
+          <div>{address}</div>
+        </>
+      )}
     </div>
   )
 }

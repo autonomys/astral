@@ -1,5 +1,5 @@
 table:
-  name: withdrawal_histories
+  name: nominators_unlocked_events
   schema: staking
 configuration:
   column_config:
@@ -13,19 +13,14 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - _id
-        - account_id
         - block_height
-        - domain_epoch
         - domain_id
+        - event_id
+        - extrinsic_id
         - id
-        - nominator_id
         - operator_id
-        - shares
-        - storage_fee_refund
-        - timestamp
-        - total_withdrawal_amount
-        - unlock_at_confirmed_domain_block_number
+        - _id
       filter: {}
       limit: 50
+      allow_aggregations: true
     comment: ""

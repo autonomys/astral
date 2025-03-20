@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { utcToLocalRelativeTime } from '@/utils/time'
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
@@ -28,7 +29,6 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
-import { formatExtrinsicId } from 'utils/string'
 import { countTablePages } from 'utils/table'
 
 type Props = {
@@ -157,7 +157,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
               )}
               className='hover:text-primaryAccent'
             >
-              <div>{formatExtrinsicId(row.original.extrinsic_id)}</div>
+              <div>{row.original.extrinsic_id}</div>
             </Link>
           </div>
         ),
@@ -242,7 +242,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-created_at-${row.index}`}>
-            {row.original.timestamp(row.original.timestamp)}
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },

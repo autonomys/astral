@@ -2,7 +2,7 @@ import { Field, Form, Formik } from 'formik'
 import { useIndexers } from 'hooks/useIndexers'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useMemo } from 'react'
-import { limitNumberDecimals } from 'utils/number'
+import { limitNumberDecimals, numberFormattedString } from 'utils/number'
 import * as Yup from 'yup'
 
 interface AmountFieldProps {
@@ -72,7 +72,7 @@ export const AmountField: FC<AmountFieldProps> = ({ maxAmount, disabled }) => {
             }}
           >
             <span className='cursor-pointer font-bold hover:underline'>
-              Max: {limitNumberDecimals(maxAmount)} {tokenSymbol}
+              Max: {numberFormattedString(limitNumberDecimals(maxAmount))} {tokenSymbol}
             </span>{' '}
           </div>
         )}

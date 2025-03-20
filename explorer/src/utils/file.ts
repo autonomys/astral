@@ -1,3 +1,9 @@
+import {
+  CompressionAlgorithm,
+  decompressFile,
+  decryptFile,
+  EncryptionAlgorithm,
+} from '@autonomys/auto-dag-data'
 import type { FileUploadOptions } from '@autonomys/auto-drive'
 import { GetCidQuery } from 'gql/graphql'
 import { inflate } from 'pako'
@@ -92,8 +98,6 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'):
       uploadOptions = JSON.parse(
         data['files_' + type + 's'][0].chunk?.uploadOptions,
       ) as FileUploadOptions
-      if (uploadOptions.encryption && uploadOptions.encryption.algorithm)
-        return { name, rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
     }
   } catch (error) {
     console.error('Error checking uploadOptions:', error)
@@ -117,6 +121,9 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'):
     }
   }
   try {
+    if (uploadOptions.encryption && uploadOptions.encryption.algorithm) {
+      return { name, rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
+    }
     if (uploadOptions.compression && uploadOptions.compression.algorithm === 'ZLIB') {
       dataArrayBuffer = inflate(new Uint8Array(dataArrayBuffer))
     }
@@ -131,4 +138,50 @@ export const extractFileData = (data: GetCidQuery): FileData => {
   if (data.files_files.length > 0) return extractFileDataByType(data, 'file')
   else if (data.files_folders.length > 0) return extractFileDataByType(data, 'folder')
   return extractFileDataByType(data, 'metadata')
+}
+
+export const asyncFromStream = async function* (
+  stream: ReadableStream<Uint8Array>,
+): AsyncIterable<Buffer> {
+  const reader = stream.getReader()
+  let result = await reader.read()
+  while (!result.done) {
+    yield Buffer.from(result.value)
+    result = await reader.read()
+  }
+}
+
+export const decryptFileData = async (password: string, fileData: FileData): Promise<FileData> => {
+  try {
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(fileData.dataArrayBuffer)
+        controller.close()
+      },
+    })
+
+    let iterable = asyncFromStream(stream)
+    iterable = decryptFile(iterable, password, {
+      algorithm: EncryptionAlgorithm.AES_256_GCM,
+    })
+    iterable = decompressFile(iterable, {
+      algorithm: CompressionAlgorithm.ZLIB,
+    })
+
+    const processedChunks: Buffer[] = []
+    for await (const chunk of iterable) {
+      processedChunks.push(chunk)
+    }
+    const combined = new Uint8Array(processedChunks.reduce((acc, chunk) => acc + chunk.length, 0))
+    let offset = 0
+    for (const chunk of processedChunks) {
+      combined.set(chunk, offset)
+      offset += chunk.length
+    }
+    fileData.dataArrayBuffer = combined.buffer
+    fileData.isEncrypted = false
+    return fileData
+  } catch (error) {
+    throw new Error((error as Error).message)
+  }
 }

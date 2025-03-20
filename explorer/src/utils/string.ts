@@ -10,10 +10,3 @@ export const allCapsToNormal = (text: string) =>
 
 export const limitText = (text: string, limit = 20) =>
   text.length > limit ? text.slice(0, limit) + '...' : text
-
-export const formatExtrinsicId = (extrinsicId: string): string => {
-  const parts = extrinsicId.split('-')
-  const part1 = parts[0].replace(/^0+/, '')
-  const part2 = parts[2].replace(/^0+/, '')
-  return part1 + '-' + part2
-}

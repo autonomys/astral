@@ -15,7 +15,9 @@ select_permissions:
         - _block_range
         - current_epoch_index
         - block_height
+        - current_total_shares
         - current_total_stake
+        - share_price
         - domain_id
         - id
         - timestamp

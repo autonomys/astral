@@ -103,7 +103,7 @@ export const AccumulatedHistoryChart: FC<AccumulatedHistoryChartProps> = ({ data
           sliceTooltip={({ slice }) => (
             <div className='rounded bg-gray-800 px-2 py-1 text-xs text-white'>
               {formatDate(new Date(slice.points[0].data.x), timeFrame)}:{' '}
-              {Number(slice.points[0].data.y).toFixed(2)}$
+              {Number(slice.points[0].data.y).toFixed(2)}{' '}
               {singleTimeFrameData[0]?.data[0]?.unit ?? 'GB'}
             </div>
           )}

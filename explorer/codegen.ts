@@ -1,13 +1,10 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
-import * as dotenv from 'dotenv'
-import { defaultIndexer } from './src/constants/indexers'
-
-dotenv.config()
+import { DEFAULT_INDEXER } from './src/constants/indexers'
 
 const config: CodegenConfig = {
   generates: {
     './gql/graphql.tsx': {
-      schema: defaultIndexer.indexer,
+      schema: DEFAULT_INDEXER,
       documents: ['./src/**/query.gql'],
       plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
     },

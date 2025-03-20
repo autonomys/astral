@@ -1,0 +1,16 @@
+table:
+  name: evm_codes
+  schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - abi
+        - address
+        - code
+        - id
+        - _id
+      filter: {}
+      limit: 50
+    comment: ""

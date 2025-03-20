@@ -3,13 +3,17 @@ import {
   EventRecord,
   stringify,
 } from "@autonomys/auto-utils";
+import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
 import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
 import {
   calculateTransfer,
   findDomainIdFromOperatorsCache,
+  findEpochFromDomainStakingHistoryCache,
   findOneExtrinsicEvent,
+  findOperatorFromOperatorsCache,
+  findWithdrawalFromWithdrawalCache,
 } from "./utils";
 
 type EventHandler = (params: {
@@ -92,7 +96,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const domainId = event.event.data[1].toString();
-    const amount = BigInt(String(extrinsic.method.args[1].toPrimitive()));
+    const totalAmount = BigInt(String(extrinsic.method.args[1].toPrimitive()));
     const operatorDetails = extrinsic.method.args[2].toPrimitive() as any;
 
     const signingKey = operatorDetails.signingKey;
@@ -107,6 +111,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const storageFeeDeposit = BigInt(
       storageFeeDepositedEvent?.event.data[2].toString() ?? 0
     );
+    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
+    const stakeAmount = totalAmount - storageFeeDeposit;
+    const estimatedShares =
+      stakeAmount /
+      (sharePrice > ZERO_BIGINT ? sharePrice : SHARES_CALCULATION_MULTIPLIER);
 
     cache.operatorRegistration.push(
       db.createOperatorRegistration(
@@ -126,9 +135,10 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         extrinsicSigner,
         domainId,
         operatorId,
-        amount - storageFeeDeposit,
+        stakeAmount,
         storageFeeDeposit,
-        amount,
+        totalAmount,
+        estimatedShares,
         blockTimestamp,
         height,
         extrinsicId,
@@ -147,7 +157,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
-    const amount = BigInt(event.event.data[2].toString());
+    const totalAmount = BigInt(event.event.data[2].toString());
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     const storageFeeDepositedEvent = findOneExtrinsicEvent(
@@ -158,15 +168,21 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const storageFeeDeposit = BigInt(
       storageFeeDepositedEvent?.event.data[2].toString() ?? 0
     );
+    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
+    const stakeAmount = totalAmount - storageFeeDeposit;
+    const estimatedShares =
+      stakeAmount /
+      (sharePrice > ZERO_BIGINT ? sharePrice : SHARES_CALCULATION_MULTIPLIER);
 
     cache.depositEvent.push(
       db.createDepositEvent(
         accountId,
         domainId,
         operatorId,
-        amount,
+        stakeAmount,
         storageFeeDeposit,
-        amount + storageFeeDeposit,
+        totalAmount,
+        estimatedShares,
         blockTimestamp,
         height,
         extrinsicId,
@@ -186,22 +202,18 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
-    const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
-
-    const amount1Event = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "balances",
-      "Withdraw"
-    );
-    const amount1 = BigInt(amount1Event?.event.data[1].toString() ?? 0);
-    const amount2Event = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "balances",
-      "Rescinded"
-    );
-    const amount2 =
-      amount1 - BigInt(amount2Event?.event.data[0].toString() ?? 0);
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+    const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
+    const withdrawalInShares = findWithdrawalFromWithdrawalCache(
+      cache,
+      operatorId,
+      accountId
+    );
+    if (!withdrawalInShares) return;
+    const { shares, storageFeeRefund } = withdrawalInShares;
+    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
+    const estimatedAmount =
+      (shares * sharePrice) / SHARES_CALCULATION_MULTIPLIER + storageFeeRefund;
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
@@ -209,9 +221,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         domainId,
         operatorId,
         stringify(toWithdraw),
-        amount1,
-        amount2,
-        amount1 + amount2,
+        shares,
+        storageFeeRefund,
+        estimatedAmount,
         blockTimestamp,
         height,
         extrinsicId,
@@ -301,6 +313,26 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
+  "domains.NominatorUnlocked": ({
+    event,
+    cache,
+    height,
+    extrinsicId,
+    eventId,
+  }) => {
+    const operatorId = event.event.data[0].toString();
+    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+
+    cache.nominatorsUnlockedEvent.push(
+      db.createNominatorsUnlockedEvent(
+        domainId,
+        operatorId,
+        height,
+        extrinsicId,
+        eventId
+      )
+    );
+  },
   "domains.OperatorDeregistered": ({
     event,
     cache,
@@ -366,6 +398,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       calculateTransfer(transfersRejected);
     const totalVolume = totalTransfersIn + totalTransfersOut;
 
+    const epoch = findEpochFromDomainStakingHistoryCache(cache, domainId);
+
     cache.bundleSubmission.push(
       db.createBundleSubmission(
         bundleHash,
@@ -376,6 +410,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         BigInt(domainBlockNumber),
         String(domainBlockHash),
         String(domainBlockExtrinsicRoot),
+        BigInt(epoch),
         BigInt(consensusBlockNumber),
         String(consensusBlockHash),
         totalTransfersIn,

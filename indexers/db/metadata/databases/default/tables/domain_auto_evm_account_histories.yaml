@@ -1,0 +1,36 @@
+table:
+  name: account_histories
+  schema: domain_auto_evm
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: accounts
+          schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - created_at
+        - free
+        - nonce
+        - reserved
+        - total
+        - id
+        - _id
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""
