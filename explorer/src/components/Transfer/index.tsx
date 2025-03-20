@@ -199,7 +199,15 @@ export const Transfer: FC = () => {
           break
         }
         case values.from.startsWith('domain') && values.to === 'consensus': {
-          if (values.receiver.startsWith('0x') || !isEvmAddress(values.receiver)) {
+          if (
+            !actingAccount ||
+            !actingAccount.address.startsWith('0x') ||
+            !isEvmAddress(actingAccount.address)
+          ) {
+            toast.error('Sender must be a valid EVM address', { position: 'bottom-center' })
+            break
+          }
+          if (!values.receiver || values.receiver.startsWith('0x') || !isAddress(values.receiver)) {
             toast.error('Receiver must be a valid Consensus address', { position: 'bottom-center' })
             break
           }
@@ -210,13 +218,14 @@ export const Transfer: FC = () => {
             break
           }
           try {
-            const tx = await transferToConsensus(domainApi.api, to, amount)
+            const tx = await transferToConsensus(domainApi.api, values.receiver, amount)
             const hash = await sendAndSaveTx({
               call: 'transporter.transfer',
               tx,
               signer: injector.signer,
-              to,
+              to: values.receiver,
               amount,
+              api: domainApi.api,
             })
             if (hash) {
               setHash(hash)
@@ -239,7 +248,16 @@ export const Transfer: FC = () => {
           break
       }
     },
-    [api, domainsApis, handleTxError, injector, sendAndSaveTx, subspaceAccount, tokenDecimals],
+    [
+      actingAccount,
+      api,
+      domainsApis,
+      handleTxError,
+      injector,
+      sendAndSaveTx,
+      subspaceAccount,
+      tokenDecimals,
+    ],
   )
 
   const loadWalletBalance = useCallback(async () => {
@@ -293,7 +311,7 @@ export const Transfer: FC = () => {
 
   useEffect(() => {
     loadWalletBalance()
-  }, [api, actingAccount, loadWalletBalance])
+  }, [loadWalletBalance])
 
   return (
     <div className='w-full max-w-xl'>
