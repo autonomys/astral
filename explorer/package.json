@@ -90,7 +90,7 @@
     "swiper": "^11.2.5",
     "tailwind-datepicker-react": "^1.4.3",
     "tailwind-merge": "^2.6.0",
-    "typescript": "^5.3.3",
+    "typescript": "^5.8.2",
     "web-vitals": "^3.5.2",
     "xlsx": "^0.18.5",
     "yup": "^0.32.11",
