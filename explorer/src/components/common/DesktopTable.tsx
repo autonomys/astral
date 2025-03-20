@@ -5,7 +5,7 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/20/solid'
 import { Table, flexRender } from '@tanstack/react-table'
-import type { SortingOptions } from '@tanstack/table-core/build/lib/features/Sorting'
+import type { SortingOptions } from '@tanstack/table-core/'
 import { ColumnMeta } from 'types/table'
 import { Tooltip } from './Tooltip'
 
@@ -52,17 +52,17 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
                   {(header.column.columnDef as SortingOptions<T>).enableSorting && (
                     <>
                       {header.column.getIsSorted() === 'asc' ? (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-primaryAccent focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronUpIcon className='size-5' aria-hidden='true' />
                         </span>
                       ) : header.column.getIsSorted() === 'desc' ? (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronDownIcon className='size-5' aria-hidden='true' />
                         </span>
                       ) : (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-primaryAccent focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronUpDownIcon className='size-5' aria-hidden='true' />
                         </span>

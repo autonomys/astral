@@ -35,8 +35,8 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
   const { ref, inView } = useInView()
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
-  const { get } = useSearchParams()
-  const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+  const searchParams = useSearchParams()
+  const isSideKickOpen = searchParams.get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
 
   const { actingAccount } = useWallet()
   const {
@@ -122,7 +122,8 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>
             <span className='text-base font-medium text-grayDarker dark:text-white'>
-              Pending transactions {transactions.length > 0 ? `( ${transactions.length} )` : ''}{' '}
+              Pending transactions{' '}
+              {transactions.length > 0 ? `( ${transactions.length} )` : ''}{' '}
             </span>
           </div>
         }
