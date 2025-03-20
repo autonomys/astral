@@ -4,19 +4,21 @@ import { sendSlackMessage } from 'utils/slack'
 export const POST = async (req: NextRequest) => {
   try {
     const logData = await req.json()
-    const slackMessage = await sendSlackMessage('Astral Error', [
+    const pathname = req.nextUrl.pathname.replace('/api/log/', '')
+    const type = pathname.split('/')[0]
+    const slackMessage = await sendSlackMessage('Astral ' + type, [
       {
         type: 'header',
         text: {
           type: 'plain_text',
-          text: 'Astral Error',
+          text: 'Astral ' + type,
         },
       },
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `Path: ${req.nextUrl.pathname.replace('/api/log/', '')}`,
+          text: `Path: ${pathname}`,
         },
       },
       {
