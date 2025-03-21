@@ -14,7 +14,7 @@
     "@autonomys/auto-utils": "^1.4.0",
     "@bull-board/api": "^5.23.0",
     "@bull-board/express": "^5.23.0",
-    "@bull-board/ui": "^5.23.0",
+    "@bull-board/ui": "^6.7.10",
     "@polkadot/keyring": "^13.4.3",
     "@polkadot/util": "^13.4.3",
     "@polkadot/util-crypto": "^13.4.3",
