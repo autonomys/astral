@@ -1,6 +1,13 @@
 table:
   name: evm_codes
   schema: domain_auto_evm
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:
