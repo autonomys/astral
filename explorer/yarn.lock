@@ -112,7 +112,7 @@
   resolved "https://registry.yarnpkg.com/@autonomys/asynchronous/-/asynchronous-1.4.1.tgz#7741610ea2988dfc816d13858ef130156915d0c6"
   integrity sha512-kDxbCKzDAac6EpomzjZwnCHfOe6wvynjKnulA4Zj0oqSOahsquxbT4VAL57PIodS4Qa3lPlZHinvKmtfT3k1jQ==
 
-"@autonomys/auto-consensus@^1.4.0", "@autonomys/auto-consensus@^1.4.1":
+"@autonomys/auto-consensus@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.4.1.tgz#c39cf4b0814c7582b9821b5769550db6cf7144f1"
   integrity sha512-TIQV3l6N2txcEPs5UqgMV9GiHbdLINDnBDnuWg1hybLt5od1RFamP0ZXogGcvtk/daizIy2mmv5nPlX5tT4RGg==
@@ -136,7 +136,7 @@
     protons "^7.6.0"
     protons-runtime "^5.5.0"
 
-"@autonomys/auto-drive@^1.4.0":
+"@autonomys/auto-drive@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-drive/-/auto-drive-1.4.1.tgz#0bfff022f14720aa1d30494d3cd693b76be5951b"
   integrity sha512-B5TE+HR7RJe8DEKhOQaOFJPES12ZlVB3j/utYz0jumHhzsjE6ZBzlo/FiA2v9vmg6clqEmYvsyba48ksZiaGag==
@@ -150,7 +150,7 @@
     stream "^0.0.3"
     zod "^3.24.2"
 
-"@autonomys/auto-utils@^1.4.0", "@autonomys/auto-utils@^1.4.1":
+"@autonomys/auto-utils@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.4.1.tgz#6adf85c81f5d8e4748578c65b19c1c529735a098"
   integrity sha512-la9p8kcJsLReh/VC8xQne1+TOK4ZiQ/gM+wja86uzjbcYcUbn5I97NQFrVh5InCEG35zAvh8UrTeg60tI/3iTw==
@@ -159,7 +159,7 @@
     "@polkadot/extension-dapp" "^0.58.5"
     fs "^0.0.1-security"
 
-"@autonomys/auto-xdm@^1.4.0":
+"@autonomys/auto-xdm@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-xdm/-/auto-xdm-1.4.1.tgz#e9e3e755c7f9c590c9bfed8bdf7ab13f04c758a3"
   integrity sha512-Q+H6UH5TkIABHnmP3STpcXJHfZnKiKFMzoI5W+/4Lerl2YHsxZlWatEJg+vuAiO7Y6TCHef/wm5vjRAQ/FHAHg==

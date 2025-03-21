@@ -64,33 +64,39 @@
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
 
-"@autonomys/auto-consensus@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.4.0.tgz#7c641aa7537e99c3b545ab951eb66337821acc4b"
-  integrity sha512-Np/V8pCCYyLYj9h26v3w/X81h48CQdpxYlpZr+ZxGJu7EV2q4GSc7KtDTY/41ixWIJrXuwUD0tN8XbObFUc4hQ==
-  dependencies:
-    "@autonomys/auto-utils" "^1.4.0"
+"@autonomys/asynchronous@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/asynchronous/-/asynchronous-1.4.1.tgz#7741610ea2988dfc816d13858ef130156915d0c6"
+  integrity sha512-kDxbCKzDAac6EpomzjZwnCHfOe6wvynjKnulA4Zj0oqSOahsquxbT4VAL57PIodS4Qa3lPlZHinvKmtfT3k1jQ==
 
-"@autonomys/auto-dag-data@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.4.0.tgz#5d08e94e1d1d7bdc3c3803d7d79ca549f0e945e1"
-  integrity sha512-cTQCR8s+PbZSQLhw/iGVFfkyiTkQfl6Ks8G38NPyOoH9U4WczmFCEsglToevfSIjUtccuZZNTKDhsiRk5FK0Jw==
+"@autonomys/auto-consensus@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.4.1.tgz#c39cf4b0814c7582b9821b5769550db6cf7144f1"
+  integrity sha512-TIQV3l6N2txcEPs5UqgMV9GiHbdLINDnBDnuWg1hybLt5od1RFamP0ZXogGcvtk/daizIy2mmv5nPlX5tT4RGg==
   dependencies:
-    "@ipld/dag-pb" "^4.1.2"
+    "@autonomys/auto-utils" "^1.4.1"
+
+"@autonomys/auto-dag-data@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.4.1.tgz#a4f1945ff582db331adc9e52d966ef46c282f251"
+  integrity sha512-mPdAag8EIEyRYm02JU0CT+zlFpSoQh81QOzosQZb3cBpM7uKeD/ND1hFLa5VqSPL/kMjzTSAmv6cNR5nxo6zVQ==
+  dependencies:
+    "@autonomys/asynchronous" "1.4.1"
+    "@ipld/dag-pb" "^4.1.3"
     "@peculiar/webcrypto" "^1.5.0"
     "@webbuf/blake3" "^3.0.26"
     "@webbuf/fixedbuf" "^3.0.26"
     "@webbuf/webbuf" "^3.0.26"
     fflate "^0.8.2"
-    multiformats "^13.2.2"
+    multiformats "^13.3.2"
     protobufjs "^7.4.0"
     protons "^7.6.0"
     protons-runtime "^5.5.0"
 
-"@autonomys/auto-utils@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.4.0.tgz#79d4eeb208a900602a41b64bf85b33f907964d74"
-  integrity sha512-Jnsnpxm/qkbjKek5TuotTJaNLrSoMM7wklhmHZNaiQoh70EtYvqtMTDWY248qBf4kpiooyDwTHEIo845O4fkGQ==
+"@autonomys/auto-utils@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.4.1.tgz#6adf85c81f5d8e4748578c65b19c1c529735a098"
+  integrity sha512-la9p8kcJsLReh/VC8xQne1+TOK4ZiQ/gM+wja86uzjbcYcUbn5I97NQFrVh5InCEG35zAvh8UrTeg60tI/3iTw==
   dependencies:
     "@polkadot/api" "^15.8.1"
     "@polkadot/extension-dapp" "^0.58.5"
@@ -628,7 +634,7 @@
   resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.2.0.tgz#6d61b3097470af1fdbbe622795b8921d42018e11"
   integrity sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==
 
-"@ipld/dag-pb@^4.1.2":
+"@ipld/dag-pb@^4.1.3":
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/@ipld/dag-pb/-/dag-pb-4.1.3.tgz#b572d7978fa548a3a9219f566a80884189261858"
   integrity sha512-ueULCaaSCcD+dQga6nKiRr+RSeVgdiYiEPKVUu5iQMNYDN+9osd0KpR3UDd9uQQ+6RWuv9L34SchfEwj7YIbOA==
@@ -7723,7 +7729,7 @@ multer@1.4.5-lts.1:
     type-is "^1.6.4"
     xtend "^4.0.0"
 
-multiformats@^13.0.0, multiformats@^13.1.0, multiformats@^13.2.2:
+multiformats@^13.0.0, multiformats@^13.1.0, multiformats@^13.3.2:
   version "13.3.2"
   resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-13.3.2.tgz#a77c2a09c490e90c73b3049551604e6e1a4854e0"
   integrity sha512-qbB0CQDt3QKfiAzZ5ZYjLFOs+zW43vA4uyM8g27PeEuXZybUOFyjrVdP93HPBHMoglibwfkdVwbzfUq8qGcH6g==
