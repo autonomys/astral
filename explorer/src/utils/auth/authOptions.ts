@@ -30,9 +30,27 @@ export const authOptions: AuthOptions = {
       }
       return token
     },
+    redirect: async ({ url, baseUrl }) => {
+      if (process.env.NEXTAUTH_URL && url.startsWith(process.env.NEXTAUTH_URL)) return url
+      if (process.env.NEXTAUTH_SECONDARY_URL && url.startsWith(process.env.NEXTAUTH_SECONDARY_URL))
+        return url
+      return baseUrl
+    },
     session: async ({ session, token }) => {
       if (token) session.user = token
       return session
+    },
+  },
+  cookies: {
+    sessionToken: {
+      name: 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.COOKIE_DOMAIN || undefined,
+      },
     },
   },
 }
