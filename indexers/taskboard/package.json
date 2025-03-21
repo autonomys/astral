@@ -12,7 +12,7 @@
   "dependencies": {
     "@autonomys/auto-consensus": "^1.4.0",
     "@autonomys/auto-utils": "^1.4.0",
-    "@bull-board/api": "^5.23.0",
+    "@bull-board/api": "^6.7.10",
     "@bull-board/express": "^5.23.0",
     "@bull-board/ui": "^5.23.0",
     "@polkadot/keyring": "^13.4.3",
