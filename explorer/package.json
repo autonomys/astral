@@ -20,7 +20,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "codegen": "yarn graphql-codegen --config codegen.ts",
+    "codegen": "npx graphql-codegen --config codegen.ts",
     "test:coverage": "CI=true yarn test -- --env=jsdom --coverage",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!@polkadot/*)/'",
     "prestart": "yarn codegen",
