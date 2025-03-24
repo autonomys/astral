@@ -15,7 +15,7 @@
     "url": "https://github.com/autonomys/astral/issues"
   },
   "engines": {
-    "node": ">=20.8.0"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "next dev",
