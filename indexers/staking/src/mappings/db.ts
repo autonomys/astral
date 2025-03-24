@@ -162,7 +162,7 @@ export function createDepositEvent(
   eventId: string
 ): DepositEvent {
   return DepositEvent.create({
-    id: extrinsicId + "-" + getNominationId(accountId, domainId, operatorId),
+    id: eventId + "-" + getNominationId(accountId, domainId, operatorId),
     sortId: getSortId(blockHeight, extrinsicId),
     accountId,
     domainId,
@@ -193,7 +193,7 @@ export function createWithdrawEvent(
   eventId: string
 ): WithdrawEvent {
   return WithdrawEvent.create({
-    id: extrinsicId + "-" + getNominationId(accountId, domainId, operatorId),
+    id: eventId + "-" + getNominationId(accountId, domainId, operatorId),
     sortId: getSortId(blockHeight, extrinsicId),
     accountId,
     domainId,
@@ -220,7 +220,7 @@ export function createOperatorReward(
   eventId: string
 ): OperatorReward {
   return OperatorReward.create({
-    id: extrinsicId,
+    id: eventId,
     domainId,
     operatorId,
     amount,
@@ -240,7 +240,7 @@ export function createOperatorTaxCollection(
   eventId: string
 ): OperatorTaxCollection {
   return OperatorTaxCollection.create({
-    id: extrinsicId,
+    id: eventId,
     domainId,
     operatorId,
     amount,
@@ -261,7 +261,7 @@ export function createUnlockedEvent(
   eventId: string
 ): UnlockedEvent {
   return UnlockedEvent.create({
-    id: extrinsicId,
+    id: eventId,
     domainId,
     operatorId,
     accountId,
@@ -282,7 +282,7 @@ export function createNominatorsUnlockedEvent(
   eventId: string
 ): NominatorsUnlockedEvent {
   return NominatorsUnlockedEvent.create({
-    id: extrinsicId,
+    id: eventId,
     domainId,
     operatorId,
     blockHeight,
