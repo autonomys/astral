@@ -37,6 +37,16 @@
       "separateMinorPatch": false
     },
     {
+      "matchPackagePatterns": [
+        "jest",
+        "mocha",
+        "chai",
+        "enzyme",
+        "testing-library"
+      ],
+      "groupName": "testing packages"
+    },
+    {
       "matchDepTypes": ["peerDependencies"],
       "enabled": false
     }
@@ -48,10 +58,16 @@
   },
   "includePaths": ["package.json", "**/package.json"],
   "dependencyDashboard": true,
+  "dependencyDashboardAutoclose": true,
   "prHourlyLimit": 2,
-  "prConcurrentLimit": 10,
+  "prConcurrentLimit": 4,
   "stabilityDays": 3,
   "major": {
     "stabilityDays": 7
+  },
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": ["@marc-aurele-besner"],
+    "schedule": "at any time"
   }
 }
