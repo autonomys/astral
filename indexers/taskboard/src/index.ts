@@ -34,6 +34,10 @@ declare module "express-session" {
 }
 
 const SESSION_SECRET = process.env.BULL_SESSION_SECRET || "keyboard cat";
+const BULL_BASE_PATH = (process.env.BULL_BASE_PATH || "/bullmq").replace(
+  /\/$/,
+  ""
+);
 
 passport.use(
   "api",
@@ -77,16 +81,21 @@ const run = async () => {
   app.set("views", `${__dirname}/views`);
   app.set("view engine", "ejs");
 
-  app.get(ROUTES.LOGIN, (req, res) => {
-    res.render("login", { invalid: false });
+  const bullRouter = express.Router();
+
+  bullRouter.get(ROUTES.LOGIN, (req, res) => {
+    res.render(VIEWS.LOGIN, {
+      invalid: false,
+      loginUrl: `${BULL_BASE_PATH}${ROUTES.LOGIN}`,
+    });
   });
-  app.get(ROUTES.DASHBOARD, (req, res) => {
+  bullRouter.get(ROUTES.DASHBOARD, (req, res) => {
     if (req.session.authenticated)
       res.render(VIEWS.DASHBOARD, { queues: QUEUES });
-    else res.redirect(ROUTES.LOGIN);
+    else res.redirect(`${BULL_BASE_PATH}${ROUTES.LOGIN}`);
   });
 
-  app.post(
+  bullRouter.post(
     ROUTES.POST_LOGIN,
     express.urlencoded({ extended: true }),
     (req, res) => {
@@ -96,8 +105,12 @@ const run = async () => {
         password === process.env.BULL_PASSWORD
       ) {
         req.session.authenticated = true;
-        res.redirect(ROUTES.DASHBOARD);
-      } else res.render(VIEWS.LOGIN, { invalid: true });
+        res.redirect(`${BULL_BASE_PATH}${ROUTES.DASHBOARD}`);
+      } else
+        res.render(VIEWS.LOGIN, {
+          invalid: true,
+          loginUrl: `${BULL_BASE_PATH}${ROUTES.LOGIN}`,
+        });
     }
   );
 
@@ -134,16 +147,16 @@ const run = async () => {
       options: BULL_BOARD_OPTIONS,
     });
 
-    serverAdapter.setBasePath(`/${queue}`);
+    serverAdapter.setBasePath(`${BULL_BASE_PATH}/${queue}`);
 
-    app.use(`/${queue}`, (req, res) => {
+    bullRouter.use(`/${queue}`, (req, res) => {
       if (req.session.authenticated) serverAdapter.getRouter()(req, res);
       else res.redirect(ROUTES.LOGIN);
     });
     serverAdapters[queue] = serverAdapter;
   }
 
-  app.post(ROUTES.POST_ADD_TASK, async (req, res) => {
+  bullRouter.post(ROUTES.POST_ADD_TASK, async (req, res) => {
     log("req.body: ", req.body);
     let { queueName, taskName, data, opts, jobId } = req.body;
 
@@ -197,6 +210,8 @@ const run = async () => {
       returnError(res, error.message, 500);
     }
   });
+
+  app.use("/", bullRouter);
 
   // Schedule garbage collection to run every hour
   setInterval(async () => {
