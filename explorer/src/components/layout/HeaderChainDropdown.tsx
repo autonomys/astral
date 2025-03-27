@@ -1,7 +1,7 @@
 import { NetworkId } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
-import { AutonomysSymbol } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
 import { Indexer, indexers } from 'constants/indexers'
 import useIndexers from 'hooks/useIndexers'
 import { useRouter } from 'next/navigation'
@@ -30,8 +30,8 @@ export const HeaderChainDropdown: FC = () => {
 
   return (
     <Listbox value={indexerSet} onChange={handleChainChange}>
-      <div className='relative z-10'>
-        <Listbox.Button className='relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-blueAccent dark:text-white sm:text-sm'>
+      <div className='relative'>
+        <Listbox.Button className='relative cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-blueAccent dark:text-white sm:w-full sm:text-sm md:w-48 lg:w-48'>
           <div className='flex items-center justify-center'>
             <AutonomysSymbol />
             <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full '>
@@ -51,7 +51,7 @@ export const HeaderChainDropdown: FC = () => {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute mt-1 max-h-60 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+          <Listbox.Options className='absolute z-50 mt-1 max-h-60 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
             {filteredChains.map((chain, chainIdx) => (
               <Listbox.Option
                 key={chainIdx}

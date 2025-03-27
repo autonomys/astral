@@ -7,7 +7,11 @@ import {
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
   Routes,
 } from 'constants/routes'
-import { AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables } from 'gql/graphql'
+import {
+  AccountsTopLeaderboardDocument,
+  AccountsTopLeaderboardQuery,
+  AccountsTopLeaderboardQueryVariables,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -17,7 +21,6 @@ import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
 import { numberPositionSuffix } from 'utils/number'
-import { QUERY_TOP_LEADERBOARD } from './query'
 
 interface LeaderboardProps {
   subspaceAccount: string
@@ -25,8 +28,8 @@ interface LeaderboardProps {
 
 export const useLeaderboard = (subspaceAccount: string) => {
   const inFocus = useWindowFocus()
-  const { get } = useSearchParams()
-  const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+  const searchParams = useSearchParams()
+  const isSideKickOpen = searchParams.get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
 
   const variables = useMemo(
     () => ({
@@ -38,7 +41,7 @@ export const useLeaderboard = (subspaceAccount: string) => {
     AccountsTopLeaderboardQuery,
     AccountsTopLeaderboardQueryVariables
   >(
-    QUERY_TOP_LEADERBOARD,
+    AccountsTopLeaderboardDocument,
     {
       variables,
       skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,

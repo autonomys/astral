@@ -1,6 +1,13 @@
-import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
+import {
+  ChevronDownIcon,
+  ChevronUpDownIcon,
+  ChevronUpIcon,
+  InformationCircleIcon,
+} from '@heroicons/react/20/solid'
 import { Table, flexRender } from '@tanstack/react-table'
-import type { SortingOptions } from '@tanstack/table-core/build/lib/features/Sorting'
+import type { SortingOptions } from '@tanstack/table-core/'
+import { ColumnMeta } from 'types/table'
+import { Tooltip } from './Tooltip'
 
 interface TableProps<T extends object> {
   table: Table<T>
@@ -9,8 +16,8 @@ interface TableProps<T extends object> {
 
 export const DesktopTable = <T extends object>({ table, emptyMessage }: TableProps<T>) => (
   <div className='overflow-x-auto'>
-    <table className='dark:bg-boxDark w-full min-w-max table-auto rounded-[20px] bg-white dark:border-none'>
-      <thead className='text-blueShade border-b border-gray-200 text-sm dark:text-white/75'>
+    <table className='w-full min-w-max table-auto rounded-[20px] bg-white dark:border-none dark:bg-boxDark'>
+      <thead className='border-b border-gray-200 text-sm text-blueShade dark:text-white/75'>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header, index) => (
@@ -25,26 +32,37 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
                       ? 'rounded-tl-[20px]'
                       : 'rounded-tr-[20px]'
                     : 'rounded-[20px]'
-                } px-3 py-4 text-start text-sm font-normal ${index === 0 ? 'dark:bg-boxDark sticky left-0 bg-white' : ''} ${index === headerGroup.headers.length - 1 ? 'dark:bg-boxDark sticky right-0 bg-white' : ''}`}
+                } px-3 py-4 text-start text-sm font-normal ${index === 0 ? 'sticky left-0 bg-white dark:bg-boxDark' : ''} ${index === headerGroup.headers.length - 1 ? 'sticky right-0 bg-white dark:bg-boxDark' : ''}`}
               >
                 <div className='flex justify-items-center gap-1 align-middle'>
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
+
+                  {(() => {
+                    const columnMeta = header.column.columnDef.meta as ColumnMeta
+                    const tooltipText: string = columnMeta?.tooltip || ''
+                    return tooltipText ? (
+                      <Tooltip text={tooltipText} direction='top'>
+                        <InformationCircleIcon className='ml-1 size-5' aria-hidden='true' />
+                      </Tooltip>
+                    ) : null
+                  })()}
+
                   {(header.column.columnDef as SortingOptions<T>).enableSorting && (
                     <>
                       {header.column.getIsSorted() === 'asc' ? (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-primaryAccent focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronUpIcon className='size-5' aria-hidden='true' />
                         </span>
                       ) : header.column.getIsSorted() === 'desc' ? (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronDownIcon className='size-5' aria-hidden='true' />
                         </span>
                       ) : (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-primaryAccent focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronUpDownIcon className='size-5' aria-hidden='true' />
                         </span>
@@ -69,10 +87,10 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
               {row.getVisibleCells().map((cell, cellIndex) => (
                 <td
                   className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                    cellIndex === 0 ? 'dark:bg-boxDark sticky left-0 bg-white' : ''
+                    cellIndex === 0 ? 'sticky left-0 bg-white dark:bg-boxDark' : ''
                   } ${
                     cellIndex === row.getVisibleCells().length - 1
-                      ? 'dark:bg-boxDark sticky right-0 bg-white'
+                      ? 'sticky right-0 bg-white dark:bg-boxDark'
                       : ''
                   } ${
                     rowIndex === table.getRowModel().rows.length - 1 && cellIndex === 0
@@ -94,7 +112,7 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
         ) : (
           <tr>
             <td colSpan={table.getAllColumns().length} className='p-6 text-center'>
-              <div className='text-blueShade text-sm dark:text-white/75'>
+              <div className='text-sm text-blueShade dark:text-white/75'>
                 {emptyMessage || 'No entries to show'}
               </div>
             </td>

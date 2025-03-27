@@ -233,7 +233,7 @@ const config: Config = {
           fontWeight: '300',
         },
         h2: {
-          fontFamily: 'var(--font-roboto-serif), serif',
+          fontFamily: 'var(--font-libre-franklin), sans-serif',
           fontSize: '2.938rem',
           lineHeight: '120%',
           letterSpacing: '-0.02em',
@@ -283,6 +283,10 @@ const config: Config = {
           lineHeight: '120%',
           letterSpacing: '-0.02em',
           fontWeight: '600',
+        },
+        html: {
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
         },
       })
     }),

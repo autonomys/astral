@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { sendGAEvent } from '@next/third-parties/google'
-import { LogoIcon, WalletIcon } from 'components/icons'
+import { LogoIcon } from 'components/icons/LogoIcon'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
 import {
   ROUTE_EXTRA_FLAGS,
@@ -14,9 +14,10 @@ import { WalletType } from 'constants/wallet'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTransactionsStates } from 'states/transactions'
 import { formatUnitsToNumber } from 'utils/number'
 import { currentYear } from 'utils/time'
@@ -30,7 +31,7 @@ import { StakingSummary } from './StakingSummary'
 
 type DrawerProps = {
   isOpen: boolean
-  onClose: () => void
+  onCloseSidebar: () => void
 }
 
 const PendingTransactionsLabel: FC = () => {
@@ -66,8 +67,9 @@ export const WalletSidekick: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const { replace } = useRouter()
-  const { get } = useSearchParams()
-  const search = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+  const searchParams = useSearchParams()
+  const search = searchParams.get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+  const sidebarRef = useRef<HTMLDivElement>(null)
 
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -84,7 +86,7 @@ export const WalletSidekick: FC = () => {
     [replace],
   )
 
-  const onClose = useCallback(() => {
+  const onCloseSidebar = useCallback(() => {
     replace('?')
     setIsOpen(false)
   }, [replace])
@@ -97,6 +99,18 @@ export const WalletSidekick: FC = () => {
     sendGAEvent('event', 'walletSideKick_open_close', { value: isOpen ? 'open' : 'close' })
   }, [isOpen])
 
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        onCloseSidebar()
+      }
+    }
+    document.addEventListener('mousedown', handleOutsideClick)
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick)
+    }
+  }, [isOpen, onCloseSidebar])
+
   return (
     <>
       <PendingTransactionsLabel />
@@ -106,14 +120,28 @@ export const WalletSidekick: FC = () => {
           isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
         } shadow-md dark:bg-buttonLightTo md:mt-3`}
       >
-        <WalletIcon width='24' height='24' />
+        <Image
+          src='/images/icons/wallet-addresses-small.webp'
+          alt='Wallet list'
+          width={24}
+          height={24}
+        />
       </button>
-      <Drawer isOpen={isOpen} onClose={onClose} />
+      {isOpen && (
+        <div className='fixed inset-0 z-20 bg-gray-900 bg-opacity-25' onClick={onCloseSidebar} />
+      )}
+      <div
+        className={`fixed right-0 top-0 z-30 h-full w-screen max-w-lg transform bg-light transition-transform duration-300 ease-in-out dark:bg-dark ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <Drawer isOpen={isOpen} onCloseSidebar={onCloseSidebar} />
+      </div>
     </>
   )
 }
 
-const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
+const Drawer: FC<DrawerProps> = ({ isOpen, onCloseSidebar }) => {
   const { push } = useRouter()
   const { network, section } = useIndexers()
   const { api, actingAccount, sessionSubspaceAccount } = useWallet()
@@ -122,10 +150,10 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   const handleNavigate = useCallback(
     (url: string) => {
-      onClose()
+      onCloseSidebar()
       push(url)
     },
-    [onClose, push],
+    [onCloseSidebar, push],
   )
 
   const loadData = useCallback(async () => {
@@ -159,69 +187,49 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   return (
     // backdrop
-    <div onClick={onClose}>
-      <nav
-        className={
-          'fixed inset-0 z-10 transform overflow-hidden bg-gray-900 bg-opacity-25 ease-in-out ' +
-          (isOpen
-            ? ' z-max translate-x-0 opacity-100 transition-opacity duration-500'
-            : ' translate-x-full opacity-0 transition-all delay-500')
-        }
-      >
-        <section
-          onClick={(e) => e.stopPropagation()}
-          className={
-            'delay-400 absolute right-0 -z-10 h-full w-screen max-w-lg transform bg-light shadow-xl transition-all duration-500 ease-in-out dark:bg-dark' +
-            (isOpen ? ' translate-x-0 ' : ' translate-x-full ')
-          }
-        >
-          <HeaderBackground />
-          <article className='relative flex h-full w-screen max-w-lg flex-col gap-2 overflow-y-scroll pb-10'>
-            <div className='flex items-center justify-between p-5 align-middle'>
-              <button
-                onClick={() => handleNavigate(`/${network}/${section}`)}
-                className='title-font flex items-center font-medium text-gray-900 dark:text-white'
-              >
-                <LogoIcon fillColor='currentColor' />
-              </button>
-              <div className='flex items-center gap-3'>
-                <button
-                  className='items-center rounded-full bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
-                  onClick={onClose}
-                >
-                  x
-                </button>
-              </div>
-            </div>
-            <AccountHeader walletBalance={walletBalance} tokenSymbol={tokenSymbol} />
-            {sessionSubspaceAccount && (
-              <>
-                <AccountSummary
-                  subspaceAccount={sessionSubspaceAccount}
-                  actingAccountName={actingAccount?.name}
-                  walletBalance={walletBalance}
-                  tokenSymbol={tokenSymbol}
-                />
-                <PendingTransactions subspaceAccount={sessionSubspaceAccount} />
-                <GetDiscordRoles />
-                <StakingSummary
-                  subspaceAccount={sessionSubspaceAccount}
-                  tokenSymbol={tokenSymbol}
-                />
-                <LastExtrinsics subspaceAccount={sessionSubspaceAccount} />
-                <Leaderboard subspaceAccount={sessionSubspaceAccount} />
-              </>
-            )}
-            <div className='flex'>
-              <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
-                <p className='text-gray text-center text-sm sm:text-left'>
-                  © {currentYear()} Autonomys Network, Inc. All Rights Reserved
-                </p>
-              </div>
-            </div>
-          </article>
-        </section>
-      </nav>
-    </div>
+    <section onClick={(e) => e.stopPropagation()} className='w-screen max-w-lg'>
+      <HeaderBackground />
+      <article className='relative flex h-screen w-screen max-w-lg flex-col gap-2 overflow-y-scroll pb-10'>
+        <div className='flex items-center justify-between p-5 align-middle'>
+          <button
+            onClick={() => handleNavigate(`/${network}/${section}`)}
+            className='title-font flex items-center font-medium text-gray-900 dark:text-white'
+          >
+            <LogoIcon fillColor='currentColor' />
+          </button>
+          <div className='flex items-center gap-3'>
+            <button
+              className='items-center rounded-full bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
+              onClick={onCloseSidebar}
+            >
+              x
+            </button>
+          </div>
+        </div>
+        <AccountHeader walletBalance={walletBalance} tokenSymbol={tokenSymbol} />
+        {subspaceAccount && (
+          <>
+            <AccountSummary
+              subspaceAccount={subspaceAccount}
+              actingAccountName={actingAccount.name}
+              walletBalance={walletBalance}
+              tokenSymbol={tokenSymbol}
+            />
+            <PendingTransactions subspaceAccount={subspaceAccount} />
+            <GetDiscordRoles />
+            <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
+            <LastExtrinsics subspaceAccount={subspaceAccount} />
+            <Leaderboard subspaceAccount={subspaceAccount} />
+          </>
+        )}
+        <div className='flex'>
+          <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
+            <p className='text-gray text-center text-sm sm:text-left'>
+              © {currentYear()} Autonomys Network, Inc. All Rights Reserved
+            </p>
+          </div>
+        </div>
+      </article>
+    </section>
   )
 }

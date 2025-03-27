@@ -1,0 +1,73 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":maintainLockFilesWeekly"],
+  "labels": ["dependencies"],
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["prettier"],
+      "labels": ["formatter"]
+    },
+    {
+      "matchPackagePatterns": ["eslint"],
+      "labels": ["linting"]
+    },
+    {
+      "matchPackagePatterns": ["@types", "typescript"],
+      "labels": ["types"]
+    },
+    {
+      "matchDepTypes": ["optionalDependencies"],
+      "addLabels": ["optional"]
+    },
+    {
+      "matchDepTypes": ["minor", "patch", "devDependencies"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "groupName": "Autonomys Auto-SDK",
+      "matchPackagePatterns": ["^@autonomys/"],
+      "groupSlug": "auto-sdk",
+      "automerge": false
+    },
+    {
+      "matchPackagePatterns": ["^react", "^@react", "redux", "^@redux"],
+      "groupName": "react packages",
+      "separateMinorPatch": false
+    },
+    {
+      "matchPackagePatterns": [
+        "jest",
+        "mocha",
+        "chai",
+        "enzyme",
+        "testing-library"
+      ],
+      "groupName": "testing packages"
+    },
+    {
+      "matchDepTypes": ["peerDependencies"],
+      "enabled": false
+    }
+  ],
+  "updateLockFiles": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 5am on monday"]
+  },
+  "includePaths": ["package.json", "**/package.json"],
+  "dependencyDashboard": true,
+  "dependencyDashboardAutoclose": true,
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 4,
+  "stabilityDays": 3,
+  "major": {
+    "stabilityDays": 7
+  },
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": ["@marc-aurele-besner"],
+    "schedule": "at any time"
+  }
+}

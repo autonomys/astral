@@ -11,7 +11,11 @@ import {
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
   Routes,
 } from 'constants/routes'
-import { ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables } from 'gql/graphql'
+import {
+  ExtrinsicsSummaryDocument,
+  ExtrinsicsSummaryQuery,
+  ExtrinsicsSummaryQueryVariables,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -21,7 +25,6 @@ import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { QUERY_EXTRINSIC_SUMMARY } from './query'
 
 interface LastExtrinsicsProps {
   subspaceAccount: string
@@ -31,8 +34,8 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
   const { ref, inView } = useInView()
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
-  const { get } = useSearchParams()
-  const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+  const searchParams = useSearchParams()
+  const isSideKickOpen = searchParams.get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
 
   const variables = useMemo(
     () => ({
@@ -45,7 +48,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
     ExtrinsicsSummaryQuery,
     ExtrinsicsSummaryQueryVariables
   >(
-    QUERY_EXTRINSIC_SUMMARY,
+    ExtrinsicsSummaryDocument,
     {
       variables,
       skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,

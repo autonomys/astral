@@ -8,7 +8,7 @@ jobs:
     defaults:
       run:
         working-directory: indexers
-    name: Run codegen and build
+    name: Indexers - Run codegen and build
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
     defaults:
       run:
         working-directory: explorer
-    name: Run eslint and code style check
+    name: Explorer - Run eslint and code style check
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
@@ -42,7 +42,7 @@ jobs:
       - name: Set up Node.js 📦
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: "20"
 
       - name: Enable Corepack 📦
         run: corepack enable
@@ -57,26 +57,3 @@ jobs:
         env:
           NEXT_PUBLIC_GEMINI_3H_INDEXERS: ${{ secrets.NEXT_PUBLIC_GEMINI_3H_INDEXERS }}
         run: yarn build
-  ts-lint-and-build-health-check:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: health-check
-    name: Run eslint, check typescript
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js 📦
-        uses: actions/setup-node@v2
-        with:
-          node-version: "16"
-
-      - name: Install dependencies 📦
-        run: npm ci
-
-      - name: Run linter 🔍
-        run: npm run lint
-
-      - name: Build project 🔧
-        run: npm run build

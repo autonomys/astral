@@ -1,10 +1,8 @@
 'use client'
 
 import { DocumentNode, useApolloClient } from '@apollo/client'
-import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   AccountTransferSenderTotalCountQuery,
@@ -16,9 +14,9 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { useTableStates } from 'states/tables'
+import { useTableSettings } from 'states/tables'
 import { useViewStates } from 'states/view'
 import type { Cell, LeaderboardFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
@@ -57,17 +55,19 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   const { ref, inView } = useInView()
   const { myPositionOnly } = useViewStates()
   const { subspaceAccount } = useWallet()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'rank', desc: false }])
-  const [pagination, setPagination] = useState({
-    pageSize: PAGE_SIZE,
-    pageIndex: 0,
-  })
+  const {
+    pagination,
+    sorting,
+    selectedColumns,
+    filters,
+    whereForSearch,
+    onPaginationChange,
+    onSortingChange,
+  } = useTableSettings<LeaderboardFilters>(TABLE)
+
   const apolloClient = useApolloClient()
   const { network, tokenDecimals } = useIndexers()
   const inFocus = useWindowFocus()
-  const availableColumns = useTableStates((state) => state[TABLE].columns)
-  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
-  const filters = useTableStates((state) => state[TABLE].filters) as LeaderboardFilters
 
   const columns = useMemo(
     () =>
@@ -150,23 +150,12 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
 
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
+    const conditions: Record<string, any> = whereForSearch
 
     if (subspaceAccount && myPositionOnly) {
       conditions['id'] = {}
       conditions.id._eq = subspaceAccount
     }
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof LeaderboardFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
 
     // Rank
     if (filters.rankMin || filters.rankMax) {
@@ -191,7 +180,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     }
 
     return conditions
-  }, [availableColumns, filters, myPositionOnly, subspaceAccount, tokenDecimals])
+  }, [whereForSearch, filters, myPositionOnly, subspaceAccount, tokenDecimals])
 
   const variables = useMemo(
     () => ({
@@ -271,10 +260,10 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
                 columns={columns}
                 showNavigation={true}
                 sorting={sorting}
-                onSortingChange={setSorting}
+                onSortingChange={onSortingChange}
                 pagination={pagination}
                 pageCount={pageCount}
-                onPaginationChange={setPagination}
+                onPaginationChange={onPaginationChange}
                 filename='leaderboard-vote-block-reward-list'
                 fullDataDownloader={fullDataDownloader}
               />

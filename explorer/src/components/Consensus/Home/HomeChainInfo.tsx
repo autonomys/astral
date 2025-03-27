@@ -1,10 +1,15 @@
-import { Spinner } from '@/components/common/Spinner'
-import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
+import HomeInfoCardSkeleton from '@/components/common/HomeInfoCardSkeleton'
+import { formatSpaceToDecimalAsObject } from '@autonomys/auto-consensus'
 import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
+import useMediaQuery from 'hooks/useMediaQuery'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { numberWithCommas } from 'utils/number'
-import { HomeCards } from './HomeCards'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import { Pagination } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { cn } from 'utils/cn'
+import { HomeInfoCard } from './HomeInfoCard'
 
 type TelemetryObject = [string, string, number, number]
 type TelemetryData = TelemetryObject[]
@@ -16,6 +21,7 @@ type Props = {
 
 export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const { indexerSet } = useIndexers()
+  const isDesktop = useMediaQuery('(min-width: 1536px)')
   const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
 
   const getTelemetryData = useCallback(async () => {
@@ -44,31 +50,76 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   }, [])
 
   const nodeCount = useMemo(() => {
-    if (!telemetryData.length || !indexerSet.telemetryNetworkName) return '0'
+    if (!telemetryData.length || !indexerSet.telemetryNetworkName) return 0
     try {
       const filterNetwork = telemetryData.filter(
         (item: TelemetryObject) => item[0] === indexerSet.telemetryNetworkName,
       )
-      return numberWithCommas(
-        filterNetwork.reduce(
-          (max: number, current: TelemetryObject) => (current[2] > max ? current[2] : max),
-          filterNetwork[0][2],
-        ),
+      return filterNetwork.reduce(
+        (max: number, current: TelemetryObject) => (current[2] > max ? current[2] : max),
+        filterNetwork[0][2],
       )
     } catch (err) {
       console.error('Failed to get node count:', err)
-      return '0'
+      return 0
     }
   }, [telemetryData, indexerSet.telemetryNetworkName])
 
   const spacePledgedVal = data ? Number(data.consensus_blocks[0].space_pledged) : 0
-  const spacePledged = formatSpaceToDecimal(spacePledgedVal)
+  const spacePledged = formatSpaceToDecimalAsObject(spacePledgedVal)
   const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
-  const historySize = formatSpaceToDecimal(historySizeVal)
-  const blocksCount = data ? numberWithCommas(Number(data.consensus_blocks[0].height)) : 'error'
-  const accountsCount = data
-    ? numberWithCommas(Number(data.consensus_accounts_aggregate?.aggregate?.count))
+  const historySize = formatSpaceToDecimalAsObject(historySizeVal)
+  const blocksCount = data ? Number(data.consensus_blocks[0].height) : 'error'
+  const accountsCount = data ? Number(data.consensus_accounts_aggregate?.aggregate?.count) : 'error'
+  const extrinsicsCount = data
+    ? Number(data.consensus_blocks[0].cumulative?.cumulative_extrinsics_count)
     : 'error'
+
+  const listOfCards = useMemo(
+    () => [
+      {
+        title: 'Processed Blocks',
+        imagePath: '/images/icons/processed-blocks.webp',
+        value: blocksCount,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Wallet addresses',
+        imagePath: '/images/icons/wallet-addresses.webp',
+        value: accountsCount,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Total Nodes',
+        imagePath: '/images/icons/total-nodes.webp',
+        value: nodeCount,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Total Space Pledged',
+        imagePath: '/images/icons/total-space-pledged.webp',
+        value: spacePledged.value,
+        unit: spacePledged.unit,
+        decimal: 2,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Archived History Size',
+        imagePath: '/images/icons/archived-history-size.webp',
+        value: historySize.value,
+        unit: historySize.unit,
+        decimal: 2,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+      {
+        title: 'Total Extrinsics',
+        imagePath: '/images/icons/total-extrinsics.webp',
+        value: extrinsicsCount,
+        darkBgClass: 'dark:bg-boxDark',
+      },
+    ],
+    [blocksCount, nodeCount, spacePledged, historySize, accountsCount, extrinsicsCount],
+  )
 
   useEffect(() => {
     getTelemetryData()
@@ -76,18 +127,53 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   }, [])
 
   return (
-    <>
-      {!data || loading ? (
-        <Spinner isXSmall />
-      ) : (
-        <HomeCards
-          blocksCount={blocksCount}
-          spacePledged={spacePledged}
-          nodeCount={nodeCount}
-          historySize={historySize}
-          accountsCount={accountsCount}
-        />
-      )}
-    </>
+    <Swiper
+      slidesPerView={1}
+      spaceBetween={20}
+      pagination={{
+        clickable: true,
+        renderBullet: (index, className) =>
+          `<span key="${index}" class="${className}" style="background-color: #1949D2;"></span>`,
+      }}
+      breakpoints={{
+        460: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+        1024: {
+          slidesPerView: 4,
+          spaceBetween: 20,
+        },
+        1536: {
+          slidesPerView: 6,
+          spaceBetween: 20,
+        },
+      }}
+      modules={[Pagination]}
+      className={cn('flex w-full items-center', isDesktop ? 'mb-12 !p-0' : 'mb-4 !pb-10')}
+    >
+      {!data || loading
+        ? Array.from({ length: 6 }).map((_, index) => (
+            <SwiperSlide key={`loader-${index}`}>
+              <HomeInfoCardSkeleton key={index} />
+            </SwiperSlide>
+          ))
+        : listOfCards.map(({ title, value, unit, decimal, imagePath, darkBgClass }, index) => (
+            <SwiperSlide key={`${title}-${index}`}>
+              <HomeInfoCard
+                title={title}
+                value={value}
+                unit={unit}
+                decimal={decimal}
+                imagePath={imagePath}
+                darkBgClass={darkBgClass}
+              />
+            </SwiperSlide>
+          ))}
+    </Swiper>
   )
 }

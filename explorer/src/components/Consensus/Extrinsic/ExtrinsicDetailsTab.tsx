@@ -5,14 +5,15 @@ import { ExtrinsicDetailsEventList } from './ExtrinsicDetailsEventList'
 
 type Props = {
   eventsCount: number
+  extrinsicId: string
   isDesktop?: boolean
 }
 
-export const ExtrinsicDetailsTab: FC<Props> = ({ eventsCount, isDesktop = false }) => {
+export const ExtrinsicDetailsTab: FC<Props> = ({ eventsCount, extrinsicId, isDesktop = false }) => {
   return (
     <PageTabs isDesktop={isDesktop}>
       <Tab title={`Events (${eventsCount})`}>
-        <ExtrinsicDetailsEventList />
+        <ExtrinsicDetailsEventList eventsCount={eventsCount} extrinsicId={extrinsicId} />
       </Tab>
     </PageTabs>
   )

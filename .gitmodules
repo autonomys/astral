@@ -1,3 +1,3 @@
-[submodule "indexers/dictionary"]
-	path = indexers/dictionary
-	url = https://github.com/autonomys/subql-dictionary
+[submodule "contracts/lib/forge-std"]
+	path = contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std

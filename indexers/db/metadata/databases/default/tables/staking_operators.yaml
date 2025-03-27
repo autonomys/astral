@@ -21,6 +21,15 @@ object_relationships:
           name: domains
           schema: staking
 array_relationships:
+  - name: deposit_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: deposit_events
+          schema: staking
   - name: deposits
     using:
       manual_configuration:
@@ -38,6 +47,24 @@ array_relationships:
         insertion_order: null
         remote_table:
           name: nominators
+          schema: staking
+  - name: unlocked_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: unlocked_events
+          schema: staking
+  - name: withdraw_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: withdraw_events
           schema: staking
   - name: withdrawals
     using:
@@ -60,6 +87,12 @@ select_permissions:
         - active_epoch_count
         - bundle_count
         - created_at
+        - current_1d_apy
+        - current_1d_yield
+        - current_30d_apy
+        - current_30d_yield
+        - current_7d_apy
+        - current_7d_yield
         - current_epoch_rewards
         - current_share_price
         - current_storage_fee_deposit
@@ -67,32 +100,23 @@ select_permissions:
         - current_total_stake
         - last_bundle_at
         - minimum_nominator_stake
-        - rejected_transfers_claimed_count
-        - sort_id
-        - total_burned_balance
-        - total_consensus_storage_fee
         - total_deposits
-        - total_domain_execution_fee
+        - total_deposits_count
         - total_estimated_withdrawals
-        - total_rejected_transfers_claimed
         - total_rewards_collected
         - total_tax_collected
-        - total_transfers_in
-        - total_transfers_out
-        - total_transfers_rejected
-        - total_volume
         - total_withdrawals
-        - transfers_in_count
-        - transfers_out_count
-        - transfers_rejected_count
+        - total_withdrawals_count
         - updated_at
         - account_id
         - domain_id
+        - extrinsic_id
         - id
-        - pending_action
         - raw_status
         - signing_key
+        - sort_id
         - status
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

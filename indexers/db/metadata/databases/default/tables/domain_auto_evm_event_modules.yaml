@@ -1,0 +1,24 @@
+table:
+  name: event_modules
+  schema: domain_auto_evm
+array_relationships:
+  - name: events
+    using:
+      manual_configuration:
+        column_mapping:
+          method: module
+        insertion_order: null
+        remote_table:
+          name: events
+          schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - method
+        - section
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""

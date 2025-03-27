@@ -1,28 +1,26 @@
 'use client'
 
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
-import type { SortingState } from '@tanstack/react-table'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { TableSettings } from 'components/common/TableSettings'
-import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { ExtrinsicsQuery, ExtrinsicsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import { FILTERS_OPTIONS } from 'constants/tables'
+import { ExtrinsicsDocument, ExtrinsicsQuery, ExtrinsicsQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { useTableStates } from 'states/tables'
-import { Cell, ExtrinsicsFilters, TableSettingsTabs } from 'types/table'
+import { useTableSettings } from 'states/tables'
+import { Cell, ExtrinsicsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_EXTRINSICS } from './query'
 
 type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
 const TABLE = 'extrinsics'
@@ -30,67 +28,35 @@ const TABLE = 'extrinsics'
 export const ExtrinsicList: FC = () => {
   const { ref, inView } = useInView()
   const { network, section } = useIndexers()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
-  const [pagination, setPagination] = useState({
-    pageSize: PAGE_SIZE,
-    pageIndex: 0,
-  })
-  const availableColumns = useTableStates((state) => state[TABLE].columns)
-  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
-  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
-  const filters = useTableStates((state) => state[TABLE].filters) as ExtrinsicsFilters
-  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
-  const setColumns = useTableStates((state) => state.setColumns)
-  const setFilters = useTableStates((state) => state.setFilters)
-  const showSettings = useTableStates((state) => state.showSettings)
-  const hideSettings = useTableStates((state) => state.hideSettings)
-  const resetSettings = useTableStates((state) => state.resetSettings)
-  const showReset = useTableStates((state) => state.showReset)
+  const {
+    pagination,
+    sorting,
+    selectedColumns,
+    filters,
+    orderBy,
+    whereForSearch,
+    onPaginationChange,
+    onSortingChange,
+  } = useTableSettings<ExtrinsicsFilters>(TABLE)
 
-  const orderBy = useMemo(
-    () =>
-      sorting && sorting.length > 0
-        ? sorting[0].id.endsWith('aggregate')
-          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
-          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
-        : { id: OrderBy.Asc },
-    [sorting],
+  const where = useMemo(
+    () => ({
+      ...whereForSearch,
+      // Block Height
+      ...((filters.blockHeightMin || filters.blockHeightMax) && {
+        // eslint-disable-next-line camelcase
+        block_height: {
+          ...(filters.blockHeightMin && { _gte: filters.blockHeightMin }),
+          ...(filters.blockHeightMax && { _lte: filters.blockHeightMax }),
+        },
+      }),
+      // Section
+      ...(filters.section && { section: { _eq: `%${filters.section}%` } }),
+      // Module
+      ...(filters.module && { module: { _eq: `%${filters.module}%` } }),
+    }),
+    [filters, whereForSearch],
   )
-
-  const where = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof ExtrinsicsFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
-
-    // Block Height
-    if (filters.blockHeightMin || filters.blockHeightMax) {
-      conditions['block_height'] = {}
-      if (filters.blockHeightMin) conditions.block_height._gte = filters.blockHeightMin
-      if (filters.blockHeightMax) conditions.block_height._lte = filters.blockHeightMax
-    }
-
-    // Section
-    if (filters.section) {
-      conditions['section'] = { _ilike: `%${filters.section}%` }
-    }
-
-    // Module
-    if (filters.module) {
-      conditions['module'] = { _ilike: `%${filters.module}%` }
-    }
-
-    return conditions
-  }, [filters, availableColumns])
 
   const variables = useMemo(
     () => ({
@@ -103,7 +69,7 @@ export const ExtrinsicList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
-    QUERY_EXTRINSICS,
+    ExtrinsicsDocument,
     {
       variables,
       pollInterval: 6000,
@@ -119,6 +85,24 @@ export const ExtrinsicList: FC = () => {
   }, [consensusEntry])
 
   const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
+  const filtersOptions = useMemo(
+    () =>
+      data
+        ? FILTERS_OPTIONS[TABLE].map((filter) => ({
+            ...filter,
+            ...(filter.key === 'section' && {
+              options: [...new Set(data.consensus_extrinsic_modules.map((m) => m.section))],
+            }),
+            ...(filter.key === 'module' && {
+              options: data.consensus_extrinsic_modules.map((m) => ({
+                value: m.method,
+                label: m.method + ' (' + m.section + ')',
+              })),
+            }),
+          }))
+        : undefined,
+    [data],
+  )
   const totalCount = useMemo(
     () =>
       data && data.consensus_extrinsics_aggregate.aggregate
@@ -151,7 +135,6 @@ export const ExtrinsicList: FC = () => {
         ),
         section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
         module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
-        name: ({ row }: Cell<Row>) => row.original.name.toUpperCase(),
         blockHeight: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-extrinsic-block_height`}
@@ -194,27 +177,6 @@ export const ExtrinsicList: FC = () => {
     return null
   }, [data, consensusEntry, loading])
 
-  const handleFilterChange = useCallback(
-    (filterName: string, value: string | boolean) => {
-      setFilters(TABLE, {
-        ...filters,
-        [filterName]: value,
-      })
-    },
-    [filters, setFilters],
-  )
-
-  const handleClickOnColumnToEditTable = useCallback(
-    (column: string, checked: boolean) =>
-      checked
-        ? setColumns(TABLE, [...selectedColumns, column])
-        : setColumns(
-            TABLE,
-            selectedColumns.filter((c) => c !== column),
-          ),
-    [selectedColumns, setColumns],
-  )
-
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
@@ -223,19 +185,10 @@ export const ExtrinsicList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
         <TableSettings
-          tableName={capitalizeFirstLetter(TABLE)}
+          table={TABLE}
           totalCount={totalCount}
-          availableColumns={availableColumns}
-          selectedColumns={selectedColumns}
           filters={filters}
-          showTableSettings={showTableSettings}
-          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
-          hideSettings={() => hideSettings(TABLE)}
-          handleColumnChange={handleClickOnColumnToEditTable}
-          handleFilterChange={handleFilterChange}
-          filterOptions={filtersOptions}
-          handleReset={() => resetSettings(TABLE)}
-          showReset={showReset(TABLE)}
+          overrideFiltersOptions={filtersOptions}
         />
         {!loading && extrinsics ? (
           <SortedTable
@@ -243,10 +196,10 @@ export const ExtrinsicList: FC = () => {
             columns={columns}
             showNavigation={true}
             sorting={sorting}
-            onSortingChange={setSorting}
+            onSortingChange={onSortingChange}
             pagination={pagination}
             pageCount={pageCount}
-            onPaginationChange={setPagination}
+            onPaginationChange={onPaginationChange}
             filename={TABLE}
           />
         ) : (

@@ -1,0 +1,32 @@
+table:
+  name: cumulative_blocks
+  schema: consensus
+object_relationships:
+  - name: block
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: blocks
+          schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - cumulative_block_reward_value
+        - cumulative_block_rewards_count
+        - cumulative_events_count
+        - cumulative_extrinsics_count
+        - cumulative_logs_count
+        - cumulative_reward_value
+        - cumulative_rewards_count
+        - cumulative_transfer_value
+        - cumulative_transfers_count
+        - cumulative_vote_reward_value
+        - cumulative_vote_rewards_count
+        - id
+      filter: {}
+      limit: 50
+    comment: ""

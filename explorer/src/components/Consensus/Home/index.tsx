@@ -7,6 +7,7 @@ import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { HomeBlockList } from './HomeBlockList'
 import { HomeChainInfo } from './HomeChainInfo'
+import { HomeChainInfoExtra } from './HomeChainInfoExtra'
 import { HomeExtrinsicList } from './HomeExtrinsicList'
 
 export const Home: FC = () => {
@@ -24,10 +25,11 @@ export const Home: FC = () => {
       <SearchBar />
       <div ref={ref}>
         <HomeChainInfo data={data} loading={loading} />
-        <div className='flex w-full flex-col items-center gap-5 xl:flex-row'>
+        <div className='mb-12 flex w-full flex-col items-center gap-5 xl:flex-row'>
           <HomeBlockList data={data} loading={loading} />
           <HomeExtrinsicList data={data} loading={loading} />
         </div>
+        <HomeChainInfoExtra data={data} loading={loading} />
       </div>
     </div>
   )

@@ -5,40 +5,40 @@
   "main": "index.js",
   "license": "MIT",
   "workspaces": [
-    "mainnet/*",
-    "taurus/*",
-    "gemini-3h/*",
-    "gemini-3g/*",
-    "db",
-    "taskboard"
+    "*"
   ],
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
-    "postinstall": "git submodule update --init --recursive",
-    "build-dictionary:mainnet": "cd dictionary/autonomys && yarn && yarn codegen && yarn build && cd -",
-    "build-dictionary:taurus": "cd dictionary/autonomys-taurus && yarn && yarn codegen && yarn build && cd -",
-    "build-dictionary:gemini-3h": "cd dictionary/autonomys-gemini-3h && yarn && yarn codegen && yarn build && cd -",
-    "build-dictionary": "yarn build-dictionary:mainnet && yarn build-dictionary:taurus && yarn build-dictionary:gemini-3h",
-    "docker:dev:up": "docker compose -p dev-astral-indexers -f ../docker-compose.yml --profile dictionary --profile task --profile indexers up --remove-orphans",
-    "docker:prod:up": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml --profile dictionary --profile task --profile indexers up --remove-orphans",
-    "docker:dev:down": "docker compose -p dev-astral-indexers -f ../docker-compose.yml down",
-    "docker:prod:down": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml down",
-    "dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:dev:up",
-    "prod": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:prod:up",
-    "build": "yarn build-dictionary && lerna run build",
+    "bootstrap": "lerna run bootstrap",
+    "prepack": "lerna run prepack",
+    "graph": "nx graph",
+    "build": "lerna run build",
     "codegen": "lerna run codegen --skip-nx-cache",
-    "console": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run console",
-    "metadata": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run metadata",
-    "migrate": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run migrate",
-    "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run apply-seeds:mainnet",
+    "docker:compose-base": "docker compose -p",
+    "docker:dev": "yarn docker:compose-base dev-astral-indexers -f ../docker-compose.yml",
+    "docker:prod": "yarn docker:compose-base prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml",
+    "docker:dev:up": "yarn docker:dev --profile task --profile indexers up --remove-orphans",
+    "docker:prod:up": "yarn docker:prod --profile task --profile indexers up --remove-orphans",
+    "docker:dev:bootstrap": "yarn docker:dev up --remove-orphans",
+    "docker:prod:bootstrap": "yarn docker:prod up --remove-orphans",
+    "docker:dev:down": "yarn docker:dev down",
+    "docker:prod:down": "yarn docker:prod down",
+    "dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen && lerna run build && yarn docker:dev:up",
+    "dev-bootstrap": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen && lerna run build && yarn docker:dev:bootstrap",
     "console:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run console",
     "metadata:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run metadata",
     "migrate:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run migrate",
     "apply-seeds:mainnet:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run apply-seeds:mainnet",
-    "prepack": "lerna run prepack",
-    "bootstrap": "lerna run bootstrap",
-    "graph": "nx graph"
+    "prod": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen && lerna run build && yarn docker:prod:up",
+    "prod-bootstrap": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen && lerna run build && yarn docker:prod:bootstrap",
+    "console": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run console",
+    "metadata": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run metadata",
+    "migrate": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run migrate",
+    "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run apply-seeds:mainnet"
   },
   "dependencies": {
-    "lerna": "^8.1.8"
+    "lerna": "^8.2.1"
   }
 }

@@ -1,10 +1,11 @@
 /* eslint-disable react/no-unknown-property */
 import { shortString } from '@autonomys/auto-utils'
-import { QUERY_BLOCK_BY_ID } from 'components/Consensus/Block/query'
-import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { BlockIcon } from 'components/icons/BlockIcon'
+import { DocIcon } from 'components/icons/DocIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { BlockByIdQuery } from 'gql/graphql'
+import { BlockByIdDocument, BlockByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -33,7 +34,7 @@ export async function GET(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_BLOCK_BY_ID['loc']?.source.body,
+      query: BlockByIdDocument['loc']?.source.body,
       variables: { blockId, blockHash: blockId },
     }),
   }).then((res) => res.json())

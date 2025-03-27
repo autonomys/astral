@@ -1,7 +1,7 @@
 'use client'
 
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
-import { LogoIcon } from 'components/icons'
+import { LogoIcon } from 'components/icons/LogoIcon'
 import useIndexers from 'hooks/useIndexers'
 import { useRouter } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
@@ -62,7 +62,7 @@ const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
             <div className='flex items-center gap-3'>
               <button
                 onClick={toggleTheme}
-                className='bg-buttonLightFrom items-center rounded-full p-2 hover:bg-gray-200 focus:outline-none dark:bg-white'
+                className='items-center rounded-full bg-buttonLightFrom p-2 hover:bg-gray-200 focus:outline-none dark:bg-white'
               >
                 {isDark ? (
                   <SunIcon

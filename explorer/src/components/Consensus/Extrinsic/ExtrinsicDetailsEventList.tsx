@@ -8,6 +8,7 @@ import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  EventsByExtrinsicIdDocument,
   EventsByExtrinsicIdQuery,
   EventsByExtrinsicIdQueryVariables,
   Order_By as OrderBy,
@@ -16,22 +17,26 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { ExtrinsicIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
-import { QUERY_EXTRINSIC_EVENTS } from './query'
 
 type Row = EventsByExtrinsicIdQuery['consensus_events'][number]
 
-export const ExtrinsicDetailsEventList: FC = () => {
+type ExtrinsicDetailsEventListProps = {
+  eventsCount: number
+  extrinsicId: string
+}
+
+export const ExtrinsicDetailsEventList: FC<ExtrinsicDetailsEventListProps> = ({
+  eventsCount,
+  extrinsicId,
+}) => {
   const { ref, inView } = useInView()
   const { network, section } = useIndexers()
-  const { extrinsicId } = useParams<ExtrinsicIdParam>()
   const apolloClient = useApolloClient()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -65,7 +70,7 @@ export const ExtrinsicDetailsEventList: FC = () => {
     EventsByExtrinsicIdQuery,
     EventsByExtrinsicIdQueryVariables
   >(
-    QUERY_EXTRINSIC_EVENTS,
+    EventsByExtrinsicIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -105,11 +110,19 @@ export const ExtrinsicDetailsEventList: FC = () => {
         ),
       },
       {
-        accessorKey: 'name',
-        header: 'Action',
+        accessorKey: 'section',
+        header: 'Section',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-extrinsic-event-action`}>{row.original.name.split('.')[1]}</div>
+          <div key={`${row.index}-extrinsic-event-section`}>{row.original.section}</div>
+        ),
+      },
+      {
+        accessorKey: 'module',
+        header: 'Module',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-extrinsic-event-module`}>{row.original.module}</div>
         ),
       },
       {
@@ -125,14 +138,14 @@ export const ExtrinsicDetailsEventList: FC = () => {
   )
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_EXTRINSIC_EVENTS, 'consensus_events', variables),
+    () =>
+      downloadFullData(apolloClient, EventsByExtrinsicIdDocument, 'consensus_events', variables),
     [apolloClient, variables],
   )
 
-  const totalCount = useMemo(() => (events ? events.length : 0), [events])
   const pageCount = useMemo(
-    () => countTablePages(totalCount, pagination.pageSize),
-    [totalCount, pagination],
+    () => countTablePages(eventsCount, pagination.pageSize),
+    [eventsCount, pagination],
   )
 
   const noData = useMemo(() => {

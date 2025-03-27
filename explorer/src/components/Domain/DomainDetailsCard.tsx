@@ -20,7 +20,7 @@ export const DomainDetailsCard: FC<Props> = ({ domain }) => {
 
   return (
     <div className='w-full'>
-      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
+      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white bg-white p-6 px-3 py-4 shadow shadow dark:border-none dark:bg-boxDark sm:p-6'>
         <div className='mb-10 flex items-center justify-between'>
           <h3 className='text-sm font-semibold leading-none text-gray-900 dark:text-white lg:text-2xl'>
             Domain #{domain.id} - {capitalizeFirstLetter(domain.name)}

@@ -9,8 +9,7 @@ import { isRouteSupportingNetwork } from 'utils/route'
 
 export const generateMetadata = ({
   params: { chain, eventId },
-}: ChainPageProps & EventIdPageProps): Metadata =>
-  getMetadata(chain, 'Event', eventId, `${chain}/${RoutesConsensus.events}/${eventId}`)
+}: ChainPageProps & EventIdPageProps): Metadata => getMetadata(chain, 'Event', eventId)
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
   isRouteSupportingNetwork(chain, Routes.consensus, RoutesConsensus.events) ? (

@@ -4,6 +4,7 @@ volumes:
   redis_db: {}
   caddy_config: {}
   caddy_data: {}
+  api_dependencies: {}
 
 services:
   # Caddy Reverse Proxy with CORS enabled
@@ -70,7 +71,7 @@ services:
 
   # Postgres Database
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17.3-alpine
     volumes:
       - postgres_db:/var/lib/postgresql/data
       - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
@@ -83,6 +84,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_MAX_CONNECTIONS: 500
+      POSTGRES_HOST_AUTH_METHOD: md5
+      POSTGRES_INITDB_ARGS: --auth=md5
     ports:
       - "${DB_PORT}:5432"
     healthcheck:
@@ -91,6 +94,26 @@ services:
       timeout: 5s
       retries: 5
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+
+  # PGCat Proxy
+  pgcat:
+    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
+    command:
+      - "pgcat"
+      - "/etc/pgcat/pgcat.toml"
+    volumes:
+      - "./indexers/db/pgcat.toml:/etc/pgcat/pgcat.toml"
+    ports:
+      - "6432:6432"
+    healthcheck:
+      test: ["CMD", "pgcat", "--version"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
 
   # Hasura GraphQL Engine
   hasura:
@@ -104,8 +127,8 @@ services:
     restart: unless-stopped
     environment:
       # Essential Environment Variables
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_DATABASE}
-      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_DATABASE} # Main database connection
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE} # Main database connection
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET} # Admin access secret
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET} # JWT authentication secret
 
@@ -153,60 +176,16 @@ services:
       - graphql-engine
       - serve
 
-  dictionary_subquery_node:
-    profiles: [dictionary, indexers]
-    build:
-      context: ./indexers/dictionary/${DICTIONARY_DIRECTORY}
-    depends_on:
-      "postgres":
-        condition: service_healthy
-    restart: unless-stopped
-    environment:
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-    volumes:
-      - ./indexers/dictionary/${DICTIONARY_DIRECTORY}:/dictionary
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://dictionary_subquery_node:3000/ready"]
-      interval: 3s
-      timeout: 5s
-      retries: 10
-    command:
-      - -f=/dictionary
-      - --disable-historical=true
-
-  dictionary_graphql_engine:
-    profiles: [dictionary, indexers]
-    image: onfinality/subql-query:latest
-    ports:
-      - "127.0.0.1:${DICTIONARY_SUBQUERY_NODE_PORT}:3000"
-    depends_on:
-      "postgres":
-        condition: service_healthy
-      "dictionary_subquery_node":
-        condition: service_healthy
-    restart: unless-stopped
-    environment:
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-    command:
-      - --name=dictionary
-      - --playground
-
   # Indexers Subquery Nodes
   consensus_subquery_node:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
     ports:
-      - "3001:3001"
+      - "127.0.0.1:3001:3000"
     depends_on:
-      "postgres":
+      pgcat:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -218,21 +197,20 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
     volumes:
-      - ./indexers/${NETWORK_ID}/consensus:/${NETWORK_ID}/consensus
+      - ./indexers/consensus:/consensus
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/${NETWORK_ID}/consensus
+      - -f=/consensus
       - --db-schema=consensus
-      - --workers=4
+      - --workers=1
       - --unsafe
-      - --batch-size=250
+      - --batch-size=120
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
-      - --port 3001
       #  - --profiler
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://consensus_subquery_node:3001/ready"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -241,37 +219,35 @@ services:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
     ports:
-      - "3002:3002"
+      - "127.0.0.1:3002:3000"
     depends_on:
-      "postgres":
+      pgcat:
         condition: service_healthy
-      "dictionary_subquery_node":
+      postgres:
         condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://localhost:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
     volumes:
-      - ./indexers/${NETWORK_ID}/leaderboard:/${NETWORK_ID}/leaderboard
+      - ./indexers/leaderboard:/leaderboard
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/${NETWORK_ID}/leaderboard
+      - -f=/leaderboard
       - --db-schema=leaderboard
       - --workers=1
       - --batch-size=100
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
-      - --port 3002
       #  - --profiler
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://leaderboard_subquery_node:3002/ready"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -280,37 +256,36 @@ services:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
     ports:
-      - "3003:3003"
+      - "127.0.0.1:3003:3000"
     depends_on:
-      "postgres":
+      pgcat:
         condition: service_healthy
-      "dictionary_subquery_node":
+      postgres:
         condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://localhost:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
     volumes:
-      - ./indexers/${NETWORK_ID}/staking:/${NETWORK_ID}/staking
+      - ./indexers/staking:/staking
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/${NETWORK_ID}/staking
+      - -f=/staking
       - --db-schema=staking
       - --workers=1
       - --unsafe
-      - --batch-size=100
+      - --batch-size=125
       - --scale-batch-size
-      - --disable-historical=true
-      - --port 3003
+      - --unfinalized-blocks=true
+      - --disable-historical=false
       #  - --profiler
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://staking_subquery_node:3003/ready"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -319,9 +294,11 @@ services:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
     ports:
-      - "3004:3004"
+      - "127.0.0.1:3004:3000"
     depends_on:
-      "postgres":
+      pgcat:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -333,21 +310,20 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
     volumes:
-      - ./indexers/${NETWORK_ID}/files:/${NETWORK_ID}/files
+      - ./indexers/files:/files
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/${NETWORK_ID}/files
+      - -f=/files
       - --db-schema=files
       - --workers=1
       - --unsafe
-      - --batch-size=25
+      - --batch-size=50
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
-      - --port 3004
       #  - --profiler
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://files_subquery_node:3004/ready"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -379,6 +355,8 @@ services:
     build:
       context: ./indexers/taskboard
     depends_on:
+      pgcat:
+        condition: service_healthy
       postgres:
         condition: service_healthy
       redis:
@@ -409,3 +387,28 @@ services:
 
       SLACK_TOKEN: ${SLACK_TOKEN}
       SLACK_CONVERSATION_ID: ${SLACK_CONVERSATION_ID}
+
+  # NestJS API Service
+  api:
+    build:
+      context: ./indexers/api
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      hasura:
+        condition: service_started
+    volumes:
+      - ./indexers/api:/app
+      - api_dependencies:/app/node_modules
+    hostname: api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT}:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}

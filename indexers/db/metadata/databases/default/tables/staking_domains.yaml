@@ -12,6 +12,15 @@ object_relationships:
           name: accounts
           schema: staking
 array_relationships:
+  - name: deposit_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: deposit_events
+          schema: staking
   - name: deposits
     using:
       manual_configuration:
@@ -39,6 +48,15 @@ array_relationships:
         remote_table:
           name: operators
           schema: staking
+  - name: withdraw_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: withdraw_events
+          schema: staking
   - name: withdrawals
     using:
       manual_configuration:
@@ -52,7 +70,6 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - runtime_id
         - accumulated_epoch_rewards
         - accumulated_epoch_shares
         - accumulated_epoch_stake
@@ -60,6 +77,12 @@ select_permissions:
         - bundle_count
         - completed_epoch
         - created_at
+        - current_1d_apy
+        - current_1d_yield
+        - current_30d_apy
+        - current_30d_yield
+        - current_7d_apy
+        - current_7d_yield
         - current_epoch_duration
         - current_share_price
         - current_storage_fee_deposit
@@ -72,10 +95,10 @@ select_permissions:
         - last_domain_block_number
         - last_epoch_duration
         - rejected_transfers_claimed_count
-        - sort_id
         - total_burned_balance
         - total_consensus_storage_fee
         - total_deposits
+        - total_deposits_count
         - total_domain_execution_fee
         - total_estimated_withdrawals
         - total_rejected_transfers_claimed
@@ -86,15 +109,20 @@ select_permissions:
         - total_transfers_rejected
         - total_volume
         - total_withdrawals
+        - total_withdrawals_count
         - transfers_in_count
         - transfers_out_count
         - transfers_rejected_count
         - updated_at
         - account_id
+        - extrinsic_id
         - id
         - name
         - runtime
+        - runtime_id
         - runtime_info
+        - sort_id
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

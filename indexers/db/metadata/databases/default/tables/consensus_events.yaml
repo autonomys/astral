@@ -58,5 +58,6 @@ select_permissions:
         - timestamp
         - _id
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

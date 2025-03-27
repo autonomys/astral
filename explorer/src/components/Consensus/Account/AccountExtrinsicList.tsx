@@ -9,6 +9,7 @@ import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  ExtrinsicsByAccountIdDocument,
   ExtrinsicsByAccountIdQuery,
   ExtrinsicsByAccountIdQueryVariables,
   Order_By as OrderBy,
@@ -24,7 +25,6 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { QUERY_ACCOUNT_EXTRINSICS } from './query'
 
 type Props = {
   accountId: string
@@ -75,7 +75,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     ExtrinsicsByAccountIdQuery,
     ExtrinsicsByAccountIdQueryVariables
   >(
-    QUERY_ACCOUNT_EXTRINSICS,
+    ExtrinsicsByAccountIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -94,7 +94,12 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNT_EXTRINSICS, 'consensus_extrinsics', variables),
+      downloadFullData(
+        apolloClient,
+        ExtrinsicsByAccountIdDocument,
+        'consensus_extrinsics',
+        variables,
+      ),
     [apolloClient, variables],
   )
 

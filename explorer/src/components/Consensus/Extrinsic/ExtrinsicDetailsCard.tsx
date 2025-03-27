@@ -8,7 +8,6 @@ import { ExtrinsicsByIdQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC } from 'react'
-import { parseArgs } from 'utils/indexerParsing'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 
 type Props = {
@@ -19,17 +18,15 @@ type Props = {
 export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
   const { network, section } = useIndexers()
 
-  const [module, call] = extrinsic.name.split('.')
-
   return (
     <div className='w-full'>
       <div className='flex'>
-        <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none sm:p-6'>
+        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
           <div className='mb-10 flex items-center justify-between'>
             <h3 className='text-sm font-medium text-grayDarker dark:text-white  md:text-2xl'>
               Extrinsic #{extrinsic.id}
             </h3>
-            <div className='bg-buttonDarkTo flex items-center justify-center gap-2 rounded-full px-5 py-3'>
+            <div className='flex items-center justify-center gap-2 rounded-full bg-buttonDarkTo px-5 py-3'>
               <div className=' block text-xs font-semibold leading-normal text-white'>
                 #{extrinsic.block_height}
               </div>
@@ -57,10 +54,12 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
                     {isDesktop ? extrinsic.hash : shortString(extrinsic.hash)}
                   </CopyButton>
                 </StyledListItem>
-                <StyledListItem title='Module'>{module}</StyledListItem>
-                <StyledListItem title='Call'>{call}</StyledListItem>
+                <StyledListItem title='Section'>{extrinsic.section}</StyledListItem>
+                <StyledListItem title='Module'>{extrinsic.module}</StyledListItem>
                 <StyledListItem title='Sender'>
-                  {isDesktop ? extrinsic.signer : shortString(extrinsic.signer)}
+                  <Link href={INTERNAL_ROUTES.accounts.id.page(network, section, extrinsic.signer)}>
+                    {isDesktop ? extrinsic.signer : shortString(extrinsic.signer)}
+                  </Link>
                 </StyledListItem>
                 <StyledListItem title='Signature'>
                   {isDesktop
@@ -69,8 +68,8 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
                 </StyledListItem>
               </List>
             </div>
-            <div className='border-blueLight bg-blueLight mb-4 w-full break-all rounded-lg border p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
-              <Arguments args={parseArgs(extrinsic.args)} />
+            <div className='mb-4 w-full break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
+              <Arguments args={extrinsic.args} />
             </div>
           </div>
         </div>

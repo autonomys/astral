@@ -1,23 +1,6 @@
 table:
   name: accounts
   schema: consensus
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
-object_relationships:
-  - name: profile
-    using:
-      manual_configuration:
-        column_mapping:
-          id: id
-        insertion_order: null
-        remote_table:
-          name: account_profiles
-          schema: consensus
 array_relationships:
   - name: extrinsics
     using:
@@ -41,16 +24,14 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
-        - _id
-        - account_id
         - created_at
         - free
-        - id
         - nonce
         - reserved
         - total
         - updated_at
+        - id
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

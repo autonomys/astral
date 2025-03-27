@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react'
 
 export const EvmExplorerBanner: FC<{ path?: string }> = ({ path }) => {
   const href = useMemo(
-    () => (path ? EXTERNAL_ROUTES.novaExplorer + path : EXTERNAL_ROUTES.novaExplorer),
+    () => (path ? EXTERNAL_ROUTES.taurusEvmExplorer + path : EXTERNAL_ROUTES.taurusEvmExplorer),
     [path],
   )
   return (

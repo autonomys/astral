@@ -1,14 +1,18 @@
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import {
+  DomainsStatusDocument,
+  DomainsStatusQuery,
+  DomainsStatusQueryVariables,
+  Order_By as OrderBy,
+} from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { formatSeconds } from 'utils/time'
 import { Tooltip } from '../common/Tooltip'
-import { QUERY_DOMAIN_STATUS } from './query'
 
 interface Stat {
   title: string
@@ -93,7 +97,7 @@ const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
     domainData.map(({ domain, stats }, domainIndex) => (
       <div
         key={domainIndex}
-        className='dark:bg-boxDark w-full min-w-80 rounded-[20px] bg-grayLight p-5 shadow dark:border-none sm:w-1/2'
+        className='w-full min-w-80 rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-boxDark sm:w-1/2'
       >
         <h2 className='mb-4 text-lg font-bold text-grayDark dark:text-white sm:text-xl'>
           {capitalizeFirstLetter(domain)}
@@ -144,7 +148,7 @@ export const DomainBlockTime: FC = () => {
   const { data, loading, error } = useIndexersQuery<
     DomainsStatusQuery,
     DomainsStatusQueryVariables
-  >(QUERY_DOMAIN_STATUS, {
+  >(DomainsStatusDocument, {
     variables: {
       limit: 10,
       orderBy: [{ id: OrderBy.Asc }],

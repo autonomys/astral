@@ -6,7 +6,7 @@ import type { OperatorByIdQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC } from 'react'
-import { bigNumberToFormattedString } from 'utils/number'
+import { bigNumberToFormattedString, numberFormattedString } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { AccountIconWithLink } from '../common/AccountIcon'
 
@@ -22,7 +22,7 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
 
   return (
     <div className='w-full'>
-      <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
+      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
         <div className='mb-10 flex items-center justify-between'>
           <h3 className='text-sm font-semibold leading-none text-gray-900 dark:text-white lg:text-2xl'>
             Operator #{operator.id}
@@ -74,26 +74,17 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
             <StyledListItem title='Total rewards collected'>
               {bigNumberToFormattedString(operator.total_rewards_collected)} {tokenSymbol}
             </StyledListItem>
-            <StyledListItem title='Total consensus storage fee'>
-              {bigNumberToFormattedString(operator.total_consensus_storage_fee)} {tokenSymbol}
-            </StyledListItem>
-            <StyledListItem title='Total domain execution fee'>
-              {bigNumberToFormattedString(operator.total_domain_execution_fee)} {tokenSymbol}
-            </StyledListItem>
-            <StyledListItem title='Total burned balance'>
-              {bigNumberToFormattedString(operator.total_burned_balance)} {tokenSymbol}
-            </StyledListItem>
             <StyledListItem title='Total tax collected'>
               {bigNumberToFormattedString(operator.total_tax_collected)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Nominators count'>
-              {bigNumberToFormattedString(operator.nominators_aggregate.aggregate?.count ?? '0')}
+              {numberFormattedString(operator.nominators_aggregate.aggregate?.count ?? 0)}
             </StyledListItem>
             <StyledListItem title='Deposits count'>
-              {bigNumberToFormattedString(operator.deposits_aggregate.aggregate?.count ?? '0')}
+              {numberFormattedString(operator.total_deposits_count)}
             </StyledListItem>
             <StyledListItem title='Withdrawals count'>
-              {bigNumberToFormattedString(operator.withdrawals_aggregate.aggregate?.count ?? '0')}
+              {numberFormattedString(operator.total_withdrawals_count)}
             </StyledListItem>
             <StyledListItem title='Status'>
               {capitalizeFirstLetter(operatorStatus(operator.raw_status))}

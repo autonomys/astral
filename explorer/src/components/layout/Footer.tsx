@@ -1,4 +1,4 @@
-import { LogoIcon } from 'components/icons'
+import { LogoIcon } from 'components/icons/LogoIcon'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import Link from 'next/link'
 import type { FC } from 'react'
@@ -7,7 +7,7 @@ import { currentYear } from 'utils/time'
 const Footer: FC = () => {
   return (
     <footer className='container mb-[50px] px-4 sm:mx-auto xl:px-0'>
-      <div className='body-font bg-footerLight dark:bg-footerDark rounded-xl p-10 text-white'>
+      <div className='body-font rounded-xl bg-footerLight p-10 text-white dark:bg-footerDark'>
         <div className='md:grid md:grid-cols-2'>
           <div className='mb-20 flex justify-center md:mb-0 md:justify-start'>
             <div className='flex flex-col md:justify-between'>
@@ -57,7 +57,7 @@ const Footer: FC = () => {
                     Docs
                   </a>
                 </li>
-                <li key='autonomys'>
+                <li key='autonomys' className='mb-4'>
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.autonomys}
@@ -65,6 +65,16 @@ const Footer: FC = () => {
                     rel='noreferrer'
                   >
                     Website
+                  </a>
+                </li>
+                <li key='autoDrive'>
+                  <a
+                    target='_blank'
+                    href={EXTERNAL_ROUTES.autoDrive}
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
+                    rel='noreferrer'
+                  >
+                    Auto Drive
                   </a>
                 </li>
               </ul>

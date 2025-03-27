@@ -5,7 +5,7 @@ import { isHex, shortString } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import { sendGAEvent } from '@next/third-parties/google'
-import { WalletIcon } from 'components/icons'
+import { WalletIcon } from 'components/icons/WalletIcon'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { Field, Form, Formik, FormikState } from 'formik'
@@ -23,7 +23,7 @@ import { WalletButton } from '../WalletButton'
 
 interface FormValues {
   domainId: number
-  signingKey: string
+  publicKey: string
   amountToStake: number
   nominatorTax: number
   minimumNominatorStake: number
@@ -49,7 +49,7 @@ export const RegisterOperators = () => {
 
   const initialValues: FormValues = {
     domainId: 0,
-    signingKey: '',
+    publicKey: '',
     amountToStake: 0,
     nominatorTax: 0,
     minimumNominatorStake: 0,
@@ -85,10 +85,10 @@ export const RegisterOperators = () => {
         'Domain Id need to be a valid domains',
       )
       .required('Domain Id is required'),
-    signingKey: Yup.string()
+    publicKey: Yup.string()
       .trim()
-      .test('isHex', 'Signing key is not a valid hex value', (val) => isHex(val))
-      .required('Signing key is required'),
+      .test('isHex', 'Public key is not a valid hex value', (val) => isHex(val))
+      .required('Public key is required'),
     amountToStake: Yup.number()
       .min(
         minOperatorStake,
@@ -122,7 +122,7 @@ export const RegisterOperators = () => {
             tokenDecimals,
           ),
           nominationTax: values.nominatorTax.toString(),
-          signingKey: values.signingKey,
+          signingKey: values.publicKey,
         })
         await sendAndSaveTx({
           call: 'registerOperator',
@@ -151,7 +151,7 @@ export const RegisterOperators = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='mt-5 flex w-full flex-col pt-20 sm:mt-0'>
-        <div className='dark:bg-boxDark w-full rounded-[20px] bg-white dark:border-none'>
+        <div className='w-full rounded-[20px] bg-white dark:border-none dark:bg-boxDark'>
           <div className='m-10'>
             <div className='flex items-center'>
               <WalletIcon width='44' height='48' />
@@ -175,7 +175,7 @@ export const RegisterOperators = () => {
             <div className='mt-4 text-xl'>
               <Link
                 data-testid={'operator-link-documentation'}
-                className='text-blueUndertone cursor-pointer underline hover:text-primaryAccent dark:text-grayLight'
+                className='cursor-pointer text-blueUndertone underline hover:text-primaryAccent dark:text-grayLight'
                 href={EXTERNAL_ROUTES.operatorDocs}
                 target='_blank'
               >
@@ -248,7 +248,7 @@ export const RegisterOperators = () => {
                               onChange={(val) => setFieldValue('domainId', val)}
                             >
                               <div className='relative'>
-                                <Listbox.Button className='to-blueUndertone relative mt-4 w-full cursor-default rounded-full bg-white from-primaryAccent py-[10px] pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'>
+                                <Listbox.Button className='relative mt-4 w-full cursor-default rounded-full bg-white from-primaryAccent to-blueUndertone py-[10px] pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'>
                                   <div className='flex items-center justify-center'>
                                     <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full '>
                                       {currentDomainLabel(values)}
@@ -311,25 +311,25 @@ export const RegisterOperators = () => {
                           </div>
                           <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Signing key
+                              Public key
                             </span>
                             <Field
-                              name='signingKey'
-                              placeholder='Signing Key'
-                              className={`to-blueUndertone mt-4 block w-full rounded-full bg-white from-primaryAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                              name='publicKey'
+                              placeholder='Public Key'
+                              className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                                 ${
-                                  errors.signingKey &&
-                                  touched.signingKey &&
+                                  errors.publicKey &&
+                                  touched.publicKey &&
                                   'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
                                 }
                               `}
                             />
-                            {errors.signingKey && touched.signingKey ? (
+                            {errors.publicKey && touched.publicKey ? (
                               <div
                                 className='text-md mt-2 h-8 text-red-500'
                                 data-testid='errorMessage'
                               >
-                                {errors.signingKey}
+                                {errors.publicKey}
                               </div>
                             ) : (
                               <div className='text-md mt-2 h-8' data-testid='placeHolder' />
@@ -342,7 +342,7 @@ export const RegisterOperators = () => {
                             <Field
                               name='amountToStake'
                               placeholder='Amount to Stake'
-                              className={`to-blueUndertone mt-4 block w-full rounded-full bg-white from-primaryAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                              className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.amountToStake &&
                               touched.amountToStake &&
@@ -368,7 +368,7 @@ export const RegisterOperators = () => {
                             <Field
                               name='nominatorTax'
                               placeholder='Nominator tax'
-                              className={`to-blueUndertone mt-4 block w-full rounded-xl bg-white from-primaryAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                              className={`mt-4 block w-full rounded-xl bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.nominatorTax &&
                               touched.nominatorTax &&
@@ -394,7 +394,7 @@ export const RegisterOperators = () => {
                             <Field
                               name='minimumNominatorStake'
                               placeholder='Minimum Nominator Stake'
-                              className={`to-blueUndertone mt-4 block w-full rounded-xl bg-white from-primaryAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                              className={`mt-4 block w-full rounded-xl bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.minimumNominatorStake &&
                               touched.minimumNominatorStake &&
@@ -428,7 +428,7 @@ export const RegisterOperators = () => {
                     {!actingAccount ? (
                       <button
                         onClick={(e) => handleConnectWallet(e)}
-                        className='to-blueUndertone h-10 w-36 rounded-full bg-gradient-to-r from-primaryAccent font-medium text-white'
+                        className='h-10 w-36 rounded-full bg-gradient-to-r from-primaryAccent to-blueUndertone font-medium text-white'
                       >
                         Connect Wallet
                       </button>

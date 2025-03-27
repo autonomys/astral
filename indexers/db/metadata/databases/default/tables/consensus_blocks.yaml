@@ -8,6 +8,16 @@ configuration:
   custom_column_names:
     _id: uuid
   custom_root_fields: {}
+object_relationships:
+  - name: cumulative
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: cumulative_blocks
+          schema: consensus
 array_relationships:
   - name: cids
     using:
@@ -50,41 +60,31 @@ select_permissions:
     permission:
       columns:
         - _block_range
-        - accounts_count
+        - _id
+        - author_id
+        - block_reward_value
         - block_rewards_count
+        - blockchain_size
         - events_count
         - extrinsics_count
-        - rewards_count
-        - transfers_count
-        - vote_rewards_count
-        - block_reward_value
-        - blockchain_size
-        - cumulative_accounts_count
-        - cumulative_block_reward_value
-        - cumulative_block_rewards_count
-        - cumulative_events_count
-        - cumulative_extrinsics_count
-        - cumulative_reward_value
-        - cumulative_rewards_count
-        - cumulative_transfer_value
-        - cumulative_transfers_count
-        - cumulative_vote_reward_value
-        - cumulative_vote_rewards_count
-        - height
-        - reward_value
-        - space_pledged
-        - transfer_value
-        - vote_reward_value
-        - author_id
         - extrinsics_root
         - hash
+        - height
         - id
+        - logs_count
         - parent_hash
+        - reward_value
+        - rewards_count
         - sort_id
+        - space_pledged
         - spec_id
         - state_root
         - timestamp
-        - _id
+        - transfer_value
+        - transfers_count
+        - vote_reward_value
+        - vote_rewards_count
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

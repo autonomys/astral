@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { utcToLocalRelativeTime } from '@/utils/time'
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
@@ -13,6 +14,7 @@ import { formatUnits } from 'ethers'
 import {
   Order_By as OrderBy,
   Consensus_Transfers_Select_Column as TransferColumn,
+  TransfersByAccountIdDocument,
   TransfersByAccountIdQuery,
   TransfersByAccountIdQueryVariables,
   Consensus_Transfers_Bool_Exp as TransferWhere,
@@ -27,9 +29,7 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
-import { formatExtrinsicId } from 'utils/string'
 import { countTablePages } from 'utils/table'
-import { QUERY_ACCOUNT_TRANSFERS } from './query'
 
 type Props = {
   accountId: string
@@ -80,7 +80,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     TransfersByAccountIdQuery,
     TransfersByAccountIdQueryVariables
   >(
-    QUERY_ACCOUNT_TRANSFERS,
+    TransfersByAccountIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -99,7 +99,13 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   )
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_ACCOUNT_TRANSFERS, 'consensus_transfers', variables),
+    () =>
+      downloadFullData(
+        apolloClient,
+        TransfersByAccountIdDocument,
+        'consensus_transfers',
+        variables,
+      ),
     [apolloClient, variables],
   )
   const totalCount = useMemo(
@@ -151,7 +157,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
               )}
               className='hover:text-primaryAccent'
             >
-              <div>{formatExtrinsicId(row.original.extrinsic_id)}</div>
+              <div>{row.original.extrinsic_id}</div>
             </Link>
           </div>
         ),
@@ -236,7 +242,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-created_at-${row.index}`}>
-            {row.original.timestamp(row.original.timestamp)}
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },

@@ -1,5 +1,20 @@
+import {
+  CompressionAlgorithm,
+  decompressFile,
+  decryptFile,
+  EncryptionAlgorithm,
+  FileUploadOptions,
+} from '@autonomys/auto-dag-data'
 import { GetCidQuery } from 'gql/graphql'
-import { Zlib } from 'zlibjs/bin/zlib_and_gzip.min.js'
+import { inflate } from 'pako'
+
+export type FileData = {
+  name: string
+  rawData: string
+  dataArrayBuffer: ArrayBuffer
+  isEncrypted: boolean
+  uploadOptions: FileUploadOptions
+}
 
 export const detectFileType = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   const bytes = [...new Uint8Array(arrayBuffer.slice(0, 4))]
@@ -70,18 +85,19 @@ export const detectFileType = async (arrayBuffer: ArrayBuffer): Promise<string> 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') => {
+const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata'): FileData => {
+  const name = data['files_' + type + 's'][0].name || ''
   let rawData: string = ''
   let dataArrayBuffer: ArrayBuffer = new ArrayBuffer(0)
   let depth = 0
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let uploadOptions: any
+  let uploadOptions: FileUploadOptions = {}
 
   try {
     if (data['files_' + type + 's'][0].chunk?.uploadOptions) {
-      uploadOptions = JSON.parse(data['files_' + type + 's'][0].chunk?.uploadOptions)
-      if (uploadOptions.encryption.algorithm)
-        return { rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
+      uploadOptions = JSON.parse(
+        data['files_' + type + 's'][0].chunk?.uploadOptions,
+      ) as FileUploadOptions
     }
   } catch (error) {
     console.error('Error checking uploadOptions:', error)
@@ -99,31 +115,73 @@ const extractFileDataByType = (data: any, type: 'file' | 'folder' | 'metadata') 
       dataArrayBuffer = new Uint8Array([
         ...new Uint8Array(dataArrayBuffer),
         ...new Uint8Array(newData),
-      ])
+      ]).buffer
       rawData = _data
       index++
     }
   }
   try {
-    if (uploadOptions.compression.algorithm === 'ZLIB') {
-      const inflate = new Zlib.Inflate(new Uint8Array(dataArrayBuffer), {
-        index: 0,
-        bufferSize: 1024,
-        bufferType: Zlib.Inflate.BufferType.BLOCK,
-        resize: true,
-        verify: true,
-      })
-      dataArrayBuffer = inflate.decompress()
+    if (uploadOptions.encryption && uploadOptions.encryption.algorithm) {
+      return { name, rawData, dataArrayBuffer, isEncrypted: true, uploadOptions }
+    }
+    if (uploadOptions.compression && uploadOptions.compression.algorithm === 'ZLIB') {
+      dataArrayBuffer = inflate(new Uint8Array(dataArrayBuffer)).buffer as ArrayBuffer
     }
   } catch (error) {
     console.error('Error decompressing data:', error)
   }
-  return { rawData, dataArrayBuffer, isEncrypted: false, uploadOptions }
+  return { name, rawData, dataArrayBuffer, isEncrypted: false, uploadOptions }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const extractFileData = (data: GetCidQuery) => {
+export const extractFileData = (data: GetCidQuery): FileData => {
   if (data.files_files.length > 0) return extractFileDataByType(data, 'file')
   else if (data.files_folders.length > 0) return extractFileDataByType(data, 'folder')
   return extractFileDataByType(data, 'metadata')
+}
+
+export const asyncFromStream = async function* (
+  stream: ReadableStream<Uint8Array>,
+): AsyncIterable<Buffer> {
+  const reader = stream.getReader()
+  let result = await reader.read()
+  while (!result.done) {
+    yield Buffer.from(result.value)
+    result = await reader.read()
+  }
+}
+
+export const decryptFileData = async (password: string, fileData: FileData): Promise<FileData> => {
+  try {
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(fileData.dataArrayBuffer)
+        controller.close()
+      },
+    })
+
+    let iterable = asyncFromStream(stream)
+    iterable = decryptFile(iterable, password, {
+      algorithm: EncryptionAlgorithm.AES_256_GCM,
+    })
+    iterable = decompressFile(iterable, {
+      algorithm: CompressionAlgorithm.ZLIB,
+    })
+
+    const processedChunks: Buffer[] = []
+    for await (const chunk of iterable) {
+      processedChunks.push(chunk)
+    }
+    const combined = new Uint8Array(processedChunks.reduce((acc, chunk) => acc + chunk.length, 0))
+    let offset = 0
+    for (const chunk of processedChunks) {
+      combined.set(chunk, offset)
+      offset += chunk.length
+    }
+    fileData.dataArrayBuffer = combined.buffer
+    fileData.isEncrypted = false
+    return fileData
+  } catch (error) {
+    throw new Error((error as Error).message)
+  }
 }

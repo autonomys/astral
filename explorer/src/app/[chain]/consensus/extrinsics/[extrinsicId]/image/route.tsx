@@ -1,10 +1,11 @@
 /* eslint-disable react/no-unknown-property */
 import { shortString } from '@autonomys/auto-utils'
-import { QUERY_EXTRINSIC_BY_ID } from 'components/Consensus/Extrinsic/query'
-import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { BlockIcon } from 'components/icons/BlockIcon'
+import { DocIcon } from 'components/icons/DocIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { ExtrinsicsByIdQuery } from 'gql/graphql'
+import { ExtrinsicsByIdDocument, ExtrinsicsByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -33,7 +34,7 @@ export async function GET(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_EXTRINSIC_BY_ID['loc']?.source.body,
+      query: ExtrinsicsByIdDocument['loc']?.source.body,
       variables: { extrinsicId },
     }),
   }).then((res) => res.json())
@@ -68,8 +69,9 @@ function Screen({
     hash: extrinsicById?.hash ?? '0',
     timestamp: extrinsicById?.timestamp ?? '0',
     blockHeight: extrinsicById?.block_height ?? '0',
-    action: extrinsicById?.name ?? '',
-    eventsCount: extrinsicById?.events_aggregate.aggregate?.count ?? 0,
+    section: extrinsicById?.section ?? '',
+    module: extrinsicById?.module ?? '',
+    eventsCount: extrinsicById?.events_count ?? 0,
     signer: extrinsicById?.signer ?? '',
   }
   const title = `${metadata.title} - ${chainMatch.title} - Extrinsic`
@@ -173,7 +175,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-16 font-bold'
             >
-              Action {extrinsic.action}
+              Extrinsic {extrinsic.section}.{extrinsic.module}
             </span>
           </div>
         </div>

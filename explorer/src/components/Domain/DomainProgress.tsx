@@ -2,7 +2,12 @@ import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import {
+  DomainsStatusDocument,
+  DomainsStatusQuery,
+  DomainsStatusQueryVariables,
+  Order_By as OrderBy,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -10,7 +15,6 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
 import { formatSeconds } from 'utils/time'
-import { QUERY_DOMAIN_STATUS } from './query'
 
 interface CardData {
   title: string
@@ -47,7 +51,7 @@ export const DomainProgress: FC = () => {
   const { data, loading, error } = useIndexersQuery<
     DomainsStatusQuery,
     DomainsStatusQueryVariables
-  >(QUERY_DOMAIN_STATUS, {
+  >(DomainsStatusDocument, {
     variables: {
       limit: 10,
       orderBy: [{ id: OrderBy.Asc }],
@@ -69,10 +73,7 @@ export const DomainProgress: FC = () => {
         currentEpoch: domain.completed_epoch,
         lastBlock: domain.last_domain_block_number,
         progress,
-        estimatedRemainingTime:
-          progress < 100
-            ? (BigInt(domain.last_epoch_duration) / BigInt(100 * 1000)) * BigInt(100 - progress)
-            : BigInt(0),
+        estimatedRemainingTime: progress < 100 ? BigInt(100 - progress) * BigInt(6) : BigInt(0),
       }
     })
   }, [data, loading, error, network])
@@ -103,7 +104,7 @@ export const DomainProgress: FC = () => {
                     {progress}%
                   </span>
                 </div>
-                <div className='dark:bg-blueUndertone mt-1 h-1.5 w-full rounded-full bg-grayLight sm:mt-2 sm:h-2'>
+                <div className='mt-1 h-1.5 w-full rounded-full bg-grayLight dark:bg-blueUndertone sm:mt-2 sm:h-2'>
                   <div
                     className='from-blueLighterAccent h-full rounded-full bg-gradient-to-r to-pastelPink dark:from-primaryAccent dark:to-pastelBlue'
                     style={{ width: `${progress}%` }}

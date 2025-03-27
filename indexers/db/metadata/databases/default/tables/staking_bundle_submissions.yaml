@@ -1,0 +1,46 @@
+table:
+  name: bundle_submissions
+  schema: staking
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - block_height
+        - burned_balance
+        - consensus_block_number
+        - consensus_storage_fee
+        - domain_block_number
+        - domain_execution_fee
+        - epoch
+        - rejected_transfers_claimed_count
+        - total_rejected_transfers_claimed
+        - total_transfers_in
+        - total_transfers_out
+        - total_transfers_rejected
+        - total_volume
+        - transfers_in_count
+        - transfers_out_count
+        - transfers_rejected_count
+        - account_id
+        - bundle_id
+        - consensus_block_hash
+        - domain_block_extrinsic_root
+        - domain_block_hash
+        - domain_block_id
+        - domain_id
+        - event_id
+        - extrinsic_id
+        - id
+        - operator_id
+        - _id
+      filter: {}
+      limit: 50
+    comment: ""

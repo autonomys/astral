@@ -87,8 +87,8 @@ export const DownloadPage: FC = () => {
             <h2 className='text-2xl font-bold'>Download Space Acres for Windows</h2>
             <p>Minimum Requirements:</p>
             <ul className='list-inside list-disc'>
-              <li>OS: Windows 10 or higher</li>
-              <li>CPU: 4 Core </li>
+              <li>OS: Windows 11 or later</li>
+              <li>CPU: 4 Cores+</li>
               <li>RAM: 8 GB</li>
               <li>Disk Space: 100 GB</li>
             </ul>
@@ -106,10 +106,10 @@ export const DownloadPage: FC = () => {
             <h2 className='text-2xl font-bold'>Download Space Acres for macOS</h2>
             <p>Minimum Requirements:</p>
             <ul className='list-inside list-disc'>
-              <li>OS: macOS 10.14 or higher</li>
-              <li>Processor: Intel Core i3 or equivalent</li>
-              <li>RAM: 4 GB</li>
-              <li>Disk Space: 500 MB</li>
+              <li>OS: macOS 14 (Sonoma)</li>
+              <li>Processor: 4 Cores+</li>
+              <li>RAM: 8 GB</li>
+              <li>Disk Space: 100 GB</li>
             </ul>
             <h3 className='mt-6 text-xl font-semibold'>Installation Instructions:</h3>
             <ol className='list-inside list-decimal text-left'>
@@ -125,10 +125,10 @@ export const DownloadPage: FC = () => {
             <h2 className='text-2xl font-bold'>Download Space Acres for Linux</h2>
             <p>Minimum Requirements:</p>
             <ul className='list-inside list-disc'>
-              <li>OS: Ubuntu 18.04 or higher</li>
-              <li>Processor: Intel Core i3 or equivalent</li>
-              <li>RAM: 4 GB</li>
-              <li>Disk Space: 500 MB</li>
+              <li>OS: Ubuntu 24.04 or later</li>
+              <li>Processor: 4 Cores+</li>
+              <li>RAM: 8 GB</li>
+              <li>Disk Space: 100 GB</li>
             </ul>
             <h3 className='mt-6 text-xl font-semibold'>Installation Instructions:</h3>
             <ol className='list-inside list-decimal text-left'>
@@ -148,7 +148,7 @@ export const DownloadPage: FC = () => {
     () => (
       <div className='mb-2 flex items-center justify-center text-center'>
         <a href={getDownloadLink(userOS || '')} className='row btn-download'>
-          <button className='from-buttonLightFrom to-buttonLightTo dark:from-buttonDarkFrom dark:to-buttonDarkTo relative mb-2 w-full cursor-pointer rounded-full bg-gradient-to-r py-[10px] pl-3 pr-16 text-center font-["Montserrat"] text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
+          <button className='relative mb-2 w-full cursor-pointer rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo py-[10px] pl-3 pr-16 text-center font-["Montserrat"] text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:from-buttonDarkFrom dark:to-buttonDarkTo dark:text-white sm:text-sm md:pr-10'>
             Download Space Acres
           </button>
           <div className='mt-4 text-left'>
@@ -181,7 +181,7 @@ export const DownloadPage: FC = () => {
   return (
     <div className='flex w-full flex-col items-center space-y-4'>
       <div className='w-full max-w-4xl'>
-        <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none sm:p-6'>
+        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
           <div className='mb-10 flex flex-col items-center justify-center'>
             <h1 className='mb-8 mt-6 text-center text-4xl font-bold text-gray-900 dark:text-white'>
               Put your unused disk space to work and contribute to the Network
@@ -193,7 +193,7 @@ export const DownloadPage: FC = () => {
               alt='Space Acres Screenshot Installation'
               width={800}
               height={400}
-              src='https://docs.autonomys.xyz/assets/images/space-acres-setup-7-3490cba2e75635efdea0006d06da9936.png'
+              src='https://docs.autonomys.xyz/img/doc-imgs/space-acres/space-acres-setup-8-dark.png'
               className='mx-auto'
             />
           </div>
@@ -206,7 +206,7 @@ export const DownloadPage: FC = () => {
           </h3>
         </div>
 
-        <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none sm:p-6'>
+        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
           <div className='flow-root  text-gray-900 dark:text-white'>
             <div className='mx-auto mb-4 w-3/4'>{renderDownloadSection}</div>
             <div className='mt-8'>{renderDownloadSection && downloadButton}</div>
@@ -216,7 +216,7 @@ export const DownloadPage: FC = () => {
                 For more detailed instructions, troubleshooting, and advanced usage, please refer to
                 the{' '}
                 <a
-                  href={`${EXTERNAL_ROUTES.docs}docs/farming-&-staking/farming/space-acres/space-acres-install`}
+                  href={`${EXTERNAL_ROUTES.docs}farming/space-acres/install`}
                   className='text-blue-500 underline dark:text-blue-300'
                 >
                   Space Acres documentation

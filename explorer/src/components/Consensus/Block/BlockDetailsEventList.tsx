@@ -7,6 +7,7 @@ import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  EventsByBlockIdDocument,
   EventsByBlockIdQuery,
   EventsByBlockIdQueryVariables,
   Order_By as OrderBy,
@@ -23,11 +24,14 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_BLOCK_EVENTS } from './query'
 
 type Row = EventsByBlockIdQuery['consensus_events'][number]
 
-export const BlockDetailsEventList: FC = () => {
+type Props = {
+  eventsCount: number
+}
+
+export const BlockDetailsEventList: FC<Props> = ({ eventsCount }) => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
   const { network, section } = useIndexers()
@@ -64,7 +68,7 @@ export const BlockDetailsEventList: FC = () => {
     EventsByBlockIdQuery,
     EventsByBlockIdQueryVariables
   >(
-    QUERY_BLOCK_EVENTS,
+    EventsByBlockIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -105,11 +109,19 @@ export const BlockDetailsEventList: FC = () => {
         ),
       },
       {
-        accessorKey: 'name',
-        header: 'Action',
+        accessorKey: 'section',
+        header: 'Section',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-event-action`}>{row.original.name.split('.')[1]}</div>
+          <div key={`${row.index}-block-event-section`}>{row.original.section}</div>
+        ),
+      },
+      {
+        accessorKey: 'module',
+        header: 'Module',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-block-event-module`}>{row.original.module}</div>
         ),
       },
       {
@@ -125,20 +137,13 @@ export const BlockDetailsEventList: FC = () => {
   )
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_BLOCK_EVENTS, 'consensus_events', variables),
+    () => downloadFullData(apolloClient, EventsByBlockIdDocument, 'consensus_events', variables),
     [apolloClient, variables],
   )
 
-  const totalCount = useMemo(
-    () =>
-      hasValue(consensusEntry) && consensusEntry.value.consensus_events_aggregate.aggregate
-        ? consensusEntry.value.consensus_events_aggregate.aggregate.count
-        : 0,
-    [consensusEntry],
-  )
   const pageCount = useMemo(
-    () => countTablePages(totalCount, pagination.pageSize),
-    [totalCount, pagination],
+    () => countTablePages(eventsCount, pagination.pageSize),
+    [eventsCount, pagination],
   )
 
   const noData = useMemo(() => {

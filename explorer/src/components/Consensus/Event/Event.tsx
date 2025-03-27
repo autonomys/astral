@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import type { EventByIdQuery, EventByIdQueryVariables } from 'gql/graphql'
+import { EventByIdDocument, EventByIdQuery, EventByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
@@ -12,14 +12,13 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { EventIdParam } from 'types/app'
 import { EventDetailsCard } from './EventDetailsCard'
-import { QUERY_EVENT_BY_ID } from './query'
 
 export const Event: FC = () => {
   const { ref, inView } = useInView()
   const { eventId } = useParams<EventIdParam>()
   const inFocus = useWindowFocus()
   const { loading, setIsVisible } = useIndexersQuery<EventByIdQuery, EventByIdQueryVariables>(
-    QUERY_EVENT_BY_ID,
+    EventByIdDocument,
     {
       variables: { eventId: eventId ?? '' },
       skip: !inFocus,

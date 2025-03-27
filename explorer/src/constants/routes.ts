@@ -10,6 +10,8 @@ export enum Routes {
   domains = 'domains',
   autoevm = 'auto-evm',
   autoid = 'auto-id',
+  transfer = 'transfer',
+  stats = 'stats',
   testnetRewards = 'testnet-rewards',
   profile = 'profile',
 }
@@ -123,8 +125,8 @@ export const ROUTES: Route[] = [
       },
       {
         name: RoutesStaking.nominations,
-        title: 'Nominations',
-        networks: [],
+        title: 'My Nominations',
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
     ],
   },
@@ -149,7 +151,7 @@ export const ROUTES: Route[] = [
       {
         name: RoutesLeaderboard.nominators,
         title: 'Top Nominators',
-        networks: [],
+        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
       },
     ],
   },
@@ -169,6 +171,11 @@ export const ROUTES: Route[] = [
         networks: [],
       },
     ],
+  },
+  {
+    name: Routes.transfer,
+    title: 'Transfer',
+    networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
   },
   {
     name: Routes.testnetRewards,
@@ -200,15 +207,13 @@ export const EXTERNAL_ROUTES = {
   academy: 'https://academy.autonomys.xyz/',
   privacyPolicy: 'https://www.autonomys.xyz/privacy-policy',
   forum: 'https://forum.autonomys.xyz/',
-  gemini2guide:
-    'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
   docs: 'https://docs.autonomys.xyz/',
+  autoDrive: 'https://ai3.storage',
   status: 'https://status.autonomys.xyz/',
-  operatorDocs:
-    'https://docs.autonomys.xyz/docs/farming-&-staking/staking/operators/register-operator',
+  operatorDocs: 'https://docs.autonomys.xyz/staking/operator/register',
   social: {
     twitter: 'https://x.com/AutonomysNet',
-    discord: 'https://discord.gg/subspace-network',
+    discord: 'https://autonomys.xyz/discord',
     telegram: 'https://t.me/subspace_network',
     github: 'https://github.com/autonomys',
     reddit: 'https://www.reddit.com/r/autonomys',
@@ -217,11 +222,13 @@ export const EXTERNAL_ROUTES = {
     linkedin: 'https://www.linkedin.com/company/autonomys/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
-  novaExplorer: 'https://nova.subspace.network/',
+  taurusEvmExplorer: 'https://blockscout.taurus.autonomys.xyz/',
   polkadot: (network: NetworkId): string =>
     `https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.${network}.subspace.network%2Fws#/explorer`,
   subscan: 'https://autonomys.subscan.io/',
-  spaceAcres: 'https://api.github.com/repos/subspace/space-acres/releases/latest',
+  spaceAcres: 'https://api.github.com/repos/autonomys/space-acres/releases/latest',
+  autoDrivePackage: 'https://www.npmjs.com/package/@autonomys/auto-drive',
+  autoDagPackage: 'https://www.npmjs.com/package/@autonomys/auto-dag-data',
 }
 
 export const INTERNAL_ROUTES = {

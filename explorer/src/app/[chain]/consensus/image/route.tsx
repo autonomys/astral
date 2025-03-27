@@ -1,16 +1,13 @@
 /* eslint-disable react/no-unknown-property */
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { QUERY_HOME } from 'components/Consensus/Home/query'
-import {
-  ArchivedHistoryIcon,
-  AutonomysSymbol,
-  BlockIcon,
-  DocIcon,
-  WalletIcon,
-} from 'components/icons'
+import { ArchivedHistoryIcon } from 'components/icons/ArchivedHistoryIcon'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { BlockIcon } from 'components/icons/BlockIcon'
+import { DocIcon } from 'components/icons/DocIcon'
+import { WalletIcon } from 'components/icons/WalletIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import type { HomeQuery } from 'gql/graphql'
+import { HomeDocument, type HomeQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -34,7 +31,7 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_HOME['loc']?.source.body,
+      query: HomeDocument['loc']?.source.body,
       variables: { limit: 1, offset: 0 },
     }),
   }).then((res) => res.json())

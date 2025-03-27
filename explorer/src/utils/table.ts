@@ -1,5 +1,6 @@
-import { ColumnDef } from '@tanstack/react-table'
+import { ColumnDef, SortingState } from '@tanstack/react-table'
 import { AVAILABLE_COLUMNS } from 'constants/tables'
+import { Order_By as OrderBy } from 'gql/graphql'
 import type { Cell } from 'types/table'
 import { camelToSnake } from './string'
 
@@ -21,6 +22,7 @@ const getTableColumn = <T>(
     header: header ?? columnFound.label,
     enableSorting: enableSorting ?? true,
     cell,
+    meta: { tooltip: columnFound.tooltip },
   }
 }
 
@@ -33,3 +35,10 @@ export const getTableColumns = <T>(
 ): ColumnDef<T>[] => {
   return columns.map((c) => getTableColumn(table, c, cells[c], headers?.[c], enableSorting?.[c]))
 }
+
+export const sortBy = (sorting: SortingState) =>
+  Object.fromEntries(sorting.map((sort) => [sort.id, sort.desc ? OrderBy.Desc : OrderBy.Asc]))
+
+export const sortByAggregate = (sorting: SortingState) => ({
+  [sorting[0].id]: { count: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc },
+})

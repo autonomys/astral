@@ -1,29 +1,28 @@
 'use client'
 
+import { formatAddress } from '@/utils/formatAddress'
 import { useApolloClient } from '@apollo/client'
-import { capitalizeFirstLetter } from '@autonomys/auto-utils'
-import type { SortingState } from '@tanstack/react-table'
+import { isAddress } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { NotFound } from 'components/layout/NotFound'
-import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { AccountsQuery, AccountsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import { AccountsDocument, AccountsQuery, AccountsQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
+import { snakeCase } from 'lodash'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { useTableStates } from 'states/tables'
-import type { AccountsFilters, Cell, TableSettingsTabs } from 'types/table'
+import { useTableSettings } from 'states/tables'
+import type { AccountsFilters, Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { AccountIconWithLink } from '../../common/AccountIcon'
-import { QUERY_ACCOUNTS } from './query'
 
 type Row = AccountsQuery['consensus_accounts'][number]
 const TABLE = 'accounts'
@@ -31,108 +30,83 @@ const TABLE = 'accounts'
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()
   const { network, section, tokenDecimals } = useIndexers()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
-  const [pagination, setPagination] = useState({
-    pageSize: PAGE_SIZE,
-    pageIndex: 0,
-  })
   const inFocus = useWindowFocus()
   const apolloClient = useApolloClient()
-  const availableColumns = useTableStates((state) => state[TABLE].columns)
-  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
-  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
-  const filters = useTableStates((state) => state[TABLE].filters) as AccountsFilters
-  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
-  const setColumns = useTableStates((state) => state.setColumns)
-  const setFilters = useTableStates((state) => state.setFilters)
-  const showSettings = useTableStates((state) => state.showSettings)
-  const hideSettings = useTableStates((state) => state.hideSettings)
-  const resetSettings = useTableStates((state) => state.resetSettings)
-  const showReset = useTableStates((state) => state.showReset)
+  const {
+    pagination,
+    sorting,
+    selectedColumns,
+    filters,
+    orderBy,
+    availableColumns,
+    onPaginationChange,
+    onSortingChange,
+  } = useTableSettings<AccountsFilters>(TABLE)
 
-  const orderBy = useMemo(
-    () =>
-      sorting && sorting.length > 0
-        ? sorting[0].id.endsWith('aggregate')
-          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
-          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
-        : { id: OrderBy.Asc },
-    [sorting],
+  const where = useMemo(
+    () => ({
+      ...availableColumns
+        .filter((column) => column.searchable)
+        .reduce((conditions, column) => {
+          const searchKey = `search-${column.name}` as keyof AccountsFilters
+          const searchValue = filters[searchKey]
+          return searchValue
+            ? {
+                ...conditions,
+                [snakeCase(column.name)]:
+                  column.name === 'id' && isAddress(searchValue)
+                    ? { _eq: formatAddress(searchValue) }
+                    : { _ilike: `%${searchValue}%` },
+              }
+            : conditions
+        }, {}),
+      // Nonce
+      ...((filters.nonceMin || filters.nonceMax) && {
+        nonce: {
+          ...(filters.nonceMin && { _gte: filters.nonceMin }),
+          ...(filters.nonceMax && { _lte: filters.nonceMax }),
+        },
+      }),
+      // Free
+      ...((filters.freeMin || filters.freeMax) && {
+        free: {
+          ...(filters.freeMin && {
+            _gte: BigInt(Math.floor(parseFloat(filters.freeMin) * 10 ** tokenDecimals)).toString(),
+          }),
+          ...(filters.freeMax && {
+            _lte: BigInt(Math.floor(parseFloat(filters.freeMax) * 10 ** tokenDecimals)).toString(),
+          }),
+        },
+      }),
+      // Reserved
+      ...((filters.reservedMin || filters.reservedMax) && {
+        reserved: {
+          ...(filters.reservedMin && {
+            _gte: BigInt(
+              Math.floor(parseFloat(filters.reservedMin) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+          ...(filters.reservedMax && {
+            _lte: BigInt(
+              Math.floor(parseFloat(filters.reservedMax) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+        },
+      }),
+      // Total
+      ...((filters.totalMin || filters.totalMax) && {
+        total: {
+          ...(filters.totalMin && {
+            _gte: BigInt(Math.floor(parseFloat(filters.totalMin) * 10 ** tokenDecimals)).toString(),
+          }),
+          ...(filters.totalMax && {
+            _lte: BigInt(Math.floor(parseFloat(filters.totalMax) * 10 ** tokenDecimals)).toString(),
+          }),
+        },
+      }),
+    }),
+    [filters, availableColumns, tokenDecimals],
   )
-
-  const where = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof AccountsFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
-
-    // Nonce
-    if (filters.nonceMin || filters.nonceMax) {
-      conditions['nonce'] = {}
-      if (filters.nonceMin) {
-        conditions.nonce._gte = filters.nonceMin
-      }
-      if (filters.nonceMax) {
-        conditions.nonce._lte = filters.nonceMax
-      }
-    }
-
-    // Free
-    if (filters.freeMin || filters.freeMax) {
-      conditions['free'] = {}
-      if (filters.freeMin) {
-        conditions.free._gte = BigInt(
-          Math.floor(parseFloat(filters.freeMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.freeMax) {
-        conditions.free._lte = BigInt(
-          Math.floor(parseFloat(filters.freeMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Reserved
-    if (filters.reservedMin || filters.reservedMax) {
-      conditions['reserved'] = {}
-      if (filters.reservedMin) {
-        conditions.reserved._gte = BigInt(
-          Math.floor(parseFloat(filters.reservedMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.reservedMax) {
-        conditions.reserved._lte = BigInt(
-          Math.floor(parseFloat(filters.reservedMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Total
-    if (filters.totalMin || filters.totalMax) {
-      conditions['total'] = {}
-      if (filters.totalMin) {
-        conditions.total._gte = BigInt(
-          Math.floor(parseFloat(filters.totalMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.totalMax) {
-        conditions.total._lte = BigInt(
-          Math.floor(parseFloat(filters.totalMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    return conditions
-  }, [availableColumns, filters, tokenDecimals])
 
   const variables = useMemo(
     () => ({
@@ -145,7 +119,7 @@ export const AccountList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<AccountsQuery, AccountsQueryVariables>(
-    QUERY_ACCOUNTS,
+    AccountsDocument,
     {
       variables,
       skip: !inFocus,
@@ -180,8 +154,6 @@ export const AccountList: FC = () => {
             <AccountIconWithLink address={row.original.id} network={network} section={section} />
           ),
           nonce: ({ row }: Cell<Row>) => row.original.nonce.toString(),
-          extrinsicsCount: ({ row }: Cell<Row>) =>
-            row.original.extrinsicsCount.aggregate?.count.toString() || '0',
           free: ({ row }: Cell<Row>) => numberWithCommas(bigNumberToNumber(row.original.free)),
           reserved: ({ row }: Cell<Row>) =>
             numberWithCommas(bigNumberToNumber(row.original.reserved)),
@@ -218,7 +190,7 @@ export const AccountList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNTS, 'consensus_' + TABLE, {
+      downloadFullData(apolloClient, AccountsDocument, 'consensus_' + TABLE, {
         orderBy,
         where,
       }),
@@ -231,27 +203,6 @@ export const AccountList: FC = () => {
     return null
   }, [data, loading, consensusEntry])
 
-  const handleFilterChange = useCallback(
-    (filterName: string, value: string | boolean) => {
-      setFilters(TABLE, {
-        ...filters,
-        [filterName]: value,
-      })
-    },
-    [filters, setFilters],
-  )
-
-  const handleClickOnColumnToEditTable = useCallback(
-    (column: string, checked: boolean) =>
-      checked
-        ? setColumns(TABLE, [...selectedColumns, column])
-        : setColumns(
-            TABLE,
-            selectedColumns.filter((c) => c !== column),
-          ),
-    [selectedColumns, setColumns],
-  )
-
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
@@ -259,31 +210,17 @@ export const AccountList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
-        <TableSettings
-          tableName={capitalizeFirstLetter(TABLE)}
-          totalCount={totalCount}
-          availableColumns={availableColumns}
-          selectedColumns={selectedColumns}
-          filters={filters}
-          showTableSettings={showTableSettings}
-          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
-          hideSettings={() => hideSettings(TABLE)}
-          handleColumnChange={handleClickOnColumnToEditTable}
-          handleFilterChange={handleFilterChange}
-          filterOptions={filtersOptions}
-          handleReset={() => resetSettings(TABLE)}
-          showReset={showReset(TABLE)}
-        />
+        <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
         {!loading && accounts ? (
           <SortedTable
             data={accounts}
             columns={columns}
             showNavigation={true}
             sorting={sorting}
-            onSortingChange={setSorting}
+            onSortingChange={onSortingChange}
             pagination={pagination}
             pageCount={pageCount}
-            onPaginationChange={setPagination}
+            onPaginationChange={onPaginationChange}
             filename={TABLE}
             fullDataDownloader={fullDataDownloader}
           />

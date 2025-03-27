@@ -1,0 +1,33 @@
+table:
+  name: operator_staking_histories
+  schema: staking
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - block_height
+        - current_total_shares
+        - current_total_stake
+        - deposits_in_epoch
+        - share_price
+        - total_storage_fee_deposit
+        - withdrawals_in_epoch
+        - current_domain_id
+        - id
+        - operator_id
+        - operator_owner
+        - partial_status
+        - signing_key
+        - timestamp
+        - _id
+      filter: {}
+      limit: 50
+    comment: ""

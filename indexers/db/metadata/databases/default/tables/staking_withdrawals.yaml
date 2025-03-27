@@ -34,11 +34,12 @@ select_permissions:
     permission:
       columns:
         - created_at
+        - domain_block_number_ready_at
         - domain_block_number_withdrawal_requested_at
         - epoch_withdrawal_requested_at
         - estimated_amount
-        - ready_at
         - shares
+        - storage_fee_refund
         - total_amount
         - unlocked_amount
         - unlocked_at
@@ -50,9 +51,10 @@ select_permissions:
         - nominator_id
         - operator_id
         - status
-        - unlock_extrinsic_hash
-        - withdraw_extrinsic_hash
+        - unlock_extrinsic_id
+        - withdraw_extrinsic_id
         - timestamp
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

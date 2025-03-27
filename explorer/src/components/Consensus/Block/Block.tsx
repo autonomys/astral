@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { BlockByIdQuery, BlockByIdQueryVariables } from 'gql/graphql'
+import { BlockByIdDocument, BlockByIdQuery, BlockByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -14,7 +14,6 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { BlockIdParam } from 'types/app'
 import { BlockDetailsCard } from './BlockDetailsCard'
 import { BlockDetailsTabs } from './BlockDetailsTabs'
-import { QUERY_BLOCK_BY_ID } from './query'
 
 export const Block: FC = () => {
   const { ref, inView } = useInView()
@@ -23,9 +22,9 @@ export const Block: FC = () => {
   const inFocus = useWindowFocus()
 
   const { loading, setIsVisible } = useIndexersQuery<BlockByIdQuery, BlockByIdQueryVariables>(
-    QUERY_BLOCK_BY_ID,
+    BlockByIdDocument,
     {
-      variables: { blockId: blockId ?? '0', blockHash: blockId?.toString() ?? '' },
+      variables: { blockId: blockId ?? '0', blockHash: blockId ?? '' },
       skip: !inFocus,
     },
     Routes.consensus,
@@ -57,9 +56,9 @@ export const Block: FC = () => {
           <>
             <BlockDetailsCard block={block} isDesktop={isDesktop} />
             <BlockDetailsTabs
-              logs={block.logs}
               extrinsicsCount={block.extrinsics_count}
               eventsCount={block.events_count}
+              logsCount={block.logs_count}
               isDesktop={isDesktop}
             />
           </>

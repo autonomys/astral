@@ -1,9 +1,10 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
-import { AutonomysSymbol, DocIcon, WalletIcon } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { DocIcon } from 'components/icons/DocIcon'
+import { WalletIcon } from 'components/icons/WalletIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { AccountByIdQuery } from 'gql/graphql'
+import { AccountByIdDocument, AccountByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -24,7 +25,7 @@ export async function GET(
   if (!accountId || !chainMatch) notFound()
 
   const {
-    data: { consensus_account_histories: accountById },
+    data: { consensus_accounts_by_pk: accountById },
   }: {
     data: AccountByIdQuery
   } = await fetch(chainMatch.indexer, {
@@ -33,7 +34,7 @@ export async function GET(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_ACCOUNT_BY_ID['loc']?.source.body,
+      query: AccountByIdDocument['loc']?.source.body,
       variables: { accountId },
     }),
   }).then((res) => res.json())
@@ -46,7 +47,7 @@ export async function GET(
         <Screen
           chainMatch={chainMatch}
           accountId={accountId}
-          accountById={accountById[0]}
+          accountById={accountById}
           tokenSymbol={tokenSymbol}
         />
       ),
@@ -69,7 +70,7 @@ function Screen({
 }: {
   chainMatch: (typeof indexers)[number]
   accountId: string
-  accountById: AccountByIdQuery['consensus_account_histories'][number]
+  accountById: AccountByIdQuery['consensus_accounts_by_pk']
   tokenSymbol: string
 }) {
   const account = {

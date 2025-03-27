@@ -1,0 +1,58 @@
+{
+  "name": "consensus",
+  "version": "1.0.0",
+  "description": "Autonomys Network - Consensus",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "subql codegen && subql build",
+    "codegen": "subql codegen",
+    "start:docker": "docker-compose pull && docker-compose up --remove-orphans",
+    "dev": "subql codegen && subql build && docker-compose pull && docker-compose up --remove-orphans",
+    "prepack": "rm -rf dist && npm run build",
+    "test": "subql build && subql-node test",
+    "build:develop": "NODE_ENV=develop subql codegen && NODE_ENV=develop subql build"
+  },
+  "homepage": "https://github.com/autonomys/astral",
+  "files": [
+    "dist",
+    "schema.graphql",
+    "project.yaml"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/autonomys/astral"
+  },
+  "author": {
+    "name": "Autonomys",
+    "url": "https://www.autonomys.xyz"
+  },
+  "bugs": {
+    "url": "https://github.com/autonomys/astral/issues"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@apollo/client": "^3.13.4",
+    "@autonomys/auto-consensus": "^1.4.0",
+    "@autonomys/auto-dag-data": "^1.4.0",
+    "@autonomys/auto-utils": "^1.4.0",
+    "@polkadot/api": "^15.8.1",
+    "@polkadot/types": "^15.8.1",
+    "@polkadot/util": "^13.4.3",
+    "@polkadot/util-crypto": "^13.4.3",
+    "@subql/cli": "^5.7.0",
+    "@subql/common-substrate": "^4.3.7",
+    "@subql/node": "^5.10.0",
+    "@subql/types": "^3.12.1",
+    "@types/node": "^22.9.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "dotenv": "^16.4.7",
+    "graphql": "^16.10.0",
+    "prom-client": "^14.2.0",
+    "rxjs": "^7.8.2",
+    "typescript": "^5.8.2"
+  },
+  "resolutions": {
+    "ipfs-unixfs": "6.0.9"
+  }
+}

@@ -1,13 +1,12 @@
 import { useQuery } from '@apollo/client'
-import { blockNumber } from '@autonomys/auto-consensus'
+// import { blockNumber } from '@autonomys/auto-consensus' // To re-implement as soon as the fix is released
 import { activate, NetworkId } from '@autonomys/auto-utils'
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import { LastBlockQuery } from 'gql/graphql'
+import { LastBlockDocument, LastBlockQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import React, { FC, useCallback, useEffect, useMemo } from 'react'
 import { useConsensusStates } from 'states/consensus'
-import { LAST_BLOCK } from './query'
 
 const NORMAL_BLOCKS_DIVERGENCE = 120
 const POLL_INTERVAL = 12000
@@ -16,8 +15,8 @@ const OutOfSyncBanner: FC = () => {
   const { network } = useIndexers()
   return (
     <div className='container mx-auto mb-4 flex grow justify-center px-5 md:px-[25px] 2xl:px-0'>
-      <div className='sticky top-0 z-50 w-full'>
-        <div className='dark:bg-boxDark w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none'>
+      <div className='sticky top-0 z-10 w-full'>
+        <div className='w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-boxDark'>
           <div className='flex flex-col gap-4'>
             <div className='text-[20px] font-bold text-[#282929] dark:text-white'>
               Indexer Currently Out of Sync
@@ -51,24 +50,26 @@ const OutOfSyncBanner: FC = () => {
 export const useOutOfSyncBanner = () => {
   const { network } = useIndexers()
 
-  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
+  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber[network])
   const setLastBlockNumber = useConsensusStates((state) => state.setLastBlockNumber)
 
-  const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
+  const { data } = useQuery<LastBlockQuery>(LastBlockDocument, {
     pollInterval: POLL_INTERVAL,
   })
 
   const getChainLastBlock = useCallback(async () => {
     try {
       const api = await activate({ networkId: network })
-      setLastBlockNumber(await blockNumber(api))
+      const block = await api.rpc.chain.getBlock()
+      const lastBlock = parseInt(block.block.header.number.toString())
+      setLastBlockNumber(network, lastBlock)
       await api.disconnect()
     } catch (error) {
       console.error('Error getting chain last block', error)
     }
   }, [network, setLastBlockNumber])
 
-  const lastBlock = useMemo(() => data && parseInt(data.lastBlock[0].height), [data])
+  const lastBlock = useMemo(() => data && data.lastBlock && parseInt(data.lastBlock.value), [data])
 
   const outOfSyncBanner = useMemo(
     () =>

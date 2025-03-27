@@ -6,7 +6,6 @@ import { EventByIdQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC } from 'react'
-import { parseArgs } from 'utils/indexerParsing'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 
 type Props = {
@@ -20,17 +19,17 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
   return (
     <div className='w-full'>
       <div className='flex'>
-        <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none sm:p-6'>
+        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
           <div className='mb-10 flex items-center justify-between'>
             <h3 className='text-sm font-medium text-grayDarker dark:text-white md:text-2xl'>
               Event #{event.id}
             </h3>
-            <div className='bg-buttonDarkTo block rounded-full px-5 py-3 text-xs font-semibold leading-normal text-white'>
+            <div className='block rounded-full bg-buttonDarkTo px-5 py-3 text-xs font-semibold leading-normal text-white'>
               <Link
                 className='flex gap-1'
-                href={INTERNAL_ROUTES.blocks.id.page(network, section, event.block?.height)}
+                href={INTERNAL_ROUTES.blocks.id.page(network, section, event.block_height)}
               >
-                #{event.block?.height}
+                #{event.block_height}
               </Link>
             </div>
           </div>
@@ -42,26 +41,18 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
                   {utcToLocalRelativeTime(event.timestamp)}
                 </StyledListItem>
                 <StyledListItem title='Extrinsic'>
-                  {event.extrinsic ? (
-                    <Link
-                      href={INTERNAL_ROUTES.extrinsics.id.page(
-                        network,
-                        section,
-                        event.extrinsic?.id,
-                      )}
-                    >
-                      {event.extrinsic?.id}
-                    </Link>
-                  ) : (
-                    '-'
-                  )}
+                  <Link
+                    href={INTERNAL_ROUTES.extrinsics.id.page(network, section, event.extrinsic_id)}
+                  >
+                    {event.extrinsic_id}
+                  </Link>
                 </StyledListItem>
-                <StyledListItem title='Module'>{event.name.split('.')[0]}</StyledListItem>
-                <StyledListItem title='Call'>{event.name.split('.')[1]}</StyledListItem>
+                <StyledListItem title='Module'>{event.module}</StyledListItem>
+                <StyledListItem title='Section'>{event.section}</StyledListItem>
               </List>
             </div>
-            <div className='border-blueLight bg-blueLight mb-4 w-full break-all rounded-lg border p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
-              <Arguments args={parseArgs(event.args)} />
+            <div className='mb-4 w-full break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
+              <Arguments args={event.args} />
             </div>
           </div>
         </div>

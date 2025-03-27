@@ -13,4 +13,5 @@ select_permissions:
         - module
         - tx_hash
       filter: {}
+      limit: 50
     comment: ""

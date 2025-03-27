@@ -1,15 +1,15 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_LOG_BY_ID } from 'components/Consensus/Log/query'
-import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
+import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { BlockIcon } from 'components/icons/BlockIcon'
+import { DocIcon } from 'components/icons/DocIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { LogByIdQuery } from 'gql/graphql'
+import { LogByIdDocument, LogByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
 import { ChainPageProps, LogIdPageProps } from 'types/app'
 import { numberWithCommas } from 'utils/number'
-import { utcToLocalRelativeTime } from 'utils/time'
 
 // export const runtime = 'edge'
 export async function GET(
@@ -32,7 +32,7 @@ export async function GET(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_LOG_BY_ID['loc']?.source.body,
+      query: LogByIdDocument['loc']?.source.body,
       variables: { logId },
     }),
   }).then((res) => res.json())
@@ -63,9 +63,9 @@ function Screen({
   logById: LogByIdQuery['consensus_logs'][number]
 }) {
   const log = {
+    id: logById?.id ?? '0',
     height: logById?.block_height ?? '0',
     kind: logById?.kind ?? '0',
-    timestamp: logById?.timestamp ?? '0',
     value: logById?.value ?? '',
   }
   const title = `${metadata.title} - ${chainMatch.title} - Log`
@@ -135,7 +135,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
             >
-              Timestamp {utcToLocalRelativeTime(log.timestamp)}
+              Log {log.id}
             </span>
           </div>
         </div>

@@ -10,32 +10,32 @@
     "dev": "export $(grep -v '^#' ../../.env | xargs) && export $(grep -v '^#' ../../.env.dev | xargs) && ts-node-dev src/index.ts"
   },
   "dependencies": {
-    "@autonomys/auto-consensus": "^1.0.12",
-    "@autonomys/auto-utils": "^1.0.12",
+    "@autonomys/auto-consensus": "^1.4.0",
+    "@autonomys/auto-utils": "^1.4.0",
     "@bull-board/api": "^5.23.0",
     "@bull-board/express": "^5.23.0",
     "@bull-board/ui": "^5.23.0",
-    "@polkadot/keyring": "^13.2.2",
-    "@polkadot/util": "^13.2.2",
-    "@polkadot/util-crypto": "^13.2.2",
-    "body-parser": "^1.20.0",
-    "bullmq": "^4.6.0",
+    "@polkadot/keyring": "^13.4.3",
+    "@polkadot/util": "^13.4.3",
+    "@polkadot/util-crypto": "^13.4.3",
+    "body-parser": "^1.20.3",
+    "bullmq": "^4.18.2",
     "connect-redis": "^7.1.1",
-    "express": "^4.21.0",
-    "express-session": "^1.17.2",
-    "ioredis": "^5.4.1",
-    "passport": "^0.6.0",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "ioredis": "^5.6.0",
+    "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.13.0"
+    "pg": "^8.14.1"
   },
   "devDependencies": {
     "@types/bull": "^4.10.4",
     "@types/express": "^5.0.0",
-    "@types/express-session": "^1.18.0",
+    "@types/express-session": "^1.18.1",
     "@types/node": "^22.9.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.8.2"
   },
   "workspaces": {
     "nohoist": [

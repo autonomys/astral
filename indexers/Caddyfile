@@ -80,3 +80,77 @@
         level INFO
     }
 }
+
+:8001 {
+    # Match WebSocket requests
+    @websockets {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+
+    # Reverse proxy for WebSocket traffic explicitly over HTTP/1.1
+    reverse_proxy @websockets node:8944 {
+        transport http {
+            versions h1  # Force HTTP/1.1 only for WebSocket traffic
+        }
+        # Headers for WebSocket support
+        header_up Connection "Upgrade"
+        header_up Upgrade "websocket"
+    }
+
+    # Reverse proxy for HTTP traffic to node at port 8944
+    reverse_proxy node:8944 {
+        transport http {
+            # Buffer sizes
+            read_buffer 64KB
+            write_buffer 64KB
+
+            # Timeouts
+            dial_timeout 10s
+            dial_fallback_delay 300ms
+            response_header_timeout 30s
+            expect_continue_timeout 1s
+
+            # Keep-alive settings
+            keepalive 90s
+            keepalive_interval 30s
+            keepalive_idle_conns 2000
+            keepalive_idle_conns_per_host 500
+
+            # Compression and HTTP versions
+            compression off
+            versions h2c h1
+
+            # Connection limits
+            max_conns_per_host 150000
+        }
+
+        # Health checks
+        health_uri /health
+        health_interval 30s
+        health_timeout 5s
+        health_status 200
+    }
+
+    # CORS Headers
+    header {
+        Access-Control-Allow-Origin "*"
+        Access-Control-Allow-Methods "GET, POST, OPTIONS"
+        Access-Control-Allow-Headers "Content-Type"
+        # Add security headers
+        Strict-Transport-Security "max-age=31536000;"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        defer  # Process headers after proxied response
+    }
+
+    # Logging configuration
+    log {
+        output file /data/access.log {
+            roll_size 10MB
+            roll_keep 10
+        }
+        format console
+        level INFO
+    }
+}

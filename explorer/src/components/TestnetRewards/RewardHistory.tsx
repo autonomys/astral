@@ -82,7 +82,7 @@ export const RewardHistory: FC = () => {
 
   return (
     <div className='w-full max-w-xl'>
-      <div className='dark:bg-boxDark mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none sm:p-6'>
+      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
         <div className='mb-6 flex flex-col items-center justify-center'>
           <h1 className='mb-2 text-center text-2xl font-bold text-gray-900 dark:text-white'>
             Reward History
@@ -101,7 +101,11 @@ export const RewardHistory: FC = () => {
               Please review your Subspace Network rewards for the testnet phases.
             </p>
             <div className='flex justify-center'>
-              {!actingAccount ? <WalletButton /> : <AccountListDropdown />}
+              {!actingAccount ? (
+                <WalletButton />
+              ) : (
+                <AccountListDropdown className='rounded-full' labelClassName='block w-full' />
+              )}
             </div>
             {actingAccount && !subspaceAccount && (
               <div className='flex justify-center'>

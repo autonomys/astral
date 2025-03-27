@@ -12,6 +12,7 @@ import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   AccountByIdQuery,
   Order_By as OrderBy,
+  RewardsListDocument,
   RewardsListQuery,
   RewardsListQueryVariables,
 } from 'gql/graphql'
@@ -34,7 +35,6 @@ import { countTablePages } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { AccountDetailsCard } from './AccountDetailsCard'
-import { QUERY_REWARDS_LIST } from './query'
 
 type Row = RewardsListQuery['consensus_rewards'][number]
 
@@ -48,9 +48,14 @@ export const AccountRewardList: FC = () => {
   })
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
-  const { accountId } = useParams<AccountIdParam>()
+  const { accountId: rawAccountId } = useParams<AccountIdParam>()
   const inFocus = useWindowFocus()
-  const lastBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
+  const accountId = formatAddress(rawAccountId)
+  const lastNetworkBlockNumber = useConsensusStates((state) => state.lastBlockNumber)
+  const lastBlockNumber = useMemo(
+    () => lastNetworkBlockNumber[network],
+    [lastNetworkBlockNumber, network],
+  )
   const orderBy = useMemo(
     () =>
       sorting && sorting.length > 0
@@ -73,7 +78,7 @@ export const AccountRewardList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<RewardsListQuery, RewardsListQueryVariables>(
-    QUERY_REWARDS_LIST,
+    RewardsListDocument,
     {
       variables,
       skip: !inFocus,
@@ -101,11 +106,10 @@ export const AccountRewardList: FC = () => {
   const account = useMemo(
     () =>
       rewards
-        ? (rewards[0].account as unknown as AccountByIdQuery['consensus_account_histories'][number])
+        ? (rewards[0].account as unknown as AccountByIdQuery['consensus_accounts_by_pk'])
         : undefined,
     [rewards],
   )
-  const convertedAddress = useMemo(() => (account ? formatAddress(account.id) : ''), [account])
 
   const columns = useMemo(
     () => [
@@ -205,7 +209,7 @@ export const AccountRewardList: FC = () => {
 
   const apolloClient = useApolloClient()
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_REWARDS_LIST, 'consensus_rewards', variables),
+    () => downloadFullData(apolloClient, RewardsListDocument, 'consensus_rewards', variables),
     [apolloClient, variables],
   )
 
@@ -225,9 +229,7 @@ export const AccountRewardList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {convertedAddress && (
-        <AccountDetailsCard account={account} accountAddress={convertedAddress} />
-      )}
+      {accountId && <AccountDetailsCard account={account} accountAddress={accountId} />}
 
       <div className='mt-5 flex w-full justify-between'>
         <div className='text-base font-medium text-grayDark dark:text-white'>{`Rewards (${totalLabel})`}</div>

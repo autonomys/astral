@@ -3,7 +3,11 @@ import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { BIGINT_ZERO } from 'constants/general'
 import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
-import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/graphql'
+import {
+  StakingSummaryDocument,
+  StakingSummaryQuery,
+  StakingSummaryQueryVariables,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -13,7 +17,6 @@ import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
 import { bigNumberToNumber } from 'utils/number'
-import { QUERY_STAKING_SUMMARY } from './query'
 
 interface StakingSummaryProps {
   subspaceAccount: string
@@ -24,8 +27,8 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
   const { ref, inView } = useInView()
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
-  const { get } = useSearchParams()
-  const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+  const searchParams = useSearchParams()
+  const isSideKickOpen = searchParams.get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
 
   const variables = useMemo(
     () => ({
@@ -35,7 +38,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
     [subspaceAccount],
   )
   const { setIsVisible } = useIndexersQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(
-    QUERY_STAKING_SUMMARY,
+    StakingSummaryDocument,
     {
       variables,
       skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,

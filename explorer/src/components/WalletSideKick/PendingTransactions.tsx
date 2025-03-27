@@ -10,7 +10,11 @@ import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE } from 'constants/ro
 import { TransactionStatus } from 'constants/transaction'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { PendingTransactionQuery, PendingTransactionQueryVariables } from 'gql/graphql'
+import {
+  PendingTransactionDocument,
+  PendingTransactionQuery,
+  PendingTransactionQueryVariables,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
@@ -20,7 +24,6 @@ import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useTransactionsStates } from 'states/transactions'
 import { Transaction } from 'types/transaction'
-import { QUERY_PENDING_TX } from './query'
 
 interface PendingTransactionsProps {
   subspaceAccount: string
@@ -32,8 +35,8 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
   const { ref, inView } = useInView()
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
-  const { get } = useSearchParams()
-  const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+  const searchParams = useSearchParams()
+  const isSideKickOpen = searchParams.get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
 
   const { actingAccount } = useWallet()
   const {
@@ -53,7 +56,7 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
   const { data, setIsVisible } = useIndexersQuery<
     PendingTransactionQuery,
     PendingTransactionQueryVariables
-  >(QUERY_PENDING_TX, {
+  >(PendingTransactionDocument, {
     variables,
     skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
     pollInterval: 6000,
@@ -119,7 +122,8 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>
             <span className='text-base font-medium text-grayDarker dark:text-white'>
-              Pending transactions {transactions.length > 0 ? `( ${transactions.length} )` : ''}{' '}
+              Pending transactions{' '}
+              {transactions.length > 0 ? `( ${transactions.length} )` : ''}{' '}
             </span>
           </div>
         }

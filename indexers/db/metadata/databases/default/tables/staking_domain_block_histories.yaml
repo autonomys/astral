@@ -1,0 +1,24 @@
+table:
+  name: domain_block_histories
+  schema: staking
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - _id
+        - block_height
+        - domain_block_number
+        - domain_id
+        - id
+        - timestamp
+      filter: {}
+      limit: 50
+    comment: ""

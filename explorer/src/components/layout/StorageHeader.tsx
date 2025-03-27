@@ -2,7 +2,7 @@
 
 import { getSupportedHeaderLinks } from '@/utils/route'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import { LogoIcon } from 'components/icons'
+import { LogoIcon } from 'components/icons/LogoIcon'
 import { Routes } from 'constants/routes'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -12,6 +12,7 @@ import { useTheme } from 'providers/ThemeProvider'
 import { FC, useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
+import StorageBanner from './StorageBanner'
 
 export const StorageHeader: FC = () => {
   const { isDark, toggleTheme } = useTheme()
@@ -22,19 +23,52 @@ export const StorageHeader: FC = () => {
 
   const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.storage), [network])
 
+  const showBanner = useMemo(() => {
+    const regex = /^\/(taurus|mainnet)\/permanent-storage(\/(files|folders)?)?$/;
+    return regex.test(pathname);
+  }, [pathname]);
+
   return (
     <header className='body-font z-9 py-[30px] text-gray-600'>
       {isDesktop ? (
-        <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
-          <Link
-            href={`/${network}/${section}`}
-            className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
-          >
-            <span className='text-xl text-grayDark dark:text-white'>
-              <LogoIcon fillColor='currentColor' />
-            </span>
-          </Link>
-          <nav className='flex flex-wrap items-center justify-center gap-10 text-sm'>
+        <div>
+          <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-2 md:flex-row md:px-[25px] 2xl:px-0'>
+            <Link
+              href={`/${network}/${section}`}
+              className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
+            >
+              <span className='text-xl text-grayDark dark:text-white'>
+                <LogoIcon fillColor='currentColor' />
+              </span>
+            </Link>
+            <div className='flex justify-center'>
+              <HeaderChainDropdown />
+              <button
+                onClick={toggleTheme}
+                className='ml-4 inline-flex items-center rounded-full bg-buttonLightFrom p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
+              >
+                {isDark ? (
+                  <SunIcon
+                    viewBox='0 0 24 24'
+                    strokeWidth={1}
+                    fill='black'
+                    stroke='black'
+                    className='size-6'
+                  />
+                ) : (
+                  <MoonIcon
+                    viewBox='0 0 24 24'
+                    strokeWidth={1}
+                    fill='white'
+                    stroke='white'
+                    className='size-6'
+                  />
+                )}
+              </button>
+            </div>
+          </div>
+          { showBanner && <StorageBanner/>}
+          <nav className='flex flex-wrap items-center justify-center gap-10 text-sm py-5'>
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link)
               return (
@@ -42,7 +76,7 @@ export const StorageHeader: FC = () => {
                   key={index}
                   className={
                     isCurrentPath
-                      ? 'bg-buttonLightFrom block rounded-full px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
+                      ? 'block rounded-full bg-buttonLightFrom px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
                       : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }
                   href={item.link}
@@ -52,34 +86,10 @@ export const StorageHeader: FC = () => {
               )
             })}
           </nav>
-          <div className='flex justify-center'>
-            <HeaderChainDropdown />
-            <button
-              onClick={toggleTheme}
-              className='bg-buttonLightFrom ml-4 inline-flex items-center rounded-full p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
-            >
-              {isDark ? (
-                <SunIcon
-                  viewBox='0 0 24 24'
-                  strokeWidth={1}
-                  fill='black'
-                  stroke='black'
-                  className='size-6'
-                />
-              ) : (
-                <MoonIcon
-                  viewBox='0 0 24 24'
-                  strokeWidth={1}
-                  fill='white'
-                  stroke='white'
-                  className='size-6'
-                />
-              )}
-            </button>
-          </div>
         </div>
       ) : (
-        <div className='flex flex-row items-center justify-between px-5'>
+        <>
+        <div className='flex flex-row items-center justify-between px-5 py-2'>
           <Link
             href={`/${network}/${section}`}
             className='title-font flex items-center font-medium text-gray-900 dark:text-white'
@@ -89,7 +99,7 @@ export const StorageHeader: FC = () => {
           <div className='flex items-center gap-4'>
             <HeaderChainDropdown />
             <button
-              className='bg-buttonLightFrom items-center rounded-full p-3 text-white dark:bg-white dark:text-blueAccent'
+              className='items-center rounded-full bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
               onClick={() => setIsOpen(true)}
             >
               <Bars3BottomRightIcon className='size-4' fill='currentColor' stroke='currentColor' />
@@ -97,6 +107,8 @@ export const StorageHeader: FC = () => {
           </div>
           <MobileHeader menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
+        {showBanner && <StorageBanner/>}
+        </>
       )}
     </header>
   )

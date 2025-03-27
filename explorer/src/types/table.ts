@@ -6,12 +6,17 @@ type Row<T> = {
 }
 export type Cell<T> = { row: Row<T> }
 
+export type ColumnMeta = {
+  tooltip?: string
+}
+
 export type AvailableColumn = {
   name: string
   label: string
   isSelected: boolean
   searchable?: true
   accessorKey?: string
+  tooltip?: string
 }
 
 export type AvailableColumns = {
@@ -21,10 +26,10 @@ export type AvailableColumns = {
 export type Filters = object
 
 export type FilterOption = {
-  type: 'range' | 'checkbox' | 'number' | 'text'
+  type: 'range' | 'checkbox' | 'number' | 'text' | 'dropdown'
   label: string
   key: string
-  options?: string[]
+  options?: string[] | { label: string; value: string }[]
 }
 
 export type FiltersOptions = {
@@ -87,14 +92,14 @@ export type LogsFilters = {
 }
 
 export type FilesFilters = {
-  cid: string
+  id: string
   name: string
   blockHeightMin: string
   blockHeightMax: string
 }
 
 export type FoldersFilters = {
-  cid: string
+  id: string
   name: string
   blockHeightMin: string
   blockHeightMax: string

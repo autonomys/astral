@@ -9,6 +9,7 @@ import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  ExtrinsicsByBlockIdDocument,
   ExtrinsicsByBlockIdQuery,
   ExtrinsicsByBlockIdQueryVariables,
   Order_By as OrderBy,
@@ -24,17 +25,16 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
-import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
-import { QUERY_BLOCK_EXTRINSICS } from './query'
 
 type Props = {
+  extrinsicsCount: number
   isDesktop?: boolean
 }
 
 type Row = ExtrinsicsByBlockIdQuery['consensus_extrinsics'][number]
 
-export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
+export const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsicsCount, isDesktop = false }) => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
   const { network, section } = useIndexers()
@@ -71,7 +71,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     ExtrinsicsByBlockIdQuery,
     ExtrinsicsByBlockIdQueryVariables
   >(
-    QUERY_BLOCK_EXTRINSICS,
+    ExtrinsicsByBlockIdDocument,
     {
       variables,
       skip: !inFocus,
@@ -104,7 +104,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
       },
       {
         accessorKey: 'hash',
-        header: 'Block hash',
+        header: 'Extrinsic hash',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
@@ -117,16 +117,16 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         ),
       },
       {
-        accessorKey: 'name',
-        header: 'Action',
+        accessorKey: 'section',
+        header: 'Section',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => row.original.name.split('.')[1].toUpperCase(),
+        cell: ({ row }: Cell<Row>) => row.original.section,
       },
       {
-        accessorKey: 'timestamp',
-        header: 'Time',
+        accessorKey: 'module',
+        header: 'Module',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.timestamp),
+        cell: ({ row }: Cell<Row>) => row.original.module,
       },
       {
         accessorKey: 'success',
@@ -146,20 +146,19 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   )
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_BLOCK_EXTRINSICS, 'consensus_extrinsics', variables),
+    () =>
+      downloadFullData(
+        apolloClient,
+        ExtrinsicsByBlockIdDocument,
+        'consensus_extrinsics',
+        variables,
+      ),
     [apolloClient, variables],
   )
 
-  const totalCount = useMemo(
-    () =>
-      hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics_aggregate.aggregate
-        ? consensusEntry.value.consensus_extrinsics_aggregate.aggregate.count
-        : 0,
-    [consensusEntry],
-  )
   const pageCount = useMemo(
-    () => countTablePages(totalCount, pagination.pageSize),
-    [totalCount, pagination],
+    () => countTablePages(extrinsicsCount, pagination.pageSize),
+    [extrinsicsCount, pagination],
   )
 
   const noData = useMemo(() => {

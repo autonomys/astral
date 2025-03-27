@@ -188,7 +188,12 @@ export const MyPendingWithdrawals: FC = () => {
   const myPendingWithdrawals = useMemo(
     () =>
       withdrawals
-        .filter((w) => w.account === subspaceAccount && w.withdrawalInShares.shares > BIGINT_ZERO)
+        .filter(
+          (w) =>
+            w.account === subspaceAccount &&
+            w.withdrawalInShares &&
+            w.withdrawalInShares.shares > BIGINT_ZERO,
+        )
         .map((w) => {
           const op = operators.find((o) => o.id === w.operatorId.toString())
           const sharesValue =
@@ -197,14 +202,21 @@ export const MyPendingWithdrawals: FC = () => {
                 BigInt(op.currentTotalShares)
               : BIGINT_ZERO
           const sharesWithdrawAmount = bigNumberToFormattedString(
-            (w.withdrawalInShares.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
+            w.withdrawalInShares
+              ? (w.withdrawalInShares.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER
+              : BIGINT_ZERO,
           )
           const storageFeeWithdrawAmount = bigNumberToFormattedString(
-            (w.withdrawalInShares.storageFeeRefund * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
+            w.withdrawalInShares
+              ? (w.withdrawalInShares.storageFeeRefund * sharesValue) /
+                  SHARES_CALCULATION_MULTIPLIER
+              : BIGINT_ZERO,
           )
-          const total =
-            ((w.withdrawalInShares.shares + w.withdrawalInShares.storageFeeRefund) * sharesValue) /
-            SHARES_CALCULATION_MULTIPLIER
+          const total = w.withdrawalInShares
+            ? ((w.withdrawalInShares.shares + w.withdrawalInShares.storageFeeRefund) *
+                sharesValue) /
+              SHARES_CALCULATION_MULTIPLIER
+            : BIGINT_ZERO
 
           return {
             operatorId: {
@@ -213,21 +225,29 @@ export const MyPendingWithdrawals: FC = () => {
             },
             shares: {
               value: `${sharesWithdrawAmount} ${tokenSymbol}`,
-              tooltip: `Shares: ${w.withdrawalInShares.shares.toString()} - Share value: ${sharesValue} - Total: ${sharesWithdrawAmount}`,
-              sortValue: w.withdrawalInShares.shares,
+              tooltip: w.withdrawalInShares
+                ? `Shares: ${w.withdrawalInShares.shares.toString()} - Share value: ${sharesValue} - Total: ${sharesWithdrawAmount}`
+                : '',
+              sortValue: w.withdrawalInShares ? w.withdrawalInShares.shares : BIGINT_ZERO,
             },
             storageFeeRefund: {
               value: `${storageFeeWithdrawAmount} ${tokenSymbol}`,
-              tooltip: `Storage Fee Refund: ${w.withdrawalInShares.storageFeeRefund.toString()} - Share value: ${sharesValue} - Total: ${storageFeeWithdrawAmount}`,
-              sortValue: w.withdrawalInShares.storageFeeRefund,
+              tooltip: w.withdrawalInShares
+                ? `Storage Fee Refund: ${w.withdrawalInShares.storageFeeRefund.toString()} - Share value: ${sharesValue} - Total: ${storageFeeWithdrawAmount}`
+                : '',
+              sortValue: w.withdrawalInShares ? w.withdrawalInShares.storageFeeRefund : BIGINT_ZERO,
             },
             total: {
               value: `${bigNumberToFormattedString(total.toString())} ${tokenSymbol}`,
               sortValue: total,
             },
             unlockAtConfirmedDomainBlockNumber: {
-              value: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString(),
-              sortValue: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber,
+              value: w.withdrawalInShares
+                ? w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString()
+                : '',
+              sortValue: w.withdrawalInShares
+                ? w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber
+                : BIGINT_ZERO,
             },
           }
         }),

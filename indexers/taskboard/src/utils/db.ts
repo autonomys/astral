@@ -22,35 +22,11 @@ export const entryTypeToTable = (entryType: string): string =>
     .toLowerCase()
     .replace(/^_/, "") + "s";
 
-// Update or insert accounts
-const consensusAccountsQuery = `
-    INSERT INTO consensus.accounts (id, account_id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
-    SELECT DISTINCT ON (id) 
-      id,
-      id as account_id,
-      gen_random_uuid() as _id,
-      nonce,
-      free,
-      reserved,
-      total,
-      created_at,
-      created_at as updated_at,
-      int8range($1::int8, $2::int8) as _block_range
-    FROM consensus.account_histories
-    WHERE _block_range && int8range($1::int8, $2::int8)
-    ON CONFLICT (id) 
-    DO UPDATE SET
-      account_id = EXCLUDED.id,
-      nonce = EXCLUDED.nonce,
-      free = EXCLUDED.free,
-      reserved = EXCLUDED.reserved,
-      total = EXCLUDED.total,
-      created_at = EXCLUDED.created_at,
-      updated_at = EXCLUDED.created_at
-    RETURNING *`;
-
 // Get unique sections from both extrinsics and events
-const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
+export const updateLeaderboardRanking = (
+  sourceTable: string,
+  targetTable: string
+) => `
   WITH aggregated_entries AS (
     SELECT account_id, 
           SUM(value) AS total_value,
@@ -75,29 +51,77 @@ const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
   DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, updated_at = EXCLUDED.updated_at;
 `;
 
-const consensusUpsertAccountQuery = `
-    INSERT INTO consensus.accounts (id, account_id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
-    VALUES ($1, $1, gen_random_uuid(), $2, $3, $4, $5, $6, $6, int8range($7::int8, $7::int8))
-    ON CONFLICT (id) 
-    DO UPDATE SET
-      nonce = $2,
-      free = $3,
-      reserved = $4,
-      total = $5,
-      updated_at = $6
-    RETURNING *`;
+export const STATS_TABLES = ["hourly", "daily", "weekly", "monthly"] as const;
+type StatsTableType = (typeof STATS_TABLES)[number];
 
-interface Queries {
-  consensusAccountsQuery: string;
-  updateLeaderboardRanking: (
-    sourceTable: string,
-    targetTable: string
-  ) => string;
-  consensusUpsertAccountQuery: string;
-}
+const getPostgresTimeUnit = (timeFrame: StatsTableType): string => {
+  const timeUnits = {
+    hourly: "hour",
+    daily: "day",
+    weekly: "week",
+    monthly: "month",
+  } as const;
 
-export const queries: Queries = {
-  consensusAccountsQuery,
-  updateLeaderboardRanking,
-  consensusUpsertAccountQuery,
+  return timeUnits[timeFrame];
 };
+
+export const generateStatsQuery = (timeFrame: StatsTableType) => `
+WITH last_completed_${getPostgresTimeUnit(timeFrame)} AS (
+    SELECT start_date as last_date, cumulated_history_size as last_history_size
+    FROM stats.${timeFrame}
+    WHERE start_date < DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', NOW())
+    ORDER BY start_date DESC
+    LIMIT 2
+), 
+${timeFrame}_stats AS (
+    SELECT 
+        DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', "timestamp") AS ${getPostgresTimeUnit(timeFrame)},
+        MAX(blockchain_size) AS max_blockchain_size,
+        MIN(height) AS start_block,
+        MAX(height) AS end_block,
+        MIN("timestamp") AS start_date,
+        MAX("timestamp") AS end_date,
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM last_completed_${getPostgresTimeUnit(timeFrame)}) THEN
+                MAX(blockchain_size) - (SELECT last_history_size FROM last_completed_${getPostgresTimeUnit(timeFrame)} ORDER BY last_history_size DESC OFFSET 1 LIMIT 1)
+            ELSE MAX(blockchain_size)
+        END AS delta_size
+    FROM consensus.blocks
+    WHERE 
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM last_completed_${getPostgresTimeUnit(timeFrame)}) THEN
+                "timestamp" >= (SELECT last_date FROM last_completed_${getPostgresTimeUnit(timeFrame)} ORDER BY last_date DESC LIMIT 1)
+            ELSE true
+        END
+    GROUP BY DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', "timestamp")
+)
+INSERT INTO stats.${timeFrame} (
+    id,
+    cumulated_history_size,
+    delta_history_size,
+    start_date,
+    start_block,
+    end_date,
+    end_block,
+    updated_at
+)
+SELECT 
+    ${getPostgresTimeUnit(timeFrame)}::text AS id,
+    max_blockchain_size AS cumulated_history_size,
+    COALESCE(delta_size, 0) AS delta_history_size,
+    start_date,
+    start_block,
+    end_date,
+    end_block,
+    NOW() AS updated_at
+FROM ${timeFrame}_stats
+ON CONFLICT (id) DO UPDATE 
+SET 
+    cumulated_history_size = EXCLUDED.cumulated_history_size,
+    delta_history_size = EXCLUDED.delta_history_size,
+    start_date = EXCLUDED.start_date,
+    start_block = EXCLUDED.start_block,
+    end_date = EXCLUDED.end_date,
+    end_block = EXCLUDED.end_block,
+    updated_at = NOW();
+`;

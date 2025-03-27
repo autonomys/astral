@@ -1,6 +1,5 @@
 import { LinkIcon } from '@heroicons/react/24/outline'
-import { getWallets } from '@subwallet/wallet-connect/dotsama/wallets'
-import type { Wallet } from '@subwallet/wallet-connect/types'
+import { getWallets, type Wallet } from '@talismn/connect-wallets'
 import { Modal } from 'components/common/Modal'
 import { SupportedWalletExtension } from 'constants/wallet'
 import useWallet from 'hooks/useWallet'
@@ -36,6 +35,8 @@ const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose }) => {
         return '/images/wallets/polkadot.svg'
       case SupportedWalletExtension.SubwalletJs:
         return '/images/wallets/subwallet.svg'
+      case SupportedWalletExtension.Talisman:
+        return '/images/wallets/talisman.svg'
       case SupportedWalletExtension.Nova:
         return '/images/wallets/nova.svg'
       default:
@@ -51,7 +52,7 @@ const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose }) => {
     >
       <div className='flex items-center gap-3'>
         <Image src={icon} alt={wallet.title} width={32} height={32} />
-        <div className='text-center text-xs font-normal text-gray-900 dark:text-white '>
+        <div className='text-center text-xs font-normal text-gray-900 dark:text-white'>
           {wallet?.title}
         </div>
       </div>

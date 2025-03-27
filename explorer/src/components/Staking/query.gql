@@ -1,0 +1,239 @@
+query NominationsList(
+  $limit: Int!
+  $offset: Int
+  $orderBy: [staking_nominators_order_by!]!
+  $where: staking_nominators_bool_exp
+) {
+  staking_nominators_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_nominators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    account_id
+    domain_id
+    domain {
+      id
+      name
+      last_domain_block_number
+    }
+    operator_id
+    operator {
+      id
+      account_id
+      status
+      raw_status
+      current_total_stake
+      current_total_shares
+      current_share_price
+      apy30d: current_30d_apy
+      apy7d: current_7d_apy
+      apy1d: current_1d_apy
+    }
+    known_shares
+    known_storage_fee_deposit
+    pending_amount
+    pending_storage_fee_deposit
+    pending_effective_domain_epoch
+    total_withdrawal_amounts
+    total_storage_fee_refund
+    unlock_at_confirmed_domain_block_number
+    pending_shares
+    pending_storage_fee_refund
+    total_deposits
+    status
+    created_at
+    updated_at
+    deposits {
+      id
+      amount
+      storage_fee_deposit
+      total_amount
+      timestamp
+      extrinsic_id
+      status
+      created_at
+      updated_at
+    }
+    withdrawals {
+      id
+      shares
+      storage_fee_refund
+      estimated_amount
+      unlocked_amount
+      unlocked_storage_fee
+      timestamp
+      withdraw_extrinsic_id
+      unlock_extrinsic_id
+      status
+      created_at
+      domain_block_number_ready_at
+      unlocked_at
+      updated_at
+    }
+    unlocked_events {
+      id
+      amount
+      storage_fee
+      block_height
+      extrinsic_id
+    }
+  }
+}
+
+query OperatorsList(
+  $limit: Int!
+  $offset: Int
+  $orderBy: [staking_operators_order_by!]!
+  $where: staking_operators_bool_exp
+  $accountId: String
+) {
+  staking_operators_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_operators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    sortId: sort_id
+    accountId: account_id
+    domainId: domain_id
+    domain {
+      id
+      sort_id
+      last_domain_block_number
+    }
+    currentTotalStake: current_total_stake
+    currentStorageFeeDeposit: current_storage_fee_deposit
+    currentTotalShares: current_total_shares
+    yield30d: current_30d_yield
+    yield7d: current_7d_yield
+    yield1d: current_1d_yield
+    apy30d: current_30d_apy
+    apy7d: current_7d_apy
+    apy1d: current_1d_apy
+    currentSharePrice: current_share_price
+    minimumNominatorStake: minimum_nominator_stake
+    nominationTax: nomination_tax
+    signingKey: signing_key
+    status
+    rawStatus: raw_status
+    totalDeposits: total_deposits
+    totalEstimatedWithdrawals: total_estimated_withdrawals
+    totalWithdrawals: total_withdrawals
+    totalTaxCollected: total_tax_collected
+    totalRewardsCollected: total_rewards_collected
+    bundleCount: bundle_count
+    lastBundleAt: last_bundle_at
+    nominatorsAggregate: nominators_aggregate {
+      aggregate {
+        count
+      }
+    }
+    depositsCount: total_deposits_count
+    withdrawalsCount: total_withdrawals_count
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}
+
+query OperatorById($operatorId: String!) {
+  staking_operators_by_pk(id: $operatorId) {
+    id
+    account_id
+    domain_id
+    domain {
+      id
+      sort_id
+    }
+    bundle_count
+    current_epoch_rewards
+    current_total_stake
+    current_total_shares
+    current_share_price
+    current_storage_fee_deposit
+    minimum_nominator_stake
+    total_rewards_collected
+    total_tax_collected
+    nomination_tax
+    signing_key
+    status
+    raw_status
+    last_bundle_at
+    updated_at
+    nominators_aggregate {
+      aggregate {
+        count
+      }
+    }
+    total_deposits_count
+    total_withdrawals_count
+  }
+}
+
+query OperatorNominatorsById(
+  $limit: Int!
+  $offset: Int
+  $orderBy: [staking_nominators_order_by!]!
+  $where: staking_nominators_bool_exp
+) {
+  staking_nominators_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_nominators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    account_id
+    domain_id
+    known_shares
+    current_total_stake
+    current_storage_fee_deposit
+    total_deposits
+    total_withdrawals
+  }
+}
+
+query NominatorsConnection(
+  $limit: Int!
+  $offset: Int
+  $orderBy: [staking_nominators_order_by!]!
+  $where: staking_nominators_bool_exp
+) {
+  staking_nominators_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_nominators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    known_shares
+    account_id
+    domain_id
+    operator {
+      id
+      account_id
+      domain_id
+      current_epoch_rewards
+      current_total_stake
+      current_total_shares
+      current_share_price
+      minimum_nominator_stake
+      nomination_tax
+      signing_key
+      status
+      raw_status
+      updated_at
+    }
+    updated_at
+  }
+}
+
+query DomainsLastBlock {
+  staking_domains {
+    id
+    last_domain_block_number
+    completed_epoch
+  }
+}

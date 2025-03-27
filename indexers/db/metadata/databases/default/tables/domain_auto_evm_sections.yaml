@@ -1,0 +1,32 @@
+table:
+  name: sections
+  schema: domain_auto_evm
+array_relationships:
+  - name: event_modules
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: event_modules
+          schema: domain_auto_evm
+  - name: extrinsic_modules
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: extrinsic_modules
+          schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - section
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""

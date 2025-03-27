@@ -1,19 +1,45 @@
 import { giveDiscordRole } from './utils'
 
-export const verifyDiscordFarmerRole = async (roles: string[]) => {
-  if (!process.env.DISCORD_GUILD_ROLE_ID_FARMER)
+export const verifyMainnetDiscordFarmerRole = async (roles: string[]) => {
+  if (!process.env.MAINNET_DISCORD_GUILD_ROLE_ID_FARMER)
     throw new Error('No Discord guild role ID for farmer')
-  const { DISCORD_GUILD_ROLE_ID_FARMER } = process.env
+  const { MAINNET_DISCORD_GUILD_ROLE_ID_FARMER } = process.env
 
   // Check if the user has the farmer role
-  return roles.includes(DISCORD_GUILD_ROLE_ID_FARMER)
+  return roles.includes(MAINNET_DISCORD_GUILD_ROLE_ID_FARMER)
 }
 
-export const giveDiscordFarmerRole = async (userId: string) => {
-  if (!process.env.DISCORD_GUILD_ROLE_ID_FARMER)
+export const verifyTaurusDiscordFarmerRole = async (roles: string[]) => {
+  if (!process.env.TAURUS_DISCORD_GUILD_ROLE_ID_FARMER)
     throw new Error('No Discord guild role ID for farmer')
-  const { DISCORD_GUILD_ROLE_ID_FARMER } = process.env
+  const { TAURUS_DISCORD_GUILD_ROLE_ID_FARMER } = process.env
+
+  // Check if the user has the farmer role
+  return roles.includes(TAURUS_DISCORD_GUILD_ROLE_ID_FARMER)
+}
+
+export const giveMainnetDiscordFarmerRole = async (userId: string) => {
+  if (!process.env.MAINNET_DISCORD_GUILD_ROLE_ID_FARMER)
+    throw new Error('No Discord guild role ID for farmer')
+  const { MAINNET_DISCORD_GUILD_ROLE_ID_FARMER } = process.env
 
   // Add the farmer role to the user
-  await giveDiscordRole(userId, DISCORD_GUILD_ROLE_ID_FARMER, 'Give the user the farmer role')
+  await giveDiscordRole(
+    userId,
+    MAINNET_DISCORD_GUILD_ROLE_ID_FARMER,
+    'Give the user the farmer role',
+  )
+}
+
+export const giveTaurusDiscordFarmerRole = async (userId: string) => {
+  if (!process.env.TAURUS_DISCORD_GUILD_ROLE_ID_FARMER)
+    throw new Error('No Discord guild role ID for farmer')
+  const { TAURUS_DISCORD_GUILD_ROLE_ID_FARMER } = process.env
+
+  // Add the farmer role to the user
+  await giveDiscordRole(
+    userId,
+    TAURUS_DISCORD_GUILD_ROLE_ID_FARMER,
+    'Give the user the farmer role',
+  )
 }

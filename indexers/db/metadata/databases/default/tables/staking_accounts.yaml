@@ -14,11 +14,14 @@ select_permissions:
         - current_total_shares
         - current_total_stake
         - total_deposits
+        - total_deposits_count
         - total_estimated_withdrawals
         - total_tax_collected
         - total_withdrawals
+        - total_withdrawals_count
         - updated_at
         - id
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

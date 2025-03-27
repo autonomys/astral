@@ -5,7 +5,6 @@ import { EXTERNAL_ROUTES } from 'constants/routes'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
-// import { ClaimStakingToken } from './Actions/ClaimStakingToken'
 import { ConnectDiscord } from './Actions/ConnectDiscord'
 import { JoinDiscord } from './Actions/JoinDiscord'
 import { VerifyWalletOwnership } from './Actions/VerifyWalletOwnership'
@@ -22,7 +21,7 @@ const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
         <div className='flex flex-col items-center gap-4'>
           <div className='grid grid-cols-1 gap-4'>
             <Accordion title='How to become a farmer?'>
-              <Link href={EXTERNAL_ROUTES.docs + 'docs/category/farming/'} target='_blank'>
+              <Link href={EXTERNAL_ROUTES.docs + 'category/farming/'} target='_blank'>
                 Please refer to the farming documentation on the Subspace website.
               </Link>
             </Accordion>
@@ -74,19 +73,39 @@ export const GetDiscordRoles: FC = () => {
       <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
         <Accordion title='Your verified roles on Discord'>
           <List>
-            {session?.user?.discord?.vcs.roles.farmer && (
-              <StyledListItem title='You are a Verified Farmer on Discord'>🌾</StyledListItem>
+            {session?.user?.discord?.vcs.roles.mainnetFarmer && (
+              <StyledListItem title='You are a Verified Mainnet Farmer on Discord'>
+                🌾
+              </StyledListItem>
             )}
-            {session?.user?.discord?.vcs.roles.operator && (
-              <StyledListItem title='You are a Verified Nominator on Discord'>🌐</StyledListItem>
+            {session?.user?.discord?.vcs.roles.mainnetOperator && (
+              <StyledListItem title='You are a Verified Mainnet Operator on Discord'>
+                🌐
+              </StyledListItem>
             )}
-            {session?.user?.discord?.vcs.roles.nominator && (
-              <StyledListItem title='You are a Verified Operator on Discord'>🤝</StyledListItem>
+            {session?.user?.discord?.vcs.roles.mainnetNominator && (
+              <StyledListItem title='You are a Verified Mainnet Nominator on Discord'>
+                🤝
+              </StyledListItem>
+            )}
+            {session?.user?.discord?.vcs.roles.taurusFarmer && (
+              <StyledListItem title='You are a Verified Taurus Farmer on Discord'>
+                🌾
+              </StyledListItem>
+            )}
+            {session?.user?.discord?.vcs.roles.taurusOperator && (
+              <StyledListItem title='You are a Verified Taurus Operator on Discord'>
+                🌐
+              </StyledListItem>
+            )}
+            {session?.user?.discord?.vcs.roles.taurusNominator && (
+              <StyledListItem title='You are a Verified Taurus Nominator on Discord'>
+                🤝
+              </StyledListItem>
             )}
             <VerifyWalletOwnership />
             <ConnectDiscord />
           </List>
-          {/* <ClaimStakingToken /> */}
         </Accordion>
         <ExplainerLinkAndModal />
       </div>

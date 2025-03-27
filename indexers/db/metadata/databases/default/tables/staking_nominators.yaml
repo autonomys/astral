@@ -30,6 +30,15 @@ object_relationships:
           name: operators
           schema: staking
 array_relationships:
+  - name: deposit_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: nominator_id
+        insertion_order: null
+        remote_table:
+          name: deposit_events
+          schema: staking
   - name: deposits
     using:
       manual_configuration:
@@ -38,6 +47,24 @@ array_relationships:
         insertion_order: null
         remote_table:
           name: deposits
+          schema: staking
+  - name: unlocked_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: nominator_id
+        insertion_order: null
+        remote_table:
+          name: unlocked_events
+          schema: staking
+  - name: withdraw_events
+    using:
+      manual_configuration:
+        column_mapping:
+          id: nominator_id
+        insertion_order: null
+        remote_table:
+          name: withdraw_events
           schema: staking
   - name: withdrawals
     using:
@@ -81,8 +108,8 @@ select_permissions:
         - domain_id
         - id
         - operator_id
-        - pending_action
         - status
       filter: {}
+      limit: 50
       allow_aggregations: true
     comment: ""

@@ -2,23 +2,21 @@
 
 import { useApolloClient } from '@apollo/client'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
-import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
+import { DomainsListDocument, DomainsListQuery, DomainsListQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { useTableStates } from 'states/tables'
-import type { Cell, DomainsFilters, TableSettingsTabs } from 'types/table'
+import { useTableSettings } from 'states/tables'
+import type { Cell, DomainsFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import {
   bigNumberToFormattedString,
@@ -30,34 +28,27 @@ import { AccountIconWithLink } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
-import { QUERY_DOMAIN_LIST } from './query'
 
 type Row = DomainsListQuery['staking_domains'][0]
 const TABLE = 'domains'
 
 export const DomainsList: FC = () => {
   const { ref, inView } = useInView()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
-  const [pagination, setPagination] = useState({
-    pageSize: PAGE_SIZE,
-    pageIndex: 0,
-  })
   useDomainsData()
   useConsensusData()
   const { network, section, tokenSymbol, tokenDecimals } = useIndexers()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
-  const availableColumns = useTableStates((state) => state[TABLE].columns)
-  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
-  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
-  const filters = useTableStates((state) => state[TABLE].filters) as DomainsFilters
-  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
-  const setColumns = useTableStates((state) => state.setColumns)
-  const setFilters = useTableStates((state) => state.setFilters)
-  const showSettings = useTableStates((state) => state.showSettings)
-  const hideSettings = useTableStates((state) => state.hideSettings)
-  const resetSettings = useTableStates((state) => state.resetSettings)
-  const showReset = useTableStates((state) => state.showReset)
+  const {
+    pagination,
+    sorting,
+    selectedColumns,
+    filters,
+    orderBy,
+    whereForSearch,
+    onPaginationChange,
+    onSortingChange,
+  } = useTableSettings<DomainsFilters>(TABLE)
 
   const columns = useMemo(
     () =>
@@ -87,6 +78,7 @@ export const DomainsList: FC = () => {
                 </span>
               }
               direction='bottom'
+              className='max-w-[650px]'
             >
               <div>{capitalizeFirstLetter(row.original.name)}</div>
             </Tooltip>
@@ -94,7 +86,6 @@ export const DomainsList: FC = () => {
         ),
         runtimeId: ({ row }: Cell<Row>) => row.original.runtimeId.toString(),
         runtime: ({ row }: Cell<Row>) => row.original.runtime,
-        runtimeInfo: ({ row }: Cell<Row>) => row.original.runtimeInfo,
         completedEpoch: ({ row }: Cell<Row>) => (
           <div>
             <Tooltip
@@ -246,115 +237,102 @@ export const DomainsList: FC = () => {
           numberFormattedString(row.original.accumulatedEpochRewards),
         accumulatedEpochShares: ({ row }: Cell<Row>) =>
           numberFormattedString(row.original.accumulatedEpochShares),
-        currentEpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.currentEpochDuration),
-        lastEpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.currentEpochDuration),
-        last6EpochsDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.last6EpochsDuration),
-        last144EpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.last144EpochDuration),
-        last1kEpochDuration: ({ row }: Cell<Row>) =>
-          numberFormattedString(row.original.last1kEpochDuration),
+        // currentEpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.currentEpochDuration),
+        // lastEpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.currentEpochDuration),
+        // last6EpochsDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.last6EpochsDuration),
+        // last144EpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.last144EpochDuration),
+        // last1kEpochDuration: ({ row }: Cell<Row>) =>
+        //   numberFormattedString(row.original.last1kEpochDuration),
       }),
     [selectedColumns, network, section, tokenSymbol],
   )
 
-  const orderBy = useMemo(
-    () =>
-      sorting && sorting.length > 0
-        ? sorting[0].id.endsWith('aggregate')
-          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
-          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
-        : { id: OrderBy.Asc },
-    [sorting],
+  const where = useMemo(
+    () => ({
+      ...whereForSearch,
+      // Total Stake
+      ...((filters.totalStakeMin || filters.totalStakeMax) && {
+        // eslint-disable-next-line camelcase
+        current_total_stake: {
+          ...(filters.totalStakeMin && {
+            _gte: BigInt(
+              Math.floor(parseFloat(filters.totalStakeMin) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+          ...(filters.totalStakeMax && {
+            _lte: BigInt(
+              Math.floor(parseFloat(filters.totalStakeMax) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+        },
+      }),
+      // Total Deposits
+      ...((filters.totalDepositsMin || filters.totalDepositsMax) && {
+        // eslint-disable-next-line camelcase
+        total_deposits: {
+          ...(filters.totalDepositsMin && {
+            _gte: BigInt(
+              Math.floor(parseFloat(filters.totalDepositsMin) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+          ...(filters.totalDepositsMax && {
+            _lte: BigInt(
+              Math.floor(parseFloat(filters.totalDepositsMax) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+        },
+      }),
+      // Total Rewards Collected
+      ...((filters.totalRewardsCollectedMin || filters.totalRewardsCollectedMax) && {
+        // eslint-disable-next-line camelcase
+        total_rewards_collected: {
+          ...(filters.totalRewardsCollectedMin && {
+            _gte: BigInt(
+              Math.floor(parseFloat(filters.totalRewardsCollectedMin) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+          ...(filters.totalRewardsCollectedMax && {
+            _lte: BigInt(
+              Math.floor(parseFloat(filters.totalRewardsCollectedMax) * 10 ** tokenDecimals),
+            ).toString(),
+          }),
+        },
+      }),
+      // Deposit Count
+      ...((filters.depositsCountMin || filters.depositsCountMax) && {
+        // eslint-disable-next-line camelcase
+        deposits_aggregate: {
+          count: {
+            predicate: {
+              ...(filters.depositsCountMin && { _gte: parseFloat(filters.depositsCountMin) }),
+              ...(filters.depositsCountMax && { _lte: parseFloat(filters.depositsCountMax) }),
+            },
+          },
+        },
+      }),
+      // Completed Epoch
+      ...((filters.completedEpochMin || filters.completedEpochMax) && {
+        // eslint-disable-next-line camelcase
+        completed_epoch: {
+          ...(filters.completedEpochMin && { _gte: filters.completedEpochMin }),
+          ...(filters.completedEpochMax && { _lte: filters.completedEpochMax }),
+        },
+      }),
+      // Bundle Count
+      ...((filters.bundleCountMin || filters.bundleCountMax) && {
+        // eslint-disable-next-line camelcase
+        bundle_count: {
+          ...(filters.bundleCountMin && { _gte: filters.bundleCountMin }),
+          ...(filters.bundleCountMax && { _lte: filters.bundleCountMax }),
+        },
+      }),
+    }),
+    [filters, tokenDecimals, whereForSearch],
   )
-
-  const where = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conditions: Record<string, any> = {}
-
-    // Add search conditions
-    availableColumns
-      .filter((column) => column.searchable)
-      .forEach((column) => {
-        const searchKey = `search-${column.name}` as keyof DomainsFilters
-        const searchValue = filters[searchKey]
-        if (searchValue) {
-          conditions[column.name] = { _ilike: `%${searchValue}%` }
-        }
-      })
-
-    // Total Stake
-    if (filters.totalStakeMin || filters.totalStakeMax) {
-      conditions['current_total_stake'] = {}
-      if (filters.totalStakeMin) {
-        conditions.current_total_stake._gte = BigInt(
-          Math.floor(parseFloat(filters.totalStakeMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.totalStakeMax) {
-        conditions.current_total_stake._lte = BigInt(
-          Math.floor(parseFloat(filters.totalStakeMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Total Deposits
-    if (filters.totalDepositsMin || filters.totalDepositsMax) {
-      conditions['total_deposits'] = {}
-      if (filters.totalDepositsMin) {
-        conditions.total_deposits._gte = BigInt(
-          Math.floor(parseFloat(filters.totalDepositsMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.totalDepositsMax) {
-        conditions.total_deposits._lte = BigInt(
-          Math.floor(parseFloat(filters.totalDepositsMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Total Rewards Collected
-    if (filters.totalRewardsCollectedMin || filters.totalRewardsCollectedMax) {
-      conditions['total_rewards_collected'] = {}
-      if (filters.totalRewardsCollectedMin) {
-        conditions.total_rewards_collected._gte = BigInt(
-          Math.floor(parseFloat(filters.totalRewardsCollectedMin) * 10 ** tokenDecimals),
-        ).toString()
-      }
-      if (filters.totalRewardsCollectedMax) {
-        conditions.total_rewards_collected._lte = BigInt(
-          Math.floor(parseFloat(filters.totalRewardsCollectedMax) * 10 ** tokenDecimals),
-        ).toString()
-      }
-    }
-
-    // Deposit Count
-    if (filters.depositsCountMin || filters.depositsCountMax) {
-      conditions['deposits_aggregate'] = { count: { predicate: {} } }
-      if (filters.depositsCountMin)
-        conditions.deposits_aggregate.count.predicate._gte = filters.depositsCountMin
-      if (filters.depositsCountMax)
-        conditions.deposits_aggregate.count.predicate._lte = filters.depositsCountMax
-    }
-
-    // Completed Epoch
-    if (filters.completedEpochMin || filters.completedEpochMax) {
-      conditions['completed_epoch'] = {}
-      if (filters.completedEpochMin) conditions.completed_epoch._gte = filters.completedEpochMin
-      if (filters.completedEpochMax) conditions.completed_epoch._lte = filters.completedEpochMax
-    }
-
-    // Bundle Count
-    if (filters.bundleCountMin || filters.bundleCountMax) {
-      conditions['bundle_count'] = {}
-      if (filters.bundleCountMin) conditions.bundle_count._gte = filters.bundleCountMin
-      if (filters.bundleCountMax) conditions.bundle_count._lte = filters.bundleCountMax
-    }
-
-    return conditions
-  }, [availableColumns, filters, tokenDecimals])
 
   const variables: DomainsListQueryVariables = useMemo(
     () => ({
@@ -367,7 +345,7 @@ export const DomainsList: FC = () => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<DomainsListQuery, DomainsListQueryVariables>(
-    QUERY_DOMAIN_LIST,
+    DomainsListDocument,
     {
       variables,
       skip: !inFocus,
@@ -382,10 +360,11 @@ export const DomainsList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_DOMAIN_LIST, TABLE, {
+      downloadFullData(apolloClient, DomainsListDocument, 'staking_' + TABLE, {
         orderBy,
+        where,
       }),
-    [apolloClient, orderBy],
+    [apolloClient, orderBy, where],
   )
 
   const domainsList = useMemo(
@@ -408,27 +387,6 @@ export const DomainsList: FC = () => {
     return null
   }, [domains])
 
-  const handleFilterChange = useCallback(
-    (filterName: string, value: string | boolean) => {
-      setFilters(TABLE, {
-        ...filters,
-        [filterName]: value,
-      })
-    },
-    [filters, setFilters],
-  )
-
-  const handleClickOnColumnToEditTable = useCallback(
-    (column: string, checked: boolean) =>
-      checked
-        ? setColumns(TABLE, [...selectedColumns, column])
-        : setColumns(
-            TABLE,
-            selectedColumns.filter((c) => c !== column),
-          ),
-    [selectedColumns, setColumns],
-  )
-
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
@@ -436,31 +394,17 @@ export const DomainsList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
-        <TableSettings
-          tableName={capitalizeFirstLetter(TABLE)}
-          totalCount={totalCount}
-          availableColumns={availableColumns}
-          selectedColumns={selectedColumns}
-          filters={filters}
-          showTableSettings={showTableSettings}
-          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
-          hideSettings={() => hideSettings(TABLE)}
-          handleColumnChange={handleClickOnColumnToEditTable}
-          handleFilterChange={handleFilterChange}
-          filterOptions={filtersOptions}
-          handleReset={() => resetSettings(TABLE)}
-          showReset={showReset(TABLE)}
-        />
+        <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
         {!loading && domainsList ? (
           <SortedTable
             data={domainsList}
             columns={columns}
             showNavigation={true}
             sorting={sorting}
-            onSortingChange={setSorting}
+            onSortingChange={onSortingChange}
             pagination={pagination}
             pageCount={pageCount}
-            onPaginationChange={setPagination}
+            onPaginationChange={onPaginationChange}
             filename='staking-domains-list'
             fullDataDownloader={fullDataDownloader}
           />

@@ -6,9 +6,10 @@ export const verifyToken = () => {
   if (!process.env.NEXTAUTH_SECRET) throw new Error('No secret')
   const { NEXTAUTH_SECRET } = process.env
 
-  const { get } = cookies()
+  const searchParams = cookies()
   const sessionToken =
-    get('__Secure-next-auth.session-token')?.value || get('next-auth.session-token')?.value
+    searchParams.get('__Secure-next-auth.session-token')?.value ||
+    searchParams.get('next-auth.session-token')?.value
   if (!sessionToken) throw new Error('No session token')
 
   const session = jsonwebtoken.verify(sessionToken, NEXTAUTH_SECRET, {

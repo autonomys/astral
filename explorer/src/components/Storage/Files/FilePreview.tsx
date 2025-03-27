@@ -1,105 +1,91 @@
 import { LockClosedIcon } from '@heroicons/react/24/outline'
 import { Arguments } from 'components/common/Arguments'
-import { Spinner } from 'components/common/Spinner'
-import { GetCidQuery, GetCidQueryVariables } from 'gql/graphql'
-import { useIndexersQuery } from 'hooks/useIndexersQuery'
-import { useWindowFocus } from 'hooks/useWindowFocus'
+import { Modal } from 'components/common/Modal'
 import Image from 'next/image'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useInView } from 'react-intersection-observer'
-import { detectFileType, extractFileData } from 'utils/file'
-import { QUERY_CID } from './query'
-
+import { FC, useCallback, useMemo, useState } from 'react'
+import { FileData } from 'utils/file'
 type Props = {
-  cid: string
+  fileData: FileData
+  fileType: string
+  fileUrl: string
+  onConfirm: (password: string) => void
 }
 
-type PreviewData = {
-  type: string
-  data: ArrayBuffer
-  isEncrypted: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  uploadOptions: any
+const PasswordModal: FC<{
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: (password: string) => void
+}> = ({ isOpen, onClose, onConfirm }) => {
+  const [password, setPassword] = useState('')
+
+  const handleConfirm = useCallback(() => {
+    onConfirm(password)
+    onClose()
+    setPassword('')
+  }, [onConfirm, onClose, setPassword, password])
+
+  return (
+    <Modal title='Enter Decryption Password' isOpen={isOpen} onClose={onClose}>
+      <div className='text-center'>
+        <input
+          id='password'
+          type='password'
+          placeholder='Enter Password'
+          className='w-full rounded-full border p-2 text-gray-900 dark:border-gray-700 dark:bg-blueAccent dark:text-white'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          className='mt-4 rounded-full bg-buttonLightFrom px-4 py-2 font-semibold leading-4 text-white dark:bg-primaryAccent'
+          onClick={handleConfirm}
+        >
+          Confirm
+        </button>
+      </div>
+    </Modal>
+  )
 }
 
-export const FilePreview: FC<Props> = ({ cid }) => {
-  const { ref, inView } = useInView()
-  const inFocus = useWindowFocus()
-  const [rawData, setRawData] = useState<PreviewData | null>(null)
-  const [imageSrc, setImageSrc] = useState<string | null>(null)
-
-  const { loading, data } = useIndexersQuery<GetCidQuery, GetCidQueryVariables>(QUERY_CID, {
-    variables: { cid: cid ?? '' },
-    skip: !inFocus || !inView,
-  })
-
-  const fetchData = useCallback(async () => {
-    if (data) {
-      const { dataArrayBuffer, isEncrypted, uploadOptions } = extractFileData(data)
-      const fileType = await detectFileType(dataArrayBuffer)
-      setRawData({
-        type: fileType,
-        data: dataArrayBuffer,
-        isEncrypted,
-        uploadOptions,
-      })
-    }
-  }, [data])
-
-  const getPreviewUrl = useCallback((rawData: PreviewData) => {
-    if (rawData) {
-      if (rawData.type.startsWith('image/svg')) {
-        const url = `data:${rawData.type};charset=utf-8,${encodeURIComponent(Buffer.from(rawData.data).toString('utf-8'))}`
-        setImageSrc(url)
-        return () => {}
-      } else {
-        const url = URL.createObjectURL(new Blob([rawData.data], { type: rawData.type }))
-        setImageSrc(url)
-        return () => {
-          URL.revokeObjectURL(url)
-        }
-      }
-    }
-  }, [])
-
+export const FilePreview: FC<Props> = ({ fileData, fileType, fileUrl, onConfirm }) => {
+  const [isModalOpen, setModalOpen] = useState(false)
   const preview = useMemo(() => {
-    if (!imageSrc) return <></>
+    if (!fileUrl) return <></>
 
     switch (true) {
-      case rawData?.isEncrypted:
+      case fileData?.isEncrypted:
         return (
           <div className='flex items-center'>
             <LockClosedIcon className={'ml-2 size-6 shrink-0'} stroke='#DE67E4' />
             <p className='text-sm font-medium text-grayDarker dark:text-white md:text-xl'>
-              No preview available for encrypted files
+              No preview due to the file been encrypted.
             </p>
           </div>
         )
-      case rawData?.type.startsWith('image'):
+      case fileType?.startsWith('image'):
         return (
           <Image
-            src={imageSrc}
+            src={fileUrl}
             alt='File Preview'
             width={520}
             height={520}
             style={{ width: '50%', height: 'auto' }}
           />
         )
-      case rawData?.type.startsWith('application/pdf'):
-      case rawData?.type.startsWith('application/ai'):
+      case fileType?.startsWith('application/pdf'):
+      case fileType?.startsWith('application/ai'):
         return (
-          <object data={imageSrc} type={rawData?.type} width='100%' height='800px'>
+          <object data={fileUrl} type={fileType ?? ''} width='100%' height='800px'>
             <p>
-              Alternative text - include a link <a href={imageSrc}>to the PDF!</a>
+              Alternative text - include a link <a href={fileUrl}>to the PDF!</a>
             </p>
           </object>
         )
-      case rawData?.type && rawData !== null: {
+      case fileType && fileData !== null: {
         try {
           return (
-            <div className='border-blueLight bg-blueLight mb-4 w-full break-all rounded-lg border p-4 shadow dark:border-none dark:bg-white/10'>
+            <div className='mb-4 w-full break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10'>
               <Arguments
-                args={JSON.parse(Buffer.from(rawData.data).toString('utf-8'))}
+                args={JSON.parse(Buffer.from(fileData.dataArrayBuffer).toString('utf-8'))}
                 collapseAtEntry={25}
               />
             </div>
@@ -111,21 +97,30 @@ export const FilePreview: FC<Props> = ({ cid }) => {
       default:
         return <div>No preview available</div>
     }
-  }, [imageSrc, rawData])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  useEffect(() => {
-    if (rawData) getPreviewUrl(rawData)
-  }, [rawData, getPreviewUrl])
-
+  }, [fileUrl, fileData, fileType])
   return (
-    <div className='flex justify-center' ref={ref}>
-      {loading && <Spinner isXSmall />}
-      {imageSrc && preview}
-      {!loading && !imageSrc && <p>No preview available.</p>}
-    </div>
+    <>
+      <div className='flex justify-center'>
+        <div className='mb-4 flex w-full items-center justify-center break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10'>
+          {fileUrl && preview}
+          {!fileUrl && <p>No preview available.</p>}
+          {fileData?.isEncrypted && (
+            <div className='ml-4 flex justify-center'>
+              <button
+                onClick={() => setModalOpen(true)}
+                className='block rounded-lg bg-buttonLightFrom px-3 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
+              >
+                Decrypt File
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+      <PasswordModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={onConfirm}
+      />
+    </>
   )
 }

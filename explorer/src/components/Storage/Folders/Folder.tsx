@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { FolderByIdQuery, FolderByIdQueryVariables } from 'gql/graphql'
+import { FolderByIdDocument, FolderByIdQuery, FolderByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -14,7 +14,6 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { CIDParam } from 'types/app'
 import { FolderDetailsCard } from './FolderDetailsCard'
 import { FolderDetailsTab } from './FolderDetailsTab'
-import { QUERY_FOLDER_BY_ID } from './query'
 
 export const Folder: FC = () => {
   const { ref, inView } = useInView()
@@ -23,7 +22,7 @@ export const Folder: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1440px)')
 
   const { loading, setIsVisible } = useIndexersQuery<FolderByIdQuery, FolderByIdQueryVariables>(
-    QUERY_FOLDER_BY_ID,
+    FolderByIdDocument,
     {
       variables: { cid: cid ?? '' },
       skip: !inFocus,

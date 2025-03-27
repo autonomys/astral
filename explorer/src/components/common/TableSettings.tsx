@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import {
   Bars3Icon,
   FunnelIcon,
@@ -5,45 +6,50 @@ import {
   PencilIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import React, { useState } from 'react'
-import { AvailableColumn, FilterOption } from 'types/table'
+import React, { useMemo, useState } from 'react'
+import { TableName, useTableSettings } from 'states/tables'
+import { FilterOption } from 'types/table'
 import { numberWithCommas } from 'utils/number'
 
 interface TableSettingsProps {
-  tableName: string
+  table: TableName
+  tableName?: string
   totalCount?: number
-  availableColumns: AvailableColumn[]
-  selectedColumns: string[]
-  filterOptions: FilterOption[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: Record<string, any>
-  showTableSettings: string | null
   addExtraIcons?: React.ReactNode
-  showReset: boolean
-  showSettings: (setting: 'columns' | 'filters' | 'search') => void
-  hideSettings: () => void
-  handleColumnChange: (column: string, checked: boolean) => void
-  handleFilterChange: (filterName: string, value: string | boolean) => void
-  handleReset: () => void
+  overrideFiltersOptions?: FilterOption[]
 }
 
 export const TableSettings: React.FC<TableSettingsProps> = ({
+  table,
   tableName,
   totalCount,
-  availableColumns,
-  selectedColumns,
-  filterOptions,
   filters,
-  showTableSettings,
   addExtraIcons,
-  showReset,
-  showSettings,
-  hideSettings,
-  handleColumnChange,
-  handleFilterChange,
-  handleReset,
+  overrideFiltersOptions,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  if (!tableName) {
+    tableName = capitalizeFirstLetter(table)
+  }
+  const {
+    availableColumns,
+    selectedColumns,
+    filtersOptions: _filtersOptions,
+    showTableSettings,
+    showReset,
+    handleFilterChange,
+    handleColumnChange,
+    showSettings,
+    hideSettings,
+    handleReset,
+  } = useTableSettings(table)
+
+  const filtersOptions = useMemo(
+    () => overrideFiltersOptions || _filtersOptions,
+    [overrideFiltersOptions, _filtersOptions],
+  )
 
   return (
     <div className='mb-4 w-full' id='accordion-open' data-accordion='open'>
@@ -53,7 +59,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             {tableName} {totalCount && `(${numberWithCommas(totalCount)})`}
           </span>
           <div className='flex items-center'>
-            <div className='sm:flex'>
+            <div className='flex'>
               {addExtraIcons && addExtraIcons}
               <MagnifyingGlassIcon
                 className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
@@ -106,7 +112,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
         id='accordion-open-body-1'
         aria-labelledby='accordion-open-heading-1'
       >
-        <div className='dark:bg-boxDark w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none'>
+        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-boxDark'>
           <div>
             <div className='mt-4'>
               <div className='flex flex-col gap-3'>
@@ -171,8 +177,8 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                     <h4 className='font-semibold text-grayDark dark:text-white'>Filters</h4>
                     <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                       <ul className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3'>
-                        {filterOptions &&
-                          filterOptions.map((filter) => (
+                        {filtersOptions &&
+                          filtersOptions.map((filter) => (
                             <li key={filter.key}>
                               {filter.type === 'range' && (
                                 <>
@@ -211,33 +217,63 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                                 <>
                                   <p className='mb-1 block font-medium'>{filter.label}</p>
                                   <div className='mt-4 flex flex-wrap gap-2'>
-                                    {filter.options?.map((option) => (
-                                      <div key={option} className='flex items-center'>
-                                        <input
-                                          type='checkbox'
-                                          id={`${filter.key}-${option}`}
-                                          value={option}
-                                          checked={
-                                            filters[
-                                              `${filter.key}${option.replace(/\s+/g, '')}`
-                                            ] === 'true'
-                                          }
-                                          onChange={(e) =>
-                                            handleFilterChange(
-                                              `${filter.key}${option.replace(/\s+/g, '')}`,
-                                              e.target.checked.toString(),
-                                            )
-                                          }
-                                          className='mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
-                                        />
-                                        <label
-                                          htmlFor={`${filter.key}-${option}`}
-                                          className='text-sm text-gray-700 dark:text-gray-300'
-                                        >
-                                          {option}
-                                        </label>
-                                      </div>
-                                    ))}
+                                    {filter.options?.map((option) => {
+                                      if (typeof option === 'string')
+                                        return (
+                                          <div key={option} className='flex items-center'>
+                                            <input
+                                              type='checkbox'
+                                              id={`${filter.key}-${option}`}
+                                              value={option}
+                                              checked={
+                                                filters[
+                                                  `${filter.key}${option.replace(/\s+/g, '')}`
+                                                ] === 'true'
+                                              }
+                                              onChange={(e) =>
+                                                handleFilterChange(
+                                                  `${filter.key}${option.replace(/\s+/g, '')}`,
+                                                  e.target.checked.toString(),
+                                                )
+                                              }
+                                              className='mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                                            />
+                                            <label
+                                              htmlFor={`${filter.key}-${option}`}
+                                              className='text-sm text-gray-700 dark:text-gray-300'
+                                            >
+                                              {option}
+                                            </label>
+                                          </div>
+                                        )
+                                      return (
+                                        <div key={option.value} className='flex items-center'>
+                                          <input
+                                            type='checkbox'
+                                            id={`${filter.key}-${option.value}`}
+                                            value={option.value}
+                                            checked={
+                                              filters[
+                                                `${filter.key}${option.value.replace(/\s+/g, '')}`
+                                              ] === 'true'
+                                            }
+                                            onChange={(e) =>
+                                              handleFilterChange(
+                                                `${filter.key}${option.value.replace(/\s+/g, '')}`,
+                                                e.target.checked.toString(),
+                                              )
+                                            }
+                                            className='mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                                          />
+                                          <label
+                                            htmlFor={`${filter.key}-${option.value}`}
+                                            className='text-sm text-gray-700 dark:text-gray-300'
+                                          >
+                                            {option.label}
+                                          </label>
+                                        </div>
+                                      )
+                                    })}
                                   </div>
                                 </>
                               )}
@@ -271,6 +307,34 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                                   />
                                 </>
                               )}
+                              {filter.type === 'dropdown' && (
+                                <>
+                                  <label htmlFor={filter.key} className='mb-1 block font-medium'>
+                                    {filter.label}
+                                  </label>
+                                  <select
+                                    id={filter.key}
+                                    className='w-full rounded border p-2 dark:bg-blueAccent dark:text-white'
+                                    value={filters[filter.key] || ''}
+                                    onChange={(e) => handleFilterChange(filter.key, e.target.value)}
+                                  >
+                                    <option value=''>Select {filter.label}</option>
+                                    {filter.options?.map((option) => {
+                                      if (typeof option === 'string')
+                                        return (
+                                          <option key={option} value={option}>
+                                            {capitalizeFirstLetter(option)}
+                                          </option>
+                                        )
+                                      return (
+                                        <option key={option.value} value={option.value}>
+                                          {option.label}
+                                        </option>
+                                      )
+                                    })}
+                                  </select>
+                                </>
+                              )}
                             </li>
                           ))}
                       </ul>
@@ -285,7 +349,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
 
       {mobileMenuOpen && (
         <div className='mt-4 w-full sm:hidden'>
-          <div className='dark:bg-boxDark flex flex-col space-y-2 rounded-[20px] bg-grayLight p-4 shadow dark:border-none dark:to-gradientTo'>
+          <div className='flex flex-col space-y-2 rounded-[20px] bg-grayLight p-4 shadow dark:border-none dark:bg-boxDark dark:to-gradientTo'>
             {addExtraIcons && (
               <div className='mb-1 w-full'>
                 {React.Children.map(addExtraIcons, (child) =>

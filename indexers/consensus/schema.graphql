@@ -1,0 +1,119 @@
+# Core Consensus Entities
+
+type Block @entity {
+  id: ID!
+  sortId: String!
+  height: BigInt!
+  hash: String!
+  timestamp: Date!
+  parentHash: String!
+  specId: String!
+  stateRoot: String!
+  extrinsicsRoot: String!
+  spacePledged: BigInt!
+  blockchainSize: BigInt!
+  extrinsicsCount: Int!
+  eventsCount: Int!
+  logsCount: Int!
+  transfersCount: Int!
+  rewardsCount: Int!
+  blockRewardsCount: Int!
+  voteRewardsCount: Int!
+  transferValue: BigInt!
+  rewardValue: BigInt!
+  blockRewardValue: BigInt!
+  voteRewardValue: BigInt!
+  authorId: String!
+}
+
+type Log @entity {
+  id: ID!
+  sortId: String!
+  blockHeight: BigInt!
+  blockHash: String!
+  indexInBlock: Int!
+  kind: String!
+  value: String
+  timestamp: Date!
+}
+
+type Extrinsic @entity {
+  id: ID!
+  sortId: String!
+  hash: String!
+  blockHeight: BigInt!
+  blockHash: String!
+  section: String!
+  module: String!
+  name: String!
+  indexInBlock: Int!
+  success: Boolean!
+  timestamp: Date!
+  nonce: BigInt!
+  signer: String!
+  signature: String!
+  eventsCount: Int!
+  args: String!
+  error: String!
+  tip: BigInt!
+  fee: BigInt!
+  pos: Int!
+  cid: String
+}
+
+type Event @entity {
+  id: ID!
+  sortId: String!
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  extrinsicHash: String!
+  section: String!
+  module: String!
+  name: String!
+  indexInBlock: BigInt!
+  timestamp: Date!
+  phase: String!
+  pos: Int!
+  args: String!
+  cid: String
+}
+
+# Accounts Entities
+
+type AccountHistory @entity {
+  id: ID!
+  nonce: BigInt!
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt
+  createdAt: BigInt!
+}
+
+type Transfer @entity {
+  id: ID!
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  eventId: String!
+  from: String!
+  fromChain: String!
+  to: String!
+  toChain: String!
+  value: BigInt!
+  fee: BigInt!
+  success: Boolean!
+  timestamp: Date!
+}
+
+type Reward @entity {
+  id: ID!
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  eventId: String!
+  accountId: String!
+  rewardType: String!
+  amount: BigInt!
+  timestamp: Date!
+}

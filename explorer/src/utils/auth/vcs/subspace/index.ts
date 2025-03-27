@@ -1,13 +1,21 @@
-import { QUERY_CHECK_ROLES } from 'components/WalletSideKick/query'
+import { NetworkId } from '@autonomys/auto-utils'
+import { CheckRoleDocument, CheckRoleQuery } from 'gql/graphql'
 import { queryGraphqlServer } from 'utils/queryGraphqlServer'
 
-export const verifySubspaceAccountRoles = async (subspaceAccount: string) => {
+const verifySubspaceAccountRolesForNetwork = async (
+  subspaceAccount: string,
+  network: NetworkId,
+) => {
   try {
-    if (!QUERY_CHECK_ROLES.loc) throw new Error('No query')
+    if (!CheckRoleDocument.loc) throw new Error('No query')
 
-    const data = await queryGraphqlServer(QUERY_CHECK_ROLES.loc.source.body, {
-      subspaceAccount,
-    })
+    const data = await queryGraphqlServer<CheckRoleQuery>(
+      CheckRoleDocument.loc.source.body,
+      {
+        subspaceAccount,
+      },
+      network,
+    )
 
     return {
       farmer: data.isFarmer.length > 0,
@@ -23,3 +31,9 @@ export const verifySubspaceAccountRoles = async (subspaceAccount: string) => {
     }
   }
 }
+
+export const verifySubspaceMainnetAccountRoles = async (subspaceAccount: string) =>
+  verifySubspaceAccountRolesForNetwork(subspaceAccount, NetworkId.MAINNET)
+
+export const verifySubspaceTaurusAccountRoles = async (subspaceAccount: string) =>
+  verifySubspaceAccountRolesForNetwork(subspaceAccount, NetworkId.TAURUS)

@@ -4,6 +4,7 @@ import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants
 import { Routes } from 'constants/routes'
 import {
   OperatorByIdQuery,
+  OperatorNominatorsByIdDocument,
   OperatorNominatorsByIdQuery,
   OperatorNominatorsByIdQueryVariables,
   Order_By as OrderBy,
@@ -19,11 +20,10 @@ import { useConsensusStates } from 'states/consensus'
 import { hasValue, useQueryStates } from 'states/query'
 import { useViewStates } from 'states/view'
 import type { Cell } from 'types/table'
-import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from 'utils/number'
+import { bigNumberToFormattedString, bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { countTablePages } from 'utils/table'
 import { AccountIconWithLink } from '../common/AccountIcon'
 import { Spinner } from '../common/Spinner'
-import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './query'
 
 type Props = {
   operator: OperatorByIdQuery['staking_operators_by_pk']
@@ -66,48 +66,40 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
         ),
       },
       {
-        accessorKey: 'shares',
-        header: 'Stakes',
+        accessorKey: 'current_total_stake',
+        header: 'Current Stake',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
           return (
             <div>
-              {numberWithCommas(
-                limitNumberDecimals(
-                  Number(
-                    Number(
-                      (BigInt(operator.current_total_stake) /
-                        BigInt(operator.current_total_shares)) *
-                        BigInt(row.original.known_shares),
-                    ) /
-                      10 ** 18,
-                  ),
-                ),
-              )}{' '}
-              {tokenSymbol}
+              {bigNumberToFormattedString(row.original.current_total_stake) + ' ' + tokenSymbol}
             </div>
           )
         },
       },
       {
-        accessorKey: 'shares',
-        header: 'Shares',
+        accessorKey: 'current_storage_fee_deposit',
+        header: 'Current Storage Fee Deposit',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>
-            {numberWithCommas(
-              limitNumberDecimals(
-                Number(
-                  Number(
-                    (BigInt(row.original.known_shares) * BigInt(1000000000)) /
-                      BigInt(operator.current_total_shares),
-                  ) / 1000000000,
-                ) * 100,
-              ),
-            )}{' '}
-            %
-          </div>
-        ),
+        cell: ({ row }: Cell<Row>) => {
+          return (
+            <div>
+              {bigNumberToFormattedString(row.original.current_storage_fee_deposit) +
+                ' ' +
+                tokenSymbol}
+            </div>
+          )
+        },
+      },
+      {
+        accessorKey: 'total_deposits',
+        header: 'Total Deposits',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => {
+          return (
+            <div>{bigNumberToFormattedString(row.original.total_deposits) + ' ' + tokenSymbol}</div>
+          )
+        },
       },
       {
         accessorKey: 'owner',
@@ -178,7 +170,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     OperatorNominatorsByIdQuery,
     OperatorNominatorsByIdQueryVariables
   >(
-    QUERY_OPERATOR_NOMINATORS_BY_ID,
+    OperatorNominatorsByIdDocument,
     {
       variables,
       skip: !inFocus,

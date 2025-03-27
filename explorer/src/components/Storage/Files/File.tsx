@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { FileByIdQuery, FileByIdQueryVariables } from 'gql/graphql'
+import { FileByIdDocument, FileByIdQuery, FileByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -14,7 +14,6 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { CIDParam } from 'types/app'
 import { FileDetailsCard } from './FileDetailsCard'
 import { FileDetailsTab } from './FileDetailsTab'
-import { QUERY_FILE_BY_ID } from './query'
 
 export const File: FC = () => {
   const { ref, inView } = useInView()
@@ -23,7 +22,7 @@ export const File: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1440px)')
 
   const { loading, setIsVisible } = useIndexersQuery<FileByIdQuery, FileByIdQueryVariables>(
-    QUERY_FILE_BY_ID,
+    FileByIdDocument,
     {
       variables: { cid: cid ?? '' },
       skip: !inFocus,

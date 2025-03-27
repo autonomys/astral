@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@subwallet/wallet-connect/types'
+import type { WalletAccount } from '@talismn/connect-wallets'
 import type { WalletType } from 'constants/wallet'
 
 export interface WalletAccountWithType extends WalletAccount {
