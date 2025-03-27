@@ -196,7 +196,6 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const handleGetWalletFromExtension = useCallback(
     async (source: string) => {
       const wallet = getWalletBySource(source)
-      const newInjector: InjectedExtension | null = null
       if (wallet) {
         await wallet.enable(process.env.NEXT_PUBLIC_TALESMAN_DAPP_NAME || 'Autonomy Block Explorer')
         if (wallet.extension) setInjector(wallet.extension)
@@ -207,9 +206,9 @@ export const WalletProvider: FC<Props> = ({ children }) => {
           event: 'wallet_get_wallet',
           value: `source:${source}`,
         })
-        return { walletAccounts, newInjector }
+        return { walletAccounts, newInjector: wallet.extension }
       }
-      return { walletAccounts: [], newInjector }
+      return { walletAccounts: [], newInjector: null }
     },
     [setPreferredExtension],
   )

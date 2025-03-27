@@ -207,19 +207,19 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onCloseSidebar }) => {
           </div>
         </div>
         <AccountHeader walletBalance={walletBalance} tokenSymbol={tokenSymbol} />
-        {subspaceAccount && (
+        {sessionSubspaceAccount && (
           <>
             <AccountSummary
-              subspaceAccount={subspaceAccount}
-              actingAccountName={actingAccount.name}
+              subspaceAccount={sessionSubspaceAccount}
+              actingAccountName={actingAccount?.name}
               walletBalance={walletBalance}
               tokenSymbol={tokenSymbol}
             />
-            <PendingTransactions subspaceAccount={subspaceAccount} />
+            <PendingTransactions subspaceAccount={sessionSubspaceAccount} />
             <GetDiscordRoles />
-            <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
-            <LastExtrinsics subspaceAccount={subspaceAccount} />
-            <Leaderboard subspaceAccount={subspaceAccount} />
+            <StakingSummary subspaceAccount={sessionSubspaceAccount} tokenSymbol={tokenSymbol} />
+            <LastExtrinsics subspaceAccount={sessionSubspaceAccount} />
+            <Leaderboard subspaceAccount={sessionSubspaceAccount} />
           </>
         )}
         <div className='flex'>

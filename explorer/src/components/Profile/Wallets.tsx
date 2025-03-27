@@ -5,7 +5,7 @@ import { useProfileStates } from '@/states/profile'
 import { WalletAccountWithType } from '@/types/wallet'
 import { formatAddress } from '@/utils/formatAddress'
 import { sendGAEvent } from '@next/third-parties/google'
-import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
+import { getWalletBySource } from '@talismn/connect-wallets'
 import useWallet from 'hooks/useWallet'
 import { useSession } from 'next-auth/react'
 import { FC, useEffect, useMemo } from 'react'
@@ -42,7 +42,9 @@ export const WalletsPage: FC = () => {
 
     try {
       const walletExtension = getWalletBySource(wallet.source)
-      await walletExtension?.enable()
+      await walletExtension?.enable(
+        process.env.NEXT_PUBLIC_TALESMAN_DAPP_NAME || 'Autonomy Block Explorer',
+      )
       const injector = walletExtension?.extension
       if (!injector) return
 
