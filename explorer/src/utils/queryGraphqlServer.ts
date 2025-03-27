@@ -21,6 +21,7 @@ export const queryGraphqlServer = async <T>(query: string, variables: object, ne
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...header,
       },
       body: JSON.stringify({
         query,

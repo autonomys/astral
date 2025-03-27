@@ -24,7 +24,11 @@ const verifySubspaceAccountRolesForNetwork = async (
     }
   } catch (error) {
     console.error('Failed to fetch if user has any related events:', error)
-    throw new Error('Failed to fetch if user has any related events')
+    return {
+      farmer: false,
+      operator: false,
+      nominator: false,
+    }
   }
 }
 

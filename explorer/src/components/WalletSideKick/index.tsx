@@ -144,7 +144,7 @@ export const WalletSidekick: FC = () => {
 const Drawer: FC<DrawerProps> = ({ isOpen, onCloseSidebar }) => {
   const { push } = useRouter()
   const { network, section } = useIndexers()
-  const { api, actingAccount, subspaceAccount } = useWallet()
+  const { api, actingAccount, sessionSubspaceAccount } = useWallet()
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
 
@@ -180,10 +180,10 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onCloseSidebar }) => {
 
   useEffect(() => {
     loadWalletBalance()
-  }, [api, actingAccount, loadWalletBalance])
+  }, [api, sessionSubspaceAccount, loadWalletBalance])
 
   if (!isOpen) return null
-  if (!actingAccount) return null
+  if (!sessionSubspaceAccount) return null
 
   return (
     // backdrop
@@ -207,19 +207,19 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onCloseSidebar }) => {
           </div>
         </div>
         <AccountHeader walletBalance={walletBalance} tokenSymbol={tokenSymbol} />
-        {subspaceAccount && (
+        {sessionSubspaceAccount && (
           <>
             <AccountSummary
-              subspaceAccount={subspaceAccount}
-              actingAccountName={actingAccount.name}
+              subspaceAccount={sessionSubspaceAccount}
+              actingAccountName={actingAccount?.name}
               walletBalance={walletBalance}
               tokenSymbol={tokenSymbol}
             />
-            <PendingTransactions subspaceAccount={subspaceAccount} />
+            <PendingTransactions subspaceAccount={sessionSubspaceAccount} />
             <GetDiscordRoles />
-            <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
-            <LastExtrinsics subspaceAccount={subspaceAccount} />
-            <Leaderboard subspaceAccount={subspaceAccount} />
+            <StakingSummary subspaceAccount={sessionSubspaceAccount} tokenSymbol={tokenSymbol} />
+            <LastExtrinsics subspaceAccount={sessionSubspaceAccount} />
+            <Leaderboard subspaceAccount={sessionSubspaceAccount} />
           </>
         )}
         <div className='flex'>
