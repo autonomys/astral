@@ -27,6 +27,7 @@ const StorageBanner = () => {
             { title: 'End-to-End Encryption', desc: 'Secure your data with end-to-end encryption', route:EXTERNAL_ROUTES.autoDrive},
             { title: 'Create API Keys', desc: 'API keys to access decentralized storage', route:EXTERNAL_ROUTES.autoDrive },
             { title: 'NPM Support', desc: 'Auto-Drive\'s secure storage via @autonomys/auto-drive', route:EXTERNAL_ROUTES.autoDrivePackage },
+            { title: 'REST API', desc: 'Auto-Drive\'s secure storage via REST API', route:EXTERNAL_ROUTES.autoDriveRestApi },
             { title: 'Auto-DAG Data Structure', desc: 'Uses the Auto-DAG data structure to store data on chain', route:EXTERNAL_ROUTES.autoDagPackage }
           ].map((feature, i) => (
             <Link key={i} href={feature.route} target="_blank" rel="noopener noreferrer">

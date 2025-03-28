@@ -202,6 +202,7 @@ export const EXTERNAL_ROUTES = {
   spaceAcres: 'https://api.github.com/repos/autonomys/space-acres/releases/latest',
   autoDrivePackage: 'https://www.npmjs.com/package/@autonomys/auto-drive',
   autoDagPackage: 'https://www.npmjs.com/package/@autonomys/auto-dag-data',
+  autoDriveRestApi: 'https://mainnet.auto-drive.autonomys.xyz/api/docs',
 }
 
 export const INTERNAL_ROUTES = {
