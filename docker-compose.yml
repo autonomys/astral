@@ -381,6 +381,7 @@ services:
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
+      BULL_BASE_PATH: ${BULL_BASE_PATH}
 
       NETWORK_ID: ${NETWORK_ID}
       LOG_LEVEL: ${LOG_LEVEL}
