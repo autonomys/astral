@@ -10,8 +10,8 @@
     "dev": "export $(grep -v '^#' ../../.env | xargs) && export $(grep -v '^#' ../../.env.dev | xargs) && ts-node-dev src/index.ts"
   },
   "dependencies": {
-    "@autonomys/auto-consensus": "^1.4.0",
-    "@autonomys/auto-utils": "^1.4.0",
+    "@autonomys/auto-consensus": "^1.4.2",
+    "@autonomys/auto-utils": "^1.4.2",
     "@bull-board/api": "^5.23.0",
     "@bull-board/express": "^5.23.0",
     "@bull-board/ui": "^5.23.0",
