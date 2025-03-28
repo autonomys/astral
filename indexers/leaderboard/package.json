@@ -40,7 +40,7 @@
     "@subql/common-substrate": "^4.3.7",
     "@subql/node": "^5.10.0",
     "@subql/types": "^3.12.1",
-    "@types/node": "^22.9.0",
+    "@types/node": "^22.13.13",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.7",
