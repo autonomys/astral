@@ -1,6 +1,6 @@
 table:
-  name: withdrawal_histories
-  schema: staking
+  name: transfers
+  schema: domain_auto_evm
 configuration:
   column_config:
     _id:
@@ -12,20 +12,22 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - success
         - _block_range
-        - _id
-        - account_id
         - block_height
-        - domain_epoch
-        - domain_id
+        - fee
+        - value
+        - block_hash
+        - event_id
+        - extrinsic_id
+        - from
+        - from_chain
         - id
-        - nominator_id
-        - operator_id
-        - shares
-        - storage_fee_refund
+        - to
+        - to_chain
         - timestamp
-        - total_withdrawal_amount
-        - unlock_at_confirmed_domain_block_number
+        - _id
       filter: {}
       limit: 50
+      allow_aggregations: true
     comment: ""

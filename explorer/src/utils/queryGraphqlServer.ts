@@ -4,11 +4,11 @@ import { cookies, headers } from 'next/headers'
 export const queryGraphqlServer = async <T>(query: string, variables: object, network?: string) => {
   try {
     // Get the selected chain from the cookies
-    const { get } = cookies()
+    const searchParams = cookies()
     const headersList = headers()
     const referer = headersList.get('referer') || ''
     if (!network) network = referer.split('/')[3]
-    const cookieNetwork = get('selected-network')
+    const cookieNetwork = searchParams.get('selected-network')
     if (!network && cookieNetwork) network = cookieNetwork.value
     if (!network) throw new Error('No selected network')
 

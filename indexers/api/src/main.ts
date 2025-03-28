@@ -70,7 +70,7 @@ async function bootstrap() {
     }
   `;
 
-  SwaggerModule.setup('api', app, document, {
+  SwaggerModule.setup('docs', app, document, {
     customCss,
     customfavIcon: '/assets/favicon.ico',
     customSiteTitle: 'Autonomys Astral API Documentation',

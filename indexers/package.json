@@ -8,7 +8,7 @@
     "*"
   ],
   "engines": {
-    "node": ">=20.8.0"
+    "node": ">=20.9.0"
   },
   "scripts": {
     "bootstrap": "lerna run bootstrap",
@@ -39,6 +39,6 @@
     "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run apply-seeds:mainnet"
   },
   "dependencies": {
-    "lerna": "^8.1.8"
+    "lerna": "^8.2.1"
   }
 }

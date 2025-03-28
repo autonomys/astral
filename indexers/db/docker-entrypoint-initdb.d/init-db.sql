@@ -27,6 +27,9 @@ ALTER SCHEMA files OWNER TO postgres;
 CREATE SCHEMA staking;
 ALTER SCHEMA staking OWNER TO postgres;
 
+CREATE SCHEMA domain_auto_evm;
+ALTER SCHEMA domain_auto_evm OWNER TO postgres;
+
 CREATE SCHEMA users;
 ALTER SCHEMA users OWNER TO postgres;
 
@@ -99,6 +102,20 @@ CREATE FUNCTION staking.schema_notification() RETURNS trigger
   $$;
 ALTER FUNCTION staking.schema_notification() OWNER TO postgres;
 
+CREATE FUNCTION domain_auto_evm.schema_notification() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    PERFORM pg_notify(
+            '0x49b290e816da6f48',
+            'schema_updated');
+    RETURN NULL;
+  END;
+  $$;
+
+
+ALTER FUNCTION domain_auto_evm.schema_notification() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -142,6 +159,14 @@ CREATE TABLE staking._metadata (
     "updatedAt" timestamp with time zone NOT NULL
 );
 ALTER TABLE staking._metadata OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm._metadata (
+    key character varying(255) NOT NULL,
+    value jsonb,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
+ALTER TABLE domain_auto_evm._metadata OWNER TO postgres;
 
 CREATE TABLE users.profiles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -1199,6 +1224,7 @@ CREATE TABLE staking.deposit_events (
     amount numeric NOT NULL,
     storage_fee_deposit numeric NOT NULL,
     total_amount numeric NOT NULL,
+    estimated_shares numeric NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
@@ -1207,27 +1233,6 @@ CREATE TABLE staking.deposit_events (
     _block_range int8range NOT NULL
 );
 ALTER TABLE staking.deposit_events OWNER TO postgres;
-
-CREATE TABLE staking.deposit_histories (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    account_id text NOT NULL,
-    operator_id text NOT NULL,
-    nominator_id text NOT NULL,
-    shares numeric NOT NULL,
-    storage_fee_deposit numeric NOT NULL,
-    shares_known numeric NOT NULL,
-    storage_fee_deposit_known numeric NOT NULL,
-    effective_domain_id_pending integer NOT NULL,
-    effective_domain_epoch_pending integer NOT NULL,
-    amount_pending numeric NOT NULL,
-    storage_fee_deposit_pending numeric NOT NULL,
-    timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.deposit_histories OWNER TO postgres;
 
 CREATE TABLE staking.deposits (
     id text NOT NULL,
@@ -1238,6 +1243,7 @@ CREATE TABLE staking.deposits (
     amount numeric NOT NULL,
     storage_fee_deposit numeric NOT NULL,
     total_amount numeric NOT NULL,
+    estimated_shares numeric NOT NULL,
     total_withdrawn numeric NOT NULL,
     status text NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
@@ -1574,24 +1580,6 @@ CREATE TABLE staking.withdraw_events (
 );
 ALTER TABLE staking.withdraw_events OWNER TO postgres;
 
-CREATE TABLE staking.withdrawal_histories (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    account_id text NOT NULL,
-    operator_id text NOT NULL,
-    nominator_id text NOT NULL,
-    total_withdrawal_amount numeric NOT NULL,
-    domain_epoch integer NOT NULL,
-    unlock_at_confirmed_domain_block_number numeric NOT NULL,
-    shares numeric NOT NULL,
-    storage_fee_refund numeric NOT NULL,
-    timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.withdrawal_histories OWNER TO postgres;
-
 CREATE TABLE staking.withdrawals (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -1625,6 +1613,245 @@ CREATE TABLE files.metadata_cids (
     _block_range INT8RANGE NOT NULL
 );
 ALTER TABLE files.metadata_cids OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.account_histories (
+    id text NOT NULL,
+    nonce numeric NOT NULL,
+    free numeric NOT NULL,
+    reserved numeric NOT NULL,
+    total numeric,
+    created_at numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.account_histories OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.accounts (
+    id text NOT NULL,
+    nonce numeric NOT NULL,
+    free numeric NOT NULL,
+    reserved numeric NOT NULL,
+    total numeric,
+    created_at numeric NOT NULL,
+    updated_at numeric NOT NULL
+);
+ALTER TABLE domain_auto_evm.accounts OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.blocks (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    height numeric NOT NULL,
+    hash text NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    parent_hash text NOT NULL,
+    spec_id text NOT NULL,
+    state_root text NOT NULL,
+    extrinsics_root text NOT NULL,
+    extrinsics_count integer NOT NULL,
+    events_count integer NOT NULL,
+    logs_count integer NOT NULL,
+    transfers_count integer NOT NULL,
+    transfer_value numeric NOT NULL,
+    author_id text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.blocks OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.cumulative_blocks (
+    id text NOT NULL,
+    cumulative_extrinsics_count numeric NOT NULL,
+    cumulative_events_count numeric NOT NULL,
+    cumulative_logs_count numeric NOT NULL,
+    cumulative_transfers_count numeric NOT NULL,
+    cumulative_transfer_value numeric NOT NULL
+);
+ALTER TABLE domain_auto_evm.cumulative_blocks OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.event_modules (
+    id text NOT NULL,
+    section text NOT NULL,
+    method text NOT NULL
+);
+ALTER TABLE domain_auto_evm.event_modules OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.events (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    extrinsic_id text NOT NULL,
+    extrinsic_hash text NOT NULL,
+    section text NOT NULL,
+    module text NOT NULL,
+    name text NOT NULL,
+    index_in_block numeric NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    phase text NOT NULL,
+    pos integer NOT NULL,
+    args text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.events OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.evm_blocks (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    height numeric NOT NULL,
+    hash text NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    block_timestamp integer NOT NULL,
+    parent_hash text NOT NULL,
+    state_root text NOT NULL,
+    transactions_root text NOT NULL,
+    receipts_root text NOT NULL,
+    transactions_count integer NOT NULL,
+    transfer_value numeric NOT NULL,
+    author_id text NOT NULL,
+    gas_used numeric NOT NULL,
+    gas_limit numeric NOT NULL,
+    extra_data text NOT NULL,
+    difficulty numeric NOT NULL,
+    total_difficulty numeric NOT NULL,
+    size numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.evm_blocks OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.evm_code_selectors (
+    id text NOT NULL,
+    address text NOT NULL,
+    selector text NOT NULL,
+    name text NOT NULL,
+    signature text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.evm_code_selectors OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.evm_codes (
+    id text NOT NULL,
+    address text NOT NULL,
+    code text NOT NULL,
+    abi text NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.evm_codes OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.evm_transactions (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    hash text NOT NULL,
+    nonce numeric NOT NULL,
+    block_hash text NOT NULL,
+    block_number numeric NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    block_timestamp integer NOT NULL,
+    transaction_index integer NOT NULL,
+    "from" text NOT NULL,
+    "to" text NOT NULL,
+    value numeric NOT NULL,
+    gas_price numeric NOT NULL,
+    max_fee_per_gas numeric NOT NULL,
+    max_priority_fee_per_gas numeric NOT NULL,
+    gas numeric NOT NULL,
+    input text NOT NULL,
+    creates text NOT NULL,
+    raw text NOT NULL,
+    public_key text NOT NULL,
+    chain_id numeric NOT NULL,
+    standard_v numeric NOT NULL,
+    v text NOT NULL,
+    r text NOT NULL,
+    s text NOT NULL,
+    access_list text NOT NULL,
+    transaction_type numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.evm_transactions OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.extrinsic_modules (
+    id text NOT NULL,
+    section text NOT NULL,
+    method text NOT NULL
+);
+ALTER TABLE domain_auto_evm.extrinsic_modules OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.extrinsics (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    hash text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    section text NOT NULL,
+    module text NOT NULL,
+    name text NOT NULL,
+    index_in_block integer NOT NULL,
+    success boolean NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    nonce numeric NOT NULL,
+    signer text NOT NULL,
+    signature text NOT NULL,
+    events_count integer NOT NULL,
+    args text NOT NULL,
+    error text NOT NULL,
+    tip numeric NOT NULL,
+    fee numeric NOT NULL,
+    pos integer NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.extrinsics OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.log_kinds (
+    id text NOT NULL,
+    kind text NOT NULL
+);
+ALTER TABLE domain_auto_evm.log_kinds OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.logs (
+    id text NOT NULL,
+    sort_id text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    index_in_block integer NOT NULL,
+    kind text NOT NULL,
+    value text,
+    "timestamp" timestamp without time zone NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.logs OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.sections (
+    id text NOT NULL,
+    section text NOT NULL
+);
+ALTER TABLE domain_auto_evm.sections OWNER TO postgres;
+
+CREATE TABLE domain_auto_evm.transfers (
+    id text NOT NULL,
+    block_height numeric NOT NULL,
+    block_hash text NOT NULL,
+    extrinsic_id text NOT NULL,
+    event_id text NOT NULL,
+    "from" text NOT NULL,
+    from_chain text NOT NULL,
+    "to" text NOT NULL,
+    to_chain text NOT NULL,
+    value numeric NOT NULL,
+    fee numeric NOT NULL,
+    success boolean NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE domain_auto_evm.transfers OWNER TO postgres;
+
 
 CREATE TABLE stats.hourly (
     id TEXT NOT NULL,
@@ -1733,7 +1960,6 @@ ALTER TABLE ONLY dictionary.extrinsics
 
 ALTER TABLE ONLY dictionary.spec_versions
     ADD CONSTRAINT spec_versions_pkey PRIMARY KEY (id);
-
 
 ALTER TABLE ONLY leaderboard._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
@@ -1924,9 +2150,6 @@ ALTER TABLE ONLY staking.bundle_submissions
 ALTER TABLE ONLY staking.deposit_events
     ADD CONSTRAINT deposit_events_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.deposit_histories
-    ADD CONSTRAINT deposit_histories_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY staking.deposits
     ADD CONSTRAINT deposits_pkey PRIMARY KEY (id);
 
@@ -1975,11 +2198,59 @@ ALTER TABLE ONLY staking.nominators_unlocked_events
 ALTER TABLE ONLY staking.withdraw_events
     ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.withdrawal_histories
-    ADD CONSTRAINT withdrawal_histories_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY staking.withdrawals
     ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id);
+    
+ALTER TABLE ONLY domain_auto_evm._metadata
+    ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
+
+ALTER TABLE ONLY domain_auto_evm.account_histories
+    ADD CONSTRAINT account_histories_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.accounts
+    ADD CONSTRAINT accounts_id_key PRIMARY KEY (id);
+
+ALTER TABLE ONLY domain_auto_evm.blocks
+    ADD CONSTRAINT blocks_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.cumulative_blocks
+    ADD CONSTRAINT cumulative_blocks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY domain_auto_evm.event_modules
+    ADD CONSTRAINT event_modules_id_key PRIMARY KEY (id);
+
+ALTER TABLE ONLY domain_auto_evm.events
+    ADD CONSTRAINT events_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.evm_blocks
+    ADD CONSTRAINT evm_blocks_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.evm_code_selectors
+    ADD CONSTRAINT evm_code_selectors_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.evm_codes
+    ADD CONSTRAINT evm_codes_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.evm_transactions
+    ADD CONSTRAINT evm_transactions_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.extrinsic_modules
+    ADD CONSTRAINT extrinsic_modules_id_key PRIMARY KEY (id);
+
+ALTER TABLE ONLY domain_auto_evm.extrinsics
+    ADD CONSTRAINT extrinsics_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.log_kinds
+    ADD CONSTRAINT log_kinds_id_key PRIMARY KEY (id);
+
+ALTER TABLE ONLY domain_auto_evm.logs
+    ADD CONSTRAINT logs_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY domain_auto_evm.sections
+    ADD CONSTRAINT sections_id_key PRIMARY KEY (id);
+
+ALTER TABLE ONLY domain_auto_evm.transfers
+    ADD CONSTRAINT transfers_pkey PRIMARY KEY (_id);
 
 ALTER TABLE ONLY stats.hourly
     ADD CONSTRAINT hourly_pkey PRIMARY KEY (id);
@@ -1997,6 +2268,7 @@ CREATE INDEX "0xccedb032815757ed" ON consensus.blocks USING btree (id);
 CREATE INDEX "consensus_blocks_sort_id" ON consensus.blocks USING btree (sort_id DESC);
 CREATE INDEX "consensus_blocks_hash" ON consensus.blocks USING btree (hash);
 CREATE INDEX "consensus_blocks_id_hash" ON consensus.blocks (id, hash);
+CREATE INDEX "consensus_cumulative_blocks_id" ON consensus.cumulative_blocks USING btree (id);
 CREATE INDEX "0xd8db4c8313621519" ON consensus.extrinsics USING btree (id);
 CREATE INDEX "consensus_extrinsics_sort_id" ON consensus.extrinsics USING btree (sort_id DESC);
 CREATE INDEX "consensus_extrinsics_hash" ON consensus.extrinsics USING btree (hash);
@@ -2171,13 +2443,7 @@ CREATE INDEX "0xa3309c82ddfd9389" ON staking.operator_registrations USING btree 
 CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING btree (id);
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
 CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btree (id);
-CREATE INDEX "0xd3486d6b21c11e22" ON staking.withdrawal_histories USING btree (id);
-CREATE INDEX "staking_withdrawal_histories_operator_id" ON staking.withdrawal_histories USING btree (operator_id);
-CREATE INDEX "staking_withdrawal_histories_nominator_id" ON staking.withdrawal_histories USING btree (nominator_id);
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
-CREATE INDEX "0xdca5e6b13feac3f6" ON staking.deposit_histories USING btree (id);
-CREATE INDEX "staking_deposit_histories_operator_id" ON staking.deposit_histories USING btree (operator_id);
-CREATE INDEX "staking_deposit_histories_nominator_id" ON staking.deposit_histories USING btree (nominator_id);
 CREATE INDEX "staking_accounts_id" ON staking.accounts USING btree (id);
 CREATE INDEX "staking_deposits_id" ON staking.deposits USING btree (id);
 CREATE INDEX "staking_deposits_domain_id" ON staking.deposits USING btree (domain_id);
@@ -2201,6 +2467,44 @@ CREATE INDEX "staking_withdrawals_nominator_id" ON staking.withdrawals USING btr
 CREATE INDEX "staking_withdrawals_status" ON staking.withdrawals USING btree ("status");
 CREATE INDEX "staking_withdrawals_status_domain_block_number_withdrawal_requested_at" ON staking.withdrawals (status, domain_block_number_withdrawal_requested_at);
 
+CREATE INDEX "0xccedb032815757ed" ON domain_auto_evm.blocks USING btree (id);
+CREATE INDEX "domain_auto_evm_blocks_sort_id" ON domain_auto_evm.blocks USING btree (sort_id DESC);
+CREATE INDEX "domain_auto_evm_blocks_hash" ON domain_auto_evm.blocks USING btree (hash);
+CREATE INDEX "domain_auto_evm_blocks_id_hash" ON domain_auto_evm.blocks (id, hash);
+CREATE INDEX "domain_auto_evm_cumulative_blocks_id" ON domain_auto_evm.cumulative_blocks USING btree (id);
+CREATE INDEX "0xd8db4c8313621519" ON domain_auto_evm.extrinsics USING btree (id);
+CREATE INDEX "domain_auto_evm_extrinsics_sort_id" ON domain_auto_evm.extrinsics USING btree (sort_id DESC);
+CREATE INDEX "domain_auto_evm_extrinsics_hash" ON domain_auto_evm.extrinsics USING btree (hash);
+CREATE INDEX "domain_auto_evm_extrinsics_block_height" ON domain_auto_evm.extrinsics USING btree (block_height);
+CREATE INDEX "domain_auto_evm_extrinsics_signer" ON domain_auto_evm.extrinsics USING btree (signer);
+CREATE INDEX "domain_auto_evm_extrinsics_section" ON domain_auto_evm.extrinsics USING btree (section);
+CREATE INDEX "domain_auto_evm_extrinsics_module" ON domain_auto_evm.extrinsics USING btree (module);
+CREATE INDEX "0xe5bf5858bd35a276" ON domain_auto_evm.events USING btree (id);
+CREATE INDEX "domain_auto_evm_events_sort_id" ON domain_auto_evm.events USING btree (sort_id DESC);
+CREATE INDEX "domain_auto_evm_events_extrinsic_id" ON domain_auto_evm.events USING btree (extrinsic_id);
+CREATE INDEX "domain_auto_evm_events_block_height" ON domain_auto_evm.events USING btree (block_height);
+CREATE INDEX "domain_auto_evm_events_section" ON domain_auto_evm.events USING btree (section);
+CREATE INDEX "domain_auto_evm_events_module" ON domain_auto_evm.events USING btree (module);
+CREATE INDEX "domain_auto_evm_accounts_id" ON domain_auto_evm.accounts USING btree (id);
+CREATE INDEX "domain_auto_evm_accounts_free" ON domain_auto_evm.accounts USING btree (free DESC);
+CREATE INDEX "domain_auto_evm_accounts_reserved" ON domain_auto_evm.accounts USING btree (reserved DESC);
+CREATE INDEX "domain_auto_evm_accounts_total" ON domain_auto_evm.accounts USING btree (total DESC);
+CREATE INDEX "0xd21b20c334f80c2e" ON domain_auto_evm.account_histories USING btree (id);
+CREATE INDEX "0xb91efc8ed4021e6e" ON domain_auto_evm.transfers USING btree (id);
+CREATE INDEX "domain_auto_evm_transfers_from" ON domain_auto_evm.transfers USING btree ("from");
+CREATE INDEX "domain_auto_evm_transfers_to" ON domain_auto_evm.transfers USING btree ("to");
+CREATE INDEX "domain_auto_evm_extrinsic_modules_id" ON domain_auto_evm.extrinsic_modules USING btree (id);
+CREATE INDEX "domain_auto_evm_event_modules_id" ON domain_auto_evm.event_modules USING btree (id);
+CREATE INDEX "domain_auto_evm_log_kinds_id" ON domain_auto_evm.log_kinds USING btree (id);
+CREATE INDEX "domain_auto_evm_sections_id" ON domain_auto_evm.sections USING btree (id);
+CREATE INDEX "0x09a98aa53fa2c2e3" ON domain_auto_evm.logs USING btree (id);
+CREATE INDEX "domain_auto_evm_logs_sort_id" ON domain_auto_evm.logs USING btree (sort_id DESC);
+CREATE INDEX "domain_auto_evm_logs_block_height" ON domain_auto_evm.logs USING btree (block_height);
+CREATE INDEX "0x3067863a57084527" ON domain_auto_evm.evm_code_selectors USING btree (id);
+CREATE INDEX "0x94656e42e9e36728" ON domain_auto_evm.evm_blocks USING btree (id);
+CREATE INDEX "0xee1355606a0eb5b7" ON domain_auto_evm.evm_transactions USING btree (id);
+CREATE INDEX "0xf54a20ed40ef7dea" ON domain_auto_evm.evm_codes USING btree (id);
+
 CREATE INDEX "stats_hourly_end_date" ON stats.hourly USING btree ("end_date" DESC);
 CREATE INDEX "stats_daily_end_date" ON stats.daily USING btree ("end_date" DESC);
 CREATE INDEX "stats_weekly_end_date" ON stats.weekly USING btree ("end_date" DESC);
@@ -2211,6 +2515,9 @@ CREATE TRIGGER "0xda8a29b0fa478533" AFTER UPDATE ON dictionary._metadata FOR EAC
 CREATE TRIGGER "0xf3241711d3af6c36" AFTER UPDATE ON leaderboard._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION leaderboard.schema_notification();
 CREATE TRIGGER "0x22152f0c663c5f9e" AFTER UPDATE ON files._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION files.schema_notification();
 CREATE TRIGGER "0x36531371aced88b2" AFTER UPDATE ON staking._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION staking.schema_notification();
+CREATE TRIGGER "0x8741811e70475b76" AFTER UPDATE ON domain_auto_evm._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION domain_auto_evm.schema_notification();
+
+-- Consensus triggers
 
 CREATE FUNCTION consensus.insert_log_kind() RETURNS trigger
     LANGUAGE plpgsql
@@ -2225,7 +2532,7 @@ CREATE FUNCTION consensus.insert_log_kind() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.insert_log_kind() OWNER TO postgres;
 
-CREATE TRIGGER ensure_log_kind
+CREATE TRIGGER ensure_consensus_log_kind
     BEFORE INSERT ON consensus.logs
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_log_kind();
@@ -2247,7 +2554,7 @@ CREATE FUNCTION consensus.insert_event_module() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.insert_event_module() OWNER TO postgres;
 
-CREATE TRIGGER ensure_event_module
+CREATE TRIGGER ensure_consensus_event_module
     BEFORE INSERT ON consensus.events
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_event_module();
@@ -2269,7 +2576,7 @@ CREATE FUNCTION consensus.insert_extrinsic_module() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.insert_extrinsic_module() OWNER TO postgres;
 
-CREATE TRIGGER ensure_extrinsic_module
+CREATE TRIGGER ensure_consensus_extrinsic_module
     BEFORE INSERT ON consensus.extrinsics
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_extrinsic_module();
@@ -2308,7 +2615,7 @@ CREATE FUNCTION consensus.update_account() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.update_account() OWNER TO postgres;
 
-CREATE TRIGGER ensure_account_updated
+CREATE TRIGGER ensure_consensus_account_updated
     BEFORE INSERT ON consensus.account_histories
     FOR EACH ROW
     EXECUTE FUNCTION consensus.update_account();
@@ -2384,7 +2691,7 @@ CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.update_cumulative_blocks() OWNER TO postgres;
 
-CREATE TRIGGER ensure_cumulative_blocks
+CREATE TRIGGER ensure_consensus_cumulative_blocks
     BEFORE INSERT ON consensus.blocks
     FOR EACH ROW
     EXECUTE FUNCTION consensus.update_cumulative_blocks();
@@ -2461,50 +2768,6 @@ CREATE TRIGGER prevent_operator_staking_histories_duplicate
 BEFORE INSERT ON staking.operator_staking_histories
 FOR EACH ROW
 EXECUTE FUNCTION staking.prevent_operator_staking_histories_duplicate();
-
-CREATE OR REPLACE FUNCTION staking.prevent_deposit_histories_duplicate() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    IF EXISTS (
-        SELECT 1 
-        FROM staking.deposit_histories 
-        WHERE id = NEW.id
-    ) THEN
-        RETURN NULL;
-    END IF;
-    
-    RETURN NEW;
-END;
-$$;
-ALTER FUNCTION staking.prevent_deposit_histories_duplicate() OWNER TO postgres;
-
-CREATE TRIGGER prevent_deposit_histories_duplicate
-BEFORE INSERT ON staking.deposit_histories
-FOR EACH ROW
-EXECUTE FUNCTION staking.prevent_deposit_histories_duplicate();
-
-CREATE OR REPLACE FUNCTION staking.prevent_withdrawal_histories_duplicate() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    IF EXISTS (
-        SELECT 1 
-        FROM staking.withdrawal_histories 
-        WHERE id = NEW.id
-    ) THEN
-        RETURN NULL;
-    END IF;
-    
-    RETURN NEW;
-END;
-$$;
-ALTER FUNCTION staking.prevent_withdrawal_histories_duplicate() OWNER TO postgres;
-
-CREATE TRIGGER prevent_withdrawal_histories_duplicate
-BEFORE INSERT ON staking.withdrawal_histories
-FOR EACH ROW
-EXECUTE FUNCTION staking.prevent_withdrawal_histories_duplicate();
 
 CREATE OR REPLACE FUNCTION staking.insert_new_domain() RETURNS TRIGGER
     LANGUAGE plpgsql
@@ -2824,6 +3087,7 @@ BEGIN
         amount,
         storage_fee_deposit,
         total_amount,
+        estimated_shares,
         total_withdrawn,
         status,
         "timestamp",
@@ -2839,6 +3103,7 @@ BEGIN
         NEW.amount,                  -- amount
         NEW.storage_fee_deposit,     -- storage_fee_deposit
         NEW.total_amount,            -- total_amount
+        NEW.estimated_shares,        -- estimated_shares
         0,                           -- total_withdrawn (starts at 0)
         'PENDING_NEXT_EPOCH',        -- status
         NEW."timestamp",             -- timestamp
@@ -3057,11 +3322,7 @@ BEGIN
         total_volume = staking.domains.total_volume + NEW.total_volume,
         total_consensus_storage_fee = staking.domains.total_consensus_storage_fee + NEW.consensus_storage_fee,
         total_domain_execution_fee = staking.domains.total_domain_execution_fee + NEW.domain_execution_fee,
-        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance
-    WHERE id = NEW.domain_id AND last_domain_block_number < NEW.domain_block_number;
-
-    UPDATE staking.domains
-    SET 
+        total_burned_balance = staking.domains.total_burned_balance + NEW.burned_balance,
         bundle_count = staking.domains.bundle_count + 1,
         last_bundle_at = NEW.consensus_block_number,
         updated_at = NEW.block_height
@@ -3213,9 +3474,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     LIMIT 1;
 
     IF NOT FOUND THEN
-        SELECT
-          0 as domain_block_number
-        INTO last_domain_block_number;
+        last_domain_block_number := 0;
     END IF;
 
     SELECT share_price
@@ -3346,7 +3605,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     SET 
         status = 'PENDING_UNLOCK_FUNDS',
         updated_at = NEW.block_height
-    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at >= last_domain_block_number;
+    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at <= last_domain_block_number;
     
     RETURN NEW;
   END;
@@ -3402,7 +3661,7 @@ CREATE OR REPLACE FUNCTION staking.update_operator_on_deregistration() RETURNS T
 BEGIN
     UPDATE staking.operators
     SET 
-        raw_status = 'DEREGISTERED',
+        status = 'DEREGISTERED',
         updated_at = NEW.block_height
     WHERE id = NEW.id;
 
@@ -3491,3 +3750,179 @@ CREATE TRIGGER handle_nominators_unlocked_events
 AFTER INSERT ON staking.nominators_unlocked_events
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_nominators_unlocked_events();
+
+
+CREATE FUNCTION domain_auto_evm.insert_log_kind() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO domain_auto_evm.log_kinds (id, kind)
+    VALUES (NEW.kind, NEW.kind)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.insert_log_kind() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_log_kind
+    BEFORE INSERT ON domain_auto_evm.logs
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.insert_log_kind();
+
+CREATE FUNCTION domain_auto_evm.insert_event_module() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO domain_auto_evm.event_modules (id, section, method)
+    VALUES (NEW.name, NEW.section, NEW.module)
+    ON CONFLICT (id) DO NOTHING;
+
+    INSERT INTO domain_auto_evm.sections (id, section)
+    VALUES (NEW.section, NEW.section)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.insert_event_module() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_event_module
+    BEFORE INSERT ON domain_auto_evm.events
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.insert_event_module();
+
+CREATE FUNCTION domain_auto_evm.insert_extrinsic_module() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO domain_auto_evm.extrinsic_modules (id, section, method)
+    VALUES (NEW.name, NEW.section, NEW.module)
+    ON CONFLICT (id) DO NOTHING;
+
+    INSERT INTO domain_auto_evm.sections (id, section)
+    VALUES (NEW.section, NEW.section)
+    ON CONFLICT (id) DO NOTHING;
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.insert_extrinsic_module() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_extrinsic_module
+    BEFORE INSERT ON domain_auto_evm.extrinsics
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.insert_extrinsic_module();
+
+CREATE FUNCTION domain_auto_evm.update_account() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    INSERT INTO domain_auto_evm.accounts (
+      id,
+      nonce,
+      free,
+      reserved,
+      total,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      NEW.id,
+      NEW.nonce,
+      NEW.free,
+      NEW.reserved,
+      NEW.total,
+      NEW.created_at,
+      EXTRACT(EPOCH FROM NOW())
+    )
+    ON CONFLICT (id) DO UPDATE SET
+      nonce = EXCLUDED.nonce,
+      free = EXCLUDED.free,
+      reserved = EXCLUDED.reserved,
+      total = EXCLUDED.total,
+      updated_at = EXTRACT(EPOCH FROM NOW());
+    
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.update_account() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_account_updated
+    BEFORE INSERT ON domain_auto_evm.account_histories
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.update_account();
+
+CREATE FUNCTION domain_auto_evm.update_cumulative_blocks() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  DECLARE
+    prev_cumulative domain_auto_evm.cumulative_blocks%ROWTYPE;
+  BEGIN
+    SELECT *
+    INTO prev_cumulative
+    FROM domain_auto_evm.cumulative_blocks
+    WHERE id = text(NEW.height - 1);
+
+    IF prev_cumulative IS NULL THEN
+      prev_cumulative.cumulative_extrinsics_count := 0;
+      prev_cumulative.cumulative_events_count := 0;
+      prev_cumulative.cumulative_logs_count := 0;
+      prev_cumulative.cumulative_transfers_count := 0;
+      prev_cumulative.cumulative_transfer_value := 0;
+    END IF;
+
+    INSERT INTO domain_auto_evm.cumulative_blocks (
+      id,
+      cumulative_extrinsics_count,
+      cumulative_events_count,
+      cumulative_logs_count,
+      cumulative_transfers_count,
+      cumulative_transfer_value
+    )
+    VALUES (
+      NEW.id,
+      prev_cumulative.cumulative_extrinsics_count + NEW.extrinsics_count,
+      prev_cumulative.cumulative_events_count + NEW.events_count,
+      prev_cumulative.cumulative_logs_count + NEW.logs_count,
+      prev_cumulative.cumulative_transfers_count + NEW.transfers_count,
+      prev_cumulative.cumulative_transfer_value + NEW.transfer_value
+    )
+    ON CONFLICT (id) DO UPDATE SET
+      cumulative_extrinsics_count = prev_cumulative.cumulative_extrinsics_count + NEW.extrinsics_count,
+      cumulative_events_count = prev_cumulative.cumulative_events_count + NEW.events_count,
+      cumulative_logs_count = prev_cumulative.cumulative_logs_count + NEW.logs_count,
+      cumulative_transfers_count = prev_cumulative.cumulative_transfers_count + NEW.transfers_count,
+      cumulative_transfer_value = prev_cumulative.cumulative_transfer_value + NEW.transfer_value;
+
+    RETURN NEW;
+  END;
+  $$;
+ALTER FUNCTION domain_auto_evm.update_cumulative_blocks() OWNER TO postgres;
+
+CREATE TRIGGER ensure_domain_auto_evm_cumulative_blocks
+    BEFORE INSERT ON domain_auto_evm.blocks
+    FOR EACH ROW
+    EXECUTE FUNCTION domain_auto_evm.update_cumulative_blocks();
+
+CREATE OR REPLACE FUNCTION domain_auto_evm.prevent_evm_code_selectors_duplicate() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 
+        FROM domain_auto_evm.evm_code_selectors 
+        WHERE id = NEW.id
+    ) THEN
+        RETURN NULL;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+ALTER FUNCTION domain_auto_evm.prevent_evm_code_selectors_duplicate() OWNER TO postgres;
+
+CREATE TRIGGER prevent_domain_auto_evm_evm_code_selectors_duplicate
+BEFORE INSERT ON domain_auto_evm.evm_code_selectors
+FOR EACH ROW
+EXECUTE FUNCTION domain_auto_evm.prevent_evm_code_selectors_duplicate();

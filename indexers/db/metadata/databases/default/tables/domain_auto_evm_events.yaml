@@ -1,0 +1,62 @@
+table:
+  name: events
+  schema: domain_auto_evm
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+object_relationships:
+  - name: block
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: height
+        insertion_order: null
+        remote_table:
+          name: blocks
+          schema: domain_auto_evm
+  - name: event_module
+    using:
+      manual_configuration:
+        column_mapping:
+          module: id
+        insertion_order: null
+        remote_table:
+          name: event_modules
+          schema: domain_auto_evm
+  - name: extrinsic
+    using:
+      manual_configuration:
+        column_mapping:
+          extrinsic_id: id
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: domain_auto_evm
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - pos
+        - block_height
+        - index_in_block
+        - args
+        - block_hash
+        - extrinsic_hash
+        - extrinsic_id
+        - id
+        - module
+        - name
+        - phase
+        - section
+        - sort_id
+        - timestamp
+        - _id
+      filter: {}
+      limit: 50
+      allow_aggregations: true
+    comment: ""

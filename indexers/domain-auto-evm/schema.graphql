@@ -1,0 +1,168 @@
+# Core Substrate Entities
+
+type Block @entity {
+  id: ID!
+  sortId: String!
+  height: BigInt!
+  hash: String!
+  timestamp: Date!
+  parentHash: String!
+  specId: String!
+  stateRoot: String!
+  extrinsicsRoot: String!
+  extrinsicsCount: Int!
+  eventsCount: Int!
+  logsCount: Int!
+  transfersCount: Int!
+  transferValue: BigInt!
+  authorId: String!
+}
+
+type Log @entity {
+  id: ID!
+  sortId: String!
+  blockHeight: BigInt!
+  blockHash: String!
+  indexInBlock: Int!
+  kind: String!
+  value: String
+  timestamp: Date!
+}
+
+type Extrinsic @entity {
+  id: ID!
+  sortId: String!
+  hash: String!
+  blockHeight: BigInt!
+  blockHash: String!
+  section: String!
+  module: String!
+  name: String!
+  indexInBlock: Int!
+  success: Boolean!
+  timestamp: Date!
+  nonce: BigInt!
+  signer: String!
+  signature: String!
+  eventsCount: Int!
+  args: String!
+  error: String!
+  tip: BigInt!
+  fee: BigInt!
+  pos: Int!
+}
+
+type Event @entity {
+  id: ID!
+  sortId: String!
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  extrinsicHash: String!
+  section: String!
+  module: String!
+  name: String!
+  indexInBlock: BigInt!
+  timestamp: Date!
+  phase: String!
+  pos: Int!
+  args: String!
+}
+
+# Accounts Entities
+
+type AccountHistory @entity {
+  id: ID!
+  nonce: BigInt!
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt
+  createdAt: BigInt!
+}
+
+type Transfer @entity {
+  id: ID!
+  blockHeight: BigInt!
+  blockHash: String!
+  extrinsicId: String!
+  eventId: String!
+  from: String!
+  fromChain: String!
+  to: String!
+  toChain: String!
+  value: BigInt!
+  fee: BigInt!
+  success: Boolean!
+  timestamp: Date!
+}
+
+# EVM Entities
+
+type EvmBlock @entity {
+  id: ID!
+  sortId: String!
+  height: BigInt!
+  hash: String!
+  timestamp: Date!
+  blockTimestamp: Int!
+  parentHash: String!
+  stateRoot: String!
+  transactionsRoot: String!
+  receiptsRoot: String!
+  transactionsCount: Int!
+  transferValue: BigInt!
+  authorId: String!
+  gasUsed: BigInt!
+  gasLimit: BigInt!
+  extraData: String!
+  difficulty: BigInt!
+  totalDifficulty: BigInt!
+  size: BigInt!
+}
+
+type EvmTransaction @entity {
+  id: ID!
+  sortId: String!
+  hash: String!
+  nonce: BigInt!
+  blockHash: String!
+  blockNumber: BigInt!
+  timestamp: Date!
+  blockTimestamp: Int!
+  transactionIndex: Int!
+  from: String!
+  to: String!
+  value: BigInt!
+  gasPrice: BigInt!
+  maxFeePerGas: BigInt!
+  maxPriorityFeePerGas: BigInt!
+  gas: BigInt!
+  input: String!
+  creates: String!
+  raw: String!
+  publicKey: String!
+  chainId: BigInt!
+  standardV: BigInt!
+  v: String!
+  r: String!
+  s: String!
+  accessList: String!
+  transactionType: BigInt!
+}
+
+# EVM Contract Entities
+
+type EvmCode @entity {
+  id: ID!
+  address: String!
+  code: String!
+  abi: String!
+}
+
+type EvmCodeSelector @entity {
+  id: ID!
+  address: String!
+  selector: String!
+  name: String!
+  signature: String!
+}

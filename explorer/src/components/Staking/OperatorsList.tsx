@@ -280,17 +280,15 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
               excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockNominator)
             if (row.original.status === OperatorStatus.PENDING_NEXT_EPOCH)
               excludeActions.push(OperatorActionType.Nominating)
-            if (
-              row.original.status === OperatorStatus.ACTIVE &&
-              !row.original.rawStatus.includes('deregistered')
-            )
+            if (row.original.status === OperatorStatus.ACTIVE)
               excludeActions.push(OperatorActionType.UnlockNominator)
-            if (
-              row.original.status === OperatorStatus.DEREGISTERED ||
-              row.original.rawStatus.includes('deregistered')
-            )
+            if (row.original.status === OperatorStatus.DEREGISTERED)
               excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
-            if (row.original.status === OperatorStatus.SLASHED) return <></>
+            if (
+              row.original.status === OperatorStatus.SLASHED ||
+              row.original.status === OperatorStatus.NOMINATORS_UNLOCKED
+            )
+              return <></>
             const rowData = {
               original: {
                 ...row.original,

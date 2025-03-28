@@ -398,7 +398,11 @@ export const NominationsTable: FC = () => {
                                 OperatorActionType.Nominating,
                                 OperatorActionType.Deregister,
                               )
-                            if (nominator.operator?.status === OperatorStatus.SLASHED) return <></>
+                            if (
+                              nominator.operator?.status === OperatorStatus.SLASHED ||
+                              nominator.operator?.status === OperatorStatus.NOMINATORS_UNLOCKED
+                            )
+                              return <></>
                             return (
                               <OperatorActions
                                 handleAction={handleAction}
