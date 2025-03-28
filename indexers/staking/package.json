@@ -33,7 +33,7 @@
   "devDependencies": {
     "@autonomys/auto-consensus": "^1.4.2",
     "@autonomys/auto-utils": "^1.4.2",
-    "@apollo/client": "^3.13.4",
+    "@apollo/client": "^3.13.5",
     "@polkadot/api": "^15.8.1",
     "@polkadot/types": "^15.8.1",
     "@polkadot/util": "^13.4.3",
