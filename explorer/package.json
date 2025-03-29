@@ -15,7 +15,7 @@
     "url": "https://github.com/autonomys/astral/issues"
   },
   "engines": {
-    "node": ">=20.8.0"
+    "node": ">=20.19.0"
   },
   "scripts": {
     "dev": "next dev",
@@ -106,7 +106,7 @@
     "@svgr/webpack": "^8.1.0",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^20.17.23",
+    "@types/node": "^20.17.27",
     "@types/pako": "^2.0.3",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
