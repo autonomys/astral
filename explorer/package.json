@@ -48,7 +48,7 @@
     "@nivo/core": "^0.88.0",
     "@nivo/line": "^0.88.0",
     "@nivo/pie": "^0.88.0",
-    "@polkadot/extension-dapp": "^0.46.7",
+    "@polkadot/extension-dapp": "^0.58.6",
     "@polkadot/extension-inject": "^0.46.7",
     "@polkadot/react-identicon": "^3.12.2",
     "@tailwindcss/forms": "^0.5.10",
