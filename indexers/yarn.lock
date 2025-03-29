@@ -45,7 +45,7 @@
     ora "5.4.1"
     rxjs "7.8.1"
 
-"@apollo/client@^3.11.2", "@apollo/client@^3.13.4":
+"@apollo/client@^3.11.2":
   version "3.13.4"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.13.4.tgz#4a26adb58eb4365dca7d6b0202cbb78ba47f1e11"
   integrity sha512-Ot3RaN2M/rhIKDqXBdOVlN0dQbHydUrYJ9lTxkvd6x7W1pAjwduUccfoz2gsO4U9by7oWtRj/ySF0MFNUp+9Aw==
@@ -64,33 +64,58 @@
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
 
-"@autonomys/auto-consensus@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.4.0.tgz#7c641aa7537e99c3b545ab951eb66337821acc4b"
-  integrity sha512-Np/V8pCCYyLYj9h26v3w/X81h48CQdpxYlpZr+ZxGJu7EV2q4GSc7KtDTY/41ixWIJrXuwUD0tN8XbObFUc4hQ==
+"@apollo/client@^3.13.5":
+  version "3.13.5"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.13.5.tgz#588ac60c751c38d50ce0286fcefcc4994aa9c5d6"
+  integrity sha512-ceHa1lApLAiGmUur4V+G/CrjwVwHYujfB7U5HM++poCgHpfGn6eet8YGM93fgeWjYX85SaqwdZbQk18IVwhRHg==
   dependencies:
-    "@autonomys/auto-utils" "^1.4.0"
+    "@graphql-typed-document-node/core" "^3.1.1"
+    "@wry/caches" "^1.0.0"
+    "@wry/equality" "^0.5.6"
+    "@wry/trie" "^0.5.0"
+    graphql-tag "^2.12.6"
+    hoist-non-react-statics "^3.3.2"
+    optimism "^0.18.0"
+    prop-types "^15.7.2"
+    rehackt "^0.1.0"
+    symbol-observable "^4.0.0"
+    ts-invariant "^0.10.3"
+    tslib "^2.3.0"
+    zen-observable-ts "^1.2.5"
 
-"@autonomys/auto-dag-data@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.4.0.tgz#5d08e94e1d1d7bdc3c3803d7d79ca549f0e945e1"
-  integrity sha512-cTQCR8s+PbZSQLhw/iGVFfkyiTkQfl6Ks8G38NPyOoH9U4WczmFCEsglToevfSIjUtccuZZNTKDhsiRk5FK0Jw==
+"@autonomys/asynchronous@^1.4.7":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@autonomys/asynchronous/-/asynchronous-1.4.7.tgz#1e169236abf74682ad7e28a6a6bf263adfd24a5b"
+  integrity sha512-Jc17wiedR/9LVlBcOS2x59wqyRFxOcHscIT5O8CF5RBY19LXa7ZH7iwX7baw/NZA4uepoIi8bRL6g/AVQUzc+w==
+
+"@autonomys/auto-consensus@^1.4.2":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.4.7.tgz#0e3dfe21008957c1317ee552ea5615c3a60574f2"
+  integrity sha512-P9cueLhVWjGnz/8E0RP5pgXSH1fCe66EH2Ahv61ZiWX4CCaLDd8b1fNZt4lbUkX/GfS16pCKGgA0j58Mntm3mA==
   dependencies:
-    "@ipld/dag-pb" "^4.1.2"
+    "@autonomys/auto-utils" "^1.4.7"
+
+"@autonomys/auto-dag-data@^1.4.2":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.4.7.tgz#779f9def1a67db59d4c694f6adbfe7d0274f6856"
+  integrity sha512-gnDwG+xmzmwB7zhU0q1JiC2E2kfcZXCLEJ7zx4L0iolg8kvdyvCPxJ2wamejrK6qp3Kah/skMLkOVMexRIf2wQ==
+  dependencies:
+    "@autonomys/asynchronous" "^1.4.7"
+    "@ipld/dag-pb" "^4.1.3"
     "@peculiar/webcrypto" "^1.5.0"
     "@webbuf/blake3" "^3.0.26"
     "@webbuf/fixedbuf" "^3.0.26"
     "@webbuf/webbuf" "^3.0.26"
     fflate "^0.8.2"
-    multiformats "^13.2.2"
+    multiformats "^13.3.2"
     protobufjs "^7.4.0"
     protons "^7.6.0"
     protons-runtime "^5.5.0"
 
-"@autonomys/auto-utils@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.4.0.tgz#79d4eeb208a900602a41b64bf85b33f907964d74"
-  integrity sha512-Jnsnpxm/qkbjKek5TuotTJaNLrSoMM7wklhmHZNaiQoh70EtYvqtMTDWY248qBf4kpiooyDwTHEIo845O4fkGQ==
+"@autonomys/auto-utils@^1.4.2", "@autonomys/auto-utils@^1.4.7":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.4.7.tgz#59889d8b40b9bb67da9920f6c4ecf675fcf157e1"
+  integrity sha512-4Pg3zG7qRhbKgyMwqoI+iO81JDLfnnT84QY6qX+YnSAt0TxgBQ5M6OFYxMvTDvMjlaUIvQEvvbN3EAaCNLPKfA==
   dependencies:
     "@polkadot/api" "^15.8.1"
     "@polkadot/extension-dapp" "^0.58.5"
@@ -628,7 +653,7 @@
   resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.2.0.tgz#6d61b3097470af1fdbbe622795b8921d42018e11"
   integrity sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==
 
-"@ipld/dag-pb@^4.1.2":
+"@ipld/dag-pb@^4.1.3":
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/@ipld/dag-pb/-/dag-pb-4.1.3.tgz#b572d7978fa548a3a9219f566a80884189261858"
   integrity sha512-ueULCaaSCcD+dQga6nKiRr+RSeVgdiYiEPKVUu5iQMNYDN+9osd0KpR3UDd9uQQ+6RWuv9L34SchfEwj7YIbOA==
@@ -2736,10 +2761,10 @@
   dependencies:
     undici-types "~6.20.0"
 
-"@types/node@^20.17.23":
-  version "20.17.24"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.17.24.tgz#2325476954e6fc8c2f11b9c61e26ba6eb7d3f5b6"
-  integrity sha512-d7fGCyB96w9BnWQrOsJtpyiSaBcAYYr75bnK6ZRjDbql2cGLj/3GsL5OYmLPNq76l7Gf2q4Rv9J2o6h5CrD9sA==
+"@types/node@^20.17.27":
+  version "20.17.28"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.17.28.tgz#c10436f3a3c996f535919a9b082e2c47f19c40a1"
+  integrity sha512-DHlH/fNL6Mho38jTy7/JT7sn2wnXI+wULR6PV4gy4VHLVvnrV/d3pHAMQHhc4gjdLmK2ZiPoMxzp6B3yRajLSQ==
   dependencies:
     undici-types "~6.19.2"
 
@@ -7723,7 +7748,7 @@ multer@1.4.5-lts.1:
     type-is "^1.6.4"
     xtend "^4.0.0"
 
-multiformats@^13.0.0, multiformats@^13.1.0, multiformats@^13.2.2:
+multiformats@^13.0.0, multiformats@^13.1.0, multiformats@^13.3.2:
   version "13.3.2"
   resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-13.3.2.tgz#a77c2a09c490e90c73b3049551604e6e1a4854e0"
   integrity sha512-qbB0CQDt3QKfiAzZ5ZYjLFOs+zW43vA4uyM8g27PeEuXZybUOFyjrVdP93HPBHMoglibwfkdVwbzfUq8qGcH6g==
