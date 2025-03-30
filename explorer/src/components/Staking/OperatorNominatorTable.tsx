@@ -27,11 +27,12 @@ import { Spinner } from '../common/Spinner'
 
 type Props = {
   operator: OperatorByIdQuery['staking_operators_by_pk']
+  nominatorCount: number
 }
 
 type Row = OperatorNominatorsByIdQuery['staking_nominators'][0]
 
-export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
+export const OperatorNominatorTable: FC<Props> = ({ operator, nominatorCount }) => {
   const { ref, inView } = useInView()
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
@@ -187,17 +188,10 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     [operatorNominators],
   )
 
-  const totalCount = useMemo(
-    () =>
-      (hasValue(operatorNominators) &&
-        operatorNominators.value.staking_nominators_aggregate.aggregate?.count) ||
-      0,
-    [operatorNominators],
-  )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
+  const totalLabel = useMemo(() => numberWithCommas(nominatorCount), [nominatorCount])
   const pageCount = useMemo(
-    () => countTablePages(totalCount, pagination.pageSize),
-    [totalCount, pagination],
+    () => countTablePages(nominatorCount, pagination.pageSize),
+    [nominatorCount, pagination],
   )
 
   useEffect(() => {
