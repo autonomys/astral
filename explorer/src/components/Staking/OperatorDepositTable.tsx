@@ -1,12 +1,13 @@
+import { utcToLocalRelativeTime } from '@/utils/time'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   OperatorByIdQuery,
-  OperatorRewardsByIdDocument,
-  OperatorRewardsByIdQuery,
-  OperatorRewardsByIdQueryVariables,
+  OperatorDepositsByIdDocument,
+  OperatorDepositsByIdQuery,
+  OperatorDepositsByIdQueryVariables,
   Order_By as OrderBy,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
@@ -20,15 +21,17 @@ import { hasValue, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { bigNumberToFormattedString, numberWithCommas } from 'utils/number'
 import { countTablePages } from 'utils/table'
+import { AccountIconWithLink } from '../common/AccountIcon'
 import { Spinner } from '../common/Spinner'
 
 type Props = {
   operator: OperatorByIdQuery['staking_operators_by_pk']
+  depositCount: number
 }
 
-type Row = OperatorRewardsByIdQuery['staking_operator_rewards'][0]
+type Row = OperatorDepositsByIdQuery['staking_deposits'][0]
 
-export const OperatorRewardTable: FC<Props> = ({ operator }) => {
+export const OperatorDepositTable: FC<Props> = ({ operator, depositCount }) => {
   const { ref, inView } = useInView()
   const { operatorId } = useParams<{ operatorId?: string }>()
   const inFocus = useWindowFocus()
@@ -42,47 +45,52 @@ export const OperatorRewardTable: FC<Props> = ({ operator }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'amount',
-        header: 'Amount',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) =>
-          `${bigNumberToFormattedString(row.original.amount)} ${tokenSymbol}`,
-      },
-      {
-        accessorKey: 'at_block_number',
-        header: 'At Block Number',
+        accessorKey: 'account_id',
+        header: 'Account Id',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <Link
-            key={`at_block_number-${row.original.id}`}
-            data-testid={`at_block_number-at-${row.index}`}
-            href={INTERNAL_ROUTES.blocks.id.page(
-              network,
-              Routes.consensus,
-              parseInt(row.original.at_block_number?.toString() ?? '0'),
-            )}
-            className='hover:text-primaryAccent'
-          >
-            <div>{row.original.at_block_number}</div>
-          </Link>
+          <AccountIconWithLink
+            address={row.original.account_id}
+            network={network}
+            section={Routes.consensus}
+          />
         ),
       },
       {
-        accessorKey: 'block_height',
-        header: 'Block Height',
+        accessorKey: 'total_amount',
+        header: 'Amount Deposited',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.total_amount)} ${tokenSymbol}`,
+      },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.status}</div>,
+      },
+      {
+        accessorKey: 'timestamp',
+        header: 'Timestamp',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{utcToLocalRelativeTime(row.original.timestamp)}</div>,
+      },
+      {
+        accessorKey: 'created_at',
+        header: 'Created At',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
-            key={`block_height-${row.original.id}`}
-            data-testid={`block_height-at-${row.index}`}
+            key={`created_at-${row.original.id}`}
+            data-testid={`created_at-at-${row.index}`}
             href={INTERNAL_ROUTES.blocks.id.page(
               network,
               Routes.consensus,
-              parseInt(row.original.block_height?.toString() ?? '0'),
+              parseInt(row.original.created_at?.toString() ?? '0'),
             )}
             className='hover:text-primaryAccent'
           >
-            <div>{row.original.block_height}</div>
+            <div>{row.original.created_at}</div>
           </Link>
         ),
       },
@@ -106,17 +114,21 @@ export const OperatorRewardTable: FC<Props> = ({ operator }) => {
         ),
       },
       {
-        accessorKey: 'event_id',
-        header: 'Event Id',
+        accessorKey: 'updated_at',
+        header: 'Updated At',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
-            key={`event_id-${row.original.id}`}
-            data-testid={`event_id-at-${row.index}`}
-            href={INTERNAL_ROUTES.events.id.page(network, Routes.consensus, row.original.event_id)}
+            key={`updated_at-${row.original.id}`}
+            data-testid={`updated_at-at-${row.index}`}
+            href={INTERNAL_ROUTES.blocks.id.page(
+              network,
+              Routes.consensus,
+              parseInt(row.original.updated_at?.toString() ?? '0'),
+            )}
             className='hover:text-primaryAccent'
           >
-            <div>{row.original.event_id}</div>
+            <div>{row.original.updated_at}</div>
           </Link>
         ),
       },
@@ -146,37 +158,30 @@ export const OperatorRewardTable: FC<Props> = ({ operator }) => {
   )
 
   const { loading, setIsVisible } = useIndexersQuery<
-    OperatorRewardsByIdQuery,
-    OperatorRewardsByIdQueryVariables
+    OperatorDepositsByIdQuery,
+    OperatorDepositsByIdQueryVariables
   >(
-    OperatorRewardsByIdDocument,
+    OperatorDepositsByIdDocument,
     {
       variables,
       skip: !inFocus,
       context: { clientName: 'staking' },
     },
     Routes.staking,
-    'operatorRewards',
+    'operatorDeposits',
   )
 
-  const operatorRewards = useQueryStates((state) => state.staking.operatorRewards)
+  const operatorDeposits = useQueryStates((state) => state.staking.operatorDeposits)
 
-  const rewards = useMemo(
-    () => (hasValue(operatorRewards) ? operatorRewards.value.staking_operator_rewards : []),
-    [operatorRewards],
+  const deposits = useMemo(
+    () => (hasValue(operatorDeposits) ? operatorDeposits.value.staking_deposits : []),
+    [operatorDeposits],
   )
 
-  const totalCount = useMemo(
-    () =>
-      hasValue(operatorRewards)
-        ? operatorRewards.value.staking_operator_rewards_aggregate?.aggregate?.count
-        : 0,
-    [operatorRewards],
-  )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
+  const totalLabel = useMemo(() => numberWithCommas(depositCount), [depositCount])
   const pageCount = useMemo(
-    () => countTablePages(Number(totalCount), pagination.pageSize),
-    [totalCount, pagination],
+    () => countTablePages(depositCount, pagination.pageSize),
+    [depositCount, pagination],
   )
 
   useEffect(() => {
@@ -188,18 +193,18 @@ export const OperatorRewardTable: FC<Props> = ({ operator }) => {
   return (
     <div ref={ref}>
       <div className='mt-5 flex w-full justify-between'>
-        <div className='text-base font-medium text-grayDark dark:text-white'>{`Rewards (${totalLabel})`}</div>
+        <div className='text-base font-medium text-grayDark dark:text-white'>{`Deposits (${totalLabel})`}</div>
       </div>
       {!loading ? (
         <SortedTable
-          data={rewards}
+          data={deposits}
           columns={columns}
           sorting={sorting}
           onSortingChange={setSorting}
           pagination={pagination}
           pageCount={pageCount}
           onPaginationChange={setPagination}
-          filename='operator-rewards-list'
+          filename='operator-deposits-list'
         />
       ) : (
         <Spinner isSmall />

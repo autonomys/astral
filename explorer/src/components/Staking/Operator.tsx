@@ -15,10 +15,13 @@ import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { OperatorBundleTable } from './OperatorBundleTable'
+import { OperatorDepositTable } from './OperatorDepositTable'
 import { OperatorDetailsCard } from './OperatorDetailsCard'
+import { OperatorFundsUnlockTable } from './OperatorFundsUnlockTable'
 import { OperatorNominatorTable } from './OperatorNominatorTable'
 import { OperatorRewardTable } from './OperatorRewardTable'
 import { OperatorTaxTable } from './OperatorTaxTable'
+import { OperatorWithdrawalTable } from './OperatorWithdrawalTable'
 
 export const Operator: FC = () => {
   const { ref, inView } = useInView()
@@ -88,6 +91,21 @@ export const Operator: FC = () => {
                   operator={operatorDetails}
                   nominatorCount={operatorDetails.nominators_aggregate.aggregate?.count ?? 0}
                 />
+              </Tab>
+              <Tab title='Deposits'>
+                <OperatorDepositTable
+                  operator={operatorDetails}
+                  depositCount={operatorDetails.total_deposits_count ?? 0}
+                />
+              </Tab>
+              <Tab title='Withdrawals'>
+                <OperatorWithdrawalTable
+                  operator={operatorDetails}
+                  withdrawalsCount={operatorDetails.total_withdrawals_count ?? 0}
+                />
+              </Tab>
+              <Tab title='Funds Unlock'>
+                <OperatorFundsUnlockTable operator={operatorDetails} />
               </Tab>
               <Tab title='Bundles'>
                 <OperatorBundleTable

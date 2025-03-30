@@ -43,19 +43,6 @@ export const OperatorBundleTable: FC<Props> = ({ operator, bundlesCount }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'domain_id',
-        header: 'Domain Id',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            className='hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.domains.id.page(network, Routes.domains, row.original.domain_id)}
-          >
-            <div>{row.original.domain_id}</div>
-          </Link>
-        ),
-      },
-      {
         accessorKey: 'domain_block_number',
         header: 'Domain Block Number',
         enableSorting: true,

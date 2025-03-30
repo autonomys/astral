@@ -66,6 +66,9 @@ interface ExplorerQueryState {
     operators: QueryState<GqlT.OperatorsListQuery>
     operator: QueryState<GqlT.OperatorByIdQuery>
     operatorNominators: QueryState<GqlT.OperatorNominatorsByIdQuery>
+    operatorDeposits: QueryState<GqlT.OperatorDepositsByIdQuery>
+    operatorWithdrawals: QueryState<GqlT.OperatorWithdrawalsByIdQuery>
+    operatorFundsUnlock: QueryState<GqlT.OperatorFundsUnlockByIdQuery>
     operatorBundles: QueryState<GqlT.OperatorBundlesByIdQuery>
     operatorRewards: QueryState<GqlT.OperatorRewardsByIdQuery>
     operatorTaxCollected: QueryState<GqlT.OperatorTaxCollectedByIdQuery>
@@ -140,6 +143,9 @@ const initialState: ExplorerQueryState = {
 
     operator: initialized,
     operatorNominators: initialized,
+    operatorDeposits: initialized,
+    operatorWithdrawals: initialized,
+    operatorFundsUnlock: initialized,
     operatorBundles: initialized,
     operatorRewards: initialized,
     operatorTaxCollected: initialized,

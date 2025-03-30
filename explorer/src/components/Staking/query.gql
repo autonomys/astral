@@ -190,6 +190,47 @@ query OperatorNominatorsById(
   }
 }
 
+query OperatorDepositsById(
+  $limit: Int!
+  $offset: Int
+  $orderBy: [staking_deposits_order_by!]!
+  $where: staking_deposits_bool_exp
+) {
+  staking_deposits(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    account_id
+    total_amount
+    status
+    timestamp
+    extrinsic_id
+    created_at
+    updated_at
+  }
+}
+
+query OperatorWithdrawalsById(
+  $limit: Int!
+  $offset: Int
+  $orderBy: [staking_withdrawals_order_by!]!
+  $where: staking_withdrawals_bool_exp
+) {
+  staking_withdrawals(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    account_id
+    shares
+    storage_fee_refund
+    estimated_amount
+    status
+    timestamp
+    withdraw_extrinsic_id
+    epoch_withdrawal_requested_at
+    domain_block_number_withdrawal_requested_at
+    created_at
+    domain_block_number_ready_at
+    updated_at
+  }
+}
+
 query OperatorBundlesById(
   $limit: Int!
   $offset: Int
@@ -198,7 +239,6 @@ query OperatorBundlesById(
 ) {
   staking_bundle_submissions(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
-    domain_id
     domain_block_number
     epoch
     consensus_block_number
@@ -233,7 +273,6 @@ query OperatorRewardsById(
   }
   staking_operator_rewards(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
-    domain_id
     amount
     at_block_number
     block_height
@@ -260,8 +299,29 @@ query OperatorTaxCollectedById(
     where: $where
   ) {
     id
-    domain_id
     amount
+    block_height
+    extrinsic_id
+    event_id
+  }
+}
+
+query OperatorFundsUnlockById(
+  $limit: Int!
+  $offset: Int
+  $orderBy: [staking_unlocked_events_order_by!]!
+  $where: staking_unlocked_events_bool_exp
+) {
+  staking_unlocked_events_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  staking_unlocked_events(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    account_id
+    amount
+    storage_fee
     block_height
     extrinsic_id
     event_id

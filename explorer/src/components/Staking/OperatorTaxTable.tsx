@@ -42,19 +42,6 @@ export const OperatorTaxTable: FC<Props> = ({ operator }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'domain_id',
-        header: 'Domain Id',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            className='hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.domains.id.page(network, Routes.domains, row.original.domain_id)}
-          >
-            <div>{row.original.domain_id}</div>
-          </Link>
-        ),
-      },
-      {
         accessorKey: 'amount',
         header: 'Amount',
         enableSorting: true,
