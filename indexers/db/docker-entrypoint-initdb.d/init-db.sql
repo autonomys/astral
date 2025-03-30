@@ -3300,7 +3300,13 @@ EXECUTE FUNCTION staking.handle_operator_tax_collections_events();
 CREATE OR REPLACE FUNCTION staking.handle_operator_rewards_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
+DECLARE
+    operator_account_id TEXT;
 BEGIN
+    SELECT account_id INTO operator_account_id
+    FROM staking.operators
+    WHERE id = NEW.operator_id;
+
     UPDATE staking.domains
     SET 
         total_rewards_collected = staking.domains.total_rewards_collected + NEW.amount,
@@ -3315,12 +3321,11 @@ BEGIN
         updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
 
-    -- TODO: add account_id to operator_rewards
-    -- UPDATE staking.accounts
-    -- SET 
-    --     total_rewards_collected = staking.accounts.total_rewards_collected + NEW.amount,
-    --     updated_at = NEW.block_height
-    -- WHERE id = NEW.operator_id;
+    UPDATE staking.accounts
+    SET 
+        total_rewards_collected = staking.accounts.total_rewards_collected + NEW.amount,
+        updated_at = NEW.block_height
+    WHERE id = operator_account_id;
     
     RETURN NEW;
 END;
