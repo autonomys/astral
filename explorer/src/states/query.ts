@@ -66,6 +66,9 @@ interface ExplorerQueryState {
     operators: QueryState<GqlT.OperatorsListQuery>
     operator: QueryState<GqlT.OperatorByIdQuery>
     operatorNominators: QueryState<GqlT.OperatorNominatorsByIdQuery>
+    operatorBundles: QueryState<GqlT.OperatorBundlesByIdQuery>
+    operatorRewards: QueryState<GqlT.OperatorRewardsByIdQuery>
+    operatorTaxCollected: QueryState<GqlT.OperatorTaxCollectedByIdQuery>
   }
   [Routes.leaderboard]: {
     leaderboard: QueryState<GqlT.AccountTransferSenderTotalCountQuery>
@@ -137,6 +140,9 @@ const initialState: ExplorerQueryState = {
 
     operator: initialized,
     operatorNominators: initialized,
+    operatorBundles: initialized,
+    operatorRewards: initialized,
+    operatorTaxCollected: initialized,
   },
   leaderboard: {
     leaderboard: initialized,
