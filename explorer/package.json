@@ -106,7 +106,7 @@
     "@svgr/webpack": "^8.1.0",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^20.17.27",
+    "@types/node": "^20.17.28",
     "@types/pako": "^2.0.3",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.5",
