@@ -38,7 +38,7 @@
     "@polkadot/util-crypto": "^13.4.3",
     "@subql/cli": "^5.7.0",
     "@subql/common-substrate": "^4.3.7",
-    "@subql/node": "^5.10.0",
+    "@subql/node": "^5.11.1",
     "@subql/types": "^3.12.1",
     "@types/node": "^22.9.0",
     "class-transformer": "^0.5.1",

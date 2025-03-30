@@ -1704,10 +1704,10 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@pkgr/core@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@pkgr/core/-/core-0.1.1.tgz#1ec17e2edbec25c8306d424ecfbf13c7de1aaa31"
-  integrity sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==
+"@pkgr/core@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@pkgr/core/-/core-0.2.0.tgz#8dff61038cb5884789d8b323d9869e5363b976f7"
+  integrity sha512-vsJDAkYR6qCPu+ioGScGiMYR7LvZYIXh/dlQeviqoTWNCVfKTLYD/LkNWH4Mxsv2a5vpIRc77FN5DnmK1eBggQ==
 
 "@polkadot-api/json-rpc-provider-proxy@^0.1.0":
   version "0.1.0"
@@ -2316,10 +2316,10 @@
     semver "^7.6.3"
     update-notifier "^5.1.0"
 
-"@subql/node-core@17.1.0":
-  version "17.1.0"
-  resolved "https://registry.yarnpkg.com/@subql/node-core/-/node-core-17.1.0.tgz#59ca8e7d87ee5d7e564b7c56239e313a658cdcae"
-  integrity sha512-C4/1nQ2BqvBprRNJOY7H/s51UboOMd7GZKciMoNlzqim6hZ4KgybfQ3zEOjK2beZPcC1EAbSDKOpH3Blmw44ew==
+"@subql/node-core@17.2.1":
+  version "17.2.1"
+  resolved "https://registry.yarnpkg.com/@subql/node-core/-/node-core-17.2.1.tgz#4c9b03558540d4dfd65785b08bbec4479fe16ab6"
+  integrity sha512-2bzxs4mcqNmfkdwOa4DS2N6lF0e/+6px8dlRRiQVkVUWZuTYGUPNttm5An6tBxRpoO9KgQAb4HVZ3Ag+y4X9zA==
   dependencies:
     "@apollo/client" "^3.11.2"
     "@nestjs/common" "^11.0.7"
@@ -2346,10 +2346,10 @@
     vm2 "^3.9.19"
     yargs "^16.2.0"
 
-"@subql/node@^5.10.0":
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/@subql/node/-/node-5.10.0.tgz#b04ca9162aa1b6e076cde9482f0b91576dafaea3"
-  integrity sha512-ZevO6oZNTEUt3cTgxlkhfxOwlarDRK3kCoqx7YufKwljYTZJQvxkjIp7x2XqULIO8Q6cVJmeUJcreeTJq7nqQA==
+"@subql/node@^5.11.1":
+  version "5.11.1"
+  resolved "https://registry.yarnpkg.com/@subql/node/-/node-5.11.1.tgz#32435ea9fcc57edccb764b48157a1cb2541f3a24"
+  integrity sha512-JqZtyEwO1t7DL3DKbyGa8fSPT+gNsD33AdIOCwLX4w7QmD4vk+CA4SZT+WfcA3Fgcd68pVkPLIs7w7dvau0i7w==
   dependencies:
     "@nestjs/common" "^11.0.7"
     "@nestjs/core" "^11.0.7"
@@ -2359,7 +2359,7 @@
     "@polkadot/api" "^15.6.1"
     "@subql/common" "5.4.0"
     "@subql/common-substrate" "4.3.7"
-    "@subql/node-core" "17.1.0"
+    "@subql/node-core" "17.2.1"
     "@subql/types" "3.12.1"
     "@subql/utils" "2.18.0"
     fetch-h2 "3.0.2"
@@ -2834,10 +2834,10 @@
     "@types/node" "*"
     form-data "^4.0.0"
 
-"@types/supertest@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@types/supertest/-/supertest-6.0.2.tgz#2af1c466456aaf82c7c6106c6b5cbd73a5e86588"
-  integrity sha512-137ypx2lk/wTQbW6An6safu9hXmajAifU/s7szAHLN/FeIm5w7yR0Wkl9fdJMRSHwOn4HLAI0DaB2TOORuhPDg==
+"@types/supertest@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@types/supertest/-/supertest-6.0.3.tgz#d736f0e994b195b63e1c93e80271a2faf927388c"
+  integrity sha512-8WzXq62EXFhJ7QsH3Ocb/iKQ/Ty9ZVWnVzoTKc9tyyFRRF3a74Tk2+TLFgaFFw364Ere+npzHKEJ6ga2LzIL7w==
   dependencies:
     "@types/methods" "^1.1.4"
     "@types/superagent" "^8.1.0"
@@ -4910,13 +4910,13 @@ eslint-config-prettier@^9.1.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-9.1.0.tgz#31af3d94578645966c082fcb71a5846d3c94867f"
   integrity sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==
 
-eslint-plugin-prettier@^5.2.3:
-  version "5.2.3"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-5.2.3.tgz#c4af01691a6fa9905207f0fbba0d7bea0902cce5"
-  integrity sha512-qJ+y0FfCp/mQYQ/vWQ3s7eUlFEL4PyKfAJxsnYTJ4YT73nsJBWqmEpFryxV9OeUiqmsTsYJ5Y+KDNaeP31wrRw==
+eslint-plugin-prettier@^5.2.5:
+  version "5.2.5"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-5.2.5.tgz#0ff00b16f4c80ccdafd6a24a263effba1700087e"
+  integrity sha512-IKKP8R87pJyMl7WWamLgPkloB16dagPIdd2FjBDbyRYPKo93wS/NbCOPh6gH+ieNLC+XZrhJt/kWj0PS/DFdmg==
   dependencies:
     prettier-linter-helpers "^1.0.0"
-    synckit "^0.9.1"
+    synckit "^0.10.2"
 
 eslint-scope@5.1.1:
   version "5.1.1"
@@ -9927,13 +9927,13 @@ symbol-observable@4.0.0, symbol-observable@^4.0.0:
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-4.0.0.tgz#5b425f192279e87f2f9b937ac8540d1984b39205"
   integrity sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==
 
-synckit@^0.9.1:
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/synckit/-/synckit-0.9.2.tgz#a3a935eca7922d48b9e7d6c61822ee6c3ae4ec62"
-  integrity sha512-vrozgXDQwYO72vHjUb/HnFbQx1exDjoKzqx23aXEg2a9VIg2TSFZ8FmeZpTjUCFMYw7mpX4BE2SFu8wI7asYsw==
+synckit@^0.10.2:
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/synckit/-/synckit-0.10.3.tgz#940aea2c7b6d141a4f74dbdebc81e0958c331a4b"
+  integrity sha512-R1urvuyiTaWfeCggqEvpDJwAlDVdsT9NM+IP//Tk2x7qHCkSvBk/fwFgw/TLAHzZlrAnnazMcRw0ZD8HlYFTEQ==
   dependencies:
-    "@pkgr/core" "^0.1.0"
-    tslib "^2.6.2"
+    "@pkgr/core" "^0.2.0"
+    tslib "^2.8.1"
 
 tapable@^2.1.1, tapable@^2.2.0, tapable@^2.2.1:
   version "2.2.1"
