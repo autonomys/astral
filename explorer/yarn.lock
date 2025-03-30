@@ -2477,17 +2477,7 @@
     rxjs "^7.8.1"
     tslib "^2.8.1"
 
-"@polkadot/extension-dapp@^0.46.7":
-  version "0.46.9"
-  resolved "https://registry.yarnpkg.com/@polkadot/extension-dapp/-/extension-dapp-0.46.9.tgz#b80231a2dd04744d8bdfff41bcb7223316f353e2"
-  integrity sha512-y5udSeQ/X9MEoyjlpTcCn0UAEjZ2jjy6U3V/jiVFQo5vBKhdqAhN1oN8X5c4yWurmhYM/7oibImxAjEoXuwH+Q==
-  dependencies:
-    "@polkadot/extension-inject" "0.46.9"
-    "@polkadot/util" "^12.6.2"
-    "@polkadot/util-crypto" "^12.6.2"
-    tslib "^2.6.2"
-
-"@polkadot/extension-dapp@^0.58.5":
+"@polkadot/extension-dapp@^0.58.5", "@polkadot/extension-dapp@^0.58.6":
   version "0.58.6"
   resolved "https://registry.yarnpkg.com/@polkadot/extension-dapp/-/extension-dapp-0.58.6.tgz#315e9fcf3431930c00e86fa260c89f822182a441"
   integrity sha512-NdoYqa2pExt27oFEkROqXRB0Nv+boHAjh2jU+11+YK3+EyJ2yl4Q4ON8JnioAqye/hDaWSn6SpdlywS+11LMCA==
@@ -2496,19 +2486,6 @@
     "@polkadot/util" "^13.4.3"
     "@polkadot/util-crypto" "^13.4.3"
     tslib "^2.8.1"
-
-"@polkadot/extension-inject@0.46.9", "@polkadot/extension-inject@^0.46.7":
-  version "0.46.9"
-  resolved "https://registry.yarnpkg.com/@polkadot/extension-inject/-/extension-inject-0.46.9.tgz#d4a8dbe27b2fda945d6410d0e22f6110a6befae1"
-  integrity sha512-m0jnrs9+jEOpMH6OUNl7nHpz9SFFWK9LzuqB8T3htEE3RUYPL//SLCPyEKxAAgHu7F8dgkUHssAWQfANofALCQ==
-  dependencies:
-    "@polkadot/api" "^10.12.4"
-    "@polkadot/rpc-provider" "^10.12.4"
-    "@polkadot/types" "^10.12.4"
-    "@polkadot/util" "^12.6.2"
-    "@polkadot/util-crypto" "^12.6.2"
-    "@polkadot/x-global" "^12.6.2"
-    tslib "^2.6.2"
 
 "@polkadot/extension-inject@0.58.6":
   version "0.58.6"
@@ -2522,6 +2499,19 @@
     "@polkadot/util-crypto" "^13.4.3"
     "@polkadot/x-global" "^13.4.3"
     tslib "^2.8.1"
+
+"@polkadot/extension-inject@^0.46.7":
+  version "0.46.9"
+  resolved "https://registry.yarnpkg.com/@polkadot/extension-inject/-/extension-inject-0.46.9.tgz#d4a8dbe27b2fda945d6410d0e22f6110a6befae1"
+  integrity sha512-m0jnrs9+jEOpMH6OUNl7nHpz9SFFWK9LzuqB8T3htEE3RUYPL//SLCPyEKxAAgHu7F8dgkUHssAWQfANofALCQ==
+  dependencies:
+    "@polkadot/api" "^10.12.4"
+    "@polkadot/rpc-provider" "^10.12.4"
+    "@polkadot/types" "^10.12.4"
+    "@polkadot/util" "^12.6.2"
+    "@polkadot/util-crypto" "^12.6.2"
+    "@polkadot/x-global" "^12.6.2"
+    tslib "^2.6.2"
 
 "@polkadot/keyring@^12.6.2":
   version "12.6.2"
