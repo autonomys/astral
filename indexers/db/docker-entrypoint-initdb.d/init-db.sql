@@ -3710,6 +3710,16 @@ EXECUTE FUNCTION staking.update_operator_on_deregistration();
 CREATE OR REPLACE FUNCTION staking.handle_unlocked_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
+DECLARE
+    remaining_amount numeric;
+    current_deposit RECORD;
+    found_eligible_deposits boolean;
+    deposit_cursor CURSOR FOR 
+        SELECT id, amount, storage_fee_deposit, total_amount, total_withdrawn, status
+        FROM staking.deposits
+        WHERE (status = 'ACTIVE' OR status = 'PARTIALLY_WITHDRAWN') 
+        AND account_id = NEW.account_id
+        ORDER BY created_at ASC;
 BEGIN
     UPDATE staking.domains
     SET 
@@ -3750,9 +3760,60 @@ BEGIN
         status = 'FUNDS_UNLOCKED',
         unlocked_at = NEW.block_height,
         updated_at = NEW.block_height
-    WHERE status = 'PENDING_UNLOCK_FUNDS' AND operator_id = NEW.operator_id
+    WHERE status = 'PENDING_UNLOCK_FUNDS' AND account_id = NEW.account_id
     ORDER BY block_height ASC
     LIMIT 1;
+
+    -- TODO: Test this
+    remaining_amount := NEW.amount + NEW.storage_fee;
+    found_eligible_deposits := FALSE;
+
+    OPEN deposit_cursor;
+    LOOP
+        FETCH deposit_cursor INTO current_deposit;
+        EXIT WHEN NOT FOUND;
+        
+        IF (current_deposit.total_amount - current_deposit.total_withdrawn) >= remaining_amount THEN
+            UPDATE staking.deposits
+            SET
+                total_withdrawn = total_withdrawn + remaining_amount,
+                status = CASE 
+                        WHEN (total_withdrawn + remaining_amount) >= total_amount THEN 'FULLY_WITHDRAWN'
+                        ELSE 'PARTIALLY_WITHDRAWN'
+                    END,
+                updated_at = NEW.block_height
+            WHERE id = current_deposit.id;
+            
+            remaining_amount := 0;
+            found_eligible_deposits := TRUE;
+            EXIT;
+        ELSE
+            UPDATE staking.deposits
+            SET
+                total_withdrawn = total_amount,
+                status = 'FULLY_WITHDRAWN',
+                updated_at = NEW.block_height
+            WHERE id = current_deposit.id;
+            
+            remaining_amount := remaining_amount - (current_deposit.total_amount - current_deposit.total_withdrawn);
+            found_eligible_deposits := TRUE;
+        END IF;
+    END LOOP;
+    
+    CLOSE deposit_cursor;
+    
+    IF remaining_amount > 0 AND found_eligible_deposits = TRUE THEN
+        UPDATE staking.deposits
+        SET
+            total_withdrawn = total_withdrawn + remaining_amount,
+            updated_at = NEW.block_height
+        WHERE account_id = NEW.account_id AND status = 'FULLY_WITHDRAWN'
+        ORDER BY created_at DESC
+        LIMIT 1;
+    ELSIF remaining_amount > 0 AND found_eligible_deposits = FALSE THEN
+        RAISE NOTICE 'No active or partially withdrawn deposits found for account %. Withdrawing amount: %', 
+            NEW.account_id, remaining_amount;
+    END IF;
 
     RETURN NEW;
 END;
