@@ -1,6 +1,8 @@
 'use client'
 
+import { PageTabs } from 'components/common/PageTabs'
 import { Spinner } from 'components/common/Spinner'
+import { Tab } from 'components/common/Tabs'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { OperatorByIdDocument, OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/graphql'
@@ -12,8 +14,11 @@ import { useParams, useRouter } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { OperatorBundleTable } from './OperatorBundleTable'
 import { OperatorDetailsCard } from './OperatorDetailsCard'
 import { OperatorNominatorTable } from './OperatorNominatorTable'
+import { OperatorRewardTable } from './OperatorRewardTable'
+import { OperatorTaxTable } from './OperatorTaxTable'
 
 export const Operator: FC = () => {
   const { ref, inView } = useInView()
@@ -71,15 +76,32 @@ export const Operator: FC = () => {
                 Prev Operator
               </button>
               <button
-                className='rounded-full bg-grayDarker p-4 px-4 py-2  text-white dark:bg-primaryAccent'
+                className='rounded-full bg-grayDarker p-4 px-4 py-2 text-white dark:bg-primaryAccent'
                 onClick={() => push((parseInt(operatorDetails.id) + 1).toString())}
               >
                 Next Operator
               </button>
             </div>
-            <div className='mt-5 flex w-full flex-col rounded-[20px] bg-white p-5 dark:bg-boxDark sm:mt-0'>
-              <OperatorNominatorTable operator={operatorDetails} />
-            </div>
+            <PageTabs isDesktop={isDesktop}>
+              <Tab title='Nominators'>
+                <OperatorNominatorTable
+                  operator={operatorDetails}
+                  nominatorCount={operatorDetails.nominators_aggregate.aggregate?.count ?? 0}
+                />
+              </Tab>
+              <Tab title='Bundles'>
+                <OperatorBundleTable
+                  operator={operatorDetails}
+                  bundlesCount={operatorDetails.bundle_count ?? 0}
+                />
+              </Tab>
+              <Tab title='Rewards'>
+                <OperatorRewardTable operator={operatorDetails} />
+              </Tab>
+              <Tab title='Tax Collected'>
+                <OperatorTaxTable operator={operatorDetails} />
+              </Tab>
+            </PageTabs>
           </div>
         </>
       ) : (
