@@ -1948,7 +1948,7 @@
   resolved "https://registry.yarnpkg.com/@next/env/-/env-14.2.26.tgz#5d55f72d2edb7246607c78f61e7d3ff21516bc2e"
   integrity sha512-vO//GJ/YBco+H7xdQhzJxF7ub3SUwft76jwaeOyVVQFHCi5DCnkP16WHB+JBylo4vOKPoZBlR94Z8xBxNBdNJA==
 
-"@next/eslint-plugin-next@^14.2.25":
+"@next/eslint-plugin-next@^14.2.26":
   version "14.2.26"
   resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-14.2.26.tgz#dd3c3844738c84d7a6fea10a19c9e5ee00608d1f"
   integrity sha512-SPEj1O5DAVTPaWD9XPupelfT2APNIgcDYD2OzEm328BEmHaglhmYNUvxhzfJYDr12AgAfW4V3UHSV93qaeELJA==
@@ -2000,7 +2000,7 @@
   resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-14.2.26.tgz#6f42a3ae16ae15c5c5e36efa9b7e291c86ab1275"
   integrity sha512-2rdB3T1/Gp7bv1eQTTm9d1Y1sv9UuJ2LAwOE0Pe2prHKe32UNscj7YS13fRB37d0GAiGNR+Y7ZcW8YjDI8Ns0w==
 
-"@next/third-parties@^14.2.25":
+"@next/third-parties@^14.2.26":
   version "14.2.26"
   resolved "https://registry.yarnpkg.com/@next/third-parties/-/third-parties-14.2.26.tgz#607f753f65424919d347c9c8664c3a92e9eb9448"
   integrity sha512-btF5TGviL9mFE4ACGHt91GIgo0avgI7ecAfUqlSyl/GC2LZZLAXYuNQbNYcemeKAXCsvv39TZaLOnofQ/f39lg==
@@ -8164,7 +8164,7 @@ next-pwa@^5.6.0:
     workbox-webpack-plugin "^6.5.4"
     workbox-window "^6.5.4"
 
-next@^14.2.25:
+next@^14.2.26:
   version "14.2.26"
   resolved "https://registry.yarnpkg.com/next/-/next-14.2.26.tgz#b918b3fc5c55e1a67aada1347907675713687721"
   integrity sha512-b81XSLihMwCfwiUVRRja3LphLo4uBBMZEzBBWMaISbKTwOmq3wPknIETy/8000tr7Gq4WmbuFYPS7jOYIf+ZJw==
