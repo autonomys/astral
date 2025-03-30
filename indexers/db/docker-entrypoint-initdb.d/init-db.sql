@@ -1169,7 +1169,9 @@ CREATE TABLE staking.accounts (
     total_deposits_count numeric NOT NULL,
     total_withdrawals_count numeric NOT NULL,
     total_tax_collected numeric NOT NULL,
+    total_tax_collected_count numeric NOT NULL,
     total_rewards_collected numeric NOT NULL,
+    total_rewards_collected_count numeric NOT NULL,
     current_total_stake numeric NOT NULL,
     current_storage_fee_deposit numeric NOT NULL,
     current_total_shares numeric NOT NULL,
@@ -3133,7 +3135,9 @@ BEGIN
         total_deposits_count,
         total_withdrawals_count,
         total_tax_collected,
+        total_tax_collected_count,
         total_rewards_collected,
+        total_rewards_collected_count,
         current_total_stake,
         current_storage_fee_deposit,
         current_total_shares,
@@ -3151,7 +3155,9 @@ BEGIN
         0,                         -- total_deposits_count
         0,                         -- total_withdrawals_count
         0,                         -- total_tax_collected
+        0,                         -- total_tax_collected_count
         0,                         -- total_rewards_collected
+        0,                         -- total_rewards_collected_count
         NEW.amount,                -- current_total_stake
         NEW.storage_fee_deposit,   -- current_storage_fee_deposit
         0,                         -- current_total_shares
@@ -3283,7 +3289,7 @@ BEGIN
     UPDATE staking.accounts
     SET 
         total_tax_collected = staking.accounts.total_tax_collected + NEW.amount,
-        tax_collected_count = staking.accounts.tax_collected_count + 1,
+        total_tax_collected_count = staking.accounts.total_tax_collected_count + 1,
         updated_at = NEW.block_height
     WHERE id = operator_account_id;
     
@@ -3324,6 +3330,7 @@ BEGIN
     UPDATE staking.accounts
     SET 
         total_rewards_collected = staking.accounts.total_rewards_collected + NEW.amount,
+        total_rewards_collected_count = staking.accounts.total_rewards_collected_count + 1,
         updated_at = NEW.block_height
     WHERE id = operator_account_id;
     
