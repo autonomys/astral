@@ -103,6 +103,18 @@ export const OperatorNominatorTable: FC<Props> = ({ operator, nominatorCount }) 
         },
       },
       {
+        accessorKey: 'total_withdrawals',
+        header: 'Total Withdrawals',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => {
+          return (
+            <div>
+              {bigNumberToFormattedString(row.original.total_withdrawals) + ' ' + tokenSymbol}
+            </div>
+          )
+        },
+      },
+      {
         accessorKey: 'owner',
         header: 'is Owner',
         enableSorting: false,
