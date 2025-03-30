@@ -359,7 +359,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     event,
     cache,
     extrinsic,
-    extrinsicSigner,
     height,
     extrinsicId,
     eventId,
@@ -398,12 +397,13 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       calculateTransfer(transfersRejected);
     const totalVolume = totalTransfersIn + totalTransfersOut;
 
+    const { operatorOwner } = findOperatorFromOperatorsCache(cache, operatorId);
     const epoch = findEpochFromDomainStakingHistoryCache(cache, domainId);
 
     cache.bundleSubmission.push(
       db.createBundleSubmission(
         bundleHash,
-        extrinsicSigner,
+        operatorOwner,
         String(domainId),
         String(domainBlockNumber),
         operatorId,
