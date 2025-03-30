@@ -107,24 +107,24 @@
     relay-runtime "12.0.0"
     signedsource "^1.0.0"
 
-"@autonomys/asynchronous@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@autonomys/asynchronous/-/asynchronous-1.4.7.tgz#1e169236abf74682ad7e28a6a6bf263adfd24a5b"
-  integrity sha512-Jc17wiedR/9LVlBcOS2x59wqyRFxOcHscIT5O8CF5RBY19LXa7ZH7iwX7baw/NZA4uepoIi8bRL6g/AVQUzc+w==
+"@autonomys/asynchronous@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@autonomys/asynchronous/-/asynchronous-1.4.8.tgz#f058df590f188dab5346d4b6f526c14268bbc94c"
+  integrity sha512-3Ndb+ZZBb76rK7tV2lI4LjYvD/jxhtDZ6gnKBaqg6aNkqginXnGBaCk/YLEMgxTYFdoaEo6ZBrxlELm8DMISLQ==
 
-"@autonomys/auto-consensus@^1.4.2", "@autonomys/auto-consensus@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.4.7.tgz#0e3dfe21008957c1317ee552ea5615c3a60574f2"
-  integrity sha512-P9cueLhVWjGnz/8E0RP5pgXSH1fCe66EH2Ahv61ZiWX4CCaLDd8b1fNZt4lbUkX/GfS16pCKGgA0j58Mntm3mA==
+"@autonomys/auto-consensus@^1.4.6", "@autonomys/auto-consensus@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.4.8.tgz#5d881756d6aef472e6fca1628a35954decd5f3f7"
+  integrity sha512-L2b7eKIyv4lZLm8UKT3KOplm02wTVC3n79xz231aNVDSxAKP8cFafd09ZQIB4PoLUUr86kj5sgX1wGDCEOyvYA==
   dependencies:
-    "@autonomys/auto-utils" "^1.4.7"
+    "@autonomys/auto-utils" "^1.4.8"
 
-"@autonomys/auto-dag-data@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.4.7.tgz#779f9def1a67db59d4c694f6adbfe7d0274f6856"
-  integrity sha512-gnDwG+xmzmwB7zhU0q1JiC2E2kfcZXCLEJ7zx4L0iolg8kvdyvCPxJ2wamejrK6qp3Kah/skMLkOVMexRIf2wQ==
+"@autonomys/auto-dag-data@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-dag-data/-/auto-dag-data-1.4.8.tgz#7094a60cd19416fcfe3ddb133fc16c1d3c9b2b67"
+  integrity sha512-+p9Vn72o03YkgLXILuT76Sg3OEyfIXc4A7K8IbrGUtzIMTNA8Olm641VneWYhevINYYbcKncioh8YRaeDzD0yQ==
   dependencies:
-    "@autonomys/asynchronous" "^1.4.7"
+    "@autonomys/asynchronous" "^1.4.8"
     "@ipld/dag-pb" "^4.1.3"
     "@peculiar/webcrypto" "^1.5.0"
     "@webbuf/blake3" "^3.0.26"
@@ -136,14 +136,14 @@
     protons "^7.6.0"
     protons-runtime "^5.5.0"
 
-"@autonomys/auto-drive@^1.4.2":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-drive/-/auto-drive-1.4.7.tgz#0f22fe90967f88fc2bd88fb4fd0d32c2d29be54d"
-  integrity sha512-rLHlqJkY/PtuO1NMMY2cVRnCskJ3OjKngdv+LIPAjq0cE+Meo/2ABFew6vYMOxPzr4hYTkJH3QHguAMAYJmrVg==
+"@autonomys/auto-drive@^1.4.6":
+  version "1.4.9"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-drive/-/auto-drive-1.4.9.tgz#29e883d60caa7fcdb90e92c017611dcb14fdb0fa"
+  integrity sha512-MSQYGqlDVAaCxMS8P3N4gHUdhsfREddTykizGASA2WQoMMRpIcQlbWMXYDsj0U828zPU3L/jrcQGDDIo9Qr1Mg==
   dependencies:
-    "@autonomys/asynchronous" "^1.4.7"
-    "@autonomys/auto-dag-data" "^1.4.7"
-    "@autonomys/auto-utils" "^1.4.7"
+    "@autonomys/asynchronous" "^1.4.8"
+    "@autonomys/auto-dag-data" "^1.4.8"
+    "@autonomys/auto-utils" "^1.4.8"
     blockstore-core "^5.0.2"
     jszip "^3.10.1"
     mime-types "^2.1.35"
@@ -151,22 +151,22 @@
     stream "^0.0.3"
     zod "^3.24.2"
 
-"@autonomys/auto-utils@^1.4.2", "@autonomys/auto-utils@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.4.7.tgz#59889d8b40b9bb67da9920f6c4ecf675fcf157e1"
-  integrity sha512-4Pg3zG7qRhbKgyMwqoI+iO81JDLfnnT84QY6qX+YnSAt0TxgBQ5M6OFYxMvTDvMjlaUIvQEvvbN3EAaCNLPKfA==
+"@autonomys/auto-utils@^1.4.6", "@autonomys/auto-utils@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.4.8.tgz#4c76e0c0aaec8b59bb094b004284cdfa9821c02f"
+  integrity sha512-iYdrICToz8zLqOyREBtgia0Tpy9y739Djqk2TEVlPgU7NHFyiOCnryvOEDk34Olwa3FkuL/zAp0LfZPJ7ANsaw==
   dependencies:
     "@polkadot/api" "^15.8.1"
     "@polkadot/extension-dapp" "^0.58.5"
     fs "^0.0.1-security"
 
-"@autonomys/auto-xdm@^1.4.2":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-xdm/-/auto-xdm-1.4.7.tgz#4b1fe8f90e8692295427d0901728f1ba092f4160"
-  integrity sha512-Y0rreZ2AymqRK9C8dUNlA03C6B3UrLy7uzKo+u/KQyfUxD3STz13vxhRkarmRBztc06oQsSOlX6AQsMxqCaWwg==
+"@autonomys/auto-xdm@^1.4.6":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-xdm/-/auto-xdm-1.4.8.tgz#f08fc9772d603291e5d64494c225dfe51644e926"
+  integrity sha512-JivhCIQwtTc51dElkZ1G6/H+xbbmU7xyNcTXZtrVDrpMu/dBtJ+xoXWaSBXbyha1/9qBMf0Tn4Qrh27AyK4b7w==
   dependencies:
-    "@autonomys/auto-consensus" "^1.4.7"
-    "@autonomys/auto-utils" "^1.4.7"
+    "@autonomys/auto-consensus" "^1.4.8"
+    "@autonomys/auto-utils" "^1.4.8"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.26.2":
   version "7.26.2"
