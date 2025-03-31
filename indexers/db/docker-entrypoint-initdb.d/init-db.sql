@@ -1169,7 +1169,9 @@ CREATE TABLE staking.accounts (
     total_deposits_count numeric NOT NULL,
     total_withdrawals_count numeric NOT NULL,
     total_tax_collected numeric NOT NULL,
+    total_tax_collected_count numeric NOT NULL,
     total_rewards_collected numeric NOT NULL,
+    total_rewards_collected_count numeric NOT NULL,
     current_total_stake numeric NOT NULL,
     current_storage_fee_deposit numeric NOT NULL,
     current_total_shares numeric NOT NULL,
@@ -3133,7 +3135,9 @@ BEGIN
         total_deposits_count,
         total_withdrawals_count,
         total_tax_collected,
+        total_tax_collected_count,
         total_rewards_collected,
+        total_rewards_collected_count,
         current_total_stake,
         current_storage_fee_deposit,
         current_total_shares,
@@ -3151,7 +3155,9 @@ BEGIN
         0,                         -- total_deposits_count
         0,                         -- total_withdrawals_count
         0,                         -- total_tax_collected
+        0,                         -- total_tax_collected_count
         0,                         -- total_rewards_collected
+        0,                         -- total_rewards_collected_count
         NEW.amount,                -- current_total_stake
         NEW.storage_fee_deposit,   -- current_storage_fee_deposit
         0,                         -- current_total_shares
@@ -3283,7 +3289,7 @@ BEGIN
     UPDATE staking.accounts
     SET 
         total_tax_collected = staking.accounts.total_tax_collected + NEW.amount,
-        tax_collected_count = staking.accounts.tax_collected_count + 1,
+        total_tax_collected_count = staking.accounts.total_tax_collected_count + 1,
         updated_at = NEW.block_height
     WHERE id = operator_account_id;
     
@@ -3324,6 +3330,7 @@ BEGIN
     UPDATE staking.accounts
     SET 
         total_rewards_collected = staking.accounts.total_rewards_collected + NEW.amount,
+        total_rewards_collected_count = staking.accounts.total_rewards_collected_count + 1,
         updated_at = NEW.block_height
     WHERE id = operator_account_id;
     
@@ -3710,7 +3717,24 @@ EXECUTE FUNCTION staking.update_operator_on_deregistration();
 CREATE OR REPLACE FUNCTION staking.handle_unlocked_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
+DECLARE
+    remaining_amount numeric;
+    current_deposit RECORD;
+    found_eligible_deposits boolean;
+    deposit_cursor CURSOR FOR 
+        SELECT id, amount, storage_fee_deposit, total_amount, total_withdrawn, status
+        FROM staking.deposits
+        WHERE (status = 'ACTIVE' OR status = 'PARTIALLY_WITHDRAWN') 
+        AND account_id = NEW.account_id
+        ORDER BY created_at ASC;
+    withdrawal_id text;
 BEGIN
+    SELECT id INTO withdrawal_id
+    FROM staking.withdrawals
+    WHERE status = 'PENDING_UNLOCK_FUNDS' AND account_id = NEW.account_id
+    ORDER BY created_at ASC
+    LIMIT 1;
+
     UPDATE staking.domains
     SET 
         total_withdrawals = staking.domains.total_withdrawals + NEW.amount,
@@ -3741,18 +3765,68 @@ BEGIN
         updated_at = NEW.block_height
     WHERE id = NEW.account_id;
 
-    UPDATE staking.withdrawals
-    SET
-        unlocked_amount = NEW.amount,
-        unlocked_storage_fee = NEW.storage_fee,
-        total_amount = NEW.amount + NEW.storage_fee,
-        unlock_extrinsic_id = NEW.extrinsic_id,
-        status = 'FUNDS_UNLOCKED',
-        unlocked_at = NEW.block_height,
-        updated_at = NEW.block_height
-    WHERE status = 'PENDING_UNLOCK_FUNDS' AND operator_id = NEW.operator_id
-    ORDER BY block_height ASC
-    LIMIT 1;
+    IF withdrawal_id IS NOT NULL THEN
+        UPDATE staking.withdrawals
+        SET
+            unlocked_amount = NEW.amount,
+            unlocked_storage_fee = NEW.storage_fee,
+            total_amount = NEW.amount + NEW.storage_fee,
+            unlock_extrinsic_id = NEW.extrinsic_id,
+            status = 'FUNDS_UNLOCKED',
+            unlocked_at = NEW.block_height,
+            updated_at = NEW.block_height
+        WHERE id = withdrawal_id;
+    END IF;
+
+    remaining_amount := NEW.amount + NEW.storage_fee;
+    found_eligible_deposits := FALSE;
+
+    OPEN deposit_cursor;
+    LOOP
+        FETCH deposit_cursor INTO current_deposit;
+        EXIT WHEN NOT FOUND;
+        
+        IF (current_deposit.total_amount - current_deposit.total_withdrawn) >= remaining_amount THEN
+            UPDATE staking.deposits
+            SET
+                total_withdrawn = total_withdrawn + remaining_amount,
+                status = CASE 
+                        WHEN (total_withdrawn + remaining_amount) >= total_amount THEN 'FULLY_WITHDRAWN'
+                        ELSE 'PARTIALLY_WITHDRAWN'
+                    END,
+                updated_at = NEW.block_height
+            WHERE id = current_deposit.id;
+            
+            remaining_amount := 0;
+            found_eligible_deposits := TRUE;
+            EXIT;
+        ELSE
+            UPDATE staking.deposits
+            SET
+                total_withdrawn = total_amount,
+                status = 'FULLY_WITHDRAWN',
+                updated_at = NEW.block_height
+            WHERE id = current_deposit.id;
+            
+            remaining_amount := remaining_amount - (current_deposit.total_amount - current_deposit.total_withdrawn);
+            found_eligible_deposits := TRUE;
+        END IF;
+    END LOOP;
+    
+    CLOSE deposit_cursor;
+    
+    IF remaining_amount > 0 AND found_eligible_deposits = TRUE THEN
+        UPDATE staking.deposits
+        SET
+            total_withdrawn = total_withdrawn + remaining_amount,
+            updated_at = NEW.block_height
+        WHERE account_id = NEW.account_id AND status = 'FULLY_WITHDRAWN'
+        ORDER BY created_at DESC
+        LIMIT 1;
+    ELSIF remaining_amount > 0 AND found_eligible_deposits = FALSE THEN
+        RAISE NOTICE 'No active or partially withdrawn deposits found for account %. Withdrawing amount: %', 
+            NEW.account_id, remaining_amount;
+    END IF;
 
     RETURN NEW;
 END;
