@@ -3727,7 +3727,14 @@ DECLARE
         WHERE (status = 'ACTIVE' OR status = 'PARTIALLY_WITHDRAWN') 
         AND account_id = NEW.account_id
         ORDER BY created_at ASC;
+    withdrawal_id text;
 BEGIN
+    SELECT id INTO withdrawal_id
+    FROM staking.withdrawals
+    WHERE status = 'PENDING_UNLOCK_FUNDS' AND account_id = NEW.account_id
+    ORDER BY created_at ASC
+    LIMIT 1;
+
     UPDATE staking.domains
     SET 
         total_withdrawals = staking.domains.total_withdrawals + NEW.amount,
@@ -3758,20 +3765,19 @@ BEGIN
         updated_at = NEW.block_height
     WHERE id = NEW.account_id;
 
-    UPDATE staking.withdrawals
-    SET
-        unlocked_amount = NEW.amount,
-        unlocked_storage_fee = NEW.storage_fee,
-        total_amount = NEW.amount + NEW.storage_fee,
-        unlock_extrinsic_id = NEW.extrinsic_id,
-        status = 'FUNDS_UNLOCKED',
-        unlocked_at = NEW.block_height,
-        updated_at = NEW.block_height
-    WHERE status = 'PENDING_UNLOCK_FUNDS' AND account_id = NEW.account_id
-    ORDER BY block_height ASC
-    LIMIT 1;
+    IF withdrawal_id IS NOT NULL THEN
+        UPDATE staking.withdrawals
+        SET
+            unlocked_amount = NEW.amount,
+            unlocked_storage_fee = NEW.storage_fee,
+            total_amount = NEW.amount + NEW.storage_fee,
+            unlock_extrinsic_id = NEW.extrinsic_id,
+            status = 'FUNDS_UNLOCKED',
+            unlocked_at = NEW.block_height,
+            updated_at = NEW.block_height
+        WHERE id = withdrawal_id;
+    END IF;
 
-    -- TODO: Test this
     remaining_amount := NEW.amount + NEW.storage_fee;
     found_eligible_deposits := FALSE;
 
