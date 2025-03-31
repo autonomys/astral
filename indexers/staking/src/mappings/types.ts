@@ -1,3 +1,8 @@
+export type ExtrinsicPrimitive = {
+  callIndex: string;
+  args: any;
+};
+
 export interface TBundle {
   sealedHeader: SealedBundleHeader;
   extrinsics: Uint8Array[];

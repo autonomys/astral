@@ -18,13 +18,12 @@ import {
   createEvent,
   createExtrinsic,
   createLog,
-  createReward,
-  createTransfer,
   initializeCache,
 } from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
 import { getBlockAuthor, parseDataToCid } from "./helper";
 import { ExtrinsicPrimitive, LogValue } from "./types";
+import { groupEventsFromBatchAll } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -129,6 +128,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     const extrinsicSignature = extrinsic.isSigned
       ? extrinsic.signature.toString()
       : EMPTY_SIGNATURE;
+    const extrinsicId = height + "-" + extrinsicIdx.toString();
 
     // Detect data storage extrinsics and parse args to cid
     let cid: string | undefined = "";
@@ -170,63 +170,122 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
     cache.addressToUpdate.add(extrinsicSigner);
 
-    // Process extrinsic events
-    extrinsicEvents.forEach((event) => {
-      const extrinsicId = extrinsic
-        ? height + "-" + extrinsicIdx.toString()
-        : "";
+    if (
+      extrinsic.method.section === "utility" &&
+      extrinsic.method.method === "batchAll"
+    ) {
+      const batchedExtrinsicEvents = groupEventsFromBatchAll(extrinsicEvents);
+      batchedExtrinsicEvents.forEach((events, index) => {
+        const extrinsicArgs = (extrinsic.args[0].toPrimitive() as any)[index];
+        events.forEach((event) => {
+          // Process extrinsic events
+          // Detect data storage extrinsics and parse args to cid
+          let cid: string | undefined = "";
+          let eventsArgs: string = stringify(event.event.data);
+          if (
+            event.event.section === "system" &&
+            event.event.method === "Remarked"
+          ) {
+            const parsedArgs = parseDataToCid(event.event.data[1].toString());
+            cid = parsedArgs.cid;
+            // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
+            eventsArgs = parsedArgs.modifiedArgs ?? eventsArgs;
+          }
 
-      // Detect data storage extrinsics and parse args to cid
-      let cid: string | undefined = "";
-      let eventsArgs: string = stringify(event.event.data);
-      if (
-        event.event.section === "system" &&
-        event.event.method === "Remarked"
-      ) {
-        const parsedArgs = parseDataToCid(event.event.data[1].toString());
-        cid = parsedArgs.cid;
-        // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
-        eventsArgs = parsedArgs.modifiedArgs ?? eventsArgs;
-      }
+          newEvents.push(
+            createEvent(
+              height,
+              blockHash,
+              BigInt(eventIndex),
+              extrinsicId,
+              extrinsicHash,
+              event.event.section,
+              event.event.method,
+              blockTimestamp,
+              event.phase.type,
+              pos,
+              eventsArgs,
+              cid
+            )
+          );
 
-      newEvents.push(
-        createEvent(
-          height,
-          blockHash,
-          BigInt(eventIndex),
-          extrinsicId,
-          extrinsicHash,
-          event.event.section,
-          event.event.method,
-          blockTimestamp,
-          event.phase.type,
-          pos,
-          eventsArgs,
-          cid
-        )
-      );
+          // Process specific events
+          const eventKey = event.event.section + "." + event.event.method;
+          const handler = EVENT_HANDLERS[eventKey];
+          if (handler)
+            handler({
+              event,
+              cache,
+              height,
+              blockHash,
+              blockTimestamp,
+              extrinsicId,
+              eventId: height + "-" + eventIndex,
+              fee,
+              successEvent: successEvent ? true : false,
+              extrinsicSigner,
+              extrinsicMethodToPrimitive: extrinsicArgs,
+            });
 
-      // Process specific events
-      const eventKey = event.event.section + "." + event.event.method;
-      const handler = EVENT_HANDLERS[eventKey];
-      if (handler)
-        handler({
-          event,
-          cache,
-          height,
-          blockHash,
-          blockTimestamp,
-          extrinsicId,
-          eventId: height + "-" + eventIndex,
-          fee,
-          successEvent: successEvent ? true : false,
-          extrinsicSigner,
-          extrinsicMethodToPrimitive,
+          // Increment event index
+          eventIndex++;
         });
+      });
+    } else {
+      // Process extrinsic events
+      extrinsicEvents.forEach((event) => {
+        // Detect data storage extrinsics and parse args to cid
+        let cid: string | undefined = "";
+        let eventsArgs: string = stringify(event.event.data);
+        if (
+          event.event.section === "system" &&
+          event.event.method === "Remarked"
+        ) {
+          const parsedArgs = parseDataToCid(event.event.data[1].toString());
+          cid = parsedArgs.cid;
+          // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
+          eventsArgs = parsedArgs.modifiedArgs ?? eventsArgs;
+        }
 
-      // Increment event index
-      eventIndex++;
-    });
+        newEvents.push(
+          createEvent(
+            height,
+            blockHash,
+            BigInt(eventIndex),
+            extrinsicId,
+            extrinsicHash,
+            event.event.section,
+            event.event.method,
+            blockTimestamp,
+            event.phase.type,
+            pos,
+            eventsArgs,
+            cid
+          )
+        );
+
+        // Process specific events
+        const eventKey = event.event.section + "." + event.event.method;
+        const handler = EVENT_HANDLERS[eventKey];
+        if (handler)
+          handler({
+            event,
+            cache,
+            height,
+            blockHash,
+            blockTimestamp,
+            extrinsicId,
+            eventId: height + "-" + eventIndex,
+            fee,
+            successEvent: successEvent ? true : false,
+            extrinsicSigner,
+            extrinsicMethodToPrimitive,
+          });
+
+        // Increment event index
+        eventIndex++;
+      });
+    }
   });
 
   // Process finalization events
