@@ -1,4 +1,3 @@
-import { Account } from 'next-auth'
 import { create } from 'zustand'
 
 export type Profile = {
@@ -63,7 +62,7 @@ interface ProfileStateAndHelper extends ProfileState {
   setShouldUpdate: (shouldUpdate: boolean) => void
   setUser: (profile: Profile, wallets: Wallet[], apiKeys: ApiKey[], tags: Tag[]) => void
   clear: () => void
-  getUserProfile: (actingAccount: Account) => Promise<void>
+  getUserProfile: (account: string, message: string, signature: string) => Promise<void>
 }
 
 const initialState: ProfileState = {
@@ -103,11 +102,11 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
   setWallets: (wallets: Wallet[]) => set(() => ({ wallets })),
   setApiKeys: (apiKeys: ApiKey[]) => set(() => ({ apiKeys })),
   setTags: (tags: Tag[]) => set(() => ({ tags })),
-  getUserProfile: async (actingAccount: Account) => {
+  getUserProfile: async (account, message, signature) => {
     set(() => ({ loading: true, error: '' }))
     const response = await fetch('/api/profile/read', {
       method: 'POST',
-      body: JSON.stringify({ account: actingAccount.address }),
+      body: JSON.stringify({ account, message, signature }),
     })
     if (!response.ok) throw new Error('Failed to read profile')
     const data = await response.json()

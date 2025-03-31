@@ -16,9 +16,7 @@ import { SmallProfileBox } from './SmallProfileBox'
 
 export const ApiKeysPage: FC = () => {
   const { actingAccount, subspaceAccount, injector } = useWallet()
-  const profile = useProfileStates((state) => state.profile)
-  const apiKeys = useProfileStates((state) => state.apiKeys)
-  const setShouldUpdate = useProfileStates((state) => state.setShouldUpdate)
+  const { profile, apiKeys, setShouldUpdate } = useProfileStates((state) => state)
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
   const [keyToDelete, setKeyToDelete] = useState<string | null>(null)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
