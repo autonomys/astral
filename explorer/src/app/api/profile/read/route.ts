@@ -101,20 +101,16 @@ export const POST = async (req: NextRequest) => {
       NETWORK,
     )
 
-    console.log('data', data)
-
     if (data.users_wallets.length === 0)
       return NextResponse.json({
         message: 'Profile not found',
       })
     const userProfile = data.users_wallets[0].profile
 
-    console.log('userProfile', userProfile.apiKeys)
-
     const userApiKeys = userProfile.apiKeys
       .map((apiKey) => ({
         ...apiKey,
-        key: shortString(apiKey.key, 4),
+        shortKey: shortString(apiKey.key, 4),
       }))
       .filter((apiKey) => apiKey.deletedAt === null)
 

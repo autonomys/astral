@@ -125,7 +125,7 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <div className='fixed inset-0 bg-black/50' />
+          <div className='fixed inset-0 bg-gray-900 bg-opacity-25 backdrop-blur-sm' />
         </Transition.Child>
 
         <div className='fixed inset-0 overflow-y-auto'>
@@ -142,7 +142,7 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
               <Dialog.Panel
                 className={`w-full ${isAvatar ? 'max-w-md' : 'max-w-xl'} rounded-lg bg-white p-6 shadow-lg dark:bg-boxDark`}
               >
-                <Dialog.Title className='mb-4 text-lg font-bold'>
+                <Dialog.Title className='mb-4 text-lg font-bold text-gray-900 dark:text-white'>
                   {isAvatar ? 'Adjust Profile Picture' : 'Adjust Banner Image'}
                 </Dialog.Title>
 
@@ -174,7 +174,9 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
                   >
                     <MinusIcon className='h-5 w-5' />
                   </button>
-                  <span className='text-sm'>{Math.round(zoom * 100)}%</span>
+                  <span className='text-sm text-gray-900 dark:text-white'>
+                    {Math.round(zoom * 100)}%
+                  </span>
                   <button
                     onClick={handleZoomIn}
                     className='rounded-full bg-gray-200 p-2 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
@@ -185,16 +187,17 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
 
                 <div className='mt-4 flex justify-end space-x-3'>
                   <button
-                    onClick={onClose}
-                    className='rounded-full bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
+                    type='button'
+                    className='inline-flex justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
+                    onClick={() => onClose()}
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
-                    className='rounded-full bg-primaryAccent px-4 py-2 text-white hover:bg-blue-600'
+                    className='inline-flex justify-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none dark:bg-primaryAccent'
                   >
-                    {isAvatar ? 'Save Profile Picture' : 'Save Banner'}
+                    Save
                   </button>
                 </div>
               </Dialog.Panel>

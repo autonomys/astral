@@ -10,11 +10,11 @@ import { getMetadata } from 'utils/metadata/basic'
 export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadata =>
   getMetadata(chain, 'Profile', undefined, '/images/share.png', false)
 
-const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
-  isRouteSupportingNetwork(chain, Routes.profile, RoutesProfile.profile) ? (
-    <ProfilePage />
-  ) : (
-    <NotFound />
-  )
+const Page: FC<ChainPageProps> = ({ params: { chain } }) => {
+  if (isRouteSupportingNetwork(chain, Routes.profile, RoutesProfile.profile)) {
+    return <ProfilePage />
+  }
+  return <NotFound />
+}
 
 export default Page

@@ -52,6 +52,7 @@ export enum RoutesProfile {
   profile = '/profile',
   wallets = Routes.profile + '/wallets',
   apiKeys = Routes.profile + '/api-keys',
+  tags = Routes.profile + '/tags',
 }
 
 export type AnyRoutes =
@@ -197,6 +198,10 @@ export const ROUTES: Route[] = [
       {
         name: RoutesProfile.apiKeys,
         title: 'API Keys',
+      },
+      {
+        name: RoutesProfile.tags,
+        title: 'Tags',
       },
     ],
   },

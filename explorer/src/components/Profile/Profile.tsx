@@ -8,6 +8,7 @@ import useWallet from 'hooks/useWallet'
 import { FC, useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import * as Yup from 'yup'
+import { Button } from '../common/Button'
 import { WalletButton } from '../WalletButton'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
 import { SmallProfileBox } from './SmallProfileBox'
@@ -126,10 +127,10 @@ export const ProfilePage: FC = () => {
             {({ errors, touched, isSubmitting }) => (
               <Form className='w-full space-y-6'>
                 <Tab.Group>
-                  <Tab.List className='mb-8 flex w-full space-x-1 rounded-xl bg-gray-100 p-1 dark:bg-gray-800'>
+                  <Tab.List className='mb-8 flex w-full space-x-1 rounded-full bg-gray-100 p-1 dark:bg-gray-800'>
                     <Tab
                       className={({ selected }) =>
-                        `w-full rounded-lg py-3 text-sm font-medium leading-5 transition-all ${
+                        `w-full rounded-full py-3 text-sm font-medium leading-5 transition-all ${
                           selected
                             ? 'bg-white text-gray-900 shadow dark:bg-primaryAccent dark:text-white'
                             : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
@@ -140,7 +141,7 @@ export const ProfilePage: FC = () => {
                     </Tab>
                     <Tab
                       className={({ selected }) =>
-                        `w-full rounded-lg py-3 text-sm font-medium leading-5 transition-all ${
+                        `w-full rounded-full py-3 text-sm font-medium leading-5 transition-all ${
                           selected
                             ? 'bg-white text-gray-900 shadow dark:bg-primaryAccent dark:text-white'
                             : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
@@ -164,7 +165,7 @@ export const ProfilePage: FC = () => {
                           <Field
                             name='name'
                             placeholder='Your name'
-                            className='block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-primaryAccent focus:outline-none focus:ring-2 focus:ring-primaryAccent/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                            className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                           />
                           {errors.name && touched.name && (
                             <p className='text-sm text-red-500'>{errors.name}</p>
@@ -181,7 +182,7 @@ export const ProfilePage: FC = () => {
                           <Field
                             name='website'
                             placeholder='https://...'
-                            className='block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-primaryAccent focus:outline-none focus:ring-2 focus:ring-primaryAccent/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                            className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                           />
                           {errors.website && touched.website && (
                             <p className='text-sm text-red-500'>{errors.website}</p>
@@ -201,7 +202,7 @@ export const ProfilePage: FC = () => {
                           name='description'
                           rows={4}
                           placeholder='Tell us about yourself'
-                          className='block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-primaryAccent focus:outline-none focus:ring-2 focus:ring-primaryAccent/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                          className='block w-full rounded-2xl bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                         />
                         {errors.description && touched.description && (
                           <p className='text-sm text-red-500'>{errors.description}</p>
@@ -218,7 +219,7 @@ export const ProfilePage: FC = () => {
                         <Field
                           name='avatar'
                           placeholder='https://...'
-                          className='block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-primaryAccent focus:outline-none focus:ring-2 focus:ring-primaryAccent/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                          className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                         />
                         {errors.avatar && touched.avatar && (
                           <p className='text-sm text-red-500'>{errors.avatar}</p>
@@ -235,7 +236,7 @@ export const ProfilePage: FC = () => {
                         <Field
                           name='banner'
                           placeholder='https://...'
-                          className='block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-primaryAccent focus:outline-none focus:ring-2 focus:ring-primaryAccent/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                          className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                         />
                         {errors.banner && touched.banner && (
                           <p className='text-sm text-red-500'>{errors.banner}</p>
@@ -257,7 +258,7 @@ export const ProfilePage: FC = () => {
                             name='email'
                             type='email'
                             placeholder='you@example.com'
-                            className='block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-primaryAccent focus:outline-none focus:ring-2 focus:ring-primaryAccent/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                            className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                           />
                           {errors.email && touched.email && (
                             <p className='text-sm text-red-500'>{errors.email}</p>
@@ -274,7 +275,7 @@ export const ProfilePage: FC = () => {
                           <Field
                             name='discord'
                             placeholder='Your Discord handle'
-                            className='block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-primaryAccent focus:outline-none focus:ring-2 focus:ring-primaryAccent/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                            className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                           />
                           {errors.discord && touched.discord && (
                             <p className='text-sm text-red-500'>{errors.discord}</p>
@@ -293,7 +294,7 @@ export const ProfilePage: FC = () => {
                           <Field
                             name='github'
                             placeholder='Your GitHub profile'
-                            className='block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-primaryAccent focus:outline-none focus:ring-2 focus:ring-primaryAccent/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                            className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                           />
                           {errors.github && touched.github && (
                             <p className='text-sm text-red-500'>{errors.github}</p>
@@ -310,7 +311,7 @@ export const ProfilePage: FC = () => {
                           <Field
                             name='twitter'
                             placeholder='@handle'
-                            className='block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-primaryAccent focus:outline-none focus:ring-2 focus:ring-primaryAccent/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white'
+                            className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                           />
                           {errors.twitter && touched.twitter && (
                             <p className='text-sm text-red-500'>{errors.twitter}</p>
@@ -322,39 +323,12 @@ export const ProfilePage: FC = () => {
                 </Tab.Group>
 
                 <div className='pt-4'>
-                  <button
-                    type='submit'
-                    disabled={isSubmitting || isSaving}
-                    className='inline-flex w-full items-center justify-center rounded-lg bg-primaryAccent px-5 py-3 text-sm font-medium text-white shadow-sm transition-all hover:bg-primaryAccent/90 focus:outline-none focus:ring-2 focus:ring-primaryAccent/50 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto'
-                  >
-                    {isSubmitting || isSaving ? (
-                      <div className='flex items-center'>
-                        <svg
-                          className='-ml-1 mr-2 h-4 w-4 animate-spin text-white'
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                        >
-                          <circle
-                            className='opacity-25'
-                            cx='12'
-                            cy='12'
-                            r='10'
-                            stroke='currentColor'
-                            strokeWidth='4'
-                          ></circle>
-                          <path
-                            className='opacity-75'
-                            fill='currentColor'
-                            d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-                          ></path>
-                        </svg>
-                        Saving Profile...
-                      </div>
-                    ) : (
-                      'Save Profile'
-                    )}
-                  </button>
+                  <Button
+                    isLoading={isSubmitting || isSaving}
+                    isDisabled={isSubmitting || isSaving}
+                    loadingLabel='Saving Profile...'
+                    label='Save Profile'
+                  />
                 </div>
               </Form>
             )}

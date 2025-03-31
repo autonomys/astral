@@ -1,6 +1,7 @@
+import { Account } from 'next-auth'
 import { create } from 'zustand'
 
-type Profile = {
+export type Profile = {
   id: string
   name: string
   description: string
@@ -12,7 +13,7 @@ type Profile = {
   github: string
   twitter: string
 }
-type Wallet = {
+export type Wallet = {
   id: string
   address: string
   type: string
@@ -20,7 +21,7 @@ type Wallet = {
   updatedAt: string
   deletedAt: string
 }
-type ApiKey = {
+export type ApiKey = {
   id: string
   key: string
   description: string
@@ -28,19 +29,41 @@ type ApiKey = {
   createdAt: string
   updatedAt: string
   deletedAt: string
+  shortKey?: string
 }
-
-interface ProfileState {
+export type Tag = {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
+}
+export interface ProfileState {
   shouldUpdate: boolean
   profile: Profile
   apiKeys: ApiKey[]
   wallets: Wallet[]
+  tags: Tag[]
 }
 
 interface ProfileStateAndHelper extends ProfileState {
-  setUser: (profile: Profile, wallets: Wallet[], apiKeys: ApiKey[]) => void
+  shouldUpdate: boolean
+  profile: Profile
+  wallets: Wallet[]
+  apiKeys: ApiKey[]
+  tags: Tag[]
+  loading: boolean
+  error: string
+  setLoading: (loading: boolean) => void
+  setError: (error: string) => void
+  setProfile: (profile: Profile) => void
+  setWallets: (wallets: Wallet[]) => void
+  setApiKeys: (apiKeys: ApiKey[]) => void
+  setTags: (tags: Tag[]) => void
   setShouldUpdate: (shouldUpdate: boolean) => void
+  setUser: (profile: Profile, wallets: Wallet[], apiKeys: ApiKey[], tags: Tag[]) => void
   clear: () => void
+  getUserProfile: (actingAccount: Account) => Promise<void>
 }
 
 const initialState: ProfileState = {
@@ -59,11 +82,40 @@ const initialState: ProfileState = {
   },
   wallets: [],
   apiKeys: [],
+  tags: [],
 }
 
 export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
-  ...initialState,
-  setUser: (profile, wallets, apiKeys) => set(() => ({ profile, wallets, apiKeys })),
-  setShouldUpdate: (shouldUpdate) => set(() => ({ shouldUpdate })),
+  loading: true,
+  profile: initialState.profile,
+  wallets: initialState.wallets,
+  apiKeys: initialState.apiKeys,
+  tags: initialState.tags,
+  shouldUpdate: initialState.shouldUpdate,
+  error: '',
   clear: () => set(() => ({ ...initialState })),
+  setUser: (profile: Profile, wallets: Wallet[], apiKeys: ApiKey[], tags: Tag[]) =>
+    set(() => ({ profile, wallets, apiKeys, tags })),
+  setShouldUpdate: (shouldUpdate: boolean) => set(() => ({ shouldUpdate })),
+  setLoading: (loading: boolean) => set(() => ({ loading })),
+  setError: (error: string) => set(() => ({ error })),
+  setProfile: (profile: Profile) => set(() => ({ profile })),
+  setWallets: (wallets: Wallet[]) => set(() => ({ wallets })),
+  setApiKeys: (apiKeys: ApiKey[]) => set(() => ({ apiKeys })),
+  setTags: (tags: Tag[]) => set(() => ({ tags })),
+  getUserProfile: async (actingAccount: Account) => {
+    set(() => ({ loading: true, error: '' }))
+    const response = await fetch('/api/profile/read', {
+      method: 'POST',
+      body: JSON.stringify({ account: actingAccount.address }),
+    })
+    if (!response.ok) throw new Error('Failed to read profile')
+    const data = await response.json()
+    set(() => ({
+      profile: data.profile,
+      wallets: data.wallets,
+      apiKeys: data.apiKeys,
+      tags: data.tags,
+    }))
+  },
 }))

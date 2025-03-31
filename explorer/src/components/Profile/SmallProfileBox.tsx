@@ -12,12 +12,9 @@ interface SmallProfileBoxProps {
 
 export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }) => {
   const { data: session } = useSession()
+  const { shouldUpdate, setShouldUpdate, setUser, profile } = useProfileStates((state) => state)
   const bannerInputRef = useRef<HTMLInputElement>(null)
   const avatarInputRef = useRef<HTMLInputElement>(null)
-
-  const profile = useProfileStates((state) => state.profile)
-  const shouldUpdate = useProfileStates((state) => state.shouldUpdate)
-  const setUser = useProfileStates((state) => state.setUser)
 
   const defaultAvatar = '/images/avatar.svg'
   const defaultBanner = '/images/autonomys-banner.webp'
@@ -50,11 +47,17 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
 
       const responseData = await response.json()
       if (responseData.message === 'Profile not found') return
-      setUser(responseData.profile, responseData.wallets, responseData.apiKeys)
+      setUser(
+        responseData.profile,
+        responseData.wallets,
+        responseData.apiKeys,
+        responseData.apiKeys,
+      )
+      setShouldUpdate(false)
     } catch (error) {
       console.error('Error loading profile:', error)
     }
-  }, [session, setUser])
+  }, [session, setUser, setShouldUpdate])
 
   useEffect(() => {
     if (session && session.user?.subspace) handleLoadProfile()
@@ -125,7 +128,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
               className='absolute bottom-3 right-3 rounded-full bg-white p-2.5 shadow-lg transition-all hover:bg-gray-50 hover:shadow-md dark:bg-boxDark dark:hover:bg-gray-800'
               aria-label='Upload banner image'
             >
-              <PencilIcon className='h-4 w-4 text-primaryAccent dark:text-pastelBlue' />
+              <PencilIcon className='h-4 w-4 text-primaryAccent dark:text-gray-200' />
             </button>
 
             <input
@@ -155,7 +158,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
             className='absolute -bottom-0 left-[100px] z-20 rounded-md border border-gray-100 bg-white p-1 shadow-md transition-all hover:bg-gray-50 hover:shadow-lg dark:border-gray-700 dark:bg-boxDark dark:hover:bg-gray-800'
             aria-label='Upload profile image'
           >
-            <PencilIcon className='h-3 w-3 text-primaryAccent dark:text-pastelBlue' />
+            <PencilIcon className='h-3 w-3 text-primaryAccent dark:text-gray-200' />
           </button>
 
           <input
@@ -178,7 +181,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
             </p>
           </div>
 
-          <div className='mt-4 flex items-center rounded-lg py-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800'>
+          <div className='mt-4 flex items-center rounded-lg py-2 transition-colors'>
             <div className='flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/30'>
               <GlobeAltIcon className='h-4 w-4 text-emerald-500 dark:text-emerald-400' />
             </div>
@@ -202,7 +205,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
           </h3>
 
           <div className='space-y-4'>
-            <div className='flex items-center rounded-lg p-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800'>
+            <div className='flex items-center rounded-lg p-2'>
               <div className='flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/30'>
                 <MdEmail className='h-5 w-5 text-blue-500 dark:text-blue-400' />
               </div>
@@ -219,7 +222,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
               </a>
             </div>
 
-            <div className='flex items-center rounded-lg p-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800'>
+            <div className='flex items-center rounded-lg p-2'>
               <div className='flex h-9 w-9 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-900/30'>
                 <FaDiscord className='h-5 w-5 text-indigo-500 dark:text-indigo-400' />
               </div>
@@ -238,7 +241,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
               </a>
             </div>
 
-            <div className='flex items-center rounded-lg p-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800'>
+            <div className='flex items-center rounded-lg p-2'>
               <div className='flex h-9 w-9 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800'>
                 <FaGithub className='h-5 w-5 text-gray-700 dark:text-gray-300' />
               </div>
@@ -257,7 +260,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
               </a>
             </div>
 
-            <div className='flex items-center rounded-lg p-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800'>
+            <div className='flex items-center rounded-lg p-2'>
               <div className='flex h-9 w-9 items-center justify-center rounded-full bg-sky-50 dark:bg-sky-900/30'>
                 <FaTwitter className='h-5 w-5 text-sky-500 dark:text-sky-400' />
               </div>
