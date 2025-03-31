@@ -1547,6 +1547,7 @@ CREATE TABLE staking.unlocked_events (
     nominator_id text NOT NULL,
     amount numeric NOT NULL,
     storage_fee numeric NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
@@ -3728,11 +3729,27 @@ DECLARE
         AND account_id = NEW.account_id
         ORDER BY created_at ASC;
     withdrawal_id text;
+    last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+    last_domain_epoch staking.domain_epochs.epoch%TYPE;
 BEGIN
     SELECT id INTO withdrawal_id
     FROM staking.withdrawals
     WHERE status = 'PENDING_UNLOCK_FUNDS' AND account_id = NEW.account_id
     ORDER BY created_at ASC
+    LIMIT 1;
+
+    SELECT domain_block_number
+    INTO last_domain_block_number
+    FROM staking.domain_block_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY domain_block_number DESC
+    LIMIT 1;
+
+    SELECT epoch
+    INTO last_domain_epoch
+    FROM staking.domain_epochs
+    WHERE domain_id = NEW.domain_id
+    ORDER BY epoch DESC
     LIMIT 1;
 
     UPDATE staking.domains
@@ -3776,6 +3793,52 @@ BEGIN
             unlocked_at = NEW.block_height,
             updated_at = NEW.block_height
         WHERE id = withdrawal_id;
+    ELSE
+        INSERT INTO staking.withdrawals (
+            id, 
+            account_id, 
+            domain_id, 
+            operator_id, 
+            nominator_id, 
+            shares, 
+            storage_fee_refund, 
+            estimated_amount, 
+            unlocked_amount, 
+            unlocked_storage_fee, 
+            total_amount, 
+            status, 
+            timestamp,
+            withdraw_extrinsic_id,
+            unlock_extrinsic_id,
+            epoch_withdrawal_requested_at,
+            domain_block_number_withdrawal_requested_at,
+            created_at,
+            domain_block_number_ready_at,
+            unlocked_at,
+            updated_at
+        ) VALUES (
+            NEW.extrinsic_id || '-' || NEW.account_id,      -- id
+            NEW.account_id,                                 -- account_id
+            NEW.domain_id,                                  -- domain_id
+            NEW.operator_id,                                -- operator_id
+            NEW.nominator_id,                               -- nominator_id
+            0, -- To-Fix                                    -- shares
+            NEW.storage_fee,                                -- storage_fee_refund
+            NEW.amount + NEW.storage_fee,                   -- estimated_amount
+            NEW.amount,                                     -- unlocked_amount
+            NEW.storage_fee,                                -- unlocked_storage_fee
+            NEW.amount + NEW.storage_fee,                   -- total_amount
+            'FUNDS_UNLOCKED',                               -- status
+            NEW.timestamp,                                  -- timestamp
+            NEW.extrinsic_id,                               -- withdraw_extrinsic_id
+            NEW.extrinsic_id,                               -- unlock_extrinsic_id
+            last_domain_epoch,                              -- epoch_withdrawal_requested_at
+            last_domain_block_number                        -- domain_block_number_withdrawal_requested_at
+            NEW.block_height,                               -- created_at
+            last_domain_block_number,                       -- domain_block_number_ready_at
+            NEW.block_height,                               -- unlocked_at
+            NEW.block_height                                -- updated_at
+        );
     END IF;
 
     remaining_amount := NEW.amount + NEW.storage_fee;

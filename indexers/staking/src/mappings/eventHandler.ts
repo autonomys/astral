@@ -283,6 +283,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     cache,
     height,
     extrinsicEvents,
+    blockTimestamp,
     extrinsicId,
     eventId,
   }) => {
@@ -307,6 +308,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         accountId,
         amount,
         storageFee,
+        blockTimestamp,
         height,
         extrinsicId,
         eventId
