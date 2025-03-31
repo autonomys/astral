@@ -35,7 +35,7 @@
     "@apollo/client": "^3.13.4",
     "@apollo/experimental-nextjs-app-support": "^0.11.11",
     "@autonomys/auto-consensus": "^1.4.0",
-    "@autonomys/auto-drive": "^1.4.0",
+    "@autonomys/auto-drive": "^1.4.9",
     "@autonomys/auto-utils": "^1.4.0",
     "@autonomys/auto-xdm": "^1.4.0",
     "@floating-ui/react": "^0.27.5",

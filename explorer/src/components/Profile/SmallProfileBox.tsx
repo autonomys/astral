@@ -1,11 +1,12 @@
 import { GlobeAltIcon, PencilIcon } from '@heroicons/react/24/outline'
+import { ImageType } from 'enum/profile'
 import { useSession } from 'next-auth/react'
 import { FC, useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'react-hot-toast'
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 import { useProfileStates } from 'states/profile'
 import { ImageCropModal } from '../common/ImageCropModal'
-
 interface SmallProfileBoxProps {
   showPrivateDetails?: boolean
 }
@@ -68,13 +69,13 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
   }, [shouldUpdate, handleLoadProfile])
 
   // Handle file uploads - simplified
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'banner' | 'avatar') => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: ImageType) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     const reader = new FileReader()
     reader.onload = () => {
-      if (type === 'banner') {
+      if (type === ImageType.Banner) {
         setBannerPreview(reader.result as string)
         setShowBannerModal(true)
       } else {
@@ -86,20 +87,58 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
   }
 
   // Handle saving cropped images
-  const handleSaveCroppedImage = (imageUrl: string, type: 'banner' | 'avatar') => {
-    if (type === 'banner') {
-      setBannerPreview(imageUrl)
-      setShowBannerModal(false)
-    } else {
-      setAvatarPreview(imageUrl)
-      setShowAvatarModal(false)
+  const handleSaveCroppedImage = async (
+    imageUrl: string,
+    cid: string | undefined,
+    type: ImageType,
+  ) => {
+    // Save to profile if we have a CID
+    if (cid && session?.user?.subspace) {
+      const loadingToastId = toast.loading(`Updating ${type}...`)
+      try {
+        const { account, message, signature } = session.user.subspace
+        const values = {
+          ...profile,
+          [type]: `${process.env.NEXT_PUBLIC_FILE_GATEWAY_URL}/${cid}`,
+        }
+
+        console.log('url', `${process.env.NEXT_PUBLIC_FILE_GATEWAY_URL}/${cid}`)
+
+        const response = await fetch('/api/profile/save-profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            subspaceAccount: account,
+            values,
+            message,
+            signature,
+          }),
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null)
+          const errorMessage = errorData?.message || `Failed to update ${type}`
+          toast.error(errorMessage, { id: loadingToastId })
+          throw new Error(errorMessage)
+        }
+
+        toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully!`, {
+          id: loadingToastId,
+        })
+        // Refresh profile data
+        setShouldUpdate(true)
+      } catch (error) {
+        console.error(`Error updating ${type}:`, error)
+        toast.error(`Failed to update ${type}. Please try again.`, { id: loadingToastId })
+      }
     }
-    // Here you would make an API call to save the image
   }
 
   // Discard the uploaded image
-  const handleCancelUpload = (type: 'banner' | 'avatar') => {
-    if (type === 'banner') {
+  const handleCancelUpload = (type: ImageType) => {
+    if (type === ImageType.Banner) {
       setBannerPreview(null)
       setShowBannerModal(false)
     } else {
@@ -121,7 +160,6 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
               alt='Profile Banner'
               className='h-full w-full object-cover transition-transform duration-500 hover:scale-105'
             />
-
             {/* Banner Upload Button */}
             <button
               onClick={() => bannerInputRef.current?.click()}
@@ -136,7 +174,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
               type='file'
               accept='image/*'
               className='hidden'
-              onChange={(e) => handleImageUpload(e, 'banner')}
+              onChange={(e) => handleImageUpload(e, ImageType.Banner)}
             />
           </div>
 
@@ -155,7 +193,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
           {/* Avatar Upload Button - Repositioned for better visibility */}
           <button
             onClick={() => avatarInputRef.current?.click()}
-            className='absolute -bottom-0 left-[100px] z-20 rounded-md border border-gray-100 bg-white p-1 shadow-md transition-all hover:bg-gray-50 hover:shadow-lg dark:border-gray-700 dark:bg-boxDark dark:hover:bg-gray-800'
+            className='absolute -bottom-0 left-[104px] z-20 rounded-md border border-gray-100 bg-white p-1 shadow-md transition-all hover:bg-gray-50 hover:shadow-lg dark:border-gray-700 dark:bg-boxDark dark:hover:bg-gray-800'
             aria-label='Upload profile image'
           >
             <PencilIcon className='h-3 w-3 text-primaryAccent dark:text-gray-200' />
@@ -166,7 +204,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
             type='file'
             accept='image/*'
             className='hidden'
-            onChange={(e) => handleImageUpload(e, 'avatar')}
+            onChange={(e) => handleImageUpload(e, ImageType.Avatar)}
           />
         </div>
 
@@ -288,10 +326,12 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
       {bannerPreview && (
         <ImageCropModal
           isOpen={showBannerModal}
-          onClose={() => handleCancelUpload('banner')}
+          onClose={() => handleCancelUpload(ImageType.Banner)}
           imageUrl={bannerPreview}
-          onSaveImage={(croppedImage) => handleSaveCroppedImage(croppedImage, 'banner')}
-          type='banner'
+          onSaveImage={(croppedImage, cid) => {
+            handleSaveCroppedImage(croppedImage, cid, ImageType.Banner)
+          }}
+          type={ImageType.Banner}
         />
       )}
 
@@ -299,10 +339,12 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
       {avatarPreview && (
         <ImageCropModal
           isOpen={showAvatarModal}
-          onClose={() => handleCancelUpload('avatar')}
+          onClose={() => handleCancelUpload(ImageType.Avatar)}
           imageUrl={avatarPreview}
-          onSaveImage={(croppedImage) => handleSaveCroppedImage(croppedImage, 'avatar')}
-          type='avatar'
+          onSaveImage={(croppedImage, cid) => {
+            handleSaveCroppedImage(croppedImage, cid, ImageType.Avatar)
+          }}
+          type={ImageType.Avatar}
         />
       )}
     </div>

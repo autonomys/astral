@@ -198,7 +198,7 @@ export const ApiKeysPage: FC = () => {
                         type='text'
                         name='description'
                         placeholder='Enter description for new API key'
-                        className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                        className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                       />
                       {errors.description && touched.description && (
                         <div className='mt-1 text-sm text-red-500'>{errors.description}</div>
@@ -230,17 +230,17 @@ export const ApiKeysPage: FC = () => {
             <div className='space-y-4'>
               <h2 className='text-lg font-semibold text-gray-800 dark:text-white'>Your API Keys</h2>
 
-              <div className='overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700'>
-                <table className='w-full table-auto'>
+              <div className='overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700'>
+                <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
                   <thead className='bg-gray-50 dark:bg-gray-800'>
                     <tr>
-                      <th className='px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                      <th className='w-1/4 max-w-[200px] px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
                         Description
                       </th>
-                      <th className='px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                      <th className='w-1/3 max-w-[300px] px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
                         Key
                       </th>
-                      <th className='px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                      <th className='w-1/6 max-w-[150px] px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
                         Created
                       </th>
                       <th className='w-24 px-4 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300'>
@@ -261,23 +261,25 @@ export const ApiKeysPage: FC = () => {
                     ) : (
                       apiKeys.map((key) => (
                         <tr key={key.id} className='bg-white dark:bg-boxDark'>
-                          <td className='whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900 dark:text-white'>
+                          <td className='max-w-[200px] truncate px-4 py-3 text-sm font-medium text-gray-900 dark:text-white'>
                             {key.description}
                           </td>
-                          <td className='flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
-                            <span>{key.shortKey}</span>
-                            <button
-                              onClick={() => copyToClipboard(key.key)}
-                              className='text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
-                              aria-label='Copy key'
-                            >
-                              <DocumentDuplicateIcon className='h-5 w-5' />
-                            </button>
+                          <td className='px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                            <div className='flex max-w-[300px] items-center gap-2 truncate'>
+                              <span className='truncate'>{key.shortKey}</span>
+                              <button
+                                onClick={() => copyToClipboard(key.key)}
+                                className='flex-shrink-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
+                                aria-label='Copy key'
+                              >
+                                <DocumentDuplicateIcon className='h-5 w-5' />
+                              </button>
+                            </div>
                           </td>
-                          <td className='whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                          <td className='max-w-[150px] truncate px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
                             {new Date(key.createdAt).toLocaleDateString()}
                           </td>
-                          <td className='whitespace-nowrap px-4 py-3 text-center text-sm'>
+                          <td className='px-4 py-3 text-center text-sm'>
                             <button
                               onClick={() => confirmDeleteApiKey(key.id)}
                               disabled={isDeleting === key.id}
@@ -286,7 +288,7 @@ export const ApiKeysPage: FC = () => {
                               {isDeleting === key.id ? (
                                 <div className='flex items-center'>
                                   <SpinnerSvg className='text-red-600' />
-                                  Deleting...
+                                  <span className='ml-1.5'>Deleting...</span>
                                 </div>
                               ) : (
                                 <>

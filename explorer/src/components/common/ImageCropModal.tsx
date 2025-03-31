@@ -1,15 +1,16 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
-import { FC, Fragment, useCallback, useRef, useState } from 'react'
+import { ImageType } from 'enum/profile'
+import { FC, Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import ReactCrop, { Crop, PixelCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 
-interface ImageCropModalProps {
+export type ImageCropModalProps = {
   isOpen: boolean
   onClose: () => void
   imageUrl: string
-  onSaveImage: (croppedImageUrl: string) => void
-  type: 'banner' | 'avatar'
+  onSaveImage: (croppedImageUrl: string, cid?: string) => void
+  type: ImageType
   aspectRatio?: number // Optional: default will depend on type
 }
 
@@ -23,6 +24,8 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
 }) => {
   const imgRef = useRef<HTMLImageElement>(null)
   const isAvatar = type === 'avatar'
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
 
   // Set default aspect ratio based on type if not provided
   const defaultAspectRatio = isAvatar ? 1 : 3 / 1
@@ -99,13 +102,115 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
     [zoom, isAvatar],
   )
 
+  // Upload image to server and get CID
+  const uploadImageToCID = async (imageDataUrl: string) => {
+    try {
+      setIsUploading(true)
+      setUploadProgress(0)
+
+      // Convert data URL to Blob
+      const fetchRes = await fetch(imageDataUrl)
+      const blob = await fetchRes.blob()
+
+      // Create FormData
+      const formData = new FormData()
+      formData.append('file', blob, `${type}_image.jpg`)
+
+      // Upload using the profile-upload API
+      const response = await fetch('/api/profile/profile-upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image')
+      }
+
+      const data = await response.json()
+      setUploadProgress(100)
+      return data.cid
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      return null
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  // Poll for upload progress
+  const checkUploadProgress = useCallback(async () => {
+    if (!isUploading) return
+
+    try {
+      // In a real implementation, you might have an endpoint to check progress
+      // For demonstration, we'll simulate progress
+      let progress = 10
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5
+        if (progress > 90) {
+          progress = 90 // Max out at 90% until complete
+          clearInterval(interval)
+        }
+        setUploadProgress(progress)
+      }, 500)
+
+      return () => clearInterval(interval)
+    } catch (error) {
+      console.error('Error checking upload progress:', error)
+    }
+  }, [isUploading])
+
+  // Start polling when uploading begins
+  useEffect(() => {
+    let cleanup: (() => void) | undefined
+
+    if (isUploading) {
+      const setup = async () => {
+        cleanup = await checkUploadProgress()
+      }
+      setup()
+    }
+
+    return () => {
+      if (cleanup) cleanup()
+    }
+  }, [isUploading, checkUploadProgress])
+
+  // Add an onImageLoad handler to set initial crop values
+  const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { width, height } = e.currentTarget
+
+    // Calculate initial crop based on the aspect ratio
+    const initialCrop: Crop = {
+      unit: '%',
+      width: 100,
+      height: 100,
+      x: 0,
+      y: 0,
+    }
+
+    // Set both the crop and completedCrop states
+    setCrop(initialCrop)
+
+    // Also set the completedCrop with pixel values
+    setCompletedCrop({
+      unit: 'px',
+      width,
+      height,
+      x: 0,
+      y: 0,
+    })
+  }
+
   // Save the cropped image
   const handleSave = async () => {
     if (imgRef.current && completedCrop) {
       try {
         const croppedImageUrl = await getCroppedImg(imgRef.current, completedCrop)
         if (croppedImageUrl) {
-          onSaveImage(croppedImageUrl)
+          setIsUploading(true)
+          const cid = await uploadImageToCID(croppedImageUrl)
+          onSaveImage(croppedImageUrl, cid)
         }
       } catch (e) {
         console.error('Error saving cropped image:', e)
@@ -162,6 +267,7 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
                       alt={`${isAvatar ? 'Avatar' : 'Banner'} Preview`}
                       className={`w-full ${!isAvatar ? 'rounded-md' : ''} object-cover`}
                       style={{ transform: `scale(${zoom})` }}
+                      onLoad={onImageLoad}
                     />
                   </ReactCrop>
                 </div>
@@ -185,19 +291,40 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
                   </button>
                 </div>
 
+                {/* Progress bar */}
+                {isUploading && (
+                  <div className='mb-4 mt-2 w-full'>
+                    <div className='mb-1 text-sm text-gray-700 dark:text-gray-300'>
+                      Uploading: {uploadProgress}%
+                    </div>
+                    <div className='h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700'>
+                      <div
+                        className='h-2.5 rounded-full bg-blue-600 transition-all duration-300 ease-in-out'
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div className='mt-4 flex justify-end space-x-3'>
                   <button
                     type='button'
                     className='inline-flex justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
                     onClick={() => onClose()}
+                    disabled={isUploading}
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
-                    className='inline-flex justify-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none dark:bg-primaryAccent'
+                    disabled={isUploading}
+                    className={`inline-flex justify-center rounded-full border border-transparent px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none ${
+                      isUploading
+                        ? 'cursor-not-allowed bg-gray-400'
+                        : 'bg-buttonLightFrom hover:bg-buttonLightTo dark:bg-primaryAccent dark:hover:bg-blue-700'
+                    }`}
                   >
-                    Save
+                    {isUploading ? 'Uploading...' : 'Save'}
                   </button>
                 </div>
               </Dialog.Panel>

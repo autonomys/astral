@@ -15,8 +15,7 @@ import { SmallProfileBox } from './SmallProfileBox'
 
 export const ProfilePage: FC = () => {
   const { actingAccount, subspaceAccount, injector } = useWallet()
-  const profile = useProfileStates((state) => state.profile)
-  const setShouldUpdate = useProfileStates((state) => state.setShouldUpdate)
+  const { profile, setShouldUpdate } = useProfileStates((state) => state)
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
@@ -26,8 +25,6 @@ export const ProfilePage: FC = () => {
   const profileValidationSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     description: Yup.string(),
-    avatar: Yup.string(),
-    banner: Yup.string(),
     website: Yup.string().url('Invalid URL'),
     email: Yup.string().email('Invalid email'),
     discord: Yup.string(),
@@ -208,42 +205,7 @@ export const ProfilePage: FC = () => {
                           <p className='text-sm text-red-500'>{errors.description}</p>
                         )}
                       </div>
-
-                      <div className='space-y-2'>
-                        <label
-                          htmlFor='avatar'
-                          className='text-sm font-medium text-gray-700 dark:text-gray-300'
-                        >
-                          Avatar URL
-                        </label>
-                        <Field
-                          name='avatar'
-                          placeholder='https://...'
-                          className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
-                        />
-                        {errors.avatar && touched.avatar && (
-                          <p className='text-sm text-red-500'>{errors.avatar}</p>
-                        )}
-                      </div>
-
-                      <div className='space-y-2'>
-                        <label
-                          htmlFor='banner'
-                          className='text-sm font-medium text-gray-700 dark:text-gray-300'
-                        >
-                          Banner URL
-                        </label>
-                        <Field
-                          name='banner'
-                          placeholder='https://...'
-                          className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
-                        />
-                        {errors.banner && touched.banner && (
-                          <p className='text-sm text-red-500'>{errors.banner}</p>
-                        )}
-                      </div>
                     </Tab.Panel>
-
                     <Tab.Panel className='space-y-5'>
                       {/* Private Info Fields */}
                       <div className='grid gap-5 sm:grid-cols-2'>
