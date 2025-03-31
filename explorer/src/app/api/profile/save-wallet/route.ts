@@ -46,9 +46,6 @@ export const POST = async (req: NextRequest) => {
         address,
       },
       NETWORK,
-      {
-        'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET,
-      },
     )
 
     return NextResponse.json({

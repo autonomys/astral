@@ -2,6 +2,46 @@ import { cryptoWaitReady, NetworkId, shortString, signatureVerify } from '@auton
 import { NextRequest, NextResponse } from 'next/server'
 import { queryGraphqlServer } from 'utils/queryGraphqlServer'
 
+type ProfileResponse = {
+  users_wallets: Array<{
+    address: string
+    profile: {
+      id: string
+      name: string
+      description: string
+      avatar: string
+      banner: string
+      website: string
+      email: string
+      discord: string
+      github: string
+      twitter: string
+      apiTotalRequests: number
+      apiDailyRequestsLimit: number
+      apiMonthlyRequestsLimit: number
+      proofMessage: string
+      proofSignature: string
+      wallets: Array<{
+        id: string
+        address: string
+        type: string
+        createdAt: string
+        updatedAt: string
+        deletedAt: string | null
+      }>
+      apiKeys: Array<{
+        id: string
+        key: string
+        description: string
+        totalRequests: number
+        createdAt: string
+        updatedAt: string
+        deletedAt: string | null
+      }>
+    }
+  }>
+}
+
 export const POST = async (req: NextRequest) => {
   try {
     const NETWORK = process.env.USERS_INDEXER_NETWORK || NetworkId.LOCALHOST
@@ -12,7 +52,7 @@ export const POST = async (req: NextRequest) => {
     const { isValid } = signatureVerify(message, signature, account)
     if (!isValid) return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
 
-    const data = await queryGraphqlServer(
+    const data = await queryGraphqlServer<ProfileResponse>(
       `
       query GetProfileByWalletAddress($account: String!) {
         users_wallets(where: { address: { _eq: $account}}) {
@@ -59,10 +99,9 @@ export const POST = async (req: NextRequest) => {
         account,
       },
       NETWORK,
-      {
-        'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET,
-      },
     )
+
+    console.log('data', data)
 
     if (data.users_wallets.length === 0)
       return NextResponse.json({
@@ -70,18 +109,16 @@ export const POST = async (req: NextRequest) => {
       })
     const userProfile = data.users_wallets[0].profile
 
+    console.log('userProfile', userProfile.apiKeys)
+
     const userApiKeys = userProfile.apiKeys
-      .map((apiKey: { key: string }) => ({
+      .map((apiKey) => ({
         ...apiKey,
         key: shortString(apiKey.key, 4),
       }))
-      .filter((apiKey: { deletedAt: null | string }) => apiKey.deletedAt === null)
-    delete userProfile.apiKeys
+      .filter((apiKey) => apiKey.deletedAt === null)
 
-    const userWallets = userProfile.wallets.filter(
-      (wallet: { deletedAt: null | string }) => wallet.deletedAt === null,
-    )
-    delete userProfile.wallets
+    const userWallets = userProfile.wallets.filter((wallet) => wallet.deletedAt === null)
 
     return NextResponse.json({
       message: 'Profile loaded successfully',

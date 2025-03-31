@@ -2,6 +2,16 @@ import { cryptoWaitReady, NetworkId, signatureVerify } from '@autonomys/auto-uti
 import { NextRequest, NextResponse } from 'next/server'
 import { queryGraphqlServer } from 'utils/queryGraphqlServer'
 
+type ApiKeyResponse = {
+  insert_users_api_keys_one: {
+    id: string
+    profile_id: string
+    key: string
+    description: string
+    total_requests: number
+  }
+}
+
 export const POST = async (req: NextRequest) => {
   try {
     const NETWORK = process.env.USERS_INDEXER_NETWORK || NetworkId.LOCALHOST
@@ -14,7 +24,7 @@ export const POST = async (req: NextRequest) => {
     const { isValid } = signatureVerify(message, signature, subspaceAccount)
     if (!isValid) return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
 
-    const data = await queryGraphqlServer(
+    const data = await queryGraphqlServer<ApiKeyResponse>(
       `
       mutation SaveApiKey($profileId: uuid!, $description: String!) {
         insert_users_api_keys_one(
@@ -42,9 +52,6 @@ export const POST = async (req: NextRequest) => {
         description,
       },
       NETWORK,
-      {
-        'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET,
-      },
     )
     const key = data.insert_users_api_keys_one.key
 

@@ -3,6 +3,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { queryGraphqlServer } from 'utils/queryGraphqlServer'
 import { v5 as uuidv5 } from 'uuid'
 
+type WalletResponse = {
+  users_wallets: Array<{
+    address: string
+    profile: {
+      id: string
+    }
+  }>
+}
+
 export const POST = async (req: NextRequest) => {
   try {
     const NETWORK = process.env.USERS_INDEXER_NETWORK || NetworkId.LOCALHOST
@@ -16,7 +25,7 @@ export const POST = async (req: NextRequest) => {
     if (!isValid) return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
     let profileId = ''
     try {
-      const dataWallet = await queryGraphqlServer(
+      const dataWallet = await queryGraphqlServer<WalletResponse>(
         `
       query GetProfileByWalletAddress($subspaceAccount: String!) {
         users_wallets(where: { address: { _eq: $subspaceAccount } }) {
@@ -30,9 +39,6 @@ export const POST = async (req: NextRequest) => {
           subspaceAccount,
         },
         NETWORK,
-        {
-          'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET,
-        },
       )
       profileId = dataWallet.users_wallets[0].profile.id
     } catch (error) {
@@ -132,9 +138,6 @@ export const POST = async (req: NextRequest) => {
         }`,
       { profileId },
       NETWORK,
-      {
-        'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET,
-      },
     )
 
     await queryGraphqlServer(
@@ -164,9 +167,6 @@ export const POST = async (req: NextRequest) => {
         subspaceAccount,
       },
       NETWORK,
-      {
-        'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET,
-      },
     )
 
     return NextResponse.json({
