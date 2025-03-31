@@ -51,7 +51,7 @@ interface ProfileStateAndHelper extends ProfileState {
   wallets: Wallet[]
   apiKeys: ApiKey[]
   tags: Tag[]
-  loading: boolean
+  isLoading: boolean
   error: string
   setLoading: (loading: boolean) => void
   setError: (error: string) => void
@@ -85,7 +85,7 @@ const initialState: ProfileState = {
 }
 
 export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
-  loading: true,
+  isLoading: true,
   profile: initialState.profile,
   wallets: initialState.wallets,
   apiKeys: initialState.apiKeys,
@@ -96,14 +96,14 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
   setUser: (profile: Profile, wallets: Wallet[], apiKeys: ApiKey[], tags: Tag[]) =>
     set(() => ({ profile, wallets, apiKeys, tags })),
   setShouldUpdate: (shouldUpdate: boolean) => set(() => ({ shouldUpdate })),
-  setLoading: (loading: boolean) => set(() => ({ loading })),
+  setLoading: (loading: boolean) => set(() => ({ isLoading: loading })),
   setError: (error: string) => set(() => ({ error })),
   setProfile: (profile: Profile) => set(() => ({ profile })),
   setWallets: (wallets: Wallet[]) => set(() => ({ wallets })),
   setApiKeys: (apiKeys: ApiKey[]) => set(() => ({ apiKeys })),
   setTags: (tags: Tag[]) => set(() => ({ tags })),
   getUserProfile: async (account, message, signature) => {
-    set(() => ({ loading: true, error: '' }))
+    set(() => ({ isLoading: true, error: '' }))
     const response = await fetch('/api/profile/read', {
       method: 'POST',
       body: JSON.stringify({ account, message, signature }),
@@ -116,5 +116,6 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
       apiKeys: data.apiKeys,
       tags: data.tags,
     }))
+    set(() => ({ isLoading: false }))
   },
 }))

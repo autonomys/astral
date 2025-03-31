@@ -9,7 +9,7 @@ export type ImageCropModalProps = {
   isOpen: boolean
   onClose: () => void
   imageUrl: string
-  onSaveImage: (croppedImageUrl: string, cid?: string) => void
+  onSaveImage: (cid: string) => void
   type: ImageType
   aspectRatio?: number // Optional: default will depend on type
 }
@@ -210,7 +210,7 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
         if (croppedImageUrl) {
           setIsUploading(true)
           const cid = await uploadImageToCID(croppedImageUrl)
-          onSaveImage(croppedImageUrl, cid)
+          onSaveImage(cid)
         }
       } catch (e) {
         console.error('Error saving cropped image:', e)

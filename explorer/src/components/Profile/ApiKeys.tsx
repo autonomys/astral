@@ -10,13 +10,14 @@ import useWallet from 'hooks/useWallet'
 import { FC, Fragment, useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import * as Yup from 'yup'
+import { Spinner } from '../common/Spinner'
 import { WalletButton } from '../WalletButton'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
 import { SmallProfileBox } from './SmallProfileBox'
 
 export const ApiKeysPage: FC = () => {
   const { actingAccount, subspaceAccount, injector } = useWallet()
-  const { profile, apiKeys, setShouldUpdate } = useProfileStates((state) => state)
+  const { profile, apiKeys, setShouldUpdate, isLoading } = useProfileStates((state) => state)
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
   const [keyToDelete, setKeyToDelete] = useState<string | null>(null)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -171,140 +172,149 @@ export const ApiKeysPage: FC = () => {
         <SmallProfileBox />
 
         {/* Right Side: API Keys Container */}
-        <div className='w-full flex-1 overflow-hidden rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
-          <div className='p-6 sm:p-8'>
-            <h1 className='mb-6 text-2xl font-bold text-gray-900 dark:text-white'>API Keys</h1>
-            <p className='mb-6 text-sm text-gray-600 dark:text-gray-300'>
-              Create and manage API keys for accessing your application.
-            </p>
 
-            {/* Create API Key Section */}
-            <div className='mb-8 space-y-4'>
-              <h2 className='text-lg font-semibold text-gray-800 dark:text-white'>
-                Create a new API Key
-              </h2>
+        {isLoading ? (
+          <div className='flex h-full w-full items-center justify-center rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+            <Spinner />
+          </div>
+        ) : (
+          <div className='w-full flex-1 overflow-hidden rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+            <div className='p-6 sm:p-8'>
+              <h1 className='mb-6 text-2xl font-bold text-gray-900 dark:text-white'>API Keys</h1>
+              <p className='mb-6 text-sm text-gray-600 dark:text-gray-300'>
+                Create and manage API keys for accessing your application.
+              </p>
 
-              <Formik
-                initialValues={initialValues}
-                validationSchema={apiKeyValidationSchema}
-                onSubmit={createApiKey}
-              >
-                {({ errors, touched }) => (
-                  <Form className='flex items-start gap-3'>
-                    <div className='flex-grow'>
-                      <Field
-                        type='text'
-                        name='description'
-                        placeholder='Enter description for new API key'
-                        className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
-                      />
-                      {errors.description && touched.description && (
-                        <div className='mt-1 text-sm text-red-500'>{errors.description}</div>
-                      )}
-                    </div>
-                    <button
-                      type='submit'
-                      disabled={isCreating}
-                      className='inline-flex justify-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none disabled:opacity-70 dark:bg-primaryAccent'
-                    >
-                      {isCreating ? (
-                        <div className='flex items-center'>
-                          <SpinnerSvg />
-                          Creating...
-                        </div>
-                      ) : (
-                        <>
-                          <PlusIcon className='my-auto mr-1.5 h-4 w-4' />
-                          Create Key
-                        </>
-                      )}
-                    </button>
-                  </Form>
-                )}
-              </Formik>
-            </div>
+              {/* Create API Key Section */}
+              <div className='mb-8 space-y-4'>
+                <h2 className='text-lg font-semibold text-gray-800 dark:text-white'>
+                  Create a new API Key
+                </h2>
 
-            {/* API Keys List Section */}
-            <div className='space-y-4'>
-              <h2 className='text-lg font-semibold text-gray-800 dark:text-white'>Your API Keys</h2>
+                <Formik
+                  initialValues={initialValues}
+                  validationSchema={apiKeyValidationSchema}
+                  onSubmit={createApiKey}
+                >
+                  {({ errors, touched }) => (
+                    <Form className='flex items-start gap-3'>
+                      <div className='flex-grow'>
+                        <Field
+                          type='text'
+                          name='description'
+                          placeholder='Enter description for new API key'
+                          className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                        />
+                        {errors.description && touched.description && (
+                          <div className='mt-1 text-sm text-red-500'>{errors.description}</div>
+                        )}
+                      </div>
+                      <button
+                        type='submit'
+                        disabled={isCreating}
+                        className='inline-flex justify-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none disabled:opacity-70 dark:bg-primaryAccent'
+                      >
+                        {isCreating ? (
+                          <div className='flex items-center'>
+                            <SpinnerSvg />
+                            Creating...
+                          </div>
+                        ) : (
+                          <>
+                            <PlusIcon className='my-auto mr-1.5 h-4 w-4' />
+                            Create Key
+                          </>
+                        )}
+                      </button>
+                    </Form>
+                  )}
+                </Formik>
+              </div>
 
-              <div className='overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700'>
-                <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
-                  <thead className='bg-gray-50 dark:bg-gray-800'>
-                    <tr>
-                      <th className='w-1/4 max-w-[200px] px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
-                        Description
-                      </th>
-                      <th className='w-1/3 max-w-[300px] px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
-                        Key
-                      </th>
-                      <th className='w-1/6 max-w-[150px] px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
-                        Created
-                      </th>
-                      <th className='w-24 px-4 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300'>
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                    {apiKeys.length === 0 ? (
+              {/* API Keys List Section */}
+              <div className='space-y-4'>
+                <h2 className='text-lg font-semibold text-gray-800 dark:text-white'>
+                  Your API Keys
+                </h2>
+
+                <div className='overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700'>
+                  <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
+                    <thead className='bg-gray-50 dark:bg-gray-800'>
                       <tr>
-                        <td
-                          colSpan={4}
-                          className='px-4 py-8 text-center text-gray-500 dark:text-gray-400'
-                        >
-                          No API keys. Create a new key to get started.
-                        </td>
+                        <th className='w-1/4 max-w-[200px] px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                          Description
+                        </th>
+                        <th className='w-1/3 max-w-[300px] px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                          Key
+                        </th>
+                        <th className='w-1/6 max-w-[150px] px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                          Created
+                        </th>
+                        <th className='w-24 px-4 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300'>
+                          Actions
+                        </th>
                       </tr>
-                    ) : (
-                      apiKeys.map((key) => (
-                        <tr key={key.id} className='bg-white dark:bg-boxDark'>
-                          <td className='max-w-[200px] truncate px-4 py-3 text-sm font-medium text-gray-900 dark:text-white'>
-                            {key.description}
-                          </td>
-                          <td className='px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
-                            <div className='flex max-w-[300px] items-center gap-2 truncate'>
-                              <span className='truncate'>{key.shortKey}</span>
-                              <button
-                                onClick={() => copyToClipboard(key.key)}
-                                className='flex-shrink-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
-                                aria-label='Copy key'
-                              >
-                                <DocumentDuplicateIcon className='h-5 w-5' />
-                              </button>
-                            </div>
-                          </td>
-                          <td className='max-w-[150px] truncate px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
-                            {new Date(key.createdAt).toLocaleDateString()}
-                          </td>
-                          <td className='px-4 py-3 text-center text-sm'>
-                            <button
-                              onClick={() => confirmDeleteApiKey(key.id)}
-                              disabled={isDeleting === key.id}
-                              className='inline-flex items-center rounded-lg bg-red-100 px-4 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-200 disabled:opacity-70 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50'
-                            >
-                              {isDeleting === key.id ? (
-                                <div className='flex items-center'>
-                                  <SpinnerSvg className='text-red-600' />
-                                  <span className='ml-1.5'>Deleting...</span>
-                                </div>
-                              ) : (
-                                <>
-                                  <TrashIcon className='mr-1.5 h-4 w-4' />
-                                  Delete
-                                </>
-                              )}
-                            </button>
+                    </thead>
+                    <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
+                      {apiKeys.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={4}
+                            className='px-4 py-8 text-center text-gray-500 dark:text-gray-400'
+                          >
+                            No API keys. Create a new key to get started.
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      ) : (
+                        apiKeys.map((key) => (
+                          <tr key={key.id} className='bg-white dark:bg-boxDark'>
+                            <td className='max-w-[200px] truncate px-4 py-3 text-sm font-medium text-gray-900 dark:text-white'>
+                              {key.description}
+                            </td>
+                            <td className='px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                              <div className='flex max-w-[300px] items-center gap-2 truncate'>
+                                <span className='truncate'>{key.shortKey}</span>
+                                <button
+                                  onClick={() => copyToClipboard(key.key)}
+                                  className='flex-shrink-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
+                                  aria-label='Copy key'
+                                >
+                                  <DocumentDuplicateIcon className='h-5 w-5' />
+                                </button>
+                              </div>
+                            </td>
+                            <td className='max-w-[150px] truncate px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                              {new Date(key.createdAt).toLocaleDateString()}
+                            </td>
+                            <td className='px-4 py-3 text-center text-sm'>
+                              <button
+                                onClick={() => confirmDeleteApiKey(key.id)}
+                                disabled={isDeleting === key.id}
+                                className='inline-flex items-center rounded-lg bg-red-100 px-4 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-200 disabled:opacity-70 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50'
+                              >
+                                {isDeleting === key.id ? (
+                                  <div className='flex items-center'>
+                                    <SpinnerSvg className='text-red-600' />
+                                    <span className='ml-1.5'>Deleting...</span>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <TrashIcon className='mr-1.5 h-4 w-4' />
+                                    Delete
+                                  </>
+                                )}
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}
