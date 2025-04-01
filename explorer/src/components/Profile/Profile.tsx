@@ -232,173 +232,175 @@ export const ProfilePage: FC = () => {
                         </div>
 
                         {/* New Privacy Settings Section */}
-                        <div className='mt-8 rounded-lg border border-gray-200 p-6 dark:border-gray-700'>
-                          <h3 className='mb-4 text-lg font-medium text-gray-900 dark:text-white'>
-                            Privacy Settings
-                          </h3>
+                        {profile?.id && (
+                          <div className='mt-8 rounded-lg border border-gray-200 p-6 dark:border-gray-700'>
+                            <h3 className='mb-4 text-lg font-medium text-gray-900 dark:text-white'>
+                              Privacy Settings
+                            </h3>
 
-                          <div className='space-y-4'>
-                            <div className='grid gap-4 sm:grid-cols-2'>
-                              {/* Contact Information Privacy */}
-                              <div className='space-y-3'>
-                                <h4 className='text-sm font-medium text-gray-700 dark:text-gray-300'>
-                                  Contact Information
-                                </h4>
-                                <div className='space-y-2'>
-                                  <div className='flex items-center justify-between py-2'>
-                                    <label
-                                      htmlFor='emailIsPublic'
-                                      className='text-sm text-gray-600 dark:text-gray-400'
-                                    >
-                                      Email
-                                    </label>
-                                    <Field name='emailIsPublic'>
-                                      {({ field, form }: FieldProps) => (
-                                        <Toggle
-                                          checked={field.value === true}
-                                          onChange={(checked) =>
-                                            form.setFieldValue(field.name, checked)
-                                          }
-                                          name='emailIsPublic'
-                                          className='flex-shrink-0'
-                                        />
-                                      )}
-                                    </Field>
-                                  </div>
-                                  <div className='flex items-center justify-between py-2'>
-                                    <label
-                                      htmlFor='discordIsPublic'
-                                      className='text-sm text-gray-600 dark:text-gray-400'
-                                    >
-                                      Discord
-                                    </label>
-                                    <Field name='discordIsPublic'>
-                                      {({ field, form }: FieldProps) => (
-                                        <Toggle
-                                          checked={field.value === true}
-                                          onChange={(checked) =>
-                                            form.setFieldValue(field.name, checked)
-                                          }
-                                          name={field.name}
-                                          className='flex-shrink-0'
-                                        />
-                                      )}
-                                    </Field>
-                                  </div>
-                                  <div className='flex items-center justify-between py-2'>
-                                    <label
-                                      htmlFor='githubIsPublic'
-                                      className='text-sm text-gray-600 dark:text-gray-400'
-                                    >
-                                      GitHub
-                                    </label>
-                                    <Field name='githubIsPublic'>
-                                      {({ field, form }: FieldProps) => (
-                                        <Toggle
-                                          checked={field.value === true}
-                                          onChange={(checked) =>
-                                            form.setFieldValue(field.name, checked)
-                                          }
-                                          name={field.name}
-                                          className='flex-shrink-0'
-                                        />
-                                      )}
-                                    </Field>
-                                  </div>
-                                  <div className='flex items-center justify-between py-2'>
-                                    <label
-                                      htmlFor='twitterIsPublic'
-                                      className='text-sm text-gray-600 dark:text-gray-400'
-                                    >
-                                      Twitter
-                                    </label>
-                                    <Field name='twitterIsPublic'>
-                                      {({ field, form }: FieldProps) => (
-                                        <Toggle
-                                          checked={field.value === true}
-                                          onChange={(checked) =>
-                                            form.setFieldValue(field.name, checked)
-                                          }
-                                          name={field.name}
-                                          className='flex-shrink-0'
-                                        />
-                                      )}
-                                    </Field>
+                            <div className='space-y-4'>
+                              <div className='grid gap-4 sm:grid-cols-2'>
+                                {/* Contact Information Privacy */}
+                                <div className='space-y-3'>
+                                  <h4 className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+                                    Contact Information
+                                  </h4>
+                                  <div className='space-y-2'>
+                                    <div className='flex items-center justify-between py-2'>
+                                      <label
+                                        htmlFor='emailIsPublic'
+                                        className='text-sm text-gray-600 dark:text-gray-400'
+                                      >
+                                        Email
+                                      </label>
+                                      <Field name='emailIsPublic'>
+                                        {({ field, form }: FieldProps) => (
+                                          <Toggle
+                                            checked={field.value === true}
+                                            onChange={(checked) =>
+                                              form.setFieldValue(field.name, checked)
+                                            }
+                                            name='emailIsPublic'
+                                            className='flex-shrink-0'
+                                          />
+                                        )}
+                                      </Field>
+                                    </div>
+                                    <div className='flex items-center justify-between py-2'>
+                                      <label
+                                        htmlFor='discordIsPublic'
+                                        className='text-sm text-gray-600 dark:text-gray-400'
+                                      >
+                                        Discord
+                                      </label>
+                                      <Field name='discordIsPublic'>
+                                        {({ field, form }: FieldProps) => (
+                                          <Toggle
+                                            checked={field.value === true}
+                                            onChange={(checked) =>
+                                              form.setFieldValue(field.name, checked)
+                                            }
+                                            name={field.name}
+                                            className='flex-shrink-0'
+                                          />
+                                        )}
+                                      </Field>
+                                    </div>
+                                    <div className='flex items-center justify-between py-2'>
+                                      <label
+                                        htmlFor='githubIsPublic'
+                                        className='text-sm text-gray-600 dark:text-gray-400'
+                                      >
+                                        GitHub
+                                      </label>
+                                      <Field name='githubIsPublic'>
+                                        {({ field, form }: FieldProps) => (
+                                          <Toggle
+                                            checked={field.value === true}
+                                            onChange={(checked) =>
+                                              form.setFieldValue(field.name, checked)
+                                            }
+                                            name={field.name}
+                                            className='flex-shrink-0'
+                                          />
+                                        )}
+                                      </Field>
+                                    </div>
+                                    <div className='flex items-center justify-between py-2'>
+                                      <label
+                                        htmlFor='twitterIsPublic'
+                                        className='text-sm text-gray-600 dark:text-gray-400'
+                                      >
+                                        Twitter
+                                      </label>
+                                      <Field name='twitterIsPublic'>
+                                        {({ field, form }: FieldProps) => (
+                                          <Toggle
+                                            checked={field.value === true}
+                                            onChange={(checked) =>
+                                              form.setFieldValue(field.name, checked)
+                                            }
+                                            name={field.name}
+                                            className='flex-shrink-0'
+                                          />
+                                        )}
+                                      </Field>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
 
-                              {/* Other Information Privacy */}
-                              <div className='space-y-3'>
-                                <h4 className='text-sm font-medium text-gray-700 dark:text-gray-300'>
-                                  Other Information
-                                </h4>
-                                <div className='space-y-2'>
-                                  <div className='flex items-center justify-between py-2'>
-                                    <label
-                                      htmlFor='websiteIsPublic'
-                                      className='text-sm text-gray-600 dark:text-gray-400'
-                                    >
-                                      Website
-                                    </label>
-                                    <Field name='websiteIsPublic'>
-                                      {({ field, form }: FieldProps) => (
-                                        <Toggle
-                                          checked={field.value === true}
-                                          onChange={(checked) =>
-                                            form.setFieldValue(field.name, checked)
-                                          }
-                                          name={field.name}
-                                          className='flex-shrink-0'
-                                        />
-                                      )}
-                                    </Field>
-                                  </div>
-                                  <div className='flex items-center justify-between py-2'>
-                                    <label
-                                      htmlFor='walletsArePublic'
-                                      className='text-sm text-gray-600 dark:text-gray-400'
-                                    >
-                                      Connected Wallets
-                                    </label>
-                                    <Field name='walletsArePublic'>
-                                      {({ field, form }: FieldProps) => (
-                                        <Toggle
-                                          checked={field.value === true}
-                                          onChange={(checked) =>
-                                            form.setFieldValue(field.name, checked)
-                                          }
-                                          name={field.name}
-                                          className='flex-shrink-0'
-                                        />
-                                      )}
-                                    </Field>
-                                  </div>
-                                  <div className='flex items-center justify-between py-2'>
-                                    <label
-                                      htmlFor='tagsArePublic'
-                                      className='text-sm text-gray-600 dark:text-gray-400'
-                                    >
-                                      Tags
-                                    </label>
-                                    <Field name='tagsArePublic'>
-                                      {({ field, form }: FieldProps) => (
-                                        <Toggle
-                                          checked={field.value === true}
-                                          onChange={(checked) =>
-                                            form.setFieldValue(field.name, checked)
-                                          }
-                                          name={field.name}
-                                          className='flex-shrink-0'
-                                        />
-                                      )}
-                                    </Field>
+                                {/* Other Information Privacy */}
+                                <div className='space-y-3'>
+                                  <h4 className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+                                    Other Information
+                                  </h4>
+                                  <div className='space-y-2'>
+                                    <div className='flex items-center justify-between py-2'>
+                                      <label
+                                        htmlFor='websiteIsPublic'
+                                        className='text-sm text-gray-600 dark:text-gray-400'
+                                      >
+                                        Website
+                                      </label>
+                                      <Field name='websiteIsPublic'>
+                                        {({ field, form }: FieldProps) => (
+                                          <Toggle
+                                            checked={field.value === true}
+                                            onChange={(checked) =>
+                                              form.setFieldValue(field.name, checked)
+                                            }
+                                            name={field.name}
+                                            className='flex-shrink-0'
+                                          />
+                                        )}
+                                      </Field>
+                                    </div>
+                                    <div className='flex items-center justify-between py-2'>
+                                      <label
+                                        htmlFor='walletsArePublic'
+                                        className='text-sm text-gray-600 dark:text-gray-400'
+                                      >
+                                        Connected Wallets
+                                      </label>
+                                      <Field name='walletsArePublic'>
+                                        {({ field, form }: FieldProps) => (
+                                          <Toggle
+                                            checked={field.value === true}
+                                            onChange={(checked) =>
+                                              form.setFieldValue(field.name, checked)
+                                            }
+                                            name={field.name}
+                                            className='flex-shrink-0'
+                                          />
+                                        )}
+                                      </Field>
+                                    </div>
+                                    <div className='flex items-center justify-between py-2'>
+                                      <label
+                                        htmlFor='tagsArePublic'
+                                        className='text-sm text-gray-600 dark:text-gray-400'
+                                      >
+                                        Tags
+                                      </label>
+                                      <Field name='tagsArePublic'>
+                                        {({ field, form }: FieldProps) => (
+                                          <Toggle
+                                            checked={field.value === true}
+                                            onChange={(checked) =>
+                                              form.setFieldValue(field.name, checked)
+                                            }
+                                            name={field.name}
+                                            className='flex-shrink-0'
+                                          />
+                                        )}
+                                      </Field>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
+                        )}
                       </Tab.Panel>
                       <Tab.Panel className='space-y-5'>
                         {/* Private Info Fields */}

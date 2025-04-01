@@ -1,7 +1,12 @@
 'use client'
 
 import { getSupportedHeaderLinks } from '@/utils/route'
-import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
+import {
+  Bars3BottomRightIcon,
+  ExclamationTriangleIcon,
+  MoonIcon,
+  SunIcon,
+} from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons/LogoIcon'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useIndexers from 'hooks/useIndexers'
@@ -10,6 +15,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
 import { useMemo, useState } from 'react'
+import { useProfileStates } from 'states/profile'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
@@ -19,8 +25,16 @@ export const ProfileHeader = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
   const { network } = useIndexers()
+  const { profile } = useProfileStates((state) => state)
 
-  const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.profile), [network])
+  const menuList = useMemo(() => {
+    if (!profile) return []
+    return getSupportedHeaderLinks(network, Routes.profile)
+  }, [network, profile])
+
+  const isProfileIncomplete = profile && (!profile.name || !profile.description)
+
+  console.log(menuList, profile, { isProfileIncomplete })
 
   return (
     <header className='body-font z-9 py-[30px] text-gray-600'>
@@ -35,6 +49,14 @@ export const ProfileHeader = () => {
             </span>
           </Link>
           <nav className='flex flex-wrap items-center justify-center gap-10 text-sm'>
+            {!menuList.length && (
+              <div className='flex items-start gap-2 rounded-md bg-amber-50 p-4 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200'>
+                <ExclamationTriangleIcon className='my-auto mt-0.5 h-5 w-5 flex-shrink-0' />
+                <p className='my-auto text-sm'>
+                  Info: Please complete your profile information to access all features.
+                </p>
+              </div>
+            )}
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link) && index !== 0
               const isInitialPath = pathname === `/${network}/operators` && index === 0

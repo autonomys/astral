@@ -157,8 +157,8 @@ export const WalletsPage: FC = () => {
                   </h2>
 
                   <div className='flex items-start gap-2 rounded-md bg-amber-50 p-4 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200'>
-                    <ExclamationTriangleIcon className='mt-0.5 h-5 w-5 flex-shrink-0' />
-                    <p className='text-sm'>
+                    <ExclamationTriangleIcon className='my-auto mt-0.5 h-5 w-5 flex-shrink-0' />
+                    <p className='my-auto text-sm'>
                       Warning: Linking an account is permanent and cannot be undone.
                     </p>
                   </div>

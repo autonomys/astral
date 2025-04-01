@@ -128,19 +128,31 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
   setApiKeys: (apiKeys: ApiKey[]) => set(() => ({ apiKeys })),
   setTags: (tags: Tag[]) => set(() => ({ tags })),
   getUserProfile: async (account, message, signature) => {
-    set(() => ({ isLoading: true, error: '' }))
-    const response = await fetch('/api/profile/read', {
-      method: 'POST',
-      body: JSON.stringify({ account, message, signature }),
-    })
-    if (!response.ok) throw new Error('Failed to read profile')
-    const data = await response.json()
-    set(() => ({
-      profile: data.profile,
-      wallets: data.wallets,
-      apiKeys: data.apiKeys,
-      tags: data.tags,
-    }))
-    set(() => ({ isLoading: false }))
+    try {
+      set(() => ({ isLoading: true, error: '' }))
+      const response = await fetch('/api/profile/read', {
+        method: 'POST',
+        body: JSON.stringify({ account, message, signature }),
+      })
+      if (!response.ok) throw new Error('Failed to read profile')
+      const data = await response.json()
+      set(() => ({
+        profile: data.profile,
+        wallets: data.wallets,
+        apiKeys: data.apiKeys,
+        tags: data.tags,
+      }))
+      set(() => ({ isLoading: false }))
+    } catch (error) {
+      set(() => ({
+        isLoading: false,
+        error: error as string,
+        profile: initialState.profile,
+        wallets: initialState.wallets,
+        apiKeys: initialState.apiKeys,
+        tags: initialState.tags,
+      }))
+      console.error(error)
+    }
   },
 }))
