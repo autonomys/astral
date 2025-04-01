@@ -1,9 +1,18 @@
 'use client'
 
-import React, { MouseEventHandler, ReactElement, ReactNode, useCallback, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import React, {
+  MouseEventHandler,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 
 type TabProps = {
   title: string
+  id?: string
   children?: ReactNode
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined
 }
@@ -14,6 +23,7 @@ export const Tab: React.FC<TabProps> = ({ children }) => {
 
 type TabTitleProps = {
   title: string
+  id?: string
   index: number
   isSelected: boolean
   setSelectedTab: (index: number) => void
@@ -24,6 +34,7 @@ type TabTitleProps = {
 
 export const TabTitle: React.FC<TabTitleProps> = ({
   title,
+  id,
   setSelectedTab,
   isSelected,
   index,
@@ -34,9 +45,20 @@ export const TabTitle: React.FC<TabTitleProps> = ({
   const handleOnClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSelectedTab(index)
+
+      if (id) {
+        const url = new URL(window.location.href)
+        const currentParams = url.searchParams.toString()
+        url.searchParams.set('tab', id)
+        const newParams = url.searchParams.toString()
+        if (currentParams !== newParams) {
+          window.history.pushState(null, '', `${url.pathname}${newParams ? '?' + newParams : ''}`)
+        }
+      }
+
       if (onClick) onClick(e)
     },
-    [onClick, setSelectedTab, index],
+    [onClick, setSelectedTab, index, id],
   )
 
   return (
@@ -65,12 +87,28 @@ type TabsProps = {
 
 export const Tabs: React.FC<TabsProps> = ({
   children,
+  initialIndex = 0,
   tabStyle = 'bg-white border border-slate-100 shadow rounded-lg p-4',
   tabTitleStyle = '',
   pillStyle = 'text-gray-600 bg-white dark:bg-transparent dark:text-white',
   activePillStyle = 'text-white bg-grayDarker dark:bg-blueAccent',
 }) => {
-  const [selectedTab, setSelectedTab] = useState(0)
+  const [selectedTab, setSelectedTab] = useState(initialIndex)
+  const searchParams = useSearchParams()
+  const tabParam = searchParams.get('tab')
+
+  const updateSelectedTab = useCallback(() => {
+    if (tabParam && Array.isArray(children)) {
+      const tabIndex = children.findIndex((child) => child.props.id === tabParam)
+      if (tabIndex !== -1) {
+        setSelectedTab(tabIndex)
+      }
+    }
+  }, [tabParam, children])
+
+  useEffect(() => {
+    updateSelectedTab()
+  }, [updateSelectedTab])
 
   return (
     <div className={`flex flex-wrap ${tabStyle}`}>
@@ -84,6 +122,7 @@ export const Tabs: React.FC<TabsProps> = ({
               <TabTitle
                 key={index}
                 title={item.props.title}
+                id={item.props.id}
                 onClick={item.props.onClick}
                 index={index}
                 isSelected={selectedTab === index}
@@ -95,6 +134,7 @@ export const Tabs: React.FC<TabsProps> = ({
           ) : (
             <TabTitle
               title={children.props.title}
+              id={children.props.id}
               onClick={children.props.onClick}
               index={0}
               isSelected={selectedTab === 0}
