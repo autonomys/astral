@@ -17,7 +17,24 @@ export const POST = async (req: NextRequest) => {
     const NETWORK = process.env.USERS_INDEXER_NETWORK || NetworkId.LOCALHOST
     const body = await req.json()
     const { subspaceAccount, values, message, signature } = body
-    const { name, description, avatar, banner, website, email, discord, github, twitter } = values
+    const {
+      name,
+      description,
+      avatar,
+      banner,
+      website,
+      email,
+      discord,
+      github,
+      twitter,
+      emailIsPublic,
+      discordIsPublic,
+      githubIsPublic,
+      twitterIsPublic,
+      websiteIsPublic,
+      walletsArePublic,
+      tagsArePublic,
+    } = values
     await cryptoWaitReady()
 
     // Verify the signature to ensure it is valid
@@ -62,24 +79,26 @@ export const POST = async (req: NextRequest) => {
               banner_url: "${banner}"
               website: "${website}"
               website_is_verified: false
-              website_is_public: false
+              website_is_public: ${websiteIsPublic}
               email: "${email}"
               email_is_verified: false
-              email_is_public: false
+              email_is_public: ${emailIsPublic}
               discord: "${discord}"
               discord_is_verified: false
-              discord_is_public: false
+              discord_is_public: ${discordIsPublic}
               github: "${github}"
               github_is_verified: false
-              github_is_public: false
+              github_is_public: ${githubIsPublic}
               twitter: "${twitter}"
               twitter_is_verified: false
-              twitter_is_public: false
+              twitter_is_public: ${twitterIsPublic}
               api_total_requests: 0
               api_daily_requests_limit: 1000
               api_monthly_requests_limit: 10000
               proof_message: ""
               proof_signature: "${signature}"
+              wallets_are_public: ${walletsArePublic}
+              tags_are_public: ${tagsArePublic}
             }
             on_conflict: {
               constraint: profiles_pkey,
@@ -105,6 +124,8 @@ export const POST = async (req: NextRequest) => {
                 twitter_is_public,
                 proof_message,
                 proof_signature,
+                wallets_are_public,
+                tags_are_public,
                 updated_at
               ]
             }
@@ -134,6 +155,8 @@ export const POST = async (req: NextRequest) => {
             api_monthly_requests_limit
             proof_message
             proof_signature
+            wallets_are_public
+            tags_are_public
           }
         }`,
       { profileId },

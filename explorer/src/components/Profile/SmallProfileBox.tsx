@@ -1,6 +1,7 @@
-import { GlobeAltIcon, PencilIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, GlobeAltIcon, PencilIcon } from '@heroicons/react/24/outline'
 import { ImageType } from 'enum/profile'
 import { useSession } from 'next-auth/react'
+import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa'
@@ -14,6 +15,7 @@ interface SmallProfileBoxProps {
 
 export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }) => {
   const { data: session } = useSession()
+  const { chain } = useParams()
   const { shouldUpdate, setShouldUpdate, setUser, profile, isLoading } = useProfileStates(
     (state) => state,
   )
@@ -214,9 +216,20 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
             {/* Profile information - padded to make room for the overlapping avatar */}
             <div className='px-6 pb-6 pt-14'>
               <div className='mb-4'>
-                <h2 className='text-xl font-bold text-gray-900 dark:text-white'>
-                  {profile?.name || 'Profile Name'}
-                </h2>
+                <div className='flex items-center justify-between'>
+                  <h2 className='text-xl font-bold text-gray-900 dark:text-white'>
+                    {profile?.name || 'Profile Name'}
+                  </h2>
+                  <a
+                    href={`/${chain}/profile/${profile?.id}`}
+                    className='inline-flex items-center rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <EyeIcon className='mr-2 h-4 w-4' />
+                    View Public Profile
+                  </a>
+                </div>
                 <p className='mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300'>
                   {profile?.description || 'No description available'}
                 </p>

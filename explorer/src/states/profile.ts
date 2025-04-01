@@ -11,6 +11,18 @@ export type Profile = {
   discord: string
   github: string
   twitter: string
+  emailIsPublic: boolean
+  discordIsPublic: boolean
+  githubIsPublic: boolean
+  twitterIsPublic: boolean
+  websiteIsPublic: boolean
+  walletsArePublic: boolean
+  tagsArePublic: boolean
+  wallets?: Array<{
+    id: string
+    address: string
+    type: string
+  }>
 }
 export type Wallet = {
   id: string
@@ -78,6 +90,13 @@ const initialState: ProfileState = {
     discord: '',
     github: '',
     twitter: '',
+    emailIsPublic: false,
+    discordIsPublic: false,
+    githubIsPublic: false,
+    twitterIsPublic: false,
+    websiteIsPublic: false,
+    walletsArePublic: false,
+    tagsArePublic: false,
   },
   wallets: [],
   apiKeys: [],

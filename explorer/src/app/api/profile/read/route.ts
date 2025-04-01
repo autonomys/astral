@@ -21,6 +21,13 @@ type ProfileResponse = {
       apiMonthlyRequestsLimit: number
       proofMessage: string
       proofSignature: string
+      emailIsPublic: boolean
+      discordIsPublic: boolean
+      githubIsPublic: boolean
+      twitterIsPublic: boolean
+      websiteIsPublic: boolean
+      walletsArePublic: boolean
+      tagsArePublic: boolean
       wallets: Array<{
         id: string
         address: string
@@ -73,7 +80,13 @@ export const POST = async (req: NextRequest) => {
             apiMonthlyRequestsLimit: api_monthly_requests_limit
             proofMessage: proof_message
             proofSignature: proof_signature
-
+            emailIsPublic: email_is_public
+            discordIsPublic: discord_is_public
+            githubIsPublic: github_is_public
+            twitterIsPublic: twitter_is_public
+            websiteIsPublic: website_is_public
+            walletsArePublic: wallets_are_public
+            tagsArePublic: tags_are_public
             wallets {
               id
               address
