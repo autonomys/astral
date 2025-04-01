@@ -53,12 +53,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
 
       const responseData = await response.json()
       if (responseData.message === 'Profile not found') return
-      setUser(
-        responseData.profile,
-        responseData.wallets,
-        responseData.apiKeys,
-        responseData.apiKeys,
-      )
+      setUser(responseData.profile, responseData.wallets, responseData.apiKeys, responseData.tags)
       setShouldUpdate(false)
     } catch (error) {
       console.error('Error loading profile:', error)

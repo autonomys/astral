@@ -1,8 +1,9 @@
 'use client'
 
-import { GlobeAltIcon } from '@heroicons/react/24/outline'
+import { DocumentDuplicateIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 import { Profile } from 'states/profile'
@@ -34,6 +35,14 @@ export const PublicProfile: FC = () => {
     }
   }, [profileId])
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    toast.success('Address copied to clipboard', {
+      duration: 2000,
+      position: 'top-center',
+    })
+  }
+
   if (isLoading) {
     return (
       <div className='flex min-h-screen w-full items-center justify-center rounded-xl bg-white'>
@@ -59,7 +68,7 @@ export const PublicProfile: FC = () => {
           <div className='relative h-full w-full overflow-hidden'>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={profile.banner || '/images/autonomys-banner.webp'}
+              src={profile?.banner || '/images/autonomys-banner.webp'}
               alt='Profile Banner'
               className='h-full w-full object-cover'
             />
@@ -70,7 +79,7 @@ export const PublicProfile: FC = () => {
             <div className='relative h-full w-full'>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={profile.avatar || '/images/avatar.svg'}
+                src={profile?.avatar || '/images/avatar.svg'}
                 alt='Profile Avatar'
                 className='h-full w-full object-cover'
               />
@@ -215,6 +224,57 @@ export const PublicProfile: FC = () => {
                     </td>
                     <td className='whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
                       {wallet.address}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Tags Section */}
+      {profile.tags && profile.tags.length > 0 && (
+        <div className='mt-6 rounded-2xl bg-white p-6 shadow-sm dark:bg-boxDark'>
+          <h2 className='mb-4 text-lg font-semibold text-gray-900 dark:text-white'>Tags</h2>
+          <div className='overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700'>
+            <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
+              <thead className='bg-gray-50 dark:bg-gray-800'>
+                <tr>
+                  <th className='w-1/4 px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                    Wallet Address
+                  </th>
+                  <th className='w-1/2 px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                    Tags
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
+                {profile.tags.map((tag) => (
+                  <tr key={tag.id} className='bg-white dark:bg-boxDark'>
+                    <td className='px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                      <div className='flex max-w-[300px] items-center gap-2 truncate'>
+                        <span className='truncate'>{tag.walletAddress}</span>
+                        <button
+                          onClick={() => copyToClipboard(tag.walletAddress)}
+                          className='flex-shrink-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
+                          aria-label='Copy address'
+                        >
+                          <DocumentDuplicateIcon className='h-5 w-5' />
+                        </button>
+                      </div>
+                    </td>
+                    <td className='max-w-[400px] px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                      <div className='flex flex-wrap gap-2'>
+                        {tag?.tags?.map((t, index) => (
+                          <span
+                            key={index}
+                            className='inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -45,6 +45,13 @@ type ProfileResponse = {
         updatedAt: string
         deletedAt: string | null
       }>
+      tags: Array<{
+        id: string
+        walletAddress: string
+        tags: string[]
+        createdAt: string
+        deletedAt: string | null
+      }>
     }
   }>
 }
@@ -105,6 +112,13 @@ export const POST = async (req: NextRequest) => {
               updatedAt: updated_at
               deletedAt: deleted_at
             }
+            tags: tags {
+              id
+              walletAddress: wallet_address
+              tags
+              createdAt: created_at
+              deletedAt: deleted_at
+            }
           }
         }
       }`,
@@ -113,6 +127,8 @@ export const POST = async (req: NextRequest) => {
       },
       NETWORK,
     )
+
+    // console.log('data', JSON.stringify(data, null, 2))
 
     if (data.users_wallets.length === 0)
       return NextResponse.json({
@@ -128,12 +144,14 @@ export const POST = async (req: NextRequest) => {
       .filter((apiKey) => apiKey.deletedAt === null)
 
     const userWallets = userProfile.wallets.filter((wallet) => wallet.deletedAt === null)
+    const userTags = userProfile.tags.filter((tag) => tag.deletedAt === null)
 
     return NextResponse.json({
       message: 'Profile loaded successfully',
       profile: userProfile,
       apiKeys: userApiKeys,
       wallets: userWallets,
+      tags: userTags,
     })
   } catch (error) {
     console.error('Error reading profile:', error)

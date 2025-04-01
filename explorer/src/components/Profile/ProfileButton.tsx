@@ -26,7 +26,7 @@ export const ProfileButton: FC = () => {
         isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
       } shadow-md dark:bg-buttonLightTo md:mt-3`}
     >
-      {profile.avatar ? (
+      {profile?.avatar ? (
         <Image src={profile.avatar} alt='Profile' width={40} height={40} className='rounded-full' />
       ) : (
         <div className='flex h-10 w-10 items-center justify-center rounded-full'>

@@ -135,13 +135,13 @@ export const ProfilePage: FC = () => {
               enableReinitialize={true}
               initialValues={{
                 ...profile,
-                emailIsPublic: profile.emailIsPublic ?? false,
-                discordIsPublic: profile.discordIsPublic ?? false,
-                githubIsPublic: profile.githubIsPublic ?? false,
-                twitterIsPublic: profile.twitterIsPublic ?? false,
-                websiteIsPublic: profile.websiteIsPublic ?? false,
-                walletsArePublic: profile.walletsArePublic ?? false,
-                tagsArePublic: profile.tagsArePublic ?? false,
+                emailIsPublic: profile?.emailIsPublic ?? false,
+                discordIsPublic: profile?.discordIsPublic ?? false,
+                githubIsPublic: profile?.githubIsPublic ?? false,
+                twitterIsPublic: profile?.twitterIsPublic ?? false,
+                websiteIsPublic: profile?.websiteIsPublic ?? false,
+                walletsArePublic: profile?.walletsArePublic ?? false,
+                tagsArePublic: profile?.tagsArePublic ?? false,
               }}
               validationSchema={profileValidationSchema}
               onSubmit={handleProfileSubmit}

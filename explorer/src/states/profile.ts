@@ -23,6 +23,11 @@ export type Profile = {
     address: string
     type: string
   }>
+  tags?: Array<{
+    id: string
+    walletAddress: string
+    tags: string[]
+  }>
 }
 export type Wallet = {
   id: string
@@ -44,10 +49,11 @@ export type ApiKey = {
 }
 export type Tag = {
   id: string
-  name: string
-  description: string
+  walletAddress: string
+  tags: string[]
   createdAt: string
   updatedAt: string
+  deletedAt: string | null
 }
 export interface ProfileState {
   shouldUpdate: boolean

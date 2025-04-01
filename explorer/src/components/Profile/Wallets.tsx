@@ -33,7 +33,7 @@ export const WalletsPage: FC = () => {
         account.type === WalletType.subspace || (account as { type: string }).type === 'sr25519'
           ? formatAddress(account.address)
           : account.address
-      return !wallets.some((wallet) => wallet.address === accountAddress)
+      return !wallets?.some((wallet) => wallet.address === accountAddress)
     })
   }, [accounts, wallets])
 
@@ -206,7 +206,7 @@ export const WalletsPage: FC = () => {
                   Connected Wallets
                 </h2>
 
-                {wallets.length === 0 ? (
+                {wallets?.length === 0 ? (
                   <div className='rounded-lg border border-gray-200 p-8 text-center dark:border-gray-700'>
                     <p className='text-gray-500 dark:text-gray-400'>
                       No wallets connected. Link a wallet to get started.
@@ -227,27 +227,38 @@ export const WalletsPage: FC = () => {
                         </tr>
                       </thead>
                       <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                        {wallets.map((wallet) => (
-                          <tr key={wallet.id} className='bg-white dark:bg-boxDark'>
-                            <td className='whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900 dark:text-white'>
-                              <span className='inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200'>
-                                {wallet.type}
-                              </span>
-                            </td>
-                            <td className='whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
-                              {wallet.address}
-                            </td>
-                            <td className='whitespace-nowrap px-4 py-3 text-right text-sm'>
-                              <button
-                                onClick={() => copyAddress(wallet.address)}
-                                className='text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
-                                aria-label='Copy address'
-                              >
-                                <DocumentDuplicateIcon className='h-5 w-5' />
-                              </button>
+                        {!wallets?.length ? (
+                          <tr>
+                            <td
+                              colSpan={3}
+                              className='px-4 py-8 text-center text-gray-500 dark:text-gray-400'
+                            >
+                              No wallets connected. Link a wallet to get started.
                             </td>
                           </tr>
-                        ))}
+                        ) : (
+                          wallets?.map((wallet) => (
+                            <tr key={wallet.id} className='bg-white dark:bg-boxDark'>
+                              <td className='whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900 dark:text-white'>
+                                <span className='inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200'>
+                                  {wallet.type}
+                                </span>
+                              </td>
+                              <td className='whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                                {wallet.address}
+                              </td>
+                              <td className='whitespace-nowrap px-4 py-3 text-right text-sm'>
+                                <button
+                                  onClick={() => copyAddress(wallet.address)}
+                                  className='text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
+                                  aria-label='Copy address'
+                                >
+                                  <DocumentDuplicateIcon className='h-5 w-5' />
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>

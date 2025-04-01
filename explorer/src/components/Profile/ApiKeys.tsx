@@ -85,7 +85,7 @@ export const ApiKeysPage: FC = () => {
         setIsCreating(false)
       }
     },
-    [injector, actingAccount, subspaceAccount, profile.id, setShouldUpdate],
+    [injector, actingAccount, subspaceAccount, profile?.id, setShouldUpdate],
   )
 
   const confirmDeleteApiKey = (apiKeyId: string) => {
@@ -256,7 +256,7 @@ export const ApiKeysPage: FC = () => {
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                      {apiKeys.length === 0 ? (
+                      {!apiKeys?.length ? (
                         <tr>
                           <td
                             colSpan={4}
@@ -266,7 +266,7 @@ export const ApiKeysPage: FC = () => {
                           </td>
                         </tr>
                       ) : (
-                        apiKeys.map((key) => (
+                        apiKeys?.map((key) => (
                           <tr key={key.id} className='bg-white dark:bg-boxDark'>
                             <td className='max-w-[200px] truncate px-4 py-3 text-sm font-medium text-gray-900 dark:text-white'>
                               {key.description}

@@ -26,6 +26,13 @@ type PublicProfileResponse = {
     github_is_public: boolean
     twitter_is_public: boolean
     wallets_are_public: boolean
+    tags: Array<{
+      id: string
+      walletAddress: string
+      tags: string[]
+      deletedAt: string | null
+    }>
+    tags_are_public: boolean
   }
 }
 
@@ -67,6 +74,13 @@ export const GET = async (req: NextRequest) => {
           github_is_public
           twitter_is_public
           wallets_are_public
+          tags {
+            id
+            walletAddress: wallet_address
+            tags
+            deletedAt: deleted_at
+          }
+          tags_are_public
         }
       }`,
       {
@@ -74,6 +88,8 @@ export const GET = async (req: NextRequest) => {
       },
       NETWORK,
     )
+
+    console.log('data', JSON.stringify(data, null, 2))
 
     if (!data.users_profiles) {
       return NextResponse.json(
@@ -102,7 +118,14 @@ export const GET = async (req: NextRequest) => {
             .filter((wallet) => wallet.deletedAt === null)
             .map(({ id, address, type }) => ({ id, address, type }))
         : [],
+      tags: profile.tags_are_public
+        ? profile.tags
+            .filter((tag) => tag.deletedAt === null)
+            .map(({ id, walletAddress, tags }) => ({ id, walletAddress, tags }))
+        : [],
     }
+
+    console.log('publicProfile', JSON.stringify(publicProfile, null, 2))
 
     return NextResponse.json({
       message: 'Profile loaded successfully',
