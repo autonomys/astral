@@ -10,6 +10,7 @@ import useWallet from 'hooks/useWallet'
 import { FC, Fragment, useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import * as Yup from 'yup'
+import { Spinner } from '../common/Spinner'
 import { WalletButton } from '../WalletButton'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
 import { SmallProfileBox } from './SmallProfileBox'
@@ -29,7 +30,7 @@ export type Tag = {
 
 export const TagsPage: FC = () => {
   const { actingAccount, subspaceAccount, injector } = useWallet()
-  const { profile, tags, setShouldUpdate } = useProfileStates((state) => state)
+  const { profile, tags, setShouldUpdate, isLoading } = useProfileStates((state) => state)
   const [isCreating, setIsCreating] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [currentTags, setCurrentTags] = useState<string[]>([])
@@ -42,8 +43,6 @@ export const TagsPage: FC = () => {
     walletAddress: '',
     tags: [],
   }
-
-  console.log('tags', tags)
 
   const tagValidationSchema = Yup.object().shape({
     walletAddress: Yup.string().required('Wallet address is required'),
@@ -198,104 +197,110 @@ export const TagsPage: FC = () => {
     <div className='flex min-h-screen w-full flex-col gap-6 p-6 sm:flex-row sm:gap-8'>
       <SmallProfileBox />
 
-      <div className='w-full flex-1 overflow-hidden rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
-        <div className='p-6 sm:p-8'>
-          <h1 className='mb-6 text-2xl font-bold text-gray-900 dark:text-white'>Tags</h1>
-          <p className='mb-6 text-sm text-gray-600 dark:text-gray-300'>
-            Create and manage tags for wallets.
-          </p>
+      {isLoading ? (
+        <div className='flex h-full w-full items-center justify-center rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+          <Spinner />
+        </div>
+      ) : (
+        <div className='w-full flex-1 overflow-hidden rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+          <div className='p-6 sm:p-8'>
+            <h1 className='mb-6 text-2xl font-bold text-gray-900 dark:text-white'>Tags</h1>
+            <p className='mb-6 text-sm text-gray-600 dark:text-gray-300'>
+              Create and manage tags for wallets.
+            </p>
 
-          {/* Create Tag Button */}
-          <div className='mb-8'>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className='inline-flex items-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none dark:bg-primaryAccent'
-            >
-              <PlusIcon className='mr-2 h-4 w-4' />
-              Create New Tags
-            </button>
-          </div>
+            {/* Create Tag Button */}
+            <div className='mb-8'>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className='inline-flex items-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none dark:bg-primaryAccent'
+              >
+                <PlusIcon className='mr-2 h-4 w-4' />
+                Create New Tags
+              </button>
+            </div>
 
-          {/* Tags Table */}
-          <div className='overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700'>
-            <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
-              <thead className='bg-gray-50 dark:bg-gray-800'>
-                <tr>
-                  <th className='w-1/4 px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
-                    Wallet Address
-                  </th>
-                  <th className='w-1/2 px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
-                    Tags
-                  </th>
-                  <th className='w-24 px-4 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300'>
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                {!tags?.length ? (
+            {/* Tags Table */}
+            <div className='overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700'>
+              <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
+                <thead className='bg-gray-50 dark:bg-gray-800'>
                   <tr>
-                    <td
-                      colSpan={3}
-                      className='px-4 py-8 text-center text-gray-500 dark:text-gray-400'
-                    >
-                      No tags. Create new tags to get started.
-                    </td>
+                    <th className='w-1/4 px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                      Wallet Address
+                    </th>
+                    <th className='w-1/2 px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                      Tags
+                    </th>
+                    <th className='w-24 px-4 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300'>
+                      Actions
+                    </th>
                   </tr>
-                ) : (
-                  tags?.map((tag) => (
-                    <tr key={tag.id} className='bg-white dark:bg-boxDark'>
-                      <td className='px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
-                        <div className='flex max-w-[300px] items-center gap-2 truncate'>
-                          <span className='truncate'>{tag.walletAddress}</span>
-                          <button
-                            onClick={() => copyToClipboard(tag.walletAddress)}
-                            className='flex-shrink-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
-                            aria-label='Copy address'
-                          >
-                            <DocumentDuplicateIcon className='h-5 w-5' />
-                          </button>
-                        </div>
-                      </td>
-                      <td className='max-w-[400px] px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
-                        <div className='flex flex-wrap gap-2'>
-                          {tag?.tags?.map((t, index) => (
-                            <span
-                              key={index}
-                              className='inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td className='w-24 px-4 py-3 text-center'>
-                        <button
-                          onClick={() => confirmDeleteTag(tag.id)}
-                          disabled={isDeleting === tag.id}
-                          className='inline-flex items-center rounded-lg bg-red-100 px-4 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-200 disabled:opacity-70 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50'
-                        >
-                          {isDeleting === tag.id ? (
-                            <div className='flex items-center'>
-                              <SpinnerSvg className='text-red-600' />
-                              <span className='ml-1.5'>Deleting...</span>
-                            </div>
-                          ) : (
-                            <>
-                              <TrashIcon className='mr-1.5 h-4 w-4' />
-                              Delete
-                            </>
-                          )}
-                        </button>
+                </thead>
+                <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
+                  {!tags?.length ? (
+                    <tr>
+                      <td
+                        colSpan={3}
+                        className='px-4 py-8 text-center text-gray-500 dark:text-gray-400'
+                      >
+                        No tags. Create new tags to get started.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    tags?.map((tag) => (
+                      <tr key={tag.id} className='bg-white dark:bg-boxDark'>
+                        <td className='px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                          <div className='flex max-w-[300px] items-center gap-2 truncate'>
+                            <span className='truncate'>{tag.walletAddress}</span>
+                            <button
+                              onClick={() => copyToClipboard(tag.walletAddress)}
+                              className='flex-shrink-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
+                              aria-label='Copy address'
+                            >
+                              <DocumentDuplicateIcon className='h-5 w-5' />
+                            </button>
+                          </div>
+                        </td>
+                        <td className='max-w-[400px] px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                          <div className='flex flex-wrap gap-2'>
+                            {tag?.tags?.map((t, index) => (
+                              <span
+                                key={index}
+                                className='inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                              >
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className='w-24 px-4 py-3 text-center'>
+                          <button
+                            onClick={() => confirmDeleteTag(tag.id)}
+                            disabled={isDeleting === tag.id}
+                            className='inline-flex items-center rounded-lg bg-red-100 px-4 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-200 disabled:opacity-70 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50'
+                          >
+                            {isDeleting === tag.id ? (
+                              <div className='flex items-center'>
+                                <SpinnerSvg className='text-red-600' />
+                                <span className='ml-1.5'>Deleting...</span>
+                              </div>
+                            ) : (
+                              <>
+                                <TrashIcon className='mr-1.5 h-4 w-4' />
+                                Delete
+                              </>
+                            )}
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Create Tag Modal */}
       <Transition appear show={showCreateModal} as={Fragment}>

@@ -1,6 +1,11 @@
 'use client'
 
-import { DocumentDuplicateIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
+import { cn } from '@/utils/cn'
+import {
+  DocumentDuplicateIcon,
+  ExclamationTriangleIcon,
+  GlobeAltIcon,
+} from '@heroicons/react/24/outline'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
@@ -8,6 +13,19 @@ import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 import { Profile } from 'states/profile'
 import { Spinner } from '../common/Spinner'
+
+const ComponentLoader = ({ className }: { className?: string }) => (
+  <div
+    className={cn(
+      'flex h-[200px] items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-boxDark',
+      className,
+    )}
+  >
+    <div className='flex flex-col items-center justify-center gap-2'>
+      <Spinner />
+    </div>
+  </div>
+)
 
 export const PublicProfile: FC = () => {
   const { profileId } = useParams()
@@ -45,15 +63,29 @@ export const PublicProfile: FC = () => {
 
   if (isLoading) {
     return (
-      <div className='flex min-h-screen w-full items-center justify-center rounded-xl bg-white'>
-        <Spinner />
+      <div className='w-full space-y-6 p-6'>
+        {/* Profile Info Loader */}
+        <ComponentLoader className='h-[400px]' />
+
+        {/* Social and Contact Info Loaders */}
+        <div className='grid gap-6 sm:grid-cols-2'>
+          <ComponentLoader />
+          <ComponentLoader />
+        </div>
+
+        {/* Wallets Loader */}
+        <ComponentLoader className='h-[300px]' />
+
+        {/* Tags Loader */}
+        <ComponentLoader className='h-[300px]' />
       </div>
     )
   }
 
   if (!profile) {
     return (
-      <div className='flex min-h-screen items-center justify-center'>
+      <div className='flex min-h-screen w-full items-center justify-center gap-2 rounded-xl bg-white shadow-sm dark:bg-boxDark'>
+        <ExclamationTriangleIcon className='h-10 w-10 text-gray-500 dark:text-gray-400' />
         <p className='text-lg text-gray-500 dark:text-gray-400'>Profile not found</p>
       </div>
     )
