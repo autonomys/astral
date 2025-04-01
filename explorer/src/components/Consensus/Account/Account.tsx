@@ -78,13 +78,13 @@ export const Account: FC = () => {
               <AccountRewardsHistory isDesktop={isDesktop} rewards={rewards} />
             </div>
             <PageTabs isDesktop={isDesktop}>
-              <Tab title='Balance History' id='balance'>
+              <Tab title='Balance History'>
                 <BalanceHistory accountId={accountId} />
               </Tab>
-              <Tab title='Extrinsic List' id='extrinsic'>
+              <Tab title='Extrinsic List'>
                 <AccountExtrinsicList accountId={accountId} />
               </Tab>
-              <Tab title='Transfers' id='transfers'>
+              <Tab title='Transfers'>
                 <AccountTransfersList accountId={accountId} />
               </Tab>
             </PageTabs>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import React, {
   MouseEventHandler,
   ReactElement,
@@ -10,9 +10,16 @@ import React, {
   useState,
 } from 'react'
 
+const generateIdFromTitle = (title: string) => {
+  return title
+    .replace(/[^\w\s]/gi, '')
+    .replace(/\s+(.)/g, (_, c) => c.toUpperCase())
+    .replace(/\s/g, '')
+    .replace(/^(.)/, (_, c) => c.toLowerCase())
+}
+
 type TabProps = {
   title: string
-  id?: string
   children?: ReactNode
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined
 }
@@ -23,7 +30,6 @@ export const Tab: React.FC<TabProps> = ({ children }) => {
 
 type TabTitleProps = {
   title: string
-  id?: string
   index: number
   isSelected: boolean
   setSelectedTab: (index: number) => void
@@ -34,7 +40,6 @@ type TabTitleProps = {
 
 export const TabTitle: React.FC<TabTitleProps> = ({
   title,
-  id,
   setSelectedTab,
   isSelected,
   index,
@@ -42,23 +47,22 @@ export const TabTitle: React.FC<TabTitleProps> = ({
   pillStyle,
   activePillStyle,
 }) => {
+  const router = useRouter()
   const handleOnClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSelectedTab(index)
-
-      if (id) {
-        const url = new URL(window.location.href)
-        const currentParams = url.searchParams.toString()
-        url.searchParams.set('tab', id)
-        const newParams = url.searchParams.toString()
-        if (currentParams !== newParams) {
-          window.history.pushState(null, '', `${url.pathname}${newParams ? '?' + newParams : ''}`)
-        }
+      const generatedId = generateIdFromTitle(title)
+      if (generatedId) {
+        const params = new URLSearchParams(window.location.search)
+        params.set('tab', generatedId)
+        router.push(`${window.location.pathname}?${params.toString()}`, {
+          scroll: false,
+        })
       }
 
       if (onClick) onClick(e)
     },
-    [onClick, setSelectedTab, index, id],
+    [onClick, setSelectedTab, index, title, router],
   )
 
   return (
@@ -99,7 +103,9 @@ export const Tabs: React.FC<TabsProps> = ({
 
   const updateSelectedTab = useCallback(() => {
     if (tabParam && Array.isArray(children)) {
-      const tabIndex = children.findIndex((child) => child.props.id === tabParam)
+      const tabIndex = children.findIndex(
+        (child) => generateIdFromTitle(child.props.title) === tabParam,
+      )
       if (tabIndex !== -1) {
         setSelectedTab(tabIndex)
       }
@@ -122,7 +128,6 @@ export const Tabs: React.FC<TabsProps> = ({
               <TabTitle
                 key={index}
                 title={item.props.title}
-                id={item.props.id}
                 onClick={item.props.onClick}
                 index={index}
                 isSelected={selectedTab === index}
@@ -134,7 +139,6 @@ export const Tabs: React.FC<TabsProps> = ({
           ) : (
             <TabTitle
               title={children.props.title}
-              id={children.props.id}
               onClick={children.props.onClick}
               index={0}
               isSelected={selectedTab === 0}
