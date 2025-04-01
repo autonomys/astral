@@ -926,6 +926,29 @@ CREATE TABLE leaderboard.nominator_withdrawals_total_counts (
 );
 ALTER TABLE leaderboard.nominator_withdrawals_total_counts OWNER TO postgres;
 
+CREATE TABLE leaderboard.nominator_withdrawals_total_value_histories (
+    id TEXT NOT NULL,
+    account_id TEXT NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
+    event_id TEXT NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
+);
+ALTER TABLE leaderboard.nominator_withdrawals_total_value_histories OWNER TO postgres;
+
+CREATE TABLE leaderboard.nominator_withdrawals_total_values (
+    id TEXT NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+ALTER TABLE leaderboard.nominator_withdrawals_total_values OWNER TO postgres;
+
 CREATE TABLE leaderboard.operator_bundle_total_count_histories (
     id TEXT NOT NULL,
     account_id TEXT NOT NULL,
@@ -1063,6 +1086,29 @@ CREATE TABLE leaderboard.operator_withdrawals_total_counts (
     updated_at INTEGER NOT NULL
 );
 ALTER TABLE leaderboard.operator_withdrawals_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.operator_withdrawals_total_value_histories (
+    id TEXT NOT NULL,
+    account_id TEXT NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
+    event_id TEXT NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
+);
+ALTER TABLE leaderboard.operator_withdrawals_total_value_histories OWNER TO postgres;
+
+CREATE TABLE leaderboard.operator_withdrawals_total_values (
+    id TEXT NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+ALTER TABLE leaderboard.operator_withdrawals_total_values OWNER TO postgres;
 
 CREATE TABLE files.chunks (
     id TEXT NOT NULL,
@@ -2080,6 +2126,12 @@ ALTER TABLE ONLY leaderboard.nominator_withdrawals_total_count_histories
 ALTER TABLE ONLY leaderboard.nominator_withdrawals_total_counts
     ADD CONSTRAINT nominator_withdrawals_total_counts_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY leaderboard.nominator_withdrawals_total_value_histories
+    ADD CONSTRAINT nominator_withdrawals_total_value_histories_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY leaderboard.nominator_withdrawals_total_values
+    ADD CONSTRAINT nominator_withdrawals_total_values_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY leaderboard.operator_bundle_total_count_histories
     ADD CONSTRAINT operator_bundle_total_count_histories_pkey PRIMARY KEY (_id);
 
@@ -2115,6 +2167,12 @@ ALTER TABLE ONLY leaderboard.operator_withdrawals_total_count_histories
 
 ALTER TABLE ONLY leaderboard.operator_withdrawals_total_counts
     ADD CONSTRAINT operator_withdrawals_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.operator_withdrawals_total_value_histories
+    ADD CONSTRAINT operator_withdrawals_total_value_histories_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY leaderboard.operator_withdrawals_total_values
+    ADD CONSTRAINT operator_withdrawals_total_values_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY files._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
@@ -2324,11 +2382,21 @@ CREATE INDEX "0x1ed6c532b99ee178" ON leaderboard.nominator_deposits_total_values
 CREATE INDEX "0x1fd4ad1795e237a1" ON leaderboard.farmer_vote_total_value_histories USING btree (id);
 CREATE INDEX "leaderboard_farmer_vote_total_value_histories_account_id" ON leaderboard.farmer_vote_total_value_histories USING btree (account_id);
 CREATE INDEX "0x203a197257ce12a5" ON leaderboard.farmer_vote_total_counts USING btree (rank);
+CREATE INDEX "0x273d80def02d3758" ON leaderboard.operator_withdrawals_total_value_histories USING btree (id);
+CREATE INDEX "leaderboard_operator_withdrawals_total_value_histories_account_id" ON leaderboard.operator_withdrawals_total_value_histories USING btree (account_id);
+CREATE INDEX "leaderboard_operator_withdrawals_total_values_id" ON leaderboard.operator_withdrawals_total_values USING btree (id);
+CREATE INDEX "leaderboard_operator_withdrawals_total_values_rank" ON leaderboard.operator_withdrawals_total_values USING btree (rank);
+CREATE INDEX "leaderboard_operator_withdrawals_total_values_value" ON leaderboard.operator_withdrawals_total_values USING btree (value);
 CREATE INDEX "0x3082545cf9f8ade6" ON leaderboard.operator_total_rewards_collected_histories USING btree (id);
 CREATE INDEX "leaderboard_operator_total_rewards_collected_histories_account_id" ON leaderboard.operator_total_rewards_collected_histories USING btree (account_id);
 CREATE INDEX "0x36fad076b7b609c8" ON leaderboard.operator_total_tax_collecteds USING btree (rank);
 CREATE INDEX "0x37cd3b31685e6b8a" ON leaderboard.operator_deposits_total_count_histories USING btree (id);
 CREATE INDEX "leaderboard_operator_deposits_total_count_histories_account_id" ON leaderboard.operator_deposits_total_count_histories USING btree (account_id);
+CREATE INDEX "0x39a8bb601e543aac" ON leaderboard.nominator_withdrawals_total_value_histories USING btree (id);
+CREATE INDEX "leaderboard_nominator_withdrawals_total_value_histories_account_id" ON leaderboard.nominator_withdrawals_total_value_histories USING btree (account_id);
+CREATE INDEX "leaderboard_nominator_withdrawals_total_values_id" ON leaderboard.nominator_withdrawals_total_values USING btree (id);
+CREATE INDEX "leaderboard_nominator_withdrawals_total_values_rank" ON leaderboard.nominator_withdrawals_total_values USING btree (rank);
+CREATE INDEX "leaderboard_nominator_withdrawals_total_values_value" ON leaderboard.nominator_withdrawals_total_values USING btree (value);
 CREATE INDEX "0x3c11ae5e03742fc1" ON leaderboard.farmer_vote_total_count_histories USING btree (id);
 CREATE INDEX "leaderboard_farmer_vote_total_count_histories_account_id" ON leaderboard.farmer_vote_total_count_histories USING btree (account_id);
 CREATE INDEX "0x3c8d59be33cc30fd" ON leaderboard.account_transaction_fee_paid_total_values USING btree (value);
@@ -2364,6 +2432,7 @@ CREATE INDEX "0x957df7861716b7e5" ON leaderboard.nominator_deposits_total_count_
 CREATE INDEX "leaderboard_nominator_deposits_total_count_histories_account_id" ON leaderboard.nominator_deposits_total_count_histories USING btree (account_id);
 CREATE INDEX "0x97d32cd19e3802db" ON leaderboard.farmer_block_total_values USING btree (rank);
 CREATE INDEX "0x99d0f21c8605c41c" ON leaderboard.account_transfer_sender_total_counts USING btree (value);
+CREATE INDEX "0xf37e3b354eac5a6e" ON leaderboard.operator_withdrawals_total_counts USING btree (value);
 CREATE INDEX "0x9b42c9f7087cc0dd" ON leaderboard.account_transfer_receiver_total_count_histories USING btree (id);
 CREATE INDEX "leaderboard_account_transfer_receiver_total_count_histories_account_id" ON leaderboard.account_transfer_receiver_total_count_histories USING btree (account_id);
 CREATE INDEX "0x9cd9957f6e6b9cf4" ON leaderboard.account_extrinsic_total_count_histories USING btree (id);
@@ -2405,7 +2474,6 @@ CREATE INDEX "leaderboard_account_extrinsic_success_total_count_histories_accoun
 CREATE INDEX "0xde3fa7f872aada9f" ON leaderboard.account_transfer_sender_total_value_histories USING btree (id);
 CREATE INDEX "leaderboard_account_transfer_sender_total_value_histories_account_id" ON leaderboard.account_transfer_sender_total_value_histories USING btree (account_id);
 CREATE INDEX "0xed89d2ba5685cb9f" ON leaderboard.account_transfer_sender_total_counts USING btree (rank);
-CREATE INDEX "0xf37e3b354eac5a6e" ON leaderboard.operator_withdrawals_total_counts USING btree (value);
 CREATE INDEX "0xf3ee1a0c9ddee938" ON leaderboard.account_transfer_receiver_total_counts USING btree (rank);
 CREATE INDEX "0xf458f461b30a6b5e" ON leaderboard.account_extrinsic_failed_total_count_histories USING btree (id);
 CREATE INDEX "leaderboard_account_extrinsic_failed_total_count_histories_account_id" ON leaderboard.account_extrinsic_failed_total_count_histories USING btree (account_id);
@@ -3879,13 +3947,19 @@ BEGIN
     CLOSE deposit_cursor;
     
     IF remaining_amount > 0 AND found_eligible_deposits = TRUE THEN
-        UPDATE staking.deposits
-        SET
-            total_withdrawn = total_withdrawn + remaining_amount,
-            updated_at = NEW.block_height
+        SELECT id INTO deposit_to_update_id
+        FROM staking.deposits
         WHERE account_id = NEW.account_id AND status = 'FULLY_WITHDRAWN'
         ORDER BY created_at DESC
         LIMIT 1;
+        
+        IF deposit_to_update_id IS NOT NULL THEN
+            UPDATE staking.deposits
+            SET
+                total_withdrawn = total_withdrawn + remaining_amount,
+                updated_at = NEW.block_height
+            WHERE id = deposit_to_update_id;
+        END IF;
     ELSIF remaining_amount > 0 AND found_eligible_deposits = FALSE THEN
         RAISE NOTICE 'No active or partially withdrawn deposits found for account %. Withdrawing amount: %', 
             NEW.account_id, remaining_amount;
