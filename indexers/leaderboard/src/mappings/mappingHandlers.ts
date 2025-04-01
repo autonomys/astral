@@ -45,17 +45,18 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       ? extrinsic.signer.toString()
       : "";
 
-    cache.accountExtrinsicTotalCountHistory.push(
-      db.createAccountExtrinsicTotalCount(
-        extrinsicSigner,
-        BigInt(1),
-        height,
-        extrinsicId,
-        height + "-" + successEventId,
-        timestamp
-      )
-    );
-    if (successEvent) {
+    if (extrinsic.isSigned)
+      cache.accountExtrinsicTotalCountHistory.push(
+        db.createAccountExtrinsicTotalCount(
+          extrinsicSigner,
+          BigInt(1),
+          height,
+          extrinsicId,
+          height + "-" + successEventId,
+          timestamp
+        )
+      );
+    if (extrinsic.isSigned && successEvent) {
       cache.accountExtrinsicSuccessTotalCountHistory.push(
         db.createAccountExtrinsicSuccessTotalCount(
           extrinsicSigner,
@@ -104,16 +105,17 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       });
     } else {
       // Process fail extrinsic
-      cache.accountExtrinsicFailedTotalCountHistory.push(
-        db.createAccountExtrinsicFailedTotalCount(
-          extrinsicSigner,
-          BigInt(1),
-          height,
-          extrinsicId,
-          height + "-" + successEventId.toString(),
-          timestamp
-        )
-      );
+      if (extrinsic.isSigned)
+        cache.accountExtrinsicFailedTotalCountHistory.push(
+          db.createAccountExtrinsicFailedTotalCount(
+            extrinsicSigner,
+            BigInt(1),
+            height,
+            extrinsicId,
+            height + "-" + successEventId.toString(),
+            timestamp
+          )
+        );
     }
   });
 
