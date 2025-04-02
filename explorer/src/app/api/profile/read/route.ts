@@ -128,8 +128,6 @@ export const POST = async (req: NextRequest) => {
       NETWORK,
     )
 
-    // console.log('data', JSON.stringify(data, null, 2))
-
     if (data.users_wallets.length === 0)
       return NextResponse.json({
         message: 'Profile not found',

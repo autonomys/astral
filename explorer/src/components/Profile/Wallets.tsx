@@ -200,7 +200,6 @@ export const WalletsPage: FC = () => {
                 </div>
               )}
 
-              {/* Connected Wallets Section */}
               <div className='space-y-4'>
                 <h2 className='text-lg font-semibold text-gray-800 dark:text-white'>
                   Connected Wallets
@@ -269,7 +268,6 @@ export const WalletsPage: FC = () => {
         )}
       </div>
 
-      {/* Confirmation Modal */}
       <Transition appear show={showConfirmModal} as={Fragment}>
         <Dialog as='div' className='relative z-50' onClose={() => setShowConfirmModal(false)}>
           <Transition.Child

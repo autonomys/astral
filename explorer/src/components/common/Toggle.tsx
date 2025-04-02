@@ -15,7 +15,7 @@ export const Toggle: FC<ToggleProps> = ({ checked, onChange, name, className }) 
       onChange={onChange}
       name={name}
       className={`${className} ${
-        checked ? 'bg-primaryAccent' : 'bg-gray-200 dark:bg-gray-700'
+        checked ? 'bg-buttonLightFrom dark:bg-primaryAccent' : 'bg-gray-200 dark:bg-gray-700'
       } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2`}
     >
       <span

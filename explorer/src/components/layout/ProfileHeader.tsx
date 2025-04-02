@@ -32,9 +32,9 @@ export const ProfileHeader = () => {
     return getSupportedHeaderLinks(network, Routes.profile)
   }, [network, profile])
 
-  const isProfileIncomplete = profile && (!profile.name || !profile.description)
-
-  console.log(menuList, profile, { isProfileIncomplete })
+  const isProfilePublic = useMemo(() => {
+    return profile && !profile.id
+  }, [profile])
 
   return (
     <header className='body-font z-9 py-[30px] text-gray-600'>
@@ -57,24 +57,25 @@ export const ProfileHeader = () => {
                 </p>
               </div>
             )}
-            {menuList.map((item, index) => {
-              const isCurrentPath = pathname.includes(item.link) && index !== 0
-              const isInitialPath = pathname === `/${network}/operators` && index === 0
+            {!isProfilePublic &&
+              menuList.map((item, index) => {
+                const isCurrentPath = pathname.includes(item.link) && index !== 0
+                const isInitialPath = pathname === `/${network}/operators` && index === 0
 
-              return (
-                <Link
-                  key={index}
-                  className={
-                    isCurrentPath || isInitialPath
-                      ? 'block rounded-full bg-buttonLightFrom px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
-                      : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
-                  }
-                  href={item.link}
-                >
-                  {item.title}
-                </Link>
-              )
-            })}
+                return (
+                  <Link
+                    key={index}
+                    className={
+                      isCurrentPath || isInitialPath
+                        ? 'block rounded-full bg-buttonLightFrom px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
+                        : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
+                    }
+                    href={item.link}
+                  >
+                    {item.title}
+                  </Link>
+                )
+              })}
           </nav>
           <div className='flex justify-center'>
             <HeaderChainDropdown />

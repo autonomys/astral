@@ -129,9 +129,11 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
   setTags: (tags: Tag[]) => set(() => ({ tags })),
   getUserProfile: async (account, message, signature) => {
     try {
-      set(() => ({ isLoading: true, error: '' }))
       const response = await fetch('/api/profile/read', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ account, message, signature }),
       })
       if (!response.ok) throw new Error('Failed to read profile')
@@ -141,8 +143,9 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
         wallets: data.wallets,
         apiKeys: data.apiKeys,
         tags: data.tags,
+        shouldUpdate: false,
+        isLoading: false,
       }))
-      set(() => ({ isLoading: false }))
     } catch (error) {
       set(() => ({
         isLoading: false,
@@ -151,6 +154,7 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
         wallets: initialState.wallets,
         apiKeys: initialState.apiKeys,
         tags: initialState.tags,
+        shouldUpdate: false,
       }))
       console.error(error)
     }

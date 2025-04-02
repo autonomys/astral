@@ -89,8 +89,6 @@ export const GET = async (req: NextRequest) => {
       NETWORK,
     )
 
-    console.log('data', JSON.stringify(data, null, 2))
-
     if (!data.users_profiles) {
       return NextResponse.json(
         {

@@ -23,12 +23,10 @@ export const ApiKeysPage: FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
 
-  // Define the initial form values
   const initialValues = {
     description: '',
   }
 
-  // Define a validation schema
   const apiKeyValidationSchema = Yup.object().shape({
     description: Yup.string().required('API key description is required'),
   })
@@ -41,7 +39,6 @@ export const ApiKeysPage: FC = () => {
     })
   }
 
-  // Function to create a new API key with error handling
   const createApiKey = useCallback(
     async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
       if (!injector || !actingAccount || !subspaceAccount) return
@@ -103,7 +100,6 @@ export const ApiKeysPage: FC = () => {
     await deleteApiKey(keyToDelete)
   }
 
-  // Function to delete an API key
   const deleteApiKey = async (apiKeyId: string) => {
     if (!injector || !actingAccount || !subspaceAccount) return
 
@@ -171,8 +167,6 @@ export const ApiKeysPage: FC = () => {
       <div className='flex min-h-screen w-full flex-col gap-6 p-6 sm:flex-row sm:gap-8'>
         <SmallProfileBox />
 
-        {/* Right Side: API Keys Container */}
-
         {isLoading ? (
           <div className='flex h-full w-full items-center justify-center rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
             <Spinner />
@@ -185,7 +179,6 @@ export const ApiKeysPage: FC = () => {
                 Create and manage API keys for accessing your application.
               </p>
 
-              {/* Create API Key Section */}
               <div className='mb-8 space-y-4'>
                 <h2 className='text-lg font-semibold text-gray-800 dark:text-white'>
                   Create a new API Key
@@ -231,7 +224,6 @@ export const ApiKeysPage: FC = () => {
                 </Formik>
               </div>
 
-              {/* API Keys List Section */}
               <div className='space-y-4'>
                 <h2 className='text-lg font-semibold text-gray-800 dark:text-white'>
                   Your API Keys
@@ -317,7 +309,6 @@ export const ApiKeysPage: FC = () => {
         )}
       </div>
 
-      {/* Delete Confirmation Modal */}
       <Transition appear show={showDeleteModal} as={Fragment}>
         <Dialog as='div' className='relative z-50' onClose={() => setShowDeleteModal(false)}>
           <Transition.Child

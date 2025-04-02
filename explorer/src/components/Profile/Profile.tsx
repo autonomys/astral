@@ -121,7 +121,6 @@ export const ProfilePage: FC = () => {
     <div className='flex min-h-screen w-full flex-col gap-6 p-6 sm:flex-row sm:gap-8'>
       <SmallProfileBox showPrivateDetails />
 
-      {/* Right Side: Modern Tabbed Form */}
       <div className='w-full flex-1 overflow-hidden rounded-2xl bg-white shadow-sm transition-all dark:border-gray-800 dark:bg-boxDark'>
         {isLoading ? (
           <div className='flex h-full w-full items-center justify-center'>
@@ -175,7 +174,6 @@ export const ProfilePage: FC = () => {
                     </Tab.List>
                     <Tab.Panels>
                       <Tab.Panel className='space-y-5'>
-                        {/* Public Info Fields */}
                         <div className='grid gap-5 sm:grid-cols-2'>
                           <div className='space-y-2'>
                             <label
@@ -231,16 +229,14 @@ export const ProfilePage: FC = () => {
                           )}
                         </div>
 
-                        {/* New Privacy Settings Section */}
                         {profile?.id && (
-                          <div className='mt-8 rounded-lg border border-gray-200 p-6 dark:border-gray-700'>
+                          <div className='mt-8 rounded-lg border border-gray-200 p-6 shadow-lg dark:border-gray-700'>
                             <h3 className='mb-4 text-lg font-medium text-gray-900 dark:text-white'>
                               Privacy Settings
                             </h3>
 
                             <div className='space-y-4'>
                               <div className='grid gap-4 sm:grid-cols-2'>
-                                {/* Contact Information Privacy */}
                                 <div className='space-y-3'>
                                   <h4 className='text-sm font-medium text-gray-700 dark:text-gray-300'>
                                     Contact Information
@@ -329,7 +325,6 @@ export const ProfilePage: FC = () => {
                                   </div>
                                 </div>
 
-                                {/* Other Information Privacy */}
                                 <div className='space-y-3'>
                                   <h4 className='text-sm font-medium text-gray-700 dark:text-gray-300'>
                                     Other Information
@@ -403,7 +398,6 @@ export const ProfilePage: FC = () => {
                         )}
                       </Tab.Panel>
                       <Tab.Panel className='space-y-5'>
-                        {/* Private Info Fields */}
                         <div className='grid gap-5 sm:grid-cols-2'>
                           <div className='space-y-2'>
                             <label

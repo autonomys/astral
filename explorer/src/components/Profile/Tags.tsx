@@ -20,14 +20,6 @@ interface TagFormValues {
   tags: string[]
 }
 
-export type Tag = {
-  id: string
-  walletAddress: string
-  tags: string[]
-  createdAt: string
-  updatedAt: string
-}
-
 export const TagsPage: FC = () => {
   const { actingAccount, subspaceAccount, injector } = useWallet()
   const { profile, tags, setShouldUpdate, isLoading } = useProfileStates((state) => state)
@@ -209,7 +201,6 @@ export const TagsPage: FC = () => {
               Create and manage tags for wallets.
             </p>
 
-            {/* Create Tag Button */}
             <div className='mb-8'>
               <button
                 onClick={() => setShowCreateModal(true)}
@@ -220,7 +211,6 @@ export const TagsPage: FC = () => {
               </button>
             </div>
 
-            {/* Tags Table */}
             <div className='overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700'>
               <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
                 <thead className='bg-gray-50 dark:bg-gray-800'>
@@ -302,7 +292,6 @@ export const TagsPage: FC = () => {
         </div>
       )}
 
-      {/* Create Tag Modal */}
       <Transition appear show={showCreateModal} as={Fragment}>
         <Dialog as='div' className='relative z-50' onClose={() => setShowCreateModal(false)}>
           <Transition.Child
@@ -446,7 +435,6 @@ export const TagsPage: FC = () => {
         </Dialog>
       </Transition>
 
-      {/* Delete Confirmation Modal */}
       <Transition appear show={showDeleteModal} as={Fragment}>
         <Dialog as='div' className='relative z-50' onClose={() => setShowDeleteModal(false)}>
           <Transition.Child
