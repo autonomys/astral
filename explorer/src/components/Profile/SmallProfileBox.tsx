@@ -205,6 +205,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
                   icon={<GlobeAltIcon className='h-4 w-4 text-gray-700 dark:text-gray-300' />}
                   value={profile?.website}
                   url={profile?.website}
+                  label='Website'
                   iconBgClass='bg-gray-50 dark:bg-gray-800'
                   className='p-0 py-2'
                 />
