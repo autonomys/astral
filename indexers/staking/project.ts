@@ -45,13 +45,7 @@ const project: SubstrateProject = {
   dataSources: [
     {
       kind: SubstrateDatasourceKind.Runtime,
-      // startBlock: 1,
-      startBlock: 402030, // DomainRuntimeCreated
-      // startBlock: 402381, // DomainInstantiated
-      // startBlock: 418715, // OperatorRegistered
-      // startBlock: 418861, // BundleStored
-      // startBlock: 418977, // DomainEpochCompleted
-      // startBlock: 435918, // OperatorRewarded
+      startBlock: parseInt(process.env.START_BLOCK_STAKING!),
       mapping: {
         file: "./dist/index.js",
         handlers: [

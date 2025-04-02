@@ -926,6 +926,29 @@ CREATE TABLE leaderboard.nominator_withdrawals_total_counts (
 );
 ALTER TABLE leaderboard.nominator_withdrawals_total_counts OWNER TO postgres;
 
+CREATE TABLE leaderboard.nominator_withdrawals_total_value_histories (
+    id TEXT NOT NULL,
+    account_id TEXT NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
+    event_id TEXT NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
+);
+ALTER TABLE leaderboard.nominator_withdrawals_total_value_histories OWNER TO postgres;
+
+CREATE TABLE leaderboard.nominator_withdrawals_total_values (
+    id TEXT NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+ALTER TABLE leaderboard.nominator_withdrawals_total_values OWNER TO postgres;
+
 CREATE TABLE leaderboard.operator_bundle_total_count_histories (
     id TEXT NOT NULL,
     account_id TEXT NOT NULL,
@@ -1064,6 +1087,29 @@ CREATE TABLE leaderboard.operator_withdrawals_total_counts (
 );
 ALTER TABLE leaderboard.operator_withdrawals_total_counts OWNER TO postgres;
 
+CREATE TABLE leaderboard.operator_withdrawals_total_value_histories (
+    id TEXT NOT NULL,
+    account_id TEXT NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    block_height NUMERIC NOT NULL,
+    extrinsic_id TEXT NOT NULL,
+    event_id TEXT NOT NULL,
+    _id UUID NOT NULL,
+    _block_range INT8RANGE NOT NULL
+);
+ALTER TABLE leaderboard.operator_withdrawals_total_value_histories OWNER TO postgres;
+
+CREATE TABLE leaderboard.operator_withdrawals_total_values (
+    id TEXT NOT NULL,
+    rank INTEGER NOT NULL,
+    value NUMERIC NOT NULL,
+    last_contribution_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+ALTER TABLE leaderboard.operator_withdrawals_total_values OWNER TO postgres;
+
 CREATE TABLE files.chunks (
     id TEXT NOT NULL,
     type TEXT NOT NULL,
@@ -1169,6 +1215,9 @@ CREATE TABLE staking.accounts (
     total_deposits_count numeric NOT NULL,
     total_withdrawals_count numeric NOT NULL,
     total_tax_collected numeric NOT NULL,
+    total_tax_collected_count numeric NOT NULL,
+    total_rewards_collected numeric NOT NULL,
+    total_rewards_collected_count numeric NOT NULL,
     current_total_stake numeric NOT NULL,
     current_storage_fee_deposit numeric NOT NULL,
     current_total_shares numeric NOT NULL,
@@ -1356,6 +1405,8 @@ CREATE TABLE staking.domains (
     accumulated_epoch_rewards numeric NOT NULL,
     accumulated_epoch_shares numeric NOT NULL,
     bundle_count numeric NOT NULL,
+    reward_count numeric NOT NULL,
+    tax_collected_count numeric NOT NULL,
     current_epoch_duration numeric NOT NULL,
     last_epoch_duration numeric NOT NULL,
     last6_epochs_duration numeric NOT NULL,
@@ -1504,6 +1555,8 @@ CREATE TABLE staking.operators (
     accumulated_epoch_shares numeric NOT NULL,
     active_epoch_count numeric NOT NULL,
     bundle_count numeric NOT NULL,
+    reward_count numeric NOT NULL,
+    tax_collected_count numeric NOT NULL,
     current_1d_yield numeric NOT NULL,
     current_7d_yield numeric NOT NULL,
     current_30d_yield numeric NOT NULL,
@@ -1540,6 +1593,7 @@ CREATE TABLE staking.unlocked_events (
     nominator_id text NOT NULL,
     amount numeric NOT NULL,
     storage_fee numeric NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
@@ -2072,6 +2126,12 @@ ALTER TABLE ONLY leaderboard.nominator_withdrawals_total_count_histories
 ALTER TABLE ONLY leaderboard.nominator_withdrawals_total_counts
     ADD CONSTRAINT nominator_withdrawals_total_counts_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY leaderboard.nominator_withdrawals_total_value_histories
+    ADD CONSTRAINT nominator_withdrawals_total_value_histories_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY leaderboard.nominator_withdrawals_total_values
+    ADD CONSTRAINT nominator_withdrawals_total_values_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY leaderboard.operator_bundle_total_count_histories
     ADD CONSTRAINT operator_bundle_total_count_histories_pkey PRIMARY KEY (_id);
 
@@ -2107,6 +2167,12 @@ ALTER TABLE ONLY leaderboard.operator_withdrawals_total_count_histories
 
 ALTER TABLE ONLY leaderboard.operator_withdrawals_total_counts
     ADD CONSTRAINT operator_withdrawals_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.operator_withdrawals_total_value_histories
+    ADD CONSTRAINT operator_withdrawals_total_value_histories_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY leaderboard.operator_withdrawals_total_values
+    ADD CONSTRAINT operator_withdrawals_total_values_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY files._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
@@ -2316,11 +2382,21 @@ CREATE INDEX "0x1ed6c532b99ee178" ON leaderboard.nominator_deposits_total_values
 CREATE INDEX "0x1fd4ad1795e237a1" ON leaderboard.farmer_vote_total_value_histories USING btree (id);
 CREATE INDEX "leaderboard_farmer_vote_total_value_histories_account_id" ON leaderboard.farmer_vote_total_value_histories USING btree (account_id);
 CREATE INDEX "0x203a197257ce12a5" ON leaderboard.farmer_vote_total_counts USING btree (rank);
+CREATE INDEX "0x273d80def02d3758" ON leaderboard.operator_withdrawals_total_value_histories USING btree (id);
+CREATE INDEX "leaderboard_operator_withdrawals_total_value_histories_account_id" ON leaderboard.operator_withdrawals_total_value_histories USING btree (account_id);
+CREATE INDEX "leaderboard_operator_withdrawals_total_values_id" ON leaderboard.operator_withdrawals_total_values USING btree (id);
+CREATE INDEX "leaderboard_operator_withdrawals_total_values_rank" ON leaderboard.operator_withdrawals_total_values USING btree (rank);
+CREATE INDEX "leaderboard_operator_withdrawals_total_values_value" ON leaderboard.operator_withdrawals_total_values USING btree (value);
 CREATE INDEX "0x3082545cf9f8ade6" ON leaderboard.operator_total_rewards_collected_histories USING btree (id);
 CREATE INDEX "leaderboard_operator_total_rewards_collected_histories_account_id" ON leaderboard.operator_total_rewards_collected_histories USING btree (account_id);
 CREATE INDEX "0x36fad076b7b609c8" ON leaderboard.operator_total_tax_collecteds USING btree (rank);
 CREATE INDEX "0x37cd3b31685e6b8a" ON leaderboard.operator_deposits_total_count_histories USING btree (id);
 CREATE INDEX "leaderboard_operator_deposits_total_count_histories_account_id" ON leaderboard.operator_deposits_total_count_histories USING btree (account_id);
+CREATE INDEX "0x39a8bb601e543aac" ON leaderboard.nominator_withdrawals_total_value_histories USING btree (id);
+CREATE INDEX "leaderboard_nominator_withdrawals_total_value_histories_account_id" ON leaderboard.nominator_withdrawals_total_value_histories USING btree (account_id);
+CREATE INDEX "leaderboard_nominator_withdrawals_total_values_id" ON leaderboard.nominator_withdrawals_total_values USING btree (id);
+CREATE INDEX "leaderboard_nominator_withdrawals_total_values_rank" ON leaderboard.nominator_withdrawals_total_values USING btree (rank);
+CREATE INDEX "leaderboard_nominator_withdrawals_total_values_value" ON leaderboard.nominator_withdrawals_total_values USING btree (value);
 CREATE INDEX "0x3c11ae5e03742fc1" ON leaderboard.farmer_vote_total_count_histories USING btree (id);
 CREATE INDEX "leaderboard_farmer_vote_total_count_histories_account_id" ON leaderboard.farmer_vote_total_count_histories USING btree (account_id);
 CREATE INDEX "0x3c8d59be33cc30fd" ON leaderboard.account_transaction_fee_paid_total_values USING btree (value);
@@ -2356,6 +2432,7 @@ CREATE INDEX "0x957df7861716b7e5" ON leaderboard.nominator_deposits_total_count_
 CREATE INDEX "leaderboard_nominator_deposits_total_count_histories_account_id" ON leaderboard.nominator_deposits_total_count_histories USING btree (account_id);
 CREATE INDEX "0x97d32cd19e3802db" ON leaderboard.farmer_block_total_values USING btree (rank);
 CREATE INDEX "0x99d0f21c8605c41c" ON leaderboard.account_transfer_sender_total_counts USING btree (value);
+CREATE INDEX "0xf37e3b354eac5a6e" ON leaderboard.operator_withdrawals_total_counts USING btree (value);
 CREATE INDEX "0x9b42c9f7087cc0dd" ON leaderboard.account_transfer_receiver_total_count_histories USING btree (id);
 CREATE INDEX "leaderboard_account_transfer_receiver_total_count_histories_account_id" ON leaderboard.account_transfer_receiver_total_count_histories USING btree (account_id);
 CREATE INDEX "0x9cd9957f6e6b9cf4" ON leaderboard.account_extrinsic_total_count_histories USING btree (id);
@@ -2397,7 +2474,6 @@ CREATE INDEX "leaderboard_account_extrinsic_success_total_count_histories_accoun
 CREATE INDEX "0xde3fa7f872aada9f" ON leaderboard.account_transfer_sender_total_value_histories USING btree (id);
 CREATE INDEX "leaderboard_account_transfer_sender_total_value_histories_account_id" ON leaderboard.account_transfer_sender_total_value_histories USING btree (account_id);
 CREATE INDEX "0xed89d2ba5685cb9f" ON leaderboard.account_transfer_sender_total_counts USING btree (rank);
-CREATE INDEX "0xf37e3b354eac5a6e" ON leaderboard.operator_withdrawals_total_counts USING btree (value);
 CREATE INDEX "0xf3ee1a0c9ddee938" ON leaderboard.account_transfer_receiver_total_counts USING btree (rank);
 CREATE INDEX "0xf458f461b30a6b5e" ON leaderboard.account_extrinsic_failed_total_count_histories USING btree (id);
 CREATE INDEX "leaderboard_account_extrinsic_failed_total_count_histories_account_id" ON leaderboard.account_extrinsic_failed_total_count_histories USING btree (account_id);
@@ -2817,6 +2893,8 @@ BEGIN
         accumulated_epoch_rewards,
         accumulated_epoch_shares,
         bundle_count,
+        reward_count,
+        tax_collected_count,
         current_epoch_duration,
         last_epoch_duration,
         last6_epochs_duration,
@@ -2870,6 +2948,8 @@ BEGIN
         0,                         -- accumulated_epoch_rewards
         0,                         -- accumulated_epoch_shares
         0,                         -- bundle_count
+        0,                         -- reward_count
+        0,                         -- tax_collected_count
         0,                         -- current_epoch_duration
         0,                         -- last_epoch_duration
         0,                         -- last6_epochs_duration
@@ -2922,6 +3002,8 @@ BEGIN
         accumulated_epoch_shares,
         active_epoch_count,
         bundle_count,
+        reward_count,
+        tax_collected_count,
         current_1d_yield,
         current_7d_yield,
         current_30d_yield,
@@ -2960,6 +3042,8 @@ BEGIN
         0,                                       -- accumulated_epoch_shares
         0,                                       -- active_epoch_count
         0,                                       -- bundle_count
+        0,                                       -- reward_count
+        0,                                       -- tax_collected_count
         0,                                       -- current_1d_yield
         0,                                       -- current_7d_yield
         0,                                       -- current_30d_yield
@@ -3120,6 +3204,9 @@ BEGIN
         total_deposits_count,
         total_withdrawals_count,
         total_tax_collected,
+        total_tax_collected_count,
+        total_rewards_collected,
+        total_rewards_collected_count,
         current_total_stake,
         current_storage_fee_deposit,
         current_total_shares,
@@ -3137,6 +3224,9 @@ BEGIN
         0,                         -- total_deposits_count
         0,                         -- total_withdrawals_count
         0,                         -- total_tax_collected
+        0,                         -- total_tax_collected_count
+        0,                         -- total_rewards_collected
+        0,                         -- total_rewards_collected_count
         NEW.amount,                -- current_total_stake
         NEW.storage_fee_deposit,   -- current_storage_fee_deposit
         0,                         -- current_total_shares
@@ -3254,18 +3344,21 @@ BEGIN
     UPDATE staking.domains
     SET 
         total_tax_collected = staking.domains.total_tax_collected + NEW.amount,
+        tax_collected_count = staking.domains.tax_collected_count + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
         total_tax_collected = staking.operators.total_tax_collected + NEW.amount,
+        tax_collected_count = staking.operators.tax_collected_count + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
 
     UPDATE staking.accounts
     SET 
         total_tax_collected = staking.accounts.total_tax_collected + NEW.amount,
+        total_tax_collected_count = staking.accounts.total_tax_collected_count + 1,
         updated_at = NEW.block_height
     WHERE id = operator_account_id;
     
@@ -3282,18 +3375,33 @@ EXECUTE FUNCTION staking.handle_operator_tax_collections_events();
 CREATE OR REPLACE FUNCTION staking.handle_operator_rewards_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
+DECLARE
+    operator_account_id TEXT;
 BEGIN
+    SELECT account_id INTO operator_account_id
+    FROM staking.operators
+    WHERE id = NEW.operator_id;
+
     UPDATE staking.domains
     SET 
         total_rewards_collected = staking.domains.total_rewards_collected + NEW.amount,
+        reward_count = staking.domains.reward_count + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.domain_id;
 
     UPDATE staking.operators
     SET 
         total_rewards_collected = staking.operators.total_rewards_collected + NEW.amount,
+        reward_count = staking.operators.reward_count + 1,
         updated_at = NEW.block_height
     WHERE id = NEW.operator_id;
+
+    UPDATE staking.accounts
+    SET 
+        total_rewards_collected = staking.accounts.total_rewards_collected + NEW.amount,
+        total_rewards_collected_count = staking.accounts.total_rewards_collected_count + 1,
+        updated_at = NEW.block_height
+    WHERE id = operator_account_id;
     
     RETURN NEW;
 END;
@@ -3678,7 +3786,40 @@ EXECUTE FUNCTION staking.update_operator_on_deregistration();
 CREATE OR REPLACE FUNCTION staking.handle_unlocked_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
+DECLARE
+    remaining_amount numeric;
+    current_deposit RECORD;
+    found_eligible_deposits boolean;
+    deposit_cursor CURSOR FOR 
+        SELECT id, amount, storage_fee_deposit, total_amount, total_withdrawn, status
+        FROM staking.deposits
+        WHERE (status = 'ACTIVE' OR status = 'PARTIALLY_WITHDRAWN') 
+        AND account_id = NEW.account_id
+        ORDER BY created_at ASC;
+    withdrawal_id text;
+    last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+    last_domain_epoch staking.domain_epochs.epoch%TYPE;
 BEGIN
+    SELECT id INTO withdrawal_id
+    FROM staking.withdrawals
+    WHERE status = 'PENDING_UNLOCK_FUNDS' AND account_id = NEW.account_id
+    ORDER BY created_at ASC
+    LIMIT 1;
+
+    SELECT domain_block_number
+    INTO last_domain_block_number
+    FROM staking.domain_block_histories
+    WHERE domain_id = NEW.domain_id
+    ORDER BY domain_block_number DESC
+    LIMIT 1;
+
+    SELECT epoch
+    INTO last_domain_epoch
+    FROM staking.domain_epochs
+    WHERE domain_id = NEW.domain_id
+    ORDER BY epoch DESC
+    LIMIT 1;
+
     UPDATE staking.domains
     SET 
         total_withdrawals = staking.domains.total_withdrawals + NEW.amount,
@@ -3709,16 +3850,120 @@ BEGIN
         updated_at = NEW.block_height
     WHERE id = NEW.account_id;
 
-    UPDATE staking.withdrawals
-    SET
-        unlocked_amount = NEW.amount,
-        unlocked_storage_fee = NEW.storage_fee,
-        total_amount = NEW.amount + NEW.storage_fee,
-        unlock_extrinsic_id = NEW.extrinsic_id,
-        status = 'FUNDS_UNLOCKED',
-        unlocked_at = NEW.block_height,
-        updated_at = NEW.block_height
-    WHERE status = 'PENDING_UNLOCK_FUNDS' AND operator_id = NEW.operator_id;
+    IF withdrawal_id IS NOT NULL THEN
+        UPDATE staking.withdrawals
+        SET
+            unlocked_amount = NEW.amount,
+            unlocked_storage_fee = NEW.storage_fee,
+            total_amount = NEW.amount + NEW.storage_fee,
+            unlock_extrinsic_id = NEW.extrinsic_id,
+            status = 'FUNDS_UNLOCKED',
+            unlocked_at = NEW.block_height,
+            updated_at = NEW.block_height
+        WHERE id = withdrawal_id;
+    ELSE
+        INSERT INTO staking.withdrawals (
+            id, 
+            account_id, 
+            domain_id, 
+            operator_id, 
+            nominator_id, 
+            shares, 
+            storage_fee_refund, 
+            estimated_amount, 
+            unlocked_amount, 
+            unlocked_storage_fee, 
+            total_amount, 
+            status, 
+            timestamp,
+            withdraw_extrinsic_id,
+            unlock_extrinsic_id,
+            epoch_withdrawal_requested_at,
+            domain_block_number_withdrawal_requested_at,
+            created_at,
+            domain_block_number_ready_at,
+            unlocked_at,
+            updated_at
+        ) VALUES (
+            NEW.extrinsic_id || '-' || NEW.account_id,      -- id
+            NEW.account_id,                                 -- account_id
+            NEW.domain_id,                                  -- domain_id
+            NEW.operator_id,                                -- operator_id
+            NEW.nominator_id,                               -- nominator_id
+            0, -- To-Fix                                    -- shares
+            NEW.storage_fee,                                -- storage_fee_refund
+            NEW.amount + NEW.storage_fee,                   -- estimated_amount
+            NEW.amount,                                     -- unlocked_amount
+            NEW.storage_fee,                                -- unlocked_storage_fee
+            NEW.amount + NEW.storage_fee,                   -- total_amount
+            'FUNDS_UNLOCKED',                               -- status
+            NEW.timestamp,                                  -- timestamp
+            NEW.extrinsic_id,                               -- withdraw_extrinsic_id
+            NEW.extrinsic_id,                               -- unlock_extrinsic_id
+            last_domain_epoch,                              -- epoch_withdrawal_requested_at
+            last_domain_block_number                        -- domain_block_number_withdrawal_requested_at
+            NEW.block_height,                               -- created_at
+            last_domain_block_number,                       -- domain_block_number_ready_at
+            NEW.block_height,                               -- unlocked_at
+            NEW.block_height                                -- updated_at
+        );
+    END IF;
+
+    remaining_amount := NEW.amount + NEW.storage_fee;
+    found_eligible_deposits := FALSE;
+
+    OPEN deposit_cursor;
+    LOOP
+        FETCH deposit_cursor INTO current_deposit;
+        EXIT WHEN NOT FOUND;
+        
+        IF (current_deposit.total_amount - current_deposit.total_withdrawn) >= remaining_amount THEN
+            UPDATE staking.deposits
+            SET
+                total_withdrawn = total_withdrawn + remaining_amount,
+                status = CASE 
+                        WHEN (total_withdrawn + remaining_amount) >= total_amount THEN 'FULLY_WITHDRAWN'
+                        ELSE 'PARTIALLY_WITHDRAWN'
+                    END,
+                updated_at = NEW.block_height
+            WHERE id = current_deposit.id;
+            
+            remaining_amount := 0;
+            found_eligible_deposits := TRUE;
+            EXIT;
+        ELSE
+            UPDATE staking.deposits
+            SET
+                total_withdrawn = total_amount,
+                status = 'FULLY_WITHDRAWN',
+                updated_at = NEW.block_height
+            WHERE id = current_deposit.id;
+            
+            remaining_amount := remaining_amount - (current_deposit.total_amount - current_deposit.total_withdrawn);
+            found_eligible_deposits := TRUE;
+        END IF;
+    END LOOP;
+    
+    CLOSE deposit_cursor;
+    
+    IF remaining_amount > 0 AND found_eligible_deposits = TRUE THEN
+        SELECT id INTO deposit_to_update_id
+        FROM staking.deposits
+        WHERE account_id = NEW.account_id AND status = 'FULLY_WITHDRAWN'
+        ORDER BY created_at DESC
+        LIMIT 1;
+        
+        IF deposit_to_update_id IS NOT NULL THEN
+            UPDATE staking.deposits
+            SET
+                total_withdrawn = total_withdrawn + remaining_amount,
+                updated_at = NEW.block_height
+            WHERE id = deposit_to_update_id;
+        END IF;
+    ELSIF remaining_amount > 0 AND found_eligible_deposits = FALSE THEN
+        RAISE NOTICE 'No active or partially withdrawn deposits found for account %. Withdrawing amount: %', 
+            NEW.account_id, remaining_amount;
+    END IF;
 
     RETURN NEW;
 END;

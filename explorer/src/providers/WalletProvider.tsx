@@ -263,25 +263,6 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     injector,
   ])
 
-  // This effect is used to mock the wallet when the environment variables are set in the .env file
-  useEffect(() => {
-    if (
-      process.env.REACT_APP_MOCK_WALLET &&
-      process.env.REACT_APP_MOCK_WALLET_ADDRESS &&
-      process.env.REACT_APP_MOCK_WALLET_SOURCE
-    ) {
-      const mockAccount = {
-        address: process.env.REACT_APP_MOCK_WALLET_ADDRESS,
-        source: process.env.REACT_APP_MOCK_WALLET_SOURCE,
-        type: WalletType.subspace,
-      }
-      setActingAccount(mockAccount)
-      setAccounts([mockAccount])
-      setSubspaceAccount(formatAddress(process.env.REACT_APP_MOCK_WALLET_ADDRESS))
-      setIsReady(true)
-    }
-  }, [])
-
   return (
     <WalletContext.Provider
       value={{

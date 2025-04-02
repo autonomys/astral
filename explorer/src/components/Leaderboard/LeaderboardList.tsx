@@ -85,7 +85,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
                 link={idLink(row.original.id)}
               />
             ) : (
-              idLink(row.original.id)
+              <Link href={idLink(row.original.id)}>{row.original.id}</Link>
             ),
           value: ({ row }: Cell<Row>) =>
             `${numberWithCommas(

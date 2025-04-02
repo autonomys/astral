@@ -16,6 +16,7 @@ select_permissions:
         - total_deposits
         - total_deposits_count
         - total_estimated_withdrawals
+        - total_rewards_collected
         - total_tax_collected
         - total_withdrawals
         - total_withdrawals_count

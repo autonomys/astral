@@ -134,6 +134,7 @@ type UnlockedEvent @entity {
   nominatorId: String!
   amount: BigInt!
   storageFee: BigInt!
+  timestamp: Date!
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!

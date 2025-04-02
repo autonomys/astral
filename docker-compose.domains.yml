@@ -76,7 +76,7 @@ services:
 
   domain_auto_evm_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:latest
+    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
     ports:
       - "127.0.0.1:3005:3000"
     depends_on:

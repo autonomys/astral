@@ -100,6 +100,8 @@ select_permissions:
         - current_total_stake
         - last_bundle_at
         - minimum_nominator_stake
+        - reward_count
+        - tax_collected_count
         - total_deposits
         - total_deposits_count
         - total_estimated_withdrawals

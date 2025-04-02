@@ -179,7 +179,7 @@ services:
   # Indexers Subquery Nodes
   consensus_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:latest
+    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
     ports:
       - "127.0.0.1:3001:3000"
     depends_on:
@@ -217,7 +217,7 @@ services:
 
   leaderboard_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:latest
+    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
     ports:
       - "127.0.0.1:3002:3000"
     depends_on:
@@ -254,7 +254,7 @@ services:
 
   staking_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:latest
+    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
     ports:
       - "127.0.0.1:3003:3000"
     depends_on:
@@ -292,7 +292,7 @@ services:
 
   files_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:latest
+    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
     ports:
       - "127.0.0.1:3004:3000"
     depends_on:
@@ -381,6 +381,7 @@ services:
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
+      BULL_BASE_PATH: ${BULL_BASE_PATH}
 
       NETWORK_ID: ${NETWORK_ID}
       LOG_LEVEL: ${LOG_LEVEL}

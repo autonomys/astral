@@ -46,7 +46,7 @@ const project: SubstrateProject = {
   dataSources: [
     {
       kind: SubstrateDatasourceKind.Runtime,
-      startBlock: 1,
+      startBlock: parseInt(process.env.START_BLOCK_DOMAIN_AUTO_EVM!),
       mapping: {
         file: "./dist/index.js",
         handlers: [
