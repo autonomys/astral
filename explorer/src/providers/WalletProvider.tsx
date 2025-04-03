@@ -62,7 +62,9 @@ export const WalletProvider: FC<Props> = ({ children }) => {
 
   const prepareApi = useCallback(async () => {
     try {
-      return await activate({ networkId: chain })
+      const api = await activate({ networkId: chain })
+      await api.isReady
+      return api
     } catch (error) {
       console.error('Failed to prepare API for chain', chain, 'error:', error)
     }
@@ -74,11 +76,12 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       if (!network || !network.domains || network.domains.length === 0) return
       const domains = network.domains
 
-      const domainApis = await Promise.all(
+      const unInitializedDomainApis = await Promise.all(
         domains.map((d) =>
           createConnection(d.rpcUrls.map((rpc) => rpc.replace('https://', 'wss://'))),
         ),
       )
+      const domainApis = await Promise.all(unInitializedDomainApis.map((d) => d.isReady))
 
       return domains.reduce(
         (acc, d, index) => ({
