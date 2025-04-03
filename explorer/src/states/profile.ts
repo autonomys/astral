@@ -3,7 +3,7 @@ import { create } from 'zustand'
 export type Profile = {
   id: string
   name: string
-  description: string
+  bio: string
   avatar: string
   banner: string
   website: string
@@ -15,24 +15,28 @@ export type Profile = {
   discordIsPublic: boolean
   githubIsPublic: boolean
   twitterIsPublic: boolean
+  nameIsPublic: boolean
+  bioIsPublic: boolean
   websiteIsPublic: boolean
-  walletsArePublic: boolean
-  tagsArePublic: boolean
   wallets?: Array<{
     id: string
     address: string
     type: string
+    isPublic: boolean
   }>
   tags?: Array<{
     id: string
-    walletAddress: string
-    tags: string[]
+    name: string
+    type: string
+    value: string
+    isPublic: boolean
   }>
 }
 export type Wallet = {
   id: string
   address: string
   type: string
+  isPublic: boolean
   createdAt: string
   updatedAt: string
   deletedAt: string
@@ -49,8 +53,10 @@ export type ApiKey = {
 }
 export type Tag = {
   id: string
-  walletAddress: string
-  tags: string[]
+  name: string
+  type: string
+  isPublic: boolean
+  value: string
   createdAt: string
   updatedAt: string
   deletedAt: string | null
@@ -88,7 +94,7 @@ const initialState: ProfileState = {
   profile: {
     id: '',
     name: '',
-    description: '',
+    bio: '',
     avatar: '',
     banner: '',
     website: '',
@@ -100,9 +106,9 @@ const initialState: ProfileState = {
     discordIsPublic: false,
     githubIsPublic: false,
     twitterIsPublic: false,
+    nameIsPublic: false,
+    bioIsPublic: false,
     websiteIsPublic: false,
-    walletsArePublic: false,
-    tagsArePublic: false,
   },
   wallets: [],
   apiKeys: [],
@@ -138,6 +144,8 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
       })
       if (!response.ok) throw new Error('Failed to read profile')
       const data = await response.json()
+      console.log('data', data)
+      if (!data.success) throw new Error('Failed to read profile')
       set(() => ({
         profile: data.profile,
         wallets: data.wallets,
@@ -156,7 +164,6 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
         tags: initialState.tags,
         shouldUpdate: false,
       }))
-      console.error(error)
     }
   },
 }))

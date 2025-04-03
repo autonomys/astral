@@ -17,7 +17,9 @@ import { SmallProfileBox } from './SmallProfileBox'
 
 export const ProfilePage: FC = () => {
   const { actingAccount, subspaceAccount, injector } = useWallet()
-  const { profile, setShouldUpdate, isLoading } = useProfileStates((state) => state)
+  const profile = useProfileStates((state) => state.profile)
+  const isLoading = useProfileStates((state) => state.isLoading)
+  const setShouldUpdate = useProfileStates((state) => state.setShouldUpdate)
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export const ProfilePage: FC = () => {
 
   const profileValidationSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    description: Yup.string(),
+    bio: Yup.string(),
     website: Yup.string().url('Invalid URL'),
     email: Yup.string().email('Invalid email'),
     discord: Yup.string(),
@@ -36,12 +38,10 @@ export const ProfilePage: FC = () => {
     discordIsPublic: Yup.boolean().default(false),
     githubIsPublic: Yup.boolean().default(false),
     twitterIsPublic: Yup.boolean().default(false),
+    nameIsPublic: Yup.boolean().default(false),
+    bioIsPublic: Yup.boolean().default(false),
     websiteIsPublic: Yup.boolean().default(false),
-    walletsArePublic: Yup.boolean().default(false),
-    tagsArePublic: Yup.boolean().default(false),
   })
-
-  console.log({ profile })
 
   const handleProfileSubmit = useCallback(
     async (values: typeof profile) => {
@@ -138,9 +138,9 @@ export const ProfilePage: FC = () => {
                 discordIsPublic: profile?.discordIsPublic ?? false,
                 githubIsPublic: profile?.githubIsPublic ?? false,
                 twitterIsPublic: profile?.twitterIsPublic ?? false,
+                nameIsPublic: profile?.nameIsPublic ?? false,
+                bioIsPublic: profile?.bioIsPublic ?? false,
                 websiteIsPublic: profile?.websiteIsPublic ?? false,
-                walletsArePublic: profile?.walletsArePublic ?? false,
-                tagsArePublic: profile?.tagsArePublic ?? false,
               }}
               validationSchema={profileValidationSchema}
               onSubmit={handleProfileSubmit}
@@ -212,20 +212,20 @@ export const ProfilePage: FC = () => {
 
                         <div className='space-y-2'>
                           <label
-                            htmlFor='description'
+                            htmlFor='bio'
                             className='text-sm font-medium text-gray-700 dark:text-gray-300'
                           >
                             Bio
                           </label>
                           <Field
                             as='textarea'
-                            name='description'
+                            name='bio'
                             rows={4}
                             placeholder='Tell us about yourself'
                             className='block w-full rounded-2xl bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                           />
-                          {errors.description && touched.description && (
-                            <p className='text-sm text-red-500'>{errors.description}</p>
+                          {errors.bio && touched.bio && (
+                            <p className='text-sm text-red-500'>{errors.bio}</p>
                           )}
                         </div>
 
@@ -332,52 +332,52 @@ export const ProfilePage: FC = () => {
                                   <div className='space-y-2'>
                                     <div className='flex items-center justify-between py-2'>
                                       <label
+                                        htmlFor='nameIsPublic'
+                                        className='text-sm text-gray-600 dark:text-gray-400'
+                                      >
+                                        Name
+                                      </label>
+                                      <Field name='nameIsPublic'>
+                                        {({ field, form }: FieldProps) => (
+                                          <Toggle
+                                            checked={field.value === true}
+                                            onChange={(checked) =>
+                                              form.setFieldValue(field.name, checked)
+                                            }
+                                            name={field.name}
+                                            className='flex-shrink-0'
+                                          />
+                                        )}
+                                      </Field>
+                                    </div>
+                                    <div className='flex items-center justify-between py-2'>
+                                      <label
+                                        htmlFor='bioIsPublic'
+                                        className='text-sm text-gray-600 dark:text-gray-400'
+                                      >
+                                        Bio
+                                      </label>
+                                      <Field name='bioIsPublic'>
+                                        {({ field, form }: FieldProps) => (
+                                          <Toggle
+                                            checked={field.value === true}
+                                            onChange={(checked) =>
+                                              form.setFieldValue(field.name, checked)
+                                            }
+                                            name={field.name}
+                                            className='flex-shrink-0'
+                                          />
+                                        )}
+                                      </Field>
+                                    </div>
+                                    <div className='flex items-center justify-between py-2'>
+                                      <label
                                         htmlFor='websiteIsPublic'
                                         className='text-sm text-gray-600 dark:text-gray-400'
                                       >
                                         Website
                                       </label>
                                       <Field name='websiteIsPublic'>
-                                        {({ field, form }: FieldProps) => (
-                                          <Toggle
-                                            checked={field.value === true}
-                                            onChange={(checked) =>
-                                              form.setFieldValue(field.name, checked)
-                                            }
-                                            name={field.name}
-                                            className='flex-shrink-0'
-                                          />
-                                        )}
-                                      </Field>
-                                    </div>
-                                    <div className='flex items-center justify-between py-2'>
-                                      <label
-                                        htmlFor='walletsArePublic'
-                                        className='text-sm text-gray-600 dark:text-gray-400'
-                                      >
-                                        Connected Wallets
-                                      </label>
-                                      <Field name='walletsArePublic'>
-                                        {({ field, form }: FieldProps) => (
-                                          <Toggle
-                                            checked={field.value === true}
-                                            onChange={(checked) =>
-                                              form.setFieldValue(field.name, checked)
-                                            }
-                                            name={field.name}
-                                            className='flex-shrink-0'
-                                          />
-                                        )}
-                                      </Field>
-                                    </div>
-                                    <div className='flex items-center justify-between py-2'>
-                                      <label
-                                        htmlFor='tagsArePublic'
-                                        className='text-sm text-gray-600 dark:text-gray-400'
-                                      >
-                                        Tags
-                                      </label>
-                                      <Field name='tagsArePublic'>
                                         {({ field, form }: FieldProps) => (
                                           <Toggle
                                             checked={field.value === true}

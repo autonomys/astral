@@ -114,7 +114,7 @@ export const PublicProfile: FC = () => {
         <div className='px-6 pb-6 pt-14'>
           <div className='mb-6'>
             <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>{profile.name}</h1>
-            <p className='mt-2 text-gray-600 dark:text-gray-300'>{profile.description}</p>
+            <p className='mt-2 text-gray-600 dark:text-gray-300'>{profile.bio}</p>
           </div>
 
           {profile.website && (
@@ -132,6 +132,12 @@ export const PublicProfile: FC = () => {
         <div className='rounded-2xl bg-white p-6 shadow-sm dark:bg-boxDark'>
           <h2 className='mb-4 text-lg font-semibold text-gray-900 dark:text-white'>Social Links</h2>
           <div className='space-y-4'>
+            {!profile.github && !profile.twitter && !profile.discord && (
+              <p className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                No social links
+              </p>
+            )}
+
             {profile.github && (
               <SocialLink
                 icon={<FaGithub className='h-5 w-5 text-gray-700 dark:text-gray-300' />}
@@ -163,6 +169,12 @@ export const PublicProfile: FC = () => {
             Contact Information
           </h2>
           <div className='space-y-4'>
+            {!profile.email && (
+              <p className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                No contact information
+              </p>
+            )}
+
             {profile.email && (
               <SocialLink
                 icon={<MdEmail className='h-5 w-5 text-gray-700 dark:text-gray-300' />}
@@ -231,9 +243,9 @@ export const PublicProfile: FC = () => {
                   <tr key={tag.id} className='bg-white dark:bg-boxDark'>
                     <td className='px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
                       <div className='flex max-w-[300px] items-center gap-2 truncate'>
-                        <span className='truncate'>{tag.walletAddress}</span>
+                        <span className='truncate'>{tag.value}</span>
                         <button
-                          onClick={() => copyToClipboard(tag.walletAddress)}
+                          onClick={() => copyToClipboard(tag.value)}
                           className='flex-shrink-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
                           aria-label='Copy address'
                         >
@@ -242,8 +254,8 @@ export const PublicProfile: FC = () => {
                       </div>
                     </td>
                     <td className='max-w-[400px] px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
-                      <div className='flex flex-wrap gap-2'>
-                        {tag?.tags?.map((t, index) => (
+                      {/* <div className='flex flex-wrap gap-2'>
+                        {tag?.map((t, index) => (
                           <span
                             key={index}
                             className='inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
@@ -251,7 +263,7 @@ export const PublicProfile: FC = () => {
                             {t}
                           </span>
                         ))}
-                      </div>
+                      </div> */}
                     </td>
                   </tr>
                 ))}

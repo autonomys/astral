@@ -22,9 +22,11 @@ const defaultBanner = '/images/autonomys-banner.webp'
 export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }) => {
   const { data: session } = useSession()
   const { chain } = useParams()
-  const { getUserProfile, shouldUpdate, setShouldUpdate, profile, isLoading } = useProfileStates(
-    (state) => state,
-  )
+  const shouldUpdate = useProfileStates((state) => state.shouldUpdate)
+  const profile = useProfileStates((state) => state.profile)
+  const isLoading = useProfileStates((state) => state.isLoading)
+  const getUserProfile = useProfileStates((state) => state.getUserProfile)
+  const setShouldUpdate = useProfileStates((state) => state.setShouldUpdate)
   const bannerInputRef = useRef<HTMLInputElement>(null)
   const avatarInputRef = useRef<HTMLInputElement>(null)
 
@@ -195,7 +197,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
                     </a>
                   </div>
                   <p className='mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300'>
-                    {profile?.description || 'No description available'}
+                    {profile?.bio || 'No bio available'}
                   </p>
                 </div>
               )}

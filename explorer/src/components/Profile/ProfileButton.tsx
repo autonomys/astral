@@ -10,7 +10,9 @@ import { AvatarIcon } from '../icons/AvatarIcon'
 export const ProfileButton: FC = () => {
   const { push } = useRouter()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const { profile, getUserProfile, shouldUpdate } = useProfileStates((state) => state)
+  const profile = useProfileStates((state) => state.profile)
+  const shouldUpdate = useProfileStates((state) => state.shouldUpdate)
+  const getUserProfile = useProfileStates((state) => state.getUserProfile)
   const { data: session } = useSession()
 
   useEffect(() => {

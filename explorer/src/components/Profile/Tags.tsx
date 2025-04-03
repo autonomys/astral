@@ -2,7 +2,7 @@
 
 import { useProfileStates } from '@/states/profile'
 import { Dialog, Transition } from '@headlessui/react'
-import { DocumentDuplicateIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { DocumentDuplicateIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SpinnerSvg } from 'components/common/SpinnerSvg'
 import { Field, Form, Formik } from 'formik'
@@ -16,48 +16,31 @@ import AccountListDropdown from '../WalletButton/AccountListDropdown'
 import { SmallProfileBox } from './SmallProfileBox'
 
 interface TagFormValues {
-  walletAddress: string
-  tags: string[]
+  value: string
+  name: string
 }
 
 export const TagsPage: FC = () => {
   const { actingAccount, subspaceAccount, injector } = useWallet()
-  const { profile, tags, setShouldUpdate, isLoading } = useProfileStates((state) => state)
+  const profile = useProfileStates((state) => state.profile)
+  const tags = useProfileStates((state) => state.tags)
+  const isLoading = useProfileStates((state) => state.isLoading)
+  const setShouldUpdate = useProfileStates((state) => state.setShouldUpdate)
   const [isCreating, setIsCreating] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [currentTags, setCurrentTags] = useState<string[]>([])
-  const [tagInput, setTagInput] = useState('')
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [tagToDelete, setTagToDelete] = useState<string | null>(null)
 
   const initialValues: TagFormValues = {
-    walletAddress: '',
-    tags: [],
+    value: '',
+    name: '',
   }
 
   const tagValidationSchema = Yup.object().shape({
-    walletAddress: Yup.string().required('Wallet address is required'),
-    tags: Yup.array().min(1, 'At least one tag is required'),
+    value: Yup.string().required('Wallet address is required'),
+    name: Yup.string().required('Name is required'),
   })
-
-  const handleAddTag = (setFieldValue: (field: string, value: string[]) => void) => {
-    if (tagInput.trim()) {
-      const newTags = [...currentTags, tagInput.trim()]
-      setCurrentTags(newTags)
-      setFieldValue('tags', newTags)
-      setTagInput('')
-    }
-  }
-
-  const handleRemoveTag = (
-    tagToRemove: string,
-    setFieldValue: (field: string, value: string[]) => void,
-  ) => {
-    const newTags = currentTags.filter((tag) => tag !== tagToRemove)
-    setCurrentTags(newTags)
-    setFieldValue('tags', newTags)
-  }
 
   const createTag = useCallback(
     async (values: TagFormValues, { resetForm }: { resetForm: () => void }) => {
@@ -93,10 +76,9 @@ export const TagsPage: FC = () => {
         if (!response.ok) throw new Error('Failed to create tag')
 
         resetForm()
-        setCurrentTags([])
         setShowCreateModal(false)
         setShouldUpdate(true)
-        toast.success('Tags created successfully')
+        toast.success('Tag created successfully')
       } catch (error) {
         console.error('Error creating tags:', error)
         toast.error('Failed to create tags')
@@ -207,7 +189,7 @@ export const TagsPage: FC = () => {
                 className='inline-flex items-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none dark:bg-primaryAccent'
               >
                 <PlusIcon className='mr-2 h-4 w-4' />
-                Create New Tags
+                Create New Tag
               </button>
             </div>
 
@@ -215,11 +197,11 @@ export const TagsPage: FC = () => {
               <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
                 <thead className='bg-gray-50 dark:bg-gray-800'>
                   <tr>
-                    <th className='w-1/4 px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
-                      Wallet Address
-                    </th>
                     <th className='w-1/2 px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
-                      Tags
+                      Name
+                    </th>
+                    <th className='w-1/4 px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300'>
+                      Value
                     </th>
                     <th className='w-24 px-4 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300'>
                       Actions
@@ -239,28 +221,23 @@ export const TagsPage: FC = () => {
                   ) : (
                     tags?.map((tag) => (
                       <tr key={tag.id} className='bg-white dark:bg-boxDark'>
+                        <td className='max-w-[400px] px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
+                          <div className='flex flex-wrap gap-2'>
+                            <span className='inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'>
+                              {tag.name}
+                            </span>
+                          </div>
+                        </td>
                         <td className='px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
                           <div className='flex max-w-[300px] items-center gap-2 truncate'>
-                            <span className='truncate'>{tag.walletAddress}</span>
+                            <span className='truncate'>{tag.value}</span>
                             <button
-                              onClick={() => copyToClipboard(tag.walletAddress)}
+                              onClick={() => copyToClipboard(tag.value)}
                               className='flex-shrink-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
                               aria-label='Copy address'
                             >
                               <DocumentDuplicateIcon className='h-5 w-5' />
                             </button>
-                          </div>
-                        </td>
-                        <td className='max-w-[400px] px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
-                          <div className='flex flex-wrap gap-2'>
-                            {tag?.tags?.map((t, index) => (
-                              <span
-                                key={index}
-                                className='inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                              >
-                                {t}
-                              </span>
-                            ))}
                           </div>
                         </td>
                         <td className='w-24 px-4 py-3 text-center'>
@@ -322,7 +299,7 @@ export const TagsPage: FC = () => {
                     as='h3'
                     className='text-lg font-bold leading-6 text-gray-900 dark:text-white'
                   >
-                    Create New Tags
+                    Create New Tag
                   </Dialog.Title>
 
                   <Formik
@@ -330,76 +307,40 @@ export const TagsPage: FC = () => {
                     validationSchema={tagValidationSchema}
                     onSubmit={createTag}
                   >
-                    {({ errors, touched, setFieldValue }) => (
+                    {({ errors, touched }) => (
                       <Form className='mt-4 space-y-4'>
                         <div>
                           <label
-                            htmlFor='walletAddress'
+                            htmlFor='name'
                             className='block text-sm font-medium text-gray-700 dark:text-gray-300'
                           >
-                            Wallet Address
+                            Name
                           </label>
                           <Field
-                            name='walletAddress'
+                            name='name'
                             className='mt-1 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
-                            placeholder='Enter wallet address'
+                            placeholder='Enter tag name'
                           />
-                          {errors.walletAddress && touched.walletAddress && (
-                            <div className='mt-1 text-sm text-red-500'>{errors.walletAddress}</div>
+                          {errors.name && touched.name && (
+                            <div className='mt-1 text-sm text-red-500'>{errors.name}</div>
                           )}
                         </div>
 
                         <div>
                           <label
-                            htmlFor='tags'
+                            htmlFor='value'
                             className='block text-sm font-medium text-gray-700 dark:text-gray-300'
                           >
-                            Tags
+                            Wallet Address
                           </label>
-                          <div className='mt-1 space-y-2'>
-                            <div className='flex flex-wrap gap-2'>
-                              {currentTags.map((tag, index) => (
-                                <span
-                                  key={index}
-                                  className='inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                                >
-                                  {tag}
-                                  <button
-                                    type='button'
-                                    onClick={() => handleRemoveTag(tag, setFieldValue)}
-                                    className='ml-1 inline-flex items-center rounded-full p-0.5 hover:bg-blue-200 dark:hover:bg-blue-800'
-                                  >
-                                    <XMarkIcon className='h-3 w-3' />
-                                  </button>
-                                </span>
-                              ))}
-                            </div>
-                            <div className='flex gap-2'>
-                              <input
-                                type='text'
-                                value={tagInput}
-                                onChange={(e) => setTagInput(e.target.value)}
-                                onKeyPress={(e) => {
-                                  if (e.key === 'Enter') {
-                                    e.preventDefault()
-                                    handleAddTag(setFieldValue)
-                                  }
-                                }}
-                                className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
-                                placeholder='Type a tag and press Enter'
-                              />
-                              <button
-                                type='button'
-                                onClick={() => handleAddTag(setFieldValue)}
-                                className='inline-flex items-center rounded-full bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90 disabled:opacity-70 dark:bg-primaryAccent'
-                              >
-                                Add
-                              </button>
-                            </div>
-                            {errors.tags && touched.tags && (
-                              <div className='mt-1 text-sm text-red-500'>{errors.tags}</div>
-                            )}
-                          </div>
+                          <Field
+                            name='value'
+                            className='mt-1 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                            placeholder='Enter wallet address'
+                          />
+                          {errors.value && touched.value && (
+                            <div className='mt-1 text-sm text-red-500'>{errors.value}</div>
+                          )}
                         </div>
 
                         <div className='mt-6 flex justify-end space-x-3'>
@@ -421,7 +362,7 @@ export const TagsPage: FC = () => {
                                 Creating...
                               </>
                             ) : (
-                              'Create Tags'
+                              'Create Tag'
                             )}
                           </button>
                         </div>
