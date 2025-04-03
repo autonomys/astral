@@ -1,5 +1,5 @@
 table:
-  name: wallets
+  name: tags
   schema: users
 object_relationships:
   - name: profile
@@ -16,23 +16,26 @@ insert_permissions:
     permission:
       check: {}
       columns:
-        - address
+        - deleted_at
         - is_public
         - profile_id
+        - name
         - type
+        - value
     comment: ""
 select_permissions:
   - role: astral-api
     permission:
       columns:
-        - address
+        - is_public
+        - name
+        - type
         - created_at
         - deleted_at
-        - id
-        - is_public
-        - profile_id
-        - type
         - updated_at
+        - id
+        - profile_id
+        - value
       filter: {}
     comment: ""
 update_permissions:
@@ -41,6 +44,9 @@ update_permissions:
       columns:
         - deleted_at
         - is_public
+        - name
+        - type
+        - value
       filter: {}
       check: null
     comment: ""
