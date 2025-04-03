@@ -37,6 +37,7 @@ const excludePatterns = [
   ':cid',
   ':operatorId',
   ':extrinsicId',
+  ':profileId',
   ':...not-found',
 ]
 
