@@ -13,6 +13,7 @@ import React, {
 const generateIdFromTitle = (title: string) => {
   return title
     .replace(/[^\w\s]/gi, '')
+    .replace(/\d+/g, '')
     .replace(/\s+(.)/g, (_, c) => c.toUpperCase())
     .replace(/\s/g, '')
     .replace(/^(.)/, (_, c) => c.toLowerCase())
