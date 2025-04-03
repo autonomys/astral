@@ -286,8 +286,9 @@ ALTER TABLE ONLY users.wallets ADD CONSTRAINT address_key UNIQUE (address);
 CREATE TABLE users.tags (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     profile_id uuid NOT NULL,
-    tags TEXT NOT NULL,
+    name TEXT NOT NULL,
     type TEXT NOT NULL,
+    value TEXT NOT NULL,
     is_public boolean NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,

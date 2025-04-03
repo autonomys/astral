@@ -19,8 +19,9 @@ insert_permissions:
         - deleted_at
         - is_public
         - profile_id
-        - tags
+        - name
         - type
+        - value
     comment: ""
 select_permissions:
   - role: astral-api
@@ -34,6 +35,7 @@ select_permissions:
         - updated_at
         - id
         - profile_id
+        - value
       filter: {}
     comment: ""
 update_permissions:
@@ -44,6 +46,7 @@ update_permissions:
         - is_public
         - tags
         - type
+        - value
       filter: {}
       check: null
     comment: ""
