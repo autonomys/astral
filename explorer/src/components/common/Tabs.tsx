@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, {
   MouseEventHandler,
   ReactElement,
@@ -48,21 +48,23 @@ export const TabTitle: React.FC<TabTitleProps> = ({
   activePillStyle,
 }) => {
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const handleOnClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSelectedTab(index)
       const generatedId = generateIdFromTitle(title)
       if (generatedId) {
-        const params = new URLSearchParams(window.location.search)
+        const params = new URLSearchParams(searchParams.toString())
         params.set('tab', generatedId)
-        router.push(`${window.location.pathname}?${params.toString()}`, {
+        router.push(`${pathname}?${params.toString()}`, {
           scroll: false,
         })
       }
 
       if (onClick) onClick(e)
     },
-    [onClick, setSelectedTab, index, title, router],
+    [setSelectedTab, index, title, onClick, searchParams, router, pathname],
   )
 
   return (
