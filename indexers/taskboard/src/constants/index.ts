@@ -69,7 +69,9 @@ export const LEADERBOARD_ENTRY_TYPE = {
   OPERATOR_DEPOSITS_TOTAL_COUNT: "OperatorDepositsTotalCount",
   OPERATOR_DEPOSITS_TOTAL_VALUE: "OperatorDepositsTotalValue",
   OPERATOR_WITHDRAWALS_TOTAL_COUNT: "OperatorWithdrawalsTotalCount",
+  OPERATOR_WITHDRAWALS_TOTAL_VALUE: "OperatorWithdrawalsTotalValue",
   NOMINATOR_DEPOSITS_TOTAL_COUNT: "NominatorDepositsTotalCount",
   NOMINATOR_DEPOSITS_TOTAL_VALUE: "NominatorDepositsTotalValue",
   NOMINATOR_WITHDRAWALS_TOTAL_COUNT: "NominatorWithdrawalsTotalCount",
+  NOMINATOR_WITHDRAWALS_TOTAL_VALUE: "NominatorWithdrawalsTotalValue",
 };

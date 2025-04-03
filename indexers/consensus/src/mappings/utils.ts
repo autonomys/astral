@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter } from "@autonomys/auto-utils";
+import { capitalizeFirstLetter, EventRecord } from "@autonomys/auto-utils";
 import { PAD_ZEROS } from "./constants";
 
 export const decodeLog = (value: null | Uint8Array | Uint8Array[]) => {
@@ -33,4 +33,27 @@ export const hexToUint8Array = (hex: string): Uint8Array => {
   return new Uint8Array(
     hex.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || []
   );
+};
+
+export const groupEventsFromBatchAll = (
+  events: EventRecord[]
+): EventRecord[][] => {
+  const result: EventRecord[][] = [];
+  let currentGroup: EventRecord[] = [];
+
+  for (const event of events) {
+    if (
+      event.event.section === "utility" &&
+      event.event.method === "ItemCompleted"
+    ) {
+      if (currentGroup.length > 0) {
+        result.push(currentGroup);
+        currentGroup = [];
+      }
+    } else currentGroup.push(event);
+  }
+
+  if (currentGroup.length > 0) result.push(currentGroup);
+
+  return result;
 };

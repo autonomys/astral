@@ -1,10 +1,9 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
-import { DEFAULT_INDEXER } from './src/constants/indexers'
 
 const config: CodegenConfig = {
   generates: {
     './gql/graphql.tsx': {
-      schema: DEFAULT_INDEXER,
+      schema: 'https://subql.blue.taurus.subspace.network/v1/graphql',
       documents: ['./src/**/query.gql'],
       plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
     },

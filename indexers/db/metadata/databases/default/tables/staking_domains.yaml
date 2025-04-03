@@ -95,6 +95,8 @@ select_permissions:
         - last_domain_block_number
         - last_epoch_duration
         - rejected_transfers_claimed_count
+        - reward_count
+        - tax_collected_count
         - total_burned_balance
         - total_consensus_storage_fee
         - total_deposits
