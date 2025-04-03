@@ -33,12 +33,14 @@ export const POST = async (req: NextRequest) => {
             profile_id: $profileId
             address: $address
             type: "subspace"
+            is_public: false
           }
         ) {
           id
           profile_id
           address
           type
+          is_public
         }
       }`,
       {

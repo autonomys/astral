@@ -28,7 +28,7 @@ select_permissions:
     permission:
       columns:
         - is_public
-        - tags
+        - name
         - type
         - created_at
         - deleted_at
@@ -44,7 +44,7 @@ update_permissions:
       columns:
         - deleted_at
         - is_public
-        - tags
+        - name
         - type
         - value
       filter: {}

@@ -6,7 +6,7 @@ type PublicProfileResponse = {
   users_profiles: {
     id: string
     name: string
-    description: string
+    bio: string
     avatar: string
     banner: string
     website: string
@@ -18,21 +18,24 @@ type PublicProfileResponse = {
       id: string
       address: string
       type: string
+      isPublic: boolean
       deletedAt: string | null
     }>
-    website_is_public: boolean
-    email_is_public: boolean
-    discord_is_public: boolean
-    github_is_public: boolean
-    twitter_is_public: boolean
-    wallets_are_public: boolean
     tags: Array<{
       id: string
-      walletAddress: string
-      tags: string[]
+      name: string
+      type: string
+      value: string
+      isPublic: boolean
       deletedAt: string | null
     }>
-    tags_are_public: boolean
+    nameIsPublic: boolean
+    bioIsPublic: boolean
+    websiteIsPublic: boolean
+    emailIsPublic: boolean
+    discordIsPublic: boolean
+    githubIsPublic: boolean
+    twitterIsPublic: boolean
   }
 }
 
@@ -54,7 +57,7 @@ export const GET = async (req: NextRequest) => {
         users_profiles: users_profiles_by_pk(id: $profileId) {
           id
           name
-          description
+          bio
           avatar: avatar_url
           banner: banner_url
           website
@@ -66,21 +69,24 @@ export const GET = async (req: NextRequest) => {
             id
             address
             type
+            isPublic: is_public
             deletedAt: deleted_at
           }
-          website_is_public
-          email_is_public
-          discord_is_public
-          github_is_public
-          twitter_is_public
-          wallets_are_public
+          nameIsPublic: name_is_public
+          bioIsPublic: bio_is_public
+          websiteIsPublic: website_is_public
+          emailIsPublic: email_is_public
+          discordIsPublic: discord_is_public
+          githubIsPublic: github_is_public
+          twitterIsPublic: twitter_is_public
           tags {
             id
-            walletAddress: wallet_address
-            tags
+            name
+            type
+            value
+            isPublic: is_public
             deletedAt: deleted_at
           }
-          tags_are_public
         }
       }`,
       {
@@ -102,28 +108,33 @@ export const GET = async (req: NextRequest) => {
     const profile = data.users_profiles
     const publicProfile = {
       id: profile.id,
-      name: profile.name,
-      description: profile.description,
+      name: profile.nameIsPublic ? profile.name : null,
+      nameIsPublic: profile.nameIsPublic,
+      bio: profile.bioIsPublic && profile.bio ? profile.bio : null,
+      bioIsPublic: profile.bioIsPublic,
       avatar: profile.avatar,
       banner: profile.banner,
-      website: profile.website_is_public ? profile.website : null,
-      email: profile.email_is_public ? profile.email : null,
-      discord: profile.discord_is_public ? profile.discord : null,
-      github: profile.github_is_public ? profile.github : null,
-      twitter: profile.twitter_is_public ? profile.twitter : null,
-      wallets: profile.wallets_are_public
+      website: profile.websiteIsPublic ? profile.website : null,
+      email: profile.emailIsPublic ? profile.email : null,
+      discord: profile.discordIsPublic ? profile.discord : null,
+      github: profile.githubIsPublic ? profile.github : null,
+      twitter: profile.twitterIsPublic ? profile.twitter : null,
+      wallets: profile.wallets
         ? profile.wallets
-            .filter((wallet) => wallet.deletedAt === null)
+            .filter((wallet) => wallet.deletedAt === null && wallet.isPublic)
             .map(({ id, address, type }) => ({ id, address, type }))
         : [],
-      tags: profile.tags_are_public
+      tags: profile.tags
         ? profile.tags
-            .filter((tag) => tag.deletedAt === null)
-            .map(({ id, walletAddress, tags }) => ({ id, walletAddress, tags }))
+            .filter((tag) => tag.deletedAt === null && tag.isPublic)
+            .map(({ id, name, type, value }) => ({ id, name, type, value }))
         : [],
+      websiteIsPublic: profile.websiteIsPublic,
+      emailIsPublic: profile.emailIsPublic,
+      discordIsPublic: profile.discordIsPublic,
+      githubIsPublic: profile.githubIsPublic,
+      twitterIsPublic: profile.twitterIsPublic,
     }
-
-    console.log('publicProfile', JSON.stringify(publicProfile, null, 2))
 
     return NextResponse.json({
       message: 'Profile loaded successfully',

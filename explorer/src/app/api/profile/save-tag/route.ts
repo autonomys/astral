@@ -15,7 +15,7 @@ export const POST = async (req: NextRequest) => {
     const NETWORK = process.env.USERS_INDEXER_NETWORK || NetworkId.LOCALHOST
     const body = await req.json()
     const { values, message, signature } = body
-    const { subspaceAccount, tags, profileId } = values
+    const { subspaceAccount, name, value, profileId } = values
     await cryptoWaitReady()
 
     // Verify the signature to ensure it is valid
@@ -24,36 +24,44 @@ export const POST = async (req: NextRequest) => {
 
     const data = await queryGraphqlServer<TagResponse>(
       `
-      mutation InsertTags($profileId: uuid!, $walletAddress: String!, $tags: [String!]) {
+      mutation InsertTags($profileId: uuid!, $value: String!, $name: String!) {
         insert_users_tags_one(
           object: {
             profile_id: $profileId
-            wallet_address: $walletAddress
-            tags: $tags
+            value: $value
+            name: $name
+            type: "wallet"
+            is_public: false
           }
           on_conflict: {
             constraint: tags_pkey,
             update_columns: [
-              tags
+              value,
+              name,
+              type,
+              is_public
             ]
           }
         ) {
           id
           profile_id
-          tags
+          value
+          name
+          type
+          is_public
         }
       }`,
       {
         profileId,
-        walletAddress: subspaceAccount,
-        tags,
+        value,
+        name,
       },
       NETWORK,
     )
 
     return NextResponse.json({
-      message: 'Tags saved successfully',
-      tags: data.insert_users_tags_one.tags,
+      message: 'Tag saved successfully',
+      tag: data.insert_users_tags_one,
     })
   } catch (error) {
     console.error('Error saving tags:', error)

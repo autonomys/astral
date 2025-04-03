@@ -19,7 +19,9 @@ export const POST = async (req: NextRequest) => {
     const { subspaceAccount, values, message, signature } = body
     const {
       name,
-      description,
+      nameIsPublic,
+      bio,
+      bioIsPublic,
       avatar,
       banner,
       website,
@@ -32,8 +34,6 @@ export const POST = async (req: NextRequest) => {
       githubIsPublic,
       twitterIsPublic,
       websiteIsPublic,
-      walletsArePublic,
-      tagsArePublic,
     } = values
     await cryptoWaitReady()
 
@@ -74,7 +74,9 @@ export const POST = async (req: NextRequest) => {
             object: {
               id: $profileId
               name: "${name}"
-              description: "${description}"
+              name_is_public: ${nameIsPublic}
+              bio: "${bio}"
+              bio_is_public: ${bioIsPublic}
               avatar_url: "${avatar}"
               banner_url: "${banner}"
               website: "${website}"
@@ -97,14 +99,14 @@ export const POST = async (req: NextRequest) => {
               api_monthly_requests_limit: 10000
               proof_message: ""
               proof_signature: "${signature}"
-              wallets_are_public: ${walletsArePublic}
-              tags_are_public: ${tagsArePublic}
             }
             on_conflict: {
               constraint: profiles_pkey,
               update_columns: [
                 name,
-                description,
+                name_is_public,
+                bio,
+                bio_is_public,
                 avatar_url,
                 banner_url,
                 website,
@@ -124,15 +126,15 @@ export const POST = async (req: NextRequest) => {
                 twitter_is_public,
                 proof_message,
                 proof_signature,
-                wallets_are_public,
-                tags_are_public,
                 updated_at
               ]
             }
           ) {
             id
             name
-            description
+            name_is_public
+            bio
+            bio_is_public
             avatar_url
             banner_url
             website
@@ -155,8 +157,6 @@ export const POST = async (req: NextRequest) => {
             api_monthly_requests_limit
             proof_message
             proof_signature
-            wallets_are_public
-            tags_are_public
           }
         }`,
       { profileId },
@@ -171,11 +171,13 @@ export const POST = async (req: NextRequest) => {
               profile_id: $profileId
               address: $subspaceAccount
               type: "subspace"
+              is_public: false
             }
             on_conflict: {
               constraint: wallets_pkey,
               update_columns: [
-                type
+                type,
+                is_public
               ]
             }
           ) {
@@ -183,6 +185,7 @@ export const POST = async (req: NextRequest) => {
             profile_id
             address
             type
+            is_public
           }
         }`,
       {

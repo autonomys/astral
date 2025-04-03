@@ -32,6 +32,7 @@ type ProfileResponse = {
         id: string
         address: string
         type: string
+        isPublic: boolean
         createdAt: string
         updatedAt: string
         deletedAt: string | null
@@ -47,8 +48,10 @@ type ProfileResponse = {
       }>
       tags: Array<{
         id: string
-        walletAddress: string
-        tags: string[]
+        name: string
+        type: string
+        value: string
+        isPublic: boolean
         createdAt: string
         deletedAt: string | null
       }>
@@ -74,7 +77,9 @@ export const POST = async (req: NextRequest) => {
           profile {
             id
             name
-            description
+            nameIsPublic: name_is_public
+            bio
+            bioIsPublic: bio_is_public
             avatar: avatar_url
             banner: banner_url
             website
@@ -92,17 +97,15 @@ export const POST = async (req: NextRequest) => {
             githubIsPublic: github_is_public
             twitterIsPublic: twitter_is_public
             websiteIsPublic: website_is_public
-            walletsArePublic: wallets_are_public
-            tagsArePublic: tags_are_public
             wallets {
               id
               address
               type
+              isPublic: is_public
               createdAt: created_at
               updatedAt: updated_at
               deletedAt: deleted_at
             }
-
             apiKeys: api_keys {
               id
               key
@@ -112,10 +115,12 @@ export const POST = async (req: NextRequest) => {
               updatedAt: updated_at
               deletedAt: deleted_at
             }
-            tags: tags {
+            tags {
               id
-              walletAddress: wallet_address
-              tags
+              name
+              type
+              value
+              isPublic: is_public
               createdAt: created_at
               deletedAt: deleted_at
             }
@@ -131,21 +136,27 @@ export const POST = async (req: NextRequest) => {
     if (data.users_wallets.length === 0)
       return NextResponse.json({
         message: 'Profile not found',
+        success: false,
       })
     const userProfile = data.users_wallets[0].profile
 
     const userApiKeys = userProfile.apiKeys
-      .map((apiKey) => ({
-        ...apiKey,
-        shortKey: shortString(apiKey.key, 4),
-      }))
-      .filter((apiKey) => apiKey.deletedAt === null)
+      ? userProfile.apiKeys
+          .map((apiKey) => ({
+            ...apiKey,
+            shortKey: shortString(apiKey.key, 4),
+          }))
+          .filter((apiKey) => apiKey.deletedAt === null)
+      : []
 
     const userWallets = userProfile.wallets.filter((wallet) => wallet.deletedAt === null)
-    const userTags = userProfile.tags.filter((tag) => tag.deletedAt === null)
+    const userTags = userProfile.tags
+      ? userProfile.tags.filter((tag) => tag.deletedAt === null)
+      : []
 
     return NextResponse.json({
       message: 'Profile loaded successfully',
+      success: true,
       profile: userProfile,
       apiKeys: userApiKeys,
       wallets: userWallets,
