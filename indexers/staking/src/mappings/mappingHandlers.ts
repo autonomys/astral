@@ -4,7 +4,12 @@ import { SubstrateBlock } from "@subql/types";
 import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
 import * as db from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
-import { aggregateByDomainId, createHashId } from "./utils";
+import { ExtrinsicPrimitive } from "./types";
+import {
+  aggregateByDomainId,
+  createHashId,
+  groupEventsFromBatchAll,
+} from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -167,6 +172,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   // Process extrinsics
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
     const extrinsicEvents = eventsByExtrinsic.get(extrinsicIdx) || [];
+    const extrinsicMethodToPrimitive =
+      extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
     const successEvent = extrinsicEvents.findLast(
       (event) =>
         event.event.section === "system" &&
@@ -179,29 +186,61 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       : "";
 
     if (successEvent) {
-      // Process extrinsic events
-      extrinsicEvents.forEach((event) => {
-        const eventId = height + "-" + eventIndex;
+      if (
+        extrinsic.method.section === "utility" &&
+        extrinsic.method.method === "batchAll"
+      ) {
+        const batchedExtrinsicEvents = groupEventsFromBatchAll(extrinsicEvents);
+        batchedExtrinsicEvents.forEach((events, index) => {
+          const extrinsicArgs = (extrinsic.args[0].toPrimitive() as any)[index];
+          events.forEach((event) => {
+            const eventId = height + "-" + eventIndex;
 
-        // Process specific events
-        const eventKey = event.event.section + "." + event.event.method;
-        const handler = EVENT_HANDLERS[eventKey];
-        if (handler)
-          handler({
-            event,
-            extrinsic,
-            cache,
-            height,
-            blockTimestamp,
-            extrinsicId,
-            eventId,
-            extrinsicSigner,
-            extrinsicEvents,
+            // Process specific events
+            const eventKey = event.event.section + "." + event.event.method;
+            const handler = EVENT_HANDLERS[eventKey];
+            if (handler)
+              handler({
+                event,
+                extrinsicMethodToPrimitive: extrinsicArgs,
+                cache,
+                height,
+                blockTimestamp,
+                extrinsicId,
+                eventId,
+                extrinsicSigner,
+                extrinsicEvents: events,
+              });
+
+            // Increment event index
+            eventIndex++;
           });
+        });
+      } else {
+        // Process extrinsic events
+        extrinsicEvents.forEach((event) => {
+          const eventId = height + "-" + eventIndex;
 
-        // Increment event index
-        eventIndex++;
-      });
+          // Process specific events
+          const eventKey = event.event.section + "." + event.event.method;
+          const handler = EVENT_HANDLERS[eventKey];
+          if (handler)
+            handler({
+              event,
+              extrinsicMethodToPrimitive,
+              cache,
+              height,
+              blockTimestamp,
+              extrinsicId,
+              eventId,
+              extrinsicSigner,
+              extrinsicEvents,
+            });
+
+          // Increment event index
+          eventIndex++;
+        });
+      }
     }
   });
 

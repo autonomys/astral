@@ -41,7 +41,7 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
           <Container>{children}</Container>
         </ErrorBoundary>
         <Footer />
-        <div className='sticky bottom-0 w-full'>
+        <div className='fixed bottom-0 z-10 w-full'>
           <CookieBanner />
         </div>
       </div>

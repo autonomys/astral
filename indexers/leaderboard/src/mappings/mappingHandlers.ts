@@ -2,6 +2,8 @@ import { SubstrateBlock } from "@subql/types";
 import * as db from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
 import { EXTRINSIC_HANDLERS } from "./extrinsicHandler";
+import { ExtrinsicPrimitive } from "./types";
+import { groupEventsFromBatchAll } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -41,21 +43,24 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
     const successEventId = successEvent?.event.index.toString() || "";
     const extrinsicId = extrinsic ? height + "-" + extrinsicIdx.toString() : "";
+    const extrinsicMethodToPrimitive =
+      extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
     const extrinsicSigner = extrinsic.isSigned
       ? extrinsic.signer.toString()
       : "";
 
-    cache.accountExtrinsicTotalCountHistory.push(
-      db.createAccountExtrinsicTotalCount(
-        extrinsicSigner,
-        BigInt(1),
-        height,
-        extrinsicId,
-        height + "-" + successEventId,
-        timestamp
-      )
-    );
-    if (successEvent) {
+    if (extrinsic.isSigned)
+      cache.accountExtrinsicTotalCountHistory.push(
+        db.createAccountExtrinsicTotalCount(
+          extrinsicSigner,
+          BigInt(1),
+          height,
+          extrinsicId,
+          height + "-" + successEventId,
+          timestamp
+        )
+      );
+    if (extrinsic.isSigned && successEvent) {
       cache.accountExtrinsicSuccessTotalCountHistory.push(
         db.createAccountExtrinsicSuccessTotalCount(
           extrinsicSigner,
@@ -81,39 +86,72 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           extrinsicSigner,
         });
 
-      // Process extrinsic events
-      extrinsicEvents.forEach((event, eventIdx) => {
-        const eventId = height + "-" + eventIndex;
+      if (
+        extrinsic.method.section === "utility" &&
+        extrinsic.method.method === "batchAll"
+      ) {
+        const batchedExtrinsicEvents = groupEventsFromBatchAll(extrinsicEvents);
+        batchedExtrinsicEvents.forEach((events, index) => {
+          const extrinsicArgs = (extrinsic.args[0].toPrimitive() as any)[index];
+          events.forEach((event) => {
+            const eventId = height + "-" + eventIndex;
 
-        // Process specific events
-        const eventKey = event.event.section + "." + event.event.method;
-        const handler = EVENT_HANDLERS[eventKey];
-        if (handler)
-          handler({
-            event,
-            extrinsic,
-            cache,
-            height,
-            timestamp,
-            extrinsicId,
-            eventId,
+            // Process specific events
+            const eventKey = event.event.section + "." + event.event.method;
+            const handler = EVENT_HANDLERS[eventKey];
+            if (handler)
+              handler({
+                event,
+                cache,
+                height,
+                timestamp,
+                extrinsicId,
+                eventId,
+                extrinsicSigner,
+                extrinsicMethodToPrimitive: extrinsicArgs,
+              });
+
+            // Increment event index
+            eventIndex++;
           });
+        });
+      } else {
+        // Process extrinsic events
+        extrinsicEvents.forEach((event) => {
+          const eventId = height + "-" + eventIndex;
 
-        // Increment event index
-        eventIndex++;
-      });
+          // Process specific events
+          const eventKey = event.event.section + "." + event.event.method;
+          const handler = EVENT_HANDLERS[eventKey];
+          if (handler)
+            handler({
+              event,
+              cache,
+              height,
+              timestamp,
+              extrinsicId,
+              eventId,
+              extrinsicSigner,
+              extrinsicMethodToPrimitive,
+            });
+
+          // Increment event index
+          eventIndex++;
+        });
+      }
     } else {
       // Process fail extrinsic
-      cache.accountExtrinsicFailedTotalCountHistory.push(
-        db.createAccountExtrinsicFailedTotalCount(
-          extrinsicSigner,
-          BigInt(1),
-          height,
-          extrinsicId,
-          height + "-" + successEventId.toString(),
-          timestamp
-        )
-      );
+      if (extrinsic.isSigned)
+        cache.accountExtrinsicFailedTotalCountHistory.push(
+          db.createAccountExtrinsicFailedTotalCount(
+            extrinsicSigner,
+            BigInt(1),
+            height,
+            extrinsicId,
+            height + "-" + successEventId.toString(),
+            timestamp
+          )
+        );
     }
   });
 
@@ -132,6 +170,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         height,
         timestamp,
         extrinsicId,
+        extrinsicSigner: "",
         eventId,
       });
 

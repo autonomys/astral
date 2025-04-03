@@ -215,6 +215,16 @@ type OperatorWithdrawalsTotalCountHistory @entity {
   eventId: String!
 }
 
+type OperatorWithdrawalsTotalValueHistory @entity {
+  id: ID!
+  accountId: String!
+  value: BigInt!
+  lastContributionAt: Date!
+  blockHeight: BigInt!
+  extrinsicId: String!
+  eventId: String!
+}
+
 # nominator/account
 type NominatorDepositsTotalCountHistory @entity {
   id: ID!
@@ -237,6 +247,16 @@ type NominatorDepositsTotalValueHistory @entity {
 }
 
 type NominatorWithdrawalsTotalCountHistory @entity {
+  id: ID!
+  accountId: String!
+  value: BigInt!
+  lastContributionAt: Date!
+  blockHeight: BigInt!
+  extrinsicId: String!
+  eventId: String!
+}
+
+type NominatorWithdrawalsTotalValueHistory @entity {
   id: ID!
   accountId: String!
   value: BigInt!
