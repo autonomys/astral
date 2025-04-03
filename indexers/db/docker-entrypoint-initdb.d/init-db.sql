@@ -3797,6 +3797,7 @@ DECLARE
         AND account_id = NEW.account_id
         ORDER BY created_at ASC;
     withdrawal_id text;
+    deposit_to_update_id text;
     last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
     last_domain_epoch staking.domain_epochs.epoch%TYPE;
 BEGIN
@@ -3974,7 +3975,6 @@ CREATE TRIGGER handle_unlocked_events
 AFTER INSERT ON staking.unlocked_events
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_unlocked_events();
-
 
 CREATE OR REPLACE FUNCTION staking.handle_nominators_unlocked_events() RETURNS TRIGGER
     LANGUAGE plpgsql
