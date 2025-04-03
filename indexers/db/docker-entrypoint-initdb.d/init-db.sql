@@ -171,7 +171,9 @@ ALTER TABLE domain_auto_evm._metadata OWNER TO postgres;
 CREATE TABLE users.profiles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name text NOT NULL,
-    description text NOT NULL,
+    name_is_public boolean NOT NULL,
+    bio text NOT NULL,
+    bio_is_public boolean NOT NULL,
     avatar_url text NOT NULL,
     banner_url text NOT NULL,
     email text NOT NULL,
@@ -272,6 +274,7 @@ CREATE TABLE users.wallets (
     profile_id uuid NOT NULL,
     address TEXT NOT NULL,
     type TEXT NOT NULL,
+    is_public boolean NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone
@@ -279,6 +282,19 @@ CREATE TABLE users.wallets (
 ALTER TABLE users.wallets OWNER TO postgres;
 ALTER TABLE ONLY users.wallets ADD CONSTRAINT wallets_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY users.wallets ADD CONSTRAINT address_key UNIQUE (address);
+
+CREATE TABLE users.tags (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    profile_id uuid NOT NULL,
+    tags TEXT NOT NULL,
+    type TEXT NOT NULL,
+    is_public boolean NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    deleted_at timestamp with time zone
+);
+ALTER TABLE users.tags OWNER TO postgres;
+ALTER TABLE ONLY users.tags ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
 
 CREATE TABLE consensus.account_histories (
     id TEXT NOT NULL,

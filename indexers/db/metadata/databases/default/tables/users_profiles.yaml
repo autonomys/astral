@@ -48,7 +48,8 @@ insert_permissions:
         - api_total_requests
         - avatar_url
         - banner_url
-        - description
+        - bio
+        - bio_is_public
         - discord
         - discord_is_public
         - discord_is_verified
@@ -59,6 +60,7 @@ insert_permissions:
         - github_is_public
         - github_is_verified
         - name
+        - name_is_public
         - proof_message
         - proof_signature
         - twitter
@@ -77,9 +79,10 @@ select_permissions:
         - api_total_requests
         - avatar_url
         - banner_url
+        - bio
+        - bio_is_public
         - created_at
         - deleted_at
-        - description
         - discord
         - discord_is_public
         - discord_is_verified
@@ -91,6 +94,7 @@ select_permissions:
         - github_is_verified
         - id
         - name
+        - name_is_public
         - proof_message
         - proof_signature
         - twitter
@@ -111,8 +115,9 @@ update_permissions:
         - api_total_requests
         - avatar_url
         - banner_url
+        - bio
+        - bio_is_public
         - deleted_at
-        - description
         - discord
         - discord_is_public
         - discord_is_verified
@@ -123,6 +128,7 @@ update_permissions:
         - github_is_public
         - github_is_verified
         - name
+        - name_is_public
         - proof_message
         - proof_signature
         - twitter
