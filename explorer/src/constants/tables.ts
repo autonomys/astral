@@ -276,13 +276,13 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'updatedAt', label: 'Updated At', isSelected: true },
   ],
   transfers: [
+    { name: 'extrinsicId', label: 'Extrinsic ID', isSelected: true, accessorKey: 'extrinsic_id' },
     {
       name: 'blockHeight',
       label: 'Block Height',
       isSelected: false,
       accessorKey: 'block_height',
     },
-    { name: 'extrinsicId', label: 'Extrinsic ID', isSelected: true, accessorKey: 'extrinsic_id' },
     { name: 'from', label: 'From', isSelected: true, searchable: true },
     { name: 'fromChain', label: 'From Chain', isSelected: true, accessorKey: 'from_chain' },
     { name: 'to', label: 'To', isSelected: true, searchable: true },
@@ -292,7 +292,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       name: 'fee',
       label: 'Fee',
       isSelected: true,
-      accessorKey: 'fee',
       tooltip: 'Transaction fee paid to the network for processing this transfer',
     },
     {
@@ -306,7 +305,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'blockHash', label: 'Block Hash', isSelected: false, accessorKey: 'block_hash' },
     { name: 'id', label: 'ID', isSelected: false },
     { name: 'eventId', label: 'Event ID', isSelected: false, accessorKey: 'event_id' },
-    { name: 'uuid', label: 'UUID', isSelected: false },
   ],
 }
 
@@ -382,7 +380,15 @@ export const FILTERS_OPTIONS: FiltersOptions = {
     { type: 'range', label: 'Amount', key: 'value' },
     { type: 'dropdown', label: 'From Chain', key: 'fromChain', options: ['consensus', 'domain:0'] },
     { type: 'dropdown', label: 'To Chain', key: 'toChain', options: ['consensus', 'domain:0'] },
-    { type: 'dropdown', label: 'Status', key: 'success', options: ['success', 'failed'] },
+    {
+      type: 'dropdown',
+      label: 'Status',
+      key: 'success',
+      options: [
+        { label: 'Success', value: 'true' },
+        { label: 'Failed', value: 'false' },
+      ],
+    },
     { type: 'range', label: 'Fee', key: 'fee' },
   ],
 }

@@ -2,7 +2,7 @@
 
 import { utcToLocalRelativeTime } from '@/utils/time'
 import { useApolloClient } from '@apollo/client'
-import { shortString } from '@autonomys/auto-utils'
+import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
@@ -20,11 +20,9 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { useConsensusStates } from 'states/consensus'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableSettings } from 'states/tables'
-import { useViewStates } from 'states/view'
-import type { Cell, FilterOption, TransfersFilters } from 'types/table'
+import type { Cell, TransfersFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToFormattedString } from 'utils/number'
 import { countTablePages, getTableColumns } from 'utils/table'
@@ -44,29 +42,9 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
   const { ref, inView } = useInView()
   const { network, tokenSymbol, tokenDecimals } = useIndexers()
   const { subspaceAccount } = useWallet()
-  const { domainRegistry } = useConsensusStates()
   useConsensusData()
   useDomainsData()
   const inFocus = useWindowFocus()
-  const { myPositionOnly } = useViewStates()
-
-  const chainOptions = ['consensus', 'domain:0']
-  const statusOptions = [
-    { value: 'true', label: 'Success' },
-    { value: 'false', label: 'Failed' },
-  ]
-
-  const overrideFiltersOptions = useMemo<FilterOption[]>(
-    () => [
-      { type: 'dropdown', label: 'From Chain', key: 'fromChain', options: chainOptions },
-      { type: 'dropdown', label: 'To Chain', key: 'toChain', options: chainOptions },
-      { type: 'dropdown', label: 'Status', key: 'success', options: statusOptions },
-      { type: 'text', label: 'Block', key: 'blockHeight' },
-      { type: 'range', label: 'Amount', key: 'value' },
-      { type: 'range', label: 'Fee', key: 'fee' },
-    ],
-    [],
-  )
 
   const {
     pagination,
@@ -82,25 +60,10 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
   const apolloClient = useApolloClient()
 
   const columns = useMemo(() => {
-    // Get the default columns from the utility function
-    const defaultColumns = getTableColumns<Row>(
+    return getTableColumns<Row>(
       TABLE,
       selectedColumns,
       {
-        blockHeight: ({ row }: Cell<Row>) => (
-          <div className='row flex items-center gap-3'>
-            <Link
-              href={INTERNAL_ROUTES.blocks.id.page(
-                network,
-                Routes.consensus,
-                parseInt(row.original.block_height?.toString() ?? '0'),
-              )}
-              className='hover:text-primaryAccent'
-            >
-              <div>{row.original.block_height}</div>
-            </Link>
-          </div>
-        ),
         extrinsicId: ({ row }: Cell<Row>) => (
           <div className='row flex items-center gap-3'>
             <Link
@@ -112,6 +75,20 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
               className='hover:text-primaryAccent'
             >
               <div>{row.original.extrinsic_id}</div>
+            </Link>
+          </div>
+        ),
+        blockHeight: ({ row }: Cell<Row>) => (
+          <div className='row flex items-center gap-3'>
+            <Link
+              href={INTERNAL_ROUTES.blocks.id.page(
+                network,
+                Routes.consensus,
+                parseInt(row.original.block_height?.toString() ?? '0'),
+              )}
+              className='hover:text-primaryAccent'
+            >
+              <div>{row.original.block_height}</div>
             </Link>
           </div>
         ),
@@ -131,7 +108,6 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
           />
         ),
         fromChain: ({ row }: Cell<Row>) => {
-          const domain = domainRegistry.find((d) => d.domainId === row.original.from_chain)
           return (
             <Link
               className='hover:text-primaryAccent'
@@ -141,28 +117,17 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
                 row.original.from_chain,
               )}
             >
-              <div>
-                {domain
-                  ? domain.domainConfig.domainName.charAt(0).toUpperCase() +
-                    domain.domainConfig.domainName.slice(1)
-                  : '#' + row.original.from_chain}
-              </div>
+              <div>{capitalizeFirstLetter(row.original.from_chain)}</div>
             </Link>
           )
         },
         toChain: ({ row }: Cell<Row>) => {
-          const domain = domainRegistry.find((d) => d.domainId === row.original.to_chain)
           return (
             <Link
               className='hover:text-primaryAccent'
               href={INTERNAL_ROUTES.domains.id.page(network, Routes.domains, row.original.to_chain)}
             >
-              <div>
-                {domain
-                  ? domain.domainConfig.domainName.charAt(0).toUpperCase() +
-                    domain.domainConfig.domainName.slice(1)
-                  : '#' + row.original.to_chain}
-              </div>
+              <div>{capitalizeFirstLetter(row.original.to_chain)}</div>
             </Link>
           )
         },
@@ -178,51 +143,13 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
           `${bigNumberToFormattedString(row.original.fee)} ${tokenSymbol}`,
         eventId: ({ row }: Cell<Row>) => <div>{row.original.event_id}</div>,
         blockHash: ({ row }: Cell<Row>) => <div>{shortString(row.original.block_hash)}</div>,
-        uuid: ({ row }: Cell<Row>) => <div>{row.original.uuid}</div>,
       },
       {
         blockHeight: 'Block',
         timestamp: 'Time',
       },
-      {
-        eventId: false,
-        blockHash: false,
-        uuid: false,
-      },
     )
-    // Make sure the 'value' and 'fee' columns are sortable by explicitly setting their accessorKey
-    return defaultColumns.map((column) => {
-      if (column.id === 'value') {
-        return {
-          ...column,
-          accessorKey: 'value',
-          enableSorting: true,
-        }
-      }
-      if (column.id === 'fee') {
-        return {
-          ...column,
-          accessorKey: 'fee',
-          enableSorting: true,
-        }
-      }
-      if (column.id === 'blockHeight') {
-        return {
-          ...column,
-          accessorKey: 'block_height',
-          enableSorting: true,
-        }
-      }
-      if (column.id === 'extrinsicId') {
-        return {
-          ...column,
-          accessorKey: 'extrinsic_id',
-          enableSorting: true,
-        }
-      }
-      return column
-    })
-  }, [selectedColumns, domainRegistry, network, tokenSymbol])
+  }, [selectedColumns, network, tokenSymbol])
 
   const where = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -233,7 +160,7 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
       conditions.from_chain._eq = domainId
     }
 
-    if (subspaceAccount && myPositionOnly) {
+    if (subspaceAccount) {
       conditions._or = [{ from: { _eq: subspaceAccount } }, { to: { _eq: subspaceAccount } }]
     } else if (conditions._or) delete conditions._or
 
@@ -299,7 +226,7 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
     }
 
     return conditions
-  }, [domainId, subspaceAccount, myPositionOnly, whereForSearch, filters, tokenDecimals])
+  }, [domainId, subspaceAccount, whereForSearch, filters, tokenDecimals])
 
   const variables: TransferHistoryQueryVariables = useMemo(
     () => ({
@@ -321,7 +248,6 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
-      context: { clientName: 'transfer' },
     },
     Routes.transfer,
     TABLE,
@@ -337,12 +263,7 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
   }, [apolloClient, orderBy, where])
 
   const transfersList = useMemo(() => {
-    if (hasValue(transfers))
-      return transfers.value.consensus_transfers.map((o) => {
-        return {
-          ...o,
-        }
-      })
+    if (hasValue(transfers)) return transfers.value.consensus_transfers
     return []
   }, [transfers])
 
@@ -370,12 +291,7 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
-        <TableSettings
-          table={TABLE}
-          totalCount={totalCount}
-          filters={filters}
-          overrideFiltersOptions={overrideFiltersOptions}
-        />
+        <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
         {!loading && transfersList ? (
           <SortedTable
             data={transfersList}

@@ -23,7 +23,7 @@ interface PersistentTableStates {
   domains: PersistentTableState
   operators: PersistentTableState
   leaderboard: PersistentTableState
-  transfer: PersistentTableState
+  transfers: PersistentTableState
 }
 interface VolatileTableStates {
   accounts: VolatileTableState
@@ -36,7 +36,7 @@ interface VolatileTableStates {
   domains: VolatileTableState
   operators: VolatileTableState
   leaderboard: VolatileTableState
-  transfer: VolatileTableState
+  transfers: VolatileTableState
 }
 
 interface PersistentTableStatesAndFn extends PersistentTableStates {

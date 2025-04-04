@@ -4,8 +4,12 @@ query TransferHistory(
   $orderBy: [consensus_transfers_order_by!]!
   $where: consensus_transfers_bool_exp
 ) {
+  consensus_transfers_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
   consensus_transfers(limit: $limit, offset: $offset, order_by: $orderBy, where: $where) {
-    _block_range
     block_hash
     block_height
     event_id
@@ -18,12 +22,6 @@ query TransferHistory(
     timestamp
     to
     to_chain
-    uuid
     value
-  }
-  consensus_transfers_aggregate(where: $where) {
-    aggregate {
-      count
-    }
   }
 }

@@ -27699,7 +27699,7 @@ export type TransferHistoryQueryVariables = Exact<{
 }>;
 
 
-export type TransferHistoryQuery = { __typename?: 'query_root', consensus_transfers: Array<{ __typename?: 'consensus_transfers', _block_range: any, block_hash: string, block_height: any, event_id: string, extrinsic_id: string, fee: any, from: string, from_chain: string, id: string, success: boolean, timestamp: any, to: string, to_chain: string, uuid: any, value: any }>, consensus_transfers_aggregate: { __typename?: 'consensus_transfers_aggregate', aggregate?: { __typename?: 'consensus_transfers_aggregate_fields', count: number } | null } };
+export type TransferHistoryQuery = { __typename?: 'query_root', consensus_transfers_aggregate: { __typename?: 'consensus_transfers_aggregate', aggregate?: { __typename?: 'consensus_transfers_aggregate_fields', count: number } | null }, consensus_transfers: Array<{ __typename?: 'consensus_transfers', block_hash: string, block_height: any, event_id: string, extrinsic_id: string, fee: any, from: string, from_chain: string, id: string, success: boolean, timestamp: any, to: string, to_chain: string, value: any }> };
 
 export type AccountsTopLeaderboardQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -31753,13 +31753,17 @@ export type FolderChildrenByIdSuspenseQueryHookResult = ReturnType<typeof useFol
 export type FolderChildrenByIdQueryResult = Apollo.QueryResult<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>;
 export const TransferHistoryDocument = gql`
     query TransferHistory($limit: Int!, $offset: Int, $orderBy: [consensus_transfers_order_by!]!, $where: consensus_transfers_bool_exp) {
+  consensus_transfers_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
   consensus_transfers(
     limit: $limit
     offset: $offset
     order_by: $orderBy
     where: $where
   ) {
-    _block_range
     block_hash
     block_height
     event_id
@@ -31772,13 +31776,7 @@ export const TransferHistoryDocument = gql`
     timestamp
     to
     to_chain
-    uuid
     value
-  }
-  consensus_transfers_aggregate(where: $where) {
-    aggregate {
-      count
-    }
   }
 }
     `;
@@ -31989,7 +31987,7 @@ export type ExtrinsicsSummaryQueryResult = Apollo.QueryResult<ExtrinsicsSummaryQ
 export const CheckRoleDocument = gql`
     query CheckRole($subspaceAccount: String!) {
   isFarmer: consensus_rewards(
-    where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}}
+    where: {_or: [{reward_type: {_eq: "rewards.VoteReward"}}, {reward_type: {_eq: "rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}}
     limit: 1
   ) {
     account {
@@ -31997,7 +31995,7 @@ export const CheckRoleDocument = gql`
     }
   }
   isOperator: staking_operators(
-    where: {account_id: {_eq: $subspaceAccount}, raw_status: {_eq: "ACTIVE"}}
+    where: {account_id: {_eq: $subspaceAccount}, status: {_eq: "ACTIVE"}}
     limit: 1
     order_by: {id: asc}
   ) {
