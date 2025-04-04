@@ -47,6 +47,11 @@ export enum RoutesDomains {
   autoid = '/auto-id',
 }
 
+export enum RoutesTransfer {
+  transfer = '/transfer',
+  history = Routes.transfer + '/history',
+}
+
 export type AnyRoutes =
   | Routes
   | RoutesConsensus
@@ -54,7 +59,7 @@ export type AnyRoutes =
   | RoutesStaking
   | RoutesLeaderboard
   | RoutesDomains
-
+  | RoutesTransfer
 export const ROUTES: Route[] = [
   {
     name: Routes.consensus,
@@ -168,6 +173,16 @@ export const ROUTES: Route[] = [
     name: Routes.transfer,
     title: 'Transfer',
     networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
+    children: [
+      {
+        name: RoutesTransfer.transfer,
+        title: 'Transfer',
+      },
+      {
+        name: RoutesTransfer.history,
+        title: 'Transaction History',
+      },
+    ],
   },
   {
     name: Routes.testnetRewards,
@@ -305,6 +320,9 @@ export const INTERNAL_ROUTES = {
     farmers: 'farmers',
     operators: 'operators',
     nominators: 'nominators',
+  },
+  transfer: {
+    history: 'history',
   },
   notFound: '/error/404',
   catchAll: '*',

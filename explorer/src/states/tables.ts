@@ -23,6 +23,7 @@ interface PersistentTableStates {
   domains: PersistentTableState
   operators: PersistentTableState
   leaderboard: PersistentTableState
+  transfer: PersistentTableState
 }
 interface VolatileTableStates {
   accounts: VolatileTableState
@@ -35,6 +36,7 @@ interface VolatileTableStates {
   domains: VolatileTableState
   operators: VolatileTableState
   leaderboard: VolatileTableState
+  transfer: VolatileTableState
 }
 
 interface PersistentTableStatesAndFn extends PersistentTableStates {
@@ -66,6 +68,7 @@ const initialPersistentState: PersistentTableStates = {
   domains: INITIAL_TABLES.domains,
   operators: INITIAL_TABLES.operators,
   leaderboard: INITIAL_TABLES.leaderboard,
+  transfer: INITIAL_TABLES.transfer,
 }
 
 const initialVolatileState: VolatileTableStates = {
@@ -108,6 +111,10 @@ const initialVolatileState: VolatileTableStates = {
   leaderboard: {
     pagination: INITIAL_TABLES.leaderboard.pagination,
     filters: INITIAL_TABLES.leaderboard.filters,
+  },
+  transfer: {
+    pagination: INITIAL_TABLES.transfer.pagination,
+    filters: INITIAL_TABLES.transfer.filters,
   },
 }
 

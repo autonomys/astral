@@ -80,6 +80,10 @@ interface ExplorerQueryState {
     domains: QueryState<GqlT.DomainsListQuery>
     domain: QueryState<GqlT.DomainByIdQuery>
   }
+  [Routes.transfer]: {
+    transfer: QueryState<GqlT.TransferHistoryQuery>
+    transferHistory: QueryState<GqlT.TransferHistoryQuery>
+  }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
     stakingSummary: QueryState<GqlT.StakingSummaryQuery>
     lastExtrinsics: QueryState<GqlT.ExtrinsicsSummaryQuery>
@@ -95,7 +99,7 @@ export type Components =
   | keyof ExplorerQueryState[Routes.staking]
   | keyof ExplorerQueryState[Routes.domains]
   | keyof ExplorerQueryState[ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]
-
+  | keyof ExplorerQueryState[Routes.transfer]
 interface ExplorerQueryStateAndHelper extends ExplorerQueryState {
   setIsLoading: (section: ExplorerSection, component: Components) => void
   setValue: <T>(section: ExplorerSection, component: Components, value: T) => void
@@ -162,6 +166,10 @@ const initialState: ExplorerQueryState = {
     stakingSummary: initialized,
     lastExtrinsics: initialized,
     leaderboard: initialized,
+  },
+  transfer: {
+    transfer: initialized,
+    transferHistory: initialized,
   },
 }
 

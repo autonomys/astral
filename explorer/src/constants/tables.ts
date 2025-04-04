@@ -170,11 +170,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'accumulatedEpochRewards', label: 'Accumulated Epoch Rewards', isSelected: false },
     { name: 'accumulatedEpochShares', label: 'Accumulated Epoch Shares', isSelected: false },
     { name: 'bundleCount', label: 'Bundle Count', isSelected: true },
-    // { name: 'currentEpochDuration', label: 'Current Epoch Duration', isSelected: false },
-    // { name: 'lastEpochDuration', label: 'Last Epoch Duration', isSelected: false },
-    // { name: 'last6EpochsDuration', label: 'Last 6 Epochs Duration', isSelected: false },
-    // { name: 'last144EpochDuration', label: 'Last 144 Epoch Duration', isSelected: false },
-    // { name: 'last1kEpochDuration', label: 'Last 1K Epoch Duration', isSelected: false },
     { name: 'lastBundleAt', label: 'Last Bundle At', isSelected: false },
     { name: 'createdAt', label: 'Created At', isSelected: false },
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
@@ -197,17 +192,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       isSelected: true,
       tooltip: 'Nomination tax percentage collected on rewards',
     },
-    // { name: 'name', label: 'Name', isSelected: true },
-    // { name: 'description', label: 'Description', isSelected: false },
-    // { name: 'icon', label: 'Icon', isSelected: false },
-    // { name: 'banner', label: 'Banner', isSelected: false },
-    // { name: 'website', label: 'Website', isSelected: false },
-    // { name: 'website_verified', label: 'Website Verified', isSelected: false },
-    // { name: 'email', label: 'Email', isSelected: false },
-    // { name: 'email_verified', label: 'Email Verified', isSelected: false },
-    // { name: 'discord', label: 'Discord', isSelected: false },
-    // { name: 'github', label: 'Github', isSelected: false },
-    // { name: 'twitter', label: 'Twitter', isSelected: false },
     { name: 'currentTotalStake', label: 'Total Stake', isSelected: true },
     {
       name: 'currentStorageFeeDeposit',
@@ -291,6 +275,40 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'createdAt', label: 'Created At', isSelected: true },
     { name: 'updatedAt', label: 'Updated At', isSelected: true },
   ],
+  transfer: [
+    {
+      name: 'blockHeight',
+      label: 'Block Height',
+      isSelected: true,
+      searchable: true,
+      accessorKey: 'block_height',
+    },
+    { name: 'extrinsicId', label: 'Extrinsic ID', isSelected: true, accessorKey: 'extrinsic_id' },
+    { name: 'from', label: 'From', isSelected: true, searchable: true },
+    { name: 'fromChain', label: 'From Chain', isSelected: true, accessorKey: 'from_chain' },
+    { name: 'to', label: 'To', isSelected: true, searchable: true },
+    { name: 'toChain', label: 'To Chain', isSelected: true, accessorKey: 'to_chain' },
+    { name: 'value', label: 'Amount', isSelected: true, accessorKey: 'value' },
+    {
+      name: 'fee',
+      label: 'Fee',
+      isSelected: true,
+      accessorKey: 'fee',
+      tooltip: 'Transaction fee paid to the network for processing this transfer',
+    },
+    {
+      name: 'success',
+      label: 'Status',
+      isSelected: true,
+      accessorKey: 'success',
+      tooltip: 'Whether the transfer was Successful/Failed/In Progress',
+    },
+    { name: 'timestamp', label: 'Time', isSelected: true },
+    { name: 'blockHash', label: 'Block Hash', isSelected: false, accessorKey: 'block_hash' },
+    { name: 'id', label: 'ID', isSelected: false },
+    { name: 'eventId', label: 'Event ID', isSelected: false, accessorKey: 'event_id' },
+    { name: 'uuid', label: 'UUID', isSelected: false },
+  ],
 }
 
 export const FILTERS_OPTIONS: FiltersOptions = {
@@ -360,6 +378,16 @@ export const FILTERS_OPTIONS: FiltersOptions = {
   leaderboard: [
     { type: 'range', label: 'Rank', key: 'rank' },
     { type: 'range', label: 'Value', key: 'value' },
+  ],
+  transfer: [
+    { type: 'range', label: 'Amount', key: 'value' },
+    { type: 'text', label: 'From Address', key: 'from' },
+    { type: 'text', label: 'To Address', key: 'to' },
+    { type: 'dropdown', label: 'From Chain', key: 'fromChain', options: ['consensus', 'domain:0'] },
+    { type: 'dropdown', label: 'To Chain', key: 'toChain', options: ['consensus', 'domain:0'] },
+    { type: 'dropdown', label: 'Status', key: 'success', options: ['success', 'failed'] },
+    { type: 'range', label: 'Block Height', key: 'blockHeight' },
+    { type: 'range', label: 'Fee', key: 'fee' },
   ],
 }
 
@@ -606,6 +634,35 @@ export const INITIAL_TABLES: InitialTables = {
       {
         id: LeaderboardsColumns.Rank,
         desc: false,
+      },
+    ],
+  },
+  transfer: {
+    ...INITIAL_TABLE_PROPERTIES,
+    name: 'transfer',
+    columns: AVAILABLE_COLUMNS.transfer,
+    selectedColumns: AVAILABLE_COLUMNS.transfer
+      .filter((column) => column.isSelected)
+      .map((column) => column.name),
+    filtersOptions: FILTERS_OPTIONS.transfer,
+    filters: {
+      valueMin: '',
+      valueMax: '',
+      blockHeightMin: '',
+      blockHeightMax: '',
+      from: '',
+      to: '',
+      fromChain: '',
+      toChain: '',
+      success: '',
+      feeMin: '',
+      feeMax: '',
+      status: '',
+    },
+    sorting: [
+      {
+        id: 'timestamp',
+        desc: true,
       },
     ],
   },
