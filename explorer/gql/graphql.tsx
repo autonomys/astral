@@ -31912,7 +31912,7 @@ export type ExtrinsicsSummaryQueryResult = Apollo.QueryResult<ExtrinsicsSummaryQ
 export const CheckRoleDocument = gql`
     query CheckRole($subspaceAccount: String!) {
   isFarmer: consensus_rewards(
-    where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}}
+    where: {_or: [{reward_type: {_eq: "rewards.VoteReward"}}, {reward_type: {_eq: "rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}}
     limit: 1
   ) {
     account {
@@ -31920,7 +31920,7 @@ export const CheckRoleDocument = gql`
     }
   }
   isOperator: staking_operators(
-    where: {account_id: {_eq: $subspaceAccount}, raw_status: {_eq: "ACTIVE"}}
+    where: {account_id: {_eq: $subspaceAccount}, status: {_eq: "ACTIVE"}}
     limit: 1
     order_by: {id: asc}
   ) {
