@@ -275,7 +275,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'createdAt', label: 'Created At', isSelected: true },
     { name: 'updatedAt', label: 'Updated At', isSelected: true },
   ],
-  transfer: [
+  transfers: [
     {
       name: 'blockHeight',
       label: 'Block Height',
