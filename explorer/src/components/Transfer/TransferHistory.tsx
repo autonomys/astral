@@ -327,7 +327,7 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
     TABLE,
   )
 
-  const transfers = useQueryStates((state) => state.transfer.transferHistory)
+  const transfers = useQueryStates((state) => state.transfer.transfers)
 
   const fullDataDownloader = useCallback(() => {
     return downloadFullData(apolloClient, TransferHistoryDocument, 'consensus_' + TABLE, {
