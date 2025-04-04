@@ -324,7 +324,7 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
       context: { clientName: 'transfer' },
     },
     Routes.transfer,
-    'transferHistory',
+    TABLE,
   )
 
   const transfers = useQueryStates((state) => state.transfer.transferHistory)
