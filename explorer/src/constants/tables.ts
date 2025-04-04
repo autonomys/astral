@@ -640,7 +640,7 @@ export const INITIAL_TABLES: InitialTables = {
     selectedColumns: AVAILABLE_COLUMNS.transfers
       .filter((column) => column.isSelected)
       .map((column) => column.name),
-    filtersOptions: FILTERS_OPTIONS.transfer,
+    filtersOptions: FILTERS_OPTIONS.transfers,
     filters: {
       valueMin: '',
       valueMax: '',
