@@ -280,7 +280,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       name: 'blockHeight',
       label: 'Block Height',
       isSelected: true,
-      searchable: true,
       accessorKey: 'block_height',
     },
     { name: 'extrinsicId', label: 'Extrinsic ID', isSelected: true, accessorKey: 'extrinsic_id' },
@@ -381,12 +380,9 @@ export const FILTERS_OPTIONS: FiltersOptions = {
   ],
   transfer: [
     { type: 'range', label: 'Amount', key: 'value' },
-    { type: 'text', label: 'From Address', key: 'from' },
-    { type: 'text', label: 'To Address', key: 'to' },
     { type: 'dropdown', label: 'From Chain', key: 'fromChain', options: ['consensus', 'domain:0'] },
     { type: 'dropdown', label: 'To Chain', key: 'toChain', options: ['consensus', 'domain:0'] },
     { type: 'dropdown', label: 'Status', key: 'success', options: ['success', 'failed'] },
-    { type: 'range', label: 'Block Height', key: 'blockHeight' },
     { type: 'range', label: 'Fee', key: 'fee' },
   ],
 }
@@ -648,10 +644,6 @@ export const INITIAL_TABLES: InitialTables = {
     filters: {
       valueMin: '',
       valueMax: '',
-      blockHeightMin: '',
-      blockHeightMax: '',
-      from: '',
-      to: '',
       fromChain: '',
       toChain: '',
       success: '',

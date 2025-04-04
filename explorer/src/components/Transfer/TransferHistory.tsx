@@ -58,13 +58,11 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
 
   const overrideFiltersOptions = useMemo<FilterOption[]>(
     () => [
-      { type: 'text', label: 'From Address', key: 'from' },
       { type: 'dropdown', label: 'From Chain', key: 'fromChain', options: chainOptions },
-      { type: 'text', label: 'To Address', key: 'to' },
       { type: 'dropdown', label: 'To Chain', key: 'toChain', options: chainOptions },
       { type: 'dropdown', label: 'Status', key: 'success', options: statusOptions },
+      { type: 'text', label: 'Block', key: 'blockHeight' },
       { type: 'range', label: 'Amount', key: 'value' },
-      { type: 'range', label: 'Block', key: 'blockHeight' },
       { type: 'range', label: 'Fee', key: 'fee' },
     ],
     [],
@@ -253,15 +251,14 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
         ).toString()
       }
     }
-
     // Block Height
-    if (filters.blockHeightMin || filters.blockHeightMax) {
-      conditions['block_height'] = {}
-      if (filters.blockHeightMin) {
-        conditions.block_height._gte = parseInt(filters.blockHeightMin)
-      }
-      if (filters.blockHeightMax) {
-        conditions.block_height._lte = parseInt(filters.blockHeightMax)
+    if (filters.blockHeight) {
+      // Parse to integer since block_height is numeric
+      const blockHeightValue = parseInt(filters.blockHeight)
+
+      // Use _eq for exact match with numbers
+      if (!isNaN(blockHeightValue)) {
+        conditions['block_height'] = { _eq: blockHeightValue }
       }
     }
 
