@@ -74,7 +74,7 @@ services:
     image: postgres:17.3-alpine
     volumes:
       - postgres_db:/var/lib/postgresql/data
-      - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - ./indexers/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./indexers/db/postgresql.conf:/etc/postgresql/postgresql.conf
     restart: unless-stopped
     hostname: postgres
