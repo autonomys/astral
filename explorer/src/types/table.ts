@@ -150,7 +150,7 @@ export type LeaderboardFilters = {
   valueMax: string
 }
 
-export type TransferHistoryFilters = {
+export type TransfersFilters = {
   fromChain: string
   toChain: string
   valueMin: string
