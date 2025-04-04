@@ -114,7 +114,7 @@ const initialVolatileState: VolatileTableStates = {
   },
   transfers: {
     pagination: INITIAL_TABLES.transfers.pagination,
-    filters: INITIAL_TABLES.transfer.filters,
+    filters: INITIAL_TABLES.transfers.filters,
   },
 }
 
