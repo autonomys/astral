@@ -77,7 +77,7 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
     whereForSearch,
     onPaginationChange,
     onSortingChange,
-  } = useTableSettings<TransferHistoryFilters>(TABLE)
+  } = useTableSettings<TransfersFilters>(TABLE)
 
   const apolloClient = useApolloClient()
 
