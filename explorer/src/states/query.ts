@@ -82,7 +82,7 @@ interface ExplorerQueryState {
   }
   [Routes.transfer]: {
     transfer: QueryState<GqlT.TransferHistoryQuery>
-    transferHistory: QueryState<GqlT.TransferHistoryQuery>
+    transfers: QueryState<GqlT.TransferHistoryQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
     stakingSummary: QueryState<GqlT.StakingSummaryQuery>
