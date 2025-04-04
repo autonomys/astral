@@ -169,7 +169,7 @@ const initialState: ExplorerQueryState = {
   },
   transfer: {
     transfer: initialized,
-    transferHistory: initialized,
+    transfers: initialized,
   },
 }
 
