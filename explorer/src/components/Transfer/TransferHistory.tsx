@@ -34,7 +34,7 @@ import { TableSettings } from '../common/TableSettings'
 import { NotFound } from '../layout/NotFound'
 
 type Row = TransferHistoryQuery['consensus_transfers'][0]
-const TABLE = 'transfer'
+const TABLE = 'transfers'
 
 interface TransferHistoryProps {
   domainId?: string
