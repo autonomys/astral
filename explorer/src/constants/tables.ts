@@ -376,8 +376,7 @@ export const FILTERS_OPTIONS: FiltersOptions = {
     { type: 'range', label: 'Rank', key: 'rank' },
     { type: 'range', label: 'Value', key: 'value' },
   ],
-  transfer: [
-    { type: 'range', label: 'Amount', key: 'value' },
+  transfers: [
     { type: 'dropdown', label: 'From Chain', key: 'fromChain', options: ['consensus', 'domain:0'] },
     { type: 'dropdown', label: 'To Chain', key: 'toChain', options: ['consensus', 'domain:0'] },
     {
@@ -385,10 +384,12 @@ export const FILTERS_OPTIONS: FiltersOptions = {
       label: 'Status',
       key: 'success',
       options: [
-        { label: 'Success', value: 'true' },
-        { label: 'Failed', value: 'false' },
+        { value: 'true', label: 'Success' },
+        { value: 'false', label: 'Failed' },
       ],
     },
+    { type: 'text', label: 'Block', key: 'blockHeight' },
+    { type: 'range', label: 'Amount', key: 'value' },
     { type: 'range', label: 'Fee', key: 'fee' },
   ],
 }
