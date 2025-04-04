@@ -635,7 +635,7 @@ export const INITIAL_TABLES: InitialTables = {
   },
   transfers: {
     ...INITIAL_TABLE_PROPERTIES,
-    name: 'transfer',
+    name: 'transfers',
     columns: AVAILABLE_COLUMNS.transfer,
     selectedColumns: AVAILABLE_COLUMNS.transfer
       .filter((column) => column.isSelected)
