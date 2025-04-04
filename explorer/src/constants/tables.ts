@@ -279,7 +279,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     {
       name: 'blockHeight',
       label: 'Block Height',
-      isSelected: true,
+      isSelected: false,
       accessorKey: 'block_height',
     },
     { name: 'extrinsicId', label: 'Extrinsic ID', isSelected: true, accessorKey: 'extrinsic_id' },
