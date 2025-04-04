@@ -68,7 +68,7 @@ const initialPersistentState: PersistentTableStates = {
   domains: INITIAL_TABLES.domains,
   operators: INITIAL_TABLES.operators,
   leaderboard: INITIAL_TABLES.leaderboard,
-  transfer: INITIAL_TABLES.transfer,
+  transfers: INITIAL_TABLES.transfers,
 }
 
 const initialVolatileState: VolatileTableStates = {
