@@ -633,7 +633,7 @@ export const INITIAL_TABLES: InitialTables = {
       },
     ],
   },
-  transfer: {
+  transfers: {
     ...INITIAL_TABLE_PROPERTIES,
     name: 'transfer',
     columns: AVAILABLE_COLUMNS.transfer,
