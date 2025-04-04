@@ -1,0 +1,52 @@
+table:
+  name: tags
+  schema: users
+object_relationships:
+  - name: profile
+    using:
+      manual_configuration:
+        column_mapping:
+          profile_id: id
+        insertion_order: null
+        remote_table:
+          name: profiles
+          schema: users
+insert_permissions:
+  - role: astral-api
+    permission:
+      check: {}
+      columns:
+        - deleted_at
+        - is_public
+        - profile_id
+        - name
+        - type
+        - value
+    comment: ""
+select_permissions:
+  - role: astral-api
+    permission:
+      columns:
+        - is_public
+        - name
+        - type
+        - created_at
+        - deleted_at
+        - updated_at
+        - id
+        - profile_id
+        - value
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: astral-api
+    permission:
+      columns:
+        - deleted_at
+        - is_public
+        - name
+        - type
+        - value
+      filter: {}
+      check: null
+    comment: ""

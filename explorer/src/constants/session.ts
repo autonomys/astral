@@ -10,6 +10,8 @@ export enum AuthProvider {
 
 export const DEFAULT_SUBSPACE_TOKEN: SubspaceToken = {
   account: '',
+  message: '',
+  signature: '',
   vcs: {
     mainnetFarmer: false,
     mainnetOperator: false,

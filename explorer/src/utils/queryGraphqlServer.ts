@@ -21,6 +21,8 @@ export const queryGraphqlServer = async <T>(query: string, variables: object, ne
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...headersList,
+        'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET,
       },
       body: JSON.stringify({
         query,

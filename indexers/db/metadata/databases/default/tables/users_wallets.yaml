@@ -16,21 +16,23 @@ insert_permissions:
     permission:
       check: {}
       columns:
+        - address
+        - is_public
         - profile_id
         - type
-        - address
     comment: ""
 select_permissions:
   - role: astral-api
     permission:
       columns:
+        - address
         - created_at
         - deleted_at
         - id
+        - is_public
         - profile_id
         - type
         - updated_at
-        - address
       filter: {}
     comment: ""
 update_permissions:
@@ -38,6 +40,7 @@ update_permissions:
     permission:
       columns:
         - deleted_at
+        - is_public
       filter: {}
       check: null
     comment: ""

@@ -171,7 +171,9 @@ ALTER TABLE domain_auto_evm._metadata OWNER TO postgres;
 CREATE TABLE users.profiles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name text NOT NULL,
-    description text NOT NULL,
+    name_is_public boolean NOT NULL,
+    bio text NOT NULL,
+    bio_is_public boolean NOT NULL,
     avatar_url text NOT NULL,
     banner_url text NOT NULL,
     email text NOT NULL,
@@ -272,6 +274,7 @@ CREATE TABLE users.wallets (
     profile_id uuid NOT NULL,
     address TEXT NOT NULL,
     type TEXT NOT NULL,
+    is_public boolean NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone
@@ -279,6 +282,20 @@ CREATE TABLE users.wallets (
 ALTER TABLE users.wallets OWNER TO postgres;
 ALTER TABLE ONLY users.wallets ADD CONSTRAINT wallets_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY users.wallets ADD CONSTRAINT address_key UNIQUE (address);
+
+CREATE TABLE users.tags (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    profile_id uuid NOT NULL,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,
+    value TEXT NOT NULL,
+    is_public boolean NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    deleted_at timestamp with time zone
+);
+ALTER TABLE users.tags OWNER TO postgres;
+ALTER TABLE ONLY users.tags ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
 
 CREATE TABLE consensus.account_histories (
     id TEXT NOT NULL,
@@ -3797,6 +3814,7 @@ DECLARE
         AND account_id = NEW.account_id
         ORDER BY created_at ASC;
     withdrawal_id text;
+    deposit_to_update_id text;
     last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
     last_domain_epoch staking.domain_epochs.epoch%TYPE;
 BEGIN
@@ -3974,7 +3992,6 @@ CREATE TRIGGER handle_unlocked_events
 AFTER INSERT ON staking.unlocked_events
 FOR EACH ROW
 EXECUTE FUNCTION staking.handle_unlocked_events();
-
 
 CREATE OR REPLACE FUNCTION staking.handle_nominators_unlocked_events() RETURNS TRIGGER
     LANGUAGE plpgsql

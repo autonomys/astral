@@ -20,6 +20,7 @@ export const Subspace = () => {
       account: { label: 'Subspace Account', type: 'text', placeholder: 'st...' },
       message: { label: 'Message', type: 'text', placeholder: '0x...' },
       signature: { label: 'Signature', type: 'text', placeholder: '0x...' },
+      csrfToken: { label: 'CSRF Token', type: 'text', placeholder: '0x...' },
     },
 
     // The authorize function is called when the user logs in
@@ -38,6 +39,12 @@ export const Subspace = () => {
         if (!isValid) return null
 
         const session = verifyToken()
+        // Parse the message
+        const messageObject = JSON.parse(message)
+
+        // Verify csrf token
+        if (credentials.csrfToken !== messageObject.csrfToken) return null
+
         const did = `did:subspace:${account}`
 
         // Verify Subspace VCs for mainnet
@@ -63,6 +70,8 @@ export const Subspace = () => {
           subspace: {
             ...(savedUser?.data?.subspace ?? {}),
             account,
+            message,
+            signature,
             vcs: {
               ...(savedUser?.data?.subspace?.vcs ?? {}),
               mainnetFarmer,

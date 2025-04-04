@@ -1,5 +1,7 @@
 export type SubspaceToken = {
   account: string
+  message: string
+  signature: string
   vcs: {
     mainnetFarmer: boolean
     mainnetOperator: boolean

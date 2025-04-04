@@ -31,7 +31,7 @@ export const Discord = () => {
     clientSecret: DISCORD_CLIENT_SECRET || '',
 
     // open id connect scopes
-    authorization: { params: { scope: 'identify guilds guilds.join guilds.members.read' } },
+    authorization: { params: { scope: 'identify guilds guilds.members.read' } },
 
     // fetch discord profile
     profile: async (profile: DiscordProfile, token: TokenSet) => {
