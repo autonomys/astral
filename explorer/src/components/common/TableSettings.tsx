@@ -62,7 +62,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             <div className='flex'>
               {addExtraIcons && addExtraIcons}
               <MagnifyingGlassIcon
-                className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
+                className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
                 stroke='currentColor'
                 key='search'
                 onClick={() =>
@@ -70,7 +70,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                 }
               />
               <PencilIcon
-                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
                 stroke='currentColor'
                 key='pencil'
                 onClick={() =>
@@ -78,7 +78,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                 }
               />
               <FunnelIcon
-                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
                 stroke='currentColor'
                 key='funnel'
                 onClick={() =>
@@ -87,7 +87,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               />
               {showReset && (
                 <XMarkIcon
-                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                  className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
                   stroke='currentColor'
                   key='reset'
                   onClick={handleReset}
@@ -96,7 +96,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             </div>
             <div className='sm:hidden'>
               <Bars3Icon
-                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
                 stroke='currentColor'
                 onClick={() => {
                   showTableSettings !== null && hideSettings()
