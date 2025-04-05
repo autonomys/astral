@@ -64,7 +64,13 @@ You can also find the instructions for setting up the Squid backend and Health c
    yarn install
    ```
 
-4. **Run the development server:**
+4. **Copy the environment variables:**
+
+   ```bash
+   cp .env.sample .env
+   ```
+
+5. **Run the development server:**
 
    ```bash
    yarn dev

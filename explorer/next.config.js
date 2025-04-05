@@ -10,6 +10,12 @@ const nextConfig = {
         port: '',
         pathname: '**',
       },
+      {
+        protocol: 'http',
+        hostname: 'gateway.autonomys.xyz',
+        port: '',
+        pathname: '/file/**',
+      },
     ],
   },
   webpack: (config, { isServer }) => {

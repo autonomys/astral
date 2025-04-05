@@ -42,7 +42,7 @@ export const VerifyWalletOwnership: FC = () => {
 
   return (
     <StyledListItem title='Verify the ownership of your wallet'>
-      {session?.user?.subspace?.signature ? (
+      {session?.user?.subspace?.account ? (
         <>
           <CheckMarkIcon />
           <StyledButton className='ml-2' onClick={handleWalletOwnership}>

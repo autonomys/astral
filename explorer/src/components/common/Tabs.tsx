@@ -1,6 +1,23 @@
 'use client'
 
-import React, { MouseEventHandler, ReactElement, ReactNode, useCallback, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import React, {
+  MouseEventHandler,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
+
+const generateIdFromTitle = (title: string) => {
+  return title
+    .replace(/[^\w\s]/gi, '')
+    .replace(/\d+/g, '')
+    .replace(/\s+(.)/g, (_, c) => c.toUpperCase())
+    .replace(/\s/g, '')
+    .replace(/^(.)/, (_, c) => c.toLowerCase())
+}
 
 type TabProps = {
   title: string
@@ -31,12 +48,24 @@ export const TabTitle: React.FC<TabTitleProps> = ({
   pillStyle,
   activePillStyle,
 }) => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const handleOnClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSelectedTab(index)
+      const generatedId = generateIdFromTitle(title)
+      if (generatedId) {
+        const params = new URLSearchParams(searchParams.toString())
+        params.set('tab', generatedId)
+        router.push(`${pathname}?${params.toString()}`, {
+          scroll: false,
+        })
+      }
+
       if (onClick) onClick(e)
     },
-    [onClick, setSelectedTab, index],
+    [setSelectedTab, index, title, onClick, searchParams, router, pathname],
   )
 
   return (
@@ -65,12 +94,30 @@ type TabsProps = {
 
 export const Tabs: React.FC<TabsProps> = ({
   children,
+  initialIndex = 0,
   tabStyle = 'bg-white border border-slate-100 shadow rounded-lg p-4',
   tabTitleStyle = '',
   pillStyle = 'text-gray-600 bg-white dark:bg-transparent dark:text-white',
   activePillStyle = 'text-white bg-grayDarker dark:bg-blueAccent',
 }) => {
-  const [selectedTab, setSelectedTab] = useState(0)
+  const [selectedTab, setSelectedTab] = useState(initialIndex)
+  const searchParams = useSearchParams()
+  const tabParam = searchParams.get('tab')
+
+  const updateSelectedTab = useCallback(() => {
+    if (tabParam && Array.isArray(children)) {
+      const tabIndex = children.findIndex(
+        (child) => generateIdFromTitle(child.props.title) === tabParam,
+      )
+      if (tabIndex !== -1) {
+        setSelectedTab(tabIndex)
+      }
+    }
+  }, [tabParam, children])
+
+  useEffect(() => {
+    updateSelectedTab()
+  }, [updateSelectedTab])
 
   return (
     <div className={`flex flex-wrap ${tabStyle}`}>

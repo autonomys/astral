@@ -18,7 +18,6 @@ import {
 
 type EventHandler = (params: {
   event: EventRecord;
-  extrinsic: any;
   cache: Cache;
   height: bigint;
   blockTimestamp: Date;
@@ -26,6 +25,7 @@ type EventHandler = (params: {
   eventId: string;
   extrinsicSigner: string;
   extrinsicEvents: EventRecord[];
+  extrinsicMethodToPrimitive: any;
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
@@ -36,12 +36,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     height,
     extrinsicId,
     eventId,
-    extrinsic,
+    extrinsicMethodToPrimitive,
   }) => {
     const runtimeId = event.event.data[0].toString();
     const runtimeType = event.event.data[1].toString();
-    const extrinsicArgs = extrinsic.method.args[0].toPrimitive() as any;
-    const runtimeName = extrinsicArgs.args.runtime_name;
+    const runtimeName = extrinsicMethodToPrimitive.args.runtime_name;
 
     cache.runtimeCreation.push(
       db.createRuntimeCreation(
@@ -62,10 +61,10 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     height,
     extrinsicId,
     eventId,
-    extrinsic,
+    extrinsicMethodToPrimitive,
   }) => {
     const domainId = event.event.data[0].toString();
-    const extrinsicArgs = extrinsic.method.args[0].toPrimitive() as any;
+    const extrinsicArgs = extrinsicMethodToPrimitive.args.domain_config_params;
     const domainName = capitalizeFirstLetter(extrinsicArgs.domainName);
     const runtimeId = Number(extrinsicArgs.runtimeId);
 
@@ -91,17 +90,21 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     blockTimestamp,
     extrinsicId,
     eventId,
-    extrinsic,
     extrinsicEvents,
+    extrinsicMethodToPrimitive,
   }) => {
     const operatorId = event.event.data[0].toString();
     const domainId = event.event.data[1].toString();
-    const totalAmount = BigInt(String(extrinsic.method.args[1].toPrimitive()));
-    const operatorDetails = extrinsic.method.args[2].toPrimitive() as any;
-
-    const signingKey = operatorDetails.signingKey;
-    const minimumNominatorStake = operatorDetails.minimumNominatorStake;
-    const nominationTax = operatorDetails.nominationTax;
+    const totalAmount = BigInt(String(extrinsicMethodToPrimitive.args.amount));
+    const signingKey = String(
+      extrinsicMethodToPrimitive.args.config.signingKey
+    );
+    const minimumNominatorStake = BigInt(
+      extrinsicMethodToPrimitive.args.config.minimumNominatorStake
+    );
+    const nominationTax = Number(
+      extrinsicMethodToPrimitive.args.config.nominationTax
+    );
 
     const storageFeeDepositedEvent = findOneExtrinsicEvent(
       extrinsicEvents,
@@ -197,13 +200,12 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     blockTimestamp,
     extrinsicId,
     eventId,
-    extrinsic,
-    extrinsicEvents,
+    extrinsicMethodToPrimitive,
   }) => {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
-    const toWithdraw = extrinsic.method.args[1].toPrimitive() as any;
+    const toWithdraw = stringify(extrinsicMethodToPrimitive.args.to_withdraw);
     const withdrawalInShares = findWithdrawalFromWithdrawalCache(
       cache,
       operatorId,
@@ -220,7 +222,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         accountId,
         domainId,
         operatorId,
-        stringify(toWithdraw),
+        toWithdraw,
         shares,
         storageFeeRefund,
         estimatedAmount,
@@ -283,6 +285,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     cache,
     height,
     extrinsicEvents,
+    blockTimestamp,
     extrinsicId,
     eventId,
   }) => {
@@ -307,6 +310,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         accountId,
         amount,
         storageFee,
+        blockTimestamp,
         height,
         extrinsicId,
         eventId
@@ -358,15 +362,14 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   "domains.BundleStored": ({
     event,
     cache,
-    extrinsic,
-    extrinsicSigner,
     height,
     extrinsicId,
     eventId,
+    extrinsicMethodToPrimitive,
   }) => {
     const bundleHash = event.event.data[1].toString();
-    const _extrinsic = extrinsic.method.args[0].toPrimitive() as any;
-    const { header } = _extrinsic.sealedHeader as SealedBundleHeader;
+    const { header } = extrinsicMethodToPrimitive.args.opaque_bundle
+      .sealedHeader as SealedBundleHeader;
     const domainId = header.proofOfElection.domainId.toString();
     const operatorId = header.proofOfElection.operatorId.toString();
 
@@ -398,12 +401,13 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       calculateTransfer(transfersRejected);
     const totalVolume = totalTransfersIn + totalTransfersOut;
 
+    const { operatorOwner } = findOperatorFromOperatorsCache(cache, operatorId);
     const epoch = findEpochFromDomainStakingHistoryCache(cache, domainId);
 
     cache.bundleSubmission.push(
       db.createBundleSubmission(
         bundleHash,
-        extrinsicSigner,
+        operatorOwner,
         String(domainId),
         String(domainBlockNumber),
         operatorId,

@@ -13,6 +13,7 @@ export enum Routes {
   transfer = 'transfer',
   stats = 'stats',
   testnetRewards = 'testnet-rewards',
+  profile = 'profile',
 }
 
 export enum RoutesConsensus {
@@ -47,6 +48,13 @@ export enum RoutesDomains {
   autoid = '/auto-id',
 }
 
+export enum RoutesProfile {
+  profile = '/profile',
+  wallets = Routes.profile + '/wallets',
+  apiKeys = Routes.profile + '/api-keys',
+  tags = Routes.profile + '/tags',
+}
+
 export type AnyRoutes =
   | Routes
   | RoutesConsensus
@@ -54,6 +62,7 @@ export type AnyRoutes =
   | RoutesStaking
   | RoutesLeaderboard
   | RoutesDomains
+  | RoutesProfile
 
 export const ROUTES: Route[] = [
   {
@@ -172,6 +181,29 @@ export const ROUTES: Route[] = [
   {
     name: Routes.testnetRewards,
     title: 'Testnet Rewards',
+  },
+  {
+    name: Routes.profile,
+    title: 'Profile',
+    hidden: true,
+    children: [
+      {
+        name: RoutesProfile.profile,
+        title: 'Profile',
+      },
+      {
+        name: RoutesProfile.wallets,
+        title: 'Wallets',
+      },
+      {
+        name: RoutesProfile.apiKeys,
+        title: 'API Keys',
+      },
+      {
+        name: RoutesProfile.tags,
+        title: 'Tags',
+      },
+    ],
   },
 ]
 
@@ -306,6 +338,9 @@ export const INTERNAL_ROUTES = {
     farmers: 'farmers',
     operators: 'operators',
     nominators: 'nominators',
+  },
+  profile: {
+    page: '/profile',
   },
   notFound: '/error/404',
   catchAll: '*',
