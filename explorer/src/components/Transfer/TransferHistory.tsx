@@ -11,8 +11,6 @@ import {
   TransferHistoryQuery,
   TransferHistoryQueryVariables,
 } from 'gql/graphql'
-import { useConsensusData } from 'hooks/useConsensusData'
-import { useDomainsData } from 'hooks/useDomainsData'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
@@ -30,6 +28,7 @@ import { AccountIconWithLink } from '../common/AccountIcon'
 import { StatusIcon } from '../common/StatusIcon'
 import { TableSettings } from '../common/TableSettings'
 import { NotFound } from '../layout/NotFound'
+import { WalletButton } from '../WalletButton'
 
 type Row = TransferHistoryQuery['consensus_transfers'][0]
 const TABLE = 'transfers'
@@ -41,9 +40,7 @@ interface TransferHistoryProps {
 export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
   const { ref, inView } = useInView()
   const { network, tokenSymbol, tokenDecimals } = useIndexers()
-  const { subspaceAccount } = useWallet()
-  useConsensusData()
-  useDomainsData()
+  const { subspaceAccount, actingAccount } = useWallet()
   const inFocus = useWindowFocus()
 
   const {
@@ -58,6 +55,12 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
   } = useTableSettings<TransfersFilters>(TABLE)
 
   const apolloClient = useApolloClient()
+
+  const isWalletConnected = useMemo(() => {
+    if (actingAccount?.address) return true
+    if (subspaceAccount) return true
+    return false
+  }, [actingAccount, subspaceAccount])
 
   const columns = useMemo(() => {
     return getTableColumns<Row>(
@@ -246,7 +249,7 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
     TransferHistoryDocument,
     {
       variables,
-      skip: !inFocus,
+      skip: !inFocus || !isWalletConnected,
       pollInterval: 6000,
     },
     Routes.transfer,
@@ -287,6 +290,15 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
+
+  if (!isWalletConnected) {
+    return (
+      <div className='flex w-full flex-col items-center justify-center gap-4 p-8 text-center'>
+        <p className='text-lg font-medium'>Please connect your wallet to view your transfers.</p>
+        <WalletButton />
+      </div>
+    )
+  }
 
   return (
     <div className='flex w-full flex-col align-middle'>

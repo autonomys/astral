@@ -287,7 +287,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'fromChain', label: 'From Chain', isSelected: true, accessorKey: 'from_chain' },
     { name: 'to', label: 'To', isSelected: true, searchable: true },
     { name: 'toChain', label: 'To Chain', isSelected: true, accessorKey: 'to_chain' },
-    { name: 'value', label: 'Amount', isSelected: true, accessorKey: 'value' },
+    { name: 'value', label: 'Amount', isSelected: true },
     {
       name: 'fee',
       label: 'Fee',
@@ -298,7 +298,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       name: 'success',
       label: 'Status',
       isSelected: true,
-      accessorKey: 'success',
       tooltip: 'Whether the transfer was Successful/Failed/In Progress',
     },
     { name: 'timestamp', label: 'Time', isSelected: true },
