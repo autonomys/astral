@@ -27691,6 +27691,16 @@ export type FolderChildrenByIdQueryVariables = Exact<{
 
 export type FolderChildrenByIdQuery = { __typename?: 'query_root', files_folder_cids_aggregate: { __typename?: 'files_folder_cids_aggregate', aggregate?: { __typename?: 'files_folder_cids_aggregate_fields', count: number } | null }, files_folder_cids: Array<{ __typename?: 'files_folder_cids', child_cid: string, chunk?: { __typename?: 'files_chunks', name?: string | null } | null }> };
 
+export type TransferHistoryQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Consensus_Transfers_Order_By> | Consensus_Transfers_Order_By;
+  where?: InputMaybe<Consensus_Transfers_Bool_Exp>;
+}>;
+
+
+export type TransferHistoryQuery = { __typename?: 'query_root', consensus_transfers_aggregate: { __typename?: 'consensus_transfers_aggregate', aggregate?: { __typename?: 'consensus_transfers_aggregate_fields', count: number } | null }, consensus_transfers: Array<{ __typename?: 'consensus_transfers', block_hash: string, block_height: any, event_id: string, extrinsic_id: string, fee: any, from: string, from_chain: string, id: string, success: boolean, timestamp: any, to: string, to_chain: string, value: any }> };
+
 export type AccountsTopLeaderboardQueryVariables = Exact<{
   first: Scalars['Int']['input'];
 }>;
@@ -31741,6 +31751,71 @@ export type FolderChildrenByIdQueryHookResult = ReturnType<typeof useFolderChild
 export type FolderChildrenByIdLazyQueryHookResult = ReturnType<typeof useFolderChildrenByIdLazyQuery>;
 export type FolderChildrenByIdSuspenseQueryHookResult = ReturnType<typeof useFolderChildrenByIdSuspenseQuery>;
 export type FolderChildrenByIdQueryResult = Apollo.QueryResult<FolderChildrenByIdQuery, FolderChildrenByIdQueryVariables>;
+export const TransferHistoryDocument = gql`
+    query TransferHistory($limit: Int!, $offset: Int, $orderBy: [consensus_transfers_order_by!]!, $where: consensus_transfers_bool_exp) {
+  consensus_transfers_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  consensus_transfers(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    block_hash
+    block_height
+    event_id
+    extrinsic_id
+    fee
+    from
+    from_chain
+    id
+    success
+    timestamp
+    to
+    to_chain
+    value
+  }
+}
+    `;
+
+/**
+ * __useTransferHistoryQuery__
+ *
+ * To run a query within a React component, call `useTransferHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTransferHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTransferHistoryQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useTransferHistoryQuery(baseOptions: Apollo.QueryHookOptions<TransferHistoryQuery, TransferHistoryQueryVariables> & ({ variables: TransferHistoryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TransferHistoryQuery, TransferHistoryQueryVariables>(TransferHistoryDocument, options);
+      }
+export function useTransferHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TransferHistoryQuery, TransferHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TransferHistoryQuery, TransferHistoryQueryVariables>(TransferHistoryDocument, options);
+        }
+export function useTransferHistorySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<TransferHistoryQuery, TransferHistoryQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TransferHistoryQuery, TransferHistoryQueryVariables>(TransferHistoryDocument, options);
+        }
+export type TransferHistoryQueryHookResult = ReturnType<typeof useTransferHistoryQuery>;
+export type TransferHistoryLazyQueryHookResult = ReturnType<typeof useTransferHistoryLazyQuery>;
+export type TransferHistorySuspenseQueryHookResult = ReturnType<typeof useTransferHistorySuspenseQuery>;
+export type TransferHistoryQueryResult = Apollo.QueryResult<TransferHistoryQuery, TransferHistoryQueryVariables>;
 export const AccountsTopLeaderboardDocument = gql`
     query AccountsTopLeaderboard($first: Int!) {
   farmers: consensus_rewards(
