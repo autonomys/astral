@@ -111,10 +111,23 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
     if (type === ImageType.Banner) {
       setBannerPreview(null)
       setShowBannerModal(false)
+      // Reset the file input
+      if (bannerInputRef.current) {
+        bannerInputRef.current.value = ''
+      }
     } else {
       setAvatarPreview(null)
       setShowAvatarModal(false)
+      // Reset the file input
+      if (avatarInputRef.current) {
+        avatarInputRef.current.value = ''
+      }
     }
+  }
+
+  // Also handle modal close from ImageCropModal
+  const handleModalClose = (type: ImageType) => {
+    handleCancelUpload(type)
   }
 
   return (
@@ -271,10 +284,11 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
       {bannerPreview && (
         <ImageCropModal
           isOpen={showBannerModal}
-          onClose={() => handleCancelUpload(ImageType.Banner)}
+          onClose={() => handleModalClose(ImageType.Banner)}
           imageUrl={bannerPreview}
           onSaveImage={(cid) => {
             handleSaveCroppedImage(cid, ImageType.Banner)
+            handleCancelUpload(ImageType.Banner)
           }}
           type={ImageType.Banner}
         />
@@ -283,10 +297,11 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
       {avatarPreview && (
         <ImageCropModal
           isOpen={showAvatarModal}
-          onClose={() => handleCancelUpload(ImageType.Avatar)}
+          onClose={() => handleModalClose(ImageType.Avatar)}
           imageUrl={avatarPreview}
           onSaveImage={(cid) => {
             handleSaveCroppedImage(cid, ImageType.Avatar)
+            handleCancelUpload(ImageType.Avatar)
           }}
           type={ImageType.Avatar}
         />
