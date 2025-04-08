@@ -125,11 +125,6 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
     }
   }
 
-  // Also handle modal close from ImageCropModal
-  const handleModalClose = (type: ImageType) => {
-    handleCancelUpload(type)
-  }
-
   return (
     <div className='flex flex-col space-y-4 text-grayDarker dark:text-white sm:w-1/3'>
       <div className='overflow-hidden rounded-2xl bg-white shadow-sm transition-all hover:shadow-md dark:border-none dark:bg-boxDark'>
@@ -284,7 +279,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
       {bannerPreview && (
         <ImageCropModal
           isOpen={showBannerModal}
-          onClose={() => handleModalClose(ImageType.Banner)}
+          onClose={() => handleCancelUpload(ImageType.Banner)}
           imageUrl={bannerPreview}
           onSaveImage={(cid) => {
             handleSaveCroppedImage(cid, ImageType.Banner)
@@ -297,7 +292,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
       {avatarPreview && (
         <ImageCropModal
           isOpen={showAvatarModal}
-          onClose={() => handleModalClose(ImageType.Avatar)}
+          onClose={() => handleCancelUpload(ImageType.Avatar)}
           imageUrl={avatarPreview}
           onSaveImage={(cid) => {
             handleSaveCroppedImage(cid, ImageType.Avatar)
