@@ -35,7 +35,7 @@ export const queryGraphqlServer = async <T>(query: string, variables: object, ne
     // Return the data
     return data as T
   } catch (error) {
-    console.error('Failed to fetch Astral Subsquid:', error)
-    throw new Error('Failed to fetch Astral Subsquid')
+    console.error('Failed to fetch GraphQL Server:', error)
+    throw new Error('Failed to fetch GraphQL Server')
   }
 }

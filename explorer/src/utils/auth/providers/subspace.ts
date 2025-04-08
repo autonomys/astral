@@ -8,7 +8,6 @@ import {
   verifySubspaceMainnetAccountRoles,
   verifySubspaceTaurusAccountRoles,
 } from '../vcs/subspace'
-import { verifyToken } from '../verifyToken'
 
 export const Subspace = () => {
   return CredentialsProvider({
@@ -34,11 +33,9 @@ export const Subspace = () => {
 
         // Verify the signature to ensure it is valid
         const { isValid } = signatureVerify(message, signature, account)
-
         // Return null if the credentials are invalid
         if (!isValid) return null
 
-        const session = verifyToken()
         // Parse the message
         const messageObject = JSON.parse(message)
 
@@ -84,7 +81,6 @@ export const Subspace = () => {
           },
           discord: {
             ...(savedUser?.data?.discord ?? DEFAULT_DISCORD_TOKEN),
-            ...session.discord,
           },
         }
 
