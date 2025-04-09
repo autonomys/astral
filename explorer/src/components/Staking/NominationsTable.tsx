@@ -54,15 +54,15 @@ export const NominationsTable: FC = () => {
 
   const OPERATOR_STATUS_CLASSNAME = {
     [OperatorStatus.PENDING_NEXT_EPOCH]:
-      'border-yellow-700 bg-yellow-300 dark:bg-yellow-800 text-yellow-700 dark:text-yellow-300',
+      'bg-yellow-300 dark:bg-yellow-800 text-yellow-700 dark:text-yellow-300',
     [OperatorStatus.ACTIVE]:
-      'border-green-700 bg-green-200 dark:bg-green-800 text-green-700 dark:text-green-500',
+      'bg-green-200 dark:bg-green-800 text-green-700 dark:text-green-500',
     [OperatorStatus.DEREGISTERED]:
-      'border-red-700 bg-red-300 dark:bg-red-300 text-red-700 dark:text-red-700',
+      'bg-red-300 dark:bg-red-300 text-red-700 dark:text-red-700',
     [OperatorStatus.NOMINATORS_UNLOCKED]:
-      'border-pink-700 bg-pink-200 dark:bg-pink-300 text-pink-700 dark:text-pink-700',
+      'bg-pink-200 dark:bg-pink-300 text-pink-700 dark:text-pink-700',
     [OperatorStatus.SLASHED]:
-      'border-red-700 bg-red-300 dark:bg-red-300 text-red-700 dark:text-red-700',
+      'bg-red-300 dark:bg-red-300 text-red-700 dark:text-red-700',
   }
 
   const handleAction = useCallback((value: OperatorAction) => {
@@ -206,19 +206,19 @@ export const NominationsTable: FC = () => {
         const label = capitalizeFirstLetter(type)
         if (type === 'deposit')
           return (
-            <span className='rounded-full border border-blue-500 bg-blue-200 px-2 py-1 text-blue-500 dark:bg-blue-800 dark:text-blue-300'>
+            <span className='rounded-full text-sm bg-blue-200 px-2.5 py-1 text-blue-500 dark:bg-blue-800 dark:text-blue-300'>
               {label}
             </span>
           )
         if (type === 'withdrawal')
           return (
-            <span className='rounded-full border border-red-500 bg-red-200 px-2 py-1 text-red-500 dark:bg-red-800 dark:text-red-300'>
+            <span className='rounded-full text-sm bg-red-200 px-2.5 py-1 text-red-500 dark:bg-red-800 dark:text-red-300'>
               {label}
             </span>
           )
         if (type === 'unlocked')
           return (
-            <span className='rounded-full border border-green-500 bg-green-200 px-2 py-1 text-green-500 dark:bg-green-800 dark:text-green-300'>
+            <span className='rounded-full text-sm bg-green-200 px-2.5 py-1 text-green-700 dark:bg-green-800 dark:text-green-300'>
               {label}
             </span>
           )
@@ -396,7 +396,7 @@ export const NominationsTable: FC = () => {
                         </div>
                         <div className='flex flex-col text-sm font-normal'>
                           <span
-                            className={`text-md rounded-full border px-2 py-1 font-semibold ${OPERATOR_STATUS_CLASSNAME[nominator.operator?.status as OperatorStatus]}`}
+                            className={`text-sm rounded-full px-2.5 py-1 font-normal ${OPERATOR_STATUS_CLASSNAME[nominator.operator?.status as OperatorStatus]}`}
                           >
                             {allCapsToNormal(nominator.operator?.status ?? '')}
                           </span>
