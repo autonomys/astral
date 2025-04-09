@@ -114,6 +114,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       CONSENSUS_CHAIN_TYPE,
       amount,
       fee,
+      "balances.Transfer",
       successEvent ? true : false,
       blockTimestamp
     );
@@ -156,6 +157,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       chainType + ":" + domainId,
       amount,
       fee,
+      "transporter.Transfer",
       successEvent ? true : false,
       blockTimestamp
     );
