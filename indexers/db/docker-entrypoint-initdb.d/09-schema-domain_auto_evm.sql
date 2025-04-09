@@ -252,6 +252,7 @@ CREATE TABLE domain_auto_evm.transfers (
     to_chain text NOT NULL,
     value numeric NOT NULL,
     fee numeric NOT NULL,
+    type text NOT NULL,
     success boolean NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
     _id uuid NOT NULL,
@@ -336,6 +337,7 @@ CREATE INDEX "0xd21b20c334f80c2e" ON domain_auto_evm.account_histories USING btr
 CREATE INDEX "0xb91efc8ed4021e6e" ON domain_auto_evm.transfers USING btree (id);
 CREATE INDEX "domain_auto_evm_transfers_from" ON domain_auto_evm.transfers USING btree ("from");
 CREATE INDEX "domain_auto_evm_transfers_to" ON domain_auto_evm.transfers USING btree ("to");
+CREATE INDEX "domain_auto_evm_transfers_type" ON domain_auto_evm.transfers USING btree (type);
 CREATE INDEX "domain_auto_evm_extrinsic_modules_id" ON domain_auto_evm.extrinsic_modules USING btree (id);
 CREATE INDEX "domain_auto_evm_event_modules_id" ON domain_auto_evm.event_modules USING btree (id);
 CREATE INDEX "domain_auto_evm_log_kinds_id" ON domain_auto_evm.log_kinds USING btree (id);

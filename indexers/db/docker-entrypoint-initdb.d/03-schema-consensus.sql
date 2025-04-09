@@ -221,6 +221,7 @@ CREATE TABLE consensus.transfers (
     to_chain TEXT NOT NULL,
     value NUMERIC NOT NULL,
     fee NUMERIC NOT NULL,
+    type TEXT NOT NULL,
     success BOOLEAN NOT NULL,
     "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     _id UUID NOT NULL,
@@ -302,6 +303,7 @@ CREATE INDEX "0xd21b20c334f80c2e" ON consensus.account_histories USING btree (id
 CREATE INDEX "0xb91efc8ed4021e6e" ON consensus.transfers USING btree (id);
 CREATE INDEX "consensus_transfers_from" ON consensus.transfers USING btree ("from");
 CREATE INDEX "consensus_transfers_to" ON consensus.transfers USING btree ("to");
+CREATE INDEX "consensus_transfers_type" ON consensus.transfers USING btree (type);
 CREATE INDEX "0x26e9de0ee335659c" ON consensus.extrinsic_modules USING btree (id);
 CREATE INDEX "0x55286926221be2e7" ON consensus.event_modules USING btree (id);
 CREATE INDEX "0x64128774d8de590c" ON consensus.log_kinds USING btree (id);
