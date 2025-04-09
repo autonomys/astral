@@ -223,6 +223,7 @@ CREATE TABLE consensus.transfers (
     fee NUMERIC NOT NULL,
     type TEXT NOT NULL,
     success BOOLEAN NOT NULL,
+    is_finalized BOOLEAN NOT NULL,
     "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     _id UUID NOT NULL,
     _block_range INT8RANGE NOT NULL

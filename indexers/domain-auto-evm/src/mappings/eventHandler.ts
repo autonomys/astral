@@ -54,6 +54,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         fee,
         "balances.Transfer",
         successEvent ? true : false,
+        true,
         blockTimestamp
       )
     );
@@ -97,6 +98,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         fee,
         "transporter.Transfer",
         successEvent ? true : false,
+        false,
         blockTimestamp
       )
     );

@@ -16,6 +16,7 @@ BEGIN
         fee,
         type,
         success,
+        is_finalized,
         "timestamp"
     ) VALUES (
         'consensus_' || NEW.id,                  -- id
@@ -31,6 +32,7 @@ BEGIN
         NEW.fee,                                 -- fee
         NEW.type,                                -- type
         NEW.success,                             -- success
+        NEW.is_finalized,                        -- is_finalized
         NEW."timestamp"                          -- timestamp
     );
     
@@ -62,6 +64,7 @@ BEGIN
         fee,
         type,
         success,
+        is_finalized,
         "timestamp"
     ) VALUES (
         'domain_auto_evm_' || NEW.id,            -- id
@@ -77,6 +80,7 @@ BEGIN
         NEW.fee,                                 -- fee
         NEW.type,                                -- type
         NEW.success,                             -- success
+        NEW.is_finalized,                        -- is_finalized
         NEW."timestamp"                          -- timestamp
     );
     

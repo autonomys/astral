@@ -254,6 +254,7 @@ CREATE TABLE domain_auto_evm.transfers (
     fee numeric NOT NULL,
     type text NOT NULL,
     success boolean NOT NULL,
+    is_finalized BOOLEAN NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL

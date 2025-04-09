@@ -315,6 +315,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
               gas,
               "evm.Transfer",
               true,
+              true,
               blockTimestamp
             )
           );

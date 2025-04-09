@@ -196,6 +196,7 @@ export function createTransfer(
   fee: bigint,
   type: string,
   success: boolean,
+  isFinalized: boolean,
   timestamp: Date
 ) {
   return {
@@ -212,6 +213,7 @@ export function createTransfer(
     fee,
     type,
     success,
+    isFinalized,
     timestamp,
   };
 }

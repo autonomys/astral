@@ -116,6 +116,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       fee,
       "balances.Transfer",
       successEvent ? true : false,
+      true,
       blockTimestamp
     );
     cache.transfers.push(newTransfer);
@@ -159,6 +160,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       fee,
       "transporter.Transfer",
       successEvent ? true : false,
+      false,
       blockTimestamp
     );
     cache.transfers.push(newTransfer);

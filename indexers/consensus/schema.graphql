@@ -104,6 +104,7 @@ type Transfer @entity {
   fee: BigInt!
   type: String!
   success: Boolean!
+  isFinalized: Boolean!
   timestamp: Date!
 }
 
