@@ -37,7 +37,6 @@ export const APIs: FC = () => {
   useEffect(() => {
     // Deep clone the swagger spec to avoid mutating the original
     const specCopy = JSON.parse(JSON.stringify(swagger))
-    console.log('specCopy', specCopy)
 
     // Filter servers based on selected network
     if (chain === 'taurus') {
