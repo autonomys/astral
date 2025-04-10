@@ -28,6 +28,7 @@ export enum RoutesConsensus {
 export enum RoutesStorage {
   files = Routes.storage + '/files',
   folders = Routes.storage + '/folders',
+  apis = Routes.storage + '/apis',
 }
 
 export enum RoutesStaking {
@@ -112,6 +113,10 @@ export const ROUTES: Route[] = [
       {
         name: RoutesStorage.folders,
         title: 'Folders',
+      },
+      {
+        name: RoutesStorage.apis,
+        title: 'APIs',
       },
     ],
   },
