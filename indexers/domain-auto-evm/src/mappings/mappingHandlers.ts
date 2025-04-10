@@ -313,6 +313,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
               DOMAIN_AUTO_EVM_CHAIN_TYPE,
               value,
               gas,
+              "evm.Transfer",
+              true,
               true,
               blockTimestamp
             )

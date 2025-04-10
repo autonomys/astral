@@ -8,6 +8,7 @@ const { findUserByID, saveUser } = UserSession<SavedUser>({
   address: process.env.USER_SESSION_CONTRACT_ADDRESS || '',
   privateKey: process.env.USER_SESSION_PRIVATE_KEY || '',
   password: process.env.USER_SESSION_PASSWORD,
+  fileName: 'explorer-user-session.json',
 })
 
 export { findUserByID, saveUser }

@@ -8,6 +8,7 @@ import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
 import {
+  calculateShares,
   calculateTransfer,
   findDomainIdFromOperatorsCache,
   findEpochFromDomainStakingHistoryCache,
@@ -116,9 +117,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     );
     const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
     const stakeAmount = totalAmount - storageFeeDeposit;
-    const estimatedShares =
-      stakeAmount /
-      (sharePrice > ZERO_BIGINT ? sharePrice : SHARES_CALCULATION_MULTIPLIER);
+    const estimatedShares = calculateShares(stakeAmount, sharePrice);
 
     cache.operatorRegistration.push(
       db.createOperatorRegistration(
@@ -173,9 +172,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     );
     const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
     const stakeAmount = totalAmount - storageFeeDeposit;
-    const estimatedShares =
-      stakeAmount /
-      (sharePrice > ZERO_BIGINT ? sharePrice : SHARES_CALCULATION_MULTIPLIER);
+    const estimatedShares = calculateShares(stakeAmount, sharePrice);
 
     cache.depositEvent.push(
       db.createDepositEvent(

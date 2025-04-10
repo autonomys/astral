@@ -1,5 +1,6 @@
 'use client'
 
+import useMediaQuery from '@/hooks/useMediaQuery'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { CheckBadgeIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
@@ -22,43 +23,28 @@ import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { bigNumberToFormattedString, numberFormattedString, numberWithCommas } from 'utils/number'
-import { allCapsToNormal } from 'utils/string'
 import { formatSeconds, utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
+import { PageTabs } from '../common/PageTabs'
+import { Tab } from '../common/Tabs'
 import { Tooltip } from '../common/Tooltip'
 import { WalletButton } from '../WalletButton'
 import { ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { NominationButton } from './NominationButton'
 import { OperatorActions } from './OperatorActions'
+import { OperatorStatusBadge } from './OperatorStatusBadge'
 import { UnlockFundsButton } from './UnlockFundsButton'
 import { WithdrawButton } from './WithdrawButton'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const columnHelper = createColumnHelper<any>()
 
-const CountdownTimer: FC<{ initialTime: bigint }> = ({ initialTime }) => {
-  const [remainingTime, setRemainingTime] = useState<bigint>(initialTime)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRemainingTime((prevTime) => prevTime - BigInt(1))
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <span className='text-sm text-grayDark dark:text-blueLight'>
-      Remaining Time: {remainingTime > BigInt(0) ? formatSeconds(remainingTime) : '0'}
-    </span>
-  )
-}
-
 export const NominationsTable: FC = () => {
   const { ref, inView } = useInView()
   const { subspaceAccount } = useWallet()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { network, tokenSymbol } = useIndexers()
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [sorting] = useState<SortingState>([{ id: 'operator_id', desc: false }])
 
   const [action, setAction] = useState<OperatorAction>({
@@ -113,19 +99,86 @@ export const NominationsTable: FC = () => {
   const nominatorsList = useMemo(
     () =>
       data
-        ? data.staking_nominators.map((n) => ({
-            ...n,
-            withdrawals: n.withdrawals.map((w) => ({
-              ...w,
-              operatorCurrentSharePrice: n.operator?.current_share_price,
-              lastDomainBlockNumber: n.domain?.last_domain_block_number,
-              unlockedEvents: n.unlocked_events.filter(
-                (u) => u.block_height >= w.created_at + 14400,
-              ),
-            })),
-          }))
+        ? data.staking_nominators.map((n) => {
+            const depositHistory = n.deposits.map((d) => {
+              const isPending = d.status === DepositStatus.PENDING_NEXT_EPOCH
+              return {
+                type: 'deposit',
+                isPending,
+                amount: d.total_amount,
+                status: d.status,
+                timestamp: d.timestamp,
+                createdAt: d.created_at,
+                extrinsicId: d.extrinsic_id,
+                completionDate: isPending
+                  ? 'At the next epoch (approx. 10 minutes)'
+                  : utcToLocalRelativeTime(d.timestamp),
+              }
+            })
+            const withdrawalHistory = n.withdrawals.map((w) => {
+              const isPending = w.status !== WithdrawalStatus.FUNDS_UNLOCKED
+              let completionDate: string | JSX.Element = isPending
+                ? 'At the next epoch (approx. 10 minutes)'
+                : utcToLocalRelativeTime(w.timestamp)
+              if (w.status === WithdrawalStatus.PENDING_CHALLENGE_PERIOD) {
+                const lastDomainBlockNumber = BigInt(n.domain?.last_domain_block_number)
+                const domainBlockNumberReadyAt = BigInt(w.domain_block_number_ready_at)
+                const estimatedRemainingTime =
+                  (domainBlockNumberReadyAt - lastDomainBlockNumber) * BigInt(6)
+                if (estimatedRemainingTime > 0)
+                  completionDate = `In ${formatSeconds(estimatedRemainingTime)}`
+                else completionDate = 'Ready to unlock'
+              }
+              if (w.status === WithdrawalStatus.PENDING_UNLOCK_FUNDS) {
+                completionDate = 'After you unlock your funds'
+              }
+              if (w.status === WithdrawalStatus.FUNDS_UNLOCKED) {
+                completionDate = (
+                  <Link
+                    key={`unlocked_at-${w.unlock_extrinsic_id}`}
+                    data-testid={`unlocked_at-${w.unlock_extrinsic_id}`}
+                    href={INTERNAL_ROUTES.extrinsics.id.page(
+                      network,
+                      Routes.consensus,
+                      w.unlock_extrinsic_id,
+                    )}
+                    className='hover:text-primaryAccent'
+                  >
+                    <div>Unlocked on extrinsic {w.unlock_extrinsic_id}</div>
+                  </Link>
+                )
+              }
+              return {
+                type: 'withdrawal',
+                isPending,
+                amount: w.total_amount > 0 ? w.total_amount : w.estimated_amount,
+                status: w.status,
+                timestamp: w.timestamp,
+                createdAt: w.created_at,
+                extrinsicId: w.withdraw_extrinsic_id,
+                completionDate,
+              }
+            })
+            const unlockedHistory = n.unlocked_events.map((u) => ({
+              type: 'unlocked',
+              isPending: false,
+              amount: BigInt(u.amount) + BigInt(u.storage_fee),
+              status: 'unlocked',
+              timestamp: 'N/A (Coming soon)',
+              createdAt: u.block_height,
+              extrinsicId: u.extrinsic_id,
+              completionDate: 'Effective immediately',
+            }))
+            const history = [...depositHistory, ...withdrawalHistory, ...unlockedHistory].sort(
+              (a, b) => a.createdAt - b.createdAt,
+            )
+            return {
+              ...n,
+              history,
+            }
+          })
         : [],
-    [data],
+    [data, network],
   )
   const totalCount = useMemo(
     () => (data && data.staking_nominators_aggregate.aggregate?.count) || 0,
@@ -133,98 +186,91 @@ export const NominationsTable: FC = () => {
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
-  const depositColumns = [
-    columnHelper.accessor('total_amount', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
-      header: 'Total Amount',
-    }),
-    columnHelper.accessor('status', {
+  const historyColumns = [
+    columnHelper.accessor('type', {
       cell: (info) => {
-        const status = info.getValue()
-        if (status === DepositStatus.PENDING_NEXT_EPOCH)
+        const type = info.getValue()
+        const label = capitalizeFirstLetter(type)
+        if (type === 'deposit')
           return (
-            <Tooltip text='Deposit is pending for the next epoch'>
-              <ClockIcon className='h-4 w-4 text-yellow-500' />
-            </Tooltip>
+            <span className='rounded-full bg-blue-200 px-2.5 py-1 text-sm text-blue-500 dark:bg-blue-800 dark:text-blue-300'>
+              {label}
+            </span>
           )
-        if (status === DepositStatus.ACTIVE)
+        if (type === 'withdrawal')
           return (
-            <Tooltip text='Deposit is active'>
-              <CheckBadgeIcon className='h-4 w-4 text-green-500' />
-            </Tooltip>
+            <span className='rounded-full bg-red-200 px-2.5 py-1 text-sm text-red-500 dark:bg-red-800 dark:text-red-300'>
+              {label}
+            </span>
           )
-        return capitalizeFirstLetter(status)
+        if (type === 'unlocked')
+          return (
+            <span className='rounded-full bg-green-200 px-2.5 py-1 text-sm text-green-700 dark:bg-green-800 dark:text-green-300'>
+              {label}
+            </span>
+          )
+        return label
       },
-      header: 'Status',
+      header: 'Type',
     }),
-    columnHelper.accessor('timestamp', {
-      cell: (info) => (
-        <Tooltip text={utcToLocalTime(info.getValue())}>
-          <div>{utcToLocalRelativeTime(info.getValue())}</div>
-        </Tooltip>
-      ),
-      header: 'Deposit date',
-    }),
-    columnHelper.accessor('created_at', {
-      cell: (info) => (
-        <Link
-          key={`created_at-${info.getValue()}`}
-          data-testid={`created_at-${info.getValue()}`}
-          href={INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, info.getValue())}
-          className='hover:text-primaryAccent'
-        >
-          <div>{info.getValue()}</div>
-        </Link>
-      ),
-      header: 'Deposited on',
-    }),
-  ]
-
-  const withdrawalColumns = [
-    columnHelper.accessor('shares', {
-      cell: (info) =>
-        `${
-          info.row.original.shares > 0
-            ? bigNumberToFormattedString(
-                (BigInt(info.row.original.shares) *
-                  BigInt(info.row.original.operatorCurrentSharePrice)) /
-                  BigInt(10 ** 18) +
-                  BigInt(info.row.original.storage_fee_refund),
-              )
-            : '0'
-        } ${tokenSymbol}`,
-      header: 'Estimated Amount',
+    columnHelper.accessor('amount', {
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
+      header: 'Amount',
     }),
     columnHelper.accessor('status', {
       cell: (info) => {
         const status = info.getValue()
-        if (status === WithdrawalStatus.PENDING_NEXT_EPOCH)
-          return (
-            <Tooltip text='Withdrawal is pending for the next epoch'>
-              <ClockIcon className='h-4 w-4 text-yellow-500' />
-            </Tooltip>
+        if (info.row.original.type === 'deposit') {
+          if (status === DepositStatus.PENDING_NEXT_EPOCH)
+            return (
+              <Tooltip text='Deposit is pending for the next epoch'>
+                <ClockIcon className='h-4 w-4 text-yellow-500' />
+              </Tooltip>
+            )
+          if (status === DepositStatus.ACTIVE)
+            return (
+              <Tooltip text='Deposit is active'>
+                <CheckBadgeIcon className='h-4 w-4 text-green-500' />
+              </Tooltip>
+            )
+          return capitalizeFirstLetter(status)
+        } else if (info.row.original.type === 'withdrawal') {
+          if (status === WithdrawalStatus.PENDING_NEXT_EPOCH)
+            return (
+              <Tooltip text='Withdrawal is pending for the next epoch'>
+                <ClockIcon className='h-4 w-4 text-yellow-500' />
+              </Tooltip>
+            )
+          if (
+            status === WithdrawalStatus.PENDING_UNLOCK_FUNDS ||
+            info.row.original.lastDomainBlockNumber >=
+              info.row.original.domain_block_number_ready_at
           )
-        if (
-          status === WithdrawalStatus.PENDING_UNLOCK_FUNDS ||
-          info.row.original.lastDomainBlockNumber >= info.row.original.domain_block_number_ready_at
-        )
-          return (
-            <Tooltip text='Withdrawal is pending that you unlock your funds'>
-              <ClockIcon className='h-4 w-4 text-green-500' />
-            </Tooltip>
-          )
-        if (status === WithdrawalStatus.PENDING_CHALLENGE_PERIOD)
-          return (
-            <Tooltip text='Withdrawal is pending for the challenge period'>
-              <ClockIcon className='h-4 w-4 text-yellow-500' />
-            </Tooltip>
-          )
-        if (status === WithdrawalStatus.FUNDS_UNLOCKED)
+            return (
+              <Tooltip text='Withdrawal is pending that you unlock your funds'>
+                <ClockIcon className='h-4 w-4 text-green-500' />
+              </Tooltip>
+            )
+          if (status === WithdrawalStatus.PENDING_CHALLENGE_PERIOD)
+            return (
+              <Tooltip text='Withdrawal is pending for the challenge period'>
+                <ClockIcon className='h-4 w-4 text-yellow-500' />
+              </Tooltip>
+            )
+          if (status === WithdrawalStatus.FUNDS_UNLOCKED)
+            return (
+              <Tooltip text='Withdrawal is unlocked'>
+                <CheckBadgeIcon className='h-4 w-4 text-green-500' />
+              </Tooltip>
+            )
+          return capitalizeFirstLetter(status)
+        } else if (info.row.original.type === 'unlocked') {
           return (
             <Tooltip text='Withdrawal is unlocked'>
               <CheckBadgeIcon className='h-4 w-4 text-green-500' />
             </Tooltip>
           )
+        }
         return capitalizeFirstLetter(status)
       },
       header: 'Status',
@@ -235,9 +281,9 @@ export const NominationsTable: FC = () => {
           <div>{utcToLocalRelativeTime(info.getValue())}</div>
         </Tooltip>
       ),
-      header: 'Request date',
+      header: 'Date',
     }),
-    columnHelper.accessor('created_at', {
+    columnHelper.accessor('createdAt', {
       cell: (info) => (
         <Link
           key={`created_at-${info.getValue()}`}
@@ -248,69 +294,28 @@ export const NominationsTable: FC = () => {
           <div>{info.getValue()}</div>
         </Link>
       ),
-      header: 'Requested on',
-    }),
-    columnHelper.accessor('unlocked_at', {
-      cell: (info) => {
-        const unlockedAt = info.getValue()
-        const lastDomainBlockNumber = BigInt(info.row.original.lastDomainBlockNumber)
-        const domainBlockNumberReadyAt = BigInt(info.row.original.domain_block_number_ready_at)
-        const estimatedRemainingTime =
-          (domainBlockNumberReadyAt - lastDomainBlockNumber) * BigInt(6)
-        if (info.row.original.unlockedEvents.length > 0) return <>Unlocked</>
-        if (estimatedRemainingTime <= BigInt(0)) return <>Ready to unlock</>
-        if (unlockedAt === '0')
-          return (
-            <>
-              Not unlocked <CountdownTimer initialTime={estimatedRemainingTime} />
-            </>
-          )
-        return (
-          <Link
-            key={`unlocked_at-${info.getValue()}`}
-            data-testid={`unlocked_at-${info.getValue()}`}
-            href={INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, info.getValue())}
-            className='hover:text-primaryAccent'
-          >
-            <div>{info.getValue()}</div>
-          </Link>
-        )
-      },
-      header: 'Unlocked on',
-    }),
-  ]
-
-  const unlockedEventColumns = [
-    columnHelper.accessor('amount', {
-      cell: (info) =>
-        `${bigNumberToFormattedString(
-          BigInt(info.getValue()) + BigInt(info.row.original.storage_fee),
-        )} ${tokenSymbol}`,
-      header: 'Total',
-    }),
-    columnHelper.accessor('amount', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
-      header: 'Staked',
-    }),
-    columnHelper.accessor('storage_fee', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
-      header: 'Storage Fee',
-    }),
-    columnHelper.accessor('block_height', {
-      cell: (info) => (
-        <Link href={INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, info.getValue())}>
-          <div>{info.getValue()}</div>
-        </Link>
-      ),
       header: 'Block height',
     }),
-    columnHelper.accessor('extrinsic_id', {
+    columnHelper.accessor('extrinsicId', {
       cell: (info) => (
-        <Link href={INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, info.getValue())}>
+        <Link
+          key={`extrinsic_id-${info.getValue()}`}
+          data-testid={`extrinsic_id-${info.getValue()}`}
+          href={INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, info.getValue())}
+          className='hover:text-primaryAccent'
+        >
           <div>{info.getValue()}</div>
         </Link>
       ),
       header: 'Extrinsic',
+    }),
+  ]
+
+  const pendingActionsColumns = [
+    ...historyColumns,
+    columnHelper.accessor('completionDate', {
+      cell: (info) => <div>{info.getValue()}</div>,
+      header: 'Expected Completion',
     }),
   ]
 
@@ -342,44 +347,44 @@ export const NominationsTable: FC = () => {
                       className='w-full rounded-[20px] bg-grayLight p-4 shadow-lg dark:border dark:border-white dark:bg-transparent'
                     >
                       <div className='mb-4 flex flex-col items-start justify-between text-lg font-semibold dark:text-white sm:flex-row sm:items-center'>
-                        <div className='mb-2 sm:mb-0'>
+                        <div className='mb-2 flex flex-col sm:mb-0'>
                           <span className='mr-2'>Operator # {nominator.operator_id}</span>
                           {nominator.domain && (
-                            <span className='text-blueLighterAccent ml-2 text-sm dark:text-blueShade'>
+                            <span className='text-blueLighterAccent text-sm dark:text-buttonLightTo'>
                               on {capitalizeFirstLetter(nominator.domain.name)}
                             </span>
                           )}
                         </div>
-                        <div className='text-sm font-normal'>
-                          Total stake:{' '}
-                          <span className='text-grayDark dark:text-blueLight'>
+                        <div className='w-1/3' />
+                        <div className='flex flex-col text-sm font-normal'>
+                          <span className='text-grayDark dark:text-buttonLightTo'>Total stake</span>
+                          <span className='text-md font-semibold text-grayDark dark:text-blueLight'>
                             {bigNumberToFormattedString(nominator.operator?.current_total_stake)}{' '}
                             {tokenSymbol}
                           </span>
                         </div>
-                        <div className='text-sm font-normal'>
-                          1 day APY:{' '}
-                          <span className='text-grayDark dark:text-blueLight'>
+                        <div className='flex flex-col text-sm font-normal'>
+                          <span className='text-grayDark dark:text-buttonLightTo'>1 day APY</span>
+                          <span className='text-md font-semibold text-grayDark dark:text-blueLight'>
                             {numberFormattedString(nominator.operator?.apy1d * 100)}%
                           </span>
                         </div>
-                        <div className='text-sm font-normal'>
-                          7 day APY:{' '}
-                          <span className='text-grayDark dark:text-blueLight'>
+                        <div className='flex flex-col text-sm font-normal'>
+                          <span className='text-grayDark dark:text-buttonLightTo'>7 day APY</span>
+                          <span className='text-md font-semibold text-grayDark dark:text-blueLight'>
                             {numberFormattedString(nominator.operator?.apy7d * 100)}%
                           </span>
                         </div>
-                        <div className='text-sm font-normal'>
-                          30 day APY:{' '}
-                          <span className='text-grayDark dark:text-blueLight'>
+                        <div className='flex flex-col text-sm font-normal'>
+                          <span className='text-grayDark dark:text-buttonLightTo'>30 day APY</span>
+                          <span className='text-md font-semibold text-grayDark dark:text-blueLight'>
                             {numberFormattedString(nominator.operator?.apy30d * 100)}%
                           </span>
                         </div>
-                        <div className='text-sm font-normal'>
-                          Status:{' '}
-                          <span className='text-grayDark dark:text-blueLight'>
-                            {allCapsToNormal(nominator.operator?.status ?? '')}
-                          </span>
+                        <div className='flex flex-col text-sm font-normal'>
+                          <OperatorStatusBadge
+                            status={nominator.operator?.status as OperatorStatus}
+                          />
                         </div>
                         <div className='mt-2 sm:mt-0'>
                           {(() => {
@@ -423,105 +428,106 @@ export const NominationsTable: FC = () => {
                           })()}
                         </div>
                       </div>
-                      <div className='flex flex-col justify-between sm:flex-row'>
-                        <div className='w-full sm:w-1/2 sm:pr-4'>
-                          <div className='mb-2 flex items-center justify-between'>
-                            <h4 className='text-md font-medium text-grayDark dark:text-blueLight'>
-                              Deposits
-                            </h4>
-                            {nominator.operator?.status === OperatorStatus.ACTIVE && (
-                              <NominationButton
-                                handleAction={handleAction}
-                                row={
-                                  {
-                                    original: {
-                                      id: nominator.operator_id,
-                                      // eslint-disable-next-line camelcase
-                                      current_total_shares: nominator.operator
-                                        ? nominator.operator.current_total_shares
-                                        : BIGINT_ZERO,
-                                    },
-                                  } as ActionsDropdownRow
-                                }
-                              />
-                            )}
-                          </div>
-                          <SortedTable
-                            data={nominator.deposits}
-                            columns={depositColumns}
-                            showNavigation={false}
-                            pageCount={1}
-                            emptyMessage='No deposits to show'
-                          />
-                        </div>
-                        <div className='w-full sm:mt-0 sm:w-1/2 sm:pl-4'>
-                          <div className='mb-2 flex items-center justify-between'>
-                            <h4 className='text-md font-medium text-grayDark dark:text-blueLight'>
-                              Withdrawals Requested
-                            </h4>
-                            <div className='flex gap-2'>
-                              {nominator.operator?.status === OperatorStatus.ACTIVE && (
-                                <WithdrawButton
-                                  handleAction={handleAction}
-                                  row={
-                                    {
-                                      original: {
-                                        id: nominator.operator_id,
-                                        // eslint-disable-next-line camelcase
-                                        current_total_shares: nominator.operator
-                                          ? nominator.operator.current_total_shares
-                                          : BIGINT_ZERO,
-                                      },
-                                    } as ActionsDropdownRow
-                                  }
+                      <div className='mb-4 w-full items-start justify-between text-lg font-semibold dark:text-white sm:flex-row sm:items-center'>
+                        <PageTabs isDesktop={isDesktop}>
+                          <Tab title='Overview'>
+                            <div className='flex w-full flex-col items-start'>
+                              <div className='w-full'>
+                                <div className='mb-2 flex w-full items-center justify-between'>
+                                  <div className='w-1/4'>
+                                    <h4 className='text-md font-medium text-grayDark dark:text-blueLight'>
+                                      Pending Actions
+                                    </h4>
+                                  </div>
+                                  <div className='flex w-full items-end justify-end'>
+                                    {nominator.operator?.status === OperatorStatus.ACTIVE && (
+                                      <div className='ml-2 w-[200px]'>
+                                        <NominationButton
+                                          handleAction={handleAction}
+                                          row={
+                                            {
+                                              original: {
+                                                id: nominator.operator_id,
+                                                // eslint-disable-next-line camelcase
+                                                current_total_shares: nominator.operator
+                                                  ? nominator.operator.current_total_shares
+                                                  : BIGINT_ZERO,
+                                              },
+                                            } as ActionsDropdownRow
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                    {nominator.operator?.status === OperatorStatus.ACTIVE && (
+                                      <div className='ml-2 w-[200px]'>
+                                        <WithdrawButton
+                                          handleAction={handleAction}
+                                          row={
+                                            {
+                                              original: {
+                                                id: nominator.operator_id,
+                                                // eslint-disable-next-line camelcase
+                                                current_total_shares: nominator.operator
+                                                  ? nominator.operator.current_total_shares
+                                                  : BIGINT_ZERO,
+                                              },
+                                            } as ActionsDropdownRow
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                    {nominator.withdrawals.find(
+                                      (w) => w.status === WithdrawalStatus.PENDING_UNLOCK_FUNDS,
+                                    ) && (
+                                      <div className='ml-2 w-[200px]'>
+                                        <UnlockFundsButton
+                                          handleAction={handleAction}
+                                          row={
+                                            {
+                                              original: {
+                                                id: nominator.operator_id,
+                                                // eslint-disable-next-line camelcase
+                                                current_total_shares: nominator.operator
+                                                  ? nominator.operator.current_total_shares
+                                                  : BIGINT_ZERO,
+                                              },
+                                            } as ActionsDropdownRow
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                <SortedTable
+                                  data={nominator.history.filter((h) => h.isPending)}
+                                  columns={pendingActionsColumns}
+                                  showNavigation={false}
+                                  pageCount={1}
+                                  emptyMessage='No pending actions to show'
                                 />
-                              )}
-                              {nominator.withdrawals.find(
-                                (w) =>
-                                  (w.status === WithdrawalStatus.PENDING_UNLOCK_FUNDS ||
-                                    w.lastDomainBlockNumber >= w.domain_block_number_ready_at) &&
-                                  w.unlockedEvents.length === 0,
-                              ) && (
-                                <UnlockFundsButton
-                                  handleAction={handleAction}
-                                  row={
-                                    {
-                                      original: {
-                                        id: nominator.operator_id,
-                                        // eslint-disable-next-line camelcase
-                                        current_total_shares: nominator.operator
-                                          ? nominator.operator.current_total_shares
-                                          : BIGINT_ZERO,
-                                      },
-                                    } as ActionsDropdownRow
-                                  }
-                                />
-                              )}
+                              </div>
                             </div>
-                          </div>
-                          <SortedTable
-                            data={nominator.withdrawals}
-                            columns={withdrawalColumns}
-                            showNavigation={false}
-                            pageCount={1}
-                            emptyMessage='No withdrawals to show'
-                          />
-                        </div>
+                          </Tab>
+                          <Tab title='Transaction History'>
+                            <div className='flex w-full flex-col items-start'>
+                              <div className='w-full'>
+                                <div className='mb-2 flex items-center justify-between'>
+                                  <h4 className='text-md font-medium text-grayDark dark:text-blueLight'>
+                                    Transaction History
+                                  </h4>
+                                </div>
+                                <SortedTable
+                                  data={nominator.history}
+                                  columns={historyColumns}
+                                  showNavigation={false}
+                                  pageCount={1}
+                                  emptyMessage='No staking transactions to show'
+                                />
+                              </div>
+                            </div>
+                          </Tab>
+                        </PageTabs>
                       </div>
-                      {nominator.unlocked_events.length > 0 && (
-                        <div className='flex flex-col gap-2'>
-                          <h4 className='text-md font-medium text-grayDark dark:text-blueLight'>
-                            Unlocked Funds
-                          </h4>
-                          <SortedTable
-                            data={nominator.unlocked_events}
-                            columns={unlockedEventColumns}
-                            showNavigation={false}
-                            pageCount={1}
-                            emptyMessage='No unlocked events to show'
-                          />
-                        </div>
-                      )}
                     </div>
                   ))
                 ) : (
