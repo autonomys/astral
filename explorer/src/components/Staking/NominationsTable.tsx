@@ -23,7 +23,6 @@ import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { bigNumberToFormattedString, numberFormattedString, numberWithCommas } from 'utils/number'
-import { allCapsToNormal } from 'utils/string'
 import { formatSeconds, utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 import { PageTabs } from '../common/PageTabs'
 import { Tab } from '../common/Tabs'
@@ -33,6 +32,7 @@ import { ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { NominationButton } from './NominationButton'
 import { OperatorActions } from './OperatorActions'
+import { OperatorStatusBadge } from './OperatorStatusBadge'
 import { UnlockFundsButton } from './UnlockFundsButton'
 import { WithdrawButton } from './WithdrawButton'
 
@@ -51,19 +51,6 @@ export const NominationsTable: FC = () => {
     type: OperatorActionType.None,
     operatorId: null,
   })
-
-  const OPERATOR_STATUS_CLASSNAME = {
-    [OperatorStatus.PENDING_NEXT_EPOCH]:
-      'border-yellow-700 bg-yellow-300 dark:bg-yellow-800 text-yellow-700 dark:text-yellow-300',
-    [OperatorStatus.ACTIVE]:
-      'border-green-700 bg-green-200 dark:bg-green-800 text-green-700 dark:text-green-500',
-    [OperatorStatus.DEREGISTERED]:
-      'border-red-700 bg-red-300 dark:bg-red-300 text-red-700 dark:text-red-700',
-    [OperatorStatus.NOMINATORS_UNLOCKED]:
-      'border-pink-700 bg-pink-200 dark:bg-pink-300 text-pink-700 dark:text-pink-700',
-    [OperatorStatus.SLASHED]:
-      'border-red-700 bg-red-300 dark:bg-red-300 text-red-700 dark:text-red-700',
-  }
 
   const handleAction = useCallback((value: OperatorAction) => {
     setAction(value)
@@ -206,19 +193,19 @@ export const NominationsTable: FC = () => {
         const label = capitalizeFirstLetter(type)
         if (type === 'deposit')
           return (
-            <span className='rounded-full border border-blue-500 bg-blue-200 px-2 py-1 text-blue-500 dark:bg-blue-800 dark:text-blue-300'>
+            <span className='rounded-full bg-blue-200 px-2.5 py-1 text-sm text-blue-500 dark:bg-blue-800 dark:text-blue-300'>
               {label}
             </span>
           )
         if (type === 'withdrawal')
           return (
-            <span className='rounded-full border border-red-500 bg-red-200 px-2 py-1 text-red-500 dark:bg-red-800 dark:text-red-300'>
+            <span className='rounded-full bg-red-200 px-2.5 py-1 text-sm text-red-500 dark:bg-red-800 dark:text-red-300'>
               {label}
             </span>
           )
         if (type === 'unlocked')
           return (
-            <span className='rounded-full border border-green-500 bg-green-200 px-2 py-1 text-green-500 dark:bg-green-800 dark:text-green-300'>
+            <span className='rounded-full bg-green-200 px-2.5 py-1 text-sm text-green-700 dark:bg-green-800 dark:text-green-300'>
               {label}
             </span>
           )
@@ -395,11 +382,9 @@ export const NominationsTable: FC = () => {
                           </span>
                         </div>
                         <div className='flex flex-col text-sm font-normal'>
-                          <span
-                            className={`text-md rounded-full border px-2 py-1 font-semibold ${OPERATOR_STATUS_CLASSNAME[nominator.operator?.status as OperatorStatus]}`}
-                          >
-                            {allCapsToNormal(nominator.operator?.status ?? '')}
-                          </span>
+                          <OperatorStatusBadge
+                            status={nominator.operator?.status as OperatorStatus}
+                          />
                         </div>
                         <div className='mt-2 sm:mt-0'>
                           {(() => {
