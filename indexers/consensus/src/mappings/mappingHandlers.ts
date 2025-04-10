@@ -39,7 +39,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const height = BigInt(number.toString());
   const blockHash = hash.toString();
   const blockTimestamp = timestamp ? timestamp : new Date(0);
-  const authorId = getBlockAuthor(_block);
+  let authorId = getBlockAuthor(_block);
   const eventsCount = events.length;
   const extrinsicsCount = extrinsics.length;
 
@@ -69,6 +69,14 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     },
     [{}, []]
   );
+
+  const blockReward = finalizationEvents.find(
+    (event) =>
+      event.event.section === "rewards" && event.event.method === "BlockReward"
+  );
+  if (blockReward) {
+    authorId = blockReward.event.data[0].toString();
+  }
 
   // Process extrinsics
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
