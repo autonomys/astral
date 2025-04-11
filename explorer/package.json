@@ -89,6 +89,7 @@
     "react-paginate": "^8.3.0",
     "react-spring": "^9.7.5",
     "siwe": "^2.3.2",
+    "swagger-ui-react": "^5.20.7",
     "swiper": "^11.2.6",
     "tailwind-datepicker-react": "^1.4.3",
     "tailwind-merge": "^2.6.0",

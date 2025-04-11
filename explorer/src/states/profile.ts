@@ -144,7 +144,7 @@ export const useProfileStates = create<ProfileStateAndHelper>((set) => ({
       })
       if (!response.ok) throw new Error('Failed to read profile')
       const data = await response.json()
-      console.log('data', data)
+
       if (!data.success) throw new Error('Failed to read profile')
       set(() => ({
         profile: data.profile,
