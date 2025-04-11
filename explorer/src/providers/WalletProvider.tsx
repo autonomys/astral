@@ -110,6 +110,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
 
   const _changeAccount = useCallback(
     async (account: WalletAccountWithType, newInjector: InjectedExtension) => {
+      setInjector(newInjector)
       try {
         const type =
           account.type === WalletType.subspace || (account as { type: string }).type === 'sr25519'
@@ -156,6 +157,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         })
         setSubspaceAccount(_subspaceAccount)
         setPreferredAccount(account.address)
+        await setup()
         setIsReady(true)
 
         sendGAEvent({
@@ -166,7 +168,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         console.error('Failed to change account', error)
       }
     },
-    [],
+    [setPreferredAccount, setup],
   )
 
   const changeAccount = useCallback(
@@ -211,7 +213,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       const { walletAccounts, newInjector } = await handleGetWalletFromExtension(source)
       if (!walletAccounts || walletAccounts.length === 0) return
       const mainAccount = walletAccounts.find((account) => account.source === source)
-      if (mainAccount && newInjector) _changeAccount(mainAccount, newInjector)
+      if (mainAccount) _changeAccount(mainAccount, newInjector)
     },
     [handleGetWalletFromExtension, _changeAccount],
   )
@@ -234,7 +236,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const initializeWallet = async () => {
-      if (actingAccount?.source && !injector) {
+      if (actingAccount?.source) {
         try {
           const { web3FromSource } = await import('@polkadot/extension-dapp')
           const newInjector = await web3FromSource(actingAccount.source)
