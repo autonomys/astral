@@ -256,6 +256,8 @@ export const EXTERNAL_ROUTES = {
   autoDrivePackage: 'https://www.npmjs.com/package/@autonomys/auto-drive',
   autoDagPackage: 'https://www.npmjs.com/package/@autonomys/auto-dag-data',
   autoDriveRestApi: 'https://mainnet.auto-drive.autonomys.xyz/api/docs',
+  autoDriveTestnetSwaggerApi: 'https://demo.auto-drive.autonomys.xyz/api/docs/raw',
+  autoDriveMainnetSwaggerApi: 'https://mainnet.auto-drive.autonomys.xyz/api/docs/raw',
 }
 
 export const INTERNAL_ROUTES = {

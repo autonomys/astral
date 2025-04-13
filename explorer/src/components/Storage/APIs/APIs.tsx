@@ -1,13 +1,16 @@
 'use client'
 
+import { EXTERNAL_ROUTES } from '@/constants/routes'
 import { useParams } from 'next/navigation'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import SwaggerUI from 'swagger-ui-react'
 import 'swagger-ui-react/swagger-ui.css'
 import swagger from './swagger.json'
+
 export const APIs: FC = () => {
   const { chain } = useParams()
-  const [filteredSpec, setFilteredSpec] = useState(swagger)
+  const [isLoading, setIsLoading] = useState(true)
+  const [specData, setSpecData] = useState(swagger)
 
   // Apply dark mode styling
   useEffect(() => {
@@ -33,12 +36,32 @@ export const APIs: FC = () => {
     return () => observer.disconnect()
   }, [])
 
-  // Filter swagger spec based on network selection
   useEffect(() => {
-    // Deep clone the swagger spec to avoid mutating the original
-    const specCopy = JSON.parse(JSON.stringify(swagger))
+    const fetchSpecData = async () => {
+      setIsLoading(true)
+      try {
+        let url = EXTERNAL_ROUTES.autoDriveMainnetSwaggerApi
+        if (chain === 'taurus') {
+          url = EXTERNAL_ROUTES.autoDriveTestnetSwaggerApi
+        }
+        const response = await fetch(url)
+        if (!response.ok) {
+          throw new Error(`Failed to fetch API specification: ${response.status}`)
+        }
+        const data = await response.json()
+        setSpecData(data)
+      } catch (error) {
+        console.error('Error fetching Swagger specification:', error)
+        setSpecData(swagger)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchSpecData()
+  }, [chain])
 
-    // Filter servers based on selected network
+  const filteredSpec = useMemo(() => {
+    const specCopy = JSON.parse(JSON.stringify(specData))
     if (chain === 'taurus') {
       specCopy.servers = specCopy.servers.filter((server: { description: string }) =>
         server.description.toLowerCase().includes('testnet'),
@@ -48,14 +71,19 @@ export const APIs: FC = () => {
         server.description.toLowerCase().includes('mainnet'),
       )
     }
-
-    setFilteredSpec(specCopy)
-  }, [chain])
+    return specCopy
+  }, [specData, chain])
 
   return (
     <div className='container mx-auto'>
       <div className='rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-boxDark'>
-        <SwaggerUI spec={filteredSpec} />
+        {isLoading ? (
+          <div className='flex h-64 items-center justify-center'>
+            <div className='border-primary h-12 w-12 animate-spin rounded-full border-b-2 border-t-2'></div>
+          </div>
+        ) : (
+          <SwaggerUI spec={filteredSpec} />
+        )}
       </div>
     </div>
   )
