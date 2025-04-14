@@ -1,6 +1,5 @@
 'use client'
 
-import { EXTERNAL_ROUTES } from '@/constants/routes'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import SwaggerUI from 'swagger-ui-react'
@@ -39,9 +38,12 @@ export const APIs: FC = () => {
     const fetchSpecData = async () => {
       setIsLoading(true)
       try {
-        let url = EXTERNAL_ROUTES.autoMainnetSwaggerApi
-        if (chain === 'taurus') {
-          url = EXTERNAL_ROUTES.autoTestnetSwaggerApi
+        let url = process.env.NEXT_PUBLIC_TAURUS_API_DOCS_URL
+        if (chain === 'mainnet') {
+          url = process.env.NEXT_PUBLIC_MAINNET_API_DOCS_URL
+        }
+        if (!url) {
+          throw new Error('API docs URL is not defined')
         }
         const response = await fetch(url)
         if (!response.ok) {
