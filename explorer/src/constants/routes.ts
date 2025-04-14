@@ -209,16 +209,16 @@ export const ROUTES: Route[] = [
         title: 'Profile',
       },
       {
-        name: RoutesProfile.apis,
-        title: 'APIs Docs',
-      },
-      {
         name: RoutesProfile.wallets,
         title: 'Wallets',
       },
       {
         name: RoutesProfile.apiKeys,
         title: 'API Keys',
+      },
+      {
+        name: RoutesProfile.apis,
+        title: 'APIs Docs',
       },
       {
         name: RoutesProfile.tags,
