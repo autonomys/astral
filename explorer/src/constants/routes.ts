@@ -28,7 +28,6 @@ export enum RoutesConsensus {
 export enum RoutesStorage {
   files = Routes.storage + '/files',
   folders = Routes.storage + '/folders',
-  apis = Routes.storage + '/apis',
 }
 
 export enum RoutesStaking {
@@ -56,6 +55,7 @@ export enum RoutesTransfer {
 
 export enum RoutesProfile {
   profile = '/profile',
+  apis = Routes.profile + '/apis',
   wallets = Routes.profile + '/wallets',
   apiKeys = Routes.profile + '/api-keys',
   tags = Routes.profile + '/tags',
@@ -113,10 +113,6 @@ export const ROUTES: Route[] = [
       {
         name: RoutesStorage.folders,
         title: 'Folders',
-      },
-      {
-        name: RoutesStorage.apis,
-        title: 'APIs',
       },
     ],
   },
@@ -213,6 +209,10 @@ export const ROUTES: Route[] = [
         title: 'Profile',
       },
       {
+        name: RoutesProfile.apis,
+        title: 'APIs Docs',
+      },
+      {
         name: RoutesProfile.wallets,
         title: 'Wallets',
       },
@@ -256,8 +256,8 @@ export const EXTERNAL_ROUTES = {
   autoDrivePackage: 'https://www.npmjs.com/package/@autonomys/auto-drive',
   autoDagPackage: 'https://www.npmjs.com/package/@autonomys/auto-dag-data',
   autoDriveRestApi: 'https://mainnet.auto-drive.autonomys.xyz/api/docs',
-  autoDriveTestnetSwaggerApi: 'https://demo.auto-drive.autonomys.xyz/api/docs/raw',
-  autoDriveMainnetSwaggerApi: 'https://mainnet.auto-drive.autonomys.xyz/api/docs/raw',
+  autoTestnetSwaggerApi: 'https://subql.blue.taurus.subspace.network/api/docs/raw',
+  autoMainnetSwaggerApi: 'https://subql.blue.mainnet.subspace.network/api/docs/raw',
 }
 
 export const INTERNAL_ROUTES = {

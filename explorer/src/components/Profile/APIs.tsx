@@ -2,15 +2,14 @@
 
 import { EXTERNAL_ROUTES } from '@/constants/routes'
 import { useParams } from 'next/navigation'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import SwaggerUI from 'swagger-ui-react'
 import 'swagger-ui-react/swagger-ui.css'
-import swagger from './swagger.json'
 
 export const APIs: FC = () => {
   const { chain } = useParams()
   const [isLoading, setIsLoading] = useState(true)
-  const [specData, setSpecData] = useState(swagger)
+  const [specData, setSpecData] = useState(null)
 
   // Apply dark mode styling
   useEffect(() => {
@@ -40,9 +39,9 @@ export const APIs: FC = () => {
     const fetchSpecData = async () => {
       setIsLoading(true)
       try {
-        let url = EXTERNAL_ROUTES.autoDriveMainnetSwaggerApi
+        let url = EXTERNAL_ROUTES.autoMainnetSwaggerApi
         if (chain === 'taurus') {
-          url = EXTERNAL_ROUTES.autoDriveTestnetSwaggerApi
+          url = EXTERNAL_ROUTES.autoTestnetSwaggerApi
         }
         const response = await fetch(url)
         if (!response.ok) {
@@ -52,27 +51,12 @@ export const APIs: FC = () => {
         setSpecData(data)
       } catch (error) {
         console.error('Error fetching Swagger specification:', error)
-        setSpecData(swagger)
       } finally {
         setIsLoading(false)
       }
     }
     fetchSpecData()
   }, [chain])
-
-  const filteredSpec = useMemo(() => {
-    const specCopy = JSON.parse(JSON.stringify(specData))
-    if (chain === 'taurus') {
-      specCopy.servers = specCopy.servers.filter((server: { description: string }) =>
-        server.description.toLowerCase().includes('testnet'),
-      )
-    } else if (chain === 'mainnet') {
-      specCopy.servers = specCopy.servers.filter((server: { description: string }) =>
-        server.description.toLowerCase().includes('mainnet'),
-      )
-    }
-    return specCopy
-  }, [specData, chain])
 
   return (
     <div className='container mx-auto'>
@@ -82,7 +66,7 @@ export const APIs: FC = () => {
             <div className='border-primary h-12 w-12 animate-spin rounded-full border-b-2 border-t-2'></div>
           </div>
         ) : (
-          <SwaggerUI spec={filteredSpec} />
+          <SwaggerUI spec={specData} />
         )}
       </div>
     </div>
