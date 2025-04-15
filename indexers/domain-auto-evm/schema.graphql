@@ -92,7 +92,9 @@ type Transfer @entity {
   toChain: String!
   value: BigInt!
   fee: BigInt!
+  type: String!
   success: Boolean!
+  isFinalized: Boolean!
   timestamp: Date!
 }
 

@@ -133,7 +133,7 @@ export const POST = async (req: NextRequest) => {
       NETWORK,
     )
 
-    if (data.users_wallets.length === 0)
+    if (!data || !data.users_wallets || data.users_wallets.length === 0)
       return NextResponse.json({
         message: 'Profile not found',
         success: false,

@@ -202,7 +202,24 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
     })
   }
 
-  // Save the cropped image
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setCrop({
+        unit: '%',
+        width: 100,
+        height: 100,
+        x: 0,
+        y: 0,
+      })
+      setCompletedCrop(null)
+      setZoom(1)
+      setUploadProgress(0)
+      setIsUploading(false)
+    }
+  }, [isOpen])
+
+  // Handle save and close
   const handleSave = async () => {
     if (imgRef.current && completedCrop) {
       try {
@@ -211,6 +228,7 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
           setIsUploading(true)
           const cid = await uploadImageToCID(croppedImageUrl)
           onSaveImage(cid)
+          onClose() // Close modal after successful save
         }
       } catch (e) {
         console.error('Error saving cropped image:', e)
