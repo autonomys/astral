@@ -80,7 +80,7 @@ export const NetworkSelector: FC<NetworkSelectorProps> = ({ direction }) => {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute right-0 z-50 mt-1 max-h-40 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+          <Listbox.Options className='absolute right-0 top-9 z-50 mt-1 max-h-40 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
             {networkList.map((network) => (
               <Listbox.Option
                 key={`domain-book-saved-${network.id}-label-${network.name}`}
@@ -97,7 +97,7 @@ export const NetworkSelector: FC<NetworkSelectorProps> = ({ direction }) => {
                     <div className={`px-2 ${selected ? 'bg-grayLighter' : 'bg-transparent'}`}>
                       <div className='flex items-center'>
                         <AutonomysSymbol />
-                        <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full '>
+                        <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full'>
                           {network.name}
                         </span>
                       </div>
