@@ -3,3 +3,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Dark mode styles for Swagger UI */
+.swagger-ui-dark {
+  --swagger-bg: #1e1e2d;
+  --swagger-text: #f8f9fa;
+  --swagger-border: #3a3a4a;
+  --swagger-accent: #3b82f6;
+  --swagger-code-bg: #2d2d3a;
+  --swagger-param-bg: #2a2a38;
+  --swagger-table-row: rgba(255, 255, 255, 0.03);
+  --swagger-btn-bg: #2d2d3a;
+  --swagger-btn-text: #e2e8f0;
+  filter: invert(88%) hue-rotate(180deg);
+}
+.swagger-ui-dark img {
+  filter: invert(100%) hue-rotate(180deg);
+}
+.swagger-ui-dark .microlight {
+  filter: invert(100%) hue-rotate(180deg);
+  background-color: var(--swagger-code-bg);
+}
+.swagger-ui-dark svg {
+  filter: invert(100%) hue-rotate(180deg);
+}
+.swagger-ui {
+  .info {
+    margin: 0px !important;
+  }
+  .title small {
+    padding: 0px 5px 0px 5px !important;
+  }
+}

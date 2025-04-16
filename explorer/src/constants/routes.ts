@@ -55,6 +55,7 @@ export enum RoutesTransfer {
 
 export enum RoutesProfile {
   profile = '/profile',
+  apis = Routes.profile + '/apis',
   wallets = Routes.profile + '/wallets',
   apiKeys = Routes.profile + '/api-keys',
   tags = Routes.profile + '/tags',
@@ -214,6 +215,10 @@ export const ROUTES: Route[] = [
       {
         name: RoutesProfile.apiKeys,
         title: 'API Keys',
+      },
+      {
+        name: RoutesProfile.apis,
+        title: 'APIs Docs',
       },
       {
         name: RoutesProfile.tags,
