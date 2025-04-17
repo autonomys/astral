@@ -1027,7 +1027,7 @@ DECLARE
 BEGIN
     SELECT id INTO withdrawal_id
     FROM staking.withdrawals
-    WHERE status = 'PENDING_UNLOCK_FUNDS' AND account_id = NEW.account_id
+    WHERE status = 'PENDING_UNLOCK_FUNDS' AND nominator_id = NEW.nominator_id
     ORDER BY created_at ASC
     LIMIT 1;
 
