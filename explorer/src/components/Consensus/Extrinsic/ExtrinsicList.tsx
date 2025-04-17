@@ -51,9 +51,9 @@ export const ExtrinsicList: FC = () => {
         },
       }),
       // Section
-      ...(filters.section && { section: { _eq: `%${filters.section}%` } }),
+      ...(filters.section && { section: { _eq: `${filters.section}` } }),
       // Module
-      ...(filters.module && { module: { _eq: `%${filters.module}%` } }),
+      ...(filters.module && { module: { _eq: `${filters.module}` } }),
     }),
     [filters, whereForSearch],
   )
