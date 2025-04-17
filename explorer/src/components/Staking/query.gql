@@ -25,6 +25,7 @@ query NominationsList(
       status
       raw_status
       current_total_stake
+      current_storage_fee_deposit
       current_total_shares
       current_share_price
       apy30d: current_30d_apy
@@ -50,6 +51,7 @@ query NominationsList(
       amount
       storage_fee_deposit
       total_amount
+      estimated_shares
       timestamp
       extrinsic_id
       status
