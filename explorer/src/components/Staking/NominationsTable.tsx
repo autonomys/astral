@@ -7,7 +7,7 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState, createColumnHelper } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { BIGINT_ZERO } from 'constants/general'
+import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { DepositStatus, OperatorStatus, WithdrawalStatus } from 'constants/staking'
 import {
@@ -172,9 +172,43 @@ export const NominationsTable: FC = () => {
             const history = [...depositHistory, ...withdrawalHistory, ...unlockedHistory].sort(
               (a, b) => a.createdAt - b.createdAt,
             )
+            const totalShares = n.deposits.reduce(
+              (acc, curr) => acc + BigInt(curr.estimated_shares),
+              BIGINT_ZERO,
+            )
+            const estimatedStake = BigInt(n.operator?.current_share_price) * totalShares
+            const totalStaked =
+              estimatedStake > BIGINT_ZERO
+                ? estimatedStake / SHARES_CALCULATION_MULTIPLIER
+                : BIGINT_ZERO
+            const operatorShares = n.operator
+              ? BigInt(n.operator.current_total_shares)
+              : BIGINT_ZERO
+            const storageFunds =
+              n.operator && operatorShares > BIGINT_ZERO
+                ? (BigInt(n.operator.current_storage_fee_deposit) * totalShares) / operatorShares
+                : BIGINT_ZERO
+            const totalDeposits = n.deposits.reduce(
+              (acc, curr) => acc + BigInt(curr.total_amount),
+              BIGINT_ZERO,
+            )
+            const totalWithdrawals = n.withdrawals.reduce(
+              (acc, curr) => acc + BigInt(curr.total_amount),
+              BIGINT_ZERO,
+            )
+            const pendingWithdrawals = n.withdrawals
+              .filter((w) => w.status !== WithdrawalStatus.FUNDS_UNLOCKED)
+              .reduce((acc, curr) => acc + BigInt(curr.estimated_amount), BIGINT_ZERO)
+            const estimatedRewards = totalStaked - (totalDeposits - totalWithdrawals)
+            const totalRewards = estimatedRewards > BIGINT_ZERO ? estimatedRewards : BIGINT_ZERO
             return {
               ...n,
               history,
+              totalShares,
+              totalStaked,
+              storageFunds,
+              pendingWithdrawals,
+              totalRewards,
             }
           })
         : [],
@@ -436,7 +470,7 @@ export const NominationsTable: FC = () => {
                                 <div className='mb-2 flex w-full items-center justify-between'>
                                   <div className='w-1/4'>
                                     <h4 className='text-md font-medium text-grayDark dark:text-blueLight'>
-                                      Pending Actions
+                                      Current Position
                                     </h4>
                                   </div>
                                   <div className='flex w-full items-end justify-end'>
@@ -496,6 +530,51 @@ export const NominationsTable: FC = () => {
                                         />
                                       </div>
                                     )}
+                                  </div>
+                                </div>
+                                <div className='mb-2 flex w-full items-center justify-between rounded-md bg-blueLight p-2 dark:bg-buttonDarkTo'>
+                                  <div className='m-4 flex w-1/4 flex-col rounded-md bg-boxLight p-2 dark:bg-boxDark'>
+                                    <span className='font-xs text-grayDark dark:text-buttonLightTo'>
+                                      Staked Amount
+                                    </span>
+                                    <span className='mt-1 text-sm font-semibold text-grayDark dark:text-blueLight'>
+                                      {bigNumberToFormattedString(nominator.totalStaked)}{' '}
+                                      {tokenSymbol}
+                                    </span>
+                                  </div>
+                                  <div className='m-4 flex w-1/4 flex-col rounded-md bg-boxLight p-2 dark:bg-boxDark'>
+                                    <span className='font-xs text-grayDark dark:text-buttonLightTo'>
+                                      Storage Fund
+                                    </span>
+                                    <span className='mt-1 text-sm font-semibold text-grayDark dark:text-blueLight'>
+                                      {bigNumberToFormattedString(nominator.storageFunds)}{' '}
+                                      {tokenSymbol}
+                                    </span>
+                                  </div>
+                                  <div className='m-4 flex w-1/4 flex-col rounded-md bg-boxLight p-2 dark:bg-boxDark'>
+                                    <span className='font-xs text-grayDark dark:text-buttonLightTo'>
+                                      Pending Withdrawals
+                                    </span>
+                                    <span className='mt-1 text-sm font-semibold text-grayDark dark:text-blueLight'>
+                                      {bigNumberToFormattedString(nominator.pendingWithdrawals)}{' '}
+                                      {tokenSymbol}
+                                    </span>
+                                  </div>
+                                  <div className='m-4 flex w-1/4 flex-col rounded-md bg-boxLight p-2 dark:bg-boxDark'>
+                                    <span className='font-xs text-grayDark dark:text-buttonLightTo'>
+                                      Total Reward
+                                    </span>
+                                    <span className='mt-1 text-sm font-semibold text-grayDark dark:text-blueLight'>
+                                      {bigNumberToFormattedString(nominator.totalRewards)}{' '}
+                                      {tokenSymbol}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className='mb-2 flex w-full items-center justify-between'>
+                                  <div className='w-1/4'>
+                                    <h4 className='text-md font-medium text-grayDark dark:text-blueLight'>
+                                      Pending Actions
+                                    </h4>
                                   </div>
                                 </div>
                                 <SortedTable
