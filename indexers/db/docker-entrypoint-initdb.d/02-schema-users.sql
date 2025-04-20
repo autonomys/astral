@@ -129,3 +129,15 @@ CREATE TABLE users.tags (
 );
 ALTER TABLE users.tags OWNER TO postgres;
 ALTER TABLE ONLY users.tags ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
+
+CREATE TABLE users.session (
+    id TEXT NOT NULL,
+    dids TEXT[] NOT NULL,
+    data jsonb NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (id)
+);
+ALTER TABLE users.session OWNER TO postgres;
+ALTER TABLE ONLY users.session ADD CONSTRAINT session_pkey PRIMARY KEY (id);
