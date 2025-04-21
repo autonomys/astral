@@ -30,7 +30,7 @@ type Props = {
   accountId: string
 }
 
-type Row = ExtrinsicsByAccountIdQuery['consensus_extrinsics'][0]
+type Row = NonNullable<ExtrinsicsByAccountIdQuery['consensus_accounts_by_pk']>['extrinsics'][0]
 
 export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
@@ -64,12 +64,13 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const variables = useMemo(() => {
     return {
+      accountId,
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
       where,
     }
-  }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
+  }, [accountId, orderBy, pagination.pageIndex, pagination.pageSize, where])
 
   const { loading, setIsVisible } = useIndexersQuery<
     ExtrinsicsByAccountIdQuery,
@@ -88,7 +89,10 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const consensusEntry = useQueryStates((state) => state.consensus.accountExtrinsic)
 
   const extrinsics = useMemo(
-    () => hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics,
+    () =>
+      hasValue(consensusEntry) &&
+      consensusEntry.value.consensus_accounts_by_pk &&
+      consensusEntry.value.consensus_accounts_by_pk.extrinsics,
     [consensusEntry],
   )
 
@@ -97,7 +101,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
       downloadFullData(
         apolloClient,
         ExtrinsicsByAccountIdDocument,
-        'consensus_extrinsics',
+        'consensus_accounts_by_pk.extrinsics',
         variables,
       ),
     [apolloClient, variables],
@@ -105,8 +109,9 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const totalCount = useMemo(
     () =>
-      hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics_aggregate.aggregate
-        ? consensusEntry.value.consensus_extrinsics_aggregate.aggregate.count
+      hasValue(consensusEntry) &&
+      consensusEntry.value.consensus_accounts_by_pk?.extrinsics_aggregate.aggregate
+        ? consensusEntry.value.consensus_accounts_by_pk.extrinsics_aggregate.aggregate.count
         : 0,
     [consensusEntry],
   )

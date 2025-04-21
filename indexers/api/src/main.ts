@@ -92,6 +92,10 @@ async function bootstrap() {
     },
   });
 
+  app.use('/docs/raw', (req, res) => {
+    res.json(document);
+  });
+
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(3000);

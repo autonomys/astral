@@ -149,3 +149,16 @@ export type LeaderboardFilters = {
   valueMin: string
   valueMax: string
 }
+
+export type TransfersFilters = {
+  fromChain: string
+  toChain: string
+  valueMin: string
+  valueMax: string
+  success: string
+  feeMin: string
+  feeMax: string
+  blockHeight: string
+  from: string
+  to: string
+}

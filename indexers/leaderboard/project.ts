@@ -44,7 +44,7 @@ const project: SubstrateProject = {
   dataSources: [
     {
       kind: SubstrateDatasourceKind.Runtime,
-      startBlock: 1,
+      startBlock: parseInt(process.env.START_BLOCK_LEADERBOARD!),
       mapping: {
         file: "./dist/index.js",
         handlers: [

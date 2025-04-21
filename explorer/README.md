@@ -65,16 +65,3 @@ yarn build
 ```
 
 This will compile the project into an optimized build ready for deployment.
-
-## 🔧 Environment Variables
-
-The table below lists the environment variables required for the project, which are set in the `.env` file.
-
-| Variables                       | Required | Default Value or Description                                                      |
-| ------------------------------- | -------- | --------------------------------------------------------------------------------- |
-| `REACT_APP_PUBLIC_URL`          | yes      | `/`                                                                               |
-| `REACT_APP_RPC_URL`             | yes      | `wss://rpc-0.<chainName>.subspace.network/ws`                                     |
-|                                 |          |                                                                                   |
-| `REACT_APP_MOCK_WALLET`         | no       | Set to `true` if you want to mock a specific connected wallet to ease development |
-| `REACT_APP_MOCK_WALLET_ADDRESS` | no       | Set the wallet address (Subspace format) to mock                                  |
-| `REACT_APP_MOCK_WALLET_SOURCE`  | no       | Set the source (wallet extension) to mock                                         |

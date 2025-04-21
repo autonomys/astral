@@ -13,6 +13,7 @@ export enum Routes {
   transfer = 'transfer',
   stats = 'stats',
   testnetRewards = 'testnet-rewards',
+  profile = 'profile',
 }
 
 export enum RoutesConsensus {
@@ -47,6 +48,19 @@ export enum RoutesDomains {
   autoid = '/auto-id',
 }
 
+export enum RoutesTransfer {
+  transfer = '/transfer',
+  history = Routes.transfer + '/history',
+}
+
+export enum RoutesProfile {
+  profile = '/profile',
+  apis = Routes.profile + '/apis',
+  wallets = Routes.profile + '/wallets',
+  apiKeys = Routes.profile + '/api-keys',
+  tags = Routes.profile + '/tags',
+}
+
 export type AnyRoutes =
   | Routes
   | RoutesConsensus
@@ -54,6 +68,8 @@ export type AnyRoutes =
   | RoutesStaking
   | RoutesLeaderboard
   | RoutesDomains
+  | RoutesTransfer
+  | RoutesProfile
 
 export const ROUTES: Route[] = [
   {
@@ -168,10 +184,47 @@ export const ROUTES: Route[] = [
     name: Routes.transfer,
     title: 'Transfer',
     networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
+    children: [
+      {
+        name: RoutesTransfer.transfer,
+        title: 'Transfer',
+      },
+      {
+        name: RoutesTransfer.history,
+        title: 'Transaction History',
+      },
+    ],
   },
   {
     name: Routes.testnetRewards,
     title: 'Testnet Rewards',
+  },
+  {
+    name: Routes.profile,
+    title: 'Profile',
+    hidden: true,
+    children: [
+      {
+        name: RoutesProfile.profile,
+        title: 'Profile',
+      },
+      {
+        name: RoutesProfile.wallets,
+        title: 'Wallets',
+      },
+      {
+        name: RoutesProfile.apiKeys,
+        title: 'API Keys',
+      },
+      {
+        name: RoutesProfile.apis,
+        title: 'APIs Docs',
+      },
+      {
+        name: RoutesProfile.tags,
+        title: 'Tags',
+      },
+    ],
   },
 ]
 
@@ -202,6 +255,7 @@ export const EXTERNAL_ROUTES = {
   spaceAcres: 'https://api.github.com/repos/autonomys/space-acres/releases/latest',
   autoDrivePackage: 'https://www.npmjs.com/package/@autonomys/auto-drive',
   autoDagPackage: 'https://www.npmjs.com/package/@autonomys/auto-dag-data',
+  autoDriveRestApi: 'https://mainnet.auto-drive.autonomys.xyz/api/docs',
 }
 
 export const INTERNAL_ROUTES = {
@@ -305,6 +359,12 @@ export const INTERNAL_ROUTES = {
     farmers: 'farmers',
     operators: 'operators',
     nominators: 'nominators',
+  },
+  transfer: {
+    history: 'history',
+  },
+  profile: {
+    page: '/profile',
   },
   notFound: '/error/404',
   catchAll: '*',

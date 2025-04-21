@@ -256,6 +256,7 @@ export function createUnlockedEvent(
   accountId: string,
   amount: bigint,
   storageFee: bigint,
+  timestamp: Date,
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string
@@ -268,6 +269,7 @@ export function createUnlockedEvent(
     nominatorId: getNominationId(accountId, domainId, operatorId),
     amount,
     storageFee,
+    timestamp,
     blockHeight,
     extrinsicId,
     eventId,

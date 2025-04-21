@@ -66,6 +66,12 @@ interface ExplorerQueryState {
     operators: QueryState<GqlT.OperatorsListQuery>
     operator: QueryState<GqlT.OperatorByIdQuery>
     operatorNominators: QueryState<GqlT.OperatorNominatorsByIdQuery>
+    operatorDeposits: QueryState<GqlT.OperatorDepositsByIdQuery>
+    operatorWithdrawals: QueryState<GqlT.OperatorWithdrawalsByIdQuery>
+    operatorFundsUnlock: QueryState<GqlT.OperatorFundsUnlockByIdQuery>
+    operatorBundles: QueryState<GqlT.OperatorBundlesByIdQuery>
+    operatorRewards: QueryState<GqlT.OperatorRewardsByIdQuery>
+    operatorTaxCollected: QueryState<GqlT.OperatorTaxCollectedByIdQuery>
   }
   [Routes.leaderboard]: {
     leaderboard: QueryState<GqlT.AccountTransferSenderTotalCountQuery>
@@ -73,6 +79,10 @@ interface ExplorerQueryState {
   [Routes.domains]: {
     domains: QueryState<GqlT.DomainsListQuery>
     domain: QueryState<GqlT.DomainByIdQuery>
+  }
+  [Routes.transfer]: {
+    transfer: QueryState<GqlT.TransferHistoryQuery>
+    transfers: QueryState<GqlT.TransferHistoryQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
     stakingSummary: QueryState<GqlT.StakingSummaryQuery>
@@ -89,7 +99,7 @@ export type Components =
   | keyof ExplorerQueryState[Routes.staking]
   | keyof ExplorerQueryState[Routes.domains]
   | keyof ExplorerQueryState[ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]
-
+  | keyof ExplorerQueryState[Routes.transfer]
 interface ExplorerQueryStateAndHelper extends ExplorerQueryState {
   setIsLoading: (section: ExplorerSection, component: Components) => void
   setValue: <T>(section: ExplorerSection, component: Components, value: T) => void
@@ -137,6 +147,12 @@ const initialState: ExplorerQueryState = {
 
     operator: initialized,
     operatorNominators: initialized,
+    operatorDeposits: initialized,
+    operatorWithdrawals: initialized,
+    operatorFundsUnlock: initialized,
+    operatorBundles: initialized,
+    operatorRewards: initialized,
+    operatorTaxCollected: initialized,
   },
   leaderboard: {
     leaderboard: initialized,
@@ -150,6 +166,10 @@ const initialState: ExplorerQueryState = {
     stakingSummary: initialized,
     lastExtrinsics: initialized,
     leaderboard: initialized,
+  },
+  transfer: {
+    transfer: initialized,
+    transfers: initialized,
   },
 }
 

@@ -7,9 +7,9 @@ import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@talismn/connect-wallets'
 import { WalletType } from 'constants/wallet'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
-import { getSession, signOut } from 'next-auth/react'
+import { getCsrfToken, getSession, signIn, signOut, useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
-import { createContext, FC, ReactNode, useCallback, useEffect, useState } from 'react'
+import { createContext, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import type { ChainParam } from 'types/app'
 import type { WalletAccountWithType } from 'types/wallet'
 import { formatAddress } from 'utils/formatAddress'
@@ -33,6 +33,7 @@ export type WalletContextValue = {
   setPreferredExtension: (extension: string) => void
   preferredExtension: string | undefined
   subspaceAccount: string | undefined
+  sessionSubspaceAccount: string | undefined
   handleSelectFirstWalletFromExtension: (source: string) => Promise<void>
   changeAccount: (account: WalletAccountWithType) => void
 }
@@ -59,6 +60,9 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const [subspaceAccount, setSubspaceAccount] = useState<string | undefined>(undefined)
   const [preferredAccount, setPreferredAccount] = useSafeLocalStorage('localAccount', null)
   const [preferredExtension, setPreferredExtension] = useSafeLocalStorage('extensionSource', null)
+  const { data: session } = useSession()
+
+  const sessionSubspaceAccount = useMemo(() => session?.user?.subspace?.account, [session])
 
   const prepareApi = useCallback(async () => {
     try {
@@ -104,24 +108,58 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       await signOut({ redirect: false })
   }, [])
 
-  const changeAccount = useCallback(
-    async (account: WalletAccountWithType) => {
+  const _changeAccount = useCallback(
+    async (account: WalletAccountWithType, newInjector: InjectedExtension) => {
+      setInjector(newInjector)
       try {
         const type =
           account.type === WalletType.subspace || (account as { type: string }).type === 'sr25519'
             ? WalletType.subspace
             : WalletType.ethereum
+
+        const _subspaceAccount = formatAddress(account.address)
+
+        // Only proceed with sign in if we have a subspace account and injector
+        if (_subspaceAccount && newInjector) {
+          // Get the current session to check if we need to sign in
+          const currentSession = await getSession()
+
+          // Only sign in if the account is different from the current session
+          if (
+            !currentSession?.user?.subspace ||
+            currentSession.user.subspace.account !== _subspaceAccount
+          ) {
+            const csrfToken = await getCsrfToken()
+            const message = JSON.stringify({ accountId: _subspaceAccount, csrfToken })
+            const signature =
+              newInjector.signer.signRaw &&
+              (await newInjector.signer.signRaw({
+                address: account.address,
+                type: 'bytes',
+                data: message,
+              }))
+
+            if (!signature) throw new Error('No signature')
+
+            await signIn('subspace', {
+              redirect: false,
+              account: _subspaceAccount,
+              message,
+              signature: signature.signature,
+            })
+          }
+        }
+
+        // Update the account state after authentication
         setActingAccount({
           ...account,
           type,
         })
-        const _subspaceAccount = formatAddress(account.address)
         setSubspaceAccount(_subspaceAccount)
         setPreferredAccount(account.address)
-        const newInjector = extensions?.find((extension) => extension.name === account.source)
-        if (newInjector) setInjector(newInjector)
+        await setup()
         setIsReady(true)
-        await signOutSessionOnAccountChange(_subspaceAccount)
+
         sendGAEvent({
           event: 'wallet_select_account',
           value: `source:${account.source}`,
@@ -130,7 +168,12 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         console.error('Failed to change account', error)
       }
     },
-    [extensions, setPreferredAccount, signOutSessionOnAccountChange],
+    [setPreferredAccount, setup],
+  )
+
+  const changeAccount = useCallback(
+    (account: WalletAccountWithType) => injector && _changeAccount(account, injector),
+    [_changeAccount, injector],
   )
 
   const disconnectWallet = useCallback(async () => {
@@ -158,84 +201,69 @@ export const WalletProvider: FC<Props> = ({ children }) => {
           event: 'wallet_get_wallet',
           value: `source:${source}`,
         })
-        return walletAccounts
+        return { walletAccounts, newInjector: wallet.extension }
       }
+      return { walletAccounts: [], newInjector: null }
     },
     [setPreferredExtension],
   )
 
   const handleSelectFirstWalletFromExtension = useCallback(
     async (source: string) => {
-      const walletAccounts = await handleGetWalletFromExtension(source)
+      const { walletAccounts, newInjector } = await handleGetWalletFromExtension(source)
       if (!walletAccounts || walletAccounts.length === 0) return
       const mainAccount = walletAccounts.find((account) => account.source === source)
-      if (mainAccount) changeAccount(mainAccount)
+      if (mainAccount) _changeAccount(mainAccount, newInjector)
     },
-    [handleGetWalletFromExtension, changeAccount],
+    [handleGetWalletFromExtension, _changeAccount],
   )
 
   const handleConnectToExtensionAndAccount = useCallback(
     async (address: string, source: string) => {
-      const walletAccounts = await handleGetWalletFromExtension(source)
+      if (injector) return
+
+      const { walletAccounts, newInjector } = await handleGetWalletFromExtension(source)
       if (!walletAccounts || walletAccounts.length === 0) return
       const mainAccount = walletAccounts.find((account) => account.address === address)
-      if (mainAccount) changeAccount(mainAccount)
+      if (mainAccount && newInjector) _changeAccount(mainAccount, newInjector)
       sendGAEvent({
         event: 'wallet_auto_connect_account',
         value: `source:${source}`,
       })
     },
-    [handleGetWalletFromExtension, changeAccount],
+    [handleGetWalletFromExtension, _changeAccount, injector],
   )
 
   useEffect(() => {
-    // This effect is used to get the injector from the selected account
-    // and is triggered when the accounts or the actingAccountIdx change
-    const getInjector = async () => {
-      const { web3FromSource } = await import('@polkadot/extension-dapp')
-
+    const initializeWallet = async () => {
       if (actingAccount?.source) {
         try {
-          const injector = await web3FromSource(actingAccount?.source)
-
-          setInjector(injector)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (e: any) {
-          setError(e)
+          const { web3FromSource } = await import('@polkadot/extension-dapp')
+          const newInjector = await web3FromSource(actingAccount.source)
+          setInjector(newInjector)
+          await setup()
+        } catch (e) {
+          setError(e as Error)
         }
       }
     }
 
-    getInjector()
-  }, [actingAccount])
+    initializeWallet()
+  }, [actingAccount, setup])
 
   useEffect(() => {
-    setup()
-  }, [injector, setup])
+    const shouldConnect = !actingAccount && preferredExtension && preferredAccount && !injector
 
-  useEffect(() => {
-    if (!actingAccount && preferredExtension && preferredAccount)
+    if (shouldConnect) {
       handleConnectToExtensionAndAccount(preferredAccount, preferredExtension)
-  }, [actingAccount, preferredAccount, preferredExtension, handleConnectToExtensionAndAccount])
-
-  // This effect is used to mock the wallet when the environment variables are set in the .env file
-  useEffect(() => {
-    if (
-      process.env.REACT_APP_MOCK_WALLET &&
-      process.env.REACT_APP_MOCK_WALLET_ADDRESS &&
-      process.env.REACT_APP_MOCK_WALLET_SOURCE
-    ) {
-      const mockAccount = {
-        address: process.env.REACT_APP_MOCK_WALLET_ADDRESS,
-        source: process.env.REACT_APP_MOCK_WALLET_SOURCE,
-        type: WalletType.subspace,
-      }
-      setActingAccount(mockAccount)
-      setAccounts([mockAccount])
-      setSubspaceAccount(formatAddress(process.env.REACT_APP_MOCK_WALLET_ADDRESS))
-      setIsReady(true)
     }
-  }, [])
+  }, [
+    actingAccount,
+    preferredAccount,
+    preferredExtension,
+    handleConnectToExtensionAndAccount,
+    injector,
+  ])
 
   return (
     <WalletContext.Provider
@@ -253,6 +281,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         preferredExtension,
         setPreferredExtension,
         subspaceAccount,
+        sessionSubspaceAccount,
         handleSelectFirstWalletFromExtension,
         changeAccount,
       }}

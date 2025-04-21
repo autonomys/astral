@@ -194,7 +194,9 @@ export function createTransfer(
   toChain: string,
   value: bigint,
   fee: bigint,
+  type: string,
   success: boolean,
+  isFinalized: boolean,
   timestamp: Date
 ) {
   return {
@@ -209,7 +211,9 @@ export function createTransfer(
     toChain,
     value,
     fee,
+    type,
     success,
+    isFinalized,
     timestamp,
   };
 }

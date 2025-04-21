@@ -2,7 +2,11 @@ import { Operator, Withdrawal } from "@autonomys/auto-consensus";
 import { EventRecord, stringify } from "@autonomys/auto-utils";
 import { createHash } from "crypto";
 import { OperatorStakingHistory } from "../types";
-import { PAD_ZEROS, ZERO_BIGINT } from "./constants";
+import {
+  PAD_ZEROS,
+  SHARES_CALCULATION_MULTIPLIER,
+  ZERO_BIGINT,
+} from "./constants";
 import { Cache } from "./db";
 import { Transfer } from "./types";
 
@@ -120,4 +124,34 @@ export const aggregateByDomainId = (
     totalStake: totalStakeSum,
     totalShares: totalSharesSum,
   };
+};
+
+export const groupEventsFromBatchAll = (
+  events: EventRecord[]
+): EventRecord[][] => {
+  const result: EventRecord[][] = [];
+  let currentGroup: EventRecord[] = [];
+
+  for (const event of events) {
+    if (
+      event.event.section === "utility" &&
+      event.event.method === "ItemCompleted"
+    ) {
+      if (currentGroup.length > 0) {
+        result.push(currentGroup);
+        currentGroup = [];
+      }
+    } else currentGroup.push(event);
+  }
+
+  if (currentGroup.length > 0) result.push(currentGroup);
+
+  return result;
+};
+
+export const calculateShares = (stakeAmount: bigint, sharePrice: bigint) => {
+  return (
+    (stakeAmount * SHARES_CALCULATION_MULTIPLIER) /
+    (sharePrice > ZERO_BIGINT ? sharePrice : SHARES_CALCULATION_MULTIPLIER)
+  );
 };
