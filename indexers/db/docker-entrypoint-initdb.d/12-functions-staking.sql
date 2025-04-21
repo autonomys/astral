@@ -937,7 +937,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     SET 
         status = 'PENDING_UNLOCK_FUNDS',
         updated_at = NEW.block_height
-    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_withdrawal_requested_at <= last_domain_block_number;
+    WHERE status = 'PENDING_CHALLENGE_PERIOD' AND domain_block_number_ready_at <= last_domain_block_number;
     
     RETURN NEW;
   END;
@@ -1018,7 +1018,7 @@ DECLARE
         SELECT id, amount, storage_fee_deposit, total_amount, total_withdrawn, status
         FROM staking.deposits
         WHERE (status = 'ACTIVE' OR status = 'PARTIALLY_WITHDRAWN') 
-        AND account_id = NEW.account_id
+        AND nominator_id = NEW.nominator_id
         ORDER BY created_at ASC;
     withdrawal_id text;
     deposit_to_update_id text;
