@@ -16,16 +16,32 @@
   --swagger-btn-bg: #2d2d3a;
   --swagger-btn-text: #e2e8f0;
   filter: invert(88%) hue-rotate(180deg);
-}
-.swagger-ui-dark img {
-  filter: invert(100%) hue-rotate(180deg);
-}
-.swagger-ui-dark .microlight {
-  filter: invert(100%) hue-rotate(180deg);
-  background-color: var(--swagger-code-bg);
-}
-.swagger-ui-dark svg {
-  filter: invert(100%) hue-rotate(180deg);
+
+  img {
+    filter: invert(100%) hue-rotate(180deg);
+  }
+  .microlight {
+    filter: invert(100%) hue-rotate(180deg);
+    background-color: var(--swagger-code-bg);
+  }
+  svg {
+    filter: invert(100%) hue-rotate(180deg);
+  }
+  .opblock-control-arrow svg.arrow path {
+    filter: invert(100%) hue-rotate(180deg);
+  }
+  .opblock-summary-control {
+    filter: invert(100%) hue-rotate(180deg);
+  }
+  .opblock-summary {
+    border-color: invert(100%) hue-rotate(180deg);
+  }
+  .expand-operation {
+    filter: invert(100%) hue-rotate(180deg);
+  }
+  .authorization__btn {
+    filter: invert(100%) hue-rotate(180deg);
+  }
 }
 .swagger-ui {
   .info {
