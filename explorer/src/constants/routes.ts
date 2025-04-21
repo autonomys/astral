@@ -364,7 +364,7 @@ export const INTERNAL_ROUTES = {
     history: 'history',
   },
   profile: {
-    page: '/profile',
+    page: (chain: string): string => `/${chain}/profile`,
   },
   notFound: '/error/404',
   catchAll: '*',
