@@ -23,7 +23,7 @@ export const ConsensusHeader: FC = () => {
   const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.consensus), [network])
 
   return (
-    <header className='body-font z-9 text-gray-600'>
+    <header className={`body-font z-9 text-gray-600 ${isDesktop ? 'py-5' : 'py-2'}`}>
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
