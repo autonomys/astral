@@ -5,20 +5,14 @@
 import { sendGAEvent } from '@next/third-parties/google'
 import { LogoIcon } from 'components/icons/LogoIcon'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
-import {
-  ROUTE_EXTRA_FLAGS,
-  ROUTE_EXTRA_FLAG_TYPE,
-  ROUTE_FLAG_VALUE_OPEN_CLOSE,
-} from 'constants/routes'
+import { ROUTE_EXTRA_FLAGS, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
 import { WalletType } from 'constants/wallet'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useTransactionsStates } from 'states/transactions'
+import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import { formatUnitsToNumber } from 'utils/number'
 import { currentYear } from 'utils/time'
 import { AccountHeader } from './AccountHeader'
@@ -32,35 +26,6 @@ import { StakingSummary } from './StakingSummary'
 type DrawerProps = {
   isOpen: boolean
   onCloseSidebar: () => void
-}
-
-const PendingTransactionsLabel: FC = () => {
-  const { pendingTransactions } = useTransactionsStates()
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const count = useMemo(
-    () => (pendingTransactions ? pendingTransactions.length : 0),
-    [pendingTransactions],
-  )
-
-  useEffect(() => {
-    sendGAEvent('event', 'walletSideKick_pending_transactions', { value: count })
-  }, [count])
-
-  if (count === 0) return null
-
-  return (
-    <div
-      className={
-        !isDesktop
-          ? 'inline-flex items-center bg-primaryAccent p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
-          : 'ml-4 rounded-full from-primaryAccent to-blueUndertone p-2 pl-4 pr-4 shadow-md dark:bg-boxDark dark:text-white'
-      }
-    >
-      <Link href={`?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN}`}>
-        {count}
-      </Link>
-    </div>
-  )
 }
 
 export const WalletSidekick: FC = () => {
@@ -113,7 +78,6 @@ export const WalletSidekick: FC = () => {
 
   return (
     <>
-      <PendingTransactionsLabel />
       <button
         onClick={onClick}
         className={`inline-flex items-center bg-white p-2 text-base hover:bg-gray-200 focus:outline-none ${
