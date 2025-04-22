@@ -22,7 +22,7 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies 📦
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Generate types and project manifest 🔗
         run: yarn codegen
@@ -48,7 +48,7 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies 📦
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Run linter 🔍
         run: yarn lint:fix
