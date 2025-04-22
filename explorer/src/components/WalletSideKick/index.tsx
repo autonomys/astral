@@ -80,8 +80,8 @@ export const WalletSidekick: FC = () => {
     <>
       <button
         onClick={onClick}
-        className={`inline-flex items-center bg-white p-2 text-base hover:bg-gray-200 focus:outline-none ${
-          isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
+        className={`inline-flex items-center bg-white text-base hover:bg-gray-200 focus:outline-none ${
+          isDesktop ? 'ml-4 rounded-full p-2' : 'rounded-r-full'
         } shadow-md dark:bg-buttonLightTo md:mt-3`}
       >
         <Image
