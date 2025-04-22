@@ -29,8 +29,8 @@ export const ProfileButton: FC = () => {
     <button
       onClick={() => push(INTERNAL_ROUTES.profile.page(network))}
       className={cn(
-        'inline-flex items-center bg-white p-0 text-base shadow-md hover:bg-gray-200 focus:outline-none dark:bg-buttonLightTo md:mt-3',
-        isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full',
+        'inline-flex items-center bg-white p-0 text-base shadow-md hover:bg-gray-200 focus:outline-none dark:bg-buttonLightTo',
+        isDesktop ? 'ml-4 rounded-full' : 'ml-2',
       )}
     >
       {profile?.avatar ? (
