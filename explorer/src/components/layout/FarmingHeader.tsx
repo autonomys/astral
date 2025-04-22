@@ -38,7 +38,7 @@ export const FarmingHeader = () => {
   )
 
   return (
-    <header className='body-font z-9 py-[30px] text-gray-600'>
+    <header className='body-font z-9 text-gray-600'>
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
