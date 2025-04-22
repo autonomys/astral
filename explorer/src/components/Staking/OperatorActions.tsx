@@ -53,7 +53,10 @@ export const OperatorActions: FC<OperatorActionsProps> = ({
         switch (OperatorActionType[actionType as keyof typeof OperatorActionType]) {
           case OperatorActionType.Deregister:
             return (
-              <button key={index} onClick={() => handleClick(actionType as OperatorActionType)}>
+              <button
+                key={index + 'Deregister'}
+                onClick={() => handleClick(actionType as OperatorActionType)}
+              >
                 <Tooltip text='Deregister' direction='top'>
                   <CancelIcon />
                 </Tooltip>
@@ -61,14 +64,17 @@ export const OperatorActions: FC<OperatorActionsProps> = ({
             )
           case OperatorActionType.UnlockNominator:
             return (
-              <button key={index} onClick={() => handleClick(actionType as OperatorActionType)}>
+              <button
+                key={index + 'UnlockNominator'}
+                onClick={() => handleClick(actionType as OperatorActionType)}
+              >
                 <Tooltip text='Unlock Nominator' direction='top'>
                   <UnlockIcon />
                 </Tooltip>
               </button>
             )
           default:
-            return <></>
+            return <div key={index}></div>
         }
       })}
     </>

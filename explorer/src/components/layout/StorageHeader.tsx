@@ -24,12 +24,12 @@ export const StorageHeader: FC = () => {
   const menuList = useMemo(() => getSupportedHeaderLinks(network, Routes.storage), [network])
 
   const showBanner = useMemo(() => {
-    const regex = /^\/(taurus|mainnet)\/permanent-storage(\/(files|folders)?)?$/;
-    return regex.test(pathname);
-  }, [pathname]);
+    const regex = /^\/(taurus|mainnet)\/permanent-storage(\/(files|folders)?)?$/
+    return regex.test(pathname)
+  }, [pathname])
 
   return (
-    <header className='body-font z-9 py-[30px] text-gray-600'>
+    <header className={`body-font z-9 text-gray-600 ${isDesktop ? 'py-5' : 'py-2'}`}>
       {isDesktop ? (
         <div>
           <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-2 md:flex-row md:px-[25px] 2xl:px-0'>
@@ -67,8 +67,8 @@ export const StorageHeader: FC = () => {
               </button>
             </div>
           </div>
-          { showBanner && <StorageBanner/>}
-          <nav className='flex flex-wrap items-center justify-center gap-10 text-sm py-5'>
+          {showBanner && <StorageBanner />}
+          <nav className='flex flex-wrap items-center justify-center gap-10 py-5 text-sm'>
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link)
               return (
@@ -89,25 +89,29 @@ export const StorageHeader: FC = () => {
         </div>
       ) : (
         <>
-        <div className='flex flex-row items-center justify-between px-5 py-2'>
-          <Link
-            href={`/${network}/${section}`}
-            className='title-font flex items-center font-medium text-gray-900 dark:text-white'
-          >
-            <LogoIcon fillColor='currentColor' />
-          </Link>
-          <div className='flex items-center gap-4'>
-            <HeaderChainDropdown />
-            <button
-              className='items-center rounded-full bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
-              onClick={() => setIsOpen(true)}
+          <div className='flex flex-row items-center justify-between px-5 py-2'>
+            <Link
+              href={`/${network}/${section}`}
+              className='title-font flex items-center font-medium text-gray-900 dark:text-white'
             >
-              <Bars3BottomRightIcon className='size-4' fill='currentColor' stroke='currentColor' />
-            </button>
+              <LogoIcon fillColor='currentColor' />
+            </Link>
+            <div className='flex items-center gap-4'>
+              <HeaderChainDropdown />
+              <button
+                className='items-center rounded-full bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
+                onClick={() => setIsOpen(true)}
+              >
+                <Bars3BottomRightIcon
+                  className='size-4'
+                  fill='currentColor'
+                  stroke='currentColor'
+                />
+              </button>
+            </div>
+            <MobileHeader menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
           </div>
-          <MobileHeader menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
-        </div>
-        {showBanner && <StorageBanner/>}
+          {showBanner && <StorageBanner />}
         </>
       )}
     </header>

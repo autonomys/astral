@@ -15,8 +15,7 @@ export const APIs: FC = () => {
     const applyDarkModeStyles = () => {
       const isDarkMode = document.documentElement.classList.contains('dark')
       const swaggerUiElement = document.querySelector('.swagger-ui')
-
-      if (swaggerUiElement) {
+      if (!isLoading && swaggerUiElement) {
         if (isDarkMode) {
           swaggerUiElement.classList.add('swagger-ui-dark')
         } else {
@@ -32,7 +31,7 @@ export const APIs: FC = () => {
     })
 
     return () => observer.disconnect()
-  }, [])
+  }, [specData, isLoading])
 
   useEffect(() => {
     const fetchSpecData = async () => {

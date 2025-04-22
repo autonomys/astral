@@ -118,7 +118,7 @@ export const NominationsTable: FC = () => {
             const withdrawalHistory = n.withdrawals.map((w) => {
               const isPending = w.status !== WithdrawalStatus.FUNDS_UNLOCKED
               let completionDate: string | JSX.Element = isPending
-                ? 'At the next epoch (approx. 10 minutes)'
+                ? 'Wait for the next epoch and the challenge period (approx. 1 day)'
                 : utcToLocalRelativeTime(w.timestamp)
               if (w.status === WithdrawalStatus.PENDING_CHALLENGE_PERIOD) {
                 const lastDomainBlockNumber = BigInt(n.domain?.last_domain_block_number)
