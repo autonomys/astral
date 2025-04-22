@@ -73,7 +73,7 @@ export const HomeExtrinsicList: FC<Props> = ({ data, loading }) => {
         ),
       },
       {
-        accessorKey: 'name',
+        accessorKey: 'success',
         header: 'Status',
         cell: ({ row }: Cell<Row>) => (
           <div
@@ -89,7 +89,7 @@ export const HomeExtrinsicList: FC<Props> = ({ data, loading }) => {
   )
 
   return (
-    <div className='dark:bg-boxDark w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none'>
+    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-boxDark'>
       <div className='mb-6 inline-flex w-full items-center justify-between align-middle'>
         <div className='text-md uppercase leading-normal text-gray-600 dark:text-white'>
           Latest Extrinsics
