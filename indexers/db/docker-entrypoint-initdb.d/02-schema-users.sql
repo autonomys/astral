@@ -135,9 +135,7 @@ CREATE TABLE users.session (
     dids TEXT[] NOT NULL,
     data jsonb NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (id)
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
 );
 ALTER TABLE users.session OWNER TO postgres;
 ALTER TABLE ONLY users.session ADD CONSTRAINT session_pkey PRIMARY KEY (id);
