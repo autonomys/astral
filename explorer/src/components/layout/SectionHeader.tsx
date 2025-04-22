@@ -68,7 +68,7 @@ export const SectionHeader: FC = () => {
               <button
                 className={
                   isActive
-                    ? 'rounded-full bg-buttonLightFrom px-2 py-2 text-white dark:bg-primaryAccent'
+                    ? `rounded-full bg-buttonLightFrom ${isDesktop ? 'px-4' : 'px-2'} py-2 text-white dark:bg-primaryAccent`
                     : 'text-grayDark dark:text-white'
                 }
               >
@@ -88,7 +88,7 @@ export const SectionHeader: FC = () => {
       data-accordion='open'
     >
       <div className='container mx-auto flex w-full items-center justify-between px-5 pb-2 pt-0 md:px-[25px] 2xl:px-0'>
-        <div className='flex gap-2 pt-3'>{domainsOptions}</div>
+        <div className={`flex pt-3 ${isDesktop ? 'gap-9' : 'gap-2'}`}>{domainsOptions}</div>
         <div className='flex gap-4'>
           {!actingAccount ? (
             <WalletButton />
