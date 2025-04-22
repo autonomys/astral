@@ -23,5 +23,6 @@
   },
   "devDependencies": {
     "hasura-cli": "2.36.2"
-  }
+  },
+  "packageManager": "yarn@4.2.2"
 }
