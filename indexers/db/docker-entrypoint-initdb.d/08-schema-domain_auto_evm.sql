@@ -242,6 +242,7 @@ ALTER TABLE domain_auto_evm.sections OWNER TO postgres;
 
 CREATE TABLE domain_auto_evm.transfers (
     id text NOT NULL,
+    block_id text NOT NULL,
     block_height numeric NOT NULL,
     block_hash text NOT NULL,
     extrinsic_id text NOT NULL,

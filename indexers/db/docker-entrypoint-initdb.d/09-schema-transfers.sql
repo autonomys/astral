@@ -3,6 +3,7 @@ ALTER SCHEMA transfers OWNER TO postgres;
 
 CREATE TABLE transfers.transfers (
     id TEXT NOT NULL,
+    block_id TEXT NOT NULL,
     block_height NUMERIC NOT NULL,
     block_hash TEXT NOT NULL,
     extrinsic_id TEXT NOT NULL,
@@ -16,14 +17,12 @@ CREATE TABLE transfers.transfers (
     type TEXT NOT NULL,
     success BOOLEAN NOT NULL,
     is_finalized BOOLEAN NOT NULL,
-    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    _id UUID NOT NULL,
-    _block_range INT8RANGE NOT NULL
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 ALTER TABLE transfers.transfers OWNER TO postgres;
 
 ALTER TABLE ONLY transfers.transfers
-    ADD CONSTRAINT transfers_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT transfers_pkey PRIMARY KEY (id);
 
 CREATE INDEX "transfers_transfers_id" ON transfers.transfers USING btree (id);
 CREATE INDEX "transfers_transfers_from" ON transfers.transfers USING btree ("from");

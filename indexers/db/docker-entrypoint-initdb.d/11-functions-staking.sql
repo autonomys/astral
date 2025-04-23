@@ -1,30 +1,3 @@
-CREATE OR REPLACE FUNCTION staking.prevent_domain_block_histories_duplicate() RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    IF EXISTS (
-        SELECT 1 
-        FROM staking.domain_block_histories 
-        WHERE id = NEW.id
-    ) THEN
-        RETURN NULL;
-    END IF;
-
-    UPDATE staking.domains
-    SET 
-        last_domain_block_number = NEW.domain_block_number
-    WHERE id = NEW.domain_id;
-    
-    RETURN NEW;
-  END;
-  $$;
-ALTER FUNCTION staking.prevent_domain_block_histories_duplicate() OWNER TO postgres;
-
-CREATE TRIGGER prevent_domain_block_histories_duplicate
-BEFORE INSERT ON staking.domain_block_histories
-FOR EACH ROW
-EXECUTE FUNCTION staking.prevent_domain_block_histories_duplicate();
-
 CREATE OR REPLACE FUNCTION staking.prevent_domain_staking_histories_duplicate() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
@@ -482,12 +455,12 @@ CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
   DECLARE
-    last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+    last_domain_block_number staking.bundle_submissions.domain_block_number%TYPE;
     last_domain_epoch staking.domain_epochs.epoch%TYPE;
   BEGIN
     SELECT domain_block_number
     INTO last_domain_block_number
-    FROM staking.domain_block_histories
+    FROM staking.bundle_submissions
     WHERE domain_id = NEW.domain_id
     ORDER BY domain_block_number DESC
     LIMIT 1;
@@ -787,7 +760,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
   DECLARE
-    last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+    last_domain_block_number staking.bundle_submissions.domain_block_number%TYPE;
     share_price_1d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
     share_price_7d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
     share_price_30d_old staking.operator_staking_histories.share_price%TYPE := '1000000000000000000';
@@ -800,7 +773,7 @@ CREATE OR REPLACE FUNCTION staking.update_domain_stakes() RETURNS TRIGGER
   BEGIN
     SELECT domain_block_number
     INTO last_domain_block_number
-    FROM staking.domain_block_histories
+    FROM staking.bundle_submissions
     WHERE domain_id = NEW.domain_id
     ORDER BY block_height DESC
     LIMIT 1;
@@ -1022,7 +995,7 @@ DECLARE
         ORDER BY created_at ASC;
     withdrawal_id text;
     deposit_to_update_id text;
-    last_domain_block_number staking.domain_block_histories.domain_block_number%TYPE;
+    last_domain_block_number staking.bundle_submissions.domain_block_number%TYPE;
     last_domain_epoch staking.domain_epochs.epoch%TYPE;
 BEGIN
     SELECT id INTO withdrawal_id
@@ -1033,7 +1006,7 @@ BEGIN
 
     SELECT domain_block_number
     INTO last_domain_block_number
-    FROM staking.domain_block_histories
+    FROM staking.bundle_submissions
     WHERE domain_id = NEW.domain_id
     ORDER BY domain_block_number DESC
     LIMIT 1;

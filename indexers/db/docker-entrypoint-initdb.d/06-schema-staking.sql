@@ -1,18 +1,6 @@
 CREATE SCHEMA staking;
 ALTER SCHEMA staking OWNER TO postgres;
 
-CREATE FUNCTION staking.schema_notification() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    PERFORM pg_notify(
-            '0x0e7ff8012c52fcca',
-            'schema_updated');
-    RETURN NULL;
-  END;
-  $$;
-ALTER FUNCTION staking.schema_notification() OWNER TO postgres;
-
 CREATE TABLE staking._metadata (
     key character varying(255) NOT NULL,
     value jsonb,
@@ -71,9 +59,7 @@ CREATE TABLE staking.bundle_submissions (
     burned_balance numeric NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.bundle_submissions OWNER TO postgres;
 
@@ -91,9 +77,7 @@ CREATE TABLE staking.deposit_events (
     "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.deposit_events OWNER TO postgres;
 
@@ -115,17 +99,6 @@ CREATE TABLE staking.deposits (
     updated_at numeric NOT NULL
 );
 ALTER TABLE staking.deposits OWNER TO postgres;
-
-CREATE TABLE staking.domain_block_histories (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    domain_block_number numeric NOT NULL,
-    timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.domain_block_histories OWNER TO postgres;
 
 CREATE TABLE staking.domain_epochs (
     id text NOT NULL,
@@ -155,9 +128,7 @@ CREATE TABLE staking.domain_instantiations (
     created_by text NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.domain_instantiations OWNER TO postgres;
 
@@ -169,9 +140,7 @@ CREATE TABLE staking.domain_staking_histories (
     current_total_shares numeric NOT NULL,
     share_price numeric NOT NULL,
     timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    block_height numeric NOT NULL
 );
 ALTER TABLE staking.domain_staking_histories OWNER TO postgres;
 
@@ -273,9 +242,7 @@ CREATE TABLE staking.operator_deregistrations (
     domain_id text NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.operator_deregistrations OWNER TO postgres;
 
@@ -289,9 +256,7 @@ CREATE TABLE staking.operator_registrations (
     nomination_tax integer NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.operator_registrations OWNER TO postgres;
 
@@ -303,9 +268,7 @@ CREATE TABLE staking.operator_rewards (
     at_block_number numeric NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.operator_rewards OWNER TO postgres;
 
@@ -323,9 +286,7 @@ CREATE TABLE staking.operator_staking_histories (
     share_price numeric NOT NULL,
     partial_status text NOT NULL,
     timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    block_height numeric NOT NULL
 );
 ALTER TABLE staking.operator_staking_histories OWNER TO postgres;
 
@@ -336,9 +297,7 @@ CREATE TABLE staking.operator_tax_collections (
     amount numeric NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.operator_tax_collections OWNER TO postgres;
 
@@ -393,9 +352,7 @@ CREATE TABLE staking.runtime_creations (
     created_by text NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.runtime_creations OWNER TO postgres;
 
@@ -410,9 +367,7 @@ CREATE TABLE staking.unlocked_events (
     "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.unlocked_events OWNER TO postgres;
 
@@ -422,9 +377,7 @@ CREATE TABLE staking.nominators_unlocked_events (
     operator_id text NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.nominators_unlocked_events OWNER TO postgres;
 
@@ -442,9 +395,7 @@ CREATE TABLE staking.withdraw_events (
     "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    event_id text NOT NULL
 );
 ALTER TABLE staking.withdraw_events OWNER TO postgres;
 
@@ -480,10 +431,10 @@ ALTER TABLE ONLY staking.accounts
     ADD CONSTRAINT accounts_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.bundle_submissions
-    ADD CONSTRAINT bundle_submissions_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT bundle_submissions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.deposit_events
-    ADD CONSTRAINT deposit_events_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT deposit_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.deposits
     ADD CONSTRAINT deposits_pkey PRIMARY KEY (id);
@@ -492,10 +443,10 @@ ALTER TABLE ONLY staking.domain_epochs
     ADD CONSTRAINT domain_epochs_pkey PRIMARY KEY (id);
     
 ALTER TABLE ONLY staking.domain_instantiations
-    ADD CONSTRAINT domain_instantiations_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT domain_instantiations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.domain_staking_histories
-    ADD CONSTRAINT domain_staking_histories_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT domain_staking_histories_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.domains
     ADD CONSTRAINT domains_pkey PRIMARY KEY (id);
@@ -504,59 +455,56 @@ ALTER TABLE ONLY staking.nominators
     ADD CONSTRAINT nominators_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.operator_deregistrations
-    ADD CONSTRAINT operator_deregistrations_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT operator_deregistrations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.operator_registrations
-    ADD CONSTRAINT operator_registrations_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT operator_registrations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.operator_rewards
-    ADD CONSTRAINT operator_rewards_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT operator_rewards_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.operator_staking_histories
-    ADD CONSTRAINT operator_staking_histories_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT operator_staking_histories_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.operator_tax_collections
-    ADD CONSTRAINT operator_tax_collections_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT operator_tax_collections_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.operators
     ADD CONSTRAINT operators_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.runtime_creations
-    ADD CONSTRAINT runtime_creations_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT runtime_creations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.unlocked_events
-    ADD CONSTRAINT unlocked_events_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT unlocked_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.nominators_unlocked_events
-    ADD CONSTRAINT nominators_unlocked_events_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT nominators_unlocked_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.withdraw_events
-    ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.withdrawals
     ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id);
 
-CREATE INDEX "0x095f76af1e0896c7" ON staking.unlocked_events USING btree (id);
-CREATE INDEX "0x17ee75861ab4beba" ON staking.operator_deregistrations USING btree (id);
-CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
-CREATE INDEX "0x3a7ed99d2776ff11" ON staking.operator_tax_collections USING btree (id);
-CREATE INDEX "0x59e52a1d9c35dee5" ON staking.domain_block_histories USING btree (id);
-CREATE INDEX "staking_domain_block_histories_domain_id" ON staking.domain_block_histories USING btree (domain_id);
-CREATE INDEX "staking_domain_block_histories_domain_block_height" ON staking.domain_block_histories USING btree (domain_id, block_height DESC);
-CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (id);
-CREATE INDEX "0x72774937664e8211" ON staking.withdraw_events USING btree (id);
+CREATE INDEX "staking_unlocked_events_id" ON staking.unlocked_events USING btree (id);
+CREATE INDEX "staking_operator_deregistrations_id" ON staking.operator_deregistrations USING btree (id);
+CREATE INDEX "staking_operator_rewards_id" ON staking.operator_rewards USING btree (id);
+CREATE INDEX "staking_operator_tax_collections_id" ON staking.operator_tax_collections USING btree (id);
+CREATE INDEX "staking_domain_instantiations_id" ON staking.domain_instantiations USING btree (id);
+CREATE INDEX "staking_withdraw_events_id" ON staking.withdraw_events USING btree (id);
 CREATE INDEX "staking_withdraw_events_domain_id" ON staking.withdraw_events USING btree (domain_id);
 CREATE INDEX "staking_withdraw_events_operator_id" ON staking.withdraw_events USING btree (operator_id);
 CREATE INDEX "staking_withdraw_events_nominator_id" ON staking.withdraw_events USING btree (nominator_id);
-CREATE INDEX "0x9addf36a4bded44f" ON staking.deposit_events USING btree (id);
+CREATE INDEX "staking_deposit_events_id" ON staking.deposit_events USING btree (id);
 CREATE INDEX "staking_deposit_events_domain_id" ON staking.deposit_events USING btree (domain_id);
 CREATE INDEX "staking_deposit_events_operator_id" ON staking.deposit_events USING btree (operator_id);
 CREATE INDEX "staking_deposit_events_nominator_id" ON staking.deposit_events USING btree (nominator_id);
-CREATE INDEX "0xa3309c82ddfd9389" ON staking.operator_registrations USING btree (id);
-CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING btree (id);
-CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
-CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btree (id);
-CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
+CREATE INDEX "staking_operator_registrations_id" ON staking.operator_registrations USING btree (id);
+CREATE INDEX "staking_operator_staking_histories_id" ON staking.operator_staking_histories USING btree (id);
+CREATE INDEX "staking_bundle_submissions_id" ON staking.bundle_submissions USING btree (id);
+CREATE INDEX "staking_domain_staking_histories_id" ON staking.domain_staking_histories USING btree (id);
+CREATE INDEX "staking_runtime_creations_id" ON staking.runtime_creations USING btree (id);
 CREATE INDEX "staking_accounts_id" ON staking.accounts USING btree (id);
 CREATE INDEX "staking_deposits_id" ON staking.deposits USING btree (id);
 CREATE INDEX "staking_deposits_domain_id" ON staking.deposits USING btree (domain_id);
@@ -579,5 +527,3 @@ CREATE INDEX "staking_withdrawals_operator_id" ON staking.withdrawals USING btre
 CREATE INDEX "staking_withdrawals_nominator_id" ON staking.withdrawals USING btree (nominator_id);
 CREATE INDEX "staking_withdrawals_status" ON staking.withdrawals USING btree ("status");
 CREATE INDEX "staking_withdrawals_status_domain_block_number_withdrawal_requested_at" ON staking.withdrawals (status, domain_block_number_withdrawal_requested_at);
-
-CREATE TRIGGER "0x36531371aced88b2" AFTER UPDATE ON staking._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION staking.schema_notification();

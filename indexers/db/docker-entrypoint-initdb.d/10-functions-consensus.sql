@@ -79,15 +79,15 @@ CREATE FUNCTION consensus.update_account() RETURNS trigger
       NEW.free,
       NEW.reserved,
       NEW.total,
-      NEW.created_at,
-      EXTRACT(EPOCH FROM NOW())
+      NEW.block_height,
+      NEW.block_height
     )
     ON CONFLICT (id) DO UPDATE SET
       nonce = EXCLUDED.nonce,
       free = EXCLUDED.free,
       reserved = EXCLUDED.reserved,
       total = EXCLUDED.total,
-      updated_at = EXTRACT(EPOCH FROM NOW());
+      updated_at = NEW.block_height;
     
     RETURN NEW;
   END;
