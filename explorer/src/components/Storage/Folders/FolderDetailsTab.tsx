@@ -10,7 +10,7 @@ type Props = {
 
 export const FolderDetailsTab: FC<Props> = ({ childCount, isDesktop = false }) => {
   return (
-    <PageTabs isDesktop={isDesktop}>
+    <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop}>
       <Tab title={`Files (${childCount})`}>
         <FolderDetailsFileList />
       </Tab>

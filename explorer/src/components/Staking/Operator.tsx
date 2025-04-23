@@ -85,7 +85,7 @@ export const Operator: FC = () => {
                 Next Operator
               </button>
             </div>
-            <PageTabs isDesktop={isDesktop}>
+            <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop}>
               <Tab title='Nominators'>
                 <OperatorNominatorTable
                   operator={operatorDetails}

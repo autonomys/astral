@@ -463,7 +463,7 @@ export const NominationsTable: FC = () => {
                         </div>
                       </div>
                       <div className='mb-4 w-full items-start justify-between text-lg font-semibold dark:text-white sm:flex-row sm:items-center'>
-                        <PageTabs isDesktop={isDesktop}>
+                        <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop}>
                           <Tab title='Overview'>
                             <div className='flex w-full flex-col items-start'>
                               <div className='w-full'>

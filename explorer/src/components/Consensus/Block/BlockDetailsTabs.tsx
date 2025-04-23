@@ -19,7 +19,7 @@ export const BlockDetailsTabs: FC<Props> = ({
   isDesktop = false,
 }) => {
   return (
-    <PageTabs isDesktop={isDesktop}>
+    <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop}>
       <Tab title={`Extrinsics (${extrinsicsCount})`}>
         <BlockDetailsExtrinsicList extrinsicsCount={extrinsicsCount} isDesktop={isDesktop} />
       </Tab>
