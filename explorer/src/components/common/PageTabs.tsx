@@ -21,10 +21,7 @@ export const PageTabs: FC<Props> = ({
 }) => {
   return (
     <Tabs
-      tabStyle={cn(
-        isDesktop ? 'bg-transparent rounded-lg p-4 dark:bg-boxDark dark:border-none' : '',
-        tabStyle,
-      )}
+      tabStyle={cn(isDesktop ? 'bg-transparent rounded-lg p-4 dark:border-none' : '', tabStyle)}
       tabTitleStyle={cn(
         !isDesktop ? 'bg-transparent rounded-[20px] mb-5 px-5 dark:bg-boxDark' : '',
         tabTitleStyle,
