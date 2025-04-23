@@ -1,13 +1,6 @@
 table:
   name: blocks
   schema: consensus
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 object_relationships:
   - name: cumulative
     using:
@@ -59,8 +52,6 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
-        - _id
         - author_id
         - block_reward_value
         - block_rewards_count

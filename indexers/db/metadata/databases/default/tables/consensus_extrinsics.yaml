@@ -1,13 +1,6 @@
 table:
   name: extrinsics
   schema: consensus
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 object_relationships:
   - name: block
     using:
@@ -50,8 +43,6 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
-        - _id
         - args
         - block_hash
         - block_height

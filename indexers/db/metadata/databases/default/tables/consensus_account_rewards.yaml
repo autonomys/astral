@@ -1,13 +1,6 @@
 table:
   name: account_rewards
   schema: consensus
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 object_relationships:
   - name: account
     using:
@@ -22,7 +15,6 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - block_rewards_counts
         - block_rewards_value
         - created_at
@@ -34,7 +26,6 @@ select_permissions:
         - vote_rewards_counts
         - vote_rewards_value
         - id
-        - _id
       filter: {}
       limit: 50
     comment: ""
