@@ -29,5 +29,7 @@
     "subsquid",
     "taskboard",
     "typegen"
-  ]
+  ],
+  "deno.enable": true,
+  "deno.lint": true
 }
