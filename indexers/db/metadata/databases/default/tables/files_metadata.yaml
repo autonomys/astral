@@ -1,13 +1,6 @@
 table:
   name: metadata
   schema: files
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 object_relationships:
   - name: chunk
     using:
@@ -41,14 +34,16 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
-        - _id
         - block_height
+        - size
+        - block_hash
+        - block_id
         - extrinsic_id
         - id
+        - metadata_cid
         - name
-        - size
         - sort_id
+        - timestamp
       filter: {}
       limit: 50
       allow_aggregations: true

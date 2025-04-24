@@ -24,14 +24,16 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - index_in_block
-        - block_height
         - block_hash
+        - block_height
+        - block_id
         - id
+        - index_in_block
         - kind
+        - log_id
         - sort_id
-        - value
         - timestamp
+        - value
       filter: {}
       limit: 50
       allow_aggregations: true

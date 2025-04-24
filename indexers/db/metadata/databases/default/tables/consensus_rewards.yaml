@@ -24,10 +24,11 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - amount
-        - block_height
         - account_id
+        - amount
         - block_hash
+        - block_height
+        - block_id
         - event_id
         - extrinsic_id
         - id

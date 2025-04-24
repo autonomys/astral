@@ -1,19 +1,10 @@
 table:
   name: deposit_events
   schema: staking
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
-        - _id
         - account_id
         - amount
         - block_height

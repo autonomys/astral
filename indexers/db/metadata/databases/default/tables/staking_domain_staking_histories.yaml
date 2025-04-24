@@ -1,18 +1,10 @@
 table:
   name: domain_staking_histories
   schema: staking
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - current_epoch_index
         - block_height
         - current_total_shares
@@ -21,7 +13,6 @@ select_permissions:
         - domain_id
         - id
         - timestamp
-        - _id
       filter: {}
       limit: 50
     comment: ""

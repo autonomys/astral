@@ -1,13 +1,6 @@
 table:
   name: cids
   schema: files
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 object_relationships:
   - name: block
     using:
@@ -40,17 +33,17 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
-        - _id
+        - is_archived
+        - index_in_block
+        - links
+        - block_height
         - blake3_hash
         - block_hash
-        - block_height
+        - block_id
+        - cid
         - extrinsic_hash
         - extrinsic_id
         - id
-        - index_in_block
-        - is_archived
-        - links
         - timestamp
       filter: {}
       limit: 50

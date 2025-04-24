@@ -46,9 +46,11 @@ select_permissions:
         - args
         - block_hash
         - block_height
+        - block_id
         - cid
         - error
         - events_count
+        - extrinsic_id
         - fee
         - hash
         - id

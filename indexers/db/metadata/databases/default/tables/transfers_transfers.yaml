@@ -1,27 +1,26 @@
 table:
   name: transfers
-  schema: consensus
+  schema: transfers
 select_permissions:
   - role: user
     permission:
       columns:
-        - block_hash
+        - is_finalized
+        - success
         - block_height
+        - fee
+        - value
+        - block_hash
         - block_id
         - event_id
         - extrinsic_id
-        - fee
         - from
         - from_chain
         - id
-        - is_finalized
-        - success
-        - timestamp
         - to
         - to_chain
         - type
-        - value
+        - timestamp
       filter: {}
       limit: 50
-      allow_aggregations: true
     comment: ""

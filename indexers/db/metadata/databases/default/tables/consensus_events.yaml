@@ -33,18 +33,20 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - pos
-        - block_height
-        - index_in_block
         - args
         - block_hash
+        - block_height
+        - block_id
         - cid
+        - event_id
         - extrinsic_hash
         - extrinsic_id
         - id
+        - index_in_block
         - module
         - name
         - phase
+        - pos
         - section
         - sort_id
         - timestamp

@@ -1,18 +1,10 @@
 table:
   name: domain_instantiations
   schema: staking
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - runtime_id
         - block_height
         - created_by
@@ -23,7 +15,6 @@ select_permissions:
         - runtime
         - runtime_info
         - sort_id
-        - _id
       filter: {}
       limit: 50
     comment: ""

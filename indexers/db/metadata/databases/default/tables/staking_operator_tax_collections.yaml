@@ -1,18 +1,10 @@
 table:
   name: operator_tax_collections
   schema: staking
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - amount
         - block_height
         - domain_id
@@ -20,6 +12,5 @@ select_permissions:
         - extrinsic_id
         - id
         - operator_id
-        - _id
       filter: {}
     comment: ""

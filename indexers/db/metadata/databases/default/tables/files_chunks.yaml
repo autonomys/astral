@@ -1,13 +1,6 @@
 table:
   name: chunks
   schema: files
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 object_relationships:
   - name: cid
     using:
@@ -22,15 +15,17 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - link_depth
+        - block_height
         - size
+        - block_hash
+        - block_id
+        - chunk_cid
         - data
         - id
         - name
         - type
         - upload_options
-        - _id
       filter: {}
       limit: 50
     comment: ""

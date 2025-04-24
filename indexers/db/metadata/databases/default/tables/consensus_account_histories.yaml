@@ -15,12 +15,15 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - created_at
+        - account_id
+        - block_hash
+        - block_height
+        - block_id
         - free
+        - id
         - nonce
         - reserved
         - total
-        - id
       filter: {}
       limit: 50
       allow_aggregations: true
