@@ -21,8 +21,11 @@ jobs:
       - name: Enable Corepack 📦
         run: corepack enable
 
+      - name: Set Yarn version to Berry
+        run: corepack prepare yarn@4.2.2 --activate
+
       - name: Install dependencies 📦
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Generate types and project manifest 🔗
         run: yarn codegen
@@ -48,7 +51,7 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies 📦
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Run linter 🔍
         run: yarn lint:fix
