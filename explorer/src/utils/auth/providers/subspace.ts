@@ -20,6 +20,8 @@ export const Subspace = () => {
       message: { label: 'Message', type: 'text', placeholder: '0x...' },
       signature: { label: 'Signature', type: 'text', placeholder: '0x...' },
       csrfToken: { label: 'CSRF Token', type: 'text', placeholder: '0x...' },
+      walletSource: { label: 'Wallet Source', type: 'text', placeholder: 'polkadot-js' },
+      walletType: { label: 'Wallet Type', type: 'text', placeholder: 'subspace' },
     },
 
     // The authorize function is called when the user logs in
@@ -42,13 +44,14 @@ export const Subspace = () => {
         // Verify csrf token
         if (credentials.csrfToken !== messageObject.csrfToken) return null
 
-        const did = `did:subspace:${account}`
+        const did = `did:${credentials.walletType}:${account}`
 
         // Verify Subspace VCs for mainnet
         const {
           farmer: mainnetFarmer,
           operator: mainnetOperator,
           nominator: mainnetNominator,
+          talismanFarmer: mainnetTalismanFarmer,
         } = await verifySubspaceMainnetAccountRoles(account)
 
         // Verify Subspace VCs for testnet
@@ -69,6 +72,8 @@ export const Subspace = () => {
             account,
             message,
             signature,
+            source: credentials.walletSource,
+            type: credentials.walletType,
             vcs: {
               ...(savedUser?.data?.subspace?.vcs ?? {}),
               mainnetFarmer,
@@ -77,6 +82,8 @@ export const Subspace = () => {
               taurusFarmer,
               taurusOperator,
               taurusNominator,
+              // Temporary VCs
+              mainnetTalismanFarmer,
             },
           },
           discord: {
