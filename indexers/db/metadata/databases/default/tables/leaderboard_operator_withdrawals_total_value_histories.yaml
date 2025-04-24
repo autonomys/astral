@@ -1,0 +1,3 @@
+table:
+  name: operator_withdrawals_total_value_histories
+  schema: leaderboard

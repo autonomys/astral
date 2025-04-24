@@ -111,9 +111,6 @@ CREATE TABLE files.metadata_cids (
 );
 ALTER TABLE files.metadata_cids OWNER TO postgres;
 
-ALTER TABLE ONLY files._metadata
-    ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
-
 ALTER TABLE ONLY files.chunks
     ADD CONSTRAINT chunks_pkey PRIMARY KEY (id);
 

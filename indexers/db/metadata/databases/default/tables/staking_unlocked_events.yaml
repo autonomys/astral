@@ -5,16 +5,17 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - account_id
         - amount
         - block_height
-        - storage_fee
-        - account_id
         - domain_id
         - event_id
         - extrinsic_id
         - id
         - nominator_id
         - operator_id
+        - storage_fee
+        - timestamp
       filter: {}
       limit: 50
     comment: ""

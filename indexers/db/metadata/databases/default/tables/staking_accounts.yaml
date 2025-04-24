@@ -13,15 +13,17 @@ select_permissions:
         - current_storage_fee_deposit
         - current_total_shares
         - current_total_stake
+        - id
         - total_deposits
         - total_deposits_count
         - total_estimated_withdrawals
         - total_rewards_collected
+        - total_rewards_collected_count
         - total_tax_collected
+        - total_tax_collected_count
         - total_withdrawals
         - total_withdrawals_count
         - updated_at
-        - id
       filter: {}
       limit: 50
       allow_aggregations: true

@@ -33,20 +33,21 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - account_id
         - amount
         - created_at
-        - storage_fee_deposit
-        - total_amount
-        - total_withdrawn
-        - updated_at
-        - account_id
         - domain_id
+        - estimated_shares
         - extrinsic_id
         - id
         - nominator_id
         - operator_id
         - status
+        - storage_fee_deposit
         - timestamp
+        - total_amount
+        - total_withdrawn
+        - updated_at
       filter: {}
       limit: 50
       allow_aggregations: true

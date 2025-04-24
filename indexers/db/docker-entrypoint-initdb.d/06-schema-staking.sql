@@ -1,14 +1,6 @@
 CREATE SCHEMA staking;
 ALTER SCHEMA staking OWNER TO postgres;
 
-CREATE TABLE staking._metadata (
-    key character varying(255) NOT NULL,
-    value jsonb,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-ALTER TABLE staking._metadata OWNER TO postgres;
-
 CREATE TABLE staking.accounts (
     id text NOT NULL,
     total_deposits numeric NOT NULL,
@@ -423,9 +415,6 @@ CREATE TABLE staking.withdrawals (
     updated_at numeric NOT NULL
 );
 ALTER TABLE staking.withdrawals OWNER TO postgres;
-
-ALTER TABLE ONLY staking._metadata
-    ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
 
 ALTER TABLE ONLY staking.accounts
     ADD CONSTRAINT accounts_pkey PRIMARY KEY (id);
