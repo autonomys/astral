@@ -68,7 +68,7 @@ export const insertChunks = async (
   ]);
   const columns = [
     "id",
-    "cid",
+    "chunk_cid",
     "block_id",
     "block_height",
     "block_hash",
@@ -114,17 +114,19 @@ export const insertFiles = async (
     file.extrinsicId,
     file.size.toString(),
     file.name,
+    file.timestamp,
   ]);
   const columns = [
     "id",
     "sort_id",
-    "cid",
+    "file_cid",
     "block_id",
     "block_height",
     "block_hash",
     "extrinsic_id",
     "size",
     "name",
+    "timestamp",
   ];
   return await insert("files.files", columns, values, sqlClient);
 };
@@ -161,17 +163,19 @@ export const insertFolders = async (
     folder.extrinsicId,
     folder.size.toString(),
     folder.name,
+    folder.timestamp,
   ]);
   const columns = [
     "id",
     "sort_id",
-    "cid",
+    "folder_cid",
     "block_id",
     "block_height",
     "block_hash",
     "extrinsic_id",
     "size",
     "name",
+    "timestamp",
   ];
   return await insert("files.folders", columns, values, sqlClient);
 };
@@ -208,17 +212,19 @@ export const insertMetadata = async (
     metadata.extrinsicId,
     metadata.size.toString(),
     metadata.name,
+    metadata.timestamp,
   ]);
   const columns = [
     "id",
     "sort_id",
-    "cid",
+    "metadata_cid",
     "block_id",
     "block_height",
     "block_hash",
     "extrinsic_id",
     "size",
     "name",
+    "timestamp",
   ];
   return await insert("files.metadata", columns, values, sqlClient);
 };

@@ -466,7 +466,8 @@ export function createMetadata(
   name: string,
   blockHeight: bigint,
   blockHash: string,
-  extrinsicId: string
+  extrinsicId: string,
+  timestamp: Date
 ): { metadata: CachedMetadata; relations: CachedMetadataCid[] } {
   const blockId = getBlockId(blockHeight, blockHash);
   const metadata = {
@@ -479,6 +480,7 @@ export function createMetadata(
     extrinsicId,
     size: BigInt(0),
     name,
+    timestamp,
   };
   if (links.length > 0)
     return {
@@ -496,7 +498,8 @@ export function createFolder(
   name: string,
   blockHeight: bigint,
   blockHash: string,
-  extrinsicId: string
+  extrinsicId: string,
+  timestamp: Date
 ): { folder: CachedFolder; relations: CachedFolderCid[] } {
   const blockId = getBlockId(blockHeight, blockHash);
   const folder = {
@@ -509,6 +512,7 @@ export function createFolder(
     extrinsicId,
     size: BigInt(0),
     name,
+    timestamp,
   };
   if (links.length > 0)
     return {
@@ -526,7 +530,8 @@ export function createFile(
   name: string,
   blockHeight: bigint,
   blockHash: string,
-  extrinsicId: string
+  extrinsicId: string,
+  timestamp: Date
 ): { file: CachedFile; relations: CachedFileCid[] } {
   const blockId = getBlockId(blockHeight, blockHash);
   const file = {
@@ -539,6 +544,7 @@ export function createFile(
     extrinsicId,
     size: BigInt(0),
     name,
+    timestamp,
   };
   if (links.length > 0)
     return {

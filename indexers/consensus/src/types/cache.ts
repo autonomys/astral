@@ -179,6 +179,7 @@ export type CachedFolder = {
   extrinsicId: string;
   size: bigint;
   name: string;
+  timestamp: Date;
 };
 
 export type CachedFolderCid = {
@@ -198,6 +199,7 @@ export type CachedFile = {
   extrinsicId: string;
   size: bigint;
   name: string;
+  timestamp: Date;
 };
 
 export type CachedFileCid = {
@@ -217,6 +219,7 @@ export type CachedMetadata = {
   extrinsicId: string;
   size: bigint;
   name: string;
+  timestamp: Date;
 };
 
 export type CachedMetadataCid = {
