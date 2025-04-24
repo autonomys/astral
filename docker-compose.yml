@@ -176,157 +176,182 @@ services:
       - graphql-engine
       - serve
 
+  # NEW Indexer Engine
+  indexer-engine:
+    build:
+      context: ./indexers/engine
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:3001:8000"
+    volumes:
+      - ./indexers/engine:/app
+    depends_on:
+      pgcat:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      ENDPOINT: ${RPC_URLS}
+      CHAIN_ID: ${CHAIN_ID}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      START_BLOCK: ${START_BLOCK_CONSENSUS}
+      START_BLOCK_STAKING: ${START_BLOCK_STAKING}
+
   # Indexers Subquery Nodes
-  consensus_subquery_node:
-    profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
-    ports:
-      - "127.0.0.1:3001:3000"
-    depends_on:
-      pgcat:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-    environment:
-      ENDPOINT: ${RPC_URLS}
-      CHAIN_ID: ${CHAIN_ID}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-    volumes:
-      - ./indexers/consensus:/consensus
-    command:
-      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/consensus
-      - --db-schema=consensus
-      - --workers=1
-      - --unsafe
-      - --batch-size=120
-      - --scale-batch-size
-      - --unfinalized-blocks=true
-      - --disable-historical=false
-      #  - --profiler
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
-      interval: 3s
-      timeout: 5s
-      retries: 10
+  # consensus_subquery_node:
+  #   profiles: [indexers]
+  #   image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+  #   ports:
+  #     - "127.0.0.1:3001:3000"
+  #   depends_on:
+  #     pgcat:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   environment:
+  #     ENDPOINT: ${RPC_URLS}
+  #     CHAIN_ID: ${CHAIN_ID}
+  #     DB_USER: ${DB_USER}
+  #     DB_PASS: ${DB_PASSWORD}
+  #     DB_DATABASE: ${DB_DATABASE}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_PORT: ${DB_PORT}
+  #   volumes:
+  #     - ./indexers/consensus:/consensus
+  #   command:
+  #     - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+  #     - -f=/consensus
+  #     - --db-schema=consensus
+  #     - --workers=1
+  #     - --unsafe
+  #     - --batch-size=120
+  #     - --scale-batch-size
+  #     - --unfinalized-blocks=true
+  #     - --disable-historical=false
+  #     #  - --profiler
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+  #     interval: 3s
+  #     timeout: 5s
+  #     retries: 10
 
-  leaderboard_subquery_node:
-    profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
-    ports:
-      - "127.0.0.1:3002:3000"
-    depends_on:
-      pgcat:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-    environment:
-      ENDPOINT: ${RPC_URLS}
-      CHAIN_ID: ${CHAIN_ID}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-    volumes:
-      - ./indexers/leaderboard:/leaderboard
-    command:
-      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/leaderboard
-      - --db-schema=leaderboard
-      - --workers=1
-      - --batch-size=100
-      - --scale-batch-size
-      - --unfinalized-blocks=true
-      - --disable-historical=false
-      #  - --profiler
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
-      interval: 3s
-      timeout: 5s
-      retries: 10
+  # leaderboard_subquery_node:
+  #   profiles: [indexers]
+  #   image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+  #   ports:
+  #     - "127.0.0.1:3002:3000"
+  #   depends_on:
+  #     pgcat:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   environment:
+  #     ENDPOINT: ${RPC_URLS}
+  #     CHAIN_ID: ${CHAIN_ID}
+  #     DB_USER: ${DB_USER}
+  #     DB_PASS: ${DB_PASSWORD}
+  #     DB_DATABASE: ${DB_DATABASE}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_PORT: ${DB_PORT}
+  #   volumes:
+  #     - ./indexers/leaderboard:/leaderboard
+  #   command:
+  #     - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+  #     - -f=/leaderboard
+  #     - --db-schema=leaderboard
+  #     - --workers=1
+  #     - --batch-size=100
+  #     - --scale-batch-size
+  #     - --unfinalized-blocks=true
+  #     - --disable-historical=false
+  #     #  - --profiler
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+  #     interval: 3s
+  #     timeout: 5s
+  #     retries: 10
 
-  staking_subquery_node:
-    profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
-    ports:
-      - "127.0.0.1:3003:3000"
-    depends_on:
-      pgcat:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-    environment:
-      ENDPOINT: ${RPC_URLS}
-      CHAIN_ID: ${CHAIN_ID}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-    volumes:
-      - ./indexers/staking:/staking
-    command:
-      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/staking
-      - --db-schema=staking
-      - --workers=1
-      - --unsafe
-      - --batch-size=125
-      - --scale-batch-size
-      - --unfinalized-blocks=true
-      - --disable-historical=false
-      #  - --profiler
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
-      interval: 3s
-      timeout: 5s
-      retries: 10
+  # staking_subquery_node:
+  #   profiles: [indexers]
+  #   image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+  #   ports:
+  #     - "127.0.0.1:3003:3000"
+  #   depends_on:
+  #     pgcat:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   environment:
+  #     ENDPOINT: ${RPC_URLS}
+  #     CHAIN_ID: ${CHAIN_ID}
+  #     DB_USER: ${DB_USER}
+  #     DB_PASS: ${DB_PASSWORD}
+  #     DB_DATABASE: ${DB_DATABASE}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_PORT: ${DB_PORT}
+  #   volumes:
+  #     - ./indexers/staking:/staking
+  #   command:
+  #     - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+  #     - -f=/staking
+  #     - --db-schema=staking
+  #     - --workers=1
+  #     - --unsafe
+  #     - --batch-size=125
+  #     - --scale-batch-size
+  #     - --unfinalized-blocks=true
+  #     - --disable-historical=false
+  #     #  - --profiler
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+  #     interval: 3s
+  #     timeout: 5s
+  #     retries: 10
 
-  files_subquery_node:
-    profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
-    ports:
-      - "127.0.0.1:3004:3000"
-    depends_on:
-      pgcat:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-    environment:
-      ENDPOINT: ${RPC_URLS}
-      CHAIN_ID: ${CHAIN_ID}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-    volumes:
-      - ./indexers/files:/files
-    command:
-      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/files
-      - --db-schema=files
-      - --workers=1
-      - --unsafe
-      - --batch-size=50
-      - --scale-batch-size
-      - --unfinalized-blocks=true
-      - --disable-historical=false
-      #  - --profiler
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
-      interval: 3s
-      timeout: 5s
-      retries: 10
+  # files_subquery_node:
+  #   profiles: [indexers]
+  #   image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+  #   ports:
+  #     - "127.0.0.1:3004:3000"
+  #   depends_on:
+  #     pgcat:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   environment:
+  #     ENDPOINT: ${RPC_URLS}
+  #     CHAIN_ID: ${CHAIN_ID}
+  #     DB_USER: ${DB_USER}
+  #     DB_PASS: ${DB_PASSWORD}
+  #     DB_DATABASE: ${DB_DATABASE}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_PORT: ${DB_PORT}
+  #   volumes:
+  #     - ./indexers/files:/files
+  #   command:
+  #     - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+  #     - -f=/files
+  #     - --db-schema=files
+  #     - --workers=1
+  #     - --unsafe
+  #     - --batch-size=50
+  #     - --scale-batch-size
+  #     - --unfinalized-blocks=true
+  #     - --disable-historical=false
+  #     #  - --profiler
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+  #     interval: 3s
+  #     timeout: 5s
+  #     retries: 10
 
   # Redis
   redis:

@@ -1,78 +1,78 @@
 services:
-  caddy:
-    extends:
-      file: ./docker-compose.yml
-      service: caddy
-    ports:
-      - "127.0.0.1:8001:8001"
-  # Subspace Node
-  node:
-    extends:
-      file: ./docker-compose.yml
-      service: node
-    image: ghcr.io/autonomys/node:${NODE_DOCKER_TAG}
-    volumes:
-      - node-data:/var/subspace:rw
-    ports:
-      - "30333:30333/tcp"
-      - "30433:30433/tcp"
-      - "30334:30334/tcp"
-      - "127.0.0.1:9944:9944/tcp"
-      - "127.0.0.1:8944:8944/tcp"
-    restart: unless-stopped
-    command:
-      [
-        "run",
-        "--chain",
-        "${NETWORK_ID}",
-        "--base-path",
-        "/var/subspace",
-        "--state-pruning",
-        "archive",
-        "--blocks-pruning",
-        "archive",
-        "--listen-on",
-        "/ip4/0.0.0.0/tcp/30333",
-        "--dsn-listen-on",
-        "/ip4/0.0.0.0/tcp/30433",
-        "--rpc-cors",
-        "all",
-        "--rpc-methods",
-        "unsafe",
-        "--rpc-listen-on",
-        "0.0.0.0:9944",
-        "--rpc-max-subscriptions-per-connection",
-        "1000",
-        "--rpc-max-connections",
-        "20000",
-        "--name",
-        "astral",
-        "--sync",
-        "full",
-        "--",
-        "--domain-id",
-        "${DOMAIN_ID}",
-        "--state-pruning",
-        "archive",
-        "--blocks-pruning",
-        "archive",
-        "--listen-on",
-        "/ip4/0.0.0.0/tcp/30334",
-        "--listen-on",
-        "/ip6/::/tcp/30334",
-        "--rpc-cors",
-        "all",
-        "--rpc-methods",
-        "safe",
-        "--rpc-listen-on",
-        "0.0.0.0:8944",
-        "--rpc-max-connections",
-        "500",
-        "--reserved-peer",
-        "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
-        "--bootstrap-node",
-        "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
-      ]
+  # caddy:
+  #   extends:
+  #     file: ./docker-compose.yml
+  #     service: caddy
+  #   ports:
+  #     - "127.0.0.1:8001:8001"
+  # # Subspace Node
+  # node:
+  #   extends:
+  #     file: ./docker-compose.yml
+  #     service: node
+  #   image: ghcr.io/autonomys/node:${NODE_DOCKER_TAG}
+  #   volumes:
+  #     - node-data:/var/subspace:rw
+  #   ports:
+  #     - "30333:30333/tcp"
+  #     - "30433:30433/tcp"
+  #     - "30334:30334/tcp"
+  #     - "127.0.0.1:9944:9944/tcp"
+  #     - "127.0.0.1:8944:8944/tcp"
+  #   restart: unless-stopped
+  #   command:
+  #     [
+  #       "run",
+  #       "--chain",
+  #       "${NETWORK_ID}",
+  #       "--base-path",
+  #       "/var/subspace",
+  #       "--state-pruning",
+  #       "archive",
+  #       "--blocks-pruning",
+  #       "archive",
+  #       "--listen-on",
+  #       "/ip4/0.0.0.0/tcp/30333",
+  #       "--dsn-listen-on",
+  #       "/ip4/0.0.0.0/tcp/30433",
+  #       "--rpc-cors",
+  #       "all",
+  #       "--rpc-methods",
+  #       "unsafe",
+  #       "--rpc-listen-on",
+  #       "0.0.0.0:9944",
+  #       "--rpc-max-subscriptions-per-connection",
+  #       "1000",
+  #       "--rpc-max-connections",
+  #       "20000",
+  #       "--name",
+  #       "astral",
+  #       "--sync",
+  #       "full",
+  #       "--",
+  #       "--domain-id",
+  #       "${DOMAIN_ID}",
+  #       "--state-pruning",
+  #       "archive",
+  #       "--blocks-pruning",
+  #       "archive",
+  #       "--listen-on",
+  #       "/ip4/0.0.0.0/tcp/30334",
+  #       "--listen-on",
+  #       "/ip6/::/tcp/30334",
+  #       "--rpc-cors",
+  #       "all",
+  #       "--rpc-methods",
+  #       "safe",
+  #       "--rpc-listen-on",
+  #       "0.0.0.0:8944",
+  #       "--rpc-max-connections",
+  #       "500",
+  #       "--reserved-peer",
+  #       "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
+  #       "--bootstrap-node",
+  #       "/dns/bootstrap-0.auto-evm.taurus.subspace.network/tcp/30334/p2p/12D3KooWKDhSnpoeyRPRQSNwnB2k1C4WRa8h3BQh5s5mtF9MJdTN",
+  #     ]
 
   domain_auto_evm_subquery_node:
     profiles: [indexers]
