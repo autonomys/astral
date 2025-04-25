@@ -72,10 +72,9 @@ export const AccountLeaderboard: FC = () => {
 
   return (
     <Leaderboard>
-      <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop}>
+      <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop} tabTitleStyle='gap-2'>
         <Tab title='Extrinsic Count'>
           <LeaderboardList
-            title=''
             query={AccountExtrinsicTotalCountDocument}
             table='leaderboard_account_extrinsic_total_counts'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
@@ -84,7 +83,6 @@ export const AccountLeaderboard: FC = () => {
         </Tab>
         <Tab title='Extrinsic Success Count'>
           <LeaderboardList
-            title=''
             query={AccountExtrinsicSuccessTotalCountDocument}
             table='leaderboard_account_extrinsic_success_total_counts'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
@@ -93,7 +91,6 @@ export const AccountLeaderboard: FC = () => {
         </Tab>
         <Tab title='Extrinsic Failed Count'>
           <LeaderboardList
-            title=''
             query={AccountExtrinsicFailedTotalCountDocument}
             table='leaderboard_account_extrinsic_failed_total_counts'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
@@ -102,7 +99,6 @@ export const AccountLeaderboard: FC = () => {
         </Tab>
         <Tab title='Transaction Fee Paid Value'>
           <LeaderboardList
-            title=''
             query={AccountTransactionFeePaidTotalValueDocument}
             table='leaderboard_account_transaction_fee_paid_total_values'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
@@ -112,7 +108,6 @@ export const AccountLeaderboard: FC = () => {
         </Tab>
         <Tab title='Transfer Sender Count'>
           <LeaderboardList
-            title=''
             query={AccountTransferSenderTotalCountDocument}
             table='leaderboard_account_transfer_sender_total_counts'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
@@ -121,7 +116,6 @@ export const AccountLeaderboard: FC = () => {
         </Tab>
         <Tab title='Transfer Sender Value'>
           <LeaderboardList
-            title=''
             query={AccountTransferSenderTotalValueDocument}
             table='leaderboard_account_transfer_sender_total_values'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
@@ -131,7 +125,6 @@ export const AccountLeaderboard: FC = () => {
         </Tab>
         <Tab title='Transfer Receiver Count'>
           <LeaderboardList
-            title=''
             query={AccountTransferReceiverTotalCountDocument}
             table='leaderboard_account_transfer_receiver_total_counts'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
@@ -140,7 +133,6 @@ export const AccountLeaderboard: FC = () => {
         </Tab>
         <Tab title='Transfer Receiver Value'>
           <LeaderboardList
-            title=''
             query={AccountTransferReceiverTotalValueDocument}
             table='leaderboard_account_transfer_receiver_total_values'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
@@ -150,7 +142,6 @@ export const AccountLeaderboard: FC = () => {
         </Tab>
         <Tab title='Remark Count'>
           <LeaderboardList
-            title='Remark Count'
             query={AccountRemarkCountDocument}
             table='leaderboard_account_remark_counts'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
@@ -177,7 +168,6 @@ export const FarmerLeaderboard: FC = () => {
       >
         <Tab title='Vote & Block Count'>
           <LeaderboardList
-            title=''
             query={FarmerVoteAndBlockTotalCountDocument}
             table='leaderboard_farmer_vote_and_block_total_counts'
             idLabel='Farmer'
@@ -187,7 +177,6 @@ export const FarmerLeaderboard: FC = () => {
         </Tab>
         <Tab title='Vote & Block Value'>
           <LeaderboardList
-            title=''
             query={FarmerVoteAndBlockTotalValueDocument}
             table='leaderboard_farmer_vote_and_block_total_values'
             idLabel='Farmer'
@@ -198,7 +187,6 @@ export const FarmerLeaderboard: FC = () => {
         </Tab>
         <Tab title='Vote Count'>
           <LeaderboardList
-            title=''
             query={FarmerVoteTotalCountDocument}
             table='leaderboard_farmer_vote_total_counts'
             idLabel='Farmer'
@@ -208,7 +196,6 @@ export const FarmerLeaderboard: FC = () => {
         </Tab>
         <Tab title='Vote Value'>
           <LeaderboardList
-            title=''
             query={FarmerVoteTotalValueDocument}
             table='leaderboard_farmer_vote_total_values'
             idLabel='Farmer'
@@ -219,7 +206,6 @@ export const FarmerLeaderboard: FC = () => {
         </Tab>
         <Tab title='Block Count'>
           <LeaderboardList
-            title=''
             query={FarmerBlockTotalCountDocument}
             table='leaderboard_farmer_block_total_counts'
             idLabel='Farmer'
@@ -229,7 +215,6 @@ export const FarmerLeaderboard: FC = () => {
         </Tab>
         <Tab title='Block Value'>
           <LeaderboardList
-            title=''
             query={FarmerBlockTotalValueDocument}
             table='leaderboard_farmer_block_total_values'
             idLabel='Farmer'
@@ -252,7 +237,6 @@ export const OperatorLeaderboard: FC = () => {
       <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop}>
         <Tab title='Rewards Collected'>
           <LeaderboardList
-            title='Rewards Collected'
             query={OperatorTotalRewardsCollectedDocument}
             table='leaderboard_operator_total_rewards_collecteds'
             idLabel='Operator'
@@ -263,7 +247,6 @@ export const OperatorLeaderboard: FC = () => {
         </Tab>
         <Tab title='Tax Collected'>
           <LeaderboardList
-            title='Tax Collected'
             query={OperatorTotalTaxCollectedDocument}
             table='leaderboard_operator_total_tax_collecteds'
             idLabel='Operator'
@@ -274,7 +257,6 @@ export const OperatorLeaderboard: FC = () => {
         </Tab>
         <Tab title='Bundle Count'>
           <LeaderboardList
-            title='Bundle Count'
             query={OperatorBundleTotalCountDocument}
             table='leaderboard_operator_bundle_total_counts'
             idLabel='Operator'
@@ -285,7 +267,6 @@ export const OperatorLeaderboard: FC = () => {
         </Tab>
         <Tab title='Deposits Count'>
           <LeaderboardList
-            title='Deposits Count'
             query={OperatorDepositsTotalCountDocument}
             table='leaderboard_operator_deposits_total_counts'
             idLabel='Operator'
@@ -296,7 +277,6 @@ export const OperatorLeaderboard: FC = () => {
         </Tab>
         <Tab title='Deposits Value'>
           <LeaderboardList
-            title='Deposits Value'
             query={OperatorDepositsTotalValueDocument}
             table='leaderboard_operator_deposits_total_values'
             idLabel='Operator'
@@ -307,7 +287,6 @@ export const OperatorLeaderboard: FC = () => {
         </Tab>
         <Tab title='Withdrawals Count'>
           <LeaderboardList
-            title='Withdrawals Count'
             query={OperatorWithdrawalsTotalCountDocument}
             table='leaderboard_operator_withdrawals_total_counts'
             idLabel='Operator'
@@ -330,7 +309,6 @@ export const NominatorLeaderboard: FC = () => {
       <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop}>
         <Tab title='Deposits Count'>
           <LeaderboardList
-            title='Deposits Count'
             query={NominatorDepositsTotalCountDocument}
             table='leaderboard_nominator_deposits_total_counts'
             idLabel='Nominator'
@@ -340,7 +318,6 @@ export const NominatorLeaderboard: FC = () => {
         </Tab>
         <Tab title='Deposits Value'>
           <LeaderboardList
-            title='Deposits Value'
             query={NominatorDepositsTotalValueDocument}
             table='leaderboard_nominator_deposits_total_values'
             idLabel='Nominator'
@@ -350,7 +327,6 @@ export const NominatorLeaderboard: FC = () => {
         </Tab>
         <Tab title='Withdrawals Count'>
           <LeaderboardList
-            title='Withdrawals Count'
             query={NominatorWithdrawalsTotalCountDocument}
             table='leaderboard_nominator_withdrawals_total_counts'
             idLabel='Nominator'
