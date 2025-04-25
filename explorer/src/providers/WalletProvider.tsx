@@ -146,6 +146,8 @@ export const WalletProvider: FC<Props> = ({ children }) => {
               account: _subspaceAccount,
               message,
               signature: signature.signature,
+              walletSource: account.source,
+              walletType: account.type,
             })
           }
         }

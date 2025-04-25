@@ -1,3 +1,4 @@
+import { SupportedWalletExtension } from '@/constants/wallet'
 import { AuthProvider } from 'constants/session'
 import type { TokenSet } from 'next-auth'
 import { User } from 'next-auth'
@@ -9,6 +10,7 @@ import {
   giveMainnetDiscordFarmerRole,
   giveMainnetDiscordNominatorRole,
   giveMainnetDiscordOperatorRole,
+  giveMainnetDiscordTalismanFarmerRole,
   giveTaurusDiscordFarmerRole,
   giveTaurusDiscordNominatorRole,
   giveTaurusDiscordOperatorRole,
@@ -16,6 +18,7 @@ import {
   verifyMainnetDiscordFarmerRole,
   verifyMainnetDiscordNominatorRole,
   verifyMainnetDiscordOperatorRole,
+  verifyMainnetDiscordTalismanFarmerRole,
   verifyTaurusDiscordFarmerRole,
   verifyTaurusDiscordNominatorRole,
   verifyTaurusDiscordOperatorRole,
@@ -49,6 +52,7 @@ export const Discord = () => {
         let taurusFarmer = await verifyTaurusDiscordFarmerRole(roles)
         let taurusOperator = await verifyTaurusDiscordOperatorRole(roles)
         let taurusNominator = await verifyTaurusDiscordNominatorRole(roles)
+        let mainnetTalismanFarmer = await verifyMainnetDiscordTalismanFarmerRole(roles)
 
         let newRolesAdded = false
         const savedUser = await findUserByID(did)
@@ -80,6 +84,15 @@ export const Discord = () => {
           await giveTaurusDiscordNominatorRole(profile.id)
           newRolesAdded = true
         }
+        // Temporary VCs
+        if (
+          session.subspace?.source === SupportedWalletExtension.Talisman &&
+          session.subspace?.vcs.mainnetTalismanFarmer &&
+          !mainnetTalismanFarmer
+        ) {
+          await giveMainnetDiscordTalismanFarmerRole(profile.id)
+          newRolesAdded = true
+        }
         if (newRolesAdded) {
           const newRoles = await getUserRoles(token.access_token)
           mainnetFarmer = await verifyMainnetDiscordFarmerRole(newRoles)
@@ -88,6 +101,7 @@ export const Discord = () => {
           taurusFarmer = await verifyTaurusDiscordFarmerRole(newRoles)
           taurusOperator = await verifyTaurusDiscordOperatorRole(newRoles)
           taurusNominator = await verifyTaurusDiscordNominatorRole(newRoles)
+          mainnetTalismanFarmer = await verifyMainnetDiscordTalismanFarmerRole(newRoles)
         }
 
         const user: User = {
@@ -108,6 +122,8 @@ export const Discord = () => {
                 taurusFarmer,
                 taurusOperator,
                 taurusNominator,
+                // Temporary VCs
+                mainnetTalismanFarmer,
               },
             },
           },
