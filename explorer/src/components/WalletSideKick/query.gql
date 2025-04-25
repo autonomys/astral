@@ -108,6 +108,20 @@ query CheckRole($subspaceAccount: String!) {
   ) {
     id
   }
+  isTalismanFarmer: consensus_rewards(
+    where: {
+      _or: [
+        { reward_type: { _eq: "rewards.VoteReward" } }
+        { reward_type: { _eq: "rewards.BlockReward" } }
+      ]
+      account_id: { _eq: $subspaceAccount }
+    }
+    limit: 1
+  ) {
+    account {
+      id
+    }
+  }
 }
 
 query StakingSummary($first: Int!, $subspaceAccount: String) {
