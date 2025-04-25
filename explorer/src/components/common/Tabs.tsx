@@ -1,5 +1,6 @@
 'use client'
 
+import { cn } from '@/utils/cn'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, {
   MouseEventHandler,
@@ -71,10 +72,10 @@ export const TabTitle: React.FC<TabTitleProps> = ({
   return (
     <li className='-mb-px w-full text-center last:mr-0 lg:w-auto'>
       <button
-        className={
-          'block w-full rounded-full px-[13.8px] py-3 text-xs font-semibold leading-normal lg:w-auto ' +
-          (isSelected ? `${activePillStyle}` : `${pillStyle}`)
-        }
+        className={cn(
+          'block w-full rounded-full px-[13.8px] py-3 text-xs font-semibold leading-normal lg:w-auto',
+          isSelected ? activePillStyle : pillStyle,
+        )}
         onClick={handleOnClick}
       >
         {title}
@@ -120,10 +121,10 @@ export const Tabs: React.FC<TabsProps> = ({
   }, [updateSelectedTab])
 
   return (
-    <div className={`flex flex-wrap ${tabStyle}`}>
+    <div className={cn('flex flex-wrap', tabStyle)}>
       <div className='w-full'>
         <ul
-          className={`flex w-full list-none flex-row flex-wrap pb-4 pt-3 ${tabTitleStyle}`}
+          className={cn('flex w-full list-none flex-row flex-wrap pb-4 pt-3', tabTitleStyle)}
           role='tablist'
         >
           {Array.isArray(children) ? (
