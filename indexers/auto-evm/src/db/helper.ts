@@ -4,7 +4,8 @@ export const insert = async (
   table: string,
   columns: string[],
   data: (string | number | boolean | string[] | Date)[][],
-  sqlClient?: typeof sql
+  sqlClient?: typeof sql,
+  onConflict?: string
 ) => {
   if (columns.length !== data[0].length)
     throw new Error("Columns and data length mismatch");
@@ -28,6 +29,7 @@ export const insert = async (
       ${columns.join(", ")}
     )
     VALUES ${placeholders}
+    ${onConflict ? `ON CONFLICT ${onConflict}` : ""}
   `;
 
   return await (sqlClient || sql).unsafe(query, flatValues);

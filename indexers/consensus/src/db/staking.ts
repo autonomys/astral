@@ -113,6 +113,127 @@ export const insertRuntimeCreations = async (
   return await insert("staking.runtime_creations", columns, values, sqlClient);
 };
 
+export const insertDomains = async (
+  domainInstantiations: CachedDomainInstantiation[],
+  sqlClient?: typeof sql
+) => {
+  if (domainInstantiations.length === 0) return;
+
+  const values = domainInstantiations.map((instantiation) => [
+    instantiation.id,
+    instantiation.sortId,
+    instantiation.createdBy,
+    instantiation.name,
+    instantiation.runtimeId,
+    instantiation.runtime,
+    instantiation.runtimeInfo,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    instantiation.extrinsicId,
+    instantiation.blockHeight.toString(),
+    instantiation.blockHeight.toString(),
+  ]);
+  const columns = [
+    "id",
+    "sort_id",
+    "account_id",
+    "name",
+    "runtime_id",
+    "runtime",
+    "runtime_info",
+    "completed_epoch",
+    "last_domain_block_number",
+    "total_deposits",
+    "total_estimated_withdrawals",
+    "total_withdrawals",
+    "total_deposits_count",
+    "total_withdrawals_count",
+    "total_tax_collected",
+    "total_rewards_collected",
+    "total_transfers_in",
+    "transfers_in_count",
+    "total_transfers_out",
+    "transfers_out_count",
+    "total_rejected_transfers_claimed",
+    "rejected_transfers_claimed_count",
+    "total_transfers_rejected",
+    "transfers_rejected_count",
+    "total_volume",
+    "total_consensus_storage_fee",
+    "total_domain_execution_fee",
+    "total_burned_balance",
+    "current_total_stake",
+    "current_storage_fee_deposit",
+    "current_total_shares",
+    "current_share_price",
+    "current_1d_yield",
+    "current_7d_yield",
+    "current_30d_yield",
+    "current_1d_apy",
+    "current_7d_apy",
+    "current_30d_apy",
+    "accumulated_epoch_stake",
+    "accumulated_epoch_storage_fee_deposit",
+    "accumulated_epoch_rewards",
+    "accumulated_epoch_shares",
+    "bundle_count",
+    "reward_count",
+    "tax_collected_count",
+    "current_epoch_duration",
+    "last_epoch_duration",
+    "last6_epochs_duration",
+    "last144_epoch_duration",
+    "last1k_epoch_duration",
+    "last_bundle_at",
+    "extrinsic_id",
+    "created_at",
+    "updated_at",
+  ];
+  return await insert("staking.domains", columns, values, sqlClient);
+};
+
 export const insertDomainInstantiations = async (
   domainInstantiations: CachedDomainInstantiation[],
   sqlClient?: typeof sql
@@ -149,6 +270,97 @@ export const insertDomainInstantiations = async (
     values,
     sqlClient
   );
+};
+
+export const insertOperators = async (
+  operatorRegistrations: CachedOperatorRegistration[],
+  sqlClient?: typeof sql
+) => {
+  if (operatorRegistrations.length === 0) return;
+
+  const values = operatorRegistrations.map((registration) => [
+    registration.id,
+    registration.sortId,
+    registration.owner,
+    registration.domainId,
+    registration.signingKey,
+    registration.minimumNominatorStake.toString(),
+    registration.nominationTax,
+    0, // current_total_stake
+    0, // current_storage_fee_deposit
+    0, // current_epoch_rewards
+    0, // current_total_shares
+    0, // current_share_price
+    '{"registered":null}', // raw_status
+    0, // total_deposits
+    0, // total_estimated_withdrawals
+    0, // total_withdrawals
+    0, // total_deposits_count
+    0, // total_withdrawals_count
+    0, // total_tax_collected
+    0, // total_rewards_collected
+    0, // accumulated_epoch_stake
+    0, // accumulated_epoch_storage_fee_deposit
+    0, // accumulated_epoch_rewards
+    0, // accumulated_epoch_shares
+    0, // active_epoch_count
+    0, // bundle_count
+    0, // reward_count
+    0, // tax_collected_count
+    0, // current_1d_yield
+    0, // current_7d_yield
+    0, // current_30d_yield
+    0, // current_1d_apy
+    0, // current_7d_apy
+    0, // current_30d_apy
+    "PENDING_NEXT_EPOCH", // status
+    0, // last_bundle_at
+    registration.extrinsicId,
+    registration.blockHeight.toString(),
+    registration.blockHeight.toString(),
+  ]);
+  const columns = [
+    "id",
+    "sort_id",
+    "account_id",
+    "domain_id",
+    "signing_key",
+    "minimum_nominator_stake",
+    "nomination_tax",
+    "current_total_stake",
+    "current_storage_fee_deposit",
+    "current_epoch_rewards",
+    "current_total_shares",
+    "current_share_price",
+    "raw_status",
+    "total_deposits",
+    "total_estimated_withdrawals",
+    "total_withdrawals",
+    "total_deposits_count",
+    "total_withdrawals_count",
+    "total_tax_collected",
+    "total_rewards_collected",
+    "accumulated_epoch_stake",
+    "accumulated_epoch_storage_fee_deposit",
+    "accumulated_epoch_rewards",
+    "accumulated_epoch_shares",
+    "active_epoch_count",
+    "bundle_count",
+    "reward_count",
+    "tax_collected_count",
+    "current_1d_yield",
+    "current_7d_yield",
+    "current_30d_yield",
+    "current_1d_apy",
+    "current_7d_apy",
+    "current_30d_apy",
+    "status",
+    "last_bundle_at",
+    "extrinsic_id",
+    "created_at",
+    "updated_at",
+  ];
+  return await insert("staking.operators", columns, values, sqlClient);
 };
 
 export const insertOperatorRegistrations = async (
@@ -191,7 +403,7 @@ export const insertOperatorRegistrations = async (
 
 export const insertOperatorDeregistrations = async (
   operatorDeregistrations: CachedOperatorDeregistration[],
-  sqlClient?: typeof sql
+  sqlClient: typeof sql = sql
 ) => {
   if (operatorDeregistrations.length === 0) return;
 
@@ -211,12 +423,17 @@ export const insertOperatorDeregistrations = async (
     "extrinsic_id",
     "event_id",
   ];
-  return await insert(
-    "staking.operator_deregistrations",
-    columns,
-    values,
-    sqlClient
-  );
+  return await Promise.all([
+    insert("staking.operator_deregistrations", columns, values, sqlClient),
+    ...operatorDeregistrations.map(
+      (deregistration) =>
+        sqlClient`UPDATE staking.operators
+          SET 
+            status = 'DEREGISTERED',
+            updated_at = ${deregistration.blockHeight.toString()}
+          WHERE id = ${deregistration.id}`
+    ),
+  ]);
 };
 
 export const insertDepositEvents = async (
@@ -225,7 +442,24 @@ export const insertDepositEvents = async (
 ) => {
   if (depositEvents.length === 0) return;
 
-  const values = depositEvents.map((event) => [
+  const depositsValues = depositEvents.map((event) => [
+    event.id,
+    event.accountId,
+    event.domainId,
+    event.operatorId,
+    event.nominatorId,
+    event.amount.toString(),
+    event.storageFeeDeposit.toString(),
+    event.totalAmount.toString(),
+    event.estimatedShares.toString(),
+    0, // total_withdrawn
+    "PENDING_NEXT_EPOCH", // status
+    event.timestamp,
+    event.extrinsicId,
+    event.blockHeight.toString(),
+    event.blockHeight.toString(),
+  ]);
+  const depositEventsValues = depositEvents.map((event) => [
     event.id,
     event.sortId,
     event.accountId,
@@ -241,7 +475,24 @@ export const insertDepositEvents = async (
     event.extrinsicId,
     event.eventId,
   ]);
-  const columns = [
+  const depositsColumns = [
+    "id",
+    "account_id",
+    "domain_id",
+    "operator_id",
+    "nominator_id",
+    "amount",
+    "storage_fee_deposit",
+    "total_amount",
+    "estimated_shares",
+    "total_withdrawn",
+    "status",
+    '"timestamp"', // Reserved keyword
+    "extrinsic_id",
+    "created_at",
+    "updated_at",
+  ];
+  const depositEventColumns = [
     "id",
     "sort_id",
     "account_id",
@@ -257,7 +508,15 @@ export const insertDepositEvents = async (
     "extrinsic_id",
     "event_id",
   ];
-  return await insert("staking.deposit_events", columns, values, sqlClient);
+  return await Promise.all([
+    insert("staking.deposits", depositsColumns, depositsValues, sqlClient),
+    insert(
+      "staking.deposit_events",
+      depositEventColumns,
+      depositEventsValues,
+      sqlClient
+    ),
+  ]);
 };
 
 export const insertWithdrawEvents = async (
@@ -266,7 +525,30 @@ export const insertWithdrawEvents = async (
 ) => {
   if (withdrawEvents.length === 0) return;
 
-  const values = withdrawEvents.map((event) => [
+  // const withdrawsValues = withdrawEvents.map((event) => [
+  //   event.id,
+  //   event.accountId,
+  //   event.domainId,
+  //   event.operatorId,
+  //   event.nominatorId,
+  //   event.shares.toString(),
+  //   event.storageFeeRefund.toString(),
+  //   event.estimatedAmount.toString(),
+  //   0, // unlocked_amount
+  //   0, // unlocked_storage_fee
+  //   0, // total_amount
+  //   "PENDING_NEXT_EPOCH", // status
+  //   event.timestamp,
+  //   event.extrinsicId,
+  //   0, // unlock_extrinsic_id
+  //   0, // TODO: epoch_withdrawal_requested_at
+  //   0, // TODO: domain_block_number_withdrawal_requested_at
+  //   event.blockHeight.toString(),
+  //   0, // TODO: domain_block_number_ready_at
+  //   0, // unlocked_at
+  //   event.blockHeight.toString(),
+  // ]);
+  const withdrawEventsValues = withdrawEvents.map((event) => [
     event.id,
     event.sortId,
     event.accountId,
@@ -282,7 +564,30 @@ export const insertWithdrawEvents = async (
     event.extrinsicId,
     event.eventId,
   ]);
-  const columns = [
+  // const withdrawsColumns = [
+  //   "id",
+  //   "account_id",
+  //   "domain_id",
+  //   "operator_id",
+  //   "nominator_id",
+  //   "shares",
+  //   "storage_fee_refund",
+  //   "estimated_amount",
+  //   "unlocked_amount",
+  //   "unlocked_storage_fee",
+  //   "total_amount",
+  //   "status",
+  //   '"timestamp"', // Reserved keyword
+  //   "withdraw_extrinsic_id",
+  //   "unlock_extrinsic_id",
+  //   "epoch_withdrawal_requested_at",
+  //   "domain_block_number_withdrawal_requested_at",
+  //   "created_at",
+  //   "domain_block_number_ready_at",
+  //   "unlocked_at",
+  //   "updated_at",
+  // ];
+  const withdrawEventsColumns = [
     "id",
     "sort_id",
     "account_id",
@@ -298,7 +603,16 @@ export const insertWithdrawEvents = async (
     "extrinsic_id",
     "event_id",
   ];
-  return await insert("staking.withdraw_events", columns, values, sqlClient);
+  return await Promise.all([
+    // insert("staking.withdrawals", withdrawsColumns, withdrawsValues, sqlClient),
+    // ,
+    insert(
+      "staking.withdraw_events",
+      withdrawEventsColumns,
+      withdrawEventsValues,
+      sqlClient
+    ),
+  ]);
 };
 
 export const insertUnlockedEvents = async (
@@ -338,7 +652,7 @@ export const insertUnlockedEvents = async (
 
 export const insertNominatorsUnlockedEvents = async (
   nominatorsUnlockedEvents: CachedNominatorsUnlockedEvent[],
-  sqlClient?: typeof sql
+  sqlClient: typeof sql = sql
 ) => {
   if (nominatorsUnlockedEvents.length === 0) return;
 
@@ -358,12 +672,17 @@ export const insertNominatorsUnlockedEvents = async (
     "extrinsic_id",
     "event_id",
   ];
-  return await insert(
-    "staking.nominators_unlocked_events",
-    columns,
-    values,
-    sqlClient
-  );
+  return await Promise.all([
+    insert("staking.nominators_unlocked_events", columns, values, sqlClient),
+    ...nominatorsUnlockedEvents.map(
+      (event) =>
+        sqlClient`UPDATE staking.operators
+          SET 
+            status = 'NOMINATORS_UNLOCKED',
+            updated_at = ${event.blockHeight.toString()}
+          WHERE id = ${event.operatorId}`
+    ),
+  ]);
 };
 
 export const insertOperatorRewards = async (
@@ -457,7 +776,8 @@ export const insertDomainStakingHistories = async (
     "staking.domain_staking_histories",
     columns,
     values,
-    sqlClient
+    sqlClient,
+    "(id) DO NOTHING"
   );
 };
 
@@ -503,7 +823,8 @@ export const insertOperatorStakingHistories = async (
     "staking.operator_staking_histories",
     columns,
     values,
-    sqlClient
+    sqlClient,
+    "(id) DO NOTHING"
   );
 };
 
@@ -517,10 +838,14 @@ export const insertCachedStakingData = (cache: Cache, txSql: typeof sql) => {
     promises.push(insertRuntimeCreations(cache.runtimeCreation, txSql));
 
   if (cache.domainInstantiation?.length > 0)
-    promises.push(insertDomainInstantiations(cache.domainInstantiation, txSql));
+    promises.push(
+      insertDomains(cache.domainInstantiation, txSql),
+      insertDomainInstantiations(cache.domainInstantiation, txSql)
+    );
 
   if (cache.operatorRegistration?.length > 0)
     promises.push(
+      insertOperators(cache.operatorRegistration, txSql),
       insertOperatorRegistrations(cache.operatorRegistration, txSql)
     );
 

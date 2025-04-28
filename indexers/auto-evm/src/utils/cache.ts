@@ -4,6 +4,10 @@ import {
   CachedAccountHistory,
   CachedBlock,
   CachedEvent,
+  CachedEvmBlock,
+  CachedEvmCode,
+  CachedEvmCodeSelector,
+  CachedEvmTransaction,
   CachedExtrinsic,
   CachedLog,
   CachedTransfer,
@@ -28,6 +32,11 @@ export const initializeCache = (persistentCache: PersistentCache): Cache => ({
   logs: [],
   transfers: [],
   accountHistories: [],
+  // EVM entities
+  evmBlocks: [],
+  evmTransactions: [],
+  evmCodes: [],
+  evmCodeSelectors: [],
   // Addresses balances to update
   addressToUpdate: new Set<string>(),
   // Totals (for consensus.blocks)
@@ -234,5 +243,131 @@ export function createTransfer(
     success,
     isFinalized,
     timestamp,
+  };
+}
+
+export function createEvmBlock(
+  hash: string,
+  height: bigint,
+  timestamp: Date,
+  blockTimestamp: number,
+  parentHash: string,
+  stateRoot: string,
+  transactionsRoot: string,
+  receiptsRoot: string,
+  transactionsCount: number,
+  transferValue: bigint,
+  authorId: string,
+  gasUsed: bigint,
+  gasLimit: bigint,
+  extraData: string,
+  difficulty: bigint,
+  totalDifficulty: bigint,
+  size: bigint
+): CachedEvmBlock {
+  return {
+    id: height.toString(),
+    sortId: getSortId(height),
+    height,
+    hash,
+    timestamp,
+    blockTimestamp,
+    parentHash,
+    stateRoot,
+    transactionsRoot,
+    receiptsRoot,
+    transactionsCount,
+    transferValue,
+    authorId,
+    gasUsed,
+    gasLimit,
+    extraData,
+    difficulty,
+    totalDifficulty,
+    size,
+  };
+}
+
+export function createEvmTransaction(
+  hash: string,
+  nonce: bigint,
+  blockHash: string,
+  blockNumber: bigint,
+  timestamp: Date,
+  blockTimestamp: number,
+  transactionIndex: bigint,
+  from: string,
+  to: string,
+  value: bigint,
+  gasPrice: bigint,
+  maxFeePerGas: bigint,
+  maxPriorityFeePerGas: bigint,
+  gas: bigint,
+  input: string,
+  creates: string,
+  raw: string,
+  publicKey: string,
+  chainId: bigint,
+  standardV: bigint,
+  v: string,
+  r: string,
+  s: string,
+  accessList: string,
+  transactionType: bigint
+): CachedEvmTransaction {
+  return {
+    id: hash,
+    sortId: getSortId(blockNumber, transactionIndex),
+    hash,
+    nonce,
+    blockHash,
+    blockNumber,
+    timestamp,
+    blockTimestamp,
+    transactionIndex,
+    from,
+    to,
+    value,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    gas,
+    input,
+    creates,
+    raw,
+    publicKey,
+    chainId,
+    standardV,
+    v,
+    r,
+    s,
+    accessList,
+    transactionType,
+  };
+}
+
+export function createEvmCode(
+  address: string,
+  code: string,
+  abi: string
+): CachedEvmCode {
+  return {
+    id: address,
+    address,
+    code,
+    abi,
+  };
+}
+
+export function createEvmCodeSelector(
+  address: string,
+  selector: string
+): CachedEvmCodeSelector {
+  return {
+    id: address + "-" + selector,
+    address,
+    selector,
+    name: "",
+    signature: "",
   };
 }

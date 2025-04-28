@@ -1,4 +1,4 @@
-import { CONSENSUS_CHAIN_TYPE } from "../structures/constants.ts";
+import { DOMAIN_AUTO_EVM_CHAIN_TYPE } from "../structures/constants.ts";
 import { Cache } from "../types/cache.ts";
 import { Event } from "../types/chain.ts";
 import { createTransfer } from "../utils/cache.ts";
@@ -50,14 +50,58 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         extrinsicId,
         eventId,
         from,
-        CONSENSUS_CHAIN_TYPE,
+        DOMAIN_AUTO_EVM_CHAIN_TYPE,
         to,
-        CONSENSUS_CHAIN_TYPE,
+        DOMAIN_AUTO_EVM_CHAIN_TYPE,
         amount,
         fee,
         "balances.Transfer",
         successEvent ? true : false,
         true,
+        date
+      )
+    );
+  },
+  "transporter.OutgoingTransferInitiated": ({
+    cache,
+    height,
+    hash,
+    date,
+    extrinsicId,
+    eventId,
+    extrinsicSigner,
+    fee,
+    successEvent,
+    extrinsicArgs,
+  }) => {
+    const [chainType, domainId] = Object.entries(
+      extrinsicArgs.dst_location.chainId
+    )[0] as [string, string | undefined];
+    const [_, to] = Object.entries(extrinsicArgs.dst_location.accountId)[0] as [
+      string,
+      string,
+    ];
+    const amount = BigInt(extrinsicArgs.amount.toString());
+
+    cache.addressToUpdate.add(extrinsicSigner);
+    if (chainType === DOMAIN_AUTO_EVM_CHAIN_TYPE) cache.addressToUpdate.add(to);
+
+    cache.totalTransferValue += amount;
+    cache.transfers.push(
+      createTransfer(
+        height,
+        hash,
+        extrinsicId,
+        eventId,
+        extrinsicSigner,
+        DOMAIN_AUTO_EVM_CHAIN_TYPE,
+        to,
+        chainType + ":" + domainId,
+        amount,
+        fee,
+        "transporter.Transfer",
+        successEvent ? true : false,
+        false,
         date
       )
     );

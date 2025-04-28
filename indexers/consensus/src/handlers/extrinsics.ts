@@ -136,7 +136,8 @@ const handleRemark: ExtrinsicHandler = ({
               nodeData.name ?? "",
               height,
               hash,
-              extrinsicId
+              extrinsicId,
+              date
             );
             cache.metadata.push(metadata);
             cache.metadataCids.push(...relations);
@@ -149,7 +150,8 @@ const handleRemark: ExtrinsicHandler = ({
               nodeData.name ?? "",
               height,
               hash,
-              extrinsicId
+              extrinsicId,
+              date
             );
             cache.folders.push(folder);
             cache.folderCids.push(...relations);
@@ -162,7 +164,8 @@ const handleRemark: ExtrinsicHandler = ({
               nodeData.name ?? "",
               height,
               hash,
-              extrinsicId
+              extrinsicId,
+              date
             );
             cache.files.push(file);
             cache.fileCids.push(...relations);

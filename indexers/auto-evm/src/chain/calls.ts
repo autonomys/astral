@@ -75,6 +75,7 @@ export const getBlockAndMore = async (cache: Cache) => {
     apiAtNextBlock.query.system.digest(),
     apiAtNextBlock.query.system.lastRuntimeUpgrade(),
     apiAtNextBlock.query.timestamp.now(),
+    api.rpc.eth.getBlockByNumber(height, true),
   ];
 
   const queriesResults = await Promise.all(queries);
@@ -86,6 +87,7 @@ export const getBlockAndMore = async (cache: Cache) => {
     rawDigest,
     rawLastRuntimeUpgrade,
     rawTimestamp,
+    rawEVMBlock,
   ] = queriesResults;
 
   const rawBlockPrimitive = rawBlock.toPrimitive();
@@ -132,7 +134,11 @@ export const getBlockAndMore = async (cache: Cache) => {
 
   const author = "";
 
+  const evmBlock = rawEVMBlock?.unwrap();
+  const evmTransactions = evmBlock?.transactions;
+
   return {
+    api,
     height,
     hash,
     timestamp,
@@ -147,5 +153,7 @@ export const getBlockAndMore = async (cache: Cache) => {
     author,
     specVersion: lastRuntimeUpgrade.specVersion,
     specName: lastRuntimeUpgrade.specName,
+    evmBlock,
+    evmTransactions,
   };
 };

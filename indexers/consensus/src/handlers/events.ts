@@ -496,7 +496,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     extrinsicArgs,
     extrinsicEvents,
   }) => {
-    const operatorId = event.event.data[1].toString();
+    const operatorId = event.event.data[0].toString();
     const domainId = event.event.data[1].toString();
     const amount = extrinsicArgs
       ? BigInt(String(extrinsicArgs.amount))

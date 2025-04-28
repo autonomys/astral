@@ -106,6 +106,74 @@ export type CachedTransfer = {
   timestamp: Date;
 };
 
+export type CachedEvmBlock = {
+  id: string;
+  sortId: string;
+  height: bigint;
+  hash: string;
+  timestamp: Date;
+  blockTimestamp: number;
+  parentHash: string;
+  stateRoot: string;
+  transactionsRoot: string;
+  receiptsRoot: string;
+  transactionsCount: number;
+  transferValue: bigint;
+  authorId: string;
+  gasUsed: bigint;
+  gasLimit: bigint;
+  extraData: string;
+  difficulty: bigint;
+  totalDifficulty: bigint;
+  size: bigint;
+};
+
+export type CachedEvmTransaction = {
+  id: string;
+  sortId: string;
+  hash: string;
+  nonce: bigint;
+  // blockId: string;
+  // blockHeight: bigint;
+  blockHash: string;
+  blockNumber: bigint;
+  timestamp: Date;
+  blockTimestamp: number;
+  transactionIndex: bigint;
+  from: string;
+  to: string;
+  value: bigint;
+  gasPrice: bigint;
+  maxFeePerGas: bigint;
+  maxPriorityFeePerGas: bigint;
+  gas: bigint;
+  input: string;
+  creates: string;
+  raw: string;
+  publicKey: string;
+  chainId: bigint;
+  standardV: bigint;
+  v: string;
+  r: string;
+  s: string;
+  accessList: string;
+  transactionType: bigint;
+};
+export type CachedEvmCodeSelector = {
+  id: string;
+  address: string;
+  selector: string;
+  name: string;
+  signature: string;
+};
+
+export type CachedEvmCode = {
+  id: string;
+  address: string;
+  code: string;
+  abi: string;
+};
+
 export type PersistentCache = {};
 
 export type Cache = PersistentCache & {
@@ -120,6 +188,11 @@ export type Cache = PersistentCache & {
   events: CachedEvent[];
   transfers: CachedTransfer[];
   accountHistories: CachedAccountHistory[];
+  // EVM entities
+  evmBlocks: CachedEvmBlock[];
+  evmTransactions: CachedEvmTransaction[];
+  evmCodes: CachedEvmCode[];
+  evmCodeSelectors: CachedEvmCodeSelector[];
   // Addresses balances to update
   addressToUpdate: Set<string>;
   // Totals (for consensus.blocks)

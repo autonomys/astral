@@ -73,7 +73,7 @@ export const insertBlocks = async (
 export const insertLogs = async (logs: CachedLog[], sqlClient?: typeof sql) => {
   if (logs.length === 0) return;
 
-  const values = logs.map((log) => [
+  const logsValues = logs.map((log) => [
     log.id,
     log.sortId,
     log.logId,
@@ -85,7 +85,8 @@ export const insertLogs = async (logs: CachedLog[], sqlClient?: typeof sql) => {
     log.value,
     log.timestamp,
   ]);
-  const columns = [
+  const logKindsValues = logs.map((log) => [log.kind, log.kind]);
+  const logsColumns = [
     "id",
     "sort_id",
     "log_id",
@@ -97,7 +98,17 @@ export const insertLogs = async (logs: CachedLog[], sqlClient?: typeof sql) => {
     "value",
     "timestamp",
   ];
-  return await insert("consensus.logs", columns, values, sqlClient);
+  const logKindsColumns = ["id", "kind"];
+  return await Promise.all([
+    insert("consensus.logs", logsColumns, logsValues, sqlClient),
+    insert(
+      "consensus.log_kinds",
+      logKindsColumns,
+      logKindsValues,
+      sqlClient,
+      "(id) DO NOTHING"
+    ),
+  ]);
 };
 
 export const insertExtrinsics = async (
@@ -106,7 +117,7 @@ export const insertExtrinsics = async (
 ) => {
   if (extrinsics.length === 0) return;
 
-  const values = extrinsics.map((extrinsic) => [
+  const extrinsicsValues = extrinsics.map((extrinsic) => [
     extrinsic.id,
     extrinsic.sortId,
     extrinsic.extrinsicId,
@@ -131,7 +142,16 @@ export const insertExtrinsics = async (
     extrinsic.pos,
     extrinsic.cid,
   ]);
-  const columns = [
+  const extrinsicModulesValues = extrinsics.map((extrinsic) => [
+    extrinsic.id,
+    extrinsic.section,
+    extrinsic.module,
+  ]);
+  const sectionsValues = extrinsics.map((extrinsic) => [
+    extrinsic.id,
+    extrinsic.section,
+  ]);
+  const extrinsicsColumns = [
     "id",
     "sort_id",
     "extrinsic_id",
@@ -156,7 +176,30 @@ export const insertExtrinsics = async (
     "pos",
     "cid",
   ];
-  return await insert("consensus.extrinsics", columns, values, sqlClient);
+  const extrinsicModulesColumns = ["id", "section", "method"];
+  const sectionsColumns = ["id", "section"];
+  return await Promise.all([
+    insert(
+      "consensus.extrinsics",
+      extrinsicsColumns,
+      extrinsicsValues,
+      sqlClient
+    ),
+    insert(
+      "consensus.extrinsic_modules",
+      extrinsicModulesColumns,
+      extrinsicModulesValues,
+      sqlClient,
+      "(id) DO NOTHING"
+    ),
+    insert(
+      "consensus.sections",
+      sectionsColumns,
+      sectionsValues,
+      sqlClient,
+      "(id) DO NOTHING"
+    ),
+  ]);
 };
 
 export const insertEvents = async (
@@ -165,7 +208,7 @@ export const insertEvents = async (
 ) => {
   if (events.length === 0) return;
 
-  const values = events.map((event) => [
+  const eventsValues = events.map((event) => [
     event.id,
     event.sortId,
     event.eventId,
@@ -184,7 +227,13 @@ export const insertEvents = async (
     event.args,
     event.cid,
   ]);
-  const columns = [
+  const eventModulesValues = events.map((event) => [
+    event.id,
+    event.section,
+    event.module,
+  ]);
+  const sectionsValues = events.map((event) => [event.id, event.section]);
+  const eventsColumns = [
     "id",
     "sort_id",
     "event_id",
@@ -203,7 +252,25 @@ export const insertEvents = async (
     "args",
     "cid",
   ];
-  return await insert("consensus.events", columns, values, sqlClient);
+  const eventModulesColumns = ["id", "section", "method"];
+  const sectionsColumns = ["id", "section"];
+  return await Promise.all([
+    insert("consensus.events", eventsColumns, eventsValues, sqlClient),
+    insert(
+      "consensus.event_modules",
+      eventModulesColumns,
+      eventModulesValues,
+      sqlClient,
+      "(id) DO NOTHING"
+    ),
+    insert(
+      "consensus.sections",
+      sectionsColumns,
+      sectionsValues,
+      sqlClient,
+      "(id) DO NOTHING"
+    ),
+  ]);
 };
 
 export const insertAccountHistories = async (
@@ -239,6 +306,41 @@ export const insertAccountHistories = async (
     columns,
     values,
     sqlClient
+  );
+};
+
+export const insertOrUpdateAccount = async (
+  accountHistories: CachedAccountHistory[],
+  sqlClient: typeof sql = sql
+) => {
+  if (accountHistories.length === 0) return;
+
+  await Promise.all(
+    accountHistories.map(
+      (h) => sqlClient`
+        INSERT INTO consensus.accounts (
+          id,
+          nonce,
+          free,
+          reserved,
+          total,
+          created_at,
+          updated_at)
+        VALUES (
+          ${h.id},
+          ${h.nonce.toString()},
+          ${h.free.toString()},
+          ${h.reserved.toString()},
+          ${h.total.toString()},
+          ${h.blockHeight.toString()},
+          ${h.blockHeight.toString()})
+        ON CONFLICT (id) DO UPDATE SET
+          nonce = EXCLUDED.nonce,
+          free = EXCLUDED.free,
+          reserved = EXCLUDED.reserved,
+          total = EXCLUDED.total,
+          updated_at = ${h.blockHeight.toString()};`
+    )
   );
 };
 
@@ -342,7 +444,10 @@ export const insertCachedConsensusData = (cache: Cache, txSql: typeof sql) => {
     promises.push(insertRewards(cache.rewards, txSql));
 
   if (cache.accountHistories.length > 0)
-    promises.push(insertAccountHistories(cache.accountHistories, txSql));
+    promises.push(
+      insertAccountHistories(cache.accountHistories, txSql),
+      insertOrUpdateAccount(cache.accountHistories, txSql)
+    );
 
   if (promises.length === 0) return [];
 

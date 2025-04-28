@@ -1,17 +1,25 @@
 import { account } from "@autonomys/auto-consensus";
 import { stringify } from "@autonomys/auto-utils";
 import { getBlockAndMore } from "../chain/calls.ts";
-import { api } from "../chain/client.ts";
 import { saveAllData } from "../db/save-all.ts";
 import { EVENT_HANDLERS } from "../handlers/events.ts";
-import { EMPTY_SIGNATURE, ZERO_BIGINT } from "../structures/constants.ts";
+import {
+  DOMAIN_AUTO_EVM_CHAIN_TYPE,
+  EMPTY_SIGNATURE,
+  ZERO_BIGINT,
+} from "../structures/constants.ts";
 import { Cache } from "../types/cache.ts";
 import {
   createAccountHistory,
   createBlock,
   createEvent,
+  createEvmBlock,
+  createEvmCode,
+  createEvmCodeSelector,
+  createEvmTransaction,
   createExtrinsic,
   createLog,
+  createTransfer,
 } from "../utils/cache.ts";
 import { groupEventsFromBatchAll } from "../utils/helper.ts";
 
@@ -22,6 +30,7 @@ export const blockMapping = async (cache: Cache) => {
   let eventIndex = 0;
 
   const {
+    api,
     height,
     hash,
     timestamp,
@@ -35,6 +44,8 @@ export const blockMapping = async (cache: Cache) => {
     extrinsicsCount,
     author,
     specVersion,
+    evmBlock,
+    evmTransactions,
   } = await getBlockAndMore(cache);
 
   const [eventsByExtrinsic, finalizationEvents] = events.reduce<
@@ -269,6 +280,117 @@ export const blockMapping = async (cache: Cache) => {
     // Increment event index
     eventIndex++;
   });
+
+  // const evmBlock = await unsafeApi?.rpc.eth.getBlockByNumber(height, true);
+  // const evmBlockData = evmBlock?.unwrap();
+  // const evmTransactions = evmBlockData?.transactions;
+  const codesToFetch: string[] = [];
+  if (evmTransactions && evmTransactions?.length > 0) {
+    evmTransactions.forEach((transaction: any) => {
+      const from = transaction.from.toString();
+      const to = transaction.to.toString();
+      const value = BigInt(transaction.value.toString());
+      const gas = BigInt(transaction.gas.toString());
+      const input = transaction.input.toString();
+      const creates = transaction.creates.toString();
+      const transactionIndex = evmTransactions.indexOf(transaction).toString();
+      cache.evmTransactions.push(
+        createEvmTransaction(
+          transaction.hash.toString(),
+          BigInt(transaction.nonce.toString()),
+          hash,
+          height,
+          date,
+          evmBlock?.timestamp.toNumber() ?? 0,
+          BigInt(transactionIndex),
+          from,
+          to,
+          value,
+          BigInt(transaction.gasPrice.toString()),
+          BigInt(transaction.maxFeePerGas.toString()),
+          BigInt(transaction.maxPriorityFeePerGas.toString()),
+          gas,
+          input,
+          creates,
+          transaction.raw.toString(),
+          transaction.publicKey.toString(),
+          BigInt(transaction.chainId.toString()),
+          BigInt(transaction.standardV.toString()),
+          transaction.v.toString(),
+          transaction.r.toString(),
+          transaction.s.toString(),
+          transaction.accessList.toString(),
+          BigInt(transaction.transactionType.toString())
+        )
+      );
+      if (creates) codesToFetch.push(creates);
+      cache.addressToUpdate.add(from);
+      if (to) {
+        cache.addressToUpdate.add(to);
+
+        if (value > ZERO_BIGINT) {
+          cache.totalTransferValue += value;
+          cache.transfers.push(
+            createTransfer(
+              height,
+              hash,
+              height + "-evm-tx-" + transactionIndex,
+              height + "-evm-tx-" + transactionIndex,
+              from,
+              DOMAIN_AUTO_EVM_CHAIN_TYPE,
+              to,
+              DOMAIN_AUTO_EVM_CHAIN_TYPE,
+              value,
+              gas,
+              "evm.Transfer",
+              true,
+              true,
+              date
+            )
+          );
+        }
+      }
+
+      if (!to && creates && input !== "0x")
+        cache.evmCodeSelectors.push(
+          createEvmCodeSelector(creates, input.slice(0, 10))
+        );
+    });
+    if (codesToFetch.length > 0) {
+      const codes = await Promise.all(
+        codesToFetch.map((code) => api.rpc.eth.getCode(code))
+      );
+      codes.forEach((code, i) =>
+        cache.evmCodes.push(
+          createEvmCode(codesToFetch[i], code?.toString() ?? "0x", "[]")
+        )
+      );
+    }
+  }
+  cache.evmBlocks.push(
+    createEvmBlock(
+      evmBlock?.hash.toString() ?? "",
+      height,
+      date,
+      evmBlock?.timestamp.toNumber() ?? 0,
+      evmBlock?.parentHash.toString() ?? "",
+      evmBlock?.stateRoot.toString() ?? "",
+      evmBlock?.transactionsRoot.toString() ?? "",
+      evmBlock?.receiptsRoot.toString() ?? "",
+      evmBlock?.transactions.length ?? 0,
+      evmBlock?.transactions.reduce(
+        (sum: bigint, tx: any) => sum + BigInt(tx.value.toString() ?? "0"),
+        ZERO_BIGINT
+      ) ?? ZERO_BIGINT,
+      evmBlock?.author?.toString() ?? "",
+      BigInt(evmBlock?.gasUsed?.toString() ?? "0"),
+      BigInt(evmBlock?.gasLimit?.toString() ?? "0"),
+      evmBlock?.extraData?.toString() ?? "",
+      BigInt(evmBlock?.difficulty.toString() ?? "0"),
+      BigInt(evmBlock?.totalDifficulty.toString() ?? "0"),
+      BigInt(evmBlock?.size.toString() ?? "0")
+    )
+  );
 
   // Update accounts
   const uniqueAddresses = Array.from(cache.addressToUpdate);
