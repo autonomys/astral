@@ -1,7 +1,7 @@
 import { getLastBlock } from "./chain/calls.ts";
+import { initializeDBData } from "./db/load.ts";
 import { getLastProcessedHeight, getMetadata } from "./db/metadata.ts";
 import { blockMapping } from "./mappings/block.ts";
-import { PersistentCache } from "./types/cache.ts";
 import {
   initializeCache,
   initializePersistentCache,
@@ -27,6 +27,8 @@ async function run() {
 
     const metadata = await getMetadata();
     const lastDBProcessedHeight = getLastProcessedHeight(metadata);
+
+    if (!cache.isDBDataInitialized) await initializeDBData(cache);
 
     // Map next block
     const START_BLOCK = parseInt(Deno.env.get("START_BLOCK") || "1");

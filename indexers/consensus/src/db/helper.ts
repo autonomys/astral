@@ -1,5 +1,4 @@
 import { sql } from "./client.ts";
-
 export const insert = async (
   table: string,
   columns: string[],

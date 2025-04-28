@@ -42,11 +42,12 @@ export const mappingStates = async (
       BigInt(domainId)
     );
     const sharePrice = totalStake > 0 ? totalStake / totalShares : ZERO_BIGINT;
+    const currentEpochIndex = valuePrimitive.currentEpochIndex.toString();
     cache.domainStakingHistory.push(
       createDomainStakingHistory(
         createHashId(data),
         keyPrimitive[0].toString(),
-        valuePrimitive.currentEpochIndex.toString(),
+        currentEpochIndex,
         valuePrimitive.currentTotalStake.toString(),
         totalShares,
         sharePrice,
@@ -54,6 +55,7 @@ export const mappingStates = async (
         height
       )
     );
+    cache.lastDomainEpoch.set(domainId, currentEpochIndex);
   });
 
   if (rawOperatorIdOwner.length > 0) {

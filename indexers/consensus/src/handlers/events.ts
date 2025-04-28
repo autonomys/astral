@@ -483,6 +483,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         eventId
       )
     );
+
+    cache.lastDomainBlockNumber.set(domainId, BigInt(domainBlockNumber));
   },
   "domains.OperatorRegistered": ({
     event,

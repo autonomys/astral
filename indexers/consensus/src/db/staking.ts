@@ -1,3 +1,4 @@
+import { CHALLENGE_PERIOD, ZERO_BIGINT } from "../structures/constants.ts";
 import {
   Cache,
   CachedBundleSubmission,
@@ -521,33 +522,37 @@ export const insertDepositEvents = async (
 
 export const insertWithdrawEvents = async (
   withdrawEvents: CachedWithdrawEvent[],
+  cache: Cache,
   sqlClient?: typeof sql
 ) => {
   if (withdrawEvents.length === 0) return;
 
-  // const withdrawsValues = withdrawEvents.map((event) => [
-  //   event.id,
-  //   event.accountId,
-  //   event.domainId,
-  //   event.operatorId,
-  //   event.nominatorId,
-  //   event.shares.toString(),
-  //   event.storageFeeRefund.toString(),
-  //   event.estimatedAmount.toString(),
-  //   0, // unlocked_amount
-  //   0, // unlocked_storage_fee
-  //   0, // total_amount
-  //   "PENDING_NEXT_EPOCH", // status
-  //   event.timestamp,
-  //   event.extrinsicId,
-  //   0, // unlock_extrinsic_id
-  //   0, // TODO: epoch_withdrawal_requested_at
-  //   0, // TODO: domain_block_number_withdrawal_requested_at
-  //   event.blockHeight.toString(),
-  //   0, // TODO: domain_block_number_ready_at
-  //   0, // unlocked_at
-  //   event.blockHeight.toString(),
-  // ]);
+  const withdrawsValues = withdrawEvents.map((event) => [
+    event.id,
+    event.accountId,
+    event.domainId,
+    event.operatorId,
+    event.nominatorId,
+    event.shares.toString(),
+    event.storageFeeRefund.toString(),
+    event.estimatedAmount.toString(),
+    0, // unlocked_amount
+    0, // unlocked_storage_fee
+    0, // total_amount
+    "PENDING_NEXT_EPOCH", // status
+    event.timestamp,
+    event.extrinsicId,
+    0, // unlock_extrinsic_id
+    (cache.lastDomainEpoch.get(event.domainId) || ZERO_BIGINT).toString(), // epoch_withdrawal_requested_at
+    (cache.lastDomainBlockNumber.get(event.domainId) || ZERO_BIGINT).toString(), // domain_block_number_withdrawal_requested_at
+    event.blockHeight.toString(),
+    (
+      (cache.lastDomainBlockNumber.get(event.domainId) || ZERO_BIGINT) +
+      CHALLENGE_PERIOD
+    ).toString(), // domain_block_number_ready_at
+    0, // unlocked_at
+    event.blockHeight.toString(),
+  ]);
   const withdrawEventsValues = withdrawEvents.map((event) => [
     event.id,
     event.sortId,
@@ -564,29 +569,29 @@ export const insertWithdrawEvents = async (
     event.extrinsicId,
     event.eventId,
   ]);
-  // const withdrawsColumns = [
-  //   "id",
-  //   "account_id",
-  //   "domain_id",
-  //   "operator_id",
-  //   "nominator_id",
-  //   "shares",
-  //   "storage_fee_refund",
-  //   "estimated_amount",
-  //   "unlocked_amount",
-  //   "unlocked_storage_fee",
-  //   "total_amount",
-  //   "status",
-  //   '"timestamp"', // Reserved keyword
-  //   "withdraw_extrinsic_id",
-  //   "unlock_extrinsic_id",
-  //   "epoch_withdrawal_requested_at",
-  //   "domain_block_number_withdrawal_requested_at",
-  //   "created_at",
-  //   "domain_block_number_ready_at",
-  //   "unlocked_at",
-  //   "updated_at",
-  // ];
+  const withdrawsColumns = [
+    "id",
+    "account_id",
+    "domain_id",
+    "operator_id",
+    "nominator_id",
+    "shares",
+    "storage_fee_refund",
+    "estimated_amount",
+    "unlocked_amount",
+    "unlocked_storage_fee",
+    "total_amount",
+    "status",
+    '"timestamp"', // Reserved keyword
+    "withdraw_extrinsic_id",
+    "unlock_extrinsic_id",
+    "epoch_withdrawal_requested_at",
+    "domain_block_number_withdrawal_requested_at",
+    "created_at",
+    "domain_block_number_ready_at",
+    "unlocked_at",
+    "updated_at",
+  ];
   const withdrawEventsColumns = [
     "id",
     "sort_id",
@@ -604,8 +609,8 @@ export const insertWithdrawEvents = async (
     "event_id",
   ];
   return await Promise.all([
-    // insert("staking.withdrawals", withdrawsColumns, withdrawsValues, sqlClient),
-    // ,
+    insert("staking.withdrawals", withdrawsColumns, withdrawsValues, sqlClient),
+    ,
     insert(
       "staking.withdraw_events",
       withdrawEventsColumns,
@@ -858,7 +863,7 @@ export const insertCachedStakingData = (cache: Cache, txSql: typeof sql) => {
     promises.push(insertDepositEvents(cache.depositEvent, txSql));
 
   if (cache.withdrawEvent?.length > 0)
-    promises.push(insertWithdrawEvents(cache.withdrawEvent, txSql));
+    promises.push(insertWithdrawEvents(cache.withdrawEvent, cache, txSql));
 
   if (cache.unlockedEvent?.length > 0)
     promises.push(insertUnlockedEvents(cache.unlockedEvent, txSql));

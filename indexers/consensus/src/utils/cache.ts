@@ -42,6 +42,10 @@ import {
 
 export const initializePersistentCache = (): PersistentCache => ({
   operatorOwnerMap: new Map<string, string>(),
+  // db cached data
+  isDBDataInitialized: false,
+  lastDomainEpoch: new Map<string, bigint>(),
+  lastDomainBlockNumber: new Map<string, bigint>(),
 });
 
 export const initializeCache = (persistentCache: PersistentCache): Cache => ({
@@ -127,7 +131,10 @@ export const updatePersistentCache = (
   cache: Cache,
   persistentCache: PersistentCache
 ) => {
+  persistentCache.isDBDataInitialized = cache.isDBDataInitialized;
   persistentCache.operatorOwnerMap = cache.operatorOwnerMap;
+  persistentCache.lastDomainEpoch = cache.lastDomainEpoch;
+  persistentCache.lastDomainBlockNumber = cache.lastDomainBlockNumber;
 };
 
 export function createBlock(

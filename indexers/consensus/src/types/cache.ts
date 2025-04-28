@@ -425,6 +425,10 @@ export type CachedOperatorStakingHistory = {
 
 export type PersistentCache = {
   operatorOwnerMap: Map<string, string>;
+  // db cached data
+  isDBDataInitialized: boolean;
+  lastDomainEpoch: Map<string, bigint>;
+  lastDomainBlockNumber: Map<string, bigint>;
 };
 
 export type Cache = PersistentCache & {
