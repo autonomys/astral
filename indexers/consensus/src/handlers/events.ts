@@ -608,7 +608,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const nominatorId = event.event.data[1].toString();
-    const amount = BigInt(event.event.data[2].toString());
+    const stakeAmount = BigInt(event.event.data[2].toString());
 
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
@@ -621,7 +621,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       storageFeeDepositedEvent?.event.data[2].toString() ?? 0
     );
     const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
-    const stakeAmount = amount - storageFeeDeposit;
+    const totalAmount = stakeAmount + storageFeeDeposit;
     const estimatedShares = calculateShares(stakeAmount, sharePrice);
 
     cache.operatorDepositsTotalCountHistory.push(
@@ -638,7 +638,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     cache.operatorDepositsTotalValueHistory.push(
       createLeaderboardEntity(
         operatorId,
-        amount,
+        totalAmount,
         height,
         hash,
         extrinsicId,
@@ -661,7 +661,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     cache.nominatorDepositsTotalValueHistory.push(
       createLeaderboardEntity(
         nominatorId,
-        amount,
+        totalAmount,
         height,
         hash,
         extrinsicId,
@@ -677,7 +677,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         operatorId,
         stakeAmount,
         storageFeeDeposit,
-        amount,
+        totalAmount,
         estimatedShares,
         date,
         height,
