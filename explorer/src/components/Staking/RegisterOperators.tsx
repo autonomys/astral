@@ -177,9 +177,9 @@ export const RegisterOperators = () => {
             </div>
 
             <div className='mt-6 w-full text-base font-medium leading-relaxed text-grayDarker dark:text-white'>
-              {tokenSymbol} holders (Gemini 3h testnet network only) can stake their {tokenSymbol}{' '}
-              to add more security to the protocol and earn Staking Incentives. Learn more about the
-              risks involved.
+              holders (Gemini 3h testnet network only) can stake their {tokenSymbol} to add more
+              security to the protocol and earn Staking Incentives. Learn more about the risks
+              involved.
             </div>
 
             <div className='mt-10 space-y-10'>
@@ -294,7 +294,7 @@ export const RegisterOperators = () => {
                                   </span>
                                   <Tooltip
                                     className='max-w-xs'
-                                    text='This domain is an EVM (Ethereum Virtual Machine) compatible blockchain.'
+                                    text='Domains are customizable execution environments within the network, enabling developers to deploy application-specific blockchains (app-chains) that operate independently while leveraging the shared consensus and storage layers.'
                                   >
                                     <InformationCircleIcon className='h-5 w-5 text-primaryAccent' />
                                   </Tooltip>
