@@ -294,7 +294,7 @@ export const RegisterOperators = () => {
                                   </span>
                                   <Tooltip
                                     className='max-w-xs'
-                                    text='Auto EVM is currently the only available domain. This domain is an EVM (Ethereum Virtual Machine) compatible blockchain.'
+                                    text='This domain is an EVM (Ethereum Virtual Machine) compatible blockchain.'
                                   >
                                     <InformationCircleIcon className='h-5 w-5 text-primaryAccent' />
                                   </Tooltip>
@@ -372,7 +372,7 @@ export const RegisterOperators = () => {
                                   </span>
                                   <Tooltip
                                     className='max-w-xs'
-                                    text="This is the public key of your operator. The operator is a node that validates transactions on Auto EVM and submits them to the Consensus chain. You'll generate this key by running a keystore script as described in the setup documentation."
+                                    text='This is the public key of your operator. The operator is a node that validates transactions and submits them to the Consensus chain. You will generate this key by running a keystore script as described in the setup documentation.'
                                   >
                                     <InformationCircleIcon className='h-5 w-5 text-primaryAccent' />
                                   </Tooltip>
@@ -504,28 +504,6 @@ export const RegisterOperators = () => {
                             </div>
                           </div>
                         </div>
-                      </div>
-
-                      <div className='mt-6 rounded-xl bg-grayLight p-4 dark:bg-blueAccent/50'>
-                        <h4 className='font-semibold text-grayDarker dark:text-white'>
-                          Rewards Example
-                        </h4>
-                        <p className='mt-2 text-sm text-grayDarker dark:text-white'>
-                          If you register with 100 {tokenSymbol}, set minimum nomination stake to
-                          100 {tokenSymbol}, and 10% tax, and someone nominates 200 {tokenSymbol} to
-                          your operator:
-                        </p>
-                        <ul className='ml-5 mt-2 list-disc text-sm text-grayDarker dark:text-white'>
-                          <li>When your operator earns 1000 {tokenSymbol} in rewards</li>
-                          <li>You earn 100 {tokenSymbol} in tax (10% of 1000)</li>
-                          <li>
-                            Of the remaining 900 {tokenSymbol}, you earn 1/3 (300 {tokenSymbol}) and
-                            your nominator earns 2/3 (600 {tokenSymbol})
-                          </li>
-                          <li>
-                            Your total: 400 {tokenSymbol}, Nominator: 600 {tokenSymbol}
-                          </li>
-                        </ul>
                       </div>
 
                       {formError && formError ? (
