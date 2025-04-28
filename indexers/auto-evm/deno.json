@@ -1,0 +1,14 @@
+{
+  "tasks": {
+    "start": "deno run --allow-env --allow-read --allow-net src/main.ts",
+    "dev": "deno run --allow-env --allow-read --allow-net --watch src/main.ts"
+  },
+  "imports": {
+    "@autonomys/auto-consensus": "npm:@autonomys/auto-consensus@^1.4.15",
+    "@autonomys/auto-utils": "npm:@autonomys/auto-utils@^1.4.15",
+    "@polkadot/types": "npm:@polkadot/types@^15.9.1",
+    "@polkadot/util": "npm:@polkadot/util@^13.4.3",
+    "postgres": "npm:postgres@^3.4.5",
+    "zod": "npm:zod@^3.24.2"
+  }
+}

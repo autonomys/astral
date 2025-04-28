@@ -1,18 +1,6 @@
 CREATE SCHEMA domain_auto_evm;
 ALTER SCHEMA domain_auto_evm OWNER TO postgres;
 
-CREATE FUNCTION domain_auto_evm.schema_notification() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    PERFORM pg_notify(
-            '0x49b290e816da6f48',
-            'schema_updated');
-    RETURN NULL;
-  END;
-  $$;
-ALTER FUNCTION domain_auto_evm.schema_notification() OWNER TO postgres;
-
 CREATE TABLE domain_auto_evm._metadata (
     key character varying(255) NOT NULL,
     value jsonb,
@@ -23,13 +11,14 @@ ALTER TABLE domain_auto_evm._metadata OWNER TO postgres;
 
 CREATE TABLE domain_auto_evm.account_histories (
     id text NOT NULL,
-    nonce numeric NOT NULL,
-    free numeric NOT NULL,
-    reserved numeric NOT NULL,
-    total numeric,
-    created_at numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    account_id TEXT NOT NULL,
+    nonce NUMERIC NOT NULL,
+    free NUMERIC NOT NULL,
+    reserved NUMERIC NOT NULL,
+    total NUMERIC,
+    block_id TEXT NOT NULL,
+    block_height NUMERIC NOT NULL,
+    block_hash TEXT NOT NULL
 );
 ALTER TABLE domain_auto_evm.account_histories OWNER TO postgres;
 
@@ -59,9 +48,7 @@ CREATE TABLE domain_auto_evm.blocks (
     logs_count integer NOT NULL,
     transfers_count integer NOT NULL,
     transfer_value numeric NOT NULL,
-    author_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    author_id text NOT NULL
 );
 ALTER TABLE domain_auto_evm.blocks OWNER TO postgres;
 
@@ -85,6 +72,8 @@ ALTER TABLE domain_auto_evm.event_modules OWNER TO postgres;
 CREATE TABLE domain_auto_evm.events (
     id text NOT NULL,
     sort_id text NOT NULL,
+    event_id TEXT NOT NULL,
+    block_id TEXT NOT NULL,
     block_height numeric NOT NULL,
     block_hash text NOT NULL,
     extrinsic_id text NOT NULL,
@@ -96,9 +85,7 @@ CREATE TABLE domain_auto_evm.events (
     "timestamp" timestamp without time zone NOT NULL,
     phase text NOT NULL,
     pos integer NOT NULL,
-    args text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    args text NOT NULL
 );
 ALTER TABLE domain_auto_evm.events OWNER TO postgres;
 
@@ -121,9 +108,7 @@ CREATE TABLE domain_auto_evm.evm_blocks (
     extra_data text NOT NULL,
     difficulty numeric NOT NULL,
     total_difficulty numeric NOT NULL,
-    size numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    size numeric NOT NULL
 );
 ALTER TABLE domain_auto_evm.evm_blocks OWNER TO postgres;
 
@@ -132,9 +117,7 @@ CREATE TABLE domain_auto_evm.evm_code_selectors (
     address text NOT NULL,
     selector text NOT NULL,
     name text NOT NULL,
-    signature text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    signature text NOT NULL
 );
 ALTER TABLE domain_auto_evm.evm_code_selectors OWNER TO postgres;
 
@@ -142,9 +125,7 @@ CREATE TABLE domain_auto_evm.evm_codes (
     id text NOT NULL,
     address text NOT NULL,
     code text NOT NULL,
-    abi text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    abi text NOT NULL
 );
 ALTER TABLE domain_auto_evm.evm_codes OWNER TO postgres;
 
@@ -175,9 +156,7 @@ CREATE TABLE domain_auto_evm.evm_transactions (
     r text NOT NULL,
     s text NOT NULL,
     access_list text NOT NULL,
-    transaction_type numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    transaction_type numeric NOT NULL
 );
 ALTER TABLE domain_auto_evm.evm_transactions OWNER TO postgres;
 
@@ -191,7 +170,9 @@ ALTER TABLE domain_auto_evm.extrinsic_modules OWNER TO postgres;
 CREATE TABLE domain_auto_evm.extrinsics (
     id text NOT NULL,
     sort_id text NOT NULL,
+    extrinsic_id TEXT NOT NULL,
     hash text NOT NULL,
+    block_id TEXT NOT NULL,
     block_height numeric NOT NULL,
     block_hash text NOT NULL,
     section text NOT NULL,
@@ -208,9 +189,7 @@ CREATE TABLE domain_auto_evm.extrinsics (
     error text NOT NULL,
     tip numeric NOT NULL,
     fee numeric NOT NULL,
-    pos integer NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    pos integer NOT NULL
 );
 ALTER TABLE domain_auto_evm.extrinsics OWNER TO postgres;
 
@@ -223,14 +202,14 @@ ALTER TABLE domain_auto_evm.log_kinds OWNER TO postgres;
 CREATE TABLE domain_auto_evm.logs (
     id text NOT NULL,
     sort_id text NOT NULL,
+    log_id TEXT NOT NULL,
+    block_id TEXT NOT NULL,
     block_height numeric NOT NULL,
     block_hash text NOT NULL,
     index_in_block integer NOT NULL,
     kind text NOT NULL,
     value text,
-    "timestamp" timestamp without time zone NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    "timestamp" timestamp without time zone NOT NULL
 );
 ALTER TABLE domain_auto_evm.logs OWNER TO postgres;
 
@@ -256,9 +235,7 @@ CREATE TABLE domain_auto_evm.transfers (
     type text NOT NULL,
     success boolean NOT NULL,
     is_finalized BOOLEAN NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
+    "timestamp" timestamp without time zone NOT NULL
 );
 ALTER TABLE domain_auto_evm.transfers OWNER TO postgres;
 
@@ -266,13 +243,13 @@ ALTER TABLE ONLY domain_auto_evm._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
 
 ALTER TABLE ONLY domain_auto_evm.account_histories
-    ADD CONSTRAINT account_histories_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT account_histories_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.accounts
     ADD CONSTRAINT accounts_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.blocks
-    ADD CONSTRAINT blocks_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT blocks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.cumulative_blocks
     ADD CONSTRAINT cumulative_blocks_pkey PRIMARY KEY (id);
@@ -281,37 +258,37 @@ ALTER TABLE ONLY domain_auto_evm.event_modules
     ADD CONSTRAINT event_modules_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.events
-    ADD CONSTRAINT events_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.evm_blocks
-    ADD CONSTRAINT evm_blocks_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT evm_blocks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.evm_code_selectors
-    ADD CONSTRAINT evm_code_selectors_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT evm_code_selectors_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.evm_codes
-    ADD CONSTRAINT evm_codes_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT evm_codes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.evm_transactions
-    ADD CONSTRAINT evm_transactions_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT evm_transactions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.extrinsic_modules
     ADD CONSTRAINT extrinsic_modules_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.extrinsics
-    ADD CONSTRAINT extrinsics_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT extrinsics_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.log_kinds
     ADD CONSTRAINT log_kinds_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.logs
-    ADD CONSTRAINT logs_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT logs_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.sections
     ADD CONSTRAINT sections_id_key PRIMARY KEY (id);
 
 ALTER TABLE ONLY domain_auto_evm.transfers
-    ADD CONSTRAINT transfers_pkey PRIMARY KEY (_id);
+    ADD CONSTRAINT transfers_pkey PRIMARY KEY (id);
 
 CREATE INDEX "0xccedb032815757ed" ON domain_auto_evm.blocks USING btree (id);
 CREATE INDEX "domain_auto_evm_blocks_sort_id" ON domain_auto_evm.blocks USING btree (sort_id DESC);
@@ -351,5 +328,3 @@ CREATE INDEX "0x3067863a57084527" ON domain_auto_evm.evm_code_selectors USING bt
 CREATE INDEX "0x94656e42e9e36728" ON domain_auto_evm.evm_blocks USING btree (id);
 CREATE INDEX "0xee1355606a0eb5b7" ON domain_auto_evm.evm_transactions USING btree (id);
 CREATE INDEX "0xf54a20ed40ef7dea" ON domain_auto_evm.evm_codes USING btree (id);
-
-CREATE TRIGGER "0x8741811e70475b76" AFTER UPDATE ON domain_auto_evm._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION domain_auto_evm.schema_notification();

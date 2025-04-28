@@ -1,13 +1,6 @@
 table:
   name: logs
   schema: domain_auto_evm
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 object_relationships:
   - name: block
     using:
@@ -31,16 +24,16 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - index_in_block
         - block_height
         - block_hash
+        - block_id
         - id
         - kind
+        - log_id
         - sort_id
         - value
         - timestamp
-        - _id
       filter: {}
       limit: 50
       allow_aggregations: true

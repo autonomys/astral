@@ -1,13 +1,6 @@
 table:
   name: extrinsics
   schema: domain_auto_evm
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 object_relationships:
   - name: block
     using:
@@ -42,7 +35,6 @@ select_permissions:
     permission:
       columns:
         - success
-        - _block_range
         - events_count
         - index_in_block
         - pos
@@ -52,7 +44,9 @@ select_permissions:
         - tip
         - args
         - block_hash
+        - block_id
         - error
+        - extrinsic_id
         - hash
         - id
         - module
@@ -62,7 +56,6 @@ select_permissions:
         - signer
         - sort_id
         - timestamp
-        - _id
       filter: {}
       limit: 50
       allow_aggregations: true

@@ -1,24 +1,15 @@
 table:
   name: evm_code_selectors
   schema: domain_auto_evm
-configuration:
-  column_config:
-    _id:
-      custom_name: uuid
-  custom_column_names:
-    _id: uuid
-  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - address
         - id
         - name
         - selector
         - signature
-        - _id
       filter: {}
       limit: 50
       allow_aggregations: true
