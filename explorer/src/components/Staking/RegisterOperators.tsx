@@ -177,7 +177,7 @@ export const RegisterOperators = () => {
             </div>
 
             <div className='mt-6 w-full text-base font-medium leading-relaxed text-grayDarker dark:text-white'>
-              holders (Gemini 3h testnet network only) can stake their {tokenSymbol} to add more
+              holders can stake their {tokenSymbol} to add more
               security to the protocol and earn Staking Incentives. Learn more about the risks
               involved.
             </div>
