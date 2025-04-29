@@ -1,12 +1,11 @@
+import { cn } from '@/utils/cn'
 import { Field, Form, Formik } from 'formik'
 import { useIndexers } from 'hooks/useIndexers'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useMemo } from 'react'
-import { limitNumberDecimals, numberFormattedString } from 'utils/number'
 import * as Yup from 'yup'
 
 interface AmountFieldProps {
-  maxAmount?: number
   disabled?: boolean
 }
 
@@ -14,7 +13,7 @@ interface FormValues {
   amount: number
 }
 
-export const AmountField: FC<AmountFieldProps> = ({ maxAmount, disabled }) => {
+export const AmountField: FC<AmountFieldProps> = ({ disabled }) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -56,65 +55,43 @@ export const AmountField: FC<AmountFieldProps> = ({ maxAmount, disabled }) => {
   )
 
   return (
-    <div className='bg-grayLighter dark:border-purpleDeepAccent dark:bg-purpleUndertone flex flex-col space-y-1 rounded-xl border-grayDarker'>
-      <div className='text-grayText flex items-center justify-between text-sm dark:text-white'>
-        <span className='w-2/3' />
-        {maxAmount && (
-          <div
-            role='button'
-            tabIndex={0}
-            onClick={() => setAmount(maxAmount.toString())}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                setAmount(maxAmount.toString())
-              }
-            }}
-          >
-            <span className='cursor-pointer font-bold hover:underline'>
-              Max: {numberFormattedString(limitNumberDecimals(maxAmount))} {tokenSymbol}
-            </span>{' '}
-          </div>
-        )}
-      </div>
-
-      <div className='text-grayText flex items-center justify-between text-sm dark:text-white'>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={formValidationSchema}
-          enableReinitialize
-          onSubmit={() => {}}
-        >
-          {({ errors, touched, handleSubmit }) => (
-            <Form className='w-full' onSubmit={handleSubmit} data-testid='testOperatorStakeForm'>
-              <div className='flex items-center'>
-                <Field
-                  name='amount'
-                  placeholder='0'
-                  type='number'
-                  disabled={disabled}
-                  onChange={handleSetAmount}
-                  className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
-                    ${
-                      errors.amount &&
-                      touched.amount &&
-                      'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
-                    }
-                  `}
-                />
-                <span className='ml-4 mt-4 text-lg font-bold'>{tokenSymbol}</span>
+    <div className='flex flex-col space-y-1'>
+      {/* <div className='text-grayText flex items-center justify-between text-sm dark:text-white'> */}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={formValidationSchema}
+        enableReinitialize
+        onSubmit={() => {}}
+      >
+        {({ errors, touched, handleSubmit }) => (
+          <Form className='w-full' onSubmit={handleSubmit} data-testid='testOperatorStakeForm'>
+            <div className='relative'>
+              <Field
+                name='amount'
+                placeholder='0'
+                type='number'
+                disabled={disabled}
+                onChange={handleSetAmount}
+                className={cn(
+                  'mt-4 block w-full rounded-md border border-blueShade bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] pr-16 text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white',
+                  errors.amount && touched.amount && 'border-red-500',
+                )}
+              />
+              <div className='absolute right-5 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-900 dark:text-white'>
+                {tokenSymbol}
               </div>
-              {errors.amount && touched.amount ? (
-                <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
-                  {errors.amount}
-                </div>
-              ) : (
-                <div className='text-md mt-2 h-8' data-testid='placeHolder' />
-              )}
-            </Form>
-          )}
-        </Formik>
-      </div>
+            </div>
+            {errors.amount && touched.amount ? (
+              <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                {errors.amount}
+              </div>
+            ) : (
+              <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+            )}
+          </Form>
+        )}
+      </Formik>
+      {/* </div> */}
     </div>
   )
 }

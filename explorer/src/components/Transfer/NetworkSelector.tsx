@@ -46,33 +46,28 @@ export const NetworkSelector: FC<NetworkSelectorProps> = ({ direction }) => {
 
   return (
     <Listbox value={selectedNetwork}>
-      <div className='relative mt-2'>
-        <Listbox.Button
-          className={
-            'relative mt-4 flex items-center rounded-full border-2 border-grayDark px-2 py-2 text-sm font-medium text-grayDarker dark:border-blueLight'
-          }
-          style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
-        >
-          <>
+      <div className='relative'>
+        <Listbox.Button className='flex w-full items-center rounded-md border border-blueShade bg-blueLight px-3 py-1.5 pr-8 text-sm font-medium text-grayDarker dark:border-blueLight dark:bg-transparent'>
+          <div className='flex w-full items-center overflow-hidden'>
             {selectedNetwork ? (
               <>
-                <span className='text-grayDark dark:text-white'>
+                <span className='flex-shrink-0 text-grayDark dark:text-white'>
                   <AutonomysSymbol />
                 </span>
-                <span className='ml-2 hidden w-5 truncate pr-6 text-sm dark:text-white sm:block md:w-full'>
+                <span className='ml-2 truncate text-sm dark:text-white'>
                   {selectedNetwork?.name}
                 </span>
               </>
             ) : (
-              <span className='pr-6 text-grayDark dark:text-white'>Select Network</span>
+              <span className='text-grayDark dark:text-white'>Select Network</span>
             )}
-            <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 dark:text-white'>
-              <ChevronDownIcon
-                className='size-5 text-gray-400 ui-open:rotate-180'
-                aria-hidden='true'
-              />
-            </span>
-          </>
+          </div>
+          <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+            <ChevronDownIcon
+              className='size-5 text-gray-800 ui-open:rotate-180 dark:text-white'
+              aria-hidden='true'
+            />
+          </span>
         </Listbox.Button>
         <Transition
           as={Fragment}
@@ -80,30 +75,24 @@ export const NetworkSelector: FC<NetworkSelectorProps> = ({ direction }) => {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute right-0 top-9 z-50 mt-1 max-h-40 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+          <Listbox.Options className='absolute right-0 z-50 mt-1 max-h-40 w-full overflow-auto rounded-md bg-white py-2 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white'>
             {networkList.map((network) => (
               <Listbox.Option
-                key={`domain-book-saved-${network.id}-label-${network.name}`}
+                key={`network-${network.id}`}
                 className={({ active }) =>
-                  `relative z-50 cursor-default select-none py-2 pr-4 text-gray-900 dark:text-white ${
-                    active && 'bg-gray-100 dark:bg-blueDarkAccent'
+                  `cursor-default select-none px-3 py-2 text-gray-900 dark:text-white ${
+                    active ? 'bg-gray-100 dark:bg-blueDarkAccent' : ''
                   }`
                 }
                 value={network.name}
                 onClick={() => setChainId(network.id)}
               >
-                {({ selected }) => {
-                  return (
-                    <div className={`px-2 ${selected ? 'bg-grayLighter' : 'bg-transparent'}`}>
-                      <div className='flex items-center'>
-                        <AutonomysSymbol />
-                        <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full'>
-                          {network.name}
-                        </span>
-                      </div>
-                    </div>
-                  )
-                }}
+                {({ selected }) => (
+                  <div className={`flex items-center ${selected ? 'bg-grayLighter' : ''}`}>
+                    <AutonomysSymbol />
+                    <span className='ml-2 truncate text-sm'>{network.name}</span>
+                  </div>
+                )}
               </Listbox.Option>
             ))}
           </Listbox.Options>
