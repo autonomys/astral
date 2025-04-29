@@ -56,7 +56,6 @@ export const AmountField: FC<AmountFieldProps> = ({ disabled }) => {
 
   return (
     <div className='flex flex-col space-y-1'>
-      {/* <div className='text-grayText flex items-center justify-between text-sm dark:text-white'> */}
       <Formik
         initialValues={initialValues}
         validationSchema={formValidationSchema}
@@ -91,7 +90,6 @@ export const AmountField: FC<AmountFieldProps> = ({ disabled }) => {
           </Form>
         )}
       </Formik>
-      {/* </div> */}
     </div>
   )
 }

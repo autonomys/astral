@@ -14,7 +14,6 @@ import * as Yup from 'yup'
 
 interface FormValues {
   address: string
-  displayAddress: string
 }
 
 export const ReceiverField: FC = () => {
@@ -28,16 +27,9 @@ export const ReceiverField: FC = () => {
   const receiver = searchParams.get('receiver')
   const to = searchParams.get('to')
 
-  const formatDisplayAddress = (address: string): string => {
-    if (!address) return ''
-    if (address.length <= 10) return address
-    return `${address.substring(0, 12)}......${address.substring(address.length - 8)}`
-  }
-
   const initialValues: FormValues = useMemo(
     () => ({
       address: receiver || '',
-      displayAddress: receiver ? formatDisplayAddress(receiver) : '',
     }),
     [receiver],
   )
@@ -95,9 +87,9 @@ export const ReceiverField: FC = () => {
                         placeholder='Enter recipient address'
                         type='text'
                         onChange={handleSetReceiver}
-                        value={values.displayAddress || values.address}
+                        value={values.address}
                         className={cn(
-                          'mt-4 block w-full rounded-md border-blueShade bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder-gray-200',
+                          'mt-4 block w-full overflow-ellipsis rounded-md border-blueShade bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] pr-[120px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder-gray-200',
                           errors.address && touched.address && 'border-red-500',
                         )}
                       />
@@ -140,10 +132,7 @@ export const ReceiverField: FC = () => {
                                     onClick={() => {
                                       if (subAccount) {
                                         setReceiver(subAccount)
-                                        setFieldValue(
-                                          'displayAddress',
-                                          formatDisplayAddress(subAccount),
-                                        )
+                                        setFieldValue('address', subAccount)
                                       }
                                     }}
                                   >
@@ -176,10 +165,6 @@ export const ReceiverField: FC = () => {
                                   value={address.address}
                                   onClick={() => {
                                     setFieldValue('address', address.address)
-                                    setFieldValue(
-                                      'displayAddress',
-                                      formatDisplayAddress(address.address),
-                                    )
                                     setReceiver(address.address)
                                   }}
                                 >
