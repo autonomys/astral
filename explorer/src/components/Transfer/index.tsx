@@ -37,7 +37,7 @@ interface FormValues {
   receiver: string
 }
 
-const DirectionBlock: FC<DirectionBlockProps> = ({ direction }) => {
+const DirectionBlock: FC<DirectionBlockProps> = ({ direction, maxAmount }) => {
   return (
     <div className='flex flex-col'>
       <div className='flex items-center justify-between space-x-4'>
@@ -47,7 +47,7 @@ const DirectionBlock: FC<DirectionBlockProps> = ({ direction }) => {
         <NetworkSelector direction={direction} />
       </div>
       {direction === SwapDirection.TO && <ReceiverField />}
-      <AmountField disabled={direction === SwapDirection.TO} />
+      <AmountField disabled={direction === SwapDirection.TO} maxAmount={maxAmount} />
     </div>
   )
 }
@@ -306,7 +306,10 @@ export const Transfer: FC = () => {
   )
 
   const isWalletBalanceEnough = useMemo(() => {
-    return walletBalance > AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM + parseFloat(amount || '0')
+    return (
+      parseFloat(walletBalance.toFixed(5)) >=
+      AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM + parseFloat(amount || '0')
+    )
   }, [walletBalance, amount])
 
   useEffect(() => {
@@ -352,7 +355,7 @@ export const Transfer: FC = () => {
                 Transfer Tokens
               </h2>
               <span className='inline-flex items-center rounded-full border border-blueShade bg-blueLight px-3 py-1 text-sm font-medium text-primaryAccent dark:border-blueDarkAccent dark:bg-blueDarkAccent dark:text-white'>
-                Max: {maxAmount} {tokenSymbol}
+                Balance: {walletBalance.toFixed(5)} {tokenSymbol}
               </span>
             </div>
             <div className='flex flex-col gap-6'>

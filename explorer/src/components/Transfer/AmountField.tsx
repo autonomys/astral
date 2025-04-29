@@ -7,13 +7,14 @@ import * as Yup from 'yup'
 
 interface AmountFieldProps {
   disabled?: boolean
+  maxAmount?: number
 }
 
 interface FormValues {
   amount: number
 }
 
-export const AmountField: FC<AmountFieldProps> = ({ disabled }) => {
+export const AmountField: FC<AmountFieldProps> = ({ disabled, maxAmount }) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -80,6 +81,36 @@ export const AmountField: FC<AmountFieldProps> = ({ disabled }) => {
                 {tokenSymbol}
               </div>
             </div>
+
+            {maxAmount ? (
+              <span
+                className='flex justify-end px-1 py-2 text-xs font-medium text-primaryAccent hover:cursor-pointer dark:text-white'
+                onClick={() => {
+                  if (searchParams.get('amount')) {
+                    const params = new URLSearchParams(searchParams.toString())
+                    params.delete('amount')
+                    router.push(`${pathname}?${params.toString()}`)
+                  } else {
+                    setAmount(maxAmount.toString())
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    if (searchParams.get('amount')) {
+                      const params = new URLSearchParams(searchParams.toString())
+                      params.delete('amount')
+                      router.push(`${pathname}?${params.toString()}`)
+                    } else {
+                      setAmount(maxAmount.toString())
+                    }
+                  }
+                }}
+                role='button'
+                tabIndex={0}
+              >
+                {searchParams.get('amount') ? 'Clear' : 'Max'}
+              </span>
+            ) : null}
             {errors.amount && touched.amount ? (
               <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
                 {errors.amount}
