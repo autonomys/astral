@@ -29,8 +29,6 @@ export const saveAllData = async (cache: Cache) => {
       promises.push(updateTargetHeight(cache.targetHeight, txSql));
 
     // Execute all insert and update operations concurrently within the transaction
-    if (promises.length > 0) {
-      await Promise.all(promises);
-    }
+    if (promises.length > 0) await Promise.all(promises);
   });
 };

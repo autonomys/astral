@@ -150,7 +150,6 @@ export const findDomainIdFromOperatorsCache = (
   const opFromCache = cache.operatorStakingHistory.find(
     (o) => o.operatorId === operatorId
   );
-  console.log("opFromCache", opFromCache);
   if (!opFromCache) {
     const parentOpFromCache = cache.parentBlockOperators.find(
       (o) => o.operatorId.toString() === operatorId
