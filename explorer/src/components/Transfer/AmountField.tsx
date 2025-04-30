@@ -73,11 +73,11 @@ export const AmountField: FC<AmountFieldProps> = ({ disabled, maxAmount }) => {
                 disabled={disabled}
                 onChange={handleSetAmount}
                 className={cn(
-                  'mt-4 block w-full rounded-md border border-blueShade bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] pr-16 text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white',
+                  'mt-4 block w-full rounded-md border border-blueShade bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] pr-16 text-base text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white',
                   errors.amount && touched.amount && 'border-red-500',
                 )}
               />
-              <div className='absolute right-5 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-900 dark:text-white'>
+              <div className='absolute right-5 top-1/2 -translate-y-1/2 text-base font-medium text-gray-900 dark:text-white'>
                 {tokenSymbol}
               </div>
             </div>

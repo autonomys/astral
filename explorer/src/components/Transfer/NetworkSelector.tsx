@@ -47,7 +47,7 @@ export const NetworkSelector: FC<NetworkSelectorProps> = ({ direction }) => {
   return (
     <Listbox value={selectedNetwork}>
       <div className='relative'>
-        <Listbox.Button className='flex w-full items-center rounded-md border border-blueShade bg-blueLight px-3 py-1.5 pr-8 text-sm font-medium text-grayDarker dark:border-blueLight dark:bg-transparent'>
+        <Listbox.Button className='flex w-full items-center rounded-md border border-blueShade bg-blueLight px-3 py-2 pr-8 text-sm font-medium text-grayDarker dark:border-blueLight dark:bg-transparent'>
           <div className='flex w-full items-center overflow-hidden'>
             {selectedNetwork ? (
               <>

@@ -89,7 +89,7 @@ export const ReceiverField: FC = () => {
                         onChange={handleSetReceiver}
                         value={values.address}
                         className={cn(
-                          'mt-4 block w-full overflow-ellipsis rounded-md border-blueShade bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] pr-[120px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder-gray-200',
+                          'mt-4 block w-full overflow-ellipsis rounded-md border-blueShade bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] pr-[120px] text-base text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder-gray-200',
                           errors.address && touched.address && 'border-red-500',
                         )}
                       />

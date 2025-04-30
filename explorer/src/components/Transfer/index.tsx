@@ -318,7 +318,7 @@ export const Transfer: FC = () => {
 
   return (
     <div className='w-full max-w-[500px]'>
-      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
+      <div className='mb-4 w-full rounded-2xl border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
         {hash ? (
           <div className='mb-6 flex flex-col items-center justify-center'>
             {hash && (
