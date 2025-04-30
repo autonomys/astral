@@ -1,5 +1,6 @@
 'use client'
 
+import { cn } from '@/utils/cn'
 import {
   deregisterOperator,
   nominateOperator,
@@ -82,7 +83,6 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     }),
     [action.minimumStake],
   )
-
   const maxAmountToAdd = useMemo(
     () =>
       walletBalance > AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT
@@ -91,10 +91,28 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     [walletBalance],
   )
 
+  const minimumStake = useMemo(() => {
+    return parseFloat(bigNumberToFormattedString(action.minimumStake))
+  }, [action.minimumStake])
+
+  const maximumStake = useMemo(() => {
+    if (maxAmountToAdd > minimumStake) {
+      return maxAmountToAdd
+    }
+    return minimumStake
+  }, [minimumStake, maxAmountToAdd])
+
+  const hasInsufficientBalance = useMemo(() => {
+    return maxAmountToAdd < minimumStake
+  }, [maxAmountToAdd, minimumStake])
+
   const addFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
-      .moreThan(0, `Amount need to be greater than 0 ${tokenSymbol}`)
-      .max(maxAmountToAdd, `Amount need to be less than ${maxAmountToAdd} ${tokenSymbol}`)
+      .min(
+        minimumStake,
+        `Amount need to be greater than or equal to ${minimumStake} ${tokenSymbol}`,
+      )
+      .max(maximumStake, `Amount need to be less than or equal to ${maximumStake} ${tokenSymbol}`)
       .required('Amount to stake is required'),
   })
 
@@ -369,10 +387,11 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       </div>
                     )}
                   />
-                  {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
-                    maxAmountToAdd === 0 ? (
+                  {(errors.amount && touched.amount) || hasInsufficientBalance ? (
+                    hasInsufficientBalance ? (
                       <span className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
-                        You don&apos;t have enough balance to stake
+                        Insufficient wallet balance for minimum stake requirement of {minimumStake}{' '}
+                        {tokenSymbol}
                       </span>
                     ) : (
                       <div className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
@@ -391,8 +410,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   ) : (
                     <div className='mt-4 flex w-full items-center justify-center gap-2'>
                       <button
-                        className='w-full rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2'
+                        className={cn(
+                          'w-full rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2',
+                          hasInsufficientBalance ? 'cursor-not-allowed opacity-50' : '',
+                        )}
                         type='submit'
+                        disabled={hasInsufficientBalance}
                       >
                         {OperatorActionType[action.type as keyof typeof OperatorActionType]}
                       </button>
@@ -513,10 +536,11 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       </div>
                     )}
                   />
-                  {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
-                    maxAmountToAdd === 0 ? (
+                  {(errors.amount && touched.amount) || hasInsufficientBalance ? (
+                    hasInsufficientBalance ? (
                       <span className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
-                        You don&apos;t have enough balance to stake
+                        Insufficient wallet balance for minimum stake requirement of {minimumStake}{' '}
+                        {tokenSymbol}
                       </span>
                     ) : (
                       <div className='mt-2 h-6 text-sm text-red-500' data-testid='errorMessage'>
@@ -587,6 +611,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   }, [
     action.type,
     initialValues,
+    nominationInitialValue,
     addFundsFormValidationSchema,
     withdrawFundsFormValidationSchema,
     ErrorPlaceholder,
@@ -600,6 +625,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     actingAccount,
     sliderValue,
     handleClose,
+    hasInsufficientBalance,
+    minimumStake,
   ])
 
   useEffect(() => {
