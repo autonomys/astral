@@ -69,6 +69,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: null,
+    minimumStake: BIGINT_ZERO,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -78,11 +79,12 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     sendGAEvent({
       event: 'initialize_staking_action',
       value: `action:${value.toString()}`,
+      minimumStake: value.minimumStake.toString(),
     })
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null })
+    setAction({ type: OperatorActionType.None, operatorId: null, minimumStake: BIGINT_ZERO })
   }, [])
 
   const apolloClient = useApolloClient()
@@ -294,6 +296,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
                 ...row.original,
                 // eslint-disable-next-line camelcase
                 current_total_shares: row.original.currentTotalShares,
+                minimumNominatorStake: row.original.minimumNominatorStake,
               },
             } as OperatorActionsRow
             return (

@@ -19,7 +19,11 @@ import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { logTx } from 'utils/log'
-import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
+import {
+  bigNumberToFormattedString,
+  floatToStringWithDecimals,
+  formatUnitsToNumber,
+} from 'utils/number'
 import * as Yup from 'yup'
 
 export enum OperatorActionType {
@@ -40,6 +44,7 @@ export const ActionsInRed = [
 export type OperatorAction = {
   type: OperatorActionType
   operatorId: number | null
+  minimumStake: bigint
 }
 
 type Props = {
@@ -70,6 +75,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     }),
     [],
   )
+
+  const nominationInitialValue = useMemo(
+    () => ({
+      amount: parseFloat(bigNumberToFormattedString(action.minimumStake)),
+    }),
+    [action.minimumStake],
+  )
+
   const maxAmountToAdd = useMemo(
     () =>
       walletBalance > AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT
@@ -303,7 +316,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         return (
           <div className='flex flex-col items-start gap-4'>
             <Formik
-              initialValues={initialValues}
+              initialValues={nominationInitialValue}
               validationSchema={addFundsFormValidationSchema}
               onSubmit={(values, { resetForm }) =>
                 OperatorActionType[action.type as keyof typeof OperatorActionType] ===
@@ -318,7 +331,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                  <span className='text-sm font-medium text-grayDarker dark:text-white'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                       OperatorActionType.Nominating
@@ -340,13 +353,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                               ? 'stake'
                               : 'withdraw'
                           }`}
-                          className={`mt-4 block w-full rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                          className={`mt-2 block w-full rounded-md border border-grayDark bg-white px-4 py-[10px] pr-[60px] text-sm text-gray-900 dark:bg-blueAccent dark:text-white ${
                             errors.amount &&
-                            'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            'block w-full rounded-full border border-red-500 bg-white px-4 py-[10px] text-sm text-gray-900'
                           }`}
                         />
                         <button
-                          className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                          className='absolute flex items-center gap-2 rounded-md px-2 text-sm font-medium text-primaryAccent dark:text-white md:space-x-4 md:text-base'
                           type='button'
                           style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                           onClick={() => setFieldValue('amount', maxAmountToAdd)}
@@ -358,29 +371,39 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   />
                   {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
                     maxAmountToAdd === 0 ? (
-                      <span className='text-md h-8 text-red-500' data-testid='errorMessage'>
+                      <span className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
                         You don&apos;t have enough balance to stake
                       </span>
                     ) : (
-                      <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                      <div className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
                         {errors.amount}
                       </div>
                     )
-                  ) : (
-                    <div className='text-md mt-2 h-8' data-testid='placeHolder' />
-                  )}
+                  ) : null}
                   {ErrorPlaceholder}
                   {!actingAccount ? (
-                    <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                    <div
+                      className='mt-4 text-center text-xs text-red-500'
+                      data-testid='errorMessage'
+                    >
                       You need to connect your wallet
                     </div>
                   ) : (
-                    <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
-                      type='submit'
-                    >
-                      {OperatorActionType[action.type as keyof typeof OperatorActionType]}
-                    </button>
+                    <div className='mt-4 flex w-full items-center justify-center gap-2'>
+                      <button
+                        className='w-full rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2'
+                        type='submit'
+                      >
+                        {OperatorActionType[action.type as keyof typeof OperatorActionType]}
+                      </button>
+                      <button
+                        className='w-full rounded-full border border-grayDark bg-white px-4 py-2 text-sm font-medium text-grayDarker hover:bg-gray-100 dark:bg-primaryAccent'
+                        type='button'
+                        onClick={handleClose}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   )}
                 </Form>
               )}
@@ -492,20 +515,20 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   />
                   {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
                     maxAmountToAdd === 0 ? (
-                      <span className='text-md h-8 text-red-500' data-testid='errorMessage'>
+                      <span className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
                         You don&apos;t have enough balance to stake
                       </span>
                     ) : (
-                      <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                      <div className='mt-2 h-6 text-sm text-red-500' data-testid='errorMessage'>
                         {errors.amount}
                       </div>
                     )
                   ) : (
-                    <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                    <div className='mt-2 h-6 text-sm' data-testid='placeHolder' />
                   )}
                   {ErrorPlaceholder}
                   {!actingAccount ? (
-                    <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                    <div className='mt-2 h-6 text-sm text-red-500' data-testid='errorMessage'>
                       You need to connect your wallet
                     </div>
                   ) : (
@@ -576,6 +599,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     maxAmountToAdd,
     actingAccount,
     sliderValue,
+    handleClose,
   ])
 
   useEffect(() => {
@@ -587,18 +611,21 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   }, [api, actingAccount, loadWalletBalance])
 
   return (
-    <Modal title={action.type} onClose={handleClose} isOpen={isOpen}>
-      <div className='flex flex-col items-start gap-4'>
-        <div className='flex flex-col items-center gap-4'>
-          <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
-        </div>
-        <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
-          onClick={onClose}
-        >
-          Close
-        </button>
-      </div>
+    <Modal title={action.type} onClose={handleClose} isOpen={isOpen} size='md'>
+      {/* <div className='flex flex-col items-start gap-4'> */}
+      {/* <div className='flex flex-col items-center gap-4'> */}
+      {/* <div className='grid grid-cols-1 gap-4'> */}
+      {ActionBody}
+
+      {/* </div> */}
+      {/* </div> */}
+      {/* <button
+        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
+        onClick={onClose}
+      >
+        Close
+      </button> */}
+      {/* </div> */}
     </Modal>
   )
 }

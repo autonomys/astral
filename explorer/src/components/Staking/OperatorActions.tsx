@@ -10,6 +10,7 @@ export type OperatorActionsRow = {
   original: {
     id: string
     current_total_shares: bigint
+    minimumNominatorStake: bigint
   }
 }
 
@@ -41,8 +42,9 @@ export const OperatorActions: FC<OperatorActionsProps> = ({
       handleAction({
         type: actionType,
         operatorId: parseInt(row.original.id),
+        minimumStake: row.original.minimumNominatorStake,
       }),
-    [handleAction, row.original.id],
+    [handleAction, row.original.id, row.original.minimumNominatorStake],
   )
 
   if (actionsAvailable.length === 0) return <></>
