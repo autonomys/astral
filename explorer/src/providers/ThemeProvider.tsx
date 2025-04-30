@@ -1,23 +1,26 @@
 'use client'
 
-import React, { FC, ReactNode, createContext, useContext, useEffect, useState } from 'react'
-
-// common
-import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
+import React, { FC, ReactNode, createContext, useCallback, useContext, useEffect } from 'react'
+import { usePreferencesStates } from 'states/preferences'
 
 function usePrefersDarkMode() {
-  const [value, setValue] = useState(true)
+  const darkMode = usePreferencesStates((state) => state.darkMode)
+  const setDarkMode = usePreferencesStates((state) => state.setDarkMode)
 
-  useEffect(() => {
+  const handleSetDarkMode = useCallback(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    setValue(mediaQuery.matches)
+    setDarkMode(mediaQuery.matches)
 
-    const handler = () => setValue(mediaQuery.matches)
+    const handler = () => setDarkMode(mediaQuery.matches)
     mediaQuery.addEventListener('change', handler)
     return () => mediaQuery.removeEventListener('change', handler)
-  }, [])
+  }, [setDarkMode])
 
-  return value
+  useEffect(() => {
+    handleSetDarkMode()
+  }, [handleSetDarkMode])
+
+  return darkMode
 }
 
 type Value = {
@@ -36,25 +39,26 @@ type Props = {
 
 export const ThemeProvider: FC<Props> = ({ children }) => {
   const prefersDarkMode = usePrefersDarkMode()
-  const [isEnabled, setIsEnabled] = useSafeLocalStorage('dark-mode', prefersDarkMode)
+  const isDark = usePreferencesStates((state) => state.darkMode)
+  const setDarkMode = usePreferencesStates((state) => state.setDarkMode)
 
   useEffect(() => {
     if (window === undefined) return
-    const enabled = isEnabled === undefined ? prefersDarkMode : isEnabled
+    const enabled = isDark === undefined ? prefersDarkMode : isDark
 
     const root = window.document.documentElement
     root.classList.remove(enabled ? 'light' : 'dark')
     root.classList.add(enabled ? 'dark' : 'light')
-    setIsEnabled(enabled)
-  }, [prefersDarkMode, setIsEnabled, isEnabled])
+    setDarkMode(enabled)
+  }, [prefersDarkMode, setDarkMode, isDark])
 
-  const toggleTheme = () => setIsEnabled(!isEnabled)
+  const toggleTheme = () => setDarkMode(!isDark)
 
   return (
     <ThemeContext.Provider
       value={{
         toggleTheme,
-        isDark: isEnabled,
+        isDark,
       }}
     >
       {children}
