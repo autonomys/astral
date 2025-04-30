@@ -45,7 +45,7 @@ export const ActionsInRed = [
 export type OperatorAction = {
   type: OperatorActionType
   operatorId: number | null
-  minimumStake: bigint
+  minimumStake?: bigint
 }
 
 type Props = {
@@ -79,7 +79,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
   const nominationInitialValue = useMemo(
     () => ({
-      amount: parseFloat(bigNumberToFormattedString(action.minimumStake)),
+      amount: action.minimumStake ? parseFloat(bigNumberToFormattedString(action.minimumStake)) : 0,
     }),
     [action.minimumStake],
   )
@@ -92,7 +92,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   )
 
   const minimumStake = useMemo(() => {
-    return parseFloat(bigNumberToFormattedString(action.minimumStake))
+    return action.minimumStake ? parseFloat(bigNumberToFormattedString(action.minimumStake)) : 0
   }, [action.minimumStake])
 
   const maximumStake = useMemo(() => {
@@ -639,20 +639,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
   return (
     <Modal title={action.type} onClose={handleClose} isOpen={isOpen} size='md'>
-      {/* <div className='flex flex-col items-start gap-4'> */}
-      {/* <div className='flex flex-col items-center gap-4'> */}
-      {/* <div className='grid grid-cols-1 gap-4'> */}
       {ActionBody}
-
-      {/* </div> */}
-      {/* </div> */}
-      {/* <button
-        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
-        onClick={onClose}
-      >
-        Close
-      </button> */}
-      {/* </div> */}
     </Modal>
   )
 }

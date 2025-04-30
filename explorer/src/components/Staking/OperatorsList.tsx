@@ -79,7 +79,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     sendGAEvent({
       event: 'initialize_staking_action',
       value: `action:${value.toString()}`,
-      minimumStake: value.minimumStake.toString(),
     })
   }, [])
   const handleActionClose = useCallback(() => {

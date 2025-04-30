@@ -10,7 +10,7 @@ export type OperatorActionsRow = {
   original: {
     id: string
     current_total_shares: bigint
-    minimumNominatorStake: bigint
+    minimumNominatorStake?: bigint
   }
 }
 
