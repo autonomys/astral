@@ -11,6 +11,10 @@ export type OperatorActionsRow = {
     id: string
     current_total_shares: bigint
     minimumNominatorStake?: bigint
+    accountId: string
+    nominationTax: string
+    currentTotalStake: string
+    apy30d: string
   }
 }
 
@@ -42,9 +46,19 @@ export const OperatorActions: FC<OperatorActionsProps> = ({
       handleAction({
         type: actionType,
         operatorId: parseInt(row.original.id),
-        minimumStake: row.original.minimumNominatorStake,
+        accountId: row.original.accountId,
+        nominationTax: row.original.nominationTax,
+        currentTotalStake: row.original.currentTotalStake,
+        apy30d: row.original.apy30d,
       }),
-    [handleAction, row.original.id, row.original.minimumNominatorStake],
+    [
+      handleAction,
+      row.original.id,
+      row.original.accountId,
+      row.original.nominationTax,
+      row.original.currentTotalStake,
+      row.original.apy30d,
+    ],
   )
 
   if (actionsAvailable.length === 0) return <></>

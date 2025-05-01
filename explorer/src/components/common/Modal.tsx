@@ -13,6 +13,8 @@ type Props = {
   className?: string
   contentClassName?: string
   overlayClassName?: string
+  showTitle?: boolean
+  showCloseButton?: boolean
 }
 
 export const Modal: FC<Props> = ({
@@ -24,6 +26,8 @@ export const Modal: FC<Props> = ({
   className = '',
   contentClassName = '',
   overlayClassName = '',
+  showTitle = true,
+  showCloseButton = true,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
 
@@ -79,7 +83,7 @@ export const Modal: FC<Props> = ({
         ref={modalRef}
         role='dialog'
         aria-modal='true'
-        aria-labelledby={title ? 'modal-title' : undefined}
+        aria-labelledby={title && showTitle ? 'modal-title' : undefined}
         className={cn(
           'relative rounded-xl bg-white p-6 shadow transition-all dark:bg-boxDark',
           getSizeClass(),
@@ -88,7 +92,7 @@ export const Modal: FC<Props> = ({
         )}
         tabIndex={-1}
       >
-        {title && (
+        {showTitle && title && (
           <h2
             id='modal-title'
             className='absolute left-6 top-4 text-xl font-medium tracking-tight text-blueAccent dark:text-blueLight'
@@ -97,15 +101,17 @@ export const Modal: FC<Props> = ({
           </h2>
         )}
 
-        <button
-          onClick={onClose}
-          aria-label='Close modal'
-          className='absolute right-2 top-2 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-white dark:hover:bg-primaryAccent/75 dark:hover:text-gray-800'
-        >
-          <IoMdClose className='h-5 w-5' />
-        </button>
+        {showCloseButton && (
+          <button
+            onClick={onClose}
+            aria-label='Close modal'
+            className='absolute right-2 top-2 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-white dark:hover:bg-primaryAccent/75 dark:hover:text-gray-800'
+          >
+            <IoMdClose className='h-5 w-5' />
+          </button>
+        )}
 
-        <div className='mt-10'>{children}</div>
+        <div className={cn(showTitle && title ? 'mt-10' : '')}>{children}</div>
       </div>
     </div>
   )

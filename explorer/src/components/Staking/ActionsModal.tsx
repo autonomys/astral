@@ -9,6 +9,7 @@ import {
   withdrawStake,
   WithdrawStakeParams,
 } from '@autonomys/auto-consensus'
+import { BIGINT_ZERO, shortString } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { WalletType } from 'constants/wallet'
@@ -19,6 +20,9 @@ import { usePathname } from 'next/navigation'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FaRegClock } from 'react-icons/fa'
+import { GoCalendar } from 'react-icons/go'
+import { LuCircleMinus } from 'react-icons/lu'
 import { logTx } from 'utils/log'
 import {
   bigNumberToFormattedString,
@@ -26,6 +30,7 @@ import {
   formatUnitsToNumber,
 } from 'utils/number'
 import * as Yup from 'yup'
+import { AccountIcon } from '../common/AccountIcon'
 
 export enum OperatorActionType {
   None = 'none',
@@ -46,6 +51,10 @@ export type OperatorAction = {
   type: OperatorActionType
   operatorId: number | null
   minimumStake?: bigint
+  accountId: string
+  nominationTax: string
+  currentTotalStake: string
+  apy30d: string
 }
 
 type Props = {
@@ -332,7 +341,61 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     switch (OperatorActionType[action.type as keyof typeof OperatorActionType]) {
       case OperatorActionType.Nominating:
         return (
-          <div className='flex flex-col items-start gap-4'>
+          <div className='flex flex-col gap-4'>
+            <div className='flex flex-row items-center justify-between'>
+              <div className='flex items-center space-x-3'>
+                <AccountIcon
+                  address={'sucDMxyNekHYqEBaBcktKytSqJgp9tNQkGtjUfzYEan4fVDiR'}
+                  size={26}
+                  theme='beachball'
+                />
+                <div>
+                  <span className='text-lg font-medium text-blueAccent dark:text-white'>
+                    Operator #{action.operatorId}
+                  </span>
+                  <p className='text-xs text-blueAccent/70 dark:text-white/70'>
+                    {shortString(action.accountId)}
+                  </p>
+                </div>
+              </div>
+              <div className='text-right'>
+                <div className='text-sm font-medium'>{action.apy30d}% 30d APY</div>
+                <div className='text-xs font-normal text-blueAccent/70 dark:text-white/70'>
+                  Est. Annual Yield
+                </div>
+              </div>
+            </div>
+            <hr className='my-2' />
+            <div className='grid grid-cols-3 gap-2'>
+              <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                  <GoCalendar className='mr-1 h-4 w-4' />
+                  Tax
+                </div>
+                <div className='font-bold text-blueAccent dark:text-white'>
+                  {action.nominationTax}%
+                </div>
+              </div>
+              <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                  <FaRegClock className='mr-1 h-4 w-4' />
+                  Total stake
+                </div>
+                <div className='font-bold text-blueAccent dark:text-white'>
+                  {action.currentTotalStake} tAI3
+                </div>
+              </div>
+              <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                  <LuCircleMinus className='mr-1 h-4 w-4' />
+                  Minimum stake
+                </div>
+                <div className='font-bold text-blueAccent dark:text-white'>
+                  {parseFloat(bigNumberToFormattedString(action.minimumStake ?? BIGINT_ZERO)) || 0}{' '}
+                  tAI3
+                </div>
+              </div>
+            </div>
             <Formik
               initialValues={nominationInitialValue}
               validationSchema={addFundsFormValidationSchema}
@@ -636,6 +699,23 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   useEffect(() => {
     loadWalletBalance()
   }, [api, actingAccount, loadWalletBalance])
+
+  if (
+    OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+    OperatorActionType.Nominating
+  ) {
+    return (
+      <Modal
+        showTitle={false}
+        showCloseButton={false}
+        onClose={handleClose}
+        isOpen={isOpen}
+        size='md'
+      >
+        {ActionBody}
+      </Modal>
+    )
+  }
 
   return (
     <Modal title={action.type} onClose={handleClose} isOpen={isOpen} size='md'>

@@ -9,6 +9,10 @@ export type NominationButtonRow = {
     id: string
     current_total_shares: bigint
     minimumNominatorStake?: bigint
+    accountId: string
+    nominationTax: string
+    currentTotalStake: string
+    apy30d: string
   }
 }
 
@@ -24,8 +28,20 @@ export const NominationButton: FC<NominationButtonProps> = ({ handleAction, row 
         type: 'Nominating' as OperatorActionType,
         operatorId: parseInt(row.original.id),
         minimumStake: row.original.minimumNominatorStake ?? BIGINT_ZERO,
+        nominationTax: row.original.nominationTax,
+        accountId: row.original.accountId,
+        currentTotalStake: row.original.currentTotalStake,
+        apy30d: row.original.apy30d,
       }),
-    [handleAction, row.original.id, row.original.minimumNominatorStake],
+    [
+      handleAction,
+      row.original.id,
+      row.original.minimumNominatorStake,
+      row.original.accountId,
+      row.original.currentTotalStake,
+      row.original.apy30d,
+      row.original.nominationTax,
+    ],
   )
 
   return (

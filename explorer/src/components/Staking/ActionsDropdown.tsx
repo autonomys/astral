@@ -9,6 +9,10 @@ export type ActionsDropdownRow = {
   original: {
     id: string
     current_total_shares: bigint
+    accountId: string
+    nominationTax: string
+    currentTotalStake: string
+    apy30d: string
   }
 }
 
@@ -46,6 +50,10 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
         handleAction({
           type: val,
           operatorId: parseInt(row.original.id),
+          accountId: row.original.accountId,
+          nominationTax: row.original.nominationTax,
+          currentTotalStake: row.original.currentTotalStake,
+          apy30d: row.original.apy30d,
         })
       }
     >
@@ -67,7 +75,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute sticky z-50 mt-1 max-h-60 w-auto overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+          <Listbox.Options className='absolute z-50 mt-1 max-h-60 w-auto overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
             {actionsAvailable.map((actionType, index) => (
               <Listbox.Option
                 key={index}
