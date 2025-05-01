@@ -1,7 +1,7 @@
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
-import { BIGINT_ZERO } from 'constants/general'
+import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
 import {
   StakingSummaryDocument,
@@ -63,17 +63,16 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
       hasValue(stakingSummary)
         ? stakingSummary.value.staking_nominators
             .filter((n) => n.operator?.account_id === subspaceAccount)
-            .reduce(
-              (acc, nominator) =>
-                BigInt(nominator.known_shares) > BIGINT_ZERO
-                  ? acc +
-                    BigInt(nominator.known_storage_fee_deposit) +
-                    (BigInt(nominator.operator?.current_total_stake) /
-                      BigInt(nominator.operator?.current_total_shares)) *
-                      BigInt(nominator.known_shares)
-                  : acc,
-              BIGINT_ZERO,
-            )
+            .reduce((acc, nominator) => {
+              const totalShares = nominator.deposits.reduce(
+                (acc, curr) => acc + BigInt(curr.estimated_shares),
+                BIGINT_ZERO,
+              )
+              const estimatedStake = BigInt(nominator.operator?.current_share_price) * totalShares
+              return estimatedStake > BIGINT_ZERO
+                ? acc + estimatedStake / SHARES_CALCULATION_MULTIPLIER
+                : acc
+            }, BIGINT_ZERO)
         : BIGINT_ZERO,
     [stakingSummary, subspaceAccount],
   )
@@ -91,17 +90,16 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
       hasValue(stakingSummary)
         ? stakingSummary.value.staking_nominators
             .filter((n) => n.operator?.account_id !== subspaceAccount)
-            .reduce(
-              (acc, nominator) =>
-                BigInt(nominator.known_shares) > BIGINT_ZERO
-                  ? acc +
-                    BigInt(nominator.known_storage_fee_deposit) +
-                    (BigInt(nominator.operator?.current_total_stake) /
-                      BigInt(nominator.operator?.current_total_shares)) *
-                      BigInt(nominator.known_shares)
-                  : acc,
-              BIGINT_ZERO,
-            )
+            .reduce((acc, nominator) => {
+              const totalShares = nominator.deposits.reduce(
+                (acc, curr) => acc + BigInt(curr.estimated_shares),
+                BIGINT_ZERO,
+              )
+              const estimatedStake = BigInt(nominator.operator?.current_share_price) * totalShares
+              return estimatedStake > BIGINT_ZERO
+                ? acc + estimatedStake / SHARES_CALCULATION_MULTIPLIER
+                : acc
+            }, BIGINT_ZERO)
         : BIGINT_ZERO,
     [stakingSummary, subspaceAccount],
   )
