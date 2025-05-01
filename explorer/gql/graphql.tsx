@@ -27484,7 +27484,7 @@ export type NominationsListQueryVariables = Exact<{
 }>;
 
 
-export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string, last_domain_block_number: any } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, raw_status: string, current_total_stake: any, current_storage_fee_deposit: any, current_total_shares: any, current_share_price: any, apy30d: any, apy7d: any, apy1d: any } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, total_amount: any, estimated_shares: any, timestamp: any, extrinsic_id: string, status: string, created_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, storage_fee_refund: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, total_amount: any, timestamp: any, withdraw_extrinsic_id: string, unlock_extrinsic_id: string, status: string, created_at: any, domain_block_number_ready_at: any, unlocked_at: any, updated_at: any }>, unlocked_events: Array<{ __typename?: 'staking_unlocked_events', id: string, amount: any, storage_fee: any, block_height: any, extrinsic_id: string }> }> };
+export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string, last_domain_block_number: any } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, raw_status: string, current_total_stake: any, current_storage_fee_deposit: any, current_total_shares: any, current_share_price: any, apy30d: any, apy7d: any, apy1d: any, minimumNominatorStake: any, nominationTax: number } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, total_amount: any, estimated_shares: any, timestamp: any, extrinsic_id: string, status: string, created_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, storage_fee_refund: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, total_amount: any, timestamp: any, withdraw_extrinsic_id: string, unlock_extrinsic_id: string, status: string, created_at: any, domain_block_number_ready_at: any, unlocked_at: any, updated_at: any }>, unlocked_events: Array<{ __typename?: 'staking_unlocked_events', id: string, amount: any, storage_fee: any, block_height: any, extrinsic_id: string }> }> };
 
 export type OperatorsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -27678,7 +27678,7 @@ export type CheckRoleQueryVariables = Exact<{
 }>;
 
 
-export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }>, isOperator: Array<{ __typename?: 'staking_operators', id: string }>, isNominator: Array<{ __typename?: 'staking_accounts', id: string }> };
+export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }>, isOperator: Array<{ __typename?: 'staking_operators', id: string }>, isNominator: Array<{ __typename?: 'staking_accounts', id: string }>, isTalismanFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }> };
 
 export type StakingSummaryQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -30587,6 +30587,8 @@ export const NominationsListDocument = gql`
       apy30d: current_30d_apy
       apy7d: current_7d_apy
       apy1d: current_1d_apy
+      minimumNominatorStake: minimum_nominator_stake
+      nominationTax: nomination_tax
     }
     known_shares
     known_storage_fee_deposit
@@ -31957,6 +31959,14 @@ export const CheckRoleDocument = gql`
     order_by: {id: asc}
   ) {
     id
+  }
+  isTalismanFarmer: consensus_rewards(
+    where: {_or: [{reward_type: {_eq: "rewards.VoteReward"}}, {reward_type: {_eq: "rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}}
+    limit: 1
+  ) {
+    account {
+      id
+    }
   }
 }
     `;

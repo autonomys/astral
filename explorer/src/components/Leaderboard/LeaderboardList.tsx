@@ -27,7 +27,6 @@ import { AccountIconWithLink } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 
 type LeaderboardListProps = {
-  title: string
   query: DocumentNode
   table: string
   idLink: (id: string) => string
@@ -42,7 +41,6 @@ type Row =
 const TABLE = 'leaderboard'
 
 export const LeaderboardList: FC<LeaderboardListProps> = ({
-  title,
   query,
   table,
   idLink,
@@ -247,31 +245,24 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   }, [inView, setIsVisible])
 
   return (
-    <div className='flex w-full flex-col align-middle'>
-      <div className='flex w-full flex-col sm:mt-0'>
-        <div className='flex w-full flex-col gap-4 px-4'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>{title}</div>
-        </div>
-        <div className='my-6 rounded'>
-          <div ref={ref}>
-            {listData ? (
-              <SortedTable
-                data={data}
-                columns={columns}
-                showNavigation={true}
-                sorting={sorting}
-                onSortingChange={onSortingChange}
-                pagination={pagination}
-                pageCount={pageCount}
-                onPaginationChange={onPaginationChange}
-                filename='leaderboard-vote-block-reward-list'
-                fullDataDownloader={fullDataDownloader}
-              />
-            ) : (
-              noData
-            )}
-          </div>
-        </div>
+    <div className='my-6 flex w-full flex-col rounded align-middle'>
+      <div ref={ref}>
+        {listData ? (
+          <SortedTable
+            data={data}
+            columns={columns}
+            showNavigation={true}
+            sorting={sorting}
+            onSortingChange={onSortingChange}
+            pagination={pagination}
+            pageCount={pageCount}
+            onPaginationChange={onPaginationChange}
+            filename='leaderboard-vote-block-reward-list'
+            fullDataDownloader={fullDataDownloader}
+          />
+        ) : (
+          noData
+        )}
       </div>
     </div>
   )

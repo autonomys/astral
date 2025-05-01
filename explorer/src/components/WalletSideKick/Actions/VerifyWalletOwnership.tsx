@@ -27,10 +27,12 @@ export const VerifyWalletOwnership: FC = () => {
 
       // Sign-in using the message&signature
       await signIn('subspace', {
+        redirect: false,
         account: subspaceAccount,
         message,
         signature: signature.signature,
-        redirect: false,
+        walletSource: actingAccount.source,
+        walletType: actingAccount.type,
       })
       toast.success('You verified the ownership of your wallet!', { position: 'bottom-center' })
     } catch (error) {

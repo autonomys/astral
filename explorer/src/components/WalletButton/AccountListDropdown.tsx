@@ -100,7 +100,7 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
               isDesktop
                 ? 'rounded-full pr-10 dark:bg-buttonLightTo'
                 : 'rounded-l-full pr-0 dark:bg-primaryAccent'
-            } ml-2 bg-white py-3 pl-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:text-white sm:text-sm md:mt-3`,
+            } ml-2 bg-white py-3 pl-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:text-white sm:text-sm`,
             className,
           )}
         >

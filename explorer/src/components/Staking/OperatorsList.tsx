@@ -69,6 +69,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: null,
+    accountId: '',
+    nominationTax: '',
+    currentTotalStake: '',
+    apy30d: '',
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -82,7 +86,14 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null })
+    setAction({
+      type: OperatorActionType.None,
+      operatorId: null,
+      accountId: '',
+      nominationTax: '',
+      currentTotalStake: '',
+      apy30d: '',
+    })
   }, [])
 
   const apolloClient = useApolloClient()
@@ -294,6 +305,14 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
                 ...row.original,
                 // eslint-disable-next-line camelcase
                 current_total_shares: row.original.currentTotalShares,
+                minimumNominatorStake: bigNumberToFormattedString(
+                  row.original.minimumNominatorStake,
+                ),
+                id: row.original.id,
+                apy30d: `${numberFormattedString(row.original.apy30d * 100)}`,
+                currentTotalStake: `${bigNumberToFormattedString(row.original.currentTotalStake)}`,
+                accountId: row.original.accountId,
+                nominationTax: `${row.original.nominationTax}`,
               },
             } as OperatorActionsRow
             return (

@@ -1,5 +1,6 @@
 'use client'
 
+import { cn } from '@/utils/cn'
 import {
   deregisterOperator,
   nominateOperator,
@@ -8,6 +9,8 @@ import {
   withdrawStake,
   WithdrawStakeParams,
 } from '@autonomys/auto-consensus'
+import { shortString } from '@autonomys/auto-utils'
+import { InformationCircleIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { WalletType } from 'constants/wallet'
@@ -21,6 +24,8 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { logTx } from 'utils/log'
 import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import * as Yup from 'yup'
+import { AccountIcon } from '../common/AccountIcon'
+import { Tooltip } from '../common/Tooltip'
 
 export enum OperatorActionType {
   None = 'none',
@@ -40,6 +45,11 @@ export const ActionsInRed = [
 export type OperatorAction = {
   type: OperatorActionType
   operatorId: number | null
+  minimumNominatorStake?: string
+  accountId?: string
+  nominationTax?: string
+  currentTotalStake?: string
+  apy30d?: string
 }
 
 type Props = {
@@ -70,6 +80,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     }),
     [],
   )
+
+  const nominationInitialValue = useMemo(
+    () => ({
+      amount: action.minimumNominatorStake ? parseFloat(action.minimumNominatorStake) : 0,
+    }),
+    [action.minimumNominatorStake],
+  )
   const maxAmountToAdd = useMemo(
     () =>
       walletBalance > AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT
@@ -78,10 +95,29 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     [walletBalance],
   )
 
+  const minimumStake = useMemo(() => {
+    return action.minimumNominatorStake ? parseFloat(action.minimumNominatorStake) : 0
+  }, [action.minimumNominatorStake])
+
+  const maximumStake = useMemo(() => {
+    if (maxAmountToAdd > minimumStake) {
+      return maxAmountToAdd
+    }
+    return minimumStake
+  }, [minimumStake, maxAmountToAdd])
+
+  const hasInsufficientBalance = useMemo(() => {
+    return maxAmountToAdd < minimumStake
+  }, [maxAmountToAdd, minimumStake])
+
   const addFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
-      .moreThan(0, `Amount need to be greater than 0 ${tokenSymbol}`)
-      .max(maxAmountToAdd, `Amount need to be less than ${maxAmountToAdd} ${tokenSymbol}`)
+      .min(
+        minimumStake,
+        `Amount need to be greater than or equal to ${minimumStake} ${tokenSymbol}`,
+      )
+      .max(maximumStake, `Amount need to be less than or equal to ${maximumStake} ${tokenSymbol}`)
+      .positive()
       .required('Amount to stake is required'),
   })
 
@@ -301,9 +337,77 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     switch (OperatorActionType[action.type as keyof typeof OperatorActionType]) {
       case OperatorActionType.Nominating:
         return (
-          <div className='flex flex-col items-start gap-4'>
+          <div className='flex flex-col gap-4'>
+            <div className='flex flex-row items-center justify-between'>
+              <div className='flex items-center space-x-3'>
+                <AccountIcon
+                  address={'sucDMxyNekHYqEBaBcktKytSqJgp9tNQkGtjUfzYEan4fVDiR'}
+                  size={26}
+                  theme='beachball'
+                />
+                <div>
+                  <span className='text-lg font-medium text-blueAccent dark:text-white'>
+                    Operator #{action.operatorId}
+                  </span>
+                  <p className='text-xs text-blueAccent/70 dark:text-white/70'>
+                    {action.accountId ? shortString(action.accountId) : ''}
+                  </p>
+                </div>
+              </div>
+              <div className='text-right'>
+                <div className='text-sm font-medium'>{action.apy30d}% 30d APY</div>
+                <div className='text-xs font-normal text-blueAccent/70 dark:text-white/70'>
+                  Est. Annual Yield
+                </div>
+              </div>
+            </div>
+            <hr className='my-2' />
+            <div className='grid grid-cols-3 gap-2'>
+              {action.nominationTax && (
+                <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                  <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                    <Tooltip text='The tax percentage for the operator' direction='top'>
+                      <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                    </Tooltip>
+                    Tax
+                  </div>
+                  <div className='font-bold text-blueAccent dark:text-white'>
+                    {action.nominationTax}%
+                  </div>
+                </div>
+              )}
+              {action.currentTotalStake && (
+                <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                  <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                    <Tooltip text='The total stake of the operator' direction='top'>
+                      <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                    </Tooltip>
+                    Total stake
+                  </div>
+                  <div className='font-bold text-blueAccent dark:text-white'>
+                    {action.currentTotalStake} tAI3
+                  </div>
+                </div>
+              )}
+              {action.minimumNominatorStake && (
+                <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                  <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                    <Tooltip
+                      text='The minimum stake required to nominate an operator'
+                      direction='top'
+                    >
+                      <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                    </Tooltip>
+                    Minimum stake
+                  </div>
+                  <div className='font-bold text-blueAccent dark:text-white'>
+                    {parseFloat(action.minimumNominatorStake) || 0} tAI3
+                  </div>
+                </div>
+              )}
+            </div>
             <Formik
-              initialValues={initialValues}
+              initialValues={nominationInitialValue}
               validationSchema={addFundsFormValidationSchema}
               onSubmit={(values, { resetForm }) =>
                 OperatorActionType[action.type as keyof typeof OperatorActionType] ===
@@ -318,7 +422,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                  <span className='text-sm font-medium text-grayDarker dark:text-white'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                       OperatorActionType.Nominating
@@ -340,13 +444,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                               ? 'stake'
                               : 'withdraw'
                           }`}
-                          className={`mt-4 block w-full rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                          className={`mt-2 block w-full rounded-md border border-grayDark bg-white px-4 py-[10px] pr-[60px] text-sm text-gray-900 dark:bg-blueAccent dark:text-white ${
                             errors.amount &&
-                            'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            'block w-full rounded-full border border-red-500 bg-white px-4 py-[10px] text-sm text-gray-900'
                           }`}
                         />
                         <button
-                          className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                          className='absolute flex items-center gap-2 rounded-md px-2 text-sm font-medium text-primaryAccent dark:text-white md:space-x-4 md:text-base'
                           type='button'
                           style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                           onClick={() => setFieldValue('amount', maxAmountToAdd)}
@@ -356,31 +460,46 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       </div>
                     )}
                   />
-                  {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
-                    maxAmountToAdd === 0 ? (
-                      <span className='text-md h-8 text-red-500' data-testid='errorMessage'>
-                        You don&apos;t have enough balance to stake
+                  {(errors.amount && touched.amount) || hasInsufficientBalance ? (
+                    hasInsufficientBalance ? (
+                      <span className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
+                        Insufficient wallet balance for minimum stake requirement of {minimumStake}{' '}
+                        {tokenSymbol}
                       </span>
                     ) : (
-                      <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                      <div className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
                         {errors.amount}
                       </div>
                     )
-                  ) : (
-                    <div className='text-md mt-2 h-8' data-testid='placeHolder' />
-                  )}
+                  ) : null}
                   {ErrorPlaceholder}
                   {!actingAccount ? (
-                    <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                    <div
+                      className='mt-4 text-center text-xs text-red-500'
+                      data-testid='errorMessage'
+                    >
                       You need to connect your wallet
                     </div>
                   ) : (
-                    <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
-                      type='submit'
-                    >
-                      {OperatorActionType[action.type as keyof typeof OperatorActionType]}
-                    </button>
+                    <div className='mt-4 flex w-full items-center justify-center gap-2'>
+                      <button
+                        className={cn(
+                          'w-full rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2',
+                          hasInsufficientBalance ? 'cursor-not-allowed opacity-50' : '',
+                        )}
+                        type='submit'
+                        disabled={hasInsufficientBalance}
+                      >
+                        {OperatorActionType[action.type as keyof typeof OperatorActionType]}
+                      </button>
+                      <button
+                        className='w-full rounded-full border border-grayDark bg-white px-4 py-2 text-sm font-medium text-grayDarker hover:bg-gray-100 dark:bg-primaryAccent'
+                        type='button'
+                        onClick={handleClose}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   )}
                 </Form>
               )}
@@ -490,22 +609,23 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       </div>
                     )}
                   />
-                  {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
-                    maxAmountToAdd === 0 ? (
-                      <span className='text-md h-8 text-red-500' data-testid='errorMessage'>
-                        You don&apos;t have enough balance to stake
+                  {(errors.amount && touched.amount) || hasInsufficientBalance ? (
+                    hasInsufficientBalance ? (
+                      <span className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
+                        Insufficient wallet balance for minimum stake requirement of {minimumStake}{' '}
+                        {tokenSymbol}
                       </span>
                     ) : (
-                      <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                      <div className='mt-2 h-6 text-sm text-red-500' data-testid='errorMessage'>
                         {errors.amount}
                       </div>
                     )
                   ) : (
-                    <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                    <div className='mt-2 h-6 text-sm' data-testid='placeHolder' />
                   )}
                   {ErrorPlaceholder}
                   {!actingAccount ? (
-                    <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                    <div className='mt-2 h-6 text-sm text-red-500' data-testid='errorMessage'>
                       You need to connect your wallet
                     </div>
                   ) : (
@@ -563,7 +683,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     }
   }, [
     action.type,
+    action.apy30d,
+    action.currentTotalStake,
+    action.minimumNominatorStake,
+    action.nominationTax,
+    action.accountId,
+    action.operatorId,
     initialValues,
+    nominationInitialValue,
     addFundsFormValidationSchema,
     withdrawFundsFormValidationSchema,
     ErrorPlaceholder,
@@ -576,6 +703,9 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     maxAmountToAdd,
     actingAccount,
     sliderValue,
+    handleClose,
+    hasInsufficientBalance,
+    minimumStake,
   ])
 
   useEffect(() => {
@@ -586,19 +716,26 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     loadWalletBalance()
   }, [api, actingAccount, loadWalletBalance])
 
+  if (
+    OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+    OperatorActionType.Nominating
+  ) {
+    return (
+      <Modal
+        showTitle={false}
+        showCloseButton={false}
+        onClose={handleClose}
+        isOpen={isOpen}
+        size='lg'
+      >
+        {ActionBody}
+      </Modal>
+    )
+  }
+
   return (
-    <Modal title={action.type} onClose={handleClose} isOpen={isOpen}>
-      <div className='flex flex-col items-start gap-4'>
-        <div className='flex flex-col items-center gap-4'>
-          <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
-        </div>
-        <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
-          onClick={onClose}
-        >
-          Close
-        </button>
-      </div>
+    <Modal title={action.type} onClose={handleClose} isOpen={isOpen} size='md'>
+      {ActionBody}
     </Modal>
   )
 }

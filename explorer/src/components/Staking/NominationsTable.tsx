@@ -463,7 +463,12 @@ export const NominationsTable: FC = () => {
                         </div>
                       </div>
                       <div className='mb-4 w-full items-start justify-between text-lg font-semibold dark:text-white sm:flex-row sm:items-center'>
-                        <PageTabs isDesktop={isDesktop}>
+                        <PageTabs
+                          pillStyle='py-2'
+                          activePillStyle='py-2'
+                          isDesktop={isDesktop}
+                          tabStyle='border border-slate-100 bg-white dark:bg-boxDark dark:border-none'
+                        >
                           <Tab title='Overview'>
                             <div className='flex w-full flex-col items-start'>
                               <div className='w-full'>
@@ -486,6 +491,19 @@ export const NominationsTable: FC = () => {
                                                 current_total_shares: nominator.operator
                                                   ? nominator.operator.current_total_shares
                                                   : BIGINT_ZERO,
+                                                currentTotalStake: `${bigNumberToFormattedString(
+                                                  nominator.operator?.current_total_stake,
+                                                )}`,
+                                                apy30d: `${numberFormattedString(
+                                                  nominator.operator?.apy30d * 100,
+                                                )}`,
+                                                accountId: nominator.operator?.account_id,
+                                                nominationTax: `${
+                                                  nominator.operator?.nominationTax
+                                                }`,
+                                                minimumNominatorStake: `${bigNumberToFormattedString(
+                                                  nominator.operator?.minimumNominatorStake,
+                                                )}`,
                                               },
                                             } as ActionsDropdownRow
                                           }
