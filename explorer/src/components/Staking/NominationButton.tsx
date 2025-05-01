@@ -12,6 +12,7 @@ export type NominationButtonRow = {
     nominationTax?: string
     currentTotalStake?: string
     apy30d?: string
+    isRedirecting?: boolean
   }
 }
 
@@ -31,6 +32,7 @@ export const NominationButton: FC<NominationButtonProps> = ({ handleAction, row 
         accountId: row.original.accountId,
         currentTotalStake: row.original.currentTotalStake,
         apy30d: row.original.apy30d,
+        isRedirecting: row.original.isRedirecting,
       }),
     [
       handleAction,
@@ -40,6 +42,7 @@ export const NominationButton: FC<NominationButtonProps> = ({ handleAction, row 
       row.original.currentTotalStake,
       row.original.apy30d,
       row.original.nominationTax,
+      row.original.isRedirecting,
     ],
   )
 
