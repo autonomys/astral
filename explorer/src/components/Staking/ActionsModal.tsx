@@ -10,6 +10,7 @@ import {
   WithdrawStakeParams,
 } from '@autonomys/auto-consensus'
 import { BIGINT_ZERO, shortString } from '@autonomys/auto-utils'
+import { InformationCircleIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { WalletType } from 'constants/wallet'
@@ -20,9 +21,6 @@ import { usePathname } from 'next/navigation'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { FaRegClock } from 'react-icons/fa'
-import { GoCalendar } from 'react-icons/go'
-import { LuCircleMinus } from 'react-icons/lu'
 import { logTx } from 'utils/log'
 import {
   bigNumberToFormattedString,
@@ -31,6 +29,7 @@ import {
 } from 'utils/number'
 import * as Yup from 'yup'
 import { AccountIcon } from '../common/AccountIcon'
+import { Tooltip } from '../common/Tooltip'
 
 export enum OperatorActionType {
   None = 'none',
@@ -369,7 +368,9 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
             <div className='grid grid-cols-3 gap-2'>
               <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
                 <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
-                  <GoCalendar className='mr-1 h-4 w-4' />
+                  <Tooltip text='The tax percentage for the operator' direction='top'>
+                    <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                  </Tooltip>
                   Tax
                 </div>
                 <div className='font-bold text-blueAccent dark:text-white'>
@@ -378,7 +379,9 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
               </div>
               <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
                 <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
-                  <FaRegClock className='mr-1 h-4 w-4' />
+                  <Tooltip text='The total stake of the operator' direction='top'>
+                    <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                  </Tooltip>
                   Total stake
                 </div>
                 <div className='font-bold text-blueAccent dark:text-white'>
@@ -387,7 +390,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
               </div>
               <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
                 <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
-                  <LuCircleMinus className='mr-1 h-4 w-4' />
+                  <Tooltip
+                    text='The minimum stake required to nominate an operator'
+                    direction='top'
+                  >
+                    <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                  </Tooltip>
                   Minimum stake
                 </div>
                 <div className='font-bold text-blueAccent dark:text-white'>
@@ -716,7 +724,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         showCloseButton={false}
         onClose={handleClose}
         isOpen={isOpen}
-        size='md'
+        size='lg'
       >
         {ActionBody}
       </Modal>
