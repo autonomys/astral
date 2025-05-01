@@ -178,6 +178,7 @@ services:
 
   # NEW Indexer Engines
   consensus:
+    profiles: [indexers]
     build:
       context: ./indexers/consensus
       dockerfile: Dockerfile

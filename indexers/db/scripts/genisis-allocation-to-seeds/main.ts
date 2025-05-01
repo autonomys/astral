@@ -1,5 +1,4 @@
-import { NAMESPACE_DNS, v1, v5 } from "jsr:@std/uuid";
-import { decode, Keyring } from "npm:@autonomys/auto-utils";
+import { Keyring } from "npm:@autonomys/auto-utils";
 
 // Load the JSON data
 const response = await fetch(
@@ -17,6 +16,13 @@ const accountHistoriesFile = await Deno.open("seeds/account_histories.sql", {
   truncate: true,
 });
 
+// Open a file to write the SQL output
+const accountsFile = await Deno.open("seeds/accounts.sql", {
+  write: true,
+  create: true,
+  truncate: true,
+});
+
 // Iterate over each entry in the JSON data and generate the insert sql
 for (const entry of data) {
   const keyring = new Keyring({ type: "sr25519", ss58Format: 42 });
@@ -27,16 +33,20 @@ for (const entry of data) {
   const reservedBalance = "0";
   const totalBalance = freeBalance;
   const createdAt = 0;
-  const uniqueNamespace = await v1.generate();
-  const _id = await v5.generate(uniqueNamespace, accountId);
-  const _blockRange = "[0,)";
 
   await accountHistoriesFile.write(
     new TextEncoder().encode(
-      `INSERT INTO consensus.account_histories (id, nonce, free, reserved, total, created_at, _id, _block_range) VALUES ('${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, '${_id}', '${_blockRange}');\n`
+      `INSERT INTO consensus.account_histories (id, account_id, nonce, free, reserved, total, block_id, block_height, block_hash) VALUES ('${accountId}-0x', '${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, '0x', ${createdAt}, '0x');\n`
+    )
+  );
+
+  await accountsFile.write(
+    new TextEncoder().encode(
+      `INSERT INTO consensus.accounts (id, nonce, free, reserved, total, created_at, updated_at) VALUES ('${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, ${createdAt});\n`
     )
   );
 }
 
 // Close the file
 accountHistoriesFile.close();
+accountsFile.close();
