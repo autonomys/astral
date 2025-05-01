@@ -164,41 +164,12 @@ query StakingSummary($first: Int!, $subspaceAccount: String) {
       current_share_price
     }
     deposits {
-      id
-      amount
-      storage_fee_deposit
-      total_amount
       estimated_shares
-      timestamp
-      extrinsic_id
-      status
-      created_at
-      updated_at
     }
     withdrawals {
-      id
-      shares
-      storage_fee_refund
-      estimated_amount
       unlocked_amount
       unlocked_storage_fee
       total_amount
-      timestamp
-      withdraw_extrinsic_id
-      unlock_extrinsic_id
-      status
-      created_at
-      domain_block_number_ready_at
-      unlocked_at
-      updated_at
-    }
-    unlocked_events {
-      id
-      amount
-      storage_fee
-      # timestamp
-      block_height
-      extrinsic_id
     }
   }
   staking_nominators_aggregate(
