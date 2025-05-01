@@ -9,10 +9,10 @@ export type ActionsDropdownRow = {
   original: {
     id: string
     current_total_shares: bigint
-    accountId: string
-    nominationTax: string
-    currentTotalStake: string
-    apy30d: string
+    accountId?: string
+    nominationTax?: string
+    currentTotalStake?: string
+    apy30d?: string
   }
 }
 

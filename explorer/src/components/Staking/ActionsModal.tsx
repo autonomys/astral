@@ -51,10 +51,10 @@ export type OperatorAction = {
   type: OperatorActionType
   operatorId: number | null
   minimumStake?: bigint
-  accountId: string
-  nominationTax: string
-  currentTotalStake: string
-  apy30d: string
+  accountId?: string
+  nominationTax?: string
+  currentTotalStake?: string
+  apy30d?: string
 }
 
 type Props = {
@@ -354,7 +354,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     Operator #{action.operatorId}
                   </span>
                   <p className='text-xs text-blueAccent/70 dark:text-white/70'>
-                    {shortString(action.accountId)}
+                    {action.accountId ? shortString(action.accountId) : ''}
                   </p>
                 </div>
               </div>
@@ -673,6 +673,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     }
   }, [
     action.type,
+    action.apy30d,
+    action.currentTotalStake,
+    action.minimumStake,
+    action.nominationTax,
+    action.accountId,
+    action.operatorId,
     initialValues,
     nominationInitialValue,
     addFundsFormValidationSchema,
