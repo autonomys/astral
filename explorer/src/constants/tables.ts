@@ -352,13 +352,13 @@ export const FILTERS_OPTIONS: FiltersOptions = {
     { type: 'range', label: 'Bundle Count', key: 'bundleCount' },
   ],
   operators: [
-    { type: 'range', label: 'Total Stake', key: 'totalStake' },
-    { type: 'range', label: 'Nomination Tax', key: 'nominationTax' },
     {
       type: 'range',
       label: 'Min. Stake',
       key: 'minimumNominatorStake',
     },
+    { type: 'range', label: 'Nomination Tax', key: 'nominationTax' },
+    { type: 'range', label: 'Total Stake', key: 'totalStake' },
     { type: 'range', label: 'Total Rewards Collected', key: 'totalRewardsCollected' },
     { type: 'range', label: 'Nominator Count', key: 'nominatorsCount' },
     { type: 'range', label: 'Deposit Count', key: 'depositsCount' },

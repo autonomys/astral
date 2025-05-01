@@ -1,16 +1,11 @@
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
+import { usePreferencesStates } from 'states/preferences'
 
 export const CookieBanner = () => {
-  const [isVisible, setIsVisible] = useSafeLocalStorage('cookie-banner', true)
+  const isVisible = usePreferencesStates((state) => state.cookieBanner)
+  const hideCookieBanner = usePreferencesStates((state) => state.hideCookieBanner)
 
-  if (!isVisible) {
-    return <></>
-  }
-
-  const handleAcceptance = () => {
-    setIsVisible(false)
-  }
+  if (!isVisible) return <></>
 
   return (
     <div className='flex w-full items-end bg-gray-600/40 p-5 px-5 backdrop-blur-lg lg:px-12'>
@@ -31,7 +26,7 @@ export const CookieBanner = () => {
         </p>
         <button
           className='min-w-32 rounded-[20px] bg-white px-2 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-blueAccent dark:text-white'
-          onClick={handleAcceptance}
+          onClick={hideCookieBanner}
         >
           Accept Cookies
         </button>

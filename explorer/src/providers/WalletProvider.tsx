@@ -6,10 +6,10 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@talismn/connect-wallets'
 import { WalletType } from 'constants/wallet'
-import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
 import { getCsrfToken, getSession, signIn, signOut, useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import { createContext, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { usePreferencesStates } from 'states/preferences'
 import type { ChainParam } from 'types/app'
 import type { WalletAccountWithType } from 'types/wallet'
 import { formatAddress } from 'utils/formatAddress'
@@ -30,8 +30,8 @@ export type WalletContextValue = {
   extensions: InjectedExtension[] | undefined
   disconnectWallet: () => void
   setActingAccount: (account: WalletAccountWithType) => void
-  setPreferredExtension: (extension: string) => void
-  preferredExtension: string | undefined
+  setPreferredExtension: (extension: string | null) => void
+  preferredExtension: string | null
   subspaceAccount: string | undefined
   sessionSubspaceAccount: string | undefined
   handleSelectFirstWalletFromExtension: (source: string) => Promise<void>
@@ -58,10 +58,16 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const [injector, setInjector] = useState<InjectedExtension | null>(null)
   const [actingAccount, setActingAccount] = useState<WalletAccountWithType | undefined>(undefined)
   const [subspaceAccount, setSubspaceAccount] = useState<string | undefined>(undefined)
-  const [preferredAccount, setPreferredAccount] = useSafeLocalStorage('localAccount', null)
-  const [preferredExtension, setPreferredExtension] = useSafeLocalStorage('extensionSource', null)
-  const { data: session } = useSession()
 
+  const preferredExtension = usePreferencesStates((state) => state.extension)
+  const preferredAccount = usePreferencesStates((state) => state.account)
+  const proofOfOwnership = usePreferencesStates((state) => state.proofOfOwnership)
+  const setPreferredExtension = usePreferencesStates((state) => state.setExtension)
+  const setPreferredAccount = usePreferencesStates((state) => state.setAccount)
+  const setProofOfOwnership = usePreferencesStates((state) => state.setProofOfOwnership)
+  const clearPreferences = usePreferencesStates((state) => state.clearWalletPreferences)
+
+  const { data: session } = useSession()
   const sessionSubspaceAccount = useMemo(() => session?.user?.subspace?.account, [session])
 
   const prepareApi = useCallback(async () => {
@@ -78,11 +84,12 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       if (!network || !network.domains || network.domains.length === 0) return
       const domains = network.domains
 
-      const domainApis = await Promise.all(
+      const unInitializedDomainApis = await Promise.all(
         domains.map((d) =>
           createConnection(d.rpcUrls.map((rpc) => rpc.replace('https://', 'wss://'))),
         ),
       )
+      const domainApis = await Promise.all(unInitializedDomainApis.map((d) => d.isReady))
 
       return domains.reduce(
         (acc, d, index) => ({
@@ -129,26 +136,41 @@ export const WalletProvider: FC<Props> = ({ children }) => {
             !currentSession?.user?.subspace ||
             currentSession.user.subspace.account !== _subspaceAccount
           ) {
-            const csrfToken = await getCsrfToken()
-            const message = JSON.stringify({ accountId: _subspaceAccount, csrfToken })
-            const signature =
-              newInjector.signer.signRaw &&
-              (await newInjector.signer.signRaw({
+            if (proofOfOwnership && proofOfOwnership.address === account.address)
+              await signIn('subspace', {
+                redirect: false,
+                account: _subspaceAccount,
+                message: proofOfOwnership.message,
+                signature: proofOfOwnership.signature,
+              })
+            else {
+              const csrfToken = await getCsrfToken()
+              const message = JSON.stringify({ accountId: _subspaceAccount, csrfToken })
+              const signature =
+                newInjector.signer.signRaw &&
+                (await newInjector.signer.signRaw({
+                  address: account.address,
+                  type: 'bytes',
+                  data: message,
+                }))
+
+              if (!signature) throw new Error('No signature')
+
+              setProofOfOwnership({
                 address: account.address,
-                type: 'bytes',
-                data: message,
-              }))
+                message,
+                signature: signature.signature,
+              })
 
-            if (!signature) throw new Error('No signature')
-
-            await signIn('subspace', {
-              redirect: false,
-              account: _subspaceAccount,
-              message,
-              signature: signature.signature,
-              walletSource: account.source,
-              walletType: account.type,
-            })
+              await signIn('subspace', {
+                redirect: false,
+                account: _subspaceAccount,
+                message,
+                signature: signature.signature,
+                walletSource: account.source,
+                walletType: account.type,
+              })
+            }
           }
         }
 
@@ -170,7 +192,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         console.error('Failed to change account', error)
       }
     },
-    [setPreferredAccount, setup],
+    [proofOfOwnership, setPreferredAccount, setProofOfOwnership, setup],
   )
 
   const changeAccount = useCallback(
@@ -183,12 +205,11 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setAccounts([])
     setActingAccount(undefined)
     setSubspaceAccount(undefined)
-    setPreferredAccount(null)
-    setPreferredExtension(null)
+    clearPreferences()
     setIsReady(false)
     await signOutSessionOnAccountChange()
     sendGAEvent('event', 'wallet_disconnect')
-  }, [setPreferredAccount, setPreferredExtension, signOutSessionOnAccountChange])
+  }, [clearPreferences, signOutSessionOnAccountChange])
 
   const handleGetWalletFromExtension = useCallback(
     async (source: string) => {
