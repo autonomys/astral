@@ -123,8 +123,7 @@ const handleRemark: ExtrinsicHandler = ({
             stringifyData,
             nodeData.uploadOptions ? stringify(nodeData.uploadOptions) : "",
             height,
-            hash,
-            extrinsicId
+            hash
           )
         );
 

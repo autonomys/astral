@@ -412,8 +412,7 @@ export function createCid(
   timestamp: Date
 ): CachedCid {
   return {
-    id: cid + "-" + blockHash + "-" + extrinsicId,
-    cid,
+    id: cid,
     blockId: getBlockId(blockHeight, blockHash),
     blockHeight,
     blockHash,
@@ -436,12 +435,10 @@ export function createChunk(
   data: string,
   uploadOptions: string,
   blockHeight: bigint,
-  blockHash: string,
-  extrinsicId: string
+  blockHash: string
 ): CachedChunk {
   return {
-    id: cid + "-" + blockHash + "-" + extrinsicId,
-    cid,
+    id: cid,
     blockId: getBlockId(blockHeight, blockHash),
     blockHeight,
     blockHash,
@@ -454,14 +451,8 @@ export function createChunk(
   };
 }
 
-const prepareRelation = (
-  cid: string,
-  link: string,
-  blockId: string,
-  blockHash: string,
-  extrinsicId: string
-) => ({
-  id: cid + ":" + link + "-" + blockHash + "-" + extrinsicId,
+const prepareRelation = (cid: string, link: string, blockId: string) => ({
+  id: cid + ":" + link,
   blockId,
   parentCid: cid,
   childCid: link,
@@ -478,9 +469,8 @@ export function createMetadata(
 ): { metadata: CachedMetadata; relations: CachedMetadataCid[] } {
   const blockId = getBlockId(blockHeight, blockHash);
   const metadata = {
-    id: cid + "-" + blockHash + "-" + extrinsicId,
+    id: cid,
     sortId: getSortId(blockHeight, extrinsicId),
-    cid,
     blockId,
     blockHeight,
     blockHash,
@@ -492,9 +482,7 @@ export function createMetadata(
   if (links.length > 0)
     return {
       metadata,
-      relations: links.map((link) =>
-        prepareRelation(cid, link, blockId, blockHash, extrinsicId)
-      ),
+      relations: links.map((link) => prepareRelation(cid, link, blockId)),
     };
   return { metadata, relations: [] };
 }
@@ -510,9 +498,8 @@ export function createFolder(
 ): { folder: CachedFolder; relations: CachedFolderCid[] } {
   const blockId = getBlockId(blockHeight, blockHash);
   const folder = {
-    id: cid + "-" + blockHash + "-" + extrinsicId,
+    id: cid,
     sortId: getSortId(blockHeight, extrinsicId),
-    cid,
     blockId,
     blockHeight,
     blockHash,
@@ -524,9 +511,7 @@ export function createFolder(
   if (links.length > 0)
     return {
       folder,
-      relations: links.map((link) =>
-        prepareRelation(cid, link, blockId, blockHash, extrinsicId)
-      ),
+      relations: links.map((link) => prepareRelation(cid, link, blockId)),
     };
   return { folder, relations: [] };
 }
@@ -542,9 +527,8 @@ export function createFile(
 ): { file: CachedFile; relations: CachedFileCid[] } {
   const blockId = getBlockId(blockHeight, blockHash);
   const file = {
-    id: cid + "-" + blockHash + "-" + extrinsicId,
+    id: cid,
     sortId: getSortId(blockHeight, extrinsicId),
-    cid,
     blockId,
     blockHeight,
     blockHash,
@@ -556,9 +540,7 @@ export function createFile(
   if (links.length > 0)
     return {
       file,
-      relations: links.map((link) =>
-        prepareRelation(cid, link, blockId, blockHash, extrinsicId)
-      ),
+      relations: links.map((link) => prepareRelation(cid, link, blockId)),
     };
   return { file, relations: [] };
 }

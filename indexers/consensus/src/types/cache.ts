@@ -142,7 +142,6 @@ export type CachedLeaderboardEntity = {
 
 export type CachedCid = {
   id: string;
-  cid: string;
   blockId: string;
   blockHeight: bigint;
   blockHash: string;
@@ -157,7 +156,6 @@ export type CachedCid = {
 
 export type CachedChunk = {
   id: string;
-  cid: string;
   blockId: string;
   blockHeight: bigint;
   blockHash: string;
@@ -172,7 +170,6 @@ export type CachedChunk = {
 export type CachedFolder = {
   id: string;
   sortId: string;
-  cid: string;
   blockId: string;
   blockHeight: bigint;
   blockHash: string;
@@ -192,7 +189,6 @@ export type CachedFolderCid = {
 export type CachedFile = {
   id: string;
   sortId: string;
-  cid: string;
   blockId: string;
   blockHeight: bigint;
   blockHash: string;
@@ -212,7 +208,6 @@ export type CachedFileCid = {
 export type CachedMetadata = {
   id: string;
   sortId: string;
-  cid: string;
   blockId: string;
   blockHeight: bigint;
   blockHash: string;

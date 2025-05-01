@@ -18,7 +18,6 @@ export const insertCids = async (cids: CachedCid[], sqlClient?: typeof sql) => {
 
   const values = cids.map((cid) => [
     cid.id,
-    cid.cid,
     cid.blockId,
     cid.blockHeight.toString(),
     cid.blockHash,
@@ -32,7 +31,6 @@ export const insertCids = async (cids: CachedCid[], sqlClient?: typeof sql) => {
   ]);
   const columns = [
     "id",
-    "cid",
     "block_id",
     "block_height",
     "block_hash",
@@ -44,7 +42,13 @@ export const insertCids = async (cids: CachedCid[], sqlClient?: typeof sql) => {
     "is_archived",
     "timestamp",
   ];
-  return await insert("files.cids", columns, values, sqlClient);
+  return await insert(
+    "files.cids",
+    columns,
+    values,
+    sqlClient,
+    "(id) DO NOTHING"
+  );
 };
 
 export const insertChunks = async (
@@ -55,7 +59,6 @@ export const insertChunks = async (
 
   const values = chunks.map((chunk) => [
     chunk.id,
-    chunk.cid,
     chunk.blockId,
     chunk.blockHeight.toString(),
     chunk.blockHash,
@@ -68,7 +71,6 @@ export const insertChunks = async (
   ]);
   const columns = [
     "id",
-    "chunk_cid",
     "block_id",
     "block_height",
     "block_hash",
@@ -79,7 +81,13 @@ export const insertChunks = async (
     "data",
     "upload_options",
   ];
-  return await insert("files.chunks", columns, values, sqlClient);
+  return await insert(
+    "files.chunks",
+    columns,
+    values,
+    sqlClient,
+    "(id) DO NOTHING"
+  );
 };
 
 export const insertFileCids = async (
@@ -95,7 +103,13 @@ export const insertFileCids = async (
     fileCid.childCid,
   ]);
   const columns = ["id", "block_id", "parent_cid", "child_cid"];
-  return await insert("files.file_cids", columns, values, sqlClient);
+  return await insert(
+    "files.file_cids",
+    columns,
+    values,
+    sqlClient,
+    "(id) DO NOTHING"
+  );
 };
 
 export const insertFiles = async (
@@ -107,7 +121,6 @@ export const insertFiles = async (
   const values = files.map((file) => [
     file.id,
     file.sortId,
-    file.cid,
     file.blockId,
     file.blockHeight.toString(),
     file.blockHash,
@@ -119,7 +132,6 @@ export const insertFiles = async (
   const columns = [
     "id",
     "sort_id",
-    "file_cid",
     "block_id",
     "block_height",
     "block_hash",
@@ -128,7 +140,13 @@ export const insertFiles = async (
     "name",
     "timestamp",
   ];
-  return await insert("files.files", columns, values, sqlClient);
+  return await insert(
+    "files.files",
+    columns,
+    values,
+    sqlClient,
+    "(id) DO NOTHING"
+  );
 };
 
 export const insertFolderCids = async (
@@ -144,7 +162,13 @@ export const insertFolderCids = async (
     folderCid.childCid,
   ]);
   const columns = ["id", "block_id", "parent_cid", "child_cid"];
-  return await insert("files.folder_cids", columns, values, sqlClient);
+  return await insert(
+    "files.folder_cids",
+    columns,
+    values,
+    sqlClient,
+    "(id) DO NOTHING"
+  );
 };
 
 export const insertFolders = async (
@@ -156,7 +180,6 @@ export const insertFolders = async (
   const values = folders.map((folder) => [
     folder.id,
     folder.sortId,
-    folder.cid,
     folder.blockId,
     folder.blockHeight.toString(),
     folder.blockHash,
@@ -168,7 +191,6 @@ export const insertFolders = async (
   const columns = [
     "id",
     "sort_id",
-    "folder_cid",
     "block_id",
     "block_height",
     "block_hash",
@@ -177,7 +199,13 @@ export const insertFolders = async (
     "name",
     "timestamp",
   ];
-  return await insert("files.folders", columns, values, sqlClient);
+  return await insert(
+    "files.folders",
+    columns,
+    values,
+    sqlClient,
+    "(id) DO NOTHING"
+  );
 };
 
 export const insertMetadataCids = async (
@@ -193,7 +221,13 @@ export const insertMetadataCids = async (
     metadataCid.childCid,
   ]);
   const columns = ["id", "block_id", "parent_cid", "child_cid"];
-  return await insert("files.metadata_cids", columns, values, sqlClient);
+  return await insert(
+    "files.metadata_cids",
+    columns,
+    values,
+    sqlClient,
+    "(id) DO NOTHING"
+  );
 };
 
 export const insertMetadata = async (
@@ -205,7 +239,6 @@ export const insertMetadata = async (
   const values = metadata.map((metadata) => [
     metadata.id,
     metadata.sortId,
-    metadata.cid,
     metadata.blockId,
     metadata.blockHeight.toString(),
     metadata.blockHash,
@@ -217,7 +250,6 @@ export const insertMetadata = async (
   const columns = [
     "id",
     "sort_id",
-    "metadata_cid",
     "block_id",
     "block_height",
     "block_hash",
@@ -226,7 +258,13 @@ export const insertMetadata = async (
     "name",
     "timestamp",
   ];
-  return await insert("files.metadata", columns, values, sqlClient);
+  return await insert(
+    "files.metadata",
+    columns,
+    values,
+    sqlClient,
+    "(id) DO NOTHING"
+  );
 };
 
 export const insertErrors = async (
