@@ -3,7 +3,7 @@ export const PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50]
 
 export const STAKE_WARS_PAGE_SIZE = 150
 
-export const MAX_DOWNLOADER_BATCH_SIZE = 100
+export const MAX_DOWNLOADER_BATCH_SIZE = 50
 
 export const STAKE_WARS_PHASES = {
   phase2: {
