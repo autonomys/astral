@@ -20,7 +20,6 @@ select_permissions:
         - size
         - block_hash
         - block_id
-        - chunk_cid
         - data
         - id
         - name

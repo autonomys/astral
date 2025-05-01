@@ -40,7 +40,6 @@ select_permissions:
         - blake3_hash
         - block_hash
         - block_id
-        - cid
         - extrinsic_hash
         - extrinsic_id
         - id

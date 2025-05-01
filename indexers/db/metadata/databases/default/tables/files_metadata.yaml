@@ -40,7 +40,6 @@ select_permissions:
         - block_id
         - extrinsic_id
         - id
-        - metadata_cid
         - name
         - sort_id
         - timestamp

@@ -39,7 +39,6 @@ select_permissions:
         - block_hash
         - block_id
         - extrinsic_id
-        - folder_cid
         - id
         - name
         - sort_id
