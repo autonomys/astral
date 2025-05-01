@@ -39,19 +39,7 @@ services:
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  consensus_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  leaderboard_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  staking_subquery_node:
+  consensus:
     logging:
       driver: loki
       options:
