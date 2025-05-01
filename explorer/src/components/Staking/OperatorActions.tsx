@@ -10,7 +10,7 @@ export type OperatorActionsRow = {
   original: {
     id: string
     current_total_shares: bigint
-    minimumNominatorStake?: bigint
+    minimumNominatorStake?: string
     accountId?: string
     nominationTax?: string
     currentTotalStake?: string

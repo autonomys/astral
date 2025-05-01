@@ -305,7 +305,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
                 ...row.original,
                 // eslint-disable-next-line camelcase
                 current_total_shares: row.original.currentTotalShares,
-                minimumNominatorStake: row.original.minimumNominatorStake,
+                minimumNominatorStake: bigNumberToFormattedString(
+                  row.original.minimumNominatorStake,
+                ),
                 id: row.original.id,
                 apy30d: `${numberFormattedString(row.original.apy30d * 100)}`,
                 currentTotalStake: `${bigNumberToFormattedString(row.original.currentTotalStake)}`,

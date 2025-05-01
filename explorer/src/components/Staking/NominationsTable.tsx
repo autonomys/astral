@@ -498,6 +498,12 @@ export const NominationsTable: FC = () => {
                                                   nominator.operator?.apy30d * 100,
                                                 )}`,
                                                 accountId: nominator.operator?.account_id,
+                                                nominationTax: `${
+                                                  nominator.operator?.nominationTax
+                                                }`,
+                                                minimumNominatorStake: `${bigNumberToFormattedString(
+                                                  nominator.operator?.minimumNominatorStake,
+                                                )}`,
                                               },
                                             } as ActionsDropdownRow
                                           }

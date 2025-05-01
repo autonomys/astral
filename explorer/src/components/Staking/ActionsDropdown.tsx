@@ -13,6 +13,7 @@ export type ActionsDropdownRow = {
     nominationTax?: string
     currentTotalStake?: string
     apy30d?: string
+    minimumNominatorStake?: string
   }
 }
 
@@ -54,6 +55,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
           nominationTax: row.original.nominationTax,
           currentTotalStake: row.original.currentTotalStake,
           apy30d: row.original.apy30d,
+          minimumNominatorStake: row.original.minimumNominatorStake,
         })
       }
     >

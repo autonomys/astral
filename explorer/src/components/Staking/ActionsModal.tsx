@@ -9,7 +9,7 @@ import {
   withdrawStake,
   WithdrawStakeParams,
 } from '@autonomys/auto-consensus'
-import { BIGINT_ZERO, shortString } from '@autonomys/auto-utils'
+import { shortString } from '@autonomys/auto-utils'
 import { InformationCircleIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
@@ -22,11 +22,7 @@ import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { logTx } from 'utils/log'
-import {
-  bigNumberToFormattedString,
-  floatToStringWithDecimals,
-  formatUnitsToNumber,
-} from 'utils/number'
+import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import * as Yup from 'yup'
 import { AccountIcon } from '../common/AccountIcon'
 import { Tooltip } from '../common/Tooltip'
@@ -49,7 +45,7 @@ export const ActionsInRed = [
 export type OperatorAction = {
   type: OperatorActionType
   operatorId: number | null
-  minimumStake?: bigint
+  minimumNominatorStake?: string
   accountId?: string
   nominationTax?: string
   currentTotalStake?: string
@@ -87,9 +83,9 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
   const nominationInitialValue = useMemo(
     () => ({
-      amount: action.minimumStake ? parseFloat(bigNumberToFormattedString(action.minimumStake)) : 0,
+      amount: action.minimumNominatorStake ? parseFloat(action.minimumNominatorStake) : 0,
     }),
-    [action.minimumStake],
+    [action.minimumNominatorStake],
   )
   const maxAmountToAdd = useMemo(
     () =>
@@ -100,8 +96,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   )
 
   const minimumStake = useMemo(() => {
-    return action.minimumStake ? parseFloat(bigNumberToFormattedString(action.minimumStake)) : 0
-  }, [action.minimumStake])
+    return action.minimumNominatorStake ? parseFloat(action.minimumNominatorStake) : 0
+  }, [action.minimumNominatorStake])
 
   const maximumStake = useMemo(() => {
     if (maxAmountToAdd > minimumStake) {
@@ -393,7 +389,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   </div>
                 </div>
               )}
-              {action.minimumStake && (
+              {action.minimumNominatorStake && (
                 <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
                   <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
                     <Tooltip
@@ -405,9 +401,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     Minimum stake
                   </div>
                   <div className='font-bold text-blueAccent dark:text-white'>
-                    {parseFloat(bigNumberToFormattedString(action.minimumStake ?? BIGINT_ZERO)) ||
-                      0}{' '}
-                    tAI3
+                    {parseFloat(action.minimumNominatorStake) || 0} tAI3
                   </div>
                 </div>
               )}
@@ -691,7 +685,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     action.type,
     action.apy30d,
     action.currentTotalStake,
-    action.minimumStake,
+    action.minimumNominatorStake,
     action.nominationTax,
     action.accountId,
     action.operatorId,

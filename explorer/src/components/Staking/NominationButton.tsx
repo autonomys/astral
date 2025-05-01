@@ -1,6 +1,5 @@
 'use client'
 
-import { BIGINT_ZERO } from '@/constants/general'
 import { FC, useCallback } from 'react'
 import { OperatorAction, OperatorActionType } from './ActionsModal'
 
@@ -8,7 +7,7 @@ export type NominationButtonRow = {
   original: {
     id: string
     current_total_shares: bigint
-    minimumNominatorStake?: bigint
+    minimumNominatorStake?: string
     accountId?: string
     nominationTax?: string
     currentTotalStake?: string
@@ -27,7 +26,7 @@ export const NominationButton: FC<NominationButtonProps> = ({ handleAction, row 
       handleAction({
         type: 'Nominating' as OperatorActionType,
         operatorId: parseInt(row.original.id),
-        minimumStake: row.original.minimumNominatorStake ?? BIGINT_ZERO,
+        minimumNominatorStake: row.original.minimumNominatorStake,
         nominationTax: row.original.nominationTax,
         accountId: row.original.accountId,
         currentTotalStake: row.original.currentTotalStake,
