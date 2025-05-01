@@ -491,6 +491,13 @@ export const NominationsTable: FC = () => {
                                                 current_total_shares: nominator.operator
                                                   ? nominator.operator.current_total_shares
                                                   : BIGINT_ZERO,
+                                                currentTotalStake: `${bigNumberToFormattedString(
+                                                  nominator.operator?.current_total_stake,
+                                                )}`,
+                                                apy30d: `${numberFormattedString(
+                                                  nominator.operator?.apy30d * 100,
+                                                )}`,
+                                                accountId: nominator.operator?.account_id,
                                               },
                                             } as ActionsDropdownRow
                                           }

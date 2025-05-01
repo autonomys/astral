@@ -121,6 +121,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         `Amount need to be greater than or equal to ${minimumStake} ${tokenSymbol}`,
       )
       .max(maximumStake, `Amount need to be less than or equal to ${maximumStake} ${tokenSymbol}`)
+      .positive()
       .required('Amount to stake is required'),
   })
 
@@ -366,43 +367,50 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
             </div>
             <hr className='my-2' />
             <div className='grid grid-cols-3 gap-2'>
-              <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
-                <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
-                  <Tooltip text='The tax percentage for the operator' direction='top'>
-                    <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
-                  </Tooltip>
-                  Tax
+              {action.nominationTax && (
+                <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                  <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                    <Tooltip text='The tax percentage for the operator' direction='top'>
+                      <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                    </Tooltip>
+                    Tax
+                  </div>
+                  <div className='font-bold text-blueAccent dark:text-white'>
+                    {action.nominationTax}%
+                  </div>
                 </div>
-                <div className='font-bold text-blueAccent dark:text-white'>
-                  {action.nominationTax}%
+              )}
+              {action.currentTotalStake && (
+                <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                  <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                    <Tooltip text='The total stake of the operator' direction='top'>
+                      <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                    </Tooltip>
+                    Total stake
+                  </div>
+                  <div className='font-bold text-blueAccent dark:text-white'>
+                    {action.currentTotalStake} tAI3
+                  </div>
                 </div>
-              </div>
-              <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
-                <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
-                  <Tooltip text='The total stake of the operator' direction='top'>
-                    <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
-                  </Tooltip>
-                  Total stake
+              )}
+              {action.minimumStake && (
+                <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                  <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                    <Tooltip
+                      text='The minimum stake required to nominate an operator'
+                      direction='top'
+                    >
+                      <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                    </Tooltip>
+                    Minimum stake
+                  </div>
+                  <div className='font-bold text-blueAccent dark:text-white'>
+                    {parseFloat(bigNumberToFormattedString(action.minimumStake ?? BIGINT_ZERO)) ||
+                      0}{' '}
+                    tAI3
+                  </div>
                 </div>
-                <div className='font-bold text-blueAccent dark:text-white'>
-                  {action.currentTotalStake} tAI3
-                </div>
-              </div>
-              <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
-                <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
-                  <Tooltip
-                    text='The minimum stake required to nominate an operator'
-                    direction='top'
-                  >
-                    <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
-                  </Tooltip>
-                  Minimum stake
-                </div>
-                <div className='font-bold text-blueAccent dark:text-white'>
-                  {parseFloat(bigNumberToFormattedString(action.minimumStake ?? BIGINT_ZERO)) || 0}{' '}
-                  tAI3
-                </div>
-              </div>
+              )}
             </div>
             <Formik
               initialValues={nominationInitialValue}
