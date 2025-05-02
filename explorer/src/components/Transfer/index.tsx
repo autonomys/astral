@@ -3,7 +3,7 @@
 import { transfer } from '@autonomys/auto-consensus'
 import { DomainRuntime, isAddress, type Hash } from '@autonomys/auto-utils'
 import {
-  transferToConsensus,
+  // transferToConsensus,
   transferToDomainAccount20Type,
   transferToDomainAccount32Type,
 } from '@autonomys/auto-xdm'
@@ -199,49 +199,53 @@ export const Transfer: FC = () => {
           break
         }
         case values.from.startsWith('domain') && values.to === 'consensus': {
-          if (
-            !actingAccount ||
-            !actingAccount.address.startsWith('0x') ||
-            !isEvmAddress(actingAccount.address)
-          ) {
-            toast.error('Sender must be a valid EVM address', { position: 'bottom-center' })
-            break
-          }
-          if (!values.receiver || values.receiver.startsWith('0x') || !isAddress(values.receiver)) {
-            toast.error('Receiver must be a valid Consensus address', { position: 'bottom-center' })
-            break
-          }
-          const sourceDomainId = values.from.replace('domainId', '')
-          const domainApi = domainsApis[sourceDomainId]
-          if (!domainApi) {
-            toast.error('Domain API not found', { position: 'bottom-center' })
-            break
-          }
-          try {
-            const tx = await transferToConsensus(domainApi.api, values.receiver, amount)
-            const hash = await sendAndSaveTx({
-              call: 'transporter.transfer',
-              tx,
-              signer: injector.signer,
-              to: values.receiver,
-              amount,
-              api: domainApi.api,
-            })
-            if (hash) {
-              setHash(hash)
-              toast.success('The transaction was sent successfully', { position: 'bottom-center' })
-              sendGAEvent({
-                event: 'walletSideKick_action_sendToken',
-                value: `extrinsic:${hash.toString()}`,
-              })
-            }
-          } catch (error) {
-            handleTxError(
-              'There was an error while sending the transaction',
-              'transporter.transfer',
-            )
-          }
-          break
+          // TODO: remove this once the domain-to-consensus transfer is implemented
+          return toast.error('Domain-to-Consensus transfer is disabled at the moment', {
+            position: 'bottom-center',
+          })
+          // if (
+          //   !actingAccount ||
+          //   !actingAccount.address.startsWith('0x') ||
+          //   !isEvmAddress(actingAccount.address)
+          // ) {
+          //   toast.error('Sender must be a valid EVM address', { position: 'bottom-center' })
+          //   break
+          // }
+          // if (!values.receiver || values.receiver.startsWith('0x') || !isAddress(values.receiver)) {
+          //   toast.error('Receiver must be a valid Consensus address', { position: 'bottom-center' })
+          //   break
+          // }
+          // const sourceDomainId = values.from.replace('domainId', '')
+          // const domainApi = domainsApis[sourceDomainId]
+          // if (!domainApi) {
+          //   toast.error('Domain API not found', { position: 'bottom-center' })
+          //   break
+          // }
+          // try {
+          //   const tx = await transferToConsensus(domainApi.api, values.receiver, amount)
+          //   const hash = await sendAndSaveTx({
+          //     call: 'transporter.transfer',
+          //     tx,
+          //     signer: injector.signer,
+          //     to: values.receiver,
+          //     amount,
+          //     api: domainApi.api,
+          //   })
+          //   if (hash) {
+          //     setHash(hash)
+          //     toast.success('The transaction was sent successfully', { position: 'bottom-center' })
+          //     sendGAEvent({
+          //       event: 'walletSideKick_action_sendToken',
+          //       value: `extrinsic:${hash.toString()}`,
+          //     })
+          //   }
+          // } catch (error) {
+          //   handleTxError(
+          //     'There was an error while sending the transaction',
+          //     'transporter.transfer',
+          //   )
+          // }
+          // break
         }
         default:
           toast.error('Invalid transfer', { position: 'bottom-center' })
@@ -312,6 +316,11 @@ export const Transfer: FC = () => {
     )
   }, [walletBalance, amount])
 
+  const isDomainToConsensus = useMemo(
+    () => (from && from.startsWith('domain') && to === 'consensus') || false,
+    [from, to],
+  )
+
   useEffect(() => {
     loadWalletBalance()
   }, [loadWalletBalance])
@@ -319,6 +328,13 @@ export const Transfer: FC = () => {
   return (
     <div className='w-full max-w-[500px]'>
       <div className='mb-4 w-full rounded-2xl border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
+        {isDomainToConsensus && (
+          <div className='mb-6 flex flex-col items-center justify-center'>
+            <span className='text-red-500'>
+              Domain-to-Consensus transfer is disabled at the moment
+            </span>
+          </div>
+        )}
         {hash ? (
           <div className='mb-6 flex flex-col items-center justify-center'>
             {hash && (
