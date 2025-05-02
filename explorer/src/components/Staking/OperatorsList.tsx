@@ -313,6 +313,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
                 currentTotalStake: `${bigNumberToFormattedString(row.original.currentTotalStake)}`,
                 accountId: row.original.accountId,
                 nominationTax: `${row.original.nominationTax}`,
+                isRedirecting: true,
               },
             } as OperatorActionsRow
             return (
