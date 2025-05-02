@@ -1,6 +1,7 @@
 'use client'
 
 import useMediaQuery from '@/hooks/useMediaQuery'
+import { useTransactionsStates } from '@/states/transactions'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { CheckBadgeIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
@@ -28,6 +29,7 @@ import { PageTabs } from '../common/PageTabs'
 import { Tab } from '../common/Tabs'
 import { Tooltip } from '../common/Tooltip'
 import { WalletButton } from '../WalletButton'
+import { PendingTransactions } from '../WalletSideKick/PendingTransactions'
 import { ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { NominationButton } from './NominationButton'
@@ -46,6 +48,18 @@ export const NominationsTable: FC = () => {
   const { network, tokenSymbol } = useIndexers()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [sorting] = useState<SortingState>([{ id: 'operator_id', desc: false }])
+  const { actingAccount } = useWallet()
+  const { pendingTransactions } = useTransactionsStates()
+
+  const transactions = useMemo(
+    () =>
+      actingAccount
+        ? pendingTransactions
+            .filter((tx) => tx.chain && actingAccount.address === tx.from && network == tx.chain)
+            .sort((a, b) => b.submittedAtBlockNumber - a.submittedAtBlockNumber)
+        : [],
+    [actingAccount, pendingTransactions, network],
+  )
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -364,6 +378,9 @@ export const NominationsTable: FC = () => {
         </div>
       ) : (
         <>
+          {transactions.length > 0 && (
+            <PendingTransactions subspaceAccount={subspaceAccount} defaultOpen={true} />
+          )}
           <div className='flex items-center justify-between'>
             <h2 id='accordion-open-heading-1'>
               <div className='flex w-full items-center justify-between truncate pb-5 text-left font-light text-gray-900 dark:text-white/75'>
@@ -504,6 +521,7 @@ export const NominationsTable: FC = () => {
                                                 minimumNominatorStake: `${bigNumberToFormattedString(
                                                   nominator.operator?.minimumNominatorStake,
                                                 )}`,
+                                                isRedirecting: false,
                                               },
                                             } as ActionsDropdownRow
                                           }
