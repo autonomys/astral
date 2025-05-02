@@ -70,10 +70,11 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
             .filter((n) => n.operator?.account_id === subspaceAccount)
             .reduce((acc, nominator) => {
               const totalShares = nominator.deposits.reduce(
-                (acc, curr) => acc + BigInt(curr.estimated_shares),
+                (acc, curr) => acc + BigInt(curr.estimated_shares || 0),
                 BIGINT_ZERO,
               )
-              const estimatedStake = BigInt(nominator.operator?.current_share_price) * totalShares
+              const estimatedStake =
+                BigInt(nominator.operator?.current_share_price || 0) * totalShares
               return estimatedStake > BIGINT_ZERO
                 ? acc + estimatedStake / SHARES_CALCULATION_MULTIPLIER
                 : acc
@@ -97,10 +98,11 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
             .filter((n) => n.operator?.account_id !== subspaceAccount)
             .reduce((acc, nominator) => {
               const totalShares = nominator.deposits.reduce(
-                (acc, curr) => acc + BigInt(curr.estimated_shares),
+                (acc, curr) => acc + BigInt(curr.estimated_shares || 0),
                 BIGINT_ZERO,
               )
-              const estimatedStake = BigInt(nominator.operator?.current_share_price) * totalShares
+              const estimatedStake =
+                BigInt(nominator.operator?.current_share_price || 0) * totalShares
               return estimatedStake > BIGINT_ZERO
                 ? acc + estimatedStake / SHARES_CALCULATION_MULTIPLIER
                 : acc
