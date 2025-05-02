@@ -14,6 +14,7 @@ export type ActionsDropdownRow = {
     currentTotalStake?: string
     apy30d?: string
     minimumNominatorStake?: string
+    isRedirecting?: boolean
   }
 }
 
@@ -56,6 +57,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
           currentTotalStake: row.original.currentTotalStake,
           apy30d: row.original.apy30d,
           minimumNominatorStake: row.original.minimumNominatorStake,
+          isRedirecting: row.original.isRedirecting,
         })
       }
     >
