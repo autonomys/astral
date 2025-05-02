@@ -34,7 +34,7 @@ interface PreferencesState extends PreferencesDefaultState {
 }
 
 const basicInitialState: BasicPreferencesDefaultState = {
-  darkMode: false,
+  darkMode: true,
   cookieBanner: true,
 }
 
