@@ -15,6 +15,7 @@ export type OperatorActionsRow = {
     nominationTax?: string
     currentTotalStake?: string
     apy30d?: string
+    isRedirecting?: boolean
   }
 }
 
@@ -50,6 +51,7 @@ export const OperatorActions: FC<OperatorActionsProps> = ({
         nominationTax: row.original.nominationTax,
         currentTotalStake: row.original.currentTotalStake,
         apy30d: row.original.apy30d,
+        isRedirecting: row.original.isRedirecting,
       }),
     [
       handleAction,
@@ -58,6 +60,7 @@ export const OperatorActions: FC<OperatorActionsProps> = ({
       row.original.nominationTax,
       row.original.currentTotalStake,
       row.original.apy30d,
+      row.original.isRedirecting,
     ],
   )
 
