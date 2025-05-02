@@ -9,7 +9,6 @@ function usePrefersDarkMode() {
 
   const handleSetDarkMode = useCallback(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    setDarkMode(mediaQuery.matches)
 
     const handler = () => setDarkMode(mediaQuery.matches)
     mediaQuery.addEventListener('change', handler)
@@ -38,19 +37,17 @@ type Props = {
 }
 
 export const ThemeProvider: FC<Props> = ({ children }) => {
-  const prefersDarkMode = usePrefersDarkMode()
+  usePrefersDarkMode()
   const isDark = usePreferencesStates((state) => state.darkMode)
   const setDarkMode = usePreferencesStates((state) => state.setDarkMode)
 
   useEffect(() => {
     if (window === undefined) return
-    const enabled = isDark === undefined ? prefersDarkMode : isDark
 
     const root = window.document.documentElement
-    root.classList.remove(enabled ? 'light' : 'dark')
-    root.classList.add(enabled ? 'dark' : 'light')
-    setDarkMode(enabled)
-  }, [prefersDarkMode, setDarkMode, isDark])
+    root.classList.remove(isDark ? 'light' : 'dark')
+    root.classList.add(isDark ? 'dark' : 'light')
+  }, [isDark])
 
   const toggleTheme = () => setDarkMode(!isDark)
 
