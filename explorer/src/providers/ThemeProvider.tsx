@@ -1,23 +1,19 @@
 'use client'
 
-import React, { FC, ReactNode, createContext, useCallback, useContext, useEffect } from 'react'
+import React, { FC, ReactNode, createContext, useContext, useEffect } from 'react'
 import { usePreferencesStates } from 'states/preferences'
 
 function usePrefersDarkMode() {
   const darkMode = usePreferencesStates((state) => state.darkMode)
   const setDarkMode = usePreferencesStates((state) => state.setDarkMode)
 
-  const handleSetDarkMode = useCallback(() => {
+  useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-
+    setDarkMode(mediaQuery.matches)
     const handler = () => setDarkMode(mediaQuery.matches)
     mediaQuery.addEventListener('change', handler)
     return () => mediaQuery.removeEventListener('change', handler)
   }, [setDarkMode])
-
-  useEffect(() => {
-    handleSetDarkMode()
-  }, [handleSetDarkMode])
 
   return darkMode
 }
