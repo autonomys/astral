@@ -1,4 +1,4 @@
-import { TabTitle } from 'components/common/Tabs'
+import { TabContent, TabTitle } from 'components/common/Tabs'
 import React, { FC, ReactElement, useState } from 'react'
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
 }
 
 export const AccountRewardsTabs: FC<Props> = ({ children, isDesktop = false }) => {
-  const [selectedTab, setSelectedTab] = useState(0)
+  const [selectedTab, setSelectedTab] = useState<number | string>(0)
 
   const tabStyle = isDesktop
     ? 'bg-white border border-slate-100 shadow rounded-[20px] p-4 dark:bg-boxDark dark:border-none'
@@ -46,7 +46,7 @@ export const AccountRewardsTabs: FC<Props> = ({ children, isDesktop = false }) =
           </div>
         </div>
 
-        {children[selectedTab]}
+        <TabContent selectedTab={selectedTab}>{children}</TabContent>
       </div>
     </div>
   )

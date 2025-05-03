@@ -161,6 +161,15 @@ query StakingSummary($first: Int!, $subspaceAccount: String) {
       domain_id
       current_total_stake
       current_total_shares
+      current_share_price
+    }
+    deposits {
+      estimated_shares
+    }
+    withdrawals {
+      unlocked_amount
+      unlocked_storage_fee
+      total_amount
     }
   }
   staking_nominators_aggregate(

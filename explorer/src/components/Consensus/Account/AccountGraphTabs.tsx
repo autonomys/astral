@@ -1,4 +1,4 @@
-import { TabTitle } from 'components/common/Tabs'
+import { TabContent, TabTitle } from 'components/common/Tabs'
 import useIndexers from 'hooks/useIndexers'
 import React, { FC, ReactElement, useState } from 'react'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false }) => {
-  const [selectedTab, setSelectedTab] = useState(0)
+  const [selectedTab, setSelectedTab] = useState<number | string>(0)
   const { tokenSymbol } = useIndexers()
 
   const tabStyle = isDesktop
@@ -57,7 +57,7 @@ export const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false
           </div>
         </div>
 
-        {children[selectedTab]}
+        <TabContent selectedTab={selectedTab}>{children}</TabContent>
       </div>
     </div>
   )
