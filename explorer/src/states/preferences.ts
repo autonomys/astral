@@ -6,7 +6,11 @@ type ProofOfOwnership = {
   message: string
   signature: string
 }
+
+export type ThemeMode = 'system' | 'dark' | 'light'
+
 interface BasicPreferencesDefaultState {
+  themeMode: ThemeMode
   darkMode: boolean
   cookieBanner: boolean
 }
@@ -22,6 +26,7 @@ interface PreferencesDefaultState
     WalletPreferencesDefaultState {}
 
 interface PreferencesState extends PreferencesDefaultState {
+  setThemeMode: (themeMode: ThemeMode) => void
   setDarkMode: (darkMode: boolean) => void
   hideCookieBanner: () => void
   setExtension: (extension: string | null) => void
@@ -34,6 +39,7 @@ interface PreferencesState extends PreferencesDefaultState {
 }
 
 const basicInitialState: BasicPreferencesDefaultState = {
+  themeMode: 'system',
   darkMode: false,
   cookieBanner: true,
 }
@@ -54,6 +60,7 @@ export const usePreferencesStates = create<PreferencesState>()(
   persist(
     (set) => ({
       ...initialState,
+      setThemeMode: (themeMode: ThemeMode) => set({ themeMode }),
       setDarkMode: (darkMode: boolean) => set({ darkMode }),
       hideCookieBanner: () => set({ cookieBanner: false }),
       setExtension: (extension: string | null) => set({ extension }),
