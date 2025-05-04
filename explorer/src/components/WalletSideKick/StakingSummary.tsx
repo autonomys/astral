@@ -1,8 +1,13 @@
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
-import { BIGINT_ZERO } from 'constants/general'
-import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
+import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
+import {
+  ROUTE_EXTRA_FLAG_TYPE,
+  ROUTE_FLAG_VALUE_OPEN_CLOSE,
+  Routes,
+  RoutesStaking,
+} from 'constants/routes'
 import {
   StakingSummaryDocument,
   StakingSummaryQuery,
@@ -63,17 +68,17 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
       hasValue(stakingSummary)
         ? stakingSummary.value.staking_nominators
             .filter((n) => n.operator?.account_id === subspaceAccount)
-            .reduce(
-              (acc, nominator) =>
-                BigInt(nominator.known_shares) > BIGINT_ZERO
-                  ? acc +
-                    BigInt(nominator.known_storage_fee_deposit) +
-                    (BigInt(nominator.operator?.current_total_stake) /
-                      BigInt(nominator.operator?.current_total_shares)) *
-                      BigInt(nominator.known_shares)
-                  : acc,
-              BIGINT_ZERO,
-            )
+            .reduce((acc, nominator) => {
+              const totalShares = nominator.deposits.reduce(
+                (acc, curr) => acc + BigInt(curr.estimated_shares || 0),
+                BIGINT_ZERO,
+              )
+              const estimatedStake =
+                BigInt(nominator.operator?.current_share_price || 0) * totalShares
+              return estimatedStake > BIGINT_ZERO
+                ? acc + estimatedStake / SHARES_CALCULATION_MULTIPLIER
+                : acc
+            }, BIGINT_ZERO)
         : BIGINT_ZERO,
     [stakingSummary, subspaceAccount],
   )
@@ -91,17 +96,17 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
       hasValue(stakingSummary)
         ? stakingSummary.value.staking_nominators
             .filter((n) => n.operator?.account_id !== subspaceAccount)
-            .reduce(
-              (acc, nominator) =>
-                BigInt(nominator.known_shares) > BIGINT_ZERO
-                  ? acc +
-                    BigInt(nominator.known_storage_fee_deposit) +
-                    (BigInt(nominator.operator?.current_total_stake) /
-                      BigInt(nominator.operator?.current_total_shares)) *
-                      BigInt(nominator.known_shares)
-                  : acc,
-              BIGINT_ZERO,
-            )
+            .reduce((acc, nominator) => {
+              const totalShares = nominator.deposits.reduce(
+                (acc, curr) => acc + BigInt(curr.estimated_shares || 0),
+                BIGINT_ZERO,
+              )
+              const estimatedStake =
+                BigInt(nominator.operator?.current_share_price || 0) * totalShares
+              return estimatedStake > BIGINT_ZERO
+                ? acc + estimatedStake / SHARES_CALCULATION_MULTIPLIER
+                : acc
+            }, BIGINT_ZERO)
         : BIGINT_ZERO,
     [stakingSummary, subspaceAccount],
   )
@@ -147,7 +152,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                   key={'totalOperatorStake'}
                   data-testid='totalOperatorStake-link'
                   className='hover:text-primaryAccent'
-                  href={`/${network}/${Routes.staking}`}
+                  href={`/${network}/${Routes.staking}/${RoutesStaking.nominations}`}
                 >
                   <StyledListItem title='Your total staked in your own operators'>
                     {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
@@ -159,7 +164,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                   key={'totalNominatedStake'}
                   data-testid='totalNominatedStake-link'
                   className='hover:text-primaryAccent'
-                  href={`/${network}/${Routes.staking}`}
+                  href={`/${network}/${Routes.staking}/${RoutesStaking.nominations}`}
                 >
                   <StyledListItem title='Your total nominated to other operators'>
                     {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
@@ -171,7 +176,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                   key={'totalOperatorCount'}
                   data-testid='totalOperatorCount-link'
                   className='hover:text-primaryAccent'
-                  href={`/${network}/${Routes.staking}`}
+                  href={`/${network}/${Routes.staking}/${RoutesStaking.nominations}`}
                 >
                   <StyledListItem title='Amount of operators you control'>
                     {totalOperatorCount}
@@ -183,9 +188,9 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                   key={'totalNominatedCount'}
                   data-testid='totalNominatedCount-link'
                   className='hover:text-primaryAccent'
-                  href={`/${network}/${Routes.staking}`}
+                  href={`/${network}/${Routes.staking}/${RoutesStaking.nominations}`}
                 >
-                  <StyledListItem title='Amount of nomination'>
+                  <StyledListItem title='Amount of nominations'>
                     {totalNominatedCount}
                   </StyledListItem>
                 </Link>

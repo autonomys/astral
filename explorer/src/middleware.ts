@@ -25,6 +25,12 @@ export async function middleware(req: NextRequest) {
     )
   }
 
+  if (req.nextUrl.pathname === '/taurus') {
+    return NextResponse.redirect(
+      new URL(`/${NetworkId.TAURUS}/${Routes.consensus}/${urlParams}`, req.url),
+    )
+  }
+
   if (Object.values(Routes).find((route) => `/${route}` === pathname)) {
     return NextResponse.redirect(new URL(`/${NetworkId.MAINNET}${pathname}${urlParams}`, req.url))
   }

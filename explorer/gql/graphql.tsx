@@ -27686,7 +27686,7 @@ export type StakingSummaryQueryVariables = Exact<{
 }>;
 
 
-export type StakingSummaryQuery = { __typename?: 'query_root', staking_operators: Array<{ __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any }>, staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, known_shares: any, known_storage_fee_deposit: any, account?: { __typename?: 'staking_accounts', id: string } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any } | null }>, staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } };
+export type StakingSummaryQuery = { __typename?: 'query_root', staking_operators: Array<{ __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any }>, staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, known_shares: any, known_storage_fee_deposit: any, account?: { __typename?: 'staking_accounts', id: string } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any, current_share_price: any } | null, deposits: Array<{ __typename?: 'staking_deposits', estimated_shares: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', unlocked_amount: any, unlocked_storage_fee: any, total_amount: any }> }>, staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } };
 
 export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -32041,6 +32041,15 @@ export const StakingSummaryDocument = gql`
       domain_id
       current_total_stake
       current_total_shares
+      current_share_price
+    }
+    deposits {
+      estimated_shares
+    }
+    withdrawals {
+      unlocked_amount
+      unlocked_storage_fee
+      total_amount
     }
   }
   staking_nominators_aggregate(
