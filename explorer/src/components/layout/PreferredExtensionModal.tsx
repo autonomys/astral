@@ -1,10 +1,11 @@
-import { LinkIcon } from '@heroicons/react/24/outline'
+import { cn } from '@/utils/cn'
+import { ArrowLeftIcon, LinkIcon } from '@heroicons/react/24/outline'
 import { getWallets, type Wallet } from '@talismn/connect-wallets'
 import { Modal } from 'components/common/Modal'
 import { SupportedWalletExtension } from 'constants/wallet'
 import useWallet from 'hooks/useWallet'
 import Image from 'next/image'
-import React, { FC, useCallback, useMemo } from 'react'
+import React, { FC, useCallback, useMemo, useState } from 'react'
 
 type Props = {
   isOpen: boolean
@@ -15,18 +16,23 @@ type WalletOptionProps = {
   wallet: Wallet
   index: number
   onClose: () => void
+  onInstall: (wallet: Wallet) => void
 }
 
-const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose }) => {
+const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose, onInstall }) => {
   const { handleSelectFirstWalletFromExtension } = useWallet()
 
   const handleExtensionSelect = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, extension: string) => {
       e.preventDefault()
-      handleSelectFirstWalletFromExtension(extension)
-      onClose()
+      if (wallet.installed) {
+        handleSelectFirstWalletFromExtension(extension)
+        onClose()
+      } else {
+        onInstall(wallet)
+      }
     },
-    [handleSelectFirstWalletFromExtension, onClose],
+    [handleSelectFirstWalletFromExtension, onClose, onInstall, wallet],
   )
 
   const icon = useMemo(() => {
@@ -59,21 +65,75 @@ const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose }) => {
       {wallet?.installed ? (
         <></>
       ) : (
-        <div className='justify-self-end text-xs font-medium text-indigo-500 dark:text-primaryAccent'>
-          <div className='flex items-center gap-1'>
-            <a href={wallet.installUrl} rel='noreferrer' target='_blank'>
-              Install
-            </a>
+        <div className='justify-self-end text-xs font-medium text-primaryAccent dark:text-primaryAccent'>
+          <a
+            href={wallet.installUrl}
+            rel='noreferrer'
+            target='_blank'
+            className='flex items-center gap-1'
+          >
+            Install
             <LinkIcon className='size-3' />
-          </div>
+          </a>
         </div>
       )}
     </button>
   )
 }
 
+type InstallWalletViewProps = {
+  wallet: Wallet
+  onBack: () => void
+}
+
+const InstallWalletView: FC<InstallWalletViewProps> = ({ wallet, onBack }) => {
+  const icon = useMemo(() => {
+    switch (wallet.extensionName) {
+      case SupportedWalletExtension.PolkadotJs:
+        return '/images/wallets/polkadot.svg'
+      case SupportedWalletExtension.SubwalletJs:
+        return '/images/wallets/subwallet.svg'
+      case SupportedWalletExtension.Talisman:
+        return '/images/wallets/talisman.svg'
+      case SupportedWalletExtension.Nova:
+        return '/images/wallets/nova.svg'
+      default:
+        return ''
+    }
+  }, [wallet.extensionName])
+
+  return (
+    <div className='flex flex-col gap-6'>
+      <button
+        onClick={onBack}
+        className='flex items-center gap-1 p-1 text-gray-600 hover:text-indigo-500 dark:text-gray-300 dark:hover:text-primaryAccent'
+      >
+        <ArrowLeftIcon className='size-5' />
+      </button>
+
+      <div className='flex flex-col items-center gap-4 p-4'>
+        <Image src={icon} alt={wallet.title} width={64} height={64} />
+        <h3 className='text-lg font-medium text-gray-900 dark:text-white'>Get {wallet.title}</h3>
+        <p className='text-center text-sm text-gray-600 dark:text-gray-300'>
+          You need to install the {wallet.title} extension to connect with this wallet.
+        </p>
+        <a
+          href={wallet.installUrl}
+          target='_blank'
+          rel='noreferrer'
+          className='mt-2 flex items-center gap-2 rounded-md bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-1 font-medium text-white dark:bg-boxDark dark:from-buttonDarkFrom dark:to-buttonDarkTo'
+        >
+          Install {wallet.title}
+          <LinkIcon className='size-4' />
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export const PreferredExtensionModal: FC<Props> = ({ isOpen, onClose }) => {
   const wallets = getWallets()
+  const [selectedWallet, setSelectedWallet] = useState<Wallet | null>(null)
 
   const uniqueWallets = useMemo(() => {
     const set = new Set(wallets.map((extension) => extension.extensionName))
@@ -91,28 +151,42 @@ export const PreferredExtensionModal: FC<Props> = ({ isOpen, onClose }) => {
     [uniqueWallets],
   )
 
+  const handleInstallWallet = useCallback((wallet: Wallet) => {
+    setSelectedWallet(wallet)
+  }, [])
+
+  const handleBack = useCallback(() => {
+    setSelectedWallet(null)
+  }, [])
+
   const WalletsOption = useMemo(
     () =>
       supportedWallets.map((wallet, index) => (
-        <WalletOption key={index} wallet={wallet} index={index} onClose={onClose} />
+        <WalletOption
+          key={index}
+          wallet={wallet}
+          index={index}
+          onClose={onClose}
+          onInstall={handleInstallWallet}
+        />
       )),
-    [supportedWallets, onClose],
+    [supportedWallets, onClose, handleInstallWallet],
   )
 
   return (
-    <Modal title='Select your extension' onClose={onClose} isOpen={isOpen}>
-      <div className='flex flex-col items-start gap-4'>
-        <div className='flex flex-col items-center gap-4'>
-          <div className='grid grid-cols-2 gap-4'>{WalletsOption}</div>
-        </div>
-
-        <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
-          onClick={onClose}
-        >
-          Close
-        </button>
-      </div>
+    <Modal
+      title='Select your extension'
+      showTitle={selectedWallet ? false : true}
+      onClose={onClose}
+      isOpen={isOpen}
+      size='sm'
+      closeButtonClassName={cn('top-4', selectedWallet && 'top-5 right-4')}
+    >
+      {selectedWallet ? (
+        <InstallWalletView wallet={selectedWallet} onBack={handleBack} />
+      ) : (
+        <div className='grid grid-cols-2 gap-4'>{WalletsOption}</div>
+      )}
     </Modal>
   )
 }
