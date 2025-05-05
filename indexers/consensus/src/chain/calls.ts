@@ -1,6 +1,6 @@
 import { blockchainSize, spacePledged } from "@autonomys/auto-consensus";
 import { Codec, SignedBlock } from "@autonomys/auto-utils";
-import { ZERO_BIGINT } from "../structures/constants.ts";
+import { EMPTY_SIGNATURE, ZERO_BIGINT } from "../structures/constants.ts";
 import { Cache } from "../types/cache.ts";
 import { Block, Digest, Event, Extrinsic } from "../types/chain.ts";
 import { BlockSchema } from "../utils/schemas.ts";
@@ -40,8 +40,8 @@ const parseExtrinsic = (extrinsic: Codec): Extrinsic => {
     isSigned,
     section,
     method,
-    signer: signature.signer.id,
-    signature: signature.signature,
+    signer: isSigned ? signature.signer.id : "",
+    signature: isSigned ? signature.signature : EMPTY_SIGNATURE,
     callIndex,
     args,
     nonce: nonce ? BigInt(nonce) : ZERO_BIGINT,
