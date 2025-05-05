@@ -25,6 +25,7 @@ export type WalletContextValue = {
   isReady: boolean
   accounts: WalletAccountWithType[] | undefined | null
   error: Error | null
+  connectionError: Error | null
   injector: InjectedExtension | null
   actingAccount: WalletAccountWithType | undefined
   extensions: InjectedExtension[] | undefined
@@ -55,6 +56,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const [accounts, setAccounts] = useState<WalletAccountWithType[] | null | undefined>(undefined)
   const [extensions] = useState<InjectedExtension[] | undefined>(undefined)
   const [error, setError] = useState<Error | null>(null)
+  const [connectionError, setConnectionError] = useState<Error | null>(null)
   const [injector, setInjector] = useState<InjectedExtension | null>(null)
   const [actingAccount, setActingAccount] = useState<WalletAccountWithType | undefined>(undefined)
   const [subspaceAccount, setSubspaceAccount] = useState<string | undefined>(undefined)
@@ -205,6 +207,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setAccounts([])
     setActingAccount(undefined)
     setSubspaceAccount(undefined)
+    setConnectionError(null)
     clearPreferences()
     setIsReady(false)
     await signOutSessionOnAccountChange()
@@ -213,11 +216,24 @@ export const WalletProvider: FC<Props> = ({ children }) => {
 
   const handleGetWalletFromExtension = useCallback(
     async (source: string) => {
-      const wallet = getWalletBySource(source)
-      if (wallet) {
+      try {
+        const wallet = getWalletBySource(source)
+        if (!wallet) {
+          throw new Error(`Wallet not found for source: ${source}`)
+        }
+
         await wallet.enable(process.env.NEXT_PUBLIC_TALESMAN_DAPP_NAME || 'Autonomy Block Explorer')
-        if (wallet.extension) setInjector(wallet.extension)
+        if (!wallet.extension) {
+          throw new Error(`Extension not available for ${source}`)
+        }
+
+        setInjector(wallet.extension)
         const walletAccounts = (await wallet.getAccounts()) as WalletAccountWithType[]
+
+        if (!walletAccounts || walletAccounts.length === 0) {
+          throw new Error(`No accounts found for ${source}`)
+        }
+
         setAccounts(walletAccounts)
         setPreferredExtension(source)
         sendGAEvent({
@@ -225,18 +241,42 @@ export const WalletProvider: FC<Props> = ({ children }) => {
           value: `source:${source}`,
         })
         return { walletAccounts, newInjector: wallet.extension }
+      } catch (err) {
+        console.error('Error getting wallet from extension:', err)
+        setConnectionError(err instanceof Error ? err : new Error(String(err)))
+        throw err
       }
-      return { walletAccounts: [], newInjector: null }
     },
     [setPreferredExtension],
   )
 
   const handleSelectFirstWalletFromExtension = useCallback(
     async (source: string) => {
-      const { walletAccounts, newInjector } = await handleGetWalletFromExtension(source)
-      if (!walletAccounts || walletAccounts.length === 0) return
-      const mainAccount = walletAccounts.find((account) => account.source === source)
-      if (mainAccount) _changeAccount(mainAccount, newInjector)
+      try {
+        setConnectionError(null)
+        const { walletAccounts, newInjector } = await handleGetWalletFromExtension(source)
+        if (!walletAccounts || walletAccounts.length === 0) {
+          const error = new Error(`No accounts found for ${source}`)
+          setConnectionError(error)
+          throw error
+        }
+        const mainAccount = walletAccounts.find((account) => account.source === source)
+        if (!mainAccount) {
+          const error = new Error(`No matching account found for ${source}`)
+          setConnectionError(error)
+          throw error
+        }
+        if (!newInjector) {
+          const error = new Error(`Failed to get injector for ${source}`)
+          setConnectionError(error)
+          throw error
+        }
+        await _changeAccount(mainAccount, newInjector)
+      } catch (error) {
+        console.error('Failed to connect wallet from extension:', error)
+        setConnectionError(error instanceof Error ? error : new Error(String(error)))
+        throw error
+      }
     },
     [handleGetWalletFromExtension, _changeAccount],
   )
@@ -297,6 +337,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         actingAccount,
         isReady,
         error,
+        connectionError,
         injector,
         disconnectWallet,
         extensions,
