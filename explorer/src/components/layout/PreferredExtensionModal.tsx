@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn'
-import { ArrowLeftIcon, LinkIcon } from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, LinkIcon } from '@heroicons/react/24/outline'
 import { getWallets, type Wallet } from '@talismn/connect-wallets'
 import { Modal } from 'components/common/Modal'
 import { SupportedWalletExtension } from 'constants/wallet'
@@ -106,12 +106,12 @@ const InstallWalletView: FC<InstallWalletViewProps> = ({ wallet, onBack }) => {
     <div className='flex flex-col gap-6'>
       <button
         onClick={onBack}
-        className='flex items-center gap-1 p-1 text-gray-600 hover:text-indigo-500 dark:text-gray-300 dark:hover:text-primaryAccent'
+        className='absolute left-5 top-5 rounded p-1 text-gray-600 hover:bg-gray-100 hover:text-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-400'
       >
-        <ArrowLeftIcon className='size-5' />
+        <ChevronLeftIcon className='size-5' />
       </button>
 
-      <div className='flex flex-col items-center gap-4 p-4'>
+      <div className='flex flex-col items-center gap-4 p-5'>
         <Image src={icon} alt={wallet.title} width={64} height={64} />
         <h3 className='text-lg font-medium text-gray-900 dark:text-white'>Get {wallet.title}</h3>
         <p className='text-center text-sm text-gray-600 dark:text-gray-300'>
@@ -121,7 +121,7 @@ const InstallWalletView: FC<InstallWalletViewProps> = ({ wallet, onBack }) => {
           href={wallet.installUrl}
           target='_blank'
           rel='noreferrer'
-          className='mt-2 flex items-center gap-2 rounded-md bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-1 font-medium text-white dark:bg-boxDark dark:from-buttonDarkFrom dark:to-buttonDarkTo'
+          className='mt-2 flex items-center gap-2 rounded-md bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-1 font-normal text-white dark:bg-boxDark dark:from-buttonDarkFrom dark:to-buttonDarkTo'
         >
           Install {wallet.title}
           <LinkIcon className='size-4' />
@@ -176,17 +176,23 @@ export const PreferredExtensionModal: FC<Props> = ({ isOpen, onClose }) => {
   return (
     <Modal
       title='Select your extension'
-      showTitle={selectedWallet ? false : true}
+      showTitle={false}
       onClose={onClose}
       isOpen={isOpen}
       size='sm'
-      closeButtonClassName={cn('top-4', selectedWallet && 'top-5 right-4')}
+      closeButtonClassName={cn('top-3 right-4', selectedWallet && 'top-5 right-5')}
+      contentClassName={cn('py-4', selectedWallet && 'p-5')}
     >
-      {selectedWallet ? (
-        <InstallWalletView wallet={selectedWallet} onBack={handleBack} />
-      ) : (
-        <div className='grid grid-cols-2 gap-4'>{WalletsOption}</div>
-      )}
+      <div className='flex flex-col gap-4'>
+        {selectedWallet ? (
+          <InstallWalletView wallet={selectedWallet} onBack={handleBack} />
+        ) : (
+          <>
+            <p className='text-base font-medium text-gray-800 dark:text-gray-300'>Connect Wallet</p>
+            <div className='grid grid-cols-2 gap-4 pb-4 pt-2'>{WalletsOption}</div>
+          </>
+        )}
+      </div>
     </Modal>
   )
 }

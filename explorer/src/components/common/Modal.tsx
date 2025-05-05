@@ -113,7 +113,7 @@ export const Modal: FC<Props> = ({
             onClick={onClose}
             aria-label='Close modal'
             className={cn(
-              'absolute right-2 top-2 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-400',
+              'absolute right-2 top-2 rounded p-1 text-gray-600 hover:bg-gray-100 hover:text-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-400',
               closeButtonClassName,
             )}
           >
