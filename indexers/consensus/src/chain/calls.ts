@@ -30,10 +30,7 @@ const parseExtrinsic = (extrinsic: Codec): Extrinsic => {
     method: { section, method },
   } = extrinsic.toHuman() as any;
   const {
-    signature: {
-      signer: { id: signer },
-      signature,
-    },
+    signature,
     method: { callIndex, args },
     nonce,
     tip,
@@ -43,8 +40,8 @@ const parseExtrinsic = (extrinsic: Codec): Extrinsic => {
     isSigned,
     section,
     method,
-    signer,
-    signature,
+    signer: signature.signer.id,
+    signature: signature.signature,
     callIndex,
     args,
     nonce: nonce ? BigInt(nonce) : ZERO_BIGINT,
