@@ -1,44 +1,3 @@
-query AccountsTopLeaderboard($first: Int!) {
-  farmers: consensus_rewards(
-    order_by: { amount: desc }
-    limit: $first
-    where: {
-      _or: [
-        { reward_type: { _eq: "Rewards.VoteReward" } }
-        { reward_type: { _eq: "Rewards.BlockReward" } }
-      ]
-    }
-  ) {
-    id
-  }
-  # TODO: change this for operators
-  operators: consensus_rewards(
-    order_by: { amount: desc }
-    limit: $first
-    where: {
-      _or: [
-        { reward_type: { _eq: "Rewards.VoteReward" } }
-        { reward_type: { _eq: "Rewards.BlockReward" } }
-      ]
-    }
-  ) {
-    id
-  }
-  # TODO: change this for nominators
-  nominators: consensus_rewards(
-    order_by: { amount: desc }
-    limit: $first
-    where: {
-      _or: [
-        { reward_type: { _eq: "Rewards.VoteReward" } }
-        { reward_type: { _eq: "Rewards.BlockReward" } }
-      ]
-    }
-  ) {
-    id
-  }
-}
-
 query PendingTransaction($subspaceAccount: String, $extrinsics: [String!]) {
   consensus_accounts(where: { id: { _eq: $subspaceAccount } }) {
     id
@@ -66,7 +25,7 @@ query ExtrinsicsSummary($first: Int!, $subspaceAccount: String) {
     }
   }
   extrinsics: consensus_extrinsics(
-    order_by: { id: desc }
+    order_by: { sort_id: desc }
     limit: $first
     where: { signer: { _eq: $subspaceAccount } }
   ) {
@@ -124,64 +83,6 @@ query CheckRole($subspaceAccount: String!) {
   ) {
     account {
       id
-    }
-  }
-}
-
-query StakingSummary($first: Int!, $subspaceAccount: String) {
-  staking_operators(
-    order_by: { id: asc }
-    limit: $first
-    where: { account_id: { _eq: $subspaceAccount } }
-  ) {
-    id
-    account_id
-    domain_id
-    current_total_stake
-    current_total_shares
-  }
-  staking_operators_aggregate(
-    order_by: { id: asc }
-    where: { account_id: { _eq: $subspaceAccount } }
-  ) {
-    aggregate {
-      count
-    }
-  }
-  staking_nominators(
-    order_by: { id: asc }
-    limit: $first
-    where: { account_id: { _eq: $subspaceAccount } }
-  ) {
-    id
-    known_shares
-    known_storage_fee_deposit
-    account {
-      id
-    }
-    operator {
-      id
-      account_id
-      domain_id
-      current_total_stake
-      current_total_shares
-      current_share_price
-    }
-    deposits {
-      estimated_shares
-    }
-    withdrawals {
-      unlocked_amount
-      unlocked_storage_fee
-      total_amount
-    }
-  }
-  staking_nominators_aggregate(
-    order_by: { id: asc }
-    where: { account_id: { _eq: $subspaceAccount } }
-  ) {
-    aggregate {
-      count
     }
   }
 }
