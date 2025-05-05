@@ -486,7 +486,7 @@ export const NominationsTable: FC = () => {
                           isDesktop={isDesktop}
                           tabStyle='border border-slate-100 bg-white dark:bg-boxDark dark:border-none'
                         >
-                          <Tab title='Overview'>
+                          <Tab title='Overview' id={`overview-${nominator.operator_id}`}>
                             <div className='flex w-full flex-col items-start'>
                               <div className='w-full'>
                                 <div className='mb-2 flex w-full items-center justify-between'>
@@ -623,7 +623,10 @@ export const NominationsTable: FC = () => {
                               </div>
                             </div>
                           </Tab>
-                          <Tab title='Transaction History'>
+                          <Tab
+                            title='Transaction History'
+                            id={`transaction-history-${nominator.operator_id}`}
+                          >
                             <div className='flex w-full flex-col items-start'>
                               <div className='w-full'>
                                 <div className='mb-2 flex items-center justify-between'>

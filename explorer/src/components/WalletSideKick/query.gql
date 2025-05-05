@@ -115,6 +115,10 @@ query CheckRole($subspaceAccount: String!) {
         { reward_type: { _eq: "rewards.BlockReward" } }
       ]
       account_id: { _eq: $subspaceAccount }
+      _and: [
+        { timestamp: { _gte: "2025-05-07T00:00:00.000" } }
+        { timestamp: { _lte: "2025-06-04T00:00:00.000" } }
+      ]
     }
     limit: 1
   ) {
@@ -161,6 +165,15 @@ query StakingSummary($first: Int!, $subspaceAccount: String) {
       domain_id
       current_total_stake
       current_total_shares
+      current_share_price
+    }
+    deposits {
+      estimated_shares
+    }
+    withdrawals {
+      unlocked_amount
+      unlocked_storage_fee
+      total_amount
     }
   }
   staking_nominators_aggregate(

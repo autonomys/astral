@@ -22,19 +22,21 @@ const generateIdFromTitle = (title: string) => {
 
 type TabProps = {
   title: string
+  id?: string
   children?: ReactNode
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined
 }
 
-export const Tab: React.FC<TabProps> = ({ children }) => {
-  return <div>{children}</div>
+export const Tab: React.FC<TabProps> = ({ children, id }) => {
+  return <div id={id}>{children}</div>
 }
 
 type TabTitleProps = {
   title: string
+  id?: string
   index: number
   isSelected: boolean
-  setSelectedTab: (index: number) => void
+  setSelectedTab: (index: number | string) => void
   pillStyle: string
   activePillStyle: string
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined
@@ -42,6 +44,7 @@ type TabTitleProps = {
 
 export const TabTitle: React.FC<TabTitleProps> = ({
   title,
+  id,
   setSelectedTab,
   isSelected,
   index,
@@ -54,19 +57,28 @@ export const TabTitle: React.FC<TabTitleProps> = ({
   const searchParams = useSearchParams()
   const handleOnClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      setSelectedTab(index)
-      const generatedId = generateIdFromTitle(title)
-      if (generatedId) {
+      if (id) {
+        setSelectedTab(id)
         const params = new URLSearchParams(searchParams.toString())
-        params.set('tab', generatedId)
+        params.set('tab', id)
         router.push(`${pathname}?${params.toString()}`, {
           scroll: false,
         })
+      } else {
+        setSelectedTab(index)
+        const generatedId = generateIdFromTitle(title)
+        if (generatedId) {
+          const params = new URLSearchParams(searchParams.toString())
+          params.set('tab', generatedId)
+          router.push(`${pathname}?${params.toString()}`, {
+            scroll: false,
+          })
+        }
       }
 
       if (onClick) onClick(e)
     },
-    [setSelectedTab, index, title, onClick, searchParams, router, pathname],
+    [setSelectedTab, index, title, onClick, searchParams, router, pathname, id],
   )
 
   return (
@@ -82,6 +94,21 @@ export const TabTitle: React.FC<TabTitleProps> = ({
       </button>
     </li>
   )
+}
+
+type TabContentProps = {
+  children: ReactElement[] | ReactElement
+  selectedTab: number | string
+}
+
+export const TabContent: React.FC<TabContentProps> = ({ children, selectedTab }) => {
+  if (!Array.isArray(children)) {
+    return null
+  }
+  if (typeof selectedTab === 'string') {
+    return <div id={selectedTab}>{children.find((child) => child.props.id === selectedTab)}</div>
+  }
+  return <div>{children[selectedTab]}</div>
 }
 
 type TabsProps = {
@@ -101,14 +128,15 @@ export const Tabs: React.FC<TabsProps> = ({
   pillStyle = 'text-gray-600 bg-white dark:bg-transparent dark:text-white',
   activePillStyle = 'text-white bg-grayDarker dark:bg-blueAccent',
 }) => {
-  const [selectedTab, setSelectedTab] = useState(initialIndex)
+  const [selectedTab, setSelectedTab] = useState<number | string>(initialIndex)
   const searchParams = useSearchParams()
   const tabParam = searchParams.get('tab')
 
   const updateSelectedTab = useCallback(() => {
     if (tabParam && Array.isArray(children)) {
       const tabIndex = children.findIndex(
-        (child) => generateIdFromTitle(child.props.title) === tabParam,
+        (child) =>
+          generateIdFromTitle(child.props.title) === tabParam || child.props.id === tabParam,
       )
       if (tabIndex !== -1) {
         setSelectedTab(tabIndex)
@@ -130,6 +158,7 @@ export const Tabs: React.FC<TabsProps> = ({
           {Array.isArray(children) ? (
             children.map((item, index) => (
               <TabTitle
+                id={item.props.id}
                 key={index}
                 title={item.props.title}
                 onClick={item.props.onClick}
@@ -142,6 +171,7 @@ export const Tabs: React.FC<TabsProps> = ({
             ))
           ) : (
             <TabTitle
+              id={children.props.id}
               title={children.props.title}
               onClick={children.props.onClick}
               index={0}
@@ -152,7 +182,7 @@ export const Tabs: React.FC<TabsProps> = ({
             />
           )}
         </ul>
-        {Array.isArray(children) ? children[selectedTab] : children}
+        <TabContent selectedTab={selectedTab}>{children}</TabContent>
       </div>
     </div>
   )
