@@ -261,14 +261,12 @@ export const PreferredExtensionModal: FC<PreferredExtensionModalProps> = ({ isOp
           handleSelectFirstWalletFromExtension(wallet.extensionName),
           timeoutPromise,
         ])
-
-        onClose()
       } catch (err) {
         console.error('Failed to connect wallet:', err)
         setConnectingError(err instanceof Error ? err.message : 'Failed to connect')
       }
     },
-    [handleSelectFirstWalletFromExtension, onClose],
+    [handleSelectFirstWalletFromExtension],
   )
 
   const modalTitle = useMemo(() => {

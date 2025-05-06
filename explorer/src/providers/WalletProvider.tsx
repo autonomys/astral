@@ -191,7 +191,8 @@ export const WalletProvider: FC<Props> = ({ children }) => {
           value: `source:${account.source}`,
         })
       } catch (error) {
-        console.error('Failed to change account', error)
+        console.error('Failed to change account', error, new Error(String(error)))
+        setConnectionError(error instanceof Error ? error : new Error(String(error)))
       }
     },
     [proofOfOwnership, setPreferredAccount, setProofOfOwnership, setup],
