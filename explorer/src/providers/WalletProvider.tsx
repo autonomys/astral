@@ -74,7 +74,25 @@ export const WalletProvider: FC<Props> = ({ children }) => {
 
   const prepareApi = useCallback(async () => {
     try {
-      return await activate({ networkId: chain })
+      const api = await activate({ networkId: chain })
+
+      if (api) {
+        await api.isReady
+
+        // TODO: Update metadata added for testing
+        if (typeof api.rpc.state?.subscribeRuntimeVersion === 'function') {
+          api.rpc.state.subscribeRuntimeVersion(async () => {
+            try {
+              console.log('Runtime version changed, updating metadata...')
+              await api.rpc.state.getMetadata()
+            } catch (error) {
+              console.error('Error updating API metadata:', error)
+            }
+          })
+        }
+      }
+
+      return api
     } catch (error) {
       console.error('Failed to prepare API for chain', chain, 'error:', error)
     }
@@ -91,7 +109,25 @@ export const WalletProvider: FC<Props> = ({ children }) => {
           createConnection(d.rpcUrls.map((rpc) => rpc.replace('https://', 'wss://'))),
         ),
       )
-      const domainApis = await Promise.all(unInitializedDomainApis.map((d) => d.isReady))
+      const domainApis = await Promise.all(
+        unInitializedDomainApis.map(async (d) => {
+          const api = await d.isReady
+
+          // TODO: Update metadata added for testing
+          if (api && typeof api.rpc.state?.subscribeRuntimeVersion === 'function') {
+            api.rpc.state.subscribeRuntimeVersion(async () => {
+              try {
+                console.log('Domain runtime version changed, updating metadata...')
+                await api.rpc.state.getMetadata()
+              } catch (error) {
+                console.error('Error updating domain API metadata:', error)
+              }
+            })
+          }
+
+          return api
+        }),
+      )
 
       return domains.reduce(
         (acc, d, index) => ({
