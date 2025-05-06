@@ -6,14 +6,11 @@ import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountPreferenceSection } from 'constants/wallet'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useState } from 'react'
-import { useInView } from 'react-intersection-observer'
+import { FC, useCallback, useState } from 'react'
 import { usePreferencesStates } from 'states/preferences'
 import { limitNumberDecimals } from 'utils/number'
 import { AccountIcon } from '../common/AccountIcon'
-import { AccountBadge } from './AccountBadge'
 import { AccountPreferencesModal } from './AccountPreferencesModal'
-import { useLeaderboard } from './Leaderboard'
 
 interface AccountSummaryProps {
   subspaceAccount: string
@@ -28,9 +25,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
   walletBalance,
   tokenSymbol,
 }) => {
-  const { ref, inView } = useInView()
   const { network } = useIndexers()
-  const { topFarmers, topOperators, topNominators, setIsVisible } = useLeaderboard(subspaceAccount)
   const { enableDevMode } = usePreferencesStates()
   const [preference, setPreference] = useState<AccountPreferenceSection>(
     AccountPreferenceSection.None,
@@ -43,10 +38,6 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
     setPreference(section)
     setPreferenceIsOpen(true)
   }, [])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='m-2 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
@@ -76,26 +67,6 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
           </Link>
         }
       >
-        <div ref={ref}>
-          {topFarmers > 0 && (
-            <AccountBadge
-              to={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
-              label={`Top ${Math.ceil(topFarmers / 10) * 10} Farmer`}
-            />
-          )}
-          {topOperators > 0 && (
-            <AccountBadge
-              to={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`}
-              label={`Top ${Math.ceil(topOperators / 10) * 10} Operator`}
-            />
-          )}
-          {topFarmers > 0 && (
-            <AccountBadge
-              to={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`}
-              label={`Top ${Math.ceil(topNominators / 10) * 10} Nominator`}
-            />
-          )}
-        </div>
         <div className='m-2 flex items-center pt-4'>
           <span className='text-base font-medium text-grayDarker dark:text-white'>
             Your Subspace Wallet Address

@@ -19,9 +19,7 @@ import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
 import { GetDiscordRoles } from './GetDiscordRoles'
 import { LastExtrinsics } from './LastExtrinsics'
-import { Leaderboard } from './Leaderboard'
 import { PendingTransactions } from './PendingTransactions'
-import { StakingSummary } from './StakingSummary'
 
 type DrawerProps = {
   isOpen: boolean
@@ -184,9 +182,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onCloseSidebar }) => {
             />
             <PendingTransactions subspaceAccount={sessionSubspaceAccount} />
             <GetDiscordRoles />
-            <StakingSummary subspaceAccount={sessionSubspaceAccount} tokenSymbol={tokenSymbol} />
             <LastExtrinsics subspaceAccount={sessionSubspaceAccount} />
-            <Leaderboard subspaceAccount={sessionSubspaceAccount} />
           </>
         )}
         <div className='flex'>
