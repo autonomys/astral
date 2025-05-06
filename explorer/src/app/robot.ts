@@ -1,4 +1,3 @@
-import { url } from 'constants/metadata'
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
@@ -6,9 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/auth/'],
+      disallow: '/private/',
     },
-    sitemap: `${url}/sitemap.xml`,
-    host: url,
   }
 }
