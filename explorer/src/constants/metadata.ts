@@ -45,7 +45,6 @@ const keywords = [
   'Autonomys Mining',
   'Blockchain Mining',
   'Autonomys Rewards',
-  'Autonomys Network',
   'Storage Rewards',
   'Autonomys Transfer',
   'Token Transfer',
@@ -53,7 +52,6 @@ const keywords = [
   'Blockchain Transactions',
   'Autonomys Wallet',
   'Cryptocurrency Transfer',
-  'Autonomys Network',
   'Digital Asset Transfer',
 ]
 export const url = process.env.NEXTAUTH_URL || 'https://explorer.autonomys.xyz'
