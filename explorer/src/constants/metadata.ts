@@ -1,8 +1,59 @@
-const title = 'Astral - Autonomys Explorer'
+/**
+ * Central metadata configuration for the Autonomys Explorer
+ *
+ * This file contains the base metadata used throughout the application.
+ *
+ * The keywords are organized by category to make maintenance easier.
+ * New global keywords should be added here, while page-specific ones
+ * can be added to the respective page components.
+ */
+
+const title = 'Autonomys Network Explorer | Blocks, Staking, Storage & More'
 const organization = 'Autonomys Labs'
-const description = 'Autonomys Labs Explorer'
-const keywords =
-  'Autonomys,Autonomys Explorer,Autonomys Network,Autonomys Lab,Autonomys Network Block Explorer'
+const description =
+  'Dive into Autonomys Network blockchain data: view consensus metrics, stake with validators, transfer tokens, and store data permanently on a decentralized Web3 network'
+const keywords = [
+  // Brand keywords
+  'Autonomys',
+  'Autonomys Explorer',
+  'Autonomys Network',
+  'Autonomys Labs',
+  'Autonomys Network Block Explorer',
+  'Autonomys Network Explorer',
+  'Autonomys blockchain',
+  'Autonomys blocks',
+  'Autonomys transactions',
+  'Autonomys accounts',
+  'Autonomys PoAS consensus (Proof-of-Archival-Storage)',
+  'Autonomys Block analysis',
+  'Autonomys Transaction details',
+  'Autonomys Blockchain explorer',
+  'Autonomy Network blockchain explorer',
+  'Autonomy Network block explorer',
+  'Autonomy Network transaction search',
+  'Autonomy Network PoAS consensus',
+  'Search Autonomy Network addresses',
+  'Autonomys Staking',
+  'Autonomys Staking Interface',
+  'Autonomys Storage',
+  'Autonomys Permanent Storage',
+  'Decentralized Storage',
+  'Blockchain Storage',
+  'Autonomys Farming',
+  'Storage Farming',
+  'Storage Provider',
+  'Autonomys Mining',
+  'Blockchain Mining',
+  'Autonomys Rewards',
+  'Storage Rewards',
+  'Autonomys Transfer',
+  'Token Transfer',
+  'Send Tokens',
+  'Blockchain Transactions',
+  'Autonomys Wallet',
+  'Cryptocurrency Transfer',
+  'Digital Asset Transfer',
+]
 export const url = process.env.NEXTAUTH_URL || 'https://explorer.autonomys.xyz'
 const twitter = '@AutonomysNet'
 const images = {
@@ -27,7 +78,7 @@ export const metadata = {
   icons: { icon: '/favicon.ico', apple: '/favicon.ico' },
   manifest: '/manifest.json',
   metadataBase: new URL(url),
-  keywords: keywords ? keywords.split(',') : [],
+  keywords,
   authors: {
     name: organization,
     url,
