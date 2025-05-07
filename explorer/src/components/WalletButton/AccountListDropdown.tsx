@@ -10,6 +10,7 @@ import { SupportedWalletExtension, WalletType } from 'constants/wallet'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import { Fragment, useCallback, useMemo } from 'react'
+import { LuLogOut } from 'react-icons/lu'
 import { formatAddress } from 'utils//formatAddress'
 import { limitText } from 'utils/string'
 import { TalismanIcon } from '../icons/TalismanIcon'
@@ -43,13 +44,16 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
             <Listbox.Option
               key={chainIdx}
               className={({ active }) =>
-                `w-120 relative cursor-pointer select-none py-2 text-gray-900 dark:text-white ${
-                  active && 'bg-gray-100 dark:bg-blueDarkAccent'
-                }`
+                cn(
+                  'w-120 relative cursor-pointer select-none py-2 text-gray-900 dark:text-white',
+                  active && 'bg-gray-100 dark:bg-blueDarkAccent',
+                  account.address === actingAccount?.address &&
+                    'bg-gray-100 dark:bg-blueDarkAccent',
+                )
               }
               value={account}
             >
-              {({ selected }) => {
+              {() => {
                 const subAccount =
                   account.type === WalletType.subspace ||
                   (account as { type: string }).type === 'sr25519'
@@ -58,10 +62,18 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
                 const formattedAccount = subAccount && shortString(subAccount)
                 return (
                   <div className='px-2'>
-                    <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                    <span
+                      className={cn(
+                        'block truncate text-base font-medium text-gray-900 dark:text-white',
+                      )}
+                    >
                       {account.name ? limitText(account.name, 16) : 'Account ' + chainIdx}
                     </span>
-                    <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                    <span
+                      className={cn(
+                        'block truncate text-sm font-medium text-gray-500 dark:text-gray-400',
+                      )}
+                    >
                       {formattedAccount}
                     </span>
                   </div>
@@ -70,7 +82,7 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
             </Listbox.Option>
           ))
         : null,
-    [accounts],
+    [accounts, actingAccount],
   )
 
   const handleDisconnectWallet = useCallback(
@@ -129,13 +141,17 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute right-0 mt-1 max-h-80 w-full min-w-40 overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm'>
+          <Listbox.Options className='absolute right-0 mt-1 max-h-80 w-full min-w-40 overflow-auto rounded-md bg-white pt-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm'>
             {walletList}
+            <hr className='border-t border-gray-200 dark:border-gray-500' />
             <button
               onClick={handleDisconnectWallet}
-              className='relative cursor-pointer select-none py-2 pr-4 text-gray-900 dark:bg-blueDarkAccent dark:text-white'
+              className='flex w-full cursor-pointer px-2 py-2.5 dark:bg-blueDarkAccent dark:text-white'
             >
-              <span className='block truncate px-2 font-normal'>Disconnect wallet</span>
+              <LuLogOut className='my-auto size-4 text-gray-700 dark:text-white' />
+              <span className='my-auto block truncate px-2 text-sm font-medium text-gray-700 dark:text-white'>
+                Disconnect wallet
+              </span>
             </button>
           </Listbox.Options>
         </Transition>
