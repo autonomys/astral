@@ -722,12 +722,21 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
               Do you really want to deregister your Operator?
             </span>
             {ErrorPlaceholder}
-            <button
-              className='flex w-full max-w-fit items-center gap-2 rounded-full bg-red-500 px-2 text-sm font-medium text-white dark:bg-red-500 md:space-x-4 md:text-base'
-              onClick={handleDeregister}
-            >
-              {OperatorActionType[action.type as keyof typeof OperatorActionType]}
-            </button>
+            <div className='mt-4 flex w-full items-center justify-center gap-2'>
+              <button
+                className='w-full rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                type='button'
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+              <button
+                className='w-full rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-500/90'
+                onClick={handleDeregister}
+              >
+                {OperatorActionType[action.type as keyof typeof OperatorActionType]}
+              </button>
+            </div>
           </div>
         )
       case OperatorActionType.UnlockFunds:
@@ -736,20 +745,33 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           <div className='flex flex-col items-start gap-4'>
             <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
               Do you really want to unlock the funds in your
-              {action.type === OperatorActionType.UnlockFunds ? 'operator' : 'nominator'} ?
+              <span className='text-blueAccent dark:text-white'>
+                {action.type === OperatorActionType.UnlockFunds ? 'operator' : 'nominator'}
+              </span>{' '}
+              ?
             </span>
             {ErrorPlaceholder}
-            <button
-              className='flex w-full max-w-fit items-center gap-2 rounded-full bg-red-500 px-2 text-sm font-medium text-white dark:bg-red-500 md:space-x-4 md:text-base'
-              onClick={
-                OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                OperatorActionType.UnlockFunds
-                  ? handleUnlockFunds
-                  : handleUnlockNominator
-              }
-            >
-              {OperatorActionType[action.type as keyof typeof OperatorActionType]}
-            </button>
+
+            <div className='mt-4 flex w-full items-center justify-center gap-2'>
+              <button
+                className='w-full rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                type='button'
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+              <button
+                className='w-full rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-500/90'
+                onClick={
+                  OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+                  OperatorActionType.UnlockFunds
+                    ? handleUnlockFunds
+                    : handleUnlockNominator
+                }
+              >
+                {OperatorActionType[action.type as keyof typeof OperatorActionType]}
+              </button>
+            </div>
           </div>
         )
       default:
