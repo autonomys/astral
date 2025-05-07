@@ -79,8 +79,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Get routes directly instead of fetching
   const dynamicRoutes = expandChainRoutes(filterRoutes(getStaticRoutes()))
 
-  console.log(dynamicRoutes)
-
   // Format the sitemap with correct type
   const sitemapEntries: MetadataRoute.Sitemap = dynamicRoutes.map((route) => {
     // Assign priority based on route importance
