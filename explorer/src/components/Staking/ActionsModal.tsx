@@ -24,10 +24,17 @@ import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { logTx } from 'utils/log'
-import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
+import {
+  bigNumberToFormattedString,
+  floatToStringWithDecimals,
+  formatUnitsToNumber,
+} from 'utils/number'
 import * as Yup from 'yup'
 import { AccountIcon } from '../common/AccountIcon'
 import { Tooltip } from '../common/Tooltip'
+
+// Custom slider styling
+import 'styles/slider-custom.css'
 
 export enum OperatorActionType {
   None = 'none',
@@ -53,6 +60,7 @@ export type OperatorAction = {
   currentTotalStake?: string
   apy30d?: string
   isRedirecting?: boolean
+  totalStake?: bigint
 }
 
 type Props = {
@@ -374,14 +382,16 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       <span className='text-lg font-medium text-blueAccent dark:text-white'>
                         Operator #{action.operatorId}
                       </span>
-                      <p className='text-xs text-blueAccent/70 dark:text-white/70'>
+                      <p className='text-xs text-blueAccent/70 dark:text-gray-300'>
                         {action.accountId ? shortString(action.accountId) : ''}
                       </p>
                     </div>
                   </div>
                   <div className='text-right'>
-                    <div className='text-sm font-medium'>{action.apy30d}% 30d APY</div>
-                    <div className='text-xs font-normal text-blueAccent/70 dark:text-white/70'>
+                    <div className='text-sm font-medium text-blueAccent dark:text-white'>
+                      {action.apy30d}% 30d APY
+                    </div>
+                    <div className='text-xs font-normal text-blueAccent/70 dark:text-gray-300'>
                       Est. Annual Yield
                     </div>
                   </div>
@@ -390,7 +400,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                 <div className='grid grid-cols-3 gap-2'>
                   {action.nominationTax && (
                     <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
-                      <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                      <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-gray-300'>
                         <Tooltip text='The tax percentage for the operator' direction='top'>
                           <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
                         </Tooltip>
@@ -403,7 +413,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   )}
                   {action.currentTotalStake && (
                     <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
-                      <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                      <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-gray-300'>
                         <Tooltip text='The total stake of the operator' direction='top'>
                           <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
                         </Tooltip>
@@ -416,7 +426,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   )}
                   {action.minimumNominatorStake && (
                     <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
-                      <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-white/70'>
+                      <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-gray-300'>
                         <Tooltip
                           text='The minimum stake required to nominate an operator'
                           direction='top'
@@ -512,21 +522,21 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       ) : (
                         <div className='mt-4 flex w-full items-center justify-center gap-2'>
                           <button
+                            className='w-full rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                            type='button'
+                            onClick={handleClose}
+                          >
+                            Cancel
+                          </button>
+                          <button
                             className={cn(
-                              'w-full rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2',
+                              'w-full rounded-full bg-buttonLightFrom px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2 dark:bg-primaryAccent dark:text-white',
                               hasInsufficientBalance ? 'cursor-not-allowed opacity-50' : '',
                             )}
                             type='submit'
                             disabled={hasInsufficientBalance}
                           >
                             {OperatorActionType[action.type as keyof typeof OperatorActionType]}
-                          </button>
-                          <button
-                            className='w-full rounded-full border border-grayDark bg-white px-4 py-2 text-sm font-medium text-grayDarker hover:bg-gray-100 dark:bg-primaryAccent'
-                            type='button'
-                            onClick={handleClose}
-                          >
-                            Cancel
                           </button>
                         </div>
                       )}
@@ -539,7 +549,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         )
       case OperatorActionType.Withdraw:
         return (
-          <div className='flex flex-col items-start gap-4'>
+          <div className='flex flex-col items-start gap-4 py-3'>
             <Formik
               initialValues={initialValues}
               validationSchema={withdrawFundsFormValidationSchema}
@@ -556,7 +566,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                  <span className='pb-3 text-sm font-medium text-gray-500 dark:text-gray-400'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                       OperatorActionType.Nominating
@@ -567,10 +577,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   <FieldArray
                     name='dischargeNorms'
                     render={() => (
-                      <div className='relative w-[400px]'>
-                        <div className='mb-4 flex w-full items-center justify-between'>
+                      <div className='mt-2 flex flex-col gap-4'>
+                        <div className='flex w-full items-center gap-2'>
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 25
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(25)
@@ -580,7 +595,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             25%
                           </button>
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 50
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(50)
@@ -590,7 +610,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             50%
                           </button>
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 75
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(75)
@@ -600,7 +625,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             75%
                           </button>
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 100
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(100)
@@ -624,7 +654,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             style={{ flexGrow: 1, marginRight: '10px' }} // Added margin to the right
                           />
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 100
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(100)
@@ -634,8 +669,16 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             Max
                           </button>
                         </div>
-                        <div className='mt-2 text-center text-sm font-medium dark:text-white'>
-                          {sliderValue.toFixed(0)}% of your stake
+                        <div className='flex items-center justify-between'>
+                          <span className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                            {sliderValue.toFixed(0)}% of your stake
+                          </span>
+                          <span className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                            {bigNumberToFormattedString(
+                              (Number(action.totalStake) || 0) * (sliderValue / 100),
+                            )}{' '}
+                            {tokenSymbol}
+                          </span>
                         </div>
                       </div>
                     )}
@@ -661,7 +704,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     </div>
                   ) : (
                     <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                      className='w-full rounded-full border border-gray-200 bg-buttonLightFrom px-3 py-2 text-sm font-medium text-gray-50 hover:bg-buttonLightFrom/90 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90'
                       type='submit'
                     >
                       {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -721,6 +764,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     action.accountId,
     action.operatorId,
     action.isRedirecting,
+    action.totalStake,
     initialValues,
     nominationInitialValue,
     addFundsFormValidationSchema,

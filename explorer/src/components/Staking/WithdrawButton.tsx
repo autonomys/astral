@@ -7,6 +7,7 @@ export type WithdrawButtonRow = {
   original: {
     id: string
     current_total_shares: bigint
+    totalStake?: bigint
   }
 }
 
@@ -21,8 +22,9 @@ export const WithdrawButton: FC<WithdrawButtonProps> = ({ handleAction, row }) =
       handleAction({
         type: 'Withdraw' as OperatorActionType,
         operatorId: parseInt(row.original.id),
+        totalStake: row.original.totalStake,
       }),
-    [handleAction, row.original.id],
+    [handleAction, row.original.id, row.original.totalStake],
   )
 
   return (
