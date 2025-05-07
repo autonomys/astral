@@ -833,7 +833,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   }
 
   return (
-    <Modal title={action.type} onClose={handleClose} isOpen={isOpen} size='md'>
+    <Modal
+      title={OperatorActionType[action.type as keyof typeof OperatorActionType]}
+      onClose={handleClose}
+      isOpen={isOpen}
+      size='md'
+    >
       {ActionBody}
     </Modal>
   )
