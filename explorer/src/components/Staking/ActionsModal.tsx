@@ -677,7 +677,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             {bigNumberToFormattedString(
                               (Number(action.totalStake) || 0) * (sliderValue / 100),
                             )}{' '}
-                            {tokenSymbol}
+                            {tokenSymbol} {'(estimated.)'}
                           </span>
                         </div>
                       </div>
