@@ -31,9 +31,9 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@apollo/client": "^3.13.5",
     "@autonomys/auto-consensus": "^1.4.14",
     "@autonomys/auto-utils": "^1.4.14",
-    "@apollo/client": "^3.13.5",
     "@polkadot/api": "^15.8.1",
     "@polkadot/types": "^15.8.1",
     "@polkadot/util": "^13.4.3",
@@ -53,5 +53,6 @@
   },
   "resolutions": {
     "ipfs-unixfs": "6.0.9"
-  }
+  },
+  "packageManager": "yarn@4.2.2"
 }
