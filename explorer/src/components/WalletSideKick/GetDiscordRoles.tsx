@@ -103,6 +103,11 @@ export const GetDiscordRoles: FC = () => {
                 🤝
               </StyledListItem>
             )}
+            {session?.user?.discord?.vcs.roles.mainnetTalismanFarmer && (
+              <StyledListItem title='You are a Verified Talisman Farmer on Discord'>
+                🌾
+              </StyledListItem>
+            )}
             <VerifyWalletOwnership />
             <ConnectDiscord />
           </List>

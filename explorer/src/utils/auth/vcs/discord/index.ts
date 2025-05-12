@@ -17,6 +17,10 @@ import {
   verifyMainnetDiscordOperatorRole,
   verifyTaurusDiscordOperatorRole,
 } from './role-operator'
+import {
+  giveMainnetDiscordTalismanFarmerRole,
+  verifyMainnetDiscordTalismanFarmerRole,
+} from './role-talisman'
 import { getUserRoles } from './utils'
 
 export {
@@ -24,6 +28,7 @@ export {
   giveMainnetDiscordFarmerRole,
   giveMainnetDiscordNominatorRole,
   giveMainnetDiscordOperatorRole,
+  giveMainnetDiscordTalismanFarmerRole,
   giveTaurusDiscordFarmerRole,
   giveTaurusDiscordNominatorRole,
   giveTaurusDiscordOperatorRole,
@@ -31,6 +36,7 @@ export {
   verifyMainnetDiscordFarmerRole,
   verifyMainnetDiscordNominatorRole,
   verifyMainnetDiscordOperatorRole,
+  verifyMainnetDiscordTalismanFarmerRole,
   verifyTaurusDiscordFarmerRole,
   verifyTaurusDiscordNominatorRole,
   verifyTaurusDiscordOperatorRole,

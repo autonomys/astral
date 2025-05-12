@@ -31,6 +31,8 @@ query NominationsList(
       apy30d: current_30d_apy
       apy7d: current_7d_apy
       apy1d: current_1d_apy
+      minimumNominatorStake: minimum_nominator_stake
+      nominationTax: nomination_tax
     }
     known_shares
     known_storage_fee_deposit

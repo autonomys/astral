@@ -12,6 +12,8 @@ export const DEFAULT_SUBSPACE_TOKEN: SubspaceToken = {
   account: '',
   message: '',
   signature: '',
+  source: '',
+  type: '',
   vcs: {
     mainnetFarmer: false,
     mainnetOperator: false,
@@ -19,6 +21,8 @@ export const DEFAULT_SUBSPACE_TOKEN: SubspaceToken = {
     taurusFarmer: false,
     taurusOperator: false,
     taurusNominator: false,
+    // Temporary VCs
+    mainnetTalismanFarmer: false,
   },
   disbursements: {
     stakeWars2: false,
@@ -37,6 +41,8 @@ export const DEFAULT_DISCORD_TOKEN: DiscordToken = {
       taurusFarmer: false,
       taurusOperator: false,
       taurusNominator: false,
+      // Temporary VCs
+      mainnetTalismanFarmer: false,
     },
   },
 }

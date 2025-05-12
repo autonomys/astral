@@ -7,6 +7,12 @@ export type NominationButtonRow = {
   original: {
     id: string
     current_total_shares: bigint
+    minimumNominatorStake?: string
+    accountId?: string
+    nominationTax?: string
+    currentTotalStake?: string
+    apy30d?: string
+    isRedirecting?: boolean
   }
 }
 
@@ -21,8 +27,23 @@ export const NominationButton: FC<NominationButtonProps> = ({ handleAction, row 
       handleAction({
         type: 'Nominating' as OperatorActionType,
         operatorId: parseInt(row.original.id),
+        minimumNominatorStake: row.original.minimumNominatorStake,
+        nominationTax: row.original.nominationTax,
+        accountId: row.original.accountId,
+        currentTotalStake: row.original.currentTotalStake,
+        apy30d: row.original.apy30d,
+        isRedirecting: row.original.isRedirecting,
       }),
-    [handleAction, row.original.id],
+    [
+      handleAction,
+      row.original.id,
+      row.original.minimumNominatorStake,
+      row.original.accountId,
+      row.original.currentTotalStake,
+      row.original.apy30d,
+      row.original.nominationTax,
+      row.original.isRedirecting,
+    ],
   )
 
   return (

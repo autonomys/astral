@@ -27484,7 +27484,7 @@ export type NominationsListQueryVariables = Exact<{
 }>;
 
 
-export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string, last_domain_block_number: any } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, raw_status: string, current_total_stake: any, current_storage_fee_deposit: any, current_total_shares: any, current_share_price: any, apy30d: any, apy7d: any, apy1d: any } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, total_amount: any, estimated_shares: any, timestamp: any, extrinsic_id: string, status: string, created_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, storage_fee_refund: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, total_amount: any, timestamp: any, withdraw_extrinsic_id: string, unlock_extrinsic_id: string, status: string, created_at: any, domain_block_number_ready_at: any, unlocked_at: any, updated_at: any }>, unlocked_events: Array<{ __typename?: 'staking_unlocked_events', id: string, amount: any, storage_fee: any, block_height: any, extrinsic_id: string }> }> };
+export type NominationsListQuery = { __typename?: 'query_root', staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, domain_id: string, operator_id: string, known_shares: any, known_storage_fee_deposit: any, pending_amount: any, pending_storage_fee_deposit: any, pending_effective_domain_epoch: any, total_withdrawal_amounts: any, total_storage_fee_refund: any, unlock_at_confirmed_domain_block_number: any, pending_shares: any, pending_storage_fee_refund: any, total_deposits: any, status: string, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, name: string, last_domain_block_number: any } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, status: string, raw_status: string, current_total_stake: any, current_storage_fee_deposit: any, current_total_shares: any, current_share_price: any, apy30d: any, apy7d: any, apy1d: any, minimumNominatorStake: any, nominationTax: number } | null, deposits: Array<{ __typename?: 'staking_deposits', id: string, amount: any, storage_fee_deposit: any, total_amount: any, estimated_shares: any, timestamp: any, extrinsic_id: string, status: string, created_at: any, updated_at: any }>, withdrawals: Array<{ __typename?: 'staking_withdrawals', id: string, shares: any, storage_fee_refund: any, estimated_amount: any, unlocked_amount: any, unlocked_storage_fee: any, total_amount: any, timestamp: any, withdraw_extrinsic_id: string, unlock_extrinsic_id: string, status: string, created_at: any, domain_block_number_ready_at: any, unlocked_at: any, updated_at: any }>, unlocked_events: Array<{ __typename?: 'staking_unlocked_events', id: string, amount: any, storage_fee: any, block_height: any, extrinsic_id: string }> }> };
 
 export type OperatorsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -27650,13 +27650,6 @@ export type TransferHistoryQueryVariables = Exact<{
 
 export type TransferHistoryQuery = { __typename?: 'query_root', consensus_transfers_aggregate: { __typename?: 'consensus_transfers_aggregate', aggregate?: { __typename?: 'consensus_transfers_aggregate_fields', count: number } | null }, consensus_transfers: Array<{ __typename?: 'consensus_transfers', block_hash: string, block_height: any, event_id: string, extrinsic_id: string, fee: any, from: string, from_chain: string, id: string, success: boolean, timestamp: any, to: string, to_chain: string, value: any }> };
 
-export type AccountsTopLeaderboardQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-}>;
-
-
-export type AccountsTopLeaderboardQuery = { __typename?: 'query_root', farmers: Array<{ __typename?: 'consensus_rewards', id: string }>, operators: Array<{ __typename?: 'consensus_rewards', id: string }>, nominators: Array<{ __typename?: 'consensus_rewards', id: string }> };
-
 export type PendingTransactionQueryVariables = Exact<{
   subspaceAccount?: InputMaybe<Scalars['String']['input']>;
   extrinsics?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
@@ -27678,15 +27671,7 @@ export type CheckRoleQueryVariables = Exact<{
 }>;
 
 
-export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }>, isOperator: Array<{ __typename?: 'staking_operators', id: string }>, isNominator: Array<{ __typename?: 'staking_accounts', id: string }> };
-
-export type StakingSummaryQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type StakingSummaryQuery = { __typename?: 'query_root', staking_operators: Array<{ __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any }>, staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, known_shares: any, known_storage_fee_deposit: any, account?: { __typename?: 'staking_accounts', id: string } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any } | null }>, staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } };
+export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }>, isOperator: Array<{ __typename?: 'staking_operators', id: string }>, isNominator: Array<{ __typename?: 'staking_accounts', id: string }>, isTalismanFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }> };
 
 export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -30587,6 +30572,8 @@ export const NominationsListDocument = gql`
       apy30d: current_30d_apy
       apy7d: current_7d_apy
       apy1d: current_1d_apy
+      minimumNominatorStake: minimum_nominator_stake
+      nominationTax: nomination_tax
     }
     known_shares
     known_storage_fee_deposit
@@ -31766,64 +31753,6 @@ export type TransferHistoryQueryHookResult = ReturnType<typeof useTransferHistor
 export type TransferHistoryLazyQueryHookResult = ReturnType<typeof useTransferHistoryLazyQuery>;
 export type TransferHistorySuspenseQueryHookResult = ReturnType<typeof useTransferHistorySuspenseQuery>;
 export type TransferHistoryQueryResult = Apollo.QueryResult<TransferHistoryQuery, TransferHistoryQueryVariables>;
-export const AccountsTopLeaderboardDocument = gql`
-    query AccountsTopLeaderboard($first: Int!) {
-  farmers: consensus_rewards(
-    order_by: {amount: desc}
-    limit: $first
-    where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}]}
-  ) {
-    id
-  }
-  operators: consensus_rewards(
-    order_by: {amount: desc}
-    limit: $first
-    where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}]}
-  ) {
-    id
-  }
-  nominators: consensus_rewards(
-    order_by: {amount: desc}
-    limit: $first
-    where: {_or: [{reward_type: {_eq: "Rewards.VoteReward"}}, {reward_type: {_eq: "Rewards.BlockReward"}}]}
-  ) {
-    id
-  }
-}
-    `;
-
-/**
- * __useAccountsTopLeaderboardQuery__
- *
- * To run a query within a React component, call `useAccountsTopLeaderboardQuery` and pass it any options that fit your needs.
- * When your component renders, `useAccountsTopLeaderboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAccountsTopLeaderboardQuery({
- *   variables: {
- *      first: // value for 'first'
- *   },
- * });
- */
-export function useAccountsTopLeaderboardQuery(baseOptions: Apollo.QueryHookOptions<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables> & ({ variables: AccountsTopLeaderboardQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>(AccountsTopLeaderboardDocument, options);
-      }
-export function useAccountsTopLeaderboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>(AccountsTopLeaderboardDocument, options);
-        }
-export function useAccountsTopLeaderboardSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>(AccountsTopLeaderboardDocument, options);
-        }
-export type AccountsTopLeaderboardQueryHookResult = ReturnType<typeof useAccountsTopLeaderboardQuery>;
-export type AccountsTopLeaderboardLazyQueryHookResult = ReturnType<typeof useAccountsTopLeaderboardLazyQuery>;
-export type AccountsTopLeaderboardSuspenseQueryHookResult = ReturnType<typeof useAccountsTopLeaderboardSuspenseQuery>;
-export type AccountsTopLeaderboardQueryResult = Apollo.QueryResult<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>;
 export const PendingTransactionDocument = gql`
     query PendingTransaction($subspaceAccount: String, $extrinsics: [String!]) {
   consensus_accounts(where: {id: {_eq: $subspaceAccount}}) {
@@ -31887,7 +31816,7 @@ export const ExtrinsicsSummaryDocument = gql`
     }
   }
   extrinsics: consensus_extrinsics(
-    order_by: {id: desc}
+    order_by: {sort_id: desc}
     limit: $first
     where: {signer: {_eq: $subspaceAccount}}
   ) {
@@ -31958,6 +31887,14 @@ export const CheckRoleDocument = gql`
   ) {
     id
   }
+  isTalismanFarmer: consensus_rewards(
+    where: {_or: [{reward_type: {_eq: "rewards.VoteReward"}}, {reward_type: {_eq: "rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}, _and: [{timestamp: {_gte: "2025-05-07T00:00:00.000"}}, {timestamp: {_lte: "2025-06-04T00:00:00.000"}}]}
+    limit: 1
+  ) {
+    account {
+      id
+    }
+  }
 }
     `;
 
@@ -31993,90 +31930,6 @@ export type CheckRoleQueryHookResult = ReturnType<typeof useCheckRoleQuery>;
 export type CheckRoleLazyQueryHookResult = ReturnType<typeof useCheckRoleLazyQuery>;
 export type CheckRoleSuspenseQueryHookResult = ReturnType<typeof useCheckRoleSuspenseQuery>;
 export type CheckRoleQueryResult = Apollo.QueryResult<CheckRoleQuery, CheckRoleQueryVariables>;
-export const StakingSummaryDocument = gql`
-    query StakingSummary($first: Int!, $subspaceAccount: String) {
-  staking_operators(
-    order_by: {id: asc}
-    limit: $first
-    where: {account_id: {_eq: $subspaceAccount}}
-  ) {
-    id
-    account_id
-    domain_id
-    current_total_stake
-    current_total_shares
-  }
-  staking_operators_aggregate(
-    order_by: {id: asc}
-    where: {account_id: {_eq: $subspaceAccount}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  staking_nominators(
-    order_by: {id: asc}
-    limit: $first
-    where: {account_id: {_eq: $subspaceAccount}}
-  ) {
-    id
-    known_shares
-    known_storage_fee_deposit
-    account {
-      id
-    }
-    operator {
-      id
-      account_id
-      domain_id
-      current_total_stake
-      current_total_shares
-    }
-  }
-  staking_nominators_aggregate(
-    order_by: {id: asc}
-    where: {account_id: {_eq: $subspaceAccount}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-
-/**
- * __useStakingSummaryQuery__
- *
- * To run a query within a React component, call `useStakingSummaryQuery` and pass it any options that fit your needs.
- * When your component renders, `useStakingSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useStakingSummaryQuery({
- *   variables: {
- *      first: // value for 'first'
- *      subspaceAccount: // value for 'subspaceAccount'
- *   },
- * });
- */
-export function useStakingSummaryQuery(baseOptions: Apollo.QueryHookOptions<StakingSummaryQuery, StakingSummaryQueryVariables> & ({ variables: StakingSummaryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(StakingSummaryDocument, options);
-      }
-export function useStakingSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StakingSummaryQuery, StakingSummaryQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(StakingSummaryDocument, options);
-        }
-export function useStakingSummarySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<StakingSummaryQuery, StakingSummaryQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(StakingSummaryDocument, options);
-        }
-export type StakingSummaryQueryHookResult = ReturnType<typeof useStakingSummaryQuery>;
-export type StakingSummaryLazyQueryHookResult = ReturnType<typeof useStakingSummaryLazyQuery>;
-export type StakingSummarySuspenseQueryHookResult = ReturnType<typeof useStakingSummarySuspenseQuery>;
-export type StakingSummaryQueryResult = Apollo.QueryResult<StakingSummaryQuery, StakingSummaryQueryVariables>;
 export const LastBlockDocument = gql`
     query LastBlock {
   lastBlock: consensus__metadata_by_pk(key: "lastProcessedHeight") {

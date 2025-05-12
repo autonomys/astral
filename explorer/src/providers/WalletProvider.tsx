@@ -6,10 +6,10 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@talismn/connect-wallets'
 import { WalletType } from 'constants/wallet'
-import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
 import { getCsrfToken, getSession, signIn, signOut, useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import { createContext, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { usePreferencesStates } from 'states/preferences'
 import type { ChainParam } from 'types/app'
 import type { WalletAccountWithType } from 'types/wallet'
 import { formatAddress } from 'utils/formatAddress'
@@ -25,13 +25,14 @@ export type WalletContextValue = {
   isReady: boolean
   accounts: WalletAccountWithType[] | undefined | null
   error: Error | null
+  connectionError: Error | null
   injector: InjectedExtension | null
   actingAccount: WalletAccountWithType | undefined
   extensions: InjectedExtension[] | undefined
   disconnectWallet: () => void
   setActingAccount: (account: WalletAccountWithType) => void
-  setPreferredExtension: (extension: string) => void
-  preferredExtension: string | undefined
+  setPreferredExtension: (extension: string | null) => void
+  preferredExtension: string | null
   subspaceAccount: string | undefined
   sessionSubspaceAccount: string | undefined
   handleSelectFirstWalletFromExtension: (source: string) => Promise<void>
@@ -55,18 +56,43 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const [accounts, setAccounts] = useState<WalletAccountWithType[] | null | undefined>(undefined)
   const [extensions] = useState<InjectedExtension[] | undefined>(undefined)
   const [error, setError] = useState<Error | null>(null)
+  const [connectionError, setConnectionError] = useState<Error | null>(null)
   const [injector, setInjector] = useState<InjectedExtension | null>(null)
   const [actingAccount, setActingAccount] = useState<WalletAccountWithType | undefined>(undefined)
   const [subspaceAccount, setSubspaceAccount] = useState<string | undefined>(undefined)
-  const [preferredAccount, setPreferredAccount] = useSafeLocalStorage('localAccount', null)
-  const [preferredExtension, setPreferredExtension] = useSafeLocalStorage('extensionSource', null)
-  const { data: session } = useSession()
 
+  const preferredExtension = usePreferencesStates((state) => state.extension)
+  const preferredAccount = usePreferencesStates((state) => state.account)
+  const proofOfOwnership = usePreferencesStates((state) => state.proofOfOwnership)
+  const setPreferredExtension = usePreferencesStates((state) => state.setExtension)
+  const setPreferredAccount = usePreferencesStates((state) => state.setAccount)
+  const setProofOfOwnership = usePreferencesStates((state) => state.setProofOfOwnership)
+  const clearPreferences = usePreferencesStates((state) => state.clearWalletPreferences)
+
+  const { data: session } = useSession()
   const sessionSubspaceAccount = useMemo(() => session?.user?.subspace?.account, [session])
 
   const prepareApi = useCallback(async () => {
     try {
-      return await activate({ networkId: chain })
+      const api = await activate({ networkId: chain })
+
+      if (api) {
+        await api.isReady
+
+        // TODO: Update metadata added for testing
+        if (typeof api.rpc.state?.subscribeRuntimeVersion === 'function') {
+          api.rpc.state.subscribeRuntimeVersion(async () => {
+            try {
+              console.log('Runtime version changed, updating metadata...')
+              await api.rpc.state.getMetadata()
+            } catch (error) {
+              console.error('Error updating API metadata:', error)
+            }
+          })
+        }
+      }
+
+      return api
     } catch (error) {
       console.error('Failed to prepare API for chain', chain, 'error:', error)
     }
@@ -78,10 +104,29 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       if (!network || !network.domains || network.domains.length === 0) return
       const domains = network.domains
 
-      const domainApis = await Promise.all(
+      const unInitializedDomainApis = await Promise.all(
         domains.map((d) =>
           createConnection(d.rpcUrls.map((rpc) => rpc.replace('https://', 'wss://'))),
         ),
+      )
+      const domainApis = await Promise.all(
+        unInitializedDomainApis.map(async (d) => {
+          const api = await d.isReady
+
+          // TODO: Update metadata added for testing
+          if (api && typeof api.rpc.state?.subscribeRuntimeVersion === 'function') {
+            api.rpc.state.subscribeRuntimeVersion(async () => {
+              try {
+                console.log('Domain runtime version changed, updating metadata...')
+                await api.rpc.state.getMetadata()
+              } catch (error) {
+                console.error('Error updating domain API metadata:', error)
+              }
+            })
+          }
+
+          return api
+        }),
       )
 
       return domains.reduce(
@@ -129,24 +174,41 @@ export const WalletProvider: FC<Props> = ({ children }) => {
             !currentSession?.user?.subspace ||
             currentSession.user.subspace.account !== _subspaceAccount
           ) {
-            const csrfToken = await getCsrfToken()
-            const message = JSON.stringify({ accountId: _subspaceAccount, csrfToken })
-            const signature =
-              newInjector.signer.signRaw &&
-              (await newInjector.signer.signRaw({
+            if (proofOfOwnership && proofOfOwnership.address === account.address)
+              await signIn('subspace', {
+                redirect: false,
+                account: _subspaceAccount,
+                message: proofOfOwnership.message,
+                signature: proofOfOwnership.signature,
+              })
+            else {
+              const csrfToken = await getCsrfToken()
+              const message = JSON.stringify({ accountId: _subspaceAccount, csrfToken })
+              const signature =
+                newInjector.signer.signRaw &&
+                (await newInjector.signer.signRaw({
+                  address: account.address,
+                  type: 'bytes',
+                  data: message,
+                }))
+
+              if (!signature) throw new Error('No signature')
+
+              setProofOfOwnership({
                 address: account.address,
-                type: 'bytes',
-                data: message,
-              }))
+                message,
+                signature: signature.signature,
+              })
 
-            if (!signature) throw new Error('No signature')
-
-            await signIn('subspace', {
-              redirect: false,
-              account: _subspaceAccount,
-              message,
-              signature: signature.signature,
-            })
+              await signIn('subspace', {
+                redirect: false,
+                account: _subspaceAccount,
+                message,
+                signature: signature.signature,
+                walletSource: account.source,
+                walletType: account.type,
+              })
+            }
           }
         }
 
@@ -165,10 +227,11 @@ export const WalletProvider: FC<Props> = ({ children }) => {
           value: `source:${account.source}`,
         })
       } catch (error) {
-        console.error('Failed to change account', error)
+        console.error('Failed to change account', error, new Error(String(error)))
+        setConnectionError(error instanceof Error ? error : new Error(String(error)))
       }
     },
-    [setPreferredAccount, setup],
+    [proofOfOwnership, setPreferredAccount, setProofOfOwnership, setup],
   )
 
   const changeAccount = useCallback(
@@ -181,20 +244,33 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setAccounts([])
     setActingAccount(undefined)
     setSubspaceAccount(undefined)
-    setPreferredAccount(null)
-    setPreferredExtension(null)
+    setConnectionError(null)
+    clearPreferences()
     setIsReady(false)
     await signOutSessionOnAccountChange()
     sendGAEvent('event', 'wallet_disconnect')
-  }, [setPreferredAccount, setPreferredExtension, signOutSessionOnAccountChange])
+  }, [clearPreferences, signOutSessionOnAccountChange])
 
   const handleGetWalletFromExtension = useCallback(
     async (source: string) => {
-      const wallet = getWalletBySource(source)
-      if (wallet) {
+      try {
+        const wallet = getWalletBySource(source)
+        if (!wallet) {
+          throw new Error(`Wallet not found for source: ${source}`)
+        }
+
         await wallet.enable(process.env.NEXT_PUBLIC_TALESMAN_DAPP_NAME || 'Autonomy Block Explorer')
-        if (wallet.extension) setInjector(wallet.extension)
+        if (!wallet.extension) {
+          throw new Error(`Extension not available for ${source}`)
+        }
+
+        setInjector(wallet.extension)
         const walletAccounts = (await wallet.getAccounts()) as WalletAccountWithType[]
+
+        if (!walletAccounts || walletAccounts.length === 0) {
+          throw new Error(`No accounts found for ${source}`)
+        }
+
         setAccounts(walletAccounts)
         setPreferredExtension(source)
         sendGAEvent({
@@ -202,18 +278,42 @@ export const WalletProvider: FC<Props> = ({ children }) => {
           value: `source:${source}`,
         })
         return { walletAccounts, newInjector: wallet.extension }
+      } catch (err) {
+        console.error('Error getting wallet from extension:', err)
+        setConnectionError(err instanceof Error ? err : new Error(String(err)))
+        throw err
       }
-      return { walletAccounts: [], newInjector: null }
     },
     [setPreferredExtension],
   )
 
   const handleSelectFirstWalletFromExtension = useCallback(
     async (source: string) => {
-      const { walletAccounts, newInjector } = await handleGetWalletFromExtension(source)
-      if (!walletAccounts || walletAccounts.length === 0) return
-      const mainAccount = walletAccounts.find((account) => account.source === source)
-      if (mainAccount) _changeAccount(mainAccount, newInjector)
+      try {
+        setConnectionError(null)
+        const { walletAccounts, newInjector } = await handleGetWalletFromExtension(source)
+        if (!walletAccounts || walletAccounts.length === 0) {
+          const error = new Error(`No accounts found for ${source}`)
+          setConnectionError(error)
+          throw error
+        }
+        const mainAccount = walletAccounts.find((account) => account.source === source)
+        if (!mainAccount) {
+          const error = new Error(`No matching account found for ${source}`)
+          setConnectionError(error)
+          throw error
+        }
+        if (!newInjector) {
+          const error = new Error(`Failed to get injector for ${source}`)
+          setConnectionError(error)
+          throw error
+        }
+        await _changeAccount(mainAccount, newInjector)
+      } catch (error) {
+        console.error('Failed to connect wallet from extension:', error)
+        setConnectionError(error instanceof Error ? error : new Error(String(error)))
+        throw error
+      }
     },
     [handleGetWalletFromExtension, _changeAccount],
   )
@@ -274,6 +374,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         actingAccount,
         isReady,
         error,
+        connectionError,
         injector,
         disconnectWallet,
         extensions,

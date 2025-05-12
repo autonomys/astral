@@ -77,7 +77,7 @@ export const Account: FC = () => {
               <AccountGraphs account={account} isDesktop={isDesktop} />
               <AccountRewardsHistory isDesktop={isDesktop} rewards={rewards} />
             </div>
-            <PageTabs isDesktop={isDesktop}>
+            <PageTabs isDesktop={isDesktop} pillStyle='py-2' activePillStyle='py-2'>
               <Tab title='Balance History'>
                 <BalanceHistory accountId={accountId} />
               </Tab>

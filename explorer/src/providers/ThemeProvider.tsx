@@ -1,28 +1,42 @@
 'use client'
 
-import React, { FC, ReactNode, createContext, useContext, useEffect, useState } from 'react'
+import React, {
+  FC,
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import { ThemeMode, usePreferencesStates } from 'states/preferences'
 
-// common
-import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
+function useSystemThemeDetection() {
+  const [systemIsDark, setSystemIsDark] = useState<boolean | null>(null)
 
-function usePrefersDarkMode() {
-  const [value, setValue] = useState(true)
+  const handleSystemThemeChange = useCallback(() => {
+    if (typeof window === 'undefined') return
 
-  useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    setValue(mediaQuery.matches)
+    setSystemIsDark(mediaQuery.matches)
 
-    const handler = () => setValue(mediaQuery.matches)
+    const handler = () => setSystemIsDark(mediaQuery.matches)
     mediaQuery.addEventListener('change', handler)
     return () => mediaQuery.removeEventListener('change', handler)
   }, [])
 
-  return value
+  useEffect(() => {
+    handleSystemThemeChange()
+  }, [handleSystemThemeChange])
+
+  return systemIsDark
 }
 
 type Value = {
+  themeMode: ThemeMode
   isDark: boolean
   toggleTheme: () => void
+  setThemeMode: (mode: ThemeMode) => void
 }
 
 const ThemeContext = createContext<Value>(
@@ -35,26 +49,51 @@ type Props = {
 }
 
 export const ThemeProvider: FC<Props> = ({ children }) => {
-  const prefersDarkMode = usePrefersDarkMode()
-  const [isEnabled, setIsEnabled] = useSafeLocalStorage('dark-mode', prefersDarkMode)
+  const systemIsDark = useSystemThemeDetection()
+  const themeMode = usePreferencesStates((state) => state.themeMode)
+  const setThemeMode = usePreferencesStates((state) => state.setThemeMode)
+  const setDarkMode = usePreferencesStates((state) => state.setDarkMode)
 
+  // Determine if dark mode should be active based on current mode
+  const isDark = useCallback(() => {
+    if (themeMode === 'system') {
+      return !!systemIsDark
+    }
+    return themeMode === 'dark'
+  }, [themeMode, systemIsDark])
+
+  // Apply theme to DOM
   useEffect(() => {
-    if (window === undefined) return
-    const enabled = isEnabled === undefined ? prefersDarkMode : isEnabled
+    if (typeof window === 'undefined' || systemIsDark === null) return
+
+    const enabled = isDark()
 
     const root = window.document.documentElement
     root.classList.remove(enabled ? 'light' : 'dark')
     root.classList.add(enabled ? 'dark' : 'light')
-    setIsEnabled(enabled)
-  }, [prefersDarkMode, setIsEnabled, isEnabled])
 
-  const toggleTheme = () => setIsEnabled(!isEnabled)
+    // Keep darkMode state in sync for backward compatibility
+    setDarkMode(enabled)
+  }, [systemIsDark, themeMode, isDark, setDarkMode])
+
+  // Toggle between dark and light mode
+  const toggleTheme = useCallback(() => {
+    if (themeMode === 'system') {
+      setThemeMode(systemIsDark ? 'light' : 'dark')
+    } else if (themeMode === 'dark') {
+      setThemeMode('light')
+    } else {
+      setThemeMode('dark')
+    }
+  }, [themeMode, systemIsDark, setThemeMode])
 
   return (
     <ThemeContext.Provider
       value={{
+        themeMode,
+        isDark: isDark(),
         toggleTheme,
-        isDark: isEnabled,
+        setThemeMode,
       }}
     >
       {children}

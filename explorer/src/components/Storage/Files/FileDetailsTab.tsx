@@ -97,7 +97,7 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
 
   return (
     <div ref={ref}>
-      <PageTabs isDesktop={isDesktop}>
+      <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop}>
         {fileType && fileUrl ? (
           <Tab title='File Preview'>
             <FilePreview

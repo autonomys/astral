@@ -1,24 +1,37 @@
+import { cn } from '@/utils/cn'
 import { FC, ReactElement } from 'react'
 import { Tabs } from './Tabs'
 
 type Props = {
   children: ReactElement[] | ReactElement
   isDesktop?: boolean
+  pillStyle?: string
+  activePillStyle?: string
+  tabStyle?: string
+  tabTitleStyle?: string
 }
 
-export const PageTabs: FC<Props> = ({ children, isDesktop = false }) => {
+export const PageTabs: FC<Props> = ({
+  children,
+  isDesktop = false,
+  pillStyle,
+  activePillStyle,
+  tabStyle,
+  tabTitleStyle,
+}) => {
   return (
     <Tabs
-      tabStyle={
-        isDesktop
-          ? 'bg-white border border-slate-100 shadow rounded-lg p-4 dark:bg-boxDark dark:border-none'
-          : ''
-      }
-      tabTitleStyle={!isDesktop ? 'bg-white rounded-[20px] mb-5 px-5 dark:bg-boxDark' : ''}
-      pillStyle={`dark:text-white ${isDesktop && 'dark:bg-transparent'}`}
-      activePillStyle={`dark:text-white text-white bg-buttonLightFrom ${
-        isDesktop ? 'dark:bg-buttonDarkFrom' : 'dark:bg-buttonDarkFrom'
-      }`}
+      tabStyle={cn(isDesktop ? 'bg-transparent rounded-lg p-4 dark:border-none' : '', tabStyle)}
+      tabTitleStyle={cn(
+        !isDesktop ? 'bg-transparent rounded-[20px] mb-5 px-5 dark:bg-boxDark' : '',
+        tabTitleStyle,
+      )}
+      pillStyle={cn('dark:text-white', isDesktop && 'dark:bg-transparent', pillStyle)}
+      activePillStyle={cn(
+        'dark:text-white text-white bg-buttonLightFrom',
+        isDesktop ? 'dark:bg-buttonDarkFrom' : 'dark:bg-buttonDarkFrom',
+        activePillStyle,
+      )}
     >
       {children}
     </Tabs>

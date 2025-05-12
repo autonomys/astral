@@ -19,9 +19,7 @@ import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
 import { GetDiscordRoles } from './GetDiscordRoles'
 import { LastExtrinsics } from './LastExtrinsics'
-import { Leaderboard } from './Leaderboard'
 import { PendingTransactions } from './PendingTransactions'
-import { StakingSummary } from './StakingSummary'
 
 type DrawerProps = {
   isOpen: boolean
@@ -80,16 +78,19 @@ export const WalletSidekick: FC = () => {
     <>
       <button
         onClick={onClick}
-        className={`inline-flex items-center bg-white text-base hover:bg-gray-200 focus:outline-none ${
-          isDesktop ? 'ml-4 rounded-full p-2' : 'rounded-r-full'
-        } shadow-md dark:bg-buttonLightTo md:mt-3`}
+        className={`inline-flex items-center justify-center bg-white text-base hover:bg-gray-200 focus:outline-none ${
+          isDesktop ? 'ml-2 rounded-full p-2' : 'w-10 rounded-r-full'
+        } shadow-md dark:bg-buttonLightTo`}
       >
-        <Image
-          src='/images/icons/wallet-addresses-small.webp'
-          alt='Wallet list'
-          width={24}
-          height={24}
-        />
+        <div className='flex h-6 min-h-6 w-6 min-w-6 items-center justify-center'>
+          <Image
+            src='/images/icons/wallet-addresses-small.webp'
+            alt='Wallet list'
+            width={24}
+            height={24}
+            className='h-[24px] min-h-[24px] w-[24px] min-w-[24px]'
+          />
+        </div>
       </button>
       {isOpen && (
         <div className='fixed inset-0 z-20 bg-gray-900 bg-opacity-25' onClick={onCloseSidebar} />
@@ -181,9 +182,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onCloseSidebar }) => {
             />
             <PendingTransactions subspaceAccount={sessionSubspaceAccount} />
             <GetDiscordRoles />
-            <StakingSummary subspaceAccount={sessionSubspaceAccount} tokenSymbol={tokenSymbol} />
             <LastExtrinsics subspaceAccount={sessionSubspaceAccount} />
-            <Leaderboard subspaceAccount={sessionSubspaceAccount} />
           </>
         )}
         <div className='flex'>
