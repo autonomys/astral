@@ -8,7 +8,12 @@ import { getMetadata } from 'utils/metadata/basic'
 export const generateMetadata = ({
   params: { chain, cid },
 }: ChainPageProps & CIDPageProps): Metadata =>
-  getMetadata(chain, 'File', cid ? shortString(cid) : '')
+  getMetadata(
+    chain,
+    'File',
+    cid ? shortString(cid) : '',
+    `/${chain}/permanent-storage/files/${cid}`,
+  )
 
 const Page: FC = () => <File />
 
