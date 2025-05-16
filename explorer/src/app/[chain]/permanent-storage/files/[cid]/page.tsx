@@ -7,17 +7,8 @@ import { getMetadata } from 'utils/metadata/basic'
 
 export const generateMetadata = ({
   params: { chain, cid },
-}: ChainPageProps & CIDPageProps): Metadata => {
-  const metadata = getMetadata(
-    chain,
-    'File',
-    cid ? shortString(cid) : '',
-    '/images/auto-drive-banner.svg',
-    false,
-  )
-  console.log(metadata)
-  return metadata
-}
+}: ChainPageProps & CIDPageProps): Metadata =>
+  getMetadata(chain, 'File', cid ? shortString(cid) : '', '/images/auto-drive-banner.svg', false)
 
 const Page: FC = () => <File />
 
