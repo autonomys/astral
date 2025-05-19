@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphQL Subscription Test</title>
+    <script src="https://unpkg.com/apollo-client@2.6.10/dist/apollo-client.umd.js"></script>
+    <script src="https://unpkg.com/apollo-link-http@1.5.17/dist/apollo-link-http.umd.js"></script>
+    <script src="https://unpkg.com/apollo-link-ws@1.0.20/dist/apollo-link-ws.umd.js"></script>
+    <script src="https://unpkg.com/apollo-utilities@1.3.4/dist/apollo-utilities.umd.js"></script>
+    <script src="https://unpkg.com/apollo-cache-inmemory@1.6.6/dist/apollo-cache-inmemory.umd.js"></script>
+    <script src="https://unpkg.com/subscriptions-transport-ws@0.11.0/dist/client.js"></script>
+    <script src="https://unpkg.com/graphql-tag@2.12.6/dist/graphql-tag.umd.js"></script>
+  </head>
+  <body>
+    <h1>GraphQL Subscription Test</h1>
+    <div id="result">Loading...</div>
+    <div id="log"></div>
+
+    <script>
+      function addLog(message) {
+        const logEl = document.getElementById('log')
+        const entry = document.createElement('div')
+        entry.textContent = `${new Date().toISOString()}: ${message}`
+        logEl.prepend(entry)
+      }
+
+      // Set up the HTTP link
+      const httpLink = ApolloLink.HttpLink.createHttpLink({
+        uri: 'http://localhost:8080/v1/graphql',
+        headers: {
+          'x-hasura-admin-secret': 'helloworld',
+        },
+      })
+
+      // Set up the WebSocket link
+      const wsLink = new ApolloLink.WebSocketLink.WebSocketLink({
+        uri: 'ws://localhost:8080/v1/graphql',
+        options: {
+          reconnect: true,
+          connectionParams: {
+            headers: {
+              'x-hasura-admin-secret': 'helloworld',
+            },
+          },
+          connectionCallback: (error) => {
+            if (error) {
+              addLog(`WebSocket connection error: ${JSON.stringify(error)}`)
+            } else {
+              addLog('WebSocket connected successfully')
+            }
+          },
+        },
+      })
+
+      // Use the right link based on operation
+      const link = ApolloLink.ApolloLink.split(
+        (operation) => {
+          const definition = ApolloUtilities.getMainDefinition(operation.query)
+          return (
+            definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
+          )
+        },
+        wsLink,
+        httpLink,
+      )
+
+      // Create the Apollo client
+      const client = new ApolloClient.ApolloClient({
+        link,
+        cache: new ApolloInMemoryCache.InMemoryCache(),
+      })
+
+      // Define subscription
+      const subscription = gql`
+        subscription {
+          consensus_blocks(limit: 5, order_by: { height: desc }) {
+            id
+            height
+            timestamp
+          }
+        }
+      `
+
+      // Subscribe
+      addLog('Starting subscription...')
+      const sub = client
+        .subscribe({
+          query: subscription,
+        })
+        .subscribe({
+          next(response) {
+            addLog('Received data')
+            document.getElementById('result').innerHTML = `
+          <h2>Latest Blocks</h2>
+          <pre>${JSON.stringify(response.data, null, 2)}</pre>
+        `
+          },
+          error(error) {
+            addLog(`Subscription error: ${error.message}`)
+            document.getElementById('result').innerHTML = `
+          <h2 style="color: red">Error</h2>
+          <pre>${JSON.stringify(error, null, 2)}</pre>
+        `
+          },
+          complete() {
+            addLog('Subscription completed')
+          },
+        })
+
+      // Cleanup on page unload
+      window.addEventListener('unload', () => {
+        if (sub) sub.unsubscribe()
+      })
+    </script>
+  </body>
+</html>

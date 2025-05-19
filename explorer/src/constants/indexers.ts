@@ -31,7 +31,7 @@ if (process.env.NEXT_PUBLIC_LOCALHOST_INDEXERS)
     indexer: process.env.NEXT_PUBLIC_LOCALHOST_INDEXERS,
   })
 
-export const DEFAULT_INDEXER = 'https://subql.blue.taurus.subspace.network/v1/graphql'
+export const DEFAULT_INDEXER = 'http://localhost:8080/v1/graphql'
 
 export const networks = new Set(indexers.map((chain) => chain.network))
 

@@ -89,6 +89,7 @@
     "react-paginate": "^8.3.0",
     "react-spring": "^9.7.5",
     "siwe": "^2.3.2",
+    "subscriptions-transport-ws": "^0.11.0",
     "swagger-ui-react": "^5.20.7",
     "swiper": "^11.2.6",
     "tailwind-datepicker-react": "^1.4.3",
@@ -135,5 +136,6 @@
     "prop-types": "^15.8.1",
     "tailwindcss": "^3.4.17",
     "tsconfig-paths-webpack-plugin": "^4.2.0"
-  }
+  },
+  "packageManager": "yarn@4.8.1+sha512.bc946f2a022d7a1a38adfc15b36a66a3807a67629789496c3714dd1703d2e6c6b1c69ff9ec3b43141ac7a1dd853b7685638eb0074300386a59c18df351ef8ff6"
 }

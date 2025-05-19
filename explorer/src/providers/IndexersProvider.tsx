@@ -6,12 +6,16 @@ import {
   ApolloProvider,
   InMemoryCache,
   createHttpLink,
+  split,
 } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
 import { RetryLink } from '@apollo/client/link/retry'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { getMainDefinition } from '@apollo/client/utilities'
 import { NetworkId } from '@autonomys/auto-utils'
 import { Indexer, defaultIndexer } from 'constants/indexers'
 import { Routes } from 'constants/routes'
+import { createClient } from 'graphql-ws'
 import { usePathname } from 'next/navigation'
 import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
 import { logError } from 'utils/log'
@@ -45,9 +49,25 @@ export const IndexersProvider: FC<Props> = ({ children }) => {
   const [indexerSet, _setIndexerSet] = useState<Indexer>(defaultIndexer)
   const [section, setSection] = useState<Routes>(Routes.consensus)
   const pathname = usePathname()
+
+  // HTTP link for queries and mutations
   const httpLink = createHttpLink({
     uri: () => indexerSet.indexer,
   })
+
+  // WebSocket link for subscriptions
+  const wsLink =
+    typeof window !== 'undefined'
+      ? new GraphQLWsLink(
+          createClient({
+            url: () => {
+              // Convert http(s) to ws(s)
+              const wsUrl = indexerSet.indexer.replace(/^http/, 'ws')
+              return wsUrl
+            },
+          }),
+        )
+      : null
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
@@ -68,7 +88,22 @@ export const IndexersProvider: FC<Props> = ({ children }) => {
       )
   })
 
-  const link = ApolloLink.from([errorLink, new RetryLink(), httpLink])
+  // Split links based on operation type
+  const splitLink =
+    typeof window !== 'undefined' && wsLink
+      ? split(
+          ({ query }) => {
+            const definition = getMainDefinition(query)
+            return (
+              definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
+            )
+          },
+          wsLink,
+          httpLink,
+        )
+      : httpLink
+
+  const link = ApolloLink.from([errorLink, new RetryLink(), splitLink])
 
   const client = useMemo(
     () =>

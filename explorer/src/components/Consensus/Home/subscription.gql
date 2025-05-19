@@ -1,0 +1,54 @@
+subscription HomeSubscription($limit: Int!, $offset: Int!) {
+  consensus_blocks(limit: $limit, offset: $offset, order_by: { sort_id: desc }) {
+    id
+    height
+    timestamp
+    extrinsics_count
+    events_count
+    space_pledged
+    blockchain_size
+    extrinsicsCount: extrinsics_count
+    extrinsics(limit: $limit, offset: $offset, order_by: { sort_id: desc }) {
+      id
+      hash
+      block_height
+      name
+      timestamp
+      success
+    }
+    cumulative {
+      cumulative_extrinsics_count
+      cumulative_events_count
+      cumulative_transfers_count
+      cumulative_transfer_value
+      cumulative_rewards_count
+      cumulative_reward_value
+    }
+  }
+  consensus_accounts_aggregate {
+    aggregate {
+      count
+    }
+  }
+}
+
+subscription OnChainActivityChartsSubscription {
+  stats_daily(limit: 30, offset: 1, order_by: { end_block: desc }) {
+    cumulated_history_size
+    delta_history_size
+    start_date
+    end_date
+  }
+  stats_weekly(limit: 30, offset: 1, order_by: { end_block: desc }) {
+    cumulated_history_size
+    delta_history_size
+    start_date
+    end_date
+  }
+  stats_monthly(limit: 30, offset: 1, order_by: { end_block: desc }) {
+    cumulated_history_size
+    delta_history_size
+    start_date
+    end_date
+  }
+}
