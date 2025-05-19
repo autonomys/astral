@@ -53,7 +53,6 @@ query NominationsList(
       amount
       storage_fee_deposit
       total_amount
-      estimated_shares
       timestamp
       extrinsic_id
       status
@@ -272,10 +271,8 @@ query OperatorRewardsById(
   $orderBy: [staking_operator_rewards_order_by!]!
   $where: staking_operator_rewards_bool_exp
 ) {
-  staking_operator_rewards_aggregate(where: $where) {
-    aggregate {
-      count
-    }
+  rewards_count: staking_operator_rewards(where: $where, limit: 0) {
+    id
   }
   staking_operator_rewards(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
@@ -293,10 +290,8 @@ query OperatorTaxCollectedById(
   $orderBy: [staking_operator_tax_collections_order_by!]!
   $where: staking_operator_tax_collections_bool_exp
 ) {
-  staking_operator_tax_collections_aggregate(where: $where) {
-    aggregate {
-      count
-    }
+  tax_collections_count: staking_operator_tax_collections(where: $where, limit: 0) {
+    id
   }
   staking_operator_tax_collections(
     order_by: $orderBy
@@ -318,10 +313,8 @@ query OperatorFundsUnlockById(
   $orderBy: [staking_unlocked_events_order_by!]!
   $where: staking_unlocked_events_bool_exp
 ) {
-  staking_unlocked_events_aggregate(where: $where) {
-    aggregate {
-      count
-    }
+  unlocked_events_count: staking_unlocked_events(where: $where, limit: 0) {
+    id
   }
   staking_unlocked_events(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
