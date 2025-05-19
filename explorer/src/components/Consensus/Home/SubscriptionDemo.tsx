@@ -36,8 +36,24 @@ const BLOCKS_SUBSCRIPTION = gql`
   }
 `
 
+// Environment/deployment options for testing
+const ENDPOINTS = {
+  local: {
+    http: 'http://localhost:8080/v1/graphql',
+    ws: 'ws://localhost:8080/v1/graphql',
+  },
+  mainnet: {
+    http: 'https://subql.green.mainnet.subspace.network/v1/graphql',
+    ws: 'wss://subql.green.mainnet.subspace.network/v1/graphql',
+  },
+  taurus: {
+    http: 'https://subql.green.taurus.subspace.network/v1/graphql',
+    ws: 'wss://subql.green.taurus.subspace.network/v1/graphql',
+  },
+}
+
 // Component that displays real-time block data
-const BlockSubscription: FC = () => {
+const BlockSubscription: FC<{ environment: keyof typeof ENDPOINTS }> = ({ environment }) => {
   // Subscribe to real-time block updates
   const { data, loading, error } = useSubscription<SubscriptionData>(BLOCKS_SUBSCRIPTION)
 
@@ -49,7 +65,7 @@ const BlockSubscription: FC = () => {
 
   return (
     <div className='space-y-4'>
-      <h2 className='text-xl font-bold'>Latest Blocks (Real-time)</h2>
+      <h2 className='text-xl font-bold'>Latest Blocks from {environment} (Real-time)</h2>
 
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
         {data.consensus_blocks.map((block) => (
@@ -73,28 +89,31 @@ const BlockSubscription: FC = () => {
 export const SubscriptionDemo: FC = () => {
   const [client, setClient] = useState<ApolloClient<NormalizedCacheObject> | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [environment, setEnvironment] = useState<keyof typeof ENDPOINTS>('local')
 
   // Initialize Apollo client for subscriptions
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
+        const endpoints = ENDPOINTS[environment]
+
         // Create HTTP link
         const httpLink = new HttpLink({
-          uri: 'http://localhost:8080/v1/graphql',
+          uri: endpoints.http,
           headers: {
-            'x-hasura-admin-secret': 'helloworld',
+            'x-hasura-admin-secret': 'helloworld', // Only needed for local development
           },
         })
 
         // Create WebSocket link
         const wsLink = new WebSocketLink({
-          uri: 'ws://localhost:8080/v1/graphql',
+          uri: endpoints.ws,
           options: {
             reconnect: true,
             timeout: 30000,
             connectionParams: {
               headers: {
-                'x-hasura-admin-secret': 'helloworld',
+                'x-hasura-admin-secret': 'helloworld', // Only needed for local development
               },
             },
             inactivityTimeout: 60000,
@@ -139,20 +158,59 @@ export const SubscriptionDemo: FC = () => {
         setError(errMsg)
       }
     }
-  }, [])
+  }, [environment])
 
-  if (error) return <div className='p-8 text-red-500'>Error: {error}</div>
-  if (!client) return <div className='p-8'>Initializing subscription client...</div>
+  const changeEnvironment = (env: keyof typeof ENDPOINTS) => {
+    setClient(null) // Clear client to force reconnection
+    setEnvironment(env)
+  }
 
   return (
-    <ApolloProvider client={client}>
-      <div className='mx-auto max-w-6xl p-6'>
-        <h1 className='mb-6 text-2xl font-bold'>GraphQL Subscription Demo</h1>
-        <div className='rounded-lg border bg-gray-50 p-6'>
-          <BlockSubscription />
+    <div className='mx-auto max-w-6xl p-6'>
+      <h1 className='mb-6 text-2xl font-bold'>GraphQL Subscription Demo</h1>
+
+      <div className='mb-6'>
+        <div className='mb-2 text-lg font-semibold'>Select Environment:</div>
+        <div className='flex gap-4'>
+          <button
+            onClick={() => changeEnvironment('local')}
+            className={`rounded px-4 py-2 ${
+              environment === 'local' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+            }`}
+          >
+            Local
+          </button>
+          <button
+            onClick={() => changeEnvironment('mainnet')}
+            className={`rounded px-4 py-2 ${
+              environment === 'mainnet' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+            }`}
+          >
+            Mainnet
+          </button>
+          <button
+            onClick={() => changeEnvironment('taurus')}
+            className={`rounded px-4 py-2 ${
+              environment === 'taurus' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+            }`}
+          >
+            Taurus
+          </button>
         </div>
       </div>
-    </ApolloProvider>
+
+      {error && <div className='mb-6 rounded bg-red-100 p-4 text-red-800'>{error}</div>}
+
+      {!client ? (
+        <div className='p-8 text-center'>Initializing subscription client for {environment}...</div>
+      ) : (
+        <div className='rounded-lg border bg-gray-50 p-6'>
+          <ApolloProvider client={client}>
+            <BlockSubscription environment={environment} />
+          </ApolloProvider>
+        </div>
+      )}
+    </div>
   )
 }
 
