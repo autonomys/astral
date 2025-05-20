@@ -1,5 +1,6 @@
 'use client'
 
+import { useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
@@ -9,12 +10,19 @@ import { StatusIcon } from 'components/common/StatusIcon'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { FILTERS_OPTIONS } from 'constants/tables'
-import { ExtrinsicsDocument, ExtrinsicsQuery, ExtrinsicsQueryVariables } from 'gql/graphql'
+import {
+  ExtrinsicsCountAndModulesDocument,
+  ExtrinsicsCountAndModulesQuery,
+  ExtrinsicsCountAndModulesQueryVariables,
+  ExtrinsicsDocument,
+  ExtrinsicsSubscription,
+  ExtrinsicsSubscriptionVariables,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
-import { FC, useEffect, useMemo } from 'react'
-import { useInView } from 'react-intersection-observer'
+import { FC, useMemo } from 'react'
+// import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableSettings } from 'states/tables'
 import { Cell, ExtrinsicsFilters } from 'types/table'
@@ -22,12 +30,12 @@ import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 
-type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
+type Row = ExtrinsicsSubscription['consensus_extrinsics'][0]
 const TABLE = 'extrinsics'
 const MAX_RECORDS = 500000
 
 export const ExtrinsicList: FC = () => {
-  const { ref, inView } = useInView()
+  // const { ref, inView } = useInView()
   const { network, section } = useIndexers()
 
   const {
@@ -71,15 +79,17 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where, orderBy],
   )
 
-  const { loading, setIsVisible } = useIndexersQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
-    ExtrinsicsDocument,
-    {
-      variables,
-      pollInterval: 6000,
-    },
-    Routes.consensus,
-    TABLE,
-  )
+  const { data: extrinsicsData, loading } = useSubscription<
+    ExtrinsicsSubscription,
+    ExtrinsicsSubscriptionVariables
+  >(ExtrinsicsDocument, {
+    variables,
+  })
+
+  const { data: countAndModulesData } = useIndexersQuery<
+    ExtrinsicsCountAndModulesQuery,
+    ExtrinsicsCountAndModulesQueryVariables
+  >(ExtrinsicsCountAndModulesDocument, {}, Routes.consensus, TABLE)
 
   const consensusEntry = useQueryStates((state) => state.consensus.extrinsics)
 
@@ -95,24 +105,29 @@ export const ExtrinsicList: FC = () => {
     [data],
   )
 
-  const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
+  const extrinsics = useMemo(
+    () => extrinsicsData && extrinsicsData.consensus_extrinsics,
+    [extrinsicsData],
+  )
   const filtersOptions = useMemo(
     () =>
-      data
+      countAndModulesData
         ? FILTERS_OPTIONS[TABLE].map((filter) => ({
             ...filter,
             ...(filter.key === 'section' && {
-              options: [...new Set(data.consensus_extrinsic_modules.map((m) => m.section))],
+              options: [
+                ...new Set(countAndModulesData?.consensus_extrinsic_modules.map((m) => m.section)),
+              ],
             }),
             ...(filter.key === 'module' && {
-              options: data.consensus_extrinsic_modules.map((m) => ({
+              options: countAndModulesData?.consensus_extrinsic_modules.map((m) => ({
                 value: m.method,
                 label: m.method + ' (' + m.section + ')',
               })),
             }),
           }))
         : undefined,
-    [data],
+    [countAndModulesData],
   )
 
   const pageCount = useMemo(
@@ -182,9 +197,9 @@ export const ExtrinsicList: FC = () => {
     return null
   }, [data, consensusEntry, loading])
 
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  // useEffect(() => {
+  //   setIsVisible(inView)
+  // }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -198,7 +213,7 @@ export const ExtrinsicList: FC = () => {
           </span>
         </div>
       )}
-      <div className='my-0' ref={ref}>
+      <div className='my-0'>
         <TableSettings table={TABLE} filters={filters} overrideFiltersOptions={filtersOptions} />
         {!loading && extrinsics ? (
           <SortedTable

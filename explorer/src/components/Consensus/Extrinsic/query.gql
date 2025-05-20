@@ -1,15 +1,22 @@
-query Extrinsics(
+query ExtrinsicsCountAndModules {
+  consensus_extrinsics_aggregate {
+    aggregate {
+      count
+    }
+  }
+  consensus_extrinsic_modules(order_by: { section: asc, method: asc }, limit: 50) {
+    section
+    method
+  }
+}
+
+subscription Extrinsics(
   $limit: Int!
   $offset: Int
   $orderBy: [consensus_extrinsics_order_by!]!
   $where: consensus_extrinsics_bool_exp
   $maxRecords: Int = 500000
 ) {
-  consensus_extrinsics_aggregate(where: $where) {
-    aggregate {
-      count
-    }
-  }
   consensus_extrinsics(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
     sortId: sort_id
@@ -26,10 +33,6 @@ query Extrinsics(
     signature
     tip
     fee
-  }
-  consensus_extrinsic_modules(order_by: { section: asc, method: asc }, limit: 50) {
-    section
-    method
   }
 }
 
