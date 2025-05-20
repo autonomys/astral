@@ -24,10 +24,12 @@ import { NotFound } from '../../layout/NotFound'
 
 type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
 const TABLE = 'extrinsics'
+const MAX_RECORDS = 500000
 
 export const ExtrinsicList: FC = () => {
   const { ref, inView } = useInView()
   const { network, section } = useIndexers()
+
   const {
     pagination,
     sorting,
@@ -64,6 +66,7 @@ export const ExtrinsicList: FC = () => {
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       where,
       orderBy,
+      maxRecords: MAX_RECORDS,
     }),
     [pagination.pageSize, pagination.pageIndex, where, orderBy],
   )
@@ -84,6 +87,14 @@ export const ExtrinsicList: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
+  const totalCount = useMemo(
+    () =>
+      data && data.consensus_extrinsics_aggregate.aggregate
+        ? data.consensus_extrinsics_aggregate.aggregate.count
+        : 0,
+    [data],
+  )
+
   const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
   const filtersOptions = useMemo(
     () =>
@@ -103,16 +114,10 @@ export const ExtrinsicList: FC = () => {
         : undefined,
     [data],
   )
-  const totalCount = useMemo(
-    () =>
-      data && data.consensus_extrinsics_aggregate.aggregate
-        ? data.consensus_extrinsics_aggregate.aggregate.count
-        : 0,
-    [data],
-  )
+
   const pageCount = useMemo(
-    () => Math.ceil(Number(totalCount) / pagination.pageSize),
-    [totalCount, pagination],
+    () => Math.ceil(MAX_RECORDS / pagination.pageSize),
+    [pagination.pageSize],
   )
 
   const columns = useMemo(
@@ -183,13 +188,18 @@ export const ExtrinsicList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='my-4' ref={ref}>
-        <TableSettings
-          table={TABLE}
-          totalCount={totalCount}
-          filters={filters}
-          overrideFiltersOptions={filtersOptions}
-        />
+      {totalCount > 0 && (
+        <div className='mt-2 text-sm text-gray-600'>
+          <span>
+            More than <b>{totalCount.toLocaleString()}</b> transactions found
+          </span>
+          <span className='block text-xs'>
+            (Showing the last <b>{MAX_RECORDS.toLocaleString()}</b> records)
+          </span>
+        </div>
+      )}
+      <div className='my-0' ref={ref}>
+        <TableSettings table={TABLE} filters={filters} overrideFiltersOptions={filtersOptions} />
         {!loading && extrinsics ? (
           <SortedTable
             data={extrinsics}

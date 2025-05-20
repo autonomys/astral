@@ -3,6 +3,7 @@ query Extrinsics(
   $offset: Int
   $orderBy: [consensus_extrinsics_order_by!]!
   $where: consensus_extrinsics_bool_exp
+  $maxRecords: Int = 500000
 ) {
   consensus_extrinsics_aggregate(where: $where) {
     aggregate {

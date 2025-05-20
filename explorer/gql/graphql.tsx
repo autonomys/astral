@@ -27157,6 +27157,7 @@ export type ExtrinsicsQueryVariables = Exact<{
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<Consensus_Extrinsics_Order_By> | Consensus_Extrinsics_Order_By;
   where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  maxRecords?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -28480,7 +28481,7 @@ export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQue
 export type EventByIdSuspenseQueryHookResult = ReturnType<typeof useEventByIdSuspenseQuery>;
 export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
 export const ExtrinsicsDocument = gql`
-    query Extrinsics($limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]!, $where: consensus_extrinsics_bool_exp) {
+    query Extrinsics($limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]!, $where: consensus_extrinsics_bool_exp, $maxRecords: Int = 500000) {
   consensus_extrinsics_aggregate(where: $where) {
     aggregate {
       count
@@ -28531,6 +28532,7 @@ export const ExtrinsicsDocument = gql`
  *      offset: // value for 'offset'
  *      orderBy: // value for 'orderBy'
  *      where: // value for 'where'
+ *      maxRecords: // value for 'maxRecords'
  *   },
  * });
  */
