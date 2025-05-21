@@ -27157,17 +27157,6 @@ export type ExtrinsicsCountAndModulesQueryVariables = Exact<{ [key: string]: nev
 
 export type ExtrinsicsCountAndModulesQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', section: string, method: string }> };
 
-export type ExtrinsicsSubscriptionVariables = Exact<{
-  limit: Scalars['Int']['input'];
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<Consensus_Extrinsics_Order_By> | Consensus_Extrinsics_Order_By;
-  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
-  maxRecords?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type ExtrinsicsSubscription = { __typename?: 'subscription_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }> };
-
 export type ExtrinsicsByIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
 }>;
@@ -27184,6 +27173,16 @@ export type EventsByExtrinsicIdQueryVariables = Exact<{
 
 
 export type EventsByExtrinsicIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, phase: string, extrinsic_id: string }> };
+
+export type ExtrinsicsSubscriptionVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Consensus_Extrinsics_Order_By> | Consensus_Extrinsics_Order_By;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+}>;
+
+
+export type ExtrinsicsSubscription = { __typename?: 'subscription_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }> };
 
 export type HomeQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -28492,7 +28491,7 @@ export const ExtrinsicsCountAndModulesDocument = gql`
       count
     }
   }
-  consensus_extrinsic_modules(order_by: {section: asc, method: asc}, limit: 50) {
+  consensus_extrinsic_modules {
     section
     method
   }
@@ -28530,59 +28529,6 @@ export type ExtrinsicsCountAndModulesQueryHookResult = ReturnType<typeof useExtr
 export type ExtrinsicsCountAndModulesLazyQueryHookResult = ReturnType<typeof useExtrinsicsCountAndModulesLazyQuery>;
 export type ExtrinsicsCountAndModulesSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsCountAndModulesSuspenseQuery>;
 export type ExtrinsicsCountAndModulesQueryResult = Apollo.QueryResult<ExtrinsicsCountAndModulesQuery, ExtrinsicsCountAndModulesQueryVariables>;
-export const ExtrinsicsDocument = gql`
-    subscription Extrinsics($limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]!, $where: consensus_extrinsics_bool_exp, $maxRecords: Int = 500000) {
-  consensus_extrinsics(
-    order_by: $orderBy
-    limit: $limit
-    offset: $offset
-    where: $where
-  ) {
-    id
-    sortId: sort_id
-    hash
-    blockHeight: block_height
-    blockHash: block_hash
-    section
-    module
-    indexInBlock: index_in_block
-    success
-    timestamp
-    nonce
-    signer
-    signature
-    tip
-    fee
-  }
-}
-    `;
-
-/**
- * __useExtrinsicsSubscription__
- *
- * To run a query within a React component, call `useExtrinsicsSubscription` and pass it any options that fit your needs.
- * When your component renders, `useExtrinsicsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useExtrinsicsSubscription({
- *   variables: {
- *      limit: // value for 'limit'
- *      offset: // value for 'offset'
- *      orderBy: // value for 'orderBy'
- *      where: // value for 'where'
- *      maxRecords: // value for 'maxRecords'
- *   },
- * });
- */
-export function useExtrinsicsSubscription(baseOptions: Apollo.SubscriptionHookOptions<ExtrinsicsSubscription, ExtrinsicsSubscriptionVariables> & ({ variables: ExtrinsicsSubscriptionVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<ExtrinsicsSubscription, ExtrinsicsSubscriptionVariables>(ExtrinsicsDocument, options);
-      }
-export type ExtrinsicsSubscriptionHookResult = ReturnType<typeof useExtrinsicsSubscription>;
-export type ExtrinsicsSubscriptionResult = Apollo.SubscriptionResult<ExtrinsicsSubscription>;
 export const ExtrinsicsByIdDocument = gql`
     query ExtrinsicsById($extrinsicId: String!) {
   consensus_extrinsics(
@@ -28687,6 +28633,58 @@ export type EventsByExtrinsicIdQueryHookResult = ReturnType<typeof useEventsByEx
 export type EventsByExtrinsicIdLazyQueryHookResult = ReturnType<typeof useEventsByExtrinsicIdLazyQuery>;
 export type EventsByExtrinsicIdSuspenseQueryHookResult = ReturnType<typeof useEventsByExtrinsicIdSuspenseQuery>;
 export type EventsByExtrinsicIdQueryResult = Apollo.QueryResult<EventsByExtrinsicIdQuery, EventsByExtrinsicIdQueryVariables>;
+export const ExtrinsicsDocument = gql`
+    subscription Extrinsics($limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]!, $where: consensus_extrinsics_bool_exp) {
+  consensus_extrinsics(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sortId: sort_id
+    hash
+    blockHeight: block_height
+    blockHash: block_hash
+    section
+    module
+    indexInBlock: index_in_block
+    success
+    timestamp
+    nonce
+    signer
+    signature
+    tip
+    fee
+  }
+}
+    `;
+
+/**
+ * __useExtrinsicsSubscription__
+ *
+ * To run a query within a React component, call `useExtrinsicsSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtrinsicsSubscription({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useExtrinsicsSubscription(baseOptions: Apollo.SubscriptionHookOptions<ExtrinsicsSubscription, ExtrinsicsSubscriptionVariables> & ({ variables: ExtrinsicsSubscriptionVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<ExtrinsicsSubscription, ExtrinsicsSubscriptionVariables>(ExtrinsicsDocument, options);
+      }
+export type ExtrinsicsSubscriptionHookResult = ReturnType<typeof useExtrinsicsSubscription>;
+export type ExtrinsicsSubscriptionResult = Apollo.SubscriptionResult<ExtrinsicsSubscription>;
 export const HomeDocument = gql`
     query Home($limit: Int!, $offset: Int!) {
   consensus_blocks(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {

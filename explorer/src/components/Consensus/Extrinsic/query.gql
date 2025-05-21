@@ -4,35 +4,9 @@ query ExtrinsicsCountAndModules {
       count
     }
   }
-  consensus_extrinsic_modules(order_by: { section: asc, method: asc }, limit: 50) {
+  consensus_extrinsic_modules {
     section
     method
-  }
-}
-
-subscription Extrinsics(
-  $limit: Int!
-  $offset: Int
-  $orderBy: [consensus_extrinsics_order_by!]!
-  $where: consensus_extrinsics_bool_exp
-  $maxRecords: Int = 500000
-) {
-  consensus_extrinsics(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
-    id
-    sortId: sort_id
-    hash
-    blockHeight: block_height
-    blockHash: block_hash
-    section
-    module
-    indexInBlock: index_in_block
-    success
-    timestamp
-    nonce
-    signer
-    signature
-    tip
-    fee
   }
 }
 

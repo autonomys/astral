@@ -31,7 +31,7 @@ interface ExplorerQueryState {
   [Routes.consensus]: {
     accounts: QueryState<GqlT.AccountsQuery>
     blocks: QueryState<GqlT.BlocksQuery>
-    extrinsics: QueryState<GqlT.ExtrinsicsCountAndModulesQuery>
+    extrinsics: QueryState<GqlT.ExtrinsicsSubscription>
     events: QueryState<GqlT.EventsQuery>
     logs: QueryState<GqlT.LogsQuery>
 

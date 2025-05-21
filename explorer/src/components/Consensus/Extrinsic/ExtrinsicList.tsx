@@ -22,8 +22,6 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
-// import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableSettings } from 'states/tables'
 import { Cell, ExtrinsicsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
@@ -35,7 +33,6 @@ const TABLE = 'extrinsics'
 const MAX_RECORDS = 500000
 
 export const ExtrinsicList: FC = () => {
-  // const { ref, inView } = useInView()
   const { network, section } = useIndexers()
 
   const {
@@ -74,60 +71,52 @@ export const ExtrinsicList: FC = () => {
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       where,
       orderBy,
-      maxRecords: MAX_RECORDS,
     }),
     [pagination.pageSize, pagination.pageIndex, where, orderBy],
   )
 
-  const { data: extrinsicsData, loading } = useSubscription<
+  const { data: dataCountAndModules } = useIndexersQuery<
+    ExtrinsicsCountAndModulesQuery,
+    ExtrinsicsCountAndModulesQueryVariables
+  >(ExtrinsicsCountAndModulesDocument, {
+    variables: {},
+  })
+
+  const { loading, data } = useSubscription<
     ExtrinsicsSubscription,
     ExtrinsicsSubscriptionVariables
   >(ExtrinsicsDocument, {
     variables,
   })
 
-  const { data: countAndModulesData } = useIndexersQuery<
-    ExtrinsicsCountAndModulesQuery,
-    ExtrinsicsCountAndModulesQueryVariables
-  >(ExtrinsicsCountAndModulesDocument, {}, Routes.consensus, TABLE)
-
-  const consensusEntry = useQueryStates((state) => state.consensus.extrinsics)
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
-
   const totalCount = useMemo(
     () =>
-      data && data.consensus_extrinsics_aggregate.aggregate
-        ? data.consensus_extrinsics_aggregate.aggregate.count
+      dataCountAndModules && dataCountAndModules.consensus_extrinsics_aggregate.aggregate
+        ? dataCountAndModules.consensus_extrinsics_aggregate.aggregate.count
         : 0,
-    [data],
+    [dataCountAndModules],
   )
 
-  const extrinsics = useMemo(
-    () => extrinsicsData && extrinsicsData.consensus_extrinsics,
-    [extrinsicsData],
-  )
+  const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
   const filtersOptions = useMemo(
     () =>
-      countAndModulesData
+      dataCountAndModules
         ? FILTERS_OPTIONS[TABLE].map((filter) => ({
             ...filter,
             ...(filter.key === 'section' && {
               options: [
-                ...new Set(countAndModulesData?.consensus_extrinsic_modules.map((m) => m.section)),
+                ...new Set(dataCountAndModules.consensus_extrinsic_modules.map((m) => m.section)),
               ],
             }),
             ...(filter.key === 'module' && {
-              options: countAndModulesData?.consensus_extrinsic_modules.map((m) => ({
+              options: dataCountAndModules.consensus_extrinsic_modules.map((m) => ({
                 value: m.method,
                 label: m.method + ' (' + m.section + ')',
               })),
             }),
           }))
         : undefined,
-    [countAndModulesData],
+    [dataCountAndModules],
   )
 
   const pageCount = useMemo(
@@ -192,21 +181,17 @@ export const ExtrinsicList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, consensusEntry, loading])
-
-  // useEffect(() => {
-  //   setIsVisible(inView)
-  // }, [inView, setIsVisible])
+  }, [data, loading])
 
   return (
     <div className='flex w-full flex-col align-middle'>
       {totalCount > 0 && (
         <div className='mt-2 text-sm text-gray-600'>
           <span>
-            More than <b>{totalCount.toLocaleString()}</b> transactions found
+            More than <b>{totalCount.toLocaleString()}</b> extrinsics found
           </span>
           <span className='block text-xs'>
             (Showing the last <b>{MAX_RECORDS.toLocaleString()}</b> records)
