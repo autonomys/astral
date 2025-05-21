@@ -79,7 +79,7 @@ export const ExtrinsicList: FC = () => {
     ExtrinsicsCountAndModulesQuery,
     ExtrinsicsCountAndModulesQueryVariables
   >(ExtrinsicsCountAndModulesDocument, {
-    variables: {},
+    variables,
   })
 
   const { loading, data } = useSubscription<
@@ -119,10 +119,11 @@ export const ExtrinsicList: FC = () => {
     [dataCountAndModules],
   )
 
-  const pageCount = useMemo(
-    () => Math.ceil(MAX_RECORDS / pagination.pageSize),
-    [pagination.pageSize],
-  )
+  const pageCount = useMemo(() => {
+    const countToUse =
+      Object.keys(where).length > 0 && totalCount < MAX_RECORDS ? totalCount : MAX_RECORDS
+    return Math.ceil(countToUse / pagination.pageSize)
+  }, [pagination.pageSize, totalCount, where])
 
   const columns = useMemo(
     () =>
@@ -188,18 +189,13 @@ export const ExtrinsicList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {totalCount > 0 && (
-        <div className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
-          <span>
-            More than <b>{totalCount.toLocaleString()}</b> extrinsics found
-          </span>
-          <span className='block text-xs'>
-            (Showing the last <b>{MAX_RECORDS.toLocaleString()}</b> records)
-          </span>
-        </div>
-      )}
       <div className='my-0'>
-        <TableSettings table={TABLE} filters={filters} overrideFiltersOptions={filtersOptions} />
+        <TableSettings
+          table={TABLE}
+          filters={filters}
+          overrideFiltersOptions={filtersOptions}
+          totalCount={'500,000+'}
+        />
         {!loading && extrinsics ? (
           <SortedTable
             data={extrinsics}

@@ -27152,7 +27152,9 @@ export type EventByIdQueryVariables = Exact<{
 
 export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, extrinsic_id: string, block_height: any, section: string, module: string, timestamp: any, args: any }> };
 
-export type ExtrinsicsCountAndModulesQueryVariables = Exact<{ [key: string]: never; }>;
+export type ExtrinsicsCountAndModulesQueryVariables = Exact<{
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+}>;
 
 
 export type ExtrinsicsCountAndModulesQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', section: string, method: string }> };
@@ -28485,8 +28487,8 @@ export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQue
 export type EventByIdSuspenseQueryHookResult = ReturnType<typeof useEventByIdSuspenseQuery>;
 export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
 export const ExtrinsicsCountAndModulesDocument = gql`
-    query ExtrinsicsCountAndModules {
-  consensus_extrinsics_aggregate {
+    query ExtrinsicsCountAndModules($where: consensus_extrinsics_bool_exp) {
+  consensus_extrinsics_aggregate(where: $where) {
     aggregate {
       count
     }
@@ -28510,6 +28512,7 @@ export const ExtrinsicsCountAndModulesDocument = gql`
  * @example
  * const { data, loading, error } = useExtrinsicsCountAndModulesQuery({
  *   variables: {
+ *      where: // value for 'where'
  *   },
  * });
  */

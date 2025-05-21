@@ -14,7 +14,7 @@ import { numberWithCommas } from 'utils/number'
 interface TableSettingsProps {
   table: TableName
   tableName?: string
-  totalCount?: number
+  totalCount?: number | string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: Record<string, any>
   addExtraIcons?: React.ReactNode
@@ -56,7 +56,11 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
       <h2 id='accordion-open-heading-1'>
         <div className='flex w-full items-center justify-between truncate pb-5 text-left font-light text-gray-900 dark:text-white/75'>
           <span className='flex items-center text-xl font-medium'>
-            {tableName} {totalCount && `(${numberWithCommas(totalCount)})`}
+            {tableName}{' '}
+            {(totalCount &&
+              typeof totalCount === 'number' &&
+              `(${numberWithCommas(totalCount)})`) ||
+              totalCount}
           </span>
           <div className='flex items-center'>
             <div className='flex'>
