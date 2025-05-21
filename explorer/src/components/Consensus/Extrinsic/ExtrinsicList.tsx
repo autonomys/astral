@@ -189,7 +189,7 @@ export const ExtrinsicList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       {totalCount > 0 && (
-        <div className='mt-2 text-sm text-gray-600'>
+        <div className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
           <span>
             More than <b>{totalCount.toLocaleString()}</b> extrinsics found
           </span>
