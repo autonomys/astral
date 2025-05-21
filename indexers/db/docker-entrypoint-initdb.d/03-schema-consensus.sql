@@ -292,6 +292,7 @@ CREATE INDEX "consensus_extrinsics_section" ON consensus.extrinsics USING btree 
 CREATE INDEX "consensus_extrinsics_module" ON consensus.extrinsics USING btree (module);
 CREATE INDEX "consensus_extrinsics_timestamp" ON consensus.extrinsics USING btree ("timestamp");
 CREATE INDEX IF NOT EXISTS extrinsics_count_idx ON consensus.extrinsics ((1));
+CREATE INDEX "consensus_extrinsics_signer_sort_id" ON consensus.extrinsics(signer, sort_id DESC);
 CREATE INDEX "0xe5bf5858bd35a276" ON consensus.events USING btree (id);
 CREATE INDEX "consensus_events_sort_id" ON consensus.events USING btree (sort_id DESC);
 CREATE INDEX "consensus_events_extrinsic_id" ON consensus.events USING btree (extrinsic_id);
