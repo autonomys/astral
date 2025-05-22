@@ -179,7 +179,7 @@ services:
   # Indexers Subquery Nodes
   consensus_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+    image: ghcr.io/autonomys/subql-node-substrate:latest
     ports:
       - "127.0.0.1:3001:3000"
     depends_on:
@@ -208,6 +208,7 @@ services:
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
+      - --finalized-depth=100
       #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
