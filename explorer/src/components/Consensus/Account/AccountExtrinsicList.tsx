@@ -25,7 +25,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
-import { downloadFullData } from 'utils/downloadFullData'
+import { exportFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 
@@ -102,24 +102,25 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     [consensusEntry],
   )
 
-  const fullDataDownloader = useCallback(
-    () =>
-      downloadFullData(
-        apolloClient,
-        ExtrinsicsByAccountIdDocument,
-        'consensus_extrinsics',
-        variables,
-      ),
-    [apolloClient, variables],
-  )
-
   const totalCount = useMemo(
-    () => countData?.consensus_extrinsics_aggregate.aggregate?.count,
+    () => countData?.consensus_extrinsics_aggregate.aggregate?.count || 0,
     [countData],
   )
   const pageCount = useMemo(
     () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
     [totalCount, pagination.pageSize],
+  )
+
+  const fullDataDownloader = useCallback(
+    () =>
+      exportFullData(
+        apolloClient,
+        ExtrinsicsByAccountIdDocument,
+        'consensus_extrinsics',
+        totalCount,
+        variables,
+      ),
+    [apolloClient, variables, totalCount],
   )
 
   const columns = useMemo(
