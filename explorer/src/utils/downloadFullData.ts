@@ -32,6 +32,35 @@ export const downloadFullData = async (
   return entries
 }
 
+export const exportFullData = async (
+  apolloClient: ApolloClient<object>,
+  query: DocumentNode,
+  path: string,
+  totalCount: number,
+  variables?: object,
+) => {
+  const entries: unknown[] = []
+  const offset = 0
+  variables = { ...variables, offset: 0, limit: MAX_DOWNLOADER_BATCH_SIZE }
+
+  let hasNextPage = true
+  while (hasNextPage) {
+    const { data } = await apolloClient.query({
+      query,
+      variables,
+    })
+    const newEntries = data[path]
+    entries.push(...newEntries)
+
+    hasNextPage = entries.length < totalCount
+    variables = { ...variables, offset: offset + entries.length }
+
+    console.log(entries.length, totalCount, entries)
+  }
+
+  return entries
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const extractNestedData = (data: any, path: any) => {
   const keys = path.split('.')
