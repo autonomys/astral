@@ -75,7 +75,7 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where, orderBy],
   )
 
-  const { data: dataCountAndModules } = useIndexersQuery<
+  const { loading: loadingCountAndModules, data: dataCountAndModules } = useIndexersQuery<
     ExtrinsicsCountAndModulesQuery,
     ExtrinsicsCountAndModulesQueryVariables
   >(ExtrinsicsCountAndModulesDocument, {
@@ -181,11 +181,15 @@ export const ExtrinsicList: FC = () => {
     [network, section, selectedColumns],
   )
 
+  const isDataLoaded = useMemo(() => {
+    return !loading && !loadingCountAndModules && extrinsics && dataCountAndModules && data
+  }, [data, dataCountAndModules, extrinsics, loading, loadingCountAndModules])
+
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
-    if (!data) return <NotFound />
+    if (loading || loadingCountAndModules) return <Spinner isSmall />
+    if (!data || !dataCountAndModules) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataCountAndModules, loading, loadingCountAndModules])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -196,7 +200,7 @@ export const ExtrinsicList: FC = () => {
           overrideFiltersOptions={filtersOptions}
           totalCount={'500,000+'}
         />
-        {!loading && extrinsics ? (
+        {isDataLoaded && extrinsics ? (
           <SortedTable
             data={extrinsics}
             columns={columns}
