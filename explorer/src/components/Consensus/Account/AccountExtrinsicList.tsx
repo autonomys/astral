@@ -9,6 +9,9 @@ import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  ExtrinsicsByAccountIdCountDocument,
+  ExtrinsicsByAccountIdCountQuery,
+  ExtrinsicsByAccountIdCountQueryVariables,
   ExtrinsicsByAccountIdDocument,
   ExtrinsicsByAccountIdQuery,
   ExtrinsicsByAccountIdQueryVariables,
@@ -30,7 +33,7 @@ type Props = {
   accountId: string
 }
 
-type Row = NonNullable<ExtrinsicsByAccountIdQuery['consensus_accounts_by_pk']>['extrinsics'][0]
+type Row = NonNullable<ExtrinsicsByAccountIdQuery['consensus_extrinsics']>[0]
 
 export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
@@ -64,13 +67,12 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const variables = useMemo(() => {
     return {
-      accountId,
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
       where,
     }
-  }, [accountId, orderBy, pagination.pageIndex, pagination.pageSize, where])
+  }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
   const { loading, setIsVisible } = useIndexersQuery<
     ExtrinsicsByAccountIdQuery,
@@ -86,13 +88,17 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     'accountExtrinsic',
   )
 
+  const { loading: countLoading, data: countData } = useIndexersQuery<
+    ExtrinsicsByAccountIdCountQuery,
+    ExtrinsicsByAccountIdCountQueryVariables
+  >(ExtrinsicsByAccountIdCountDocument, {
+    variables,
+  })
+
   const consensusEntry = useQueryStates((state) => state.consensus.accountExtrinsic)
 
   const extrinsics = useMemo(
-    () =>
-      hasValue(consensusEntry) &&
-      consensusEntry.value.consensus_accounts_by_pk &&
-      consensusEntry.value.consensus_accounts_by_pk.extrinsics,
+    () => hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics,
     [consensusEntry],
   )
 
@@ -101,19 +107,15 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
       downloadFullData(
         apolloClient,
         ExtrinsicsByAccountIdDocument,
-        'consensus_accounts_by_pk.extrinsics',
+        'consensus_extrinsics',
         variables,
       ),
     [apolloClient, variables],
   )
 
   const totalCount = useMemo(
-    () =>
-      hasValue(consensusEntry) &&
-      consensusEntry.value.consensus_accounts_by_pk?.extrinsics_aggregate.aggregate
-        ? consensusEntry.value.consensus_accounts_by_pk.extrinsics_aggregate.aggregate.count
-        : 0,
-    [consensusEntry],
+    () => countData?.consensus_extrinsics_aggregate.aggregate?.count,
+    [countData],
   )
   const pageCount = useMemo(
     () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
@@ -186,10 +188,10 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
+    if (loading || isLoading(consensusEntry) || countLoading) return <Spinner isSmall />
+    if (!hasValue(consensusEntry) || !countData) return <NotFound />
     return null
-  }, [consensusEntry, loading])
+  }, [consensusEntry, countData, countLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
