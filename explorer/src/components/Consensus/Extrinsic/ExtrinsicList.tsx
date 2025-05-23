@@ -1,14 +1,14 @@
 'use client'
 
+import { numberWithCommas } from '@/utils/number'
 import { useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
-import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { TableSettings } from 'components/common/TableSettings'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import { FILTERS_OPTIONS } from 'constants/tables'
 import {
   ExtrinsicsCountAndModulesDocument,
@@ -57,8 +57,6 @@ export const ExtrinsicList: FC = () => {
           ...(filters.blockHeightMax && { _lte: filters.blockHeightMax }),
         },
       }),
-      // Section
-      ...(filters.section && { section: { _eq: `${filters.section}` } }),
       // Module
       ...(filters.module && { module: { _eq: `${filters.module}` } }),
     }),
@@ -75,11 +73,20 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where, orderBy],
   )
 
+  // Variables for count and modules query - exclude pagination to avoid unnecessary API calls
+  const countVariables = useMemo(
+    () => ({
+      where,
+      orderBy,
+    }),
+    [where, orderBy],
+  )
+
   const { loading: loadingCountAndModules, data: dataCountAndModules } = useIndexersQuery<
     ExtrinsicsCountAndModulesQuery,
     ExtrinsicsCountAndModulesQueryVariables
   >(ExtrinsicsCountAndModulesDocument, {
-    variables,
+    variables: countVariables,
   })
 
   const { loading, data } = useSubscription<
@@ -103,11 +110,6 @@ export const ExtrinsicList: FC = () => {
       dataCountAndModules
         ? FILTERS_OPTIONS[TABLE].map((filter) => ({
             ...filter,
-            ...(filter.key === 'section' && {
-              options: [
-                ...new Set(dataCountAndModules.consensus_extrinsic_modules.map((m) => m.section)),
-              ],
-            }),
             ...(filter.key === 'module' && {
               options: dataCountAndModules.consensus_extrinsic_modules.map((m) => ({
                 value: m.method,
@@ -120,64 +122,56 @@ export const ExtrinsicList: FC = () => {
   )
 
   const pageCount = useMemo(() => {
-    const countToUse =
-      Object.keys(where).length > 0 && totalCount < MAX_RECORDS ? totalCount : MAX_RECORDS
+    const countToUse = Object.keys(where).length > 0 ? totalCount : MAX_RECORDS
     return Math.ceil(countToUse / pagination.pageSize)
   }, [pagination.pageSize, totalCount, where])
 
   const columns = useMemo(
     () =>
-      getTableColumns<Row>(TABLE, selectedColumns, {
-        sortId: ({ row }: Cell<Row>) => (
-          <Link
-            key={`${row.index}-extrinsic-id`}
-            className='w-full whitespace-nowrap hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
-          >
-            <div>{row.original.id}</div>
-          </Link>
-        ),
-        timestamp: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.timestamp),
-        hash: ({ row }: Cell<Row>) => (
-          <CopyButton value={row.original.hash} message='Hash copied'>
-            {shortString(row.original.hash)}
-          </CopyButton>
-        ),
-        section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
-        module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
-        blockHeight: ({ row }: Cell<Row>) => (
-          <Link
-            key={`${row.index}-extrinsic-block_height`}
-            className='hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.blockHeight)}
-          >
-            <div>{row.original.blockHeight}</div>
-          </Link>
-        ),
-        blockHash: ({ row }: Cell<Row>) => (
-          <CopyButton value={row.original.blockHash} message='Block hash copied'>
-            {shortString(row.original.blockHash)}
-          </CopyButton>
-        ),
-        indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock.toString(),
-        success: ({ row }: Cell<Row>) => <StatusIcon status={row.original.success} />,
-        nonce: ({ row }: Cell<Row>) => row.original.nonce,
-        signer: ({ row }: Cell<Row>) => (
-          <AccountIconWithLink
-            address={row.original.signer}
-            network={network}
-            section={Routes.consensus}
-            forceShortString={true}
-          />
-        ),
-        signature: ({ row }: Cell<Row>) => (
-          <CopyButton value={row.original.signature} message='Signature copied'>
-            {shortString(row.original.signature)}
-          </CopyButton>
-        ),
-        tip: ({ row }: Cell<Row>) => row.original.tip,
-        fee: ({ row }: Cell<Row>) => row.original.fee,
-      }),
+      getTableColumns<Row>(
+        TABLE,
+        selectedColumns,
+        {
+          sortId: ({ row }: Cell<Row>) => (
+            <Link
+              key={`${row.index}-extrinsic-id`}
+              className='w-full whitespace-nowrap hover:text-primaryAccent'
+              href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
+            >
+              <div>{row.original.id}</div>
+            </Link>
+          ),
+          timestamp: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.timestamp),
+          hash: ({ row }: Cell<Row>) => (
+            <CopyButton value={row.original.hash} message='Hash copied'>
+              {shortString(row.original.hash)}
+            </CopyButton>
+          ),
+          section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
+          module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
+          blockHeight: ({ row }: Cell<Row>) => (
+            <Link
+              key={`${row.index}-extrinsic-block_height`}
+              className='hover:text-primaryAccent'
+              href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.blockHeight)}
+            >
+              <div>{row.original.blockHeight}</div>
+            </Link>
+          ),
+
+          success: ({ row }: Cell<Row>) => <StatusIcon status={row.original.success} />,
+        },
+        {},
+        {
+          sortId: false,
+          blockHeight: false,
+          hash: false,
+          section: false,
+          module: false,
+          timestamp: false,
+          success: false,
+        },
+      ),
     [network, section, selectedColumns],
   )
 
@@ -198,7 +192,7 @@ export const ExtrinsicList: FC = () => {
           table={TABLE}
           filters={filters}
           overrideFiltersOptions={filtersOptions}
-          totalCount={'500,000+'}
+          totalCount={`(${numberWithCommas(MAX_RECORDS)}+)`}
         />
         {isDataLoaded && extrinsics ? (
           <SortedTable

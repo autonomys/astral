@@ -27184,7 +27184,7 @@ export type ExtrinsicsSubscriptionVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsSubscription = { __typename?: 'subscription_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }> };
+export type ExtrinsicsSubscription = { __typename?: 'subscription_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, success: boolean, timestamp: any, module: string, sortId: string, blockHeight: any }> };
 
 export type HomeQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -28648,17 +28648,10 @@ export const ExtrinsicsDocument = gql`
     sortId: sort_id
     hash
     blockHeight: block_height
-    blockHash: block_hash
     section
-    module
-    indexInBlock: index_in_block
     success
     timestamp
-    nonce
-    signer
-    signature
-    tip
-    fee
+    module
   }
 }
     `;

@@ -9,16 +9,9 @@ subscription Extrinsics(
     sortId: sort_id
     hash
     blockHeight: block_height
-    blockHash: block_hash
     section
-    module
-    indexInBlock: index_in_block
     success
     timestamp
-    nonce
-    signer
-    signature
-    tip
-    fee
+    module
   }
 }

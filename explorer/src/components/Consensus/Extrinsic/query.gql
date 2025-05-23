@@ -1,4 +1,4 @@
-query ExtrinsicsCountAndModules($where: consensus_extrinsics_bool_exp) {
+query ExtrinsicsCountAndModules($where: consensus_extrinsics_bool_exp) @cached(ttl: 60000) {
   consensus_extrinsics_aggregate(where: $where) {
     aggregate {
       count

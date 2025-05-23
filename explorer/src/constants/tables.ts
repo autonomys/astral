@@ -40,20 +40,12 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'authorId', label: 'Block Author', isSelected: true, searchable: true },
   ],
   extrinsics: [
-    { name: 'sortId', label: 'Extrinsic Id', isSelected: true, searchable: true },
-    { name: 'hash', label: 'Extrinsic Hash', isSelected: true, searchable: true },
-    { name: 'blockHeight', label: 'Block Height', isSelected: true, searchable: true },
-    { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
-    { name: 'section', label: 'Section', isSelected: false, searchable: true },
-    { name: 'module', label: 'Module', isSelected: true, searchable: true },
-    { name: 'indexInBlock', label: 'Index in Block', isSelected: false },
-    { name: 'success', label: 'Status', isSelected: true, searchable: true },
+    { name: 'sortId', label: 'Extrinsic Id', isSelected: true },
+    { name: 'hash', label: 'Extrinsic Hash', isSelected: true },
+    { name: 'blockHeight', label: 'Block Height', isSelected: true },
+    { name: 'module', label: 'Module', isSelected: true },
+    { name: 'success', label: 'Status', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
-    { name: 'nonce', label: 'Nonce', isSelected: false },
-    { name: 'signer', label: 'Signer', isSelected: false, searchable: true },
-    { name: 'signature', label: 'Signature', isSelected: false },
-    { name: 'tip', label: 'Tip', isSelected: false },
-    { name: 'fee', label: 'Fee', isSelected: false },
   ],
   events: [
     { name: 'sortId', label: 'Event Id', isSelected: true, searchable: true },
@@ -321,7 +313,6 @@ export const FILTERS_OPTIONS: FiltersOptions = {
   ],
   extrinsics: [
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
-    { type: 'dropdown', label: 'Section', key: 'section', options: [] },
     { type: 'dropdown', label: 'Module', key: 'module', options: [] },
   ],
   events: [
@@ -462,7 +453,6 @@ export const INITIAL_TABLES: InitialTables = {
     filters: {
       blockHeightMin: '',
       blockHeightMax: '',
-      section: '',
       module: '',
     },
     sorting: [
