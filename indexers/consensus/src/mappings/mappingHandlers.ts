@@ -4,10 +4,7 @@ global.Buffer = require("buffer/").Buffer;
 
 import {
   account,
-  blockchainSize,
-  spacePledge,
 } from "@autonomys/auto-consensus";
-import type { ApiAtBlockHash } from "@autonomys/auto-utils";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { Entity } from "@subql/types-core";
@@ -26,6 +23,12 @@ import { ExtrinsicPrimitive, LogValue } from "./types";
 import { groupEventsFromBatchAll } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
+  const handlerStartTime = Date.now();
+  const blockNumber = _block.block.header.number.toNumber();
+  logger.info(`[Block: ${blockNumber}] handleBlock START`);
+
+  // Measure initialization time
+  const initStartTime = Date.now();
   const {
     block: {
       header: { number, parentHash, stateRoot, extrinsicsRoot, digest },
@@ -43,17 +46,17 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const eventsCount = events.length;
   const extrinsicsCount = extrinsics.length;
 
+  logger.info(`[Block: ${blockNumber}] Extrinsics: ${extrinsicsCount}, Events: ${eventsCount}, SpecVersion: ${specVersion}`);
+
   let cache = initializeCache();
-  const newExtrinsics = new Array<Entity>(extrinsics.length);
-  const newEvents = new Array<Entity>(events.length);
+  const newExtrinsics: Entity[] = [];
+  const newEvents: Entity[] = [];
   let eventIndex = 0;
+  const initDuration = Date.now() - initStartTime;
+  logger.info(`[Block: ${blockNumber}] Initialization completed in ${initDuration}ms`);
 
-  // Calculate space pledged and blockchain size concurrently
-  const [_spacePledged, _blockchainSize] = await Promise.all([
-    spacePledge(api as unknown as ApiAtBlockHash),
-    blockchainSize(api as unknown as ApiAtBlockHash),
-  ]);
-
+  // Measure events organization time
+  const eventsOrgStartTime = Date.now();
   const [eventsByExtrinsic, finalizationEvents] = events.reduce<
     [Record<number, typeof events>, typeof events]
   >(
@@ -77,9 +80,14 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   if (blockReward) {
     authorId = blockReward.event.data[0].toString();
   }
+  const eventsOrgDuration = Date.now() - eventsOrgStartTime;
+  logger.info(`[Block: ${blockNumber}] Events organization completed in ${eventsOrgDuration}ms`);
+  logger.info(`[Block: ${blockNumber}] Author ID: ${authorId}`);
 
   // Process extrinsics
+  const processExtrinsicsStartTime = Date.now();
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
+    const extrinsicProcessStartTime = Date.now();
     const extrinsicHash = extrinsic.hash.toString();
     const extrinsicMethodToPrimitive =
       extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
@@ -183,7 +191,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       extrinsic.method.method === "batchAll"
     ) {
       const batchedExtrinsicEvents = groupEventsFromBatchAll(extrinsicEvents);
+      logger.debug(`[Block: ${blockNumber}] Extrinsic ${extrinsicIdx} is batchAll with ${batchedExtrinsicEvents.length} inner calls.`);
       batchedExtrinsicEvents.forEach((events, index) => {
+        const innerCallStartTime = Date.now();
         const extrinsicArgs = (extrinsic.args[0].toPrimitive() as any)[index];
         events.forEach((event) => {
           // Process extrinsic events
@@ -238,6 +248,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           // Increment event index
           eventIndex++;
         });
+        logger.debug(`[Block: ${blockNumber}] Extrinsic ${extrinsicIdx} - batchAll inner call ${index} processed in ${Date.now() - innerCallStartTime}ms`);
       });
     } else {
       // Process extrinsic events
@@ -294,9 +305,13 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         eventIndex++;
       });
     }
+    logger.debug(`[Block: ${blockNumber}] Extrinsic ${extrinsicIdx} (${extrinsic.method.section}.${extrinsic.method.method}) processed in ${Date.now() - extrinsicProcessStartTime}ms`);
   });
+  const processExtrinsicsDuration = Date.now() - processExtrinsicsStartTime;
+  logger.info(`[Block: ${blockNumber}] All extrinsics processed in ${processExtrinsicsDuration}ms`);
 
   // Process finalization events
+  const finalizationEventsStartTime = Date.now();
   finalizationEvents.forEach(async (event) => {
     newEvents.push(
       createEvent(
@@ -336,8 +351,11 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     // Increment event index
     eventIndex++;
   });
+  const finalizationEventsDuration = Date.now() - finalizationEventsStartTime;
+  logger.info(`[Block: ${blockNumber}] Finalization events processed in ${finalizationEventsDuration}ms`);
 
   // Create block logs
+  const createLogsStartTime = Date.now();
   const newLogs = digest.logs.map((log, i) => {
     const logData = log.toHuman();
     const logJson = log.toPrimitive();
@@ -358,14 +376,21 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       blockTimestamp
     );
   });
+  const createLogsDuration = Date.now() - createLogsStartTime;
+  logger.info(`[Block: ${blockNumber}] ${newLogs.length} logs created in ${createLogsDuration}ms`);
 
   // Update accounts
+  const fetchAccountsStartTime = Date.now();
   const uniqueAddresses = Array.from(cache.addressToUpdate);
+  logger.info(`[Block: ${blockNumber}] Updating ${uniqueAddresses.length} unique addresses.`);
   const accounts = await Promise.all(
     uniqueAddresses.map((address) => account(api as any, address))
   );
+  const fetchAccountsDuration = Date.now() - fetchAccountsStartTime;
+  logger.info(`[Block: ${blockNumber}] Fetched ${accounts.length} account details in ${fetchAccountsDuration}ms (after Promise.all)`);
 
   // Create and save accounts
+  const createAccountHistoriesStartTime = Date.now();
   const accountHistories = accounts.map((account, i) =>
     createAccountHistory(
       uniqueAddresses[i],
@@ -376,8 +401,19 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       account.data.free + account.data.reserved
     )
   );
+  const createAccountHistoriesDuration = Date.now() - createAccountHistoriesStartTime;
+  logger.info(`[Block: ${blockNumber}] ${accountHistories.length} AccountHistory entities created in ${createAccountHistoriesDuration}ms`);
 
+  // Prepare for bulkSave - measure time for any preparation
+  const preBulkSaveStartTime = Date.now();
+  logger.info(`[Block: ${blockNumber}] Starting bulk entity save. Extrinsics: ${newExtrinsics.length}, Events: ${newEvents.length}, Logs: ${newLogs.length}, Transfers: ${cache.transfers.length}, Rewards: ${cache.rewards.length}, AccountHistories: ${accountHistories.length}`);
+  const preBulkSaveDuration = Date.now() - preBulkSaveStartTime;
+  if (preBulkSaveDuration > 1) { // Only log if it's more than a millisecond, to reduce noise
+    logger.info(`[Block: ${blockNumber}] Bulk save preparation took ${preBulkSaveDuration}ms`);
+  }
+  
   // Save many entities in parallel
+  const bulkSaveStartTime = Date.now();
   await Promise.all([
     // Save extrinsic, events and logs
     store.bulkCreate(`Extrinsic`, newExtrinsics),
@@ -401,8 +437,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         specVersion.toString(),
         stateRoot.toString(),
         extrinsicsRoot.toString(),
-        _spacePledged,
-        _blockchainSize,
         extrinsicsCount,
         eventsCount,
         newLogs.length,
@@ -418,4 +452,22 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       ),
     ]),
   ]);
+  const bulkSaveDuration = Date.now() - bulkSaveStartTime;
+  logger.info(`[Block: ${blockNumber}] All entities saved (bulkCreate) in ${bulkSaveDuration}ms`);
+  
+  // Calculate time breakdown for detailed analysis
+  const totalMeasuredTime = initDuration + 
+    eventsOrgDuration + 
+    processExtrinsicsDuration +
+    finalizationEventsDuration + 
+    createLogsDuration + 
+    fetchAccountsDuration + 
+    createAccountHistoriesDuration + 
+    preBulkSaveDuration +
+    bulkSaveDuration;
+    
+  const totalActualTime = Date.now() - handlerStartTime;
+  const unmeasuredTime = totalActualTime - totalMeasuredTime;
+  
+  logger.info(`[Block: ${blockNumber}] handleBlock END. Total duration: ${totalActualTime}ms. Breakdown: init=${initDuration}, eventsOrg=${eventsOrgDuration}, extrinsics=${processExtrinsicsDuration}, finalization=${finalizationEventsDuration}, logs=${createLogsDuration}, fetchAcc=${fetchAccountsDuration}, accHistory=${createAccountHistoriesDuration}, preBulkPrep=${preBulkSaveDuration}, bulkSave=${bulkSaveDuration}, unmeasured=${unmeasuredTime}`);
 }
