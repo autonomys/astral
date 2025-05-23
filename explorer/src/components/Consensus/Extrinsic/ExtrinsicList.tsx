@@ -17,11 +17,13 @@ import {
   ExtrinsicsDocument,
   ExtrinsicsSubscription,
   ExtrinsicsSubscriptionVariables,
+  // eslint-disable-next-line camelcase
+  Order_By,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
-import { FC, useMemo } from 'react'
+import { FC, useEffect, useMemo, useRef } from 'react'
 import { useTableSettings } from 'states/tables'
 import { Cell, ExtrinsicsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
@@ -40,11 +42,13 @@ export const ExtrinsicList: FC = () => {
     sorting,
     selectedColumns,
     filters,
-    orderBy,
     whereForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<ExtrinsicsFilters>(TABLE)
+
+  // Ref to store previous where value for comparison
+  const prevWhereRef = useRef<string | null>(null)
 
   const where = useMemo(
     () => ({
@@ -63,23 +67,43 @@ export const ExtrinsicList: FC = () => {
     [filters, whereForSearch],
   )
 
+  // Effect to reset pagination when where clause changes
+  useEffect(() => {
+    const currentWhere = JSON.stringify(where)
+    const prevWhere = prevWhereRef.current
+
+    if (prevWhere !== null && prevWhere !== currentWhere) {
+      // Reset pagination to first page when where clause changes
+      onPaginationChange({ pageIndex: 0, pageSize: pagination.pageSize })
+    }
+
+    prevWhereRef.current = currentWhere
+  }, [where, onPaginationChange, pagination.pageSize])
+
   const variables = useMemo(
     () => ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       where,
-      orderBy,
+      orderBy: {
+        // eslint-disable-next-line camelcase
+        block_height: Order_By.Desc,
+      },
     }),
-    [pagination.pageSize, pagination.pageIndex, where, orderBy],
+    [pagination.pageSize, pagination.pageIndex, where],
   )
 
-  // Variables for count and modules query - exclude pagination to avoid unnecessary API calls
+  console.log(variables)
+
   const countVariables = useMemo(
     () => ({
       where,
-      orderBy,
+      orderBy: {
+        // eslint-disable-next-line camelcase
+        block_height: Order_By.Desc,
+      },
     }),
-    [where, orderBy],
+    [where],
   )
 
   const { loading: loadingCountAndModules, data: dataCountAndModules } = useIndexersQuery<
@@ -155,7 +179,7 @@ export const ExtrinsicList: FC = () => {
               className='hover:text-primaryAccent'
               href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.blockHeight)}
             >
-              <div>{row.original.blockHeight}</div>
+              <div>{numberWithCommas(row.original.blockHeight)}</div>
             </Link>
           ),
 
