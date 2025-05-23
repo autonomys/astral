@@ -63,7 +63,6 @@ ALTER TABLE consensus.accounts OWNER TO postgres;
 
 CREATE TABLE consensus.blocks (
     id TEXT NOT NULL,
-    sort_id TEXT NOT NULL,
     height NUMERIC NOT NULL,
     hash TEXT NOT NULL,
     "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
@@ -113,7 +112,6 @@ ALTER TABLE consensus.event_modules OWNER TO postgres;
 
 CREATE TABLE consensus.events (
     id TEXT NOT NULL,
-    sort_id TEXT NOT NULL,
     block_height NUMERIC NOT NULL,
     block_hash TEXT NOT NULL,
     extrinsic_id TEXT NOT NULL,
@@ -141,7 +139,6 @@ ALTER TABLE consensus.extrinsic_modules OWNER TO postgres;
 
 CREATE TABLE consensus.extrinsics (
     id TEXT NOT NULL,
-    sort_id TEXT NOT NULL,
     hash TEXT NOT NULL,
     block_height numeric NOT NULL,
     block_hash TEXT NOT NULL,
@@ -174,7 +171,6 @@ ALTER TABLE consensus.log_kinds OWNER TO postgres;
 
 CREATE TABLE consensus.logs (
     id TEXT NOT NULL,
-    sort_id TEXT NOT NULL,
     block_height NUMERIC NOT NULL,
     block_hash TEXT NOT NULL,
     index_in_block INTEGER NOT NULL,
@@ -276,41 +272,64 @@ ALTER TABLE ONLY consensus.sections
 ALTER TABLE ONLY consensus.transfers
     ADD CONSTRAINT transfers_pkey PRIMARY KEY (_id);
 
-CREATE INDEX "0xccedb032815757ed" ON consensus.blocks USING btree (id);
-CREATE INDEX "consensus_blocks_sort_id" ON consensus.blocks USING btree (sort_id DESC);
+CREATE INDEX "consensus_blocks_id" ON consensus.blocks USING btree (id);
+CREATE INDEX "consensus_blocks_height_desc" ON consensus.blocks USING btree (height DESC);
+CREATE INDEX "consensus_blocks_timestamp_desc" ON consensus.blocks USING btree ("timestamp" DESC);
 CREATE INDEX "consensus_blocks_hash" ON consensus.blocks USING btree (hash);
 CREATE INDEX "consensus_blocks_id_hash" ON consensus.blocks (id, hash);
+CREATE INDEX "consensus_blocks_author_id" ON consensus.blocks USING btree (author_id);
+
 CREATE INDEX "consensus_cumulative_blocks_id" ON consensus.cumulative_blocks USING btree (id);
-CREATE INDEX "0xd8db4c8313621519" ON consensus.extrinsics USING btree (id);
-CREATE INDEX "consensus_extrinsics_sort_id" ON consensus.extrinsics USING btree (sort_id DESC);
+
+CREATE INDEX "consensus_extrinsics_id" ON consensus.extrinsics USING btree (id);
+CREATE INDEX "consensus_extrinsics_block_height_desc" ON consensus.extrinsics USING btree (block_height DESC);
+CREATE INDEX "consensus_extrinsics_timestamp_desc" ON consensus.extrinsics USING btree ("timestamp" DESC);
 CREATE INDEX "consensus_extrinsics_hash" ON consensus.extrinsics USING btree (hash);
-CREATE INDEX "consensus_extrinsics_block_height" ON consensus.extrinsics USING btree (block_height);
 CREATE INDEX "consensus_extrinsics_signer" ON consensus.extrinsics USING btree (signer);
 CREATE INDEX "consensus_extrinsics_section" ON consensus.extrinsics USING btree (section);
 CREATE INDEX "consensus_extrinsics_module" ON consensus.extrinsics USING btree (module);
-CREATE INDEX "0xe5bf5858bd35a276" ON consensus.events USING btree (id);
-CREATE INDEX "consensus_events_sort_id" ON consensus.events USING btree (sort_id DESC);
+CREATE INDEX "consensus_extrinsics_success" ON consensus.extrinsics USING btree (success);
+CREATE INDEX "consensus_extrinsics_block_ordering" ON consensus.extrinsics USING btree (block_height DESC, index_in_block);
+
+CREATE INDEX "consensus_events_id" ON consensus.events USING btree (id);
+CREATE INDEX "consensus_events_block_height_desc" ON consensus.events USING btree (block_height DESC);
+CREATE INDEX "consensus_events_timestamp_desc" ON consensus.events USING btree ("timestamp" DESC);
 CREATE INDEX "consensus_events_extrinsic_id" ON consensus.events USING btree (extrinsic_id);
-CREATE INDEX "consensus_events_block_height" ON consensus.events USING btree (block_height);
 CREATE INDEX "consensus_events_section" ON consensus.events USING btree (section);
 CREATE INDEX "consensus_events_module" ON consensus.events USING btree (module);
-CREATE INDEX "0x4cb388e53e3e30f3" ON consensus.accounts USING btree (id);
-CREATE INDEX "consensus_accounts_free" ON consensus.accounts USING btree (free DESC);
-CREATE INDEX "consensus_accounts_reserved" ON consensus.accounts USING btree (reserved DESC);
-CREATE INDEX "consensus_accounts_total" ON consensus.accounts USING btree (total DESC);
-CREATE INDEX "0xd21b20c334f80c2e" ON consensus.account_histories USING btree (id);
-CREATE INDEX "0xb91efc8ed4021e6e" ON consensus.transfers USING btree (id);
+CREATE INDEX "consensus_events_block_ordering" ON consensus.events USING btree (block_height DESC, index_in_block);
+
+CREATE INDEX "consensus_logs_id" ON consensus.logs USING btree (id);
+CREATE INDEX "consensus_logs_block_height_desc" ON consensus.logs USING btree (block_height DESC);
+CREATE INDEX "consensus_logs_timestamp_desc" ON consensus.logs USING btree ("timestamp" DESC);
+CREATE INDEX "consensus_logs_kind" ON consensus.logs USING btree (kind);
+CREATE INDEX "consensus_logs_block_ordering" ON consensus.logs USING btree (block_height DESC, index_in_block);
+
+CREATE INDEX "consensus_accounts_id" ON consensus.accounts USING btree (id);
+CREATE INDEX "consensus_accounts_free_desc" ON consensus.accounts USING btree (free DESC);
+CREATE INDEX "consensus_accounts_reserved_desc" ON consensus.accounts USING btree (reserved DESC);
+CREATE INDEX "consensus_accounts_total_desc" ON consensus.accounts USING btree (total DESC);
+
+CREATE INDEX "consensus_account_histories_id" ON consensus.account_histories USING btree (id);
+CREATE INDEX "consensus_account_histories_created_at_desc" ON consensus.account_histories USING btree (created_at DESC);
+
+CREATE INDEX "consensus_transfers_id" ON consensus.transfers USING btree (id);
+CREATE INDEX "consensus_transfers_block_height_desc" ON consensus.transfers USING btree (block_height DESC);
+CREATE INDEX "consensus_transfers_timestamp_desc" ON consensus.transfers USING btree ("timestamp" DESC);
 CREATE INDEX "consensus_transfers_from" ON consensus.transfers USING btree ("from");
 CREATE INDEX "consensus_transfers_to" ON consensus.transfers USING btree ("to");
 CREATE INDEX "consensus_transfers_type" ON consensus.transfers USING btree (type);
-CREATE INDEX "0x26e9de0ee335659c" ON consensus.extrinsic_modules USING btree (id);
-CREATE INDEX "0x55286926221be2e7" ON consensus.event_modules USING btree (id);
-CREATE INDEX "0x64128774d8de590c" ON consensus.log_kinds USING btree (id);
-CREATE INDEX "0x3d8ee08d232943ea" ON consensus.sections USING btree (id);
-CREATE INDEX "0x1e967733a0d5db15" ON consensus.rewards USING btree (id);
+CREATE INDEX "consensus_transfers_success" ON consensus.transfers USING btree (success);
+
+CREATE INDEX "consensus_rewards_id" ON consensus.rewards USING btree (id);
+CREATE INDEX "consensus_rewards_block_height_desc" ON consensus.rewards USING btree (block_height DESC);
+CREATE INDEX "consensus_rewards_timestamp_desc" ON consensus.rewards USING btree ("timestamp" DESC);
 CREATE INDEX "consensus_rewards_account_id" ON consensus.rewards USING btree (account_id);
-CREATE INDEX "0x09a98aa53fa2c2e3" ON consensus.logs USING btree (id);
-CREATE INDEX "consensus_logs_sort_id" ON consensus.logs USING btree (sort_id DESC);
-CREATE INDEX "consensus_logs_block_height" ON consensus.logs USING btree (block_height);
+CREATE INDEX "consensus_rewards_reward_type" ON consensus.rewards USING btree (reward_type);
+
+CREATE INDEX "consensus_extrinsic_modules_id" ON consensus.extrinsic_modules USING btree (id);
+CREATE INDEX "consensus_event_modules_id" ON consensus.event_modules USING btree (id);
+CREATE INDEX "consensus_log_kinds_id" ON consensus.log_kinds USING btree (id);
+CREATE INDEX "consensus_sections_id" ON consensus.sections USING btree (id);
 
 CREATE TRIGGER "0x648269cc35867c16" AFTER UPDATE ON consensus._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION consensus.schema_notification();

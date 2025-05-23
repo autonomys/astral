@@ -1,6 +1,6 @@
 import { Entity } from "@subql/types-core";
 import { ZERO_BIGINT } from "./constants";
-import { getSortId, moduleName } from "./utils";
+import { moduleName } from "./utils";
 
 export type Cache = {
   rewards: Entity[];
@@ -55,7 +55,6 @@ export function createBlock(
 ) {
   return {
     id: height.toString(),
-    sortId: getSortId(height),
     height,
     hash,
     timestamp,
@@ -88,7 +87,6 @@ export function createLog(
 ) {
   return {
     id: blockHeight + "-" + indexInBlock,
-    sortId: getSortId(blockHeight, BigInt(indexInBlock)),
     blockHeight,
     blockHash,
     indexInBlock,
@@ -120,7 +118,6 @@ export function createExtrinsic(
 ) {
   return {
     id: blockHeight + "-" + indexInBlock,
-    sortId: getSortId(blockHeight, BigInt(indexInBlock)),
     hash,
     blockHeight,
     blockHash,
@@ -159,7 +156,6 @@ export function createEvent(
 ) {
   return {
     id: blockHeight + "-" + indexInBlock.toString(),
-    sortId: getSortId(blockHeight, indexInBlock),
     blockHeight,
     blockHash,
     extrinsicId,
