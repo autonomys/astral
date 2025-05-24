@@ -11,10 +11,13 @@ import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { FILTERS_OPTIONS } from 'constants/tables'
 import {
-  ExtrinsicsCountAndModulesDocument,
-  ExtrinsicsCountAndModulesQuery,
-  ExtrinsicsCountAndModulesQueryVariables,
+  ExtrinsicsAggregateDocument,
+  ExtrinsicsAggregateQuery,
+  ExtrinsicsAggregateQueryVariables,
   ExtrinsicsDocument,
+  ExtrinsicsModulesDocument,
+  ExtrinsicsModulesQuery,
+  ExtrinsicsModulesQueryVariables,
   ExtrinsicsSubscription,
   ExtrinsicsSubscriptionVariables,
   // eslint-disable-next-line camelcase
@@ -93,25 +96,29 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where],
   )
 
-  console.log(variables)
-
   const countVariables = useMemo(
     () => ({
-      where,
-      orderBy: {
-        // eslint-disable-next-line camelcase
-        block_height: Order_By.Desc,
-      },
+      where: Object.keys(where).length > 0 ? where : undefined,
     }),
     [where],
   )
 
-  const { loading: loadingCountAndModules, data: dataCountAndModules } = useIndexersQuery<
-    ExtrinsicsCountAndModulesQuery,
-    ExtrinsicsCountAndModulesQueryVariables
-  >(ExtrinsicsCountAndModulesDocument, {
-    variables: countVariables,
-  })
+  const {
+    loading: loadingAggregate,
+    data: dataAggregate,
+    setIsVisible,
+  } = useIndexersQuery<ExtrinsicsAggregateQuery, ExtrinsicsAggregateQueryVariables>(
+    ExtrinsicsAggregateDocument,
+    {
+      variables: countVariables,
+      skip: !countVariables.where,
+    },
+  )
+
+  const { loading: loadingModules, data: dataModules } = useIndexersQuery<
+    ExtrinsicsModulesQuery,
+    ExtrinsicsModulesQueryVariables
+  >(ExtrinsicsModulesDocument, {})
 
   const { loading, data } = useSubscription<
     ExtrinsicsSubscription,
@@ -122,27 +129,27 @@ export const ExtrinsicList: FC = () => {
 
   const totalCount = useMemo(
     () =>
-      dataCountAndModules && dataCountAndModules.consensus_extrinsics_aggregate.aggregate
-        ? dataCountAndModules.consensus_extrinsics_aggregate.aggregate.count
+      dataAggregate && dataAggregate.consensus_extrinsics_aggregate.aggregate
+        ? dataAggregate.consensus_extrinsics_aggregate.aggregate.count
         : 0,
-    [dataCountAndModules],
+    [dataAggregate],
   )
 
   const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
   const filtersOptions = useMemo(
     () =>
-      dataCountAndModules
+      dataModules
         ? FILTERS_OPTIONS[TABLE].map((filter) => ({
             ...filter,
             ...(filter.key === 'module' && {
-              options: dataCountAndModules.consensus_extrinsic_modules.map((m) => ({
+              options: dataModules?.consensus_extrinsic_modules.map((m) => ({
                 value: m.method,
                 label: m.method + ' (' + m.section + ')',
               })),
             }),
           }))
         : undefined,
-    [dataCountAndModules],
+    [dataModules],
   )
 
   const pageCount = useMemo(() => {
@@ -200,14 +207,21 @@ export const ExtrinsicList: FC = () => {
   )
 
   const isDataLoaded = useMemo(() => {
-    return !loading && !loadingCountAndModules && extrinsics && dataCountAndModules && data
-  }, [data, dataCountAndModules, extrinsics, loading, loadingCountAndModules])
+    if (countVariables.where) {
+      return !loading && !loadingAggregate && !loadingModules && extrinsics
+    }
+    return !loading && !loadingModules && extrinsics
+  }, [extrinsics, loading, loadingAggregate, loadingModules, countVariables])
 
   const noData = useMemo(() => {
-    if (loading || loadingCountAndModules) return <Spinner isSmall />
-    if (!data || !dataCountAndModules) return <NotFound />
+    if (loading || loadingAggregate) return <Spinner isSmall />
+    if (!data || !dataAggregate) return <NotFound />
     return null
-  }, [data, dataCountAndModules, loading, loadingCountAndModules])
+  }, [data, dataAggregate, loading, loadingAggregate])
+
+  useEffect(() => {
+    setIsVisible(false)
+  }, [setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
