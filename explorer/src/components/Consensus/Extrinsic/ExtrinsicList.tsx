@@ -103,17 +103,12 @@ export const ExtrinsicList: FC = () => {
     [where],
   )
 
-  const {
-    loading: loadingAggregate,
-    data: dataAggregate,
-    setIsVisible,
-  } = useIndexersQuery<ExtrinsicsAggregateQuery, ExtrinsicsAggregateQueryVariables>(
-    ExtrinsicsAggregateDocument,
-    {
-      variables: countVariables,
-      skip: !countVariables.where,
-    },
-  )
+  const { loading: loadingAggregate, data: dataAggregate } = useIndexersQuery<
+    ExtrinsicsAggregateQuery,
+    ExtrinsicsAggregateQueryVariables
+  >(ExtrinsicsAggregateDocument, {
+    variables: countVariables,
+  })
 
   const { loading: loadingModules, data: dataModules } = useIndexersQuery<
     ExtrinsicsModulesQuery,
@@ -218,10 +213,6 @@ export const ExtrinsicList: FC = () => {
     if (!data || !dataAggregate) return <NotFound />
     return null
   }, [data, dataAggregate, loading, loadingAggregate])
-
-  useEffect(() => {
-    setIsVisible(false)
-  }, [setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
