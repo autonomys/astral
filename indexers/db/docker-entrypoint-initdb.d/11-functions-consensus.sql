@@ -99,6 +99,11 @@ CREATE TRIGGER ensure_consensus_account_updated
     FOR EACH ROW
     EXECUTE FUNCTION consensus.update_account();
 
+CREATE TRIGGER ensure_consensus_account_updated_on_history_update
+    AFTER UPDATE ON consensus.account_histories
+    FOR EACH ROW
+    EXECUTE FUNCTION consensus.update_account();
+
 CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
