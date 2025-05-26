@@ -1,7 +1,6 @@
 'use client'
 
 import { numberWithCommas } from '@/utils/number'
-import { useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -16,8 +15,8 @@ import {
   EventsModulesDocument,
   EventsModulesQuery,
   EventsModulesQueryVariables,
-  EventsSubscription,
-  EventsSubscriptionVariables,
+  EventsQuery,
+  EventsQueryVariables,
   // eslint-disable-next-line camelcase
   Order_By,
 } from 'gql/graphql'
@@ -31,7 +30,7 @@ import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 
-type Row = EventsSubscription['consensus_events'][0]
+type Row = EventsQuery['consensus_events'][0]
 const TABLE = 'events'
 const MAX_RECORDS = 500000
 
@@ -107,19 +106,18 @@ export const EventList: FC = () => {
     variables: countVariables,
   })
 
+  const { loading, data } = useIndexersQuery<EventsQuery, EventsQueryVariables>(EventsDocument, {
+    variables,
+    skip: !variables.where,
+    pollInterval: 6000,
+  })
+
   const { loading: loadingModules, data: dataModules } = useIndexersQuery<
     EventsModulesQuery,
     EventsModulesQueryVariables
   >(EventsModulesDocument, {
     variables: {},
   })
-
-  const { loading, data } = useSubscription<EventsSubscription, EventsSubscriptionVariables>(
-    EventsDocument,
-    {
-      variables,
-    },
-  )
 
   const totalCount = useMemo(
     () =>
@@ -129,7 +127,7 @@ export const EventList: FC = () => {
     [dataAggregate],
   )
 
-  const events = useMemo(() => data && data.consensus_events, [data])
+  const events = useMemo(() => (data ? data.consensus_events : []), [data])
   const filtersOptions = useMemo(
     () =>
       dataModules
@@ -148,6 +146,15 @@ export const EventList: FC = () => {
         : undefined,
     [dataModules],
   )
+
+  console.log('dataAggregate', dataAggregate)
+  console.log('dataModules', data)
+  console.log('data', data)
+  console.log('loading', loading)
+  console.log('loadingAggregate', loadingAggregate)
+  console.log('loadingModules', loading)
+  console.log('filtersOptions', filtersOptions)
+  console.log('events', events)
 
   const pageCount = useMemo(() => {
     const countToUse = Object.keys(where).length > 0 ? totalCount : MAX_RECORDS
@@ -211,10 +218,10 @@ export const EventList: FC = () => {
 
   const isDataLoaded = useMemo(() => {
     if (countVariables.where) {
-      return !loading && !loadingAggregate && !loadingModules && events
+      return !loading && !loadingAggregate && !loadingModules
     }
-    return !loading && !loadingModules && events
-  }, [events, loading, loadingAggregate, loadingModules, countVariables])
+    return !loading && !loadingModules
+  }, [loading, loadingAggregate, loadingModules, countVariables])
 
   const noData = useMemo(() => {
     if (loading || loadingAggregate) return <Spinner isSmall />

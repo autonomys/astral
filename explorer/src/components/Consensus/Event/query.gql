@@ -1,8 +1,17 @@
-query EventsAggregate($where: consensus_events_bool_exp) @cached(ttl: 60000) {
-  consensus_events_aggregate(where: $where) {
-    aggregate {
-      count
-    }
+query Events(
+  $limit: Int!
+  $offset: Int
+  $orderBy: [consensus_events_order_by!]!
+  $where: consensus_events_bool_exp
+) {
+  consensus_events(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    sortId: sort_id
+    blockHeight: block_height
+    extrinsicId: extrinsic_id
+    module
+    indexInBlock: index_in_block
+    timestamp
   }
 }
 
@@ -10,6 +19,14 @@ query EventsModules {
   consensus_event_modules {
     section
     method
+  }
+}
+
+query EventsAggregate($where: consensus_events_bool_exp) @cached(ttl: 60000) {
+  consensus_events_aggregate(where: $where) {
+    aggregate {
+      count
+    }
   }
 }
 

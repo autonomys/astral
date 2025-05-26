@@ -1,7 +1,6 @@
 'use client'
 
 import { numberWithCommas } from '@/utils/number'
-import { useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
@@ -18,8 +17,8 @@ import {
   ExtrinsicsModulesDocument,
   ExtrinsicsModulesQuery,
   ExtrinsicsModulesQueryVariables,
-  ExtrinsicsSubscription,
-  ExtrinsicsSubscriptionVariables,
+  ExtrinsicsQuery,
+  ExtrinsicsQueryVariables,
   // eslint-disable-next-line camelcase
   Order_By,
 } from 'gql/graphql'
@@ -33,7 +32,7 @@ import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 
-type Row = ExtrinsicsSubscription['consensus_extrinsics'][0]
+type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
 const TABLE = 'extrinsics'
 const MAX_RECORDS = 500000
 
@@ -115,12 +114,14 @@ export const ExtrinsicList: FC = () => {
     ExtrinsicsModulesQueryVariables
   >(ExtrinsicsModulesDocument, {})
 
-  const { loading, data } = useSubscription<
-    ExtrinsicsSubscription,
-    ExtrinsicsSubscriptionVariables
-  >(ExtrinsicsDocument, {
-    variables,
-  })
+  const { loading, data } = useIndexersQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
+    ExtrinsicsDocument,
+    {
+      variables,
+      skip: !variables.where,
+      pollInterval: 6000,
+    },
+  )
 
   const totalCount = useMemo(
     () =>
@@ -138,7 +139,7 @@ export const ExtrinsicList: FC = () => {
             ...filter,
             ...(filter.key === 'module' && {
               options: dataModules?.consensus_extrinsic_modules.map((m) => ({
-                value: m.method,
+                value: m.section,
                 label: m.method + ' (' + m.section + ')',
               })),
             }),
