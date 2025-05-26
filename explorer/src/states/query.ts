@@ -32,7 +32,7 @@ interface ExplorerQueryState {
     accounts: QueryState<GqlT.AccountsQuery>
     blocks: QueryState<GqlT.BlocksQuery>
     extrinsics: QueryState<GqlT.ExtrinsicsSubscription>
-    events: QueryState<GqlT.EventsQuery>
+    events: QueryState<GqlT.EventsSubscription>
     logs: QueryState<GqlT.LogsQuery>
 
     account: QueryState<GqlT.AccountByIdQuery>
