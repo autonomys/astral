@@ -135,5 +135,6 @@
     "prop-types": "^15.8.1",
     "tailwindcss": "^3.4.17",
     "tsconfig-paths-webpack-plugin": "^4.2.0"
-  }
+  },
+  "packageManager": "yarn@4.2.2"
 }
