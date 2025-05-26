@@ -48,13 +48,10 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],
   events: [
-    { name: 'sortId', label: 'Event Id', isSelected: true, searchable: true },
-    { name: 'blockHeight', label: 'Block Height', isSelected: true, searchable: true },
-    { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
-    { name: 'extrinsicId', label: 'Extrinsic Id', isSelected: true, searchable: true },
-    { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: false, searchable: true },
-    { name: 'section', label: 'Section', isSelected: true, searchable: true },
-    { name: 'module', label: 'Module', isSelected: true, searchable: true },
+    { name: 'sortId', label: 'Event Id', isSelected: true },
+    { name: 'blockHeight', label: 'Block Height', isSelected: true },
+    { name: 'extrinsicId', label: 'Extrinsic Id', isSelected: true },
+    { name: 'module', label: 'Module', isSelected: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],
@@ -317,7 +314,6 @@ export const FILTERS_OPTIONS: FiltersOptions = {
   ],
   events: [
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
-    { type: 'dropdown', label: 'Section', key: 'section', options: [] },
     { type: 'dropdown', label: 'Module', key: 'module', options: [] },
   ],
   logs: [

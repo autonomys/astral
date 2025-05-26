@@ -27135,15 +27135,17 @@ export type LogsByBlockIdQueryVariables = Exact<{
 
 export type LogsByBlockIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, block_height: any }> };
 
-export type EventsQueryVariables = Exact<{
-  limit: Scalars['Int']['input'];
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<Consensus_Events_Order_By> | Consensus_Events_Order_By;
+export type EventsAggregateQueryVariables = Exact<{
   where?: InputMaybe<Consensus_Events_Bool_Exp>;
 }>;
 
 
-export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', section: string, method: string }> };
+export type EventsAggregateQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null } };
+
+export type EventsModulesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type EventsModulesQuery = { __typename?: 'query_root', consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', section: string, method: string }> };
 
 export type EventByIdQueryVariables = Exact<{
   eventId: Scalars['String']['input'];
@@ -27151,6 +27153,16 @@ export type EventByIdQueryVariables = Exact<{
 
 
 export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, extrinsic_id: string, block_height: any, section: string, module: string, timestamp: any, args: any }> };
+
+export type EventsSubscriptionVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Consensus_Events_Order_By> | Consensus_Events_Order_By;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+}>;
+
+
+export type EventsSubscription = { __typename?: 'subscription_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }> };
 
 export type ExtrinsicsAggregateQueryVariables = Exact<{
   where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
@@ -28378,32 +28390,51 @@ export type LogsByBlockIdQueryHookResult = ReturnType<typeof useLogsByBlockIdQue
 export type LogsByBlockIdLazyQueryHookResult = ReturnType<typeof useLogsByBlockIdLazyQuery>;
 export type LogsByBlockIdSuspenseQueryHookResult = ReturnType<typeof useLogsByBlockIdSuspenseQuery>;
 export type LogsByBlockIdQueryResult = Apollo.QueryResult<LogsByBlockIdQuery, LogsByBlockIdQueryVariables>;
-export const EventsDocument = gql`
-    query Events($limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]!, $where: consensus_events_bool_exp) {
+export const EventsAggregateDocument = gql`
+    query EventsAggregate($where: consensus_events_bool_exp) @cached(ttl: 60000) {
   consensus_events_aggregate(where: $where) {
     aggregate {
       count
     }
   }
-  consensus_events(
-    order_by: $orderBy
-    limit: $limit
-    offset: $offset
-    where: $where
-  ) {
-    id
-    sortId: sort_id
-    blockHeight: block_height
-    blockHash: block_hash
-    extrinsicId: extrinsic_id
-    extrinsicHash: extrinsic_hash
-    section
-    module
-    indexInBlock: index_in_block
-    timestamp
-    phase
-  }
-  consensus_event_modules(order_by: {section: asc, method: asc}, limit: 50) {
+}
+    `;
+
+/**
+ * __useEventsAggregateQuery__
+ *
+ * To run a query within a React component, call `useEventsAggregateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventsAggregateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventsAggregateQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useEventsAggregateQuery(baseOptions?: Apollo.QueryHookOptions<EventsAggregateQuery, EventsAggregateQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EventsAggregateQuery, EventsAggregateQueryVariables>(EventsAggregateDocument, options);
+      }
+export function useEventsAggregateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventsAggregateQuery, EventsAggregateQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EventsAggregateQuery, EventsAggregateQueryVariables>(EventsAggregateDocument, options);
+        }
+export function useEventsAggregateSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EventsAggregateQuery, EventsAggregateQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EventsAggregateQuery, EventsAggregateQueryVariables>(EventsAggregateDocument, options);
+        }
+export type EventsAggregateQueryHookResult = ReturnType<typeof useEventsAggregateQuery>;
+export type EventsAggregateLazyQueryHookResult = ReturnType<typeof useEventsAggregateLazyQuery>;
+export type EventsAggregateSuspenseQueryHookResult = ReturnType<typeof useEventsAggregateSuspenseQuery>;
+export type EventsAggregateQueryResult = Apollo.QueryResult<EventsAggregateQuery, EventsAggregateQueryVariables>;
+export const EventsModulesDocument = gql`
+    query EventsModules {
+  consensus_event_modules {
     section
     method
   }
@@ -28411,40 +28442,36 @@ export const EventsDocument = gql`
     `;
 
 /**
- * __useEventsQuery__
+ * __useEventsModulesQuery__
  *
- * To run a query within a React component, call `useEventsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useEventsModulesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventsModulesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEventsQuery({
+ * const { data, loading, error } = useEventsModulesQuery({
  *   variables: {
- *      limit: // value for 'limit'
- *      offset: // value for 'offset'
- *      orderBy: // value for 'orderBy'
- *      where: // value for 'where'
  *   },
  * });
  */
-export function useEventsQuery(baseOptions: Apollo.QueryHookOptions<EventsQuery, EventsQueryVariables> & ({ variables: EventsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useEventsModulesQuery(baseOptions?: Apollo.QueryHookOptions<EventsModulesQuery, EventsModulesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
+        return Apollo.useQuery<EventsModulesQuery, EventsModulesQueryVariables>(EventsModulesDocument, options);
       }
-export function useEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventsQuery, EventsQueryVariables>) {
+export function useEventsModulesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventsModulesQuery, EventsModulesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
+          return Apollo.useLazyQuery<EventsModulesQuery, EventsModulesQueryVariables>(EventsModulesDocument, options);
         }
-export function useEventsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EventsQuery, EventsQueryVariables>) {
+export function useEventsModulesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EventsModulesQuery, EventsModulesQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
+          return Apollo.useSuspenseQuery<EventsModulesQuery, EventsModulesQueryVariables>(EventsModulesDocument, options);
         }
-export type EventsQueryHookResult = ReturnType<typeof useEventsQuery>;
-export type EventsLazyQueryHookResult = ReturnType<typeof useEventsLazyQuery>;
-export type EventsSuspenseQueryHookResult = ReturnType<typeof useEventsSuspenseQuery>;
-export type EventsQueryResult = Apollo.QueryResult<EventsQuery, EventsQueryVariables>;
+export type EventsModulesQueryHookResult = ReturnType<typeof useEventsModulesQuery>;
+export type EventsModulesLazyQueryHookResult = ReturnType<typeof useEventsModulesLazyQuery>;
+export type EventsModulesSuspenseQueryHookResult = ReturnType<typeof useEventsModulesSuspenseQuery>;
+export type EventsModulesQueryResult = Apollo.QueryResult<EventsModulesQuery, EventsModulesQueryVariables>;
 export const EventByIdDocument = gql`
     query EventById($eventId: String!) {
   consensus_events(where: {id: {_eq: $eventId}}) {
@@ -28491,6 +28518,54 @@ export type EventByIdQueryHookResult = ReturnType<typeof useEventByIdQuery>;
 export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQuery>;
 export type EventByIdSuspenseQueryHookResult = ReturnType<typeof useEventByIdSuspenseQuery>;
 export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
+export const EventsDocument = gql`
+    subscription Events($limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]!, $where: consensus_events_bool_exp) {
+  consensus_events(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sortId: sort_id
+    blockHeight: block_height
+    blockHash: block_hash
+    extrinsicId: extrinsic_id
+    extrinsicHash: extrinsic_hash
+    section
+    module
+    indexInBlock: index_in_block
+    timestamp
+    phase
+  }
+}
+    `;
+
+/**
+ * __useEventsSubscription__
+ *
+ * To run a query within a React component, call `useEventsSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useEventsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventsSubscription({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useEventsSubscription(baseOptions: Apollo.SubscriptionHookOptions<EventsSubscription, EventsSubscriptionVariables> & ({ variables: EventsSubscriptionVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<EventsSubscription, EventsSubscriptionVariables>(EventsDocument, options);
+      }
+export type EventsSubscriptionHookResult = ReturnType<typeof useEventsSubscription>;
+export type EventsSubscriptionResult = Apollo.SubscriptionResult<EventsSubscription>;
 export const ExtrinsicsAggregateDocument = gql`
     query ExtrinsicsAggregate($where: consensus_extrinsics_bool_exp) @cached(ttl: 60000) {
   consensus_extrinsics_aggregate(where: $where) {
