@@ -95,18 +95,11 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where],
   )
 
-  const countVariables = useMemo(
-    () => ({
-      where: Object.keys(where).length > 0 ? where : undefined,
-    }),
-    [where],
-  )
-
   const { loading: loadingAggregate, data: dataAggregate } = useIndexersQuery<
     ExtrinsicsAggregateQuery,
     ExtrinsicsAggregateQueryVariables
   >(ExtrinsicsAggregateDocument, {
-    variables: countVariables,
+    variables: { where: where },
   })
 
   const { loading: loadingModules, data: dataModules } = useIndexersQuery<
@@ -203,11 +196,11 @@ export const ExtrinsicList: FC = () => {
   )
 
   const isDataLoaded = useMemo(() => {
-    if (countVariables.where) {
+    if (Object.keys(where).length > 0) {
       return !loading && !loadingAggregate && !loadingModules && extrinsics
     }
     return !loading && !loadingModules && extrinsics
-  }, [extrinsics, loading, loadingAggregate, loadingModules, countVariables])
+  }, [extrinsics, loading, loadingAggregate, loadingModules, where])
 
   const noData = useMemo(() => {
     if (loading || loadingAggregate) return <Spinner isSmall />

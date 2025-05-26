@@ -92,18 +92,11 @@ export const EventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where],
   )
 
-  const countVariables = useMemo(
-    () => ({
-      where: Object.keys(where).length > 0 ? where : undefined,
-    }),
-    [where],
-  )
-
   const { loading: loadingAggregate, data: dataAggregate } = useIndexersQuery<
     EventsAggregateQuery,
     EventsAggregateQueryVariables
   >(EventsAggregateDocument, {
-    variables: countVariables,
+    variables: { where: where },
   })
 
   const { loading, data } = useIndexersQuery<EventsQuery, EventsQueryVariables>(EventsDocument, {
@@ -147,21 +140,10 @@ export const EventList: FC = () => {
     [dataModules],
   )
 
-  console.log('dataAggregate', dataAggregate)
-  console.log('dataModules', data)
-  console.log('data', data)
-  console.log('loading', loading)
-  console.log('loadingAggregate', loadingAggregate)
-  console.log('loadingModules', loading)
-  console.log('filtersOptions', filtersOptions)
-  console.log('events', events)
-
   const pageCount = useMemo(() => {
     const countToUse = Object.keys(where).length > 0 ? totalCount : MAX_RECORDS
     return Math.ceil(countToUse / pagination.pageSize)
   }, [pagination.pageSize, totalCount, where])
-
-  console.log('events', events)
 
   const columns = useMemo(
     () =>
@@ -217,11 +199,11 @@ export const EventList: FC = () => {
   )
 
   const isDataLoaded = useMemo(() => {
-    if (countVariables.where) {
+    if (Object.keys(where).length > 0) {
       return !loading && !loadingAggregate && !loadingModules
     }
     return !loading && !loadingModules
-  }, [loading, loadingAggregate, loadingModules, countVariables])
+  }, [loading, loadingAggregate, loadingModules, where])
 
   const noData = useMemo(() => {
     if (loading || loadingAggregate) return <Spinner isSmall />
