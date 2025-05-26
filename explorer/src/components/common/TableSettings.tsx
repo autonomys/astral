@@ -51,6 +51,10 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
     [overrideFiltersOptions, _filtersOptions],
   )
 
+  const isAvailableSearch = useMemo(() => {
+    return availableColumns?.some((column) => column.searchable)
+  }, [availableColumns])
+
   return (
     <div className='mb-4 w-full' id='accordion-open' data-accordion='open'>
       <h2 id='accordion-open-heading-1'>
@@ -65,14 +69,18 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
           <div className='flex items-center'>
             <div className='flex'>
               {addExtraIcons && addExtraIcons}
-              <MagnifyingGlassIcon
-                className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
-                stroke='currentColor'
-                key='search'
-                onClick={() =>
-                  showTableSettings !== 'search' ? showSettings('search') : hideSettings()
-                }
-              />
+
+              {isAvailableSearch && (
+                <MagnifyingGlassIcon
+                  className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
+                  stroke='currentColor'
+                  key='search'
+                  onClick={() =>
+                    showTableSettings !== 'search' ? showSettings('search') : hideSettings()
+                  }
+                />
+              )}
+
               <PencilIcon
                 className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
                 stroke='currentColor'
