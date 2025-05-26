@@ -27162,7 +27162,7 @@ export type EventsSubscriptionVariables = Exact<{
 }>;
 
 
-export type EventsSubscription = { __typename?: 'subscription_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }> };
+export type EventsSubscription = { __typename?: 'subscription_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, module: string, timestamp: any, phase: string, sortId: string, blockHeight: any, extrinsicId: string, indexInBlock: any }> };
 
 export type ExtrinsicsAggregateQueryVariables = Exact<{
   where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
@@ -28529,10 +28529,7 @@ export const EventsDocument = gql`
     id
     sortId: sort_id
     blockHeight: block_height
-    blockHash: block_hash
     extrinsicId: extrinsic_id
-    extrinsicHash: extrinsic_hash
-    section
     module
     indexInBlock: index_in_block
     timestamp

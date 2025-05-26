@@ -2,8 +2,7 @@
 
 import { numberWithCommas } from '@/utils/number'
 import { useSubscription } from '@apollo/client'
-import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
-import { CopyButton } from 'components/common/CopyButton'
+import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
@@ -182,11 +181,6 @@ export const EventList: FC = () => {
               {numberWithCommas(row.original.blockHeight)}
             </Link>
           ),
-          blockHash: ({ row }: Cell<Row>) => (
-            <CopyButton value={row.original.blockHash} message='Block hash copied'>
-              {shortString(row.original.blockHash)}
-            </CopyButton>
-          ),
           extrinsicId: ({ row }: Cell<Row>) => (
             <Link
               key={`${row.index}-event-extrinsic`}
@@ -196,12 +190,6 @@ export const EventList: FC = () => {
               {row.original.extrinsicId}
             </Link>
           ),
-          extrinsicHash: ({ row }: Cell<Row>) => (
-            <CopyButton value={row.original.extrinsicHash} message='Extrinsic hash copied'>
-              {shortString(row.original.extrinsicHash)}
-            </CopyButton>
-          ),
-          section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
           module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
           indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock,
         },
