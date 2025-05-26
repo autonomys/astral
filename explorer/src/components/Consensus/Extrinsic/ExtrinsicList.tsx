@@ -64,6 +64,7 @@ export const ExtrinsicList: FC = () => {
         },
       }),
       // Module
+      ...(filters.section && { section: { _eq: `${filters.section}` } }),
       ...(filters.module && { module: { _eq: `${filters.module}` } }),
     }),
     [filters, whereForSearch],
@@ -130,6 +131,9 @@ export const ExtrinsicList: FC = () => {
       dataModules
         ? FILTERS_OPTIONS[TABLE].map((filter) => ({
             ...filter,
+            ...(filter.key === 'section' && {
+              options: [...new Set(dataModules?.consensus_extrinsic_modules.map((m) => m.section))],
+            }),
             ...(filter.key === 'module' && {
               options: dataModules?.consensus_extrinsic_modules.map((m) => ({
                 value: m.section,

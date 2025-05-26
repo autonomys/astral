@@ -61,6 +61,7 @@ export const EventList: FC = () => {
         },
       }),
       // Module
+      ...(filters.section && { section: { _eq: `${filters.section}` } }),
       ...(filters.module && { module: { _eq: `${filters.module}` } }),
     }),
     [filters, whereForSearch],
