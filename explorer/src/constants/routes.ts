@@ -21,7 +21,6 @@ export enum RoutesConsensus {
   blocks = Routes.consensus + '/blocks',
   extrinsics = Routes.consensus + '/extrinsics',
   events = Routes.consensus + '/events',
-  logs = Routes.consensus + '/logs',
   files = Routes.consensus + '/files',
 }
 
@@ -91,10 +90,6 @@ export const ROUTES: Route[] = [
       {
         name: RoutesConsensus.events,
         title: 'Events',
-      },
-      {
-        name: RoutesConsensus.logs,
-        title: 'Logs',
       },
     ],
   },
