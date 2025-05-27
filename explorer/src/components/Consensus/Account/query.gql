@@ -92,29 +92,29 @@ query RewardsList(
   }
 }
 
+query ExtrinsicsByAccountIdCount($where: consensus_extrinsics_bool_exp) @cached(ttl: 60000) {
+  consensus_extrinsics_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+
 query ExtrinsicsByAccountId(
-  $accountId: String!
   $limit: Int!
   $offset: Int
   $where: consensus_extrinsics_bool_exp
   $orderBy: [consensus_extrinsics_order_by!]!
 ) {
-  consensus_accounts_by_pk(id: $accountId) {
-    extrinsics_aggregate(where: $where) {
-      aggregate {
-        count
-      }
-    }
-    extrinsics(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
-      id
-      sort_id
-      hash
-      name
-      success
-      block_height
-      timestamp
-      index_in_block
-    }
+  consensus_extrinsics(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    sort_id
+    hash
+    name
+    success
+    block_height
+    timestamp
+    index_in_block
   }
 }
 
