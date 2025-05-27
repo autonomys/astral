@@ -7,15 +7,8 @@ import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { FILTERS_OPTIONS } from 'constants/tables'
 import {
-  EventsAggregateDocument,
-  EventsAggregateQuery,
-  EventsAggregateQueryVariables,
   EventsDocument,
-  EventsModulesDocument,
-  EventsModulesQuery,
-  EventsModulesQueryVariables,
   EventsQuery,
   EventsQueryVariables,
   // eslint-disable-next-line camelcase
@@ -94,58 +87,16 @@ export const EventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where],
   )
 
-  const { loading: loadingAggregate, data: dataAggregate } = useIndexersQuery<
-    EventsAggregateQuery,
-    EventsAggregateQueryVariables
-  >(EventsAggregateDocument, {
-    variables: { where: where },
-  })
-
   const { loading, data } = useIndexersQuery<EventsQuery, EventsQueryVariables>(EventsDocument, {
     variables,
     skip: !variables.where,
     pollInterval: 6000,
   })
 
-  const { loading: loadingModules, data: dataModules } = useIndexersQuery<
-    EventsModulesQuery,
-    EventsModulesQueryVariables
-  >(EventsModulesDocument, {
-    variables: {},
-  })
-
-  const totalCount = useMemo(
-    () =>
-      dataAggregate && dataAggregate.consensus_events_aggregate.aggregate
-        ? dataAggregate.consensus_events_aggregate.aggregate.count
-        : 0,
-    [dataAggregate],
-  )
-
   const events = useMemo(() => (data ? data.consensus_events : []), [data])
-  const filtersOptions = useMemo(
-    () =>
-      dataModules
-        ? FILTERS_OPTIONS[TABLE].map((filter) => ({
-            ...filter,
-            ...(filter.key === 'section' && {
-              options: [...new Set(dataModules?.consensus_event_modules.map((m) => m.section))],
-            }),
-            ...(filter.key === 'module' && {
-              options: dataModules?.consensus_event_modules.map((m) => ({
-                value: m.method,
-                label: m.method + ' (' + m.section + ')',
-              })),
-            }),
-          }))
-        : undefined,
-    [dataModules],
-  )
-
   const pageCount = useMemo(() => {
-    const countToUse = Object.keys(where).length > 0 ? totalCount : MAX_RECORDS
-    return Math.ceil(countToUse / pagination.pageSize)
-  }, [pagination.pageSize, totalCount, where])
+    return Math.ceil(MAX_RECORDS / pagination.pageSize)
+  }, [pagination.pageSize])
 
   const columns = useMemo(
     () =>
@@ -204,18 +155,11 @@ export const EventList: FC = () => {
     [network, section, selectedColumns],
   )
 
-  const isDataLoaded = useMemo(() => {
-    if (Object.keys(where).length > 0) {
-      return !loading && !loadingAggregate && !loadingModules
-    }
-    return !loading && !loadingModules
-  }, [loading, loadingAggregate, loadingModules, where])
-
   const noData = useMemo(() => {
-    if (loading || loadingAggregate) return <Spinner isSmall />
-    if (!data || !dataAggregate) return <NotFound />
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
     return null
-  }, [data, dataAggregate, loading, loadingAggregate])
+  }, [data, loading])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -223,10 +167,10 @@ export const EventList: FC = () => {
         <TableSettings
           table={TABLE}
           filters={filters}
-          overrideFiltersOptions={filtersOptions}
+          overrideFiltersOptions={[]}
           totalCount={`(${numberWithCommas(MAX_RECORDS)}+)`}
         />
-        {isDataLoaded && events ? (
+        {!loading && events ? (
           <SortedTable
             data={events}
             columns={columns}

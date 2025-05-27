@@ -55,6 +55,10 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
     return availableColumns?.some((column) => column.searchable)
   }, [availableColumns])
 
+  const isAvailableFilters = useMemo(() => {
+    return filtersOptions?.some((filter) => filter.type !== 'range' && filter.type !== 'checkbox')
+  }, [filtersOptions])
+
   return (
     <div className='mb-4 w-full' id='accordion-open' data-accordion='open'>
       <h2 id='accordion-open-heading-1'>
@@ -89,14 +93,16 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                   showTableSettings !== 'columns' ? showSettings('columns') : hideSettings()
                 }
               />
-              <FunnelIcon
-                className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
-                stroke='currentColor'
-                key='funnel'
-                onClick={() =>
-                  showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
-                }
-              />
+              {isAvailableFilters && (
+                <FunnelIcon
+                  className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
+                  stroke='currentColor'
+                  key='funnel'
+                  onClick={() =>
+                    showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
+                  }
+                />
+              )}
               {showReset && (
                 <XMarkIcon
                   className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
