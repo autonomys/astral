@@ -88,7 +88,7 @@ export const EventList: FC = () => {
       where,
       orderBy: {
         // eslint-disable-next-line camelcase
-        sort_id: Order_By.Desc,
+        block_height: Order_By.Desc,
       },
     }),
     [pagination.pageSize, pagination.pageIndex, where],
