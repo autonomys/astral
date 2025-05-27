@@ -7,6 +7,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { TableSettings } from 'components/common/TableSettings'
+import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { FILTERS_OPTIONS } from 'constants/tables'
 import {
@@ -29,7 +30,7 @@ import { FC, useEffect, useMemo, useRef } from 'react'
 import { useTableSettings } from 'states/tables'
 import { Cell, ExtrinsicsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
-import { utcToLocalRelativeTime } from 'utils/time'
+import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 
 type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
@@ -165,7 +166,11 @@ export const ExtrinsicList: FC = () => {
               <div>{row.original.id}</div>
             </Link>
           ),
-          timestamp: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.timestamp),
+          timestamp: ({ row }: Cell<Row>) => (
+            <Tooltip text={utcToLocalTime(row.original.timestamp)}>
+              <div>{utcToLocalRelativeTime(row.original.timestamp)}</div>
+            </Tooltip>
+          ),
           hash: ({ row }: Cell<Row>) => (
             <CopyButton value={row.original.hash} message='Hash copied'>
               {shortString(row.original.hash)}
