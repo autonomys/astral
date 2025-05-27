@@ -27056,8 +27056,14 @@ export type RewardsListQueryVariables = Exact<{
 
 export type RewardsListQuery = { __typename?: 'query_root', consensus_rewards_aggregate: { __typename?: 'consensus_rewards_aggregate', aggregate?: { __typename?: 'consensus_rewards_aggregate_fields', count: number } | null }, consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, block_height: any, reward_type: string, amount: any, timestamp: any, block?: { __typename?: 'consensus_blocks', hash: string, id: string, height: any } | null, account?: { __typename?: 'consensus_accounts', id: string, free: any, reserved: any, total?: any | null, updated_at: any } | null }> };
 
+export type ExtrinsicsByAccountIdCountQueryVariables = Exact<{
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+}>;
+
+
+export type ExtrinsicsByAccountIdCountQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
+
 export type ExtrinsicsByAccountIdQueryVariables = Exact<{
-  accountId: Scalars['String']['input'];
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
@@ -27065,7 +27071,7 @@ export type ExtrinsicsByAccountIdQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsByAccountIdQuery = { __typename?: 'query_root', consensus_accounts_by_pk?: { __typename?: 'consensus_accounts', extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, sort_id: string, hash: string, name: string, success: boolean, block_height: any, timestamp: any, index_in_block: number }> } | null };
+export type ExtrinsicsByAccountIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, sort_id: string, hash: string, name: string, success: boolean, block_height: any, timestamp: any, index_in_block: number }> };
 
 export type TransfersByAccountIdQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -27937,24 +27943,64 @@ export type RewardsListQueryHookResult = ReturnType<typeof useRewardsListQuery>;
 export type RewardsListLazyQueryHookResult = ReturnType<typeof useRewardsListLazyQuery>;
 export type RewardsListSuspenseQueryHookResult = ReturnType<typeof useRewardsListSuspenseQuery>;
 export type RewardsListQueryResult = Apollo.QueryResult<RewardsListQuery, RewardsListQueryVariables>;
-export const ExtrinsicsByAccountIdDocument = gql`
-    query ExtrinsicsByAccountId($accountId: String!, $limit: Int!, $offset: Int, $where: consensus_extrinsics_bool_exp, $orderBy: [consensus_extrinsics_order_by!]!) {
-  consensus_accounts_by_pk(id: $accountId) {
-    extrinsics_aggregate(where: $where) {
-      aggregate {
-        count
+export const ExtrinsicsByAccountIdCountDocument = gql`
+    query ExtrinsicsByAccountIdCount($where: consensus_extrinsics_bool_exp) {
+  consensus_extrinsics_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+
+/**
+ * __useExtrinsicsByAccountIdCountQuery__
+ *
+ * To run a query within a React component, call `useExtrinsicsByAccountIdCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsByAccountIdCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtrinsicsByAccountIdCountQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useExtrinsicsByAccountIdCountQuery(baseOptions?: Apollo.QueryHookOptions<ExtrinsicsByAccountIdCountQuery, ExtrinsicsByAccountIdCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExtrinsicsByAccountIdCountQuery, ExtrinsicsByAccountIdCountQueryVariables>(ExtrinsicsByAccountIdCountDocument, options);
       }
-    }
-    extrinsics(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
-      id
-      sort_id
-      hash
-      name
-      success
-      block_height
-      timestamp
-      index_in_block
-    }
+export function useExtrinsicsByAccountIdCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsByAccountIdCountQuery, ExtrinsicsByAccountIdCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExtrinsicsByAccountIdCountQuery, ExtrinsicsByAccountIdCountQueryVariables>(ExtrinsicsByAccountIdCountDocument, options);
+        }
+export function useExtrinsicsByAccountIdCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsByAccountIdCountQuery, ExtrinsicsByAccountIdCountQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExtrinsicsByAccountIdCountQuery, ExtrinsicsByAccountIdCountQueryVariables>(ExtrinsicsByAccountIdCountDocument, options);
+        }
+export type ExtrinsicsByAccountIdCountQueryHookResult = ReturnType<typeof useExtrinsicsByAccountIdCountQuery>;
+export type ExtrinsicsByAccountIdCountLazyQueryHookResult = ReturnType<typeof useExtrinsicsByAccountIdCountLazyQuery>;
+export type ExtrinsicsByAccountIdCountSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByAccountIdCountSuspenseQuery>;
+export type ExtrinsicsByAccountIdCountQueryResult = Apollo.QueryResult<ExtrinsicsByAccountIdCountQuery, ExtrinsicsByAccountIdCountQueryVariables>;
+export const ExtrinsicsByAccountIdDocument = gql`
+    query ExtrinsicsByAccountId($limit: Int!, $offset: Int, $where: consensus_extrinsics_bool_exp, $orderBy: [consensus_extrinsics_order_by!]!) {
+  consensus_extrinsics(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    sort_id
+    hash
+    name
+    success
+    block_height
+    timestamp
+    index_in_block
   }
 }
     `;
@@ -27971,7 +28017,6 @@ export const ExtrinsicsByAccountIdDocument = gql`
  * @example
  * const { data, loading, error } = useExtrinsicsByAccountIdQuery({
  *   variables: {
- *      accountId: // value for 'accountId'
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
  *      where: // value for 'where'
