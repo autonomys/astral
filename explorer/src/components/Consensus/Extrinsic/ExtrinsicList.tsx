@@ -1,6 +1,7 @@
 'use client'
 
 import { numberWithCommas } from '@/utils/number'
+import { useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
@@ -11,13 +12,12 @@ import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
   ExtrinsicsDocument,
-  ExtrinsicsQuery,
-  ExtrinsicsQueryVariables,
+  ExtrinsicsSubscription,
+  ExtrinsicsSubscriptionVariables,
   // eslint-disable-next-line camelcase
   Order_By,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
 import { FC, useEffect, useMemo, useRef } from 'react'
 import { useTableSettings } from 'states/tables'
@@ -26,7 +26,7 @@ import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 
-type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
+type Row = ExtrinsicsSubscription['consensus_extrinsics'][0]
 const TABLE = 'extrinsics'
 const MAX_RECORDS = 500000
 
@@ -90,14 +90,12 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where],
   )
 
-  const { loading, data } = useIndexersQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
-    ExtrinsicsDocument,
-    {
-      variables,
-      skip: !variables.where,
-      pollInterval: 6000,
-    },
-  )
+  const { loading, data } = useSubscription<
+    ExtrinsicsSubscription,
+    ExtrinsicsSubscriptionVariables
+  >(ExtrinsicsDocument, {
+    variables,
+  })
 
   const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
 

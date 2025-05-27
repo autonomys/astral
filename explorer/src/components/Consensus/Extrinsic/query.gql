@@ -1,21 +1,3 @@
-query Extrinsics(
-  $limit: Int!
-  $offset: Int
-  $orderBy: [consensus_extrinsics_order_by!]!
-  $where: consensus_extrinsics_bool_exp
-) {
-  consensus_extrinsics(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
-    id
-    sortId: sort_id
-    hash
-    blockHeight: block_height
-    section
-    success
-    timestamp
-    module
-  }
-}
-
 query ExtrinsicsAggregate($where: consensus_extrinsics_bool_exp) @cached(ttl: 60000) {
   consensus_extrinsics_aggregate(where: $where) {
     aggregate {

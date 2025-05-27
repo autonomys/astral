@@ -1,6 +1,7 @@
 'use client'
 
 import { numberWithCommas } from '@/utils/number'
+import { useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -9,13 +10,12 @@ import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
   EventsDocument,
-  EventsQuery,
-  EventsQueryVariables,
+  EventsSubscription,
+  EventsSubscriptionVariables,
   // eslint-disable-next-line camelcase
   Order_By,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
 import { FC, useEffect, useMemo, useRef } from 'react'
 import { useTableSettings } from 'states/tables'
@@ -24,7 +24,7 @@ import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 
-type Row = EventsQuery['consensus_events'][0]
+type Row = EventsSubscription['consensus_events'][0]
 const TABLE = 'events'
 const MAX_RECORDS = 500000
 
@@ -87,11 +87,12 @@ export const EventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where],
   )
 
-  const { loading, data } = useIndexersQuery<EventsQuery, EventsQueryVariables>(EventsDocument, {
-    variables,
-    skip: !variables.where,
-    pollInterval: 6000,
-  })
+  const { loading, data } = useSubscription<EventsSubscription, EventsSubscriptionVariables>(
+    EventsDocument,
+    {
+      variables,
+    },
+  )
 
   const events = useMemo(() => (data ? data.consensus_events : []), [data])
   const pageCount = useMemo(() => {
