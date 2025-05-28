@@ -69,7 +69,9 @@ BEGIN
         type,
         success,
         is_finalized,
-        "timestamp"
+        "timestamp",
+        _id,
+        _block_range
     ) VALUES (
         'domain_auto_evm_' || NEW.id,            -- id
         NEW.block_height,                        -- block_height
@@ -85,7 +87,9 @@ BEGIN
         NEW.type,                                -- type
         NEW.success,                             -- success
         NEW.is_finalized,                        -- is_finalized
-        NEW."timestamp"                          -- timestamp
+        NEW."timestamp",                          -- timestamp
+        gen_random_uuid(),                       -- _id
+        NEW._block_range                         -- _block_range
     );
     
     RETURN NEW;
