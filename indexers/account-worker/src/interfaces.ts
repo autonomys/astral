@@ -1,4 +1,3 @@
-
 export interface AccountProcessingTask {
   address: string;
   blockHeight: number;

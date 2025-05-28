@@ -43,8 +43,8 @@ const disconnectDb = async (): Promise<void> => {
 }
 
 /**
- * Updates multiple AccountHistory records in a single transaction.
- * Much more efficient than individual updates.
+ * Updates multiple AccountHistory records and the accounts table in a single transaction.
+ * Directly updates accounts table to avoid trigger-based deadlocks.
  */
 const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]): Promise<number> => {
   if (!pool) {
@@ -57,9 +57,9 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
   let successCount = 0;
 
   try {
-    await client.query('BEGIN');
+    const _begin = await client.query('BEGIN');
 
-    // Prepare batch update query
+    // First, update all account_histories records
     const updatePromises = updates.map(async (data) => {
       const { id, nonce, free, reserved, total, eventBlockNumber } = data;
       
@@ -85,21 +85,87 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
       try {
         const result = await client.query(query, values);
         if (result.rowCount && result.rowCount > 0) {
-          successCount++;
-          return true;
+          return { success: true, data };
         }
         console.warn(`No AccountHistory record found for address: ${id} (block ${eventBlockNumber})`);
-        return false;
+        return { success: false, data };
       } catch (error) {
         console.error(`Error updating AccountHistory for address ${id}:`, error);
+        return { success: false, data };
+      }
+    });
+
+    const results = await Promise.all(updatePromises);
+    
+    // Group successful updates by account address to get the latest data for each account
+    const latestByAccount = new Map<string, AccountHistoryUpdateData>();
+    
+    for (const result of results) {
+      if (result.success) {
+        successCount++;
+        const existing = latestByAccount.get(result.data.id);
+        // Keep the update with the highest block number
+        if (!existing || result.data.eventBlockNumber > existing.eventBlockNumber) {
+          latestByAccount.set(result.data.id, result.data);
+        }
+      }
+    }
+
+    // Now update the accounts table with the latest data for each unique account
+    // Do this in parallel since each account is unique - no deadlocks possible
+    const accountUpdatePromises = Array.from(latestByAccount.entries()).map(async ([address, data]) => {
+      const accountQuery = `
+        INSERT INTO consensus.accounts (
+          id,
+          nonce,
+          free,
+          reserved,
+          total,
+          created_at,
+          updated_at
+        )
+        VALUES (
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          $6,
+          EXTRACT(EPOCH FROM NOW())
+        )
+        ON CONFLICT (id) DO UPDATE SET
+          nonce = EXCLUDED.nonce,
+          free = EXCLUDED.free,
+          reserved = EXCLUDED.reserved,
+          total = EXCLUDED.total,
+          updated_at = EXTRACT(EPOCH FROM NOW());
+      `;
+
+      const accountValues = [
+        address,
+        data.nonce,
+        data.free,
+        data.reserved,
+        data.total,
+        data.eventBlockNumber
+      ];
+
+      try {
+        const _updateAccount = await client.query(accountQuery, accountValues);
+        return true;
+      } catch (error) {
+        console.error(`Error updating account ${address}:`, error);
         return false;
       }
     });
 
-    const _update = await Promise.all(updatePromises);
+    // Execute all account updates in parallel
+    const accountResults = await Promise.all(accountUpdatePromises);
+    const accountsUpdated = accountResults.filter(result => result).length;
+
     const _commit = await client.query('COMMIT');
     
-    console.log(`Batch update completed: ${successCount}/${updates.length} accounts updated successfully`);
+    console.log(`Batch update completed: ${successCount}/${updates.length} account histories updated, ${accountsUpdated}/${latestByAccount.size} accounts updated`);
     return successCount;
   } catch (error) {
     const _rollback = await client.query('ROLLBACK');
