@@ -14,7 +14,7 @@ import { numberWithCommas } from 'utils/number'
 interface TableSettingsProps {
   table: TableName
   tableName?: string
-  totalCount?: number
+  totalCount?: number | string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: Record<string, any>
   addExtraIcons?: React.ReactNode
@@ -51,24 +51,40 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
     [overrideFiltersOptions, _filtersOptions],
   )
 
+  const isAvailableSearch = useMemo(() => {
+    return availableColumns?.some((column) => column.searchable)
+  }, [availableColumns])
+
+  const isAvailableFilters = useMemo(() => {
+    return filtersOptions?.some((filter) => filter.type !== 'range' && filter.type !== 'checkbox')
+  }, [filtersOptions])
+
   return (
     <div className='mb-4 w-full' id='accordion-open' data-accordion='open'>
       <h2 id='accordion-open-heading-1'>
         <div className='flex w-full items-center justify-between truncate pb-5 text-left font-light text-gray-900 dark:text-white/75'>
           <span className='flex items-center text-xl font-medium'>
-            {tableName} {totalCount && `(${numberWithCommas(totalCount)})`}
+            {tableName}{' '}
+            {(totalCount &&
+              typeof totalCount === 'number' &&
+              `(${numberWithCommas(totalCount)})`) ||
+              totalCount}
           </span>
           <div className='flex items-center'>
             <div className='flex'>
               {addExtraIcons && addExtraIcons}
-              <MagnifyingGlassIcon
-                className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
-                stroke='currentColor'
-                key='search'
-                onClick={() =>
-                  showTableSettings !== 'search' ? showSettings('search') : hideSettings()
-                }
-              />
+
+              {isAvailableSearch && (
+                <MagnifyingGlassIcon
+                  className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
+                  stroke='currentColor'
+                  key='search'
+                  onClick={() =>
+                    showTableSettings !== 'search' ? showSettings('search') : hideSettings()
+                  }
+                />
+              )}
+
               <PencilIcon
                 className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
                 stroke='currentColor'
@@ -77,14 +93,16 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                   showTableSettings !== 'columns' ? showSettings('columns') : hideSettings()
                 }
               />
-              <FunnelIcon
-                className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
-                stroke='currentColor'
-                key='funnel'
-                onClick={() =>
-                  showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
-                }
-              />
+              {isAvailableFilters && (
+                <FunnelIcon
+                  className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
+                  stroke='currentColor'
+                  key='funnel'
+                  onClick={() =>
+                    showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
+                  }
+                />
+              )}
               {showReset && (
                 <XMarkIcon
                   className='m-4 size-10 cursor-pointer rounded-full border-2 border-grayDark p-1 dark:border-white'
