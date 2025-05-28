@@ -15,6 +15,7 @@ export type ActionsDropdownRow = {
     apy30d?: string
     minimumNominatorStake?: string
     isRedirecting?: boolean
+    totalStake?: bigint
   }
 }
 

@@ -226,7 +226,7 @@ export const usePersistentTableStates = create<PersistentTableStatesAndFn>()(
     }),
     {
       name: 'table-storage',
-      version: 12,
+      version: 13,
       storage: createJSONStorage(() => localStorage),
       serialize: (state) => JSON.stringify(state, bigIntSerializer),
       deserialize: (str) => JSON.parse(str, bigIntDeserializer),

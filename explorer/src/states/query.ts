@@ -31,8 +31,8 @@ interface ExplorerQueryState {
   [Routes.consensus]: {
     accounts: QueryState<GqlT.AccountsQuery>
     blocks: QueryState<GqlT.BlocksQuery>
-    extrinsics: QueryState<GqlT.ExtrinsicsQuery>
-    events: QueryState<GqlT.EventsQuery>
+    extrinsics: QueryState<GqlT.ExtrinsicsSubscription>
+    events: QueryState<GqlT.EventsSubscription>
     logs: QueryState<GqlT.LogsQuery>
 
     account: QueryState<GqlT.AccountByIdQuery>
@@ -85,9 +85,7 @@ interface ExplorerQueryState {
     transfers: QueryState<GqlT.TransferHistoryQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
-    stakingSummary: QueryState<GqlT.StakingSummaryQuery>
     lastExtrinsics: QueryState<GqlT.ExtrinsicsSummaryQuery>
-    leaderboard: QueryState<GqlT.AccountsTopLeaderboardQuery>
   }
 }
 
@@ -163,9 +161,7 @@ const initialState: ExplorerQueryState = {
     domain: initialized,
   },
   walletSidekick: {
-    stakingSummary: initialized,
     lastExtrinsics: initialized,
-    leaderboard: initialized,
   },
   transfer: {
     transfer: initialized,

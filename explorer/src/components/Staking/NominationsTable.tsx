@@ -540,6 +540,7 @@ export const NominationsTable: FC = () => {
                                                 current_total_shares: nominator.operator
                                                   ? nominator.operator.current_total_shares
                                                   : BIGINT_ZERO,
+                                                totalStake: nominator.totalStaked,
                                               },
                                             } as ActionsDropdownRow
                                           }

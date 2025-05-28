@@ -159,7 +159,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
-    const totalAmount = BigInt(event.event.data[2].toString());
+    const stakeAmount = BigInt(event.event.data[2].toString());
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     const storageFeeDepositedEvent = findOneExtrinsicEvent(
@@ -171,7 +171,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       storageFeeDepositedEvent?.event.data[2].toString() ?? 0
     );
     const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
-    const stakeAmount = totalAmount - storageFeeDeposit;
+    const totalAmount = stakeAmount + storageFeeDeposit;
     const estimatedShares = calculateShares(stakeAmount, sharePrice);
 
     cache.depositEvent.push(

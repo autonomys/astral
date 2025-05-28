@@ -15,6 +15,8 @@ type Props = {
   overlayClassName?: string
   showTitle?: boolean
   showCloseButton?: boolean
+  titleClassName?: string
+  closeButtonClassName?: string
 }
 
 export const Modal: FC<Props> = ({
@@ -28,6 +30,8 @@ export const Modal: FC<Props> = ({
   overlayClassName = '',
   showTitle = true,
   showCloseButton = true,
+  titleClassName = '',
+  closeButtonClassName = '',
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
 
@@ -95,7 +99,10 @@ export const Modal: FC<Props> = ({
         {showTitle && title && (
           <h2
             id='modal-title'
-            className='absolute left-6 top-4 text-xl font-medium tracking-tight text-blueAccent dark:text-blueLight'
+            className={cn(
+              'absolute left-6 top-4 text-xl font-medium tracking-tight text-blueAccent dark:text-blueLight',
+              titleClassName,
+            )}
           >
             {title}
           </h2>
@@ -105,7 +112,10 @@ export const Modal: FC<Props> = ({
           <button
             onClick={onClose}
             aria-label='Close modal'
-            className='absolute right-2 top-2 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-white dark:hover:bg-primaryAccent/75 dark:hover:text-gray-800'
+            className={cn(
+              'absolute right-2 top-2 rounded p-1 text-gray-600 hover:bg-gray-100 hover:text-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-400',
+              closeButtonClassName,
+            )}
           >
             <IoMdClose className='h-5 w-5' />
           </button>

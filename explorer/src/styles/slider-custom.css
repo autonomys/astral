@@ -1,0 +1,51 @@
+/* Custom styling for rc-slider handle */
+.rc-slider-handle {
+  width: 18px !important; /* Increase width (default is usually 14px) */
+  height: 18px !important; /* Increase height (default is usually 14px) */
+  border: 2px solid black !important; /* Add black border */
+  background-color: white !important;
+  margin-top: -5px !important; /* Adjusted for track height */
+}
+
+.rc-slider-handle:hover {
+  border-color: black !important;
+}
+
+.rc-slider-handle:active {
+  border-color: black !important;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Dark mode styling for handle */
+.dark .rc-slider-handle {
+  border: 2px solid white !important;
+  background-color: rgb(25 73 210) !important; /* #1949d2 */
+}
+
+.dark .rc-slider-handle:hover,
+.dark .rc-slider-handle:active {
+  border-color: white !important;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Custom styling for the slider track */
+.rc-slider-track {
+  background-color: rgb(3 35 114) !important; /* #032372 - updated primary accent color */
+  height: 8px !important; /* Increased track height */
+}
+
+/* Rail is the unfilled part of the slider */
+.rc-slider-rail {
+  height: 8px !important; /* Match the track height */
+  background-color: #e5e7eb !important; /* Light gray in light mode */
+}
+
+/* Dark mode styling for rail */
+.dark .rc-slider-rail {
+  background-color: #374151 !important; /* Darker gray for dark mode */
+}
+
+/* For dark mode - track color remains the same */
+.dark .rc-slider-track {
+  background-color: rgb(25 73 210) !important; /* #1949d2 */
+}
