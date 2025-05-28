@@ -21,7 +21,7 @@ import { ExtrinsicPrimitive, LogValue } from "./types";
 import { groupEventsFromBatchAll } from "./utils";
 
 export const accountsToProcess: Map<number, { blockHash: string; addresses: Set<string> }> = new Map();
-
+const DEPTH_TO_PUBLISH_TO_REDIS = 4;
 
 
 /*
@@ -488,13 +488,14 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     logger.info(`[REDIS: ${blockNumber}] Storing ${uniqueAddresses.length} addresses for block ${blockNumber}, will publish when block is 10+ deep`);
   }
 
-  // Check if we have blocks that are now 4+ deep and can be published to Redis
+  // Check if we have blocks that are now DEPTH_TO_PUBLISH_TO_REDIS+ deep and can be published to Redis
+  // This practice IS NOT to handle re-orgs, it is for avoiding deadlocks with the account-worker
   const currentBlockNumber = blockNumber;
   const blocksToPublish: number[] = [];
   
   for (const [storedBlockNumber] of accountsToProcess.entries()) {
     const blockDepth = currentBlockNumber - storedBlockNumber;
-    if (blockDepth >= 4) {
+    if (blockDepth >= DEPTH_TO_PUBLISH_TO_REDIS) {
       blocksToPublish.push(storedBlockNumber);
     }
   }
