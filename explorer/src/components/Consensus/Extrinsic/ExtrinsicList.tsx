@@ -1,7 +1,7 @@
 'use client'
 
 import { numberWithCommas } from '@/utils/number'
-import { useSubscription } from '@apollo/client'
+import { useQuery, useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
@@ -16,10 +16,13 @@ import {
   ExtrinsicsSubscriptionVariables,
   // eslint-disable-next-line camelcase
   Order_By,
+  SearchExtrinsicsByBlockHashDocument,
+  SearchExtrinsicsByBlockHashQuery,
+  SearchExtrinsicsByBlockHashQueryVariables,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
-import { FC, useEffect, useMemo, useRef } from 'react'
+import { FC, useMemo } from 'react'
 import { useTableSettings } from 'states/tables'
 import { Cell, ExtrinsicsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
@@ -28,7 +31,7 @@ import { NotFound } from '../../layout/NotFound'
 
 type Row = ExtrinsicsSubscription['consensus_extrinsics'][0]
 const TABLE = 'extrinsics'
-const MAX_RECORDS = 500000
+let MAX_RECORDS = 500000
 
 export const ExtrinsicList: FC = () => {
   const { network, section } = useIndexers()
@@ -38,56 +41,22 @@ export const ExtrinsicList: FC = () => {
     sorting,
     selectedColumns,
     filters,
-    whereForSearch,
+    stringForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<ExtrinsicsFilters>(TABLE)
-
-  // Ref to store previous where value for comparison
-  const prevWhereRef = useRef<string | null>(null)
-
-  const where = useMemo(
-    () => ({
-      ...whereForSearch,
-      // Block Height
-      ...((filters.blockHeightMin || filters.blockHeightMax) && {
-        // eslint-disable-next-line camelcase
-        block_height: {
-          ...(filters.blockHeightMin && { _gte: filters.blockHeightMin }),
-          ...(filters.blockHeightMax && { _lte: filters.blockHeightMax }),
-        },
-      }),
-      // Module
-      ...(filters.section && { section: { _eq: `${filters.section}` } }),
-      ...(filters.module && { module: { _eq: `${filters.module}` } }),
-    }),
-    [filters, whereForSearch],
-  )
-
-  // Effect to reset pagination when where clause changes
-  useEffect(() => {
-    const currentWhere = JSON.stringify(where)
-    const prevWhere = prevWhereRef.current
-
-    if (prevWhere !== null && prevWhere !== currentWhere) {
-      // Reset pagination to first page when where clause changes
-      onPaginationChange({ pageIndex: 0, pageSize: pagination.pageSize })
-    }
-
-    prevWhereRef.current = currentWhere
-  }, [where, onPaginationChange, pagination.pageSize])
 
   const variables = useMemo(
     () => ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
-      where,
+
       orderBy: {
         // eslint-disable-next-line camelcase
         block_height: Order_By.Desc,
       },
     }),
-    [pagination.pageSize, pagination.pageIndex, where],
+    [pagination.pageSize, pagination.pageIndex],
   )
 
   const { loading, data } = useSubscription<
@@ -97,11 +66,29 @@ export const ExtrinsicList: FC = () => {
     variables,
   })
 
-  const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
+  const { loading: loadingSearch, data: dataSearch } = useQuery<
+    SearchExtrinsicsByBlockHashQuery,
+    SearchExtrinsicsByBlockHashQueryVariables
+  >(SearchExtrinsicsByBlockHashDocument, {
+    variables: {
+      search: (stringForSearch as { block_hash: string })?.block_hash,
+      limit: 10,
+    },
+  })
+
+  const extrinsics = useMemo(() => {
+    if (dataSearch) return dataSearch.consensus_search_extrinsics_by_block_hash
+    if (data) return data.consensus_extrinsics
+    return []
+  }, [data, dataSearch])
 
   const pageCount = useMemo(() => {
+    if (dataSearch) {
+      MAX_RECORDS =
+        dataSearch.consensus_search_extrinsics_by_block_hash_aggregate?.aggregate?.count ?? 0
+    }
     return Math.ceil(MAX_RECORDS / pagination.pageSize)
-  }, [pagination.pageSize])
+  }, [dataSearch, pagination.pageSize])
 
   const columns = useMemo(
     () =>
@@ -139,7 +126,11 @@ export const ExtrinsicList: FC = () => {
               <div>{numberWithCommas(row.original.blockHeight)}</div>
             </Link>
           ),
-
+          blockHash: ({ row }: Cell<Row>) => (
+            <CopyButton value={row.original.blockHash} message='Block hash copied'>
+              {shortString(row.original.blockHash)}
+            </CopyButton>
+          ),
           success: ({ row }: Cell<Row>) => <StatusIcon status={row.original.success} />,
         },
         {},
@@ -157,10 +148,10 @@ export const ExtrinsicList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
-    if (!data) return <NotFound />
+    if (loading || loadingSearch) return <Spinner isSmall />
+    if (!data && !dataSearch) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, loading, loadingSearch, dataSearch])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -171,7 +162,7 @@ export const ExtrinsicList: FC = () => {
           overrideFiltersOptions={[]}
           totalCount={`(${numberWithCommas(MAX_RECORDS)}+)`}
         />
-        {!loading && extrinsics ? (
+        {!loading && !loadingSearch && extrinsics ? (
           <SortedTable
             data={extrinsics}
             columns={columns}

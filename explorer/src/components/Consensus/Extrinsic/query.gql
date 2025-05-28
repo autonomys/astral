@@ -13,6 +13,25 @@ query ExtrinsicsModules {
   }
 }
 
+query SearchExtrinsicsByBlockHash($search: String!, $limit: Int!) {
+  consensus_search_extrinsics_by_block_hash(args: { search: $search }, limit: $limit) {
+    id
+    sortId: sort_id
+    hash
+    blockHeight: block_height
+    section
+    success
+    timestamp
+    module
+    blockHash: block_hash
+  }
+  consensus_search_extrinsics_by_block_hash_aggregate(args: { search: $search }) {
+    aggregate {
+      count
+    }
+  }
+}
+
 query ExtrinsicsById($extrinsicId: String!) {
   consensus_extrinsics(
     where: { _or: [{ id: { _eq: $extrinsicId } }, { hash: { _eq: $extrinsicId } }] }

@@ -46,6 +46,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'module', label: 'Module', isSelected: true },
     { name: 'success', label: 'Status', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
+    { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
   ],
   events: [
     { name: 'sortId', label: 'Event Id', isSelected: true },
@@ -54,6 +55,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'module', label: 'Module', isSelected: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
+    { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
   ],
   logs: [
     { name: 'sortId', label: 'Log Id', isSelected: true, searchable: true },
