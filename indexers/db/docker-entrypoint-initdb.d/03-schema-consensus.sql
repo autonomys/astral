@@ -13,6 +13,31 @@ CREATE FUNCTION consensus.schema_notification() RETURNS trigger
   $$;
 ALTER FUNCTION consensus.schema_notification() OWNER TO postgres;
 
+
+CREATE OR REPLACE FUNCTION consensus.search_extrinsics_by_block_hash(search text)
+    RETURNS SETOF consensus.extrinsics
+    LANGUAGE sql
+    STABLE
+AS $function$
+    SELECT *
+    FROM consensus.extrinsics
+    WHERE to_tsvector('english', block_hash) @@ plainto_tsquery('english', search)
+    ORDER BY ts_rank(to_tsvector('english', block_hash), plainto_tsquery('english', search)) DESC;
+$function$
+
+
+CREATE OR REPLACE FUNCTION consensus.search_events_by_block_hash(search text)
+    RETURNS SETOF consensus.events
+    LANGUAGE sql
+    STABLE
+AS $function$
+    SELECT *
+    FROM consensus.events
+    WHERE to_tsvector('english', block_hash) @@ plainto_tsquery('english', search)
+    ORDER BY ts_rank(to_tsvector('english', block_hash), plainto_tsquery('english', search)) DESC;
+$function$
+
+
 CREATE TABLE consensus._metadata (
     key character varying(255) NOT NULL,
     value jsonb,
@@ -284,19 +309,12 @@ CREATE INDEX "consensus_blocks_hash" ON consensus.blocks USING btree (hash);
 CREATE INDEX "consensus_blocks_id_hash" ON consensus.blocks (id, hash);
 CREATE INDEX "consensus_cumulative_blocks_id" ON consensus.cumulative_blocks USING btree (id);
 CREATE INDEX "0xd8db4c8313621519" ON consensus.extrinsics USING btree (id);
-CREATE INDEX "consensus_extrinsics_sort_id" ON consensus.extrinsics USING btree (sort_id DESC);
 CREATE INDEX "consensus_extrinsics_hash" ON consensus.extrinsics USING btree (hash);
 CREATE INDEX "consensus_extrinsics_block_height" ON consensus.extrinsics USING btree (block_height);
-CREATE INDEX "consensus_extrinsics_signer" ON consensus.extrinsics USING btree (signer);
-CREATE INDEX "consensus_extrinsics_section" ON consensus.extrinsics USING btree (section);
-CREATE INDEX "consensus_extrinsics_module" ON consensus.extrinsics USING btree (module);
-CREATE INDEX "consensus_extrinsics_timestamp" ON consensus.extrinsics USING btree ("timestamp");
+CREATE INDEX "consensus_extrinsics_block_hash" ON consensus.extrinsics USING GIN (to_tsvector('english', block_hash));
 CREATE INDEX "0xe5bf5858bd35a276" ON consensus.events USING btree (id);
-CREATE INDEX "consensus_events_sort_id" ON consensus.events USING btree (sort_id DESC);
-CREATE INDEX "consensus_events_extrinsic_id" ON consensus.events USING btree (extrinsic_id);
 CREATE INDEX "consensus_events_block_height" ON consensus.events USING btree (block_height);
-CREATE INDEX "consensus_events_section" ON consensus.events USING btree (section);
-CREATE INDEX "consensus_events_module" ON consensus.events USING btree (module);
+CREATE INDEX consensus_event_block_hash ON consensus.events USING GIN (to_tsvector('english', block_hash));
 CREATE INDEX "0x4cb388e53e3e30f3" ON consensus.accounts USING btree (id);
 CREATE INDEX "consensus_accounts_free" ON consensus.accounts USING btree (free DESC);
 CREATE INDEX "consensus_accounts_reserved" ON consensus.accounts USING btree (reserved DESC);
