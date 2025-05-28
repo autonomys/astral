@@ -430,13 +430,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     logger.info(`[Block: ${blockNumber}] ${accountHistories.length} placeholder AccountHistory entities prepared in ${createAccountHistoriesDuration}ms`);
   }
 
-  if (blockNumber % 10 === 0) {
-    logger.info(`[REDIS: ${blockNumber}] Publishing ${accountsToProcess.size} addresses to Redis`);
-    publishAccountsToRedis().catch(err => 
-      logger.warn(`Background Redis publishing failed: ${err.message}`)
-    );
-  }
-
   // Prepare for bulkSave - measure time for any preparation
   const preBulkSaveStartTime = Date.now();
   logger.info(`[Block: ${blockNumber}] Starting bulk entity save. Extrinsics: ${newExtrinsics.length}, Events: ${newEvents.length}, Logs: ${newLogs.length}, Transfers: ${cache.transfers.length}, Rewards: ${cache.rewards.length}`);
@@ -487,7 +480,32 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   ]);
   const bulkSaveDuration = Date.now() - bulkSaveStartTime;
   logger.info(`[Block: ${blockNumber}] All entities saved (bulkCreate) in ${bulkSaveDuration}ms`);
+
+  // Publish to Redis AFTER all database operations are complete AND block is deep enough
+  // This is a temporary solution to avoid deadlocks with the account-worker
+  if (uniqueAddresses.length > 0) {
+    // Store addresses for this block, but don't publish to Redis yet
+    logger.info(`[REDIS: ${blockNumber}] Storing ${uniqueAddresses.length} addresses for block ${blockNumber}, will publish when block is 10+ deep`);
+  }
+
+  // Check if we have blocks that are now 4+ deep and can be published to Redis
+  const currentBlockNumber = blockNumber;
+  const blocksToPublish: number[] = [];
   
+  for (const [storedBlockNumber] of accountsToProcess.entries()) {
+    const blockDepth = currentBlockNumber - storedBlockNumber;
+    if (blockDepth >= 4) {
+      blocksToPublish.push(storedBlockNumber);
+    }
+  }
+
+  if (blocksToPublish.length > 0) {
+    logger.info(`[REDIS: ${blockNumber}] Publishing ${blocksToPublish.length} deep blocks to Redis: ${blocksToPublish.join(', ')}`);
+    publishAccountsToRedis(blocksToPublish).catch(err => 
+      logger.warn(`Background Redis publishing failed: ${err.message}`)
+    );
+  }
+
   // Calculate time breakdown for detailed analysis
   const totalMeasuredTime = initDuration + 
     eventsOrgDuration + 
