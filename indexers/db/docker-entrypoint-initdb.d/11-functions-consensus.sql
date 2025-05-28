@@ -60,49 +60,48 @@ CREATE TRIGGER ensure_consensus_extrinsic_module
     FOR EACH ROW
     EXECUTE FUNCTION consensus.insert_extrinsic_module();
 
-CREATE FUNCTION consensus.update_account() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    INSERT INTO consensus.accounts (
-      id,
-      nonce,
-      free,
-      reserved,
-      total,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      NEW.id,
-      NEW.nonce,
-      NEW.free,
-      NEW.reserved,
-      NEW.total,
-      NEW.created_at,
-      EXTRACT(EPOCH FROM NOW())
-    )
-    ON CONFLICT (id) DO UPDATE SET
-      nonce = EXCLUDED.nonce,
-      free = EXCLUDED.free,
-      reserved = EXCLUDED.reserved,
-      total = EXCLUDED.total,
-      updated_at = EXTRACT(EPOCH FROM NOW());
+-- Removed trigger and update_account function to prevent deadlocks
+-- Account-worker now updates the accounts table directly after updating account_histories
+-- This gives us full control over the update sequence and prevents race conditions
+
+-- CREATE FUNCTION consensus.update_account() RETURNS trigger
+--     LANGUAGE plpgsql
+--     AS $$
+--   BEGIN
+--     INSERT INTO consensus.accounts (
+--       id,
+--       nonce,
+--       free,
+--       reserved,
+--       total,
+--       created_at,
+--       updated_at
+--     )
+--     VALUES (
+--       NEW.id,
+--       NEW.nonce,
+--       NEW.free,
+--       NEW.reserved,
+--       NEW.total,
+--       NEW.created_at,
+--       EXTRACT(EPOCH FROM NOW())
+--     )
+--     ON CONFLICT (id) DO UPDATE SET
+--       nonce = EXCLUDED.nonce,
+--       free = EXCLUDED.free,
+--       reserved = EXCLUDED.reserved,
+--       total = EXCLUDED.total,
+--       updated_at = EXTRACT(EPOCH FROM NOW());
     
-    RETURN NEW;
-  END;
-  $$;
-ALTER FUNCTION consensus.update_account() OWNER TO postgres;
+--     RETURN NEW;
+--   END;
+--   $$;
+-- ALTER FUNCTION consensus.update_account() OWNER TO postgres;
 
-CREATE TRIGGER ensure_consensus_account_updated
-    BEFORE INSERT ON consensus.account_histories
-    FOR EACH ROW
-    EXECUTE FUNCTION consensus.update_account();
-
-CREATE TRIGGER ensure_consensus_account_updated_on_history_update
-    AFTER UPDATE ON consensus.account_histories
-    FOR EACH ROW
-    EXECUTE FUNCTION consensus.update_account();
+-- CREATE TRIGGER ensure_consensus_account_updated_on_history_update
+--     AFTER UPDATE ON consensus.account_histories
+--     FOR EACH ROW
+--     EXECUTE FUNCTION consensus.update_account();
 
 CREATE FUNCTION consensus.update_cumulative_blocks() RETURNS trigger
     LANGUAGE plpgsql
