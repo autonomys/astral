@@ -66,6 +66,7 @@ export const ExtrinsicList: FC = () => {
     ExtrinsicsSubscriptionVariables
   >(ExtrinsicsDocument, {
     variables,
+    skip: Object.keys(stringForSearch).length > 0,
   })
 
   const { data: dataByBlockHash, loading: loadingByBlockHash } = useQuery<
@@ -85,20 +86,22 @@ export const ExtrinsicList: FC = () => {
   })
 
   const extrinsics = useMemo(() => {
-    if (dataByBlockHash)
+    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash)
       return (
-        dataByBlockHash.consensus_blocks[0].extrinsics.slice(
+        dataByBlockHash.consensus_blocks[0]?.extrinsics?.slice(
           pagination.pageIndex * pagination.pageSize,
           (pagination.pageIndex + 1) * pagination.pageSize,
         ) ?? []
       )
     if (data) return data.consensus_extrinsics ?? []
     return []
-  }, [data, dataByBlockHash, pagination.pageIndex, pagination.pageSize])
+  }, [data, dataByBlockHash, pagination.pageIndex, pagination.pageSize, stringForSearch])
 
   const pageCount = useMemo(() => {
     if (Object.keys(stringForSearch).length > 0) {
       MAX_RECORDS = dataByBlockHash?.consensus_blocks[0].extrinsicsCount ?? 0
+    } else {
+      MAX_RECORDS = 500000
     }
     return Math.ceil(MAX_RECORDS / pagination.pageSize)
   }, [dataByBlockHash, pagination.pageSize, stringForSearch])
@@ -140,8 +143,8 @@ export const ExtrinsicList: FC = () => {
             </Link>
           ),
           hash: ({ row }: Cell<Row>) => (
-            <CopyButton value={row.original.hash} message='Block hash copied'>
-              {shortString(row.original.hash)}
+            <CopyButton value={row.original.blockHash} message='Block hash copied'>
+              {shortString(row.original.blockHash)}
             </CopyButton>
           ),
           success: ({ row }: Cell<Row>) => <StatusIcon status={row.original.success} />,

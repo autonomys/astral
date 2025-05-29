@@ -27450,7 +27450,7 @@ export type ExtrinsicsByBlockHashQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsByBlockHashQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, extrinsicsCount: number, authorId: string, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, success: boolean, timestamp: any, module: string, sortId: string, blockHeight: any }> }> };
+export type ExtrinsicsByBlockHashQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, extrinsicsCount: number, authorId: string, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, success: boolean, timestamp: any, module: string, sortId: string, blockHeight: any, blockHash: string }> }> };
 
 export type ExtrinsicsByIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
@@ -28985,6 +28985,7 @@ export const ExtrinsicsByBlockHashDocument = gql`
       success
       timestamp
       module
+      blockHash: block_hash
     }
   }
 }

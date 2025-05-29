@@ -37,6 +37,7 @@ query ExtrinsicsByBlockHash(
       success
       timestamp
       module
+      blockHash: block_hash
     }
   }
 }
