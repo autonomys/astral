@@ -76,7 +76,7 @@ services:
 
   domain_auto_evm_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+    image: ghcr.io/autonomys/subql-node-substrate:latest
     ports:
       - "127.0.0.1:3005:3000"
     depends_on:
@@ -105,7 +105,9 @@ services:
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
-      #  - --profiler
+      - --finalized-depth=100
+      - --log-level=info
+      - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
       interval: 3s

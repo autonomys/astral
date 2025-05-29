@@ -71,8 +71,6 @@ CREATE TABLE consensus.blocks (
     spec_id TEXT NOT NULL,
     state_root TEXT NOT NULL,
     extrinsics_root TEXT NOT NULL,
-    space_pledged NUMERIC NOT NULL,
-    blockchain_size NUMERIC NOT NULL,
     extrinsics_count INTEGER NOT NULL,
     events_count INTEGER NOT NULL,
     logs_count INTEGER NOT NULL,
