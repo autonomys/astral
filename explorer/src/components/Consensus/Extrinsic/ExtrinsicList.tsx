@@ -99,7 +99,7 @@ export const ExtrinsicList: FC = () => {
 
   const pageCount = useMemo(() => {
     if (Object.keys(stringForSearch).length > 0) {
-      MAX_RECORDS = dataByBlockHash?.consensus_blocks[0].extrinsicsCount ?? 0
+      MAX_RECORDS = dataByBlockHash?.consensus_blocks[0]?.extrinsics?.length ?? 0
     } else {
       MAX_RECORDS = 500000
     }

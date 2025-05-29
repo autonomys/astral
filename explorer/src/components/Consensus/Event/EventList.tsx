@@ -10,9 +10,9 @@ import { TableSettings } from 'components/common/TableSettings'
 import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
-  EventsAggregateDocument,
-  EventsAggregateQuery,
-  EventsAggregateQueryVariables,
+  EventsByBlockHashDocument,
+  EventsByBlockHashQuery,
+  EventsByBlockHashQueryVariables,
   EventsDocument,
   EventsSubscription,
   EventsSubscriptionVariables,
@@ -28,7 +28,9 @@ import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 
-type Row = EventsSubscription['consensus_events'][0]
+type Row =
+  | EventsSubscription['consensus_events'][0]
+  | EventsByBlockHashQuery['consensus_blocks'][0]['events'][0]
 const TABLE = 'events'
 let MAX_RECORDS = 500000
 
@@ -48,42 +50,62 @@ export const EventList: FC = () => {
   const variables = useMemo(
     () => ({
       limit: pagination.pageSize,
+      where: stringForSearch,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy: {
         // eslint-disable-next-line camelcase
         block_height: Order_By.Desc,
       },
     }),
-    [pagination.pageSize, pagination.pageIndex],
+    [pagination.pageSize, pagination.pageIndex, stringForSearch],
   )
 
   const { loading, data } = useSubscription<EventsSubscription, EventsSubscriptionVariables>(
     EventsDocument,
     {
       variables,
+      skip: Object.keys(stringForSearch).length > 0,
     },
   )
 
-  const { data: dataAggregate, loading: loadingAggregate } = useQuery<
-    EventsAggregateQuery,
-    EventsAggregateQueryVariables
-  >(EventsAggregateDocument, {
+  const { data: dataByBlockHash, loading: loadingByBlockHash } = useQuery<
+    EventsByBlockHashQuery,
+    EventsByBlockHashQueryVariables
+  >(EventsByBlockHashDocument, {
     variables: {
       where: stringForSearch,
+      limit: 10,
+      offset: 0,
+      orderBy: {
+        // eslint-disable-next-line camelcase
+        sort_id: Order_By.Desc,
+      },
     },
+    skip: !stringForSearch,
   })
 
   const events = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
+      return (
+        dataByBlockHash.consensus_blocks[0]?.events?.slice(
+          pagination.pageIndex * pagination.pageSize,
+          (pagination.pageIndex + 1) * pagination.pageSize,
+        ) ?? []
+      )
+    }
+
     if (data) return data.consensus_events ?? []
     return []
-  }, [data])
+  }, [data, dataByBlockHash, stringForSearch, pagination.pageIndex, pagination.pageSize])
 
   const pageCount = useMemo(() => {
-    if (Object.keys(stringForSearch).length > 0) {
-      MAX_RECORDS = dataAggregate?.consensus_events_aggregate?.aggregate?.count ?? 0
+    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
+      MAX_RECORDS = dataByBlockHash?.consensus_blocks[0]?.events?.length ?? 0
+    } else {
+      MAX_RECORDS = 500000
     }
     return Math.ceil(MAX_RECORDS / pagination.pageSize)
-  }, [dataAggregate, pagination.pageSize, stringForSearch])
+  }, [dataByBlockHash, pagination.pageSize, stringForSearch])
 
   const columns = useMemo(
     () =>
@@ -125,7 +147,7 @@ export const EventList: FC = () => {
           ),
           module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
           indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock,
-          blockHash: ({ row }: Cell<Row>) => (
+          hash: ({ row }: Cell<Row>) => (
             <CopyButton value={row.original.blockHash} message='Block hash copied'>
               {shortString(row.original.blockHash)}
             </CopyButton>
@@ -149,17 +171,16 @@ export const EventList: FC = () => {
 
   const isDataLoaded = useMemo(() => {
     if (Object.keys(stringForSearch).length > 0) {
-      return !loading && !loadingAggregate && events
+      return !loadingByBlockHash
     }
-
     return !loading && events
-  }, [loading, loadingAggregate, stringForSearch, events])
+  }, [loading, loadingByBlockHash, events, stringForSearch])
 
   const noData = useMemo(() => {
-    if (loading || loadingAggregate) return <Spinner isSmall />
-    if (!data && !dataAggregate) return <NotFound />
+    if (loading || loadingByBlockHash) return <Spinner isSmall />
+    if (!data && !dataByBlockHash) return <NotFound />
     return null
-  }, [data, dataAggregate, loading, loadingAggregate])
+  }, [data, dataByBlockHash, loading, loadingByBlockHash])
 
   return (
     <div className='flex w-full flex-col align-middle'>

@@ -19,14 +19,8 @@ query ExtrinsicsByBlockHash(
   $orderBy: [consensus_blocks_order_by!]!
   $where: consensus_blocks_bool_exp
 ) {
-  consensus_blocks_aggregate(where: $where) {
-    aggregate {
-      count
-    }
-  }
   consensus_blocks(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
-    extrinsicsCount: extrinsics_count
     authorId: author_id
     extrinsics {
       id

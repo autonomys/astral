@@ -55,7 +55,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'module', label: 'Module', isSelected: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
-    { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
+    { name: 'hash', label: 'Block Hash', isSelected: false, searchable: true },
   ],
   logs: [
     { name: 'sortId', label: 'Log Id', isSelected: true, searchable: true },
