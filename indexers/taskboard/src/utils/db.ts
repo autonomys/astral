@@ -76,15 +76,19 @@ WITH last_completed_${getPostgresTimeUnit(timeFrame)} AS (
 ${timeFrame}_stats AS (
     SELECT 
         DATE_TRUNC('${getPostgresTimeUnit(timeFrame)}', "timestamp") AS ${getPostgresTimeUnit(timeFrame)},
-        MAX(blockchain_size) AS max_blockchain_size,
+        -- MAX(blockchain_size) AS max_blockchain_size,
+        0 AS max_blockchain_size,
         MIN(height) AS start_block,
         MAX(height) AS end_block,
         MIN("timestamp") AS start_date,
         MAX("timestamp") AS end_date,
         CASE 
             WHEN EXISTS (SELECT 1 FROM last_completed_${getPostgresTimeUnit(timeFrame)}) THEN
-                MAX(blockchain_size) - (SELECT last_history_size FROM last_completed_${getPostgresTimeUnit(timeFrame)} ORDER BY last_history_size DESC OFFSET 1 LIMIT 1)
-            ELSE MAX(blockchain_size)
+                -- MAX(blockchain_size) - (SELECT last_history_size FROM last_completed_${getPostgresTimeUnit(timeFrame)} ORDER BY last_history_size DESC OFFSET 1 LIMIT 1)
+                0 - (SELECT last_history_size FROM last_completed_${getPostgresTimeUnit(timeFrame)} ORDER BY last_history_size DESC OFFSET 1 LIMIT 1)
+            ELSE 
+                -- MAX(blockchain_size)
+                0
         END AS delta_size
     FROM consensus.blocks
     WHERE 

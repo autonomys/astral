@@ -40,13 +40,13 @@ export class Blocks extends BaseEntity {
   @Column('text')
   extrinsics_root: string;
 
-  @ApiProperty()
-  @Column('numeric')
-  space_pledged: number;
+  // @ApiProperty()
+  // @Column('numeric')
+  // space_pledged: number;
 
-  @ApiProperty()
-  @Column('numeric')
-  blockchain_size: number;
+  // @ApiProperty()
+  // @Column('numeric')
+  // blockchain_size: number;
 
   @ApiProperty()
   @Column('integer')
