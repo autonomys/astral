@@ -286,10 +286,8 @@ CREATE INDEX "consensus_extrinsics_sort_id" ON consensus.extrinsics USING btree 
 CREATE INDEX "consensus_extrinsics_hash" ON consensus.extrinsics USING btree (hash);
 CREATE INDEX "consensus_extrinsics_block_height" ON consensus.extrinsics USING btree (block_height);
 CREATE INDEX "consensus_extrinsics_signer" ON consensus.extrinsics USING btree (signer);
-CREATE INDEX "consensus_extrinsics_block_hash" ON consensus.extrinsics USING btree (block_hash);
 CREATE INDEX "0xe5bf5858bd35a276" ON consensus.events USING btree (id);
 CREATE INDEX "consensus_events_block_height" ON consensus.events USING btree (block_height);
-CREATE INDEX "consensus_event_block_hash" ON consensus.events USING btree (block_hash);
 CREATE INDEX "0x4cb388e53e3e30f3" ON consensus.accounts USING btree (id);
 CREATE INDEX "consensus_accounts_free" ON consensus.accounts USING btree (free DESC);
 CREATE INDEX "consensus_accounts_reserved" ON consensus.accounts USING btree (reserved DESC);
