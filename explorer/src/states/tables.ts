@@ -306,7 +306,9 @@ export const useTableSettings = <TFilter>(table: TableName) => {
         .filter((column) => column.searchable)
         .reduce((conditions, column) => {
           const searchValue = filters[`search-${column.name}` as keyof TFilter]
-          return searchValue ? { ...conditions, [snakeCase(column.name)]: searchValue } : conditions
+          return searchValue
+            ? { ...conditions, [snakeCase(column.name)]: { _eq: searchValue } }
+            : conditions
         }, {}),
     [availableColumns, filters],
   )

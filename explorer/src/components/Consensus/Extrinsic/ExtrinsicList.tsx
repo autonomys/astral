@@ -11,14 +11,14 @@ import { TableSettings } from 'components/common/TableSettings'
 import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
+  ExtrinsicsAggregateDocument,
+  ExtrinsicsAggregateQuery,
+  ExtrinsicsAggregateQueryVariables,
   ExtrinsicsDocument,
   ExtrinsicsSubscription,
   ExtrinsicsSubscriptionVariables,
   // eslint-disable-next-line camelcase
   Order_By,
-  SearchExtrinsicsByBlockHashDocument,
-  SearchExtrinsicsByBlockHashQuery,
-  SearchExtrinsicsByBlockHashQueryVariables,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
@@ -50,13 +50,13 @@ export const ExtrinsicList: FC = () => {
     () => ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
-
+      where: stringForSearch,
       orderBy: {
         // eslint-disable-next-line camelcase
         block_height: Order_By.Desc,
       },
     }),
-    [pagination.pageSize, pagination.pageIndex],
+    [pagination.pageSize, pagination.pageIndex, stringForSearch],
   )
 
   const { loading, data } = useSubscription<
@@ -66,29 +66,26 @@ export const ExtrinsicList: FC = () => {
     variables,
   })
 
-  const { loading: loadingSearch, data: dataSearch } = useQuery<
-    SearchExtrinsicsByBlockHashQuery,
-    SearchExtrinsicsByBlockHashQueryVariables
-  >(SearchExtrinsicsByBlockHashDocument, {
+  const { data: dataAggregate, loading: loadingAggregate } = useQuery<
+    ExtrinsicsAggregateQuery,
+    ExtrinsicsAggregateQueryVariables
+  >(ExtrinsicsAggregateDocument, {
     variables: {
-      search: (stringForSearch as { block_hash: string })?.block_hash,
-      limit: 10,
+      where: stringForSearch,
     },
   })
 
   const extrinsics = useMemo(() => {
-    if (dataSearch) return dataSearch.consensus_search_extrinsics_by_block_hash
-    if (data) return data.consensus_extrinsics
+    if (data) return data.consensus_extrinsics ?? []
     return []
-  }, [data, dataSearch])
+  }, [data])
 
   const pageCount = useMemo(() => {
-    if (dataSearch) {
-      MAX_RECORDS =
-        dataSearch.consensus_search_extrinsics_by_block_hash_aggregate?.aggregate?.count ?? 0
+    if (Object.keys(stringForSearch).length > 0) {
+      MAX_RECORDS = dataAggregate?.consensus_extrinsics_aggregate?.aggregate?.count ?? 0
     }
     return Math.ceil(MAX_RECORDS / pagination.pageSize)
-  }, [dataSearch, pagination.pageSize])
+  }, [dataAggregate, pagination.pageSize, stringForSearch])
 
   const columns = useMemo(
     () =>
@@ -147,11 +144,18 @@ export const ExtrinsicList: FC = () => {
     [network, section, selectedColumns],
   )
 
+  const isDataLoaded = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0) {
+      return !loading && !loadingAggregate && extrinsics.length
+    }
+    return !loading && extrinsics.length
+  }, [loading, loadingAggregate, stringForSearch, extrinsics])
+
   const noData = useMemo(() => {
-    if (loading || loadingSearch) return <Spinner isSmall />
-    if (!data && !dataSearch) return <NotFound />
+    if (loading || loadingAggregate) return <Spinner isSmall />
+    if (!data && !dataAggregate) return <NotFound />
     return null
-  }, [data, loading, loadingSearch, dataSearch])
+  }, [data, dataAggregate, loading, loadingAggregate])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -162,7 +166,7 @@ export const ExtrinsicList: FC = () => {
           overrideFiltersOptions={[]}
           totalCount={`(${numberWithCommas(MAX_RECORDS)}+)`}
         />
-        {!loading && !loadingSearch && extrinsics ? (
+        {isDataLoaded ? (
           <SortedTable
             data={extrinsics}
             columns={columns}

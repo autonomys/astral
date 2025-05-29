@@ -10,14 +10,14 @@ import { TableSettings } from 'components/common/TableSettings'
 import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
+  EventsAggregateDocument,
+  EventsAggregateQuery,
+  EventsAggregateQueryVariables,
   EventsDocument,
   EventsSubscription,
   EventsSubscriptionVariables,
   // eslint-disable-next-line camelcase
   Order_By,
-  SearchEventsByBlockHashDocument,
-  SearchEventsByBlockHashQuery,
-  SearchEventsByBlockHashQueryVariables,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
@@ -64,30 +64,26 @@ export const EventList: FC = () => {
     },
   )
 
-  const { loading: loadingSearch, data: dataSearch } = useQuery<
-    SearchEventsByBlockHashQuery,
-    SearchEventsByBlockHashQueryVariables
-  >(SearchEventsByBlockHashDocument, {
+  const { data: dataAggregate, loading: loadingAggregate } = useQuery<
+    EventsAggregateQuery,
+    EventsAggregateQueryVariables
+  >(EventsAggregateDocument, {
     variables: {
-      search: (stringForSearch as { block_hash: string })?.block_hash,
-      limit: 10,
+      where: stringForSearch,
     },
-    skip: !stringForSearch,
   })
 
   const events = useMemo(() => {
-    if (dataSearch) return dataSearch.consensus_search_events_by_block_hash
-    if (data) return data.consensus_events
+    if (data) return data.consensus_events ?? []
     return []
-  }, [data, dataSearch])
+  }, [data])
 
   const pageCount = useMemo(() => {
-    if (dataSearch) {
-      MAX_RECORDS =
-        dataSearch.consensus_search_events_by_block_hash_aggregate?.aggregate?.count ?? 0
+    if (Object.keys(stringForSearch).length > 0) {
+      MAX_RECORDS = dataAggregate?.consensus_events_aggregate?.aggregate?.count ?? 0
     }
     return Math.ceil(MAX_RECORDS / pagination.pageSize)
-  }, [dataSearch, pagination.pageSize])
+  }, [dataAggregate, pagination.pageSize, stringForSearch])
 
   const columns = useMemo(
     () =>
@@ -151,11 +147,19 @@ export const EventList: FC = () => {
     [network, section, selectedColumns],
   )
 
+  const isDataLoaded = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0) {
+      return !loading && !loadingAggregate && events
+    }
+
+    return !loading && events
+  }, [loading, loadingAggregate, stringForSearch, events])
+
   const noData = useMemo(() => {
-    if (loading || loadingSearch) return <Spinner isSmall />
-    if (!data && !dataSearch) return <NotFound />
+    if (loading || loadingAggregate) return <Spinner isSmall />
+    if (!data && !dataAggregate) return <NotFound />
     return null
-  }, [data, loading, loadingSearch, dataSearch])
+  }, [data, dataAggregate, loading, loadingAggregate])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -166,7 +170,7 @@ export const EventList: FC = () => {
           overrideFiltersOptions={[]}
           totalCount={`(${numberWithCommas(MAX_RECORDS)}+)`}
         />
-        {!loading && !loadingSearch && events ? (
+        {isDataLoaded ? (
           <SortedTable
             data={events}
             columns={columns}
