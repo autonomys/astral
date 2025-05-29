@@ -99,17 +99,21 @@ const retryOperation = async <T>(
 
 /**
  * Updates multiple AccountHistory records in a single transaction.
- * Returns the successfully updated records grouped by account address.
+ * Returns the successfully updated records grouped by account address and failed updates.
  */
-const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]): Promise<Map<string, AccountHistoryUpdateData>> => {
+const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]): Promise<{
+  successful: Map<string, AccountHistoryUpdateData>;
+  failed: AccountHistoryUpdateData[];
+}> => {
   if (!pool) {
     throw new Error('Database pool not initialized. Call connectDb() first.');
   }
 
-  if (updates.length === 0) return new Map();
+  if (updates.length === 0) return { successful: new Map(), failed: [] };
 
   const client = await pool.connect();
   const latestByAccount = new Map<string, AccountHistoryUpdateData>();
+  const failedUpdates: AccountHistoryUpdateData[] = [];
 
   try {
     await client.query('BEGIN');
@@ -160,6 +164,8 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
         // All retries exhausted - record still not found or other error
         if (error instanceof Error && error.message.includes('No AccountHistory record found')) {
           console.warn(`AccountHistory record not found after retries for address: ${id} (block ${blockHeight})`);
+          // Add to failed list for re-queuing
+          failedUpdates.push(data);
         } else {
           console.error(`Error updating AccountHistory for address ${id} after retries:`, error);
         }
@@ -184,8 +190,8 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
 
     await client.query('COMMIT');
     
-    console.log(`Account histories batch update completed: ${successCount}/${updates.length} records updated`);
-    return latestByAccount;
+    console.log(`Account histories batch update completed: ${successCount}/${updates.length} records updated, ${failedUpdates.length} failed`);
+    return { successful: latestByAccount, failed: failedUpdates };
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Account histories batch update failed, transaction rolled back:', error);
@@ -242,7 +248,9 @@ const batchUpdateAccounts = async (accountUpdates: Map<string, AccountHistoryUpd
           free = EXCLUDED.free,
           reserved = EXCLUDED.reserved,
           total = EXCLUDED.total,
-          updated_at = EXTRACT(EPOCH FROM NOW());
+          created_at = EXCLUDED.created_at,
+          updated_at = EXTRACT(EPOCH FROM NOW())
+        WHERE consensus.accounts.created_at < EXCLUDED.created_at;
       `;
 
       const accountValues = [
@@ -281,13 +289,18 @@ const batchUpdateAccounts = async (accountUpdates: Map<string, AccountHistoryUpd
   }
 };
 
-const batchUpdateAccountHistoriesAndAccounts = async (updates: AccountHistoryUpdateData[]): Promise<{ historiesUpdated: number; accountsUpdated: number }> => {
-  const latestByAccount = await batchUpdateAccountHistories(updates);
-  const accountsUpdated = await batchUpdateAccounts(latestByAccount);
+const batchUpdateAccountHistoriesAndAccounts = async (updates: AccountHistoryUpdateData[]): Promise<{ 
+  historiesUpdated: number; 
+  accountsUpdated: number;
+  failedUpdates: AccountHistoryUpdateData[];
+}> => {
+  const { successful, failed } = await batchUpdateAccountHistories(updates);
+  const accountsUpdated = await batchUpdateAccounts(successful);
   
   return {
-    historiesUpdated: latestByAccount.size,
-    accountsUpdated
+    historiesUpdated: successful.size,
+    accountsUpdated,
+    failedUpdates: failed
   };
 };
 

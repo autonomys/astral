@@ -2,6 +2,7 @@ import { config } from './config';
 import { AccountHistoryUpdateData, AccountProcessingTask } from './interfaces';
 import { getCurrentChainHeight, getMultipleAccountsDataAtBlock } from './services/autonomysService';
 import { batchUpdateAccountHistoriesAndAccounts } from './services/dbService';
+import { pushTasksToQueue } from './services/redisService';
 
 let currentChainHeight: number = 0;
 
@@ -29,6 +30,12 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
 
   // Filter tasks by processing depth
   const validTasks = tasks.filter(task => {
+    // Skip future blocks (blocks ahead of current chain height)
+    if (task.blockHeight > currentChainHeight) {
+      console.warn(`Worker: Skipping future block task for block ${task.blockHeight} (current chain height: ${currentChainHeight})`);
+      return false;
+    }
+    
     const blockDepth = currentChainHeight - task.blockHeight;
     if (blockDepth < config.processingDepth) {
       console.log(`Worker: Skipping task for block ${task.blockHeight} (depth: ${blockDepth}, required: ${config.processingDepth})`);
@@ -93,10 +100,35 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
 
   // Batch update database
   let successCount = 0;
+  const failedTasks: AccountProcessingTask[] = [];
+  
   if (allUpdates.length > 0) {
     try {
-      const { historiesUpdated } = await batchUpdateAccountHistoriesAndAccounts(allUpdates);
+      const { historiesUpdated, failedUpdates } = await batchUpdateAccountHistoriesAndAccounts(allUpdates);
       successCount = historiesUpdated;
+      
+      // Convert failed updates back to tasks for re-queuing
+      if (failedUpdates.length > 0) {
+        // Group failed updates by blockHeight to find the original task info
+        const taskMap = new Map<string, AccountProcessingTask>();
+        for (const task of validTasks) {
+          taskMap.set(`${task.address}-${task.blockHeight}`, task);
+        }
+        
+        for (const failedUpdate of failedUpdates) {
+          const key = `${failedUpdate.id}-${failedUpdate.blockHeight}`;
+          const originalTask = taskMap.get(key);
+          if (originalTask) {
+            failedTasks.push(originalTask);
+          }
+        }
+        
+        // Re-queue failed tasks
+        if (failedTasks.length > 0) {
+          const requeuedCount = await pushTasksToQueue(failedTasks);
+          console.log(`Worker: Re-queued ${requeuedCount} failed tasks for later processing`);
+        }
+      }
     } catch (error) {
       console.error('Worker: Batch database update failed:', error);
     }
