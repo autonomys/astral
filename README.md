@@ -82,25 +82,31 @@ You can also find the instructions for setting up the Squid backend and Health c
 
 To set up the multi-network indexers, follow these steps:
 
-1. **Navigate to the indexers directory:**
+1. **Environment Vars**:
+   At the root, run:
+   ```bash
+      for f in .env .env.dev .env.prod; do cp -v .env.sample "$f"; done
+   ```
+
+2. **Navigate to the indexers directory:**
 
    ```bash
    cd indexers
    ```
 
-2. **Install the dependencies:**
+3. **Install the dependencies:**
 
    ```bash
    yarn
    ```
 
-3. **Build the indexers:**
+4. **Build the indexers:**
 
    ```bash
    yarn codegen && yarn build
    ```
 
-4. **Start a local node, the PostgreSQL database with multiple tables, Hasura, and various SubQuery nodes and a TaskBoard (BullMQ) using Docker Compose:**
+5. **Start a local node, the PostgreSQL database with multiple tables, Hasura, and various SubQuery nodes and a TaskBoard (BullMQ) using Docker Compose:**
 
    From the root directory, run:
 
@@ -108,6 +114,13 @@ To set up the multi-network indexers, follow these steps:
    yarn dev
    ```
 
+   Also, for development purposes you can run each indexer separately:
+   ```
+   yarn dev:consensus
+   yarn dev:domain
+   yarn dev:staking
+   yarn dev:leaderboard
+   ```
 This command will initialize a PostgreSQL database configured with multiple tables, launch the Hasura GraphQL engine, and start multiple Subquery nodes to index all networks. This setup provides all the necessary data for different sections of the explorer, ensuring a comprehensive indexing solution for the application.
 
 ## Contributing

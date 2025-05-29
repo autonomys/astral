@@ -64,7 +64,6 @@ select_permissions:
         - author_id
         - block_reward_value
         - block_rewards_count
-        - blockchain_size
         - events_count
         - extrinsics_count
         - extrinsics_root
@@ -76,7 +75,6 @@ select_permissions:
         - reward_value
         - rewards_count
         - sort_id
-        - space_pledged
         - spec_id
         - state_root
         - timestamp

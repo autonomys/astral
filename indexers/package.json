@@ -36,7 +36,12 @@
     "console": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run console",
     "metadata": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run metadata",
     "migrate": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run migrate",
-    "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run apply-seeds:mainnet"
+    "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run apply-seeds:mainnet",
+
+    "dev:consensus": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:dev up postgres pgcat hasura redis account-worker consensus_subquery_node node --remove-orphans",
+    "dev:domain": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope domain-auto-evm && lerna run build --scope domain-auto-evm && yarn docker:dev -f ../docker-compose.domains.yml up postgres pgcat hasura domain_auto_evm_subquery_node node --remove-orphans",
+    "dev:staking": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope staking && lerna run build --scope staking && yarn docker:dev up postgres pgcat hasura staking_subquery_node node --remove-orphans",
+    "dev:leaderboard": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope leaderboard && lerna run build --scope leaderboard && yarn docker:dev up postgres pgcat hasura leaderboard_subquery_node node --remove-orphans"
   },
   "dependencies": {
     "lerna": "^8.2.1"
