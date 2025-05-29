@@ -46,27 +46,6 @@ const disconnectRedis = async (): Promise<void> => {
   }
 }
 
-/**
- * Fetches a task from the account processing queue.
- * Uses RPOPLPUSH to move the task to a temporary processing list for reliability.
- * If processing fails, the task can be moved back to the main queue from the processing list.
- * For simplicity here, I just use LPOP for now (less reliable if worker crashes).
- */
-const fetchTaskFromQueue = async (): Promise<AccountProcessingTask | null> => {
-  if (!redisClient) {
-    throw new Error('Redis client not initialized. Call connectRedis() first.');
-  }
-  try {
-    const taskString = await redisClient.lpop(config.accountProcessingQueueName);
-    if (taskString) {
-      return JSON.parse(taskString) as AccountProcessingTask;
-    }
-    return null;
-  } catch (error) {
-    console.error('Error fetching task from Redis queue:', error);
-    return null;
-  }
-}
 
 /**
  * Fetches multiple tasks from the account processing queue for batch processing.
@@ -108,6 +87,5 @@ const fetchTasksFromQueue = async (batchSize: number = 10): Promise<AccountProce
 export {
   connectRedis,
   disconnectRedis,
-  fetchTaskFromQueue,
   fetchTasksFromQueue
 };

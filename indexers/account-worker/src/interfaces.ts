@@ -33,5 +33,5 @@ export interface AccountHistoryUpdateData {
   free: bigint;
   reserved: bigint;
   total: bigint;
-  eventBlockNumber: number;
+  blockHeight: number;
 }

@@ -1,7 +1,7 @@
 import { config } from './config';
 import { AccountHistoryUpdateData, AccountProcessingTask } from './interfaces';
 import { getCurrentChainHeight, getMultipleAccountsDataAtBlock } from './services/autonomysService';
-import { batchUpdateAccountHistories } from './services/dbService';
+import { batchUpdateAccountHistoriesAndAccounts } from './services/dbService';
 
 let currentChainHeight: number = 0;
 
@@ -79,7 +79,7 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
             free,
             reserved,
             total,
-            eventBlockNumber: task.blockHeight
+            blockHeight: task.blockHeight
           });
         } else {
           console.warn(`Worker: No account data found for ${task.address} at block ${blockHash}`);
@@ -95,7 +95,8 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
   let successCount = 0;
   if (allUpdates.length > 0) {
     try {
-      successCount = await batchUpdateAccountHistories(allUpdates);
+      const { historiesUpdated } = await batchUpdateAccountHistoriesAndAccounts(allUpdates);
+      successCount = historiesUpdated;
     } catch (error) {
       console.error('Worker: Batch database update failed:', error);
     }

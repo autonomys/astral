@@ -42,6 +42,29 @@ const disconnectDb = async (): Promise<void> => {
   }
 }
 
+
+const accountLocks = new Map<string, Promise<void>>();
+
+/**
+ * Get a lock for an account
+ */
+
+const acquireAccountLock = async (accountId: string): Promise<() => void> => {
+  if (accountLocks.has(accountId)) {
+    await accountLocks.get(accountId)!;
+  }
+  let releaseLock: () => void;
+
+  const lockPromise = new Promise<void>((resolve) => {
+    releaseLock = () => {
+      accountLocks.delete(accountId);
+      resolve()
+    }
+  });
+
+  accountLocks.set(accountId, lockPromise);
+  return releaseLock!;
+}
 /**
  * Helper function to retry a database operation with exponential backoff
  */
@@ -75,26 +98,32 @@ const retryOperation = async <T>(
 };
 
 /**
- * Updates multiple AccountHistory records and the accounts table in a single transaction.
- * Directly updates accounts table to avoid trigger-based deadlocks.
+ * Updates multiple AccountHistory records in a single transaction.
+ * Returns the successfully updated records grouped by account address.
  */
-const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]): Promise<number> => {
+const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]): Promise<Map<string, AccountHistoryUpdateData>> => {
   if (!pool) {
     throw new Error('Database pool not initialized. Call connectDb() first.');
   }
 
-  if (updates.length === 0) return 0;
+  if (updates.length === 0) return new Map();
 
   const client = await pool.connect();
-  let successCount = 0;
+  const latestByAccount = new Map<string, AccountHistoryUpdateData>();
 
   try {
-    const _begin = await client.query('BEGIN');
+    await client.query('BEGIN');
 
-    // First, update all account_histories records
+    // Update all account_histories records
     const updatePromises = updates.map(async (data) => {
-      const { id, nonce, free, reserved, total, eventBlockNumber } = data;
-      
+      const { id, nonce, free, reserved, total, blockHeight } = data;
+    
+      const checkQuery = `
+      SELECT created_at, nonce, free, reserved, total 
+      FROM consensus.account_histories 
+      WHERE id = $1 AND created_at = $2;
+      `;
+
       const query = `
         UPDATE consensus.account_histories
         SET
@@ -105,34 +134,32 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
         WHERE id = $5 AND created_at = $6;
       `;
 
-      const values = [
-        nonce, 
-        free,
-        reserved,
-        total,
-        id,
-        eventBlockNumber
-      ];
+      const values = [nonce, free, reserved, total, id, blockHeight];
 
       try {
         // Retry logic for finding and updating the record
         const result = await retryOperation(async () => {
+
+          const checkResult = await client.query(checkQuery, [id, blockHeight]);
+          if (checkResult.rowCount === 0) {
+            throw new Error(`No AccountHistory record found for address: ${id} at block ${blockHeight}!`);
+          }
+
           const queryResult = await client.query(query, values);
           
           // If no rows were updated, throw an error to trigger retry
           if (!queryResult.rowCount || queryResult.rowCount === 0) {
-            throw new Error(`No AccountHistory record found for address: ${id} (block ${eventBlockNumber} - retrying)`);
+            throw new Error(`No AccountHistory record found for address: ${id} (block ${blockHeight} - retrying)`);
           }
           
           return queryResult;
-        }, 3, 100); // 3 retries with 100ms initial delay
+        }, 3, 100);
         
-        // If we get here, the update was successful
         return { success: true, data };
       } catch (error) {
         // All retries exhausted - record still not found or other error
         if (error instanceof Error && error.message.includes('No AccountHistory record found')) {
-          console.warn(`AccountHistory record not found after retries for address: ${id} (block ${eventBlockNumber})`);
+          console.warn(`AccountHistory record not found after retries for address: ${id} (block ${blockHeight})`);
         } else {
           console.error(`Error updating AccountHistory for address ${id} after retries:`, error);
         }
@@ -141,24 +168,56 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
     });
 
     const results = await Promise.all(updatePromises);
+    let successCount = 0;
     
     // Group successful updates by account address to get the latest data for each account
-    const latestByAccount = new Map<string, AccountHistoryUpdateData>();
-    
     for (const result of results) {
       if (result.success) {
         successCount++;
         const existing = latestByAccount.get(result.data.id);
         // Keep the update with the highest block number
-        if (!existing || result.data.eventBlockNumber > existing.eventBlockNumber) {
+        if (!existing || result.data.blockHeight > existing.blockHeight) {
           latestByAccount.set(result.data.id, result.data);
         }
       }
     }
 
-    // Now update the accounts table with the latest data for each unique account
+    await client.query('COMMIT');
+    
+    console.log(`Account histories batch update completed: ${successCount}/${updates.length} records updated`);
+    return latestByAccount;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Account histories batch update failed, transaction rolled back:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+/**
+ * Updates multiple accounts in the accounts table using upsert operations.
+ * Takes a map of account data (typically from batchUpdateAccountHistories).
+ */
+const batchUpdateAccounts = async (accountUpdates: Map<string, AccountHistoryUpdateData>): Promise<number> => {
+  if (!pool) {
+    throw new Error('Database pool not initialized. Call connectDb() first.');
+  }
+
+  if (accountUpdates.size === 0) return 0;
+
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const sortedAccountUpdates = Array.from(accountUpdates.entries()).sort(([addressA], [addressB]) => addressA.localeCompare(addressB));
+
+    // Update the accounts table with the latest data for each unique account
     // Do this in parallel since each account is unique - no deadlocks possible
-    const accountUpdatePromises = Array.from(latestByAccount.entries()).map(async ([address, data]) => {
+    const accountUpdatePromises = sortedAccountUpdates.map(async ([address, data]) => {
+      const releaseLock = await acquireAccountLock(address);
+      try {
       const accountQuery = `
         INSERT INTO consensus.accounts (
           id,
@@ -192,17 +251,16 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
         data.free,
         data.reserved,
         data.total,
-        data.eventBlockNumber
+        data.blockHeight
       ];
 
-      try {
-        const _updateAccount = await retryOperation(async () => {
+        await retryOperation(async () => {
           return await client.query(accountQuery, accountValues);
-        }, 3, 100); // 3 retries with 100ms initial delay
-        return true;
+        }, 3, 100);
       } catch (error) {
         console.error(`Error updating account ${address} after retries:`, error);
-        return false;
+      } finally {
+        releaseLock();
       }
     });
 
@@ -210,21 +268,31 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
     const accountResults = await Promise.all(accountUpdatePromises);
     const accountsUpdated = accountResults.filter(result => result).length;
 
-    const _commit = await client.query('COMMIT');
+    await client.query('COMMIT');
     
-    console.log(`Batch update completed: ${successCount}/${updates.length} account histories updated, ${accountsUpdated}/${latestByAccount.size} accounts updated`);
-    return successCount;
+    console.log(`Accounts batch update completed: ${accountsUpdated}/${accountUpdates.size} accounts updated`);
+    return accountsUpdated;
   } catch (error) {
-    const _rollback = await client.query('ROLLBACK');
-    console.error('Batch update failed, transaction rolled back:', error);
+    await client.query('ROLLBACK');
+    console.error('Accounts batch update failed, transaction rolled back:', error);
     throw error;
   } finally {
     client.release();
   }
-} 
+};
+
+const batchUpdateAccountHistoriesAndAccounts = async (updates: AccountHistoryUpdateData[]): Promise<{ historiesUpdated: number; accountsUpdated: number }> => {
+  const latestByAccount = await batchUpdateAccountHistories(updates);
+  const accountsUpdated = await batchUpdateAccounts(latestByAccount);
+  
+  return {
+    historiesUpdated: latestByAccount.size,
+    accountsUpdated
+  };
+};
 
 export {
-  batchUpdateAccountHistories,
+  batchUpdateAccountHistoriesAndAccounts,
   connectDb,
   disconnectDb
 };
