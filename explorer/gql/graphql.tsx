@@ -27413,14 +27413,6 @@ export type EventsAggregateQueryVariables = Exact<{
 
 export type EventsAggregateQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null } };
 
-export type SearchEventsByBlockHashQueryVariables = Exact<{
-  search: Scalars['String']['input'];
-  limit: Scalars['Int']['input'];
-}>;
-
-
-export type SearchEventsByBlockHashQuery = { __typename?: 'query_root', consensus_search_events_by_block_hash: Array<{ __typename?: 'consensus_events', id: string, module: string, timestamp: any, sortId: string, blockHeight: any, extrinsicId: string, indexInBlock: any, blockHash: string }>, consensus_search_events_by_block_hash_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null } };
-
 export type EventByIdQueryVariables = Exact<{
   eventId: Scalars['String']['input'];
 }>;
@@ -27450,13 +27442,15 @@ export type ExtrinsicsModulesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ExtrinsicsModulesQuery = { __typename?: 'query_root', consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', section: string, method: string }> };
 
-export type SearchExtrinsicsByBlockHashQueryVariables = Exact<{
-  search: Scalars['String']['input'];
+export type ExtrinsicsByBlockHashQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Consensus_Blocks_Order_By> | Consensus_Blocks_Order_By;
+  where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
 }>;
 
 
-export type SearchExtrinsicsByBlockHashQuery = { __typename?: 'query_root', consensus_search_extrinsics_by_block_hash: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, success: boolean, timestamp: any, module: string, sortId: string, blockHeight: any, blockHash: string }>, consensus_search_extrinsics_by_block_hash_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
+export type ExtrinsicsByBlockHashQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, extrinsicsCount: number, authorId: string, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, success: boolean, timestamp: any, module: string, sortId: string, blockHeight: any }> }> };
 
 export type ExtrinsicsByIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
@@ -28793,59 +28787,6 @@ export type EventsAggregateQueryHookResult = ReturnType<typeof useEventsAggregat
 export type EventsAggregateLazyQueryHookResult = ReturnType<typeof useEventsAggregateLazyQuery>;
 export type EventsAggregateSuspenseQueryHookResult = ReturnType<typeof useEventsAggregateSuspenseQuery>;
 export type EventsAggregateQueryResult = Apollo.QueryResult<EventsAggregateQuery, EventsAggregateQueryVariables>;
-export const SearchEventsByBlockHashDocument = gql`
-    query SearchEventsByBlockHash($search: String!, $limit: Int!) {
-  consensus_search_events_by_block_hash(args: {search: $search}, limit: $limit) {
-    id
-    sortId: sort_id
-    blockHeight: block_height
-    extrinsicId: extrinsic_id
-    module
-    indexInBlock: index_in_block
-    timestamp
-    blockHash: block_hash
-  }
-  consensus_search_events_by_block_hash_aggregate(args: {search: $search}) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-
-/**
- * __useSearchEventsByBlockHashQuery__
- *
- * To run a query within a React component, call `useSearchEventsByBlockHashQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchEventsByBlockHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchEventsByBlockHashQuery({
- *   variables: {
- *      search: // value for 'search'
- *      limit: // value for 'limit'
- *   },
- * });
- */
-export function useSearchEventsByBlockHashQuery(baseOptions: Apollo.QueryHookOptions<SearchEventsByBlockHashQuery, SearchEventsByBlockHashQueryVariables> & ({ variables: SearchEventsByBlockHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SearchEventsByBlockHashQuery, SearchEventsByBlockHashQueryVariables>(SearchEventsByBlockHashDocument, options);
-      }
-export function useSearchEventsByBlockHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchEventsByBlockHashQuery, SearchEventsByBlockHashQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SearchEventsByBlockHashQuery, SearchEventsByBlockHashQueryVariables>(SearchEventsByBlockHashDocument, options);
-        }
-export function useSearchEventsByBlockHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SearchEventsByBlockHashQuery, SearchEventsByBlockHashQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<SearchEventsByBlockHashQuery, SearchEventsByBlockHashQueryVariables>(SearchEventsByBlockHashDocument, options);
-        }
-export type SearchEventsByBlockHashQueryHookResult = ReturnType<typeof useSearchEventsByBlockHashQuery>;
-export type SearchEventsByBlockHashLazyQueryHookResult = ReturnType<typeof useSearchEventsByBlockHashLazyQuery>;
-export type SearchEventsByBlockHashSuspenseQueryHookResult = ReturnType<typeof useSearchEventsByBlockHashSuspenseQuery>;
-export type SearchEventsByBlockHashQueryResult = Apollo.QueryResult<SearchEventsByBlockHashQuery, SearchEventsByBlockHashQueryVariables>;
 export const EventByIdDocument = gql`
     query EventById($eventId: String!) {
   consensus_events(where: {id: {_eq: $eventId}}) {
@@ -29019,63 +28960,71 @@ export type ExtrinsicsModulesQueryHookResult = ReturnType<typeof useExtrinsicsMo
 export type ExtrinsicsModulesLazyQueryHookResult = ReturnType<typeof useExtrinsicsModulesLazyQuery>;
 export type ExtrinsicsModulesSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsModulesSuspenseQuery>;
 export type ExtrinsicsModulesQueryResult = Apollo.QueryResult<ExtrinsicsModulesQuery, ExtrinsicsModulesQueryVariables>;
-export const SearchExtrinsicsByBlockHashDocument = gql`
-    query SearchExtrinsicsByBlockHash($search: String!, $limit: Int!) {
-  consensus_search_extrinsics_by_block_hash(
-    args: {search: $search}
-    limit: $limit
-  ) {
-    id
-    sortId: sort_id
-    hash
-    blockHeight: block_height
-    section
-    success
-    timestamp
-    module
-    blockHash: block_hash
-  }
-  consensus_search_extrinsics_by_block_hash_aggregate(args: {search: $search}) {
+export const ExtrinsicsByBlockHashDocument = gql`
+    query ExtrinsicsByBlockHash($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!, $where: consensus_blocks_bool_exp) {
+  consensus_blocks_aggregate(where: $where) {
     aggregate {
       count
+    }
+  }
+  consensus_blocks(
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+    where: $where
+  ) {
+    id
+    extrinsicsCount: extrinsics_count
+    authorId: author_id
+    extrinsics {
+      id
+      sortId: sort_id
+      hash
+      blockHeight: block_height
+      section
+      success
+      timestamp
+      module
     }
   }
 }
     `;
 
 /**
- * __useSearchExtrinsicsByBlockHashQuery__
+ * __useExtrinsicsByBlockHashQuery__
  *
- * To run a query within a React component, call `useSearchExtrinsicsByBlockHashQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchExtrinsicsByBlockHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useExtrinsicsByBlockHashQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsByBlockHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSearchExtrinsicsByBlockHashQuery({
+ * const { data, loading, error } = useExtrinsicsByBlockHashQuery({
  *   variables: {
- *      search: // value for 'search'
  *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
  *   },
  * });
  */
-export function useSearchExtrinsicsByBlockHashQuery(baseOptions: Apollo.QueryHookOptions<SearchExtrinsicsByBlockHashQuery, SearchExtrinsicsByBlockHashQueryVariables> & ({ variables: SearchExtrinsicsByBlockHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useExtrinsicsByBlockHashQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsByBlockHashQuery, ExtrinsicsByBlockHashQueryVariables> & ({ variables: ExtrinsicsByBlockHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SearchExtrinsicsByBlockHashQuery, SearchExtrinsicsByBlockHashQueryVariables>(SearchExtrinsicsByBlockHashDocument, options);
+        return Apollo.useQuery<ExtrinsicsByBlockHashQuery, ExtrinsicsByBlockHashQueryVariables>(ExtrinsicsByBlockHashDocument, options);
       }
-export function useSearchExtrinsicsByBlockHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchExtrinsicsByBlockHashQuery, SearchExtrinsicsByBlockHashQueryVariables>) {
+export function useExtrinsicsByBlockHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsByBlockHashQuery, ExtrinsicsByBlockHashQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SearchExtrinsicsByBlockHashQuery, SearchExtrinsicsByBlockHashQueryVariables>(SearchExtrinsicsByBlockHashDocument, options);
+          return Apollo.useLazyQuery<ExtrinsicsByBlockHashQuery, ExtrinsicsByBlockHashQueryVariables>(ExtrinsicsByBlockHashDocument, options);
         }
-export function useSearchExtrinsicsByBlockHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SearchExtrinsicsByBlockHashQuery, SearchExtrinsicsByBlockHashQueryVariables>) {
+export function useExtrinsicsByBlockHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsByBlockHashQuery, ExtrinsicsByBlockHashQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<SearchExtrinsicsByBlockHashQuery, SearchExtrinsicsByBlockHashQueryVariables>(SearchExtrinsicsByBlockHashDocument, options);
+          return Apollo.useSuspenseQuery<ExtrinsicsByBlockHashQuery, ExtrinsicsByBlockHashQueryVariables>(ExtrinsicsByBlockHashDocument, options);
         }
-export type SearchExtrinsicsByBlockHashQueryHookResult = ReturnType<typeof useSearchExtrinsicsByBlockHashQuery>;
-export type SearchExtrinsicsByBlockHashLazyQueryHookResult = ReturnType<typeof useSearchExtrinsicsByBlockHashLazyQuery>;
-export type SearchExtrinsicsByBlockHashSuspenseQueryHookResult = ReturnType<typeof useSearchExtrinsicsByBlockHashSuspenseQuery>;
-export type SearchExtrinsicsByBlockHashQueryResult = Apollo.QueryResult<SearchExtrinsicsByBlockHashQuery, SearchExtrinsicsByBlockHashQueryVariables>;
+export type ExtrinsicsByBlockHashQueryHookResult = ReturnType<typeof useExtrinsicsByBlockHashQuery>;
+export type ExtrinsicsByBlockHashLazyQueryHookResult = ReturnType<typeof useExtrinsicsByBlockHashLazyQuery>;
+export type ExtrinsicsByBlockHashSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByBlockHashSuspenseQuery>;
+export type ExtrinsicsByBlockHashQueryResult = Apollo.QueryResult<ExtrinsicsByBlockHashQuery, ExtrinsicsByBlockHashQueryVariables>;
 export const ExtrinsicsByIdDocument = gql`
     query ExtrinsicsById($extrinsicId: String!) {
   consensus_extrinsics(

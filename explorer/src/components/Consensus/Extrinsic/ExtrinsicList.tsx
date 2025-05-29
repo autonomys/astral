@@ -11,9 +11,9 @@ import { TableSettings } from 'components/common/TableSettings'
 import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
-  ExtrinsicsAggregateDocument,
-  ExtrinsicsAggregateQuery,
-  ExtrinsicsAggregateQueryVariables,
+  ExtrinsicsByBlockHashDocument,
+  ExtrinsicsByBlockHashQuery,
+  ExtrinsicsByBlockHashQueryVariables,
   ExtrinsicsDocument,
   ExtrinsicsSubscription,
   ExtrinsicsSubscriptionVariables,
@@ -29,7 +29,9 @@ import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 
-type Row = ExtrinsicsSubscription['consensus_extrinsics'][0]
+type Row =
+  | ExtrinsicsSubscription['consensus_extrinsics'][0]
+  | ExtrinsicsByBlockHashQuery['consensus_blocks'][0]['extrinsics'][0]
 const TABLE = 'extrinsics'
 let MAX_RECORDS = 500000
 
@@ -66,26 +68,40 @@ export const ExtrinsicList: FC = () => {
     variables,
   })
 
-  const { data: dataAggregate, loading: loadingAggregate } = useQuery<
-    ExtrinsicsAggregateQuery,
-    ExtrinsicsAggregateQueryVariables
-  >(ExtrinsicsAggregateDocument, {
+  const { data: dataByBlockHash, loading: loadingByBlockHash } = useQuery<
+    ExtrinsicsByBlockHashQuery,
+    ExtrinsicsByBlockHashQueryVariables
+  >(ExtrinsicsByBlockHashDocument, {
     variables: {
       where: stringForSearch,
+      limit: 10,
+      offset: 0,
+      orderBy: {
+        // eslint-disable-next-line camelcase
+        sort_id: Order_By.Desc,
+      },
     },
+    skip: !stringForSearch,
   })
 
   const extrinsics = useMemo(() => {
+    if (dataByBlockHash)
+      return (
+        dataByBlockHash.consensus_blocks[0].extrinsics.slice(
+          pagination.pageIndex * pagination.pageSize,
+          (pagination.pageIndex + 1) * pagination.pageSize,
+        ) ?? []
+      )
     if (data) return data.consensus_extrinsics ?? []
     return []
-  }, [data])
+  }, [data, dataByBlockHash, pagination.pageIndex, pagination.pageSize])
 
   const pageCount = useMemo(() => {
     if (Object.keys(stringForSearch).length > 0) {
-      MAX_RECORDS = dataAggregate?.consensus_extrinsics_aggregate?.aggregate?.count ?? 0
+      MAX_RECORDS = dataByBlockHash?.consensus_blocks[0].extrinsicsCount ?? 0
     }
     return Math.ceil(MAX_RECORDS / pagination.pageSize)
-  }, [dataAggregate, pagination.pageSize, stringForSearch])
+  }, [dataByBlockHash, pagination.pageSize, stringForSearch])
 
   const columns = useMemo(
     () =>
@@ -107,7 +123,7 @@ export const ExtrinsicList: FC = () => {
               <div>{utcToLocalRelativeTime(row.original.timestamp)}</div>
             </Tooltip>
           ),
-          hash: ({ row }: Cell<Row>) => (
+          extrinsicHash: ({ row }: Cell<Row>) => (
             <CopyButton value={row.original.hash} message='Hash copied'>
               {shortString(row.original.hash)}
             </CopyButton>
@@ -123,9 +139,9 @@ export const ExtrinsicList: FC = () => {
               <div>{numberWithCommas(row.original.blockHeight)}</div>
             </Link>
           ),
-          blockHash: ({ row }: Cell<Row>) => (
-            <CopyButton value={row.original.blockHash} message='Block hash copied'>
-              {shortString(row.original.blockHash)}
+          hash: ({ row }: Cell<Row>) => (
+            <CopyButton value={row.original.hash} message='Block hash copied'>
+              {shortString(row.original.hash)}
             </CopyButton>
           ),
           success: ({ row }: Cell<Row>) => <StatusIcon status={row.original.success} />,
@@ -146,16 +162,16 @@ export const ExtrinsicList: FC = () => {
 
   const isDataLoaded = useMemo(() => {
     if (Object.keys(stringForSearch).length > 0) {
-      return !loading && !loadingAggregate && extrinsics.length
+      return !loadingByBlockHash
     }
     return !loading && extrinsics.length
-  }, [loading, loadingAggregate, stringForSearch, extrinsics])
+  }, [loading, loadingByBlockHash, stringForSearch, extrinsics])
 
   const noData = useMemo(() => {
-    if (loading || loadingAggregate) return <Spinner isSmall />
-    if (!data && !dataAggregate) return <NotFound />
+    if (loading || loadingByBlockHash) return <Spinner isSmall />
+    if (!data && !dataByBlockHash) return <NotFound />
     return null
-  }, [data, dataAggregate, loading, loadingAggregate])
+  }, [data, dataByBlockHash, loading, loadingByBlockHash])
 
   return (
     <div className='flex w-full flex-col align-middle'>
