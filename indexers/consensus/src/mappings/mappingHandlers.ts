@@ -2,12 +2,6 @@ global.TextEncoder = require("util").TextEncoder;
 global.TextDecoder = require("util").TextDecoder;
 global.Buffer = require("buffer/").Buffer;
 
-import {
-  account,
-  blockchainSize,
-  spacePledge,
-} from "@autonomys/auto-consensus";
-import type { ApiAtBlockHash } from "@autonomys/auto-utils";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { Entity } from "@subql/types-core";
@@ -22,10 +16,25 @@ import {
 } from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
 import { getBlockAuthor, parseDataToCid } from "./helper";
+import { publishAccountsToRedis } from "./redisPusher";
 import { ExtrinsicPrimitive, LogValue } from "./types";
 import { groupEventsFromBatchAll } from "./utils";
 
+export const accountsToProcess: Map<number, { blockHash: string; addresses: Set<string> }> = new Map();
+const DEPTH_TO_PUBLISH_TO_REDIS = 4;
+
+
+/*
+This is a very long and messy function. We must refactor it.
+*/
+
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
+  const handlerStartTime = Date.now();
+  const blockNumber = _block.block.header.number.toNumber();
+  logger.info(`[Block: ${blockNumber}] handleBlock START`);
+
+  // Measure initialization time
+  const initStartTime = Date.now();
   const {
     block: {
       header: { number, parentHash, stateRoot, extrinsicsRoot, digest },
@@ -43,17 +52,17 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const eventsCount = events.length;
   const extrinsicsCount = extrinsics.length;
 
+  logger.info(`[Block: ${blockNumber}] Extrinsics: ${extrinsicsCount}, Events: ${eventsCount}, SpecVersion: ${specVersion}`);
+
   let cache = initializeCache();
-  const newExtrinsics = new Array<Entity>(extrinsics.length);
-  const newEvents = new Array<Entity>(events.length);
+  const newExtrinsics: Entity[] = [];
+  const newEvents: Entity[] = [];
   let eventIndex = 0;
+  const initDuration = Date.now() - initStartTime;
+  logger.info(`[Block: ${blockNumber}] Initialization completed in ${initDuration}ms`);
 
-  // Calculate space pledged and blockchain size concurrently
-  const [_spacePledged, _blockchainSize] = await Promise.all([
-    spacePledge(api as unknown as ApiAtBlockHash),
-    blockchainSize(api as unknown as ApiAtBlockHash),
-  ]);
-
+  // Measure events organization time
+  const eventsOrgStartTime = Date.now();
   const [eventsByExtrinsic, finalizationEvents] = events.reduce<
     [Record<number, typeof events>, typeof events]
   >(
@@ -77,9 +86,14 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   if (blockReward) {
     authorId = blockReward.event.data[0].toString();
   }
+  const eventsOrgDuration = Date.now() - eventsOrgStartTime;
+  logger.info(`[Block: ${blockNumber}] Events organization completed in ${eventsOrgDuration}ms`);
+  logger.info(`[Block: ${blockNumber}] Author ID: ${authorId}`);
 
   // Process extrinsics
+  const processExtrinsicsStartTime = Date.now();
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
+    const extrinsicProcessStartTime = Date.now();
     const extrinsicHash = extrinsic.hash.toString();
     const extrinsicMethodToPrimitive =
       extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
@@ -176,14 +190,18 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         cid
       )
     );
-    cache.addressToUpdate.add(extrinsicSigner);
+    if (extrinsicSigner) {
+      cache.addressToUpdate.add(extrinsicSigner);
+    }
 
     if (
       extrinsic.method.section === "utility" &&
       extrinsic.method.method === "batchAll"
     ) {
       const batchedExtrinsicEvents = groupEventsFromBatchAll(extrinsicEvents);
+      logger.debug(`[Block: ${blockNumber}] Extrinsic ${extrinsicIdx} is batchAll with ${batchedExtrinsicEvents.length} inner calls.`);
       batchedExtrinsicEvents.forEach((events, index) => {
+        const innerCallStartTime = Date.now();
         const extrinsicArgs = (extrinsic.args[0].toPrimitive() as any)[index];
         events.forEach((event) => {
           // Process extrinsic events
@@ -238,6 +256,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           // Increment event index
           eventIndex++;
         });
+        logger.debug(`[Block: ${blockNumber}] Extrinsic ${extrinsicIdx} - batchAll inner call ${index} processed in ${Date.now() - innerCallStartTime}ms`);
       });
     } else {
       // Process extrinsic events
@@ -294,9 +313,13 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         eventIndex++;
       });
     }
+    logger.debug(`[Block: ${blockNumber}] Extrinsic ${extrinsicIdx} (${extrinsic.method.section}.${extrinsic.method.method}) processed in ${Date.now() - extrinsicProcessStartTime}ms`);
   });
+  const processExtrinsicsDuration = Date.now() - processExtrinsicsStartTime;
+  logger.info(`[Block: ${blockNumber}] All extrinsics processed in ${processExtrinsicsDuration}ms`);
 
   // Process finalization events
+  const finalizationEventsStartTime = Date.now();
   finalizationEvents.forEach(async (event) => {
     newEvents.push(
       createEvent(
@@ -336,8 +359,11 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     // Increment event index
     eventIndex++;
   });
+  const finalizationEventsDuration = Date.now() - finalizationEventsStartTime;
+  logger.info(`[Block: ${blockNumber}] Finalization events processed in ${finalizationEventsDuration}ms`);
 
   // Create block logs
+  const createLogsStartTime = Date.now();
   const newLogs = digest.logs.map((log, i) => {
     const logData = log.toHuman();
     const logJson = log.toPrimitive();
@@ -358,26 +384,62 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       blockTimestamp
     );
   });
+  const createLogsDuration = Date.now() - createLogsStartTime;
+  logger.info(`[Block: ${blockNumber}] ${newLogs.length} logs created in ${createLogsDuration}ms`);
 
   // Update accounts
+  const fetchAccountsStartTime = Date.now();
   const uniqueAddresses = Array.from(cache.addressToUpdate);
-  const accounts = await Promise.all(
-    uniqueAddresses.map((address) => account(api as any, address))
-  );
+  logger.info(`[Block: ${blockNumber}] Updating ${uniqueAddresses.length} unique addresses.`);
+  // const accounts = await Promise.all(
+  //   uniqueAddresses.map((address) => account(api as any, address))
+  // );
+  const fetchAccountsDuration = Date.now() - fetchAccountsStartTime;
+  logger.info(`[Block: ${blockNumber}] Fetched ${uniqueAddresses.length} account details in ${fetchAccountsDuration}ms (after Promise.all)`);
+
+  uniqueAddresses.forEach(address => {
+    if (!accountsToProcess.has(blockNumber)) {
+      accountsToProcess.set(blockNumber, { blockHash, addresses: new Set() });
+    }
+    accountsToProcess.get(blockNumber)!.addresses.add(address);
+  });
 
   // Create and save accounts
-  const accountHistories = accounts.map((account, i) =>
-    createAccountHistory(
-      uniqueAddresses[i],
-      height,
-      BigInt(account.nonce.toString()),
-      account.data.free,
-      account.data.reserved,
-      account.data.free + account.data.reserved
-    )
-  );
+  const createAccountHistoriesStartTime = Date.now();
+  const accountHistories: Entity[] = [];
+  if (uniqueAddresses.length > 0) {
+    logger.info(`[Block: ${blockNumber}] Creating ${uniqueAddresses.length} placeholder AccountHistory records.`);
+    for (const address of uniqueAddresses) {
+      try {
+        const placeholderHistory = createAccountHistory(
+          address,
+          height,
+          ZERO_BIGINT,
+          ZERO_BIGINT,
+          ZERO_BIGINT,
+          ZERO_BIGINT
+        );
+        accountHistories.push(placeholderHistory as Entity);
+      } catch (error) {
+        logger.error(`[Block: ${blockNumber}] Error creating AccountHistory for address ${address}:`, error);
+      }
+    }
+  }
+  const createAccountHistoriesDuration = Date.now() - createAccountHistoriesStartTime;
+  if (uniqueAddresses.length > 0) {
+    logger.info(`[Block: ${blockNumber}] ${accountHistories.length} placeholder AccountHistory entities prepared in ${createAccountHistoriesDuration}ms`);
+  }
 
+  // Prepare for bulkSave - measure time for any preparation
+  const preBulkSaveStartTime = Date.now();
+  logger.info(`[Block: ${blockNumber}] Starting bulk entity save. Extrinsics: ${newExtrinsics.length}, Events: ${newEvents.length}, Logs: ${newLogs.length}, Transfers: ${cache.transfers.length}, Rewards: ${cache.rewards.length}`);
+  const preBulkSaveDuration = Date.now() - preBulkSaveStartTime;
+  if (preBulkSaveDuration > 1) { // Only log if it's more than a millisecond, to reduce noise
+    logger.info(`[Block: ${blockNumber}] Bulk save preparation took ${preBulkSaveDuration}ms`);
+  }
+  
   // Save many entities in parallel
+  const bulkSaveStartTime = Date.now();
   await Promise.all([
     // Save extrinsic, events and logs
     store.bulkCreate(`Extrinsic`, newExtrinsics),
@@ -401,8 +463,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         specVersion.toString(),
         stateRoot.toString(),
         extrinsicsRoot.toString(),
-        _spacePledged,
-        _blockchainSize,
         extrinsicsCount,
         eventsCount,
         newLogs.length,
@@ -418,4 +478,48 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       ),
     ]),
   ]);
+  const bulkSaveDuration = Date.now() - bulkSaveStartTime;
+  logger.info(`[Block: ${blockNumber}] All entities saved (bulkCreate) in ${bulkSaveDuration}ms`);
+
+  // Publish to Redis AFTER all database operations are complete AND block is deep enough
+  // This is a temporary solution to avoid deadlocks with the account-worker
+  if (uniqueAddresses.length > 0) {
+    // Store addresses for this block, but don't publish to Redis yet
+    logger.info(`[REDIS: ${blockNumber}] Storing ${uniqueAddresses.length} addresses for block ${blockNumber}, will publish when block is 10+ deep`);
+  }
+
+  // Check if we have blocks that are now DEPTH_TO_PUBLISH_TO_REDIS+ deep and can be published to Redis
+  // This practice IS NOT to handle re-orgs, it is for avoiding deadlocks with the account-worker
+  const currentBlockNumber = blockNumber;
+  const blocksToPublish: number[] = [];
+  
+  for (const [storedBlockNumber] of accountsToProcess.entries()) {
+    const blockDepth = currentBlockNumber - storedBlockNumber;
+    if (blockDepth >= DEPTH_TO_PUBLISH_TO_REDIS) {
+      blocksToPublish.push(storedBlockNumber);
+    }
+  }
+
+  if (blocksToPublish.length > 0) {
+    logger.info(`[REDIS: ${blockNumber}] Publishing ${blocksToPublish.length} deep blocks to Redis: ${blocksToPublish.join(', ')}`);
+    publishAccountsToRedis(blocksToPublish).catch(err => 
+      logger.warn(`Background Redis publishing failed: ${err.message}`)
+    );
+  }
+
+  // Calculate time breakdown for detailed analysis
+  const totalMeasuredTime = initDuration + 
+    eventsOrgDuration + 
+    processExtrinsicsDuration +
+    finalizationEventsDuration + 
+    createLogsDuration + 
+    fetchAccountsDuration + 
+    // createAccountHistoriesDuration + 
+    preBulkSaveDuration +
+    bulkSaveDuration;
+    
+  const totalActualTime = Date.now() - handlerStartTime;
+  const unmeasuredTime = totalActualTime - totalMeasuredTime;
+  
+  logger.info(`[Block: ${blockNumber}] handleBlock END. Total duration: ${totalActualTime}ms. Breakdown: init=${initDuration}, eventsOrg=${eventsOrgDuration}, extrinsics=${processExtrinsicsDuration}, finalization=${finalizationEventsDuration}, logs=${createLogsDuration}, fetchAcc=${fetchAccountsDuration}, preBulkPrep=${preBulkSaveDuration}, bulkSave=${bulkSaveDuration}, unmeasured=${unmeasuredTime}`);
 }

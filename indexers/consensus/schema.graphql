@@ -10,8 +10,6 @@ type Block @entity {
   specId: String!
   stateRoot: String!
   extrinsicsRoot: String!
-  spacePledged: BigInt!
-  blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
   logsCount: Int!
