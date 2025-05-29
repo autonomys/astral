@@ -84,8 +84,56 @@ const fetchTasksFromQueue = async (batchSize: number = 10): Promise<AccountProce
   }
 }
 
+/**
+ * Pushes tasks back to the queue for later processing.
+ * Uses RPUSH to add tasks to the end of the queue.
+ */
+const pushTasksToQueue = async (tasks: AccountProcessingTask[]): Promise<number> => {
+  if (!redisClient) {
+    throw new Error('Redis client not initialized. Call connectRedis() first.');
+  }
+  
+  if (tasks.length === 0) {
+    return 0;
+  }
+  
+  try {
+    // Serialize tasks
+    const serializedTasks = tasks.map(task => JSON.stringify(task));
+    
+    // Use pipeline for better performance with batches
+    const pipeline = redisClient.pipeline();
+    
+    // Push tasks in batches of 50 to avoid issues
+    const BATCH_SIZE = 50;
+    for (let i = 0; i < serializedTasks.length; i += BATCH_SIZE) {
+      const batch = serializedTasks.slice(i, i + BATCH_SIZE);
+      pipeline.rpush(config.accountProcessingQueueName, ...batch);
+    }
+    
+    const results = await pipeline.exec();
+    
+    let pushedCount = 0;
+    if (results) {
+      for (const [error] of results) {
+        if (!error) {
+          pushedCount += BATCH_SIZE;
+        }
+      }
+    }
+    
+    const actualPushed = Math.min(pushedCount, tasks.length);
+    console.log(`Worker: Re-queued ${actualPushed} tasks to Redis for later processing`);
+    return actualPushed;
+  } catch (error) {
+    console.error('Error pushing tasks back to Redis queue:', error);
+    return 0;
+  }
+}
+
 export {
   connectRedis,
   disconnectRedis,
-  fetchTasksFromQueue
+  fetchTasksFromQueue,
+  pushTasksToQueue
 };

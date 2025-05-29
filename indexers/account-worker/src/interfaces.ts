@@ -2,6 +2,7 @@ export interface AccountProcessingTask {
   address: string;
   blockHeight: number;
   blockHash: string;
+  timestamp: number;
 }
 
 export interface ConsensusAccountData {
