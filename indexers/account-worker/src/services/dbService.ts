@@ -43,6 +43,38 @@ const disconnectDb = async (): Promise<void> => {
 }
 
 /**
+ * Helper function to retry a database operation with exponential backoff
+ */
+const retryOperation = async <T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 3,
+  initialDelay: number = 100
+): Promise<T> => {
+  let lastError: Error;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error as Error;
+      
+      // Don't retry if it's the last attempt
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      
+      // Calculate delay with exponential backoff
+      const delay = initialDelay * Math.pow(2, attempt);
+      console.log(`Attempt ${attempt + 1} failed, retrying in ${delay}ms...`);
+      
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError!;
+};
+
+/**
  * Updates multiple AccountHistory records and the accounts table in a single transaction.
  * Directly updates accounts table to avoid trigger-based deadlocks.
  */
@@ -83,14 +115,27 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
       ];
 
       try {
-        const result = await client.query(query, values);
-        if (result.rowCount && result.rowCount > 0) {
-          return { success: true, data };
-        }
-        console.warn(`No AccountHistory record found for address: ${id} (block ${eventBlockNumber})`);
-        return { success: false, data };
+        // Retry logic for finding and updating the record
+        const result = await retryOperation(async () => {
+          const queryResult = await client.query(query, values);
+          
+          // If no rows were updated, throw an error to trigger retry
+          if (!queryResult.rowCount || queryResult.rowCount === 0) {
+            throw new Error(`No AccountHistory record found for address: ${id} (block ${eventBlockNumber} - retrying)`);
+          }
+          
+          return queryResult;
+        }, 3, 100); // 3 retries with 100ms initial delay
+        
+        // If we get here, the update was successful
+        return { success: true, data };
       } catch (error) {
-        console.error(`Error updating AccountHistory for address ${id}:`, error);
+        // All retries exhausted - record still not found or other error
+        if (error instanceof Error && error.message.includes('No AccountHistory record found')) {
+          console.warn(`AccountHistory record not found after retries for address: ${id} (block ${eventBlockNumber})`);
+        } else {
+          console.error(`Error updating AccountHistory for address ${id} after retries:`, error);
+        }
         return { success: false, data };
       }
     });
@@ -151,10 +196,12 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
       ];
 
       try {
-        const _updateAccount = await client.query(accountQuery, accountValues);
+        const _updateAccount = await retryOperation(async () => {
+          return await client.query(accountQuery, accountValues);
+        }, 3, 100); // 3 retries with 100ms initial delay
         return true;
       } catch (error) {
-        console.error(`Error updating account ${address}:`, error);
+        console.error(`Error updating account ${address} after retries:`, error);
         return false;
       }
     });
