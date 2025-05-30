@@ -1,8 +1,11 @@
 import HomeInfoCardSkeleton from '@/components/common/HomeInfoCardSkeleton'
 import useMediaQuery from '@/hooks/useMediaQuery'
+import { useSpacePledged } from '@/hooks/useSpacePledged'
+import { ChainParam } from '@/types/app'
 import { cn } from '@/utils/cn'
-import type { HomeQuery } from 'gql/graphql'
+import type { HomeSubscription } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
+import { useParams } from 'next/navigation'
 import { FC, useMemo } from 'react'
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -12,13 +15,16 @@ import { bigNumberToNumber, formatNumberWithUnit, safeDivide } from 'utils/numbe
 import { HomeInfoCard } from './HomeInfoCard'
 
 type Props = {
-  data: HomeQuery | undefined
+  data: HomeSubscription | undefined
   loading: boolean
 }
 
 export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   const { tokenSymbol } = useIndexers()
   const isDesktop = useMediaQuery('(min-width: 1536px)')
+  const { chain } = useParams<ChainParam>()
+
+  const { spacePledgedVal, loading: spacePledgedLoading } = useSpacePledged(chain || '')
 
   const eventsCount = data
     ? Number(data.consensus_blocks[0].cumulative?.cumulative_events_count)
@@ -35,7 +41,6 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   const rewardsValue = data
     ? bigNumberToNumber(data.consensus_blocks[0].cumulative?.cumulative_reward_value)
     : 'error'
-  const spacePledgedVal = data ? Number(data.consensus_blocks[0].space_pledged) : 0
   const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
   const replicationFactor = formatNumberWithUnit(safeDivide(spacePledgedVal, historySizeVal))
 
@@ -118,7 +123,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
       modules={[Pagination]}
       className={cn('flex w-full items-center gap-5', isDesktop ? '!p-0' : '!pb-10')}
     >
-      {!data || loading
+      {!data || loading || spacePledgedLoading
         ? Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={`loader-${index}`}>
               <HomeInfoCardSkeleton

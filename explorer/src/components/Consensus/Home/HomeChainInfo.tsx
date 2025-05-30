@@ -1,8 +1,11 @@
 import HomeInfoCardSkeleton from '@/components/common/HomeInfoCardSkeleton'
+import { useSpacePledged } from '@/hooks/useSpacePledged'
+import { ChainParam } from '@/types/app'
 import { formatSpaceToDecimalAsObject } from '@autonomys/auto-consensus'
 import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -21,8 +24,10 @@ type Props = {
 
 export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const { indexerSet } = useIndexers()
+  const { chain } = useParams<ChainParam>()
   const isDesktop = useMediaQuery('(min-width: 1536px)')
   const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
+  const { spacePledgedVal, loading: spacePledgedLoading } = useSpacePledged(chain || '')
 
   const getTelemetryData = useCallback(async () => {
     if (!process.env.NEXT_PUBLIC_TELEMETRY_URL) return
@@ -65,8 +70,7 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
     }
   }, [telemetryData, indexerSet.telemetryNetworkName])
 
-  const spacePledgedVal = data ? Number(data.consensus_blocks[0].space_pledged) : 0
-  const spacePledged = formatSpaceToDecimalAsObject(spacePledgedVal)
+  const spacePledgedFormatted = formatSpaceToDecimalAsObject(spacePledgedVal)
   const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
   const historySize = formatSpaceToDecimalAsObject(historySizeVal)
   const blocksCount = data ? Number(data.consensus_blocks[0].height) : 'error'
@@ -98,8 +102,8 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
       {
         title: 'Total Space Pledged',
         imagePath: '/images/icons/total-space-pledged.webp',
-        value: spacePledged.value,
-        unit: spacePledged.unit,
+        value: spacePledgedFormatted.value,
+        unit: spacePledgedFormatted.unit,
         decimal: 2,
         darkBgClass: 'dark:bg-boxDark',
       },
@@ -118,7 +122,7 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
         darkBgClass: 'dark:bg-boxDark',
       },
     ],
-    [blocksCount, nodeCount, spacePledged, historySize, accountsCount, extrinsicsCount],
+    [blocksCount, nodeCount, spacePledgedFormatted, historySize, accountsCount, extrinsicsCount],
   )
 
   useEffect(() => {
@@ -156,7 +160,7 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
       modules={[Pagination]}
       className={cn('flex w-full items-center', isDesktop ? 'mb-12 !p-0' : 'mb-4 !pb-10')}
     >
-      {!data || loading
+      {!data || loading || spacePledgedLoading
         ? Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={`loader-${index}`}>
               <HomeInfoCardSkeleton key={index} />
