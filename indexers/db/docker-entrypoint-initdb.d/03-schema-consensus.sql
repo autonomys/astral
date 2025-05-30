@@ -286,6 +286,7 @@ CREATE INDEX "consensus_extrinsics_sort_id" ON consensus.extrinsics USING btree 
 CREATE INDEX "consensus_extrinsics_hash" ON consensus.extrinsics USING btree (hash);
 CREATE INDEX "consensus_extrinsics_block_height" ON consensus.extrinsics USING btree (block_height);
 CREATE INDEX "consensus_extrinsics_signer" ON consensus.extrinsics USING btree (signer);
+CREATE INDEX "consensus_extrinsics_block_index" ON consensus.extrinsics (block_height, index_in_block);
 CREATE INDEX "0xe5bf5858bd35a276" ON consensus.events USING btree (id);
 CREATE INDEX "consensus_events_sort_id" ON consensus.events USING btree (sort_id DESC);
 CREATE INDEX "consensus_events_extrinsic_id" ON consensus.events USING btree (extrinsic_id);
