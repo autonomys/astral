@@ -290,6 +290,7 @@ CREATE INDEX "0xe5bf5858bd35a276" ON consensus.events USING btree (id);
 CREATE INDEX "consensus_events_sort_id" ON consensus.events USING btree (sort_id DESC);
 CREATE INDEX "consensus_events_extrinsic_id" ON consensus.events USING btree (extrinsic_id);
 CREATE INDEX "consensus_events_block_height" ON consensus.events USING btree (block_height);
+CREATE INDEX "consensus_events_block_index" ON consensus.events (block_height, index_in_block);
 CREATE INDEX "0x4cb388e53e3e30f3" ON consensus.accounts USING btree (id);
 CREATE INDEX "consensus_accounts_free" ON consensus.accounts USING btree (free DESC);
 CREATE INDEX "consensus_accounts_reserved" ON consensus.accounts USING btree (reserved DESC);
