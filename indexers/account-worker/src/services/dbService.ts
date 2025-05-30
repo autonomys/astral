@@ -215,7 +215,7 @@ const getClientWithRetry = async (): Promise<any> => {
 };
 
 /**
- * Updates multiple AccountHistory records in a single transaction.
+ * Updates multiple AccountHistory records with individual transactions per update.
  * Returns the successfully updated records grouped by account address and failed updates.
  */
 const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]): Promise<{
@@ -228,30 +228,33 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
 
   if (updates.length === 0) return { successful: new Map(), failed: [] };
 
-  const client = await getClientWithRetry(); // Use retry logic for connection
   const latestByAccount = new Map<string, AccountHistoryUpdateData>();
   const failedUpdates: AccountHistoryUpdateData[] = [];
 
-  try {
-    await client.query('BEGIN');
-
-    // Process updates in smaller chunks to avoid overwhelming the database
-    const CHUNK_SIZE = config.dbUpdateChunkSize; // Use config value
+  // Process updates in smaller chunks to avoid overwhelming the database
+  const CHUNK_SIZE = config.dbUpdateChunkSize; // Use config value
+  
+  for (let i = 0; i < updates.length; i += CHUNK_SIZE) {
+    const chunk = updates.slice(i, i + CHUNK_SIZE);
+    console.log(`Processing chunk ${Math.floor(i/CHUNK_SIZE) + 1}/${Math.ceil(updates.length/CHUNK_SIZE)} (${chunk.length} updates)`);
     
-    for (let i = 0; i < updates.length; i += CHUNK_SIZE) {
-      const chunk = updates.slice(i, i + CHUNK_SIZE);
-      console.log(`Processing chunk ${Math.floor(i/CHUNK_SIZE) + 1}/${Math.ceil(updates.length/CHUNK_SIZE)} (${chunk.length} updates)`);
+    // Update account_histories records in this chunk - each with its own transaction
+    const updatePromises = chunk.map(async (data) => {
+      const { id, nonce, free, reserved, total, blockHeight } = data;
       
-      // Update account_histories records in this chunk
-      const updatePromises = chunk.map(async (data) => {
-        const { id, nonce, free, reserved, total, blockHeight } = data;
+      // Get a dedicated client for this update
+      let client;
+      try {
+        client = await getClientWithRetry();
+      } catch (error) {
+        console.error(`Failed to get client for ${id}:`, error);
+        failedUpdates.push(data);
+        return { success: false, data };
+      }
       
-        const checkQuery = `
-        SELECT created_at, nonce, free, reserved, total 
-        FROM consensus.account_histories 
-        WHERE id = $1 AND created_at = $2;
-        `;
-
+      try {
+        // Start individual transaction for this update
+        await client.query('BEGIN');
         const query = `
           UPDATE consensus.account_histories
           SET
@@ -264,84 +267,85 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
 
         const values = [nonce, free, reserved, total, id, blockHeight];
 
-        try {
-          // Retry logic for finding and updating the record
-          const result = await retryOperation(async () => {
-
-            const checkResult = await client.query(checkQuery, [id, blockHeight]);
-            if (checkResult.rowCount === 0) {
-              throw new Error(`No AccountHistory record found for address: ${id} at block ${blockHeight}!`);
-            }
-
-            const queryResult = await client.query(query, values);
-            
-            // If no rows were updated, throw an error to trigger retry
-            if (!queryResult.rowCount || queryResult.rowCount === 0) {
-              throw new Error(`No AccountHistory record found for address: ${id} (block ${blockHeight} - retrying)`);
-            }
-            
-            return queryResult;
-          }, 2, 50);
+        // Retry logic for finding and updating the record
+        const result = await retryOperation(async () => {
+          const queryResult = await client.query(query, values);
           
-          return { success: true, data };
-        } catch (error) {
-          // All retries exhausted - record still not found or other error
-          if (error instanceof Error && error.message.includes('No AccountHistory record found')) {
-            console.warn(`AccountHistory record not found after retries for address: ${id} (block ${blockHeight})`);
-            // Add to failed list for re-queuing
-            failedUpdates.push(data);
-          } else if (error instanceof Error && 
-                     (error.message.includes('deadlock detected') ||
-                      error.message.includes('could not serialize access') ||
-                      error.message.includes('concurrent update') ||
-                      error.message.includes('Query read timeout') ||
-                      error.message.includes('query_timeout') ||
-                      error.message.includes('statement timeout') ||
-                      error.message.includes('canceling statement due to statement timeout') ||
-                      (error as any).code === '40P01' || // PostgreSQL deadlock error code
-                      (error as any).code === '40001' || // PostgreSQL serialization failure
-                      (error as any).code === '57014')) { // PostgreSQL query canceled error code
-            console.warn(`Deadlock/timeout error for address: ${id} (block ${blockHeight}), will re-queue`);
-            // Add to failed list for re-queuing
-            failedUpdates.push(data);
-          } else {
-            console.error(`Error updating AccountHistory for address ${id} after retries:`, error);
+          // If no rows were updated, throw an error to trigger retry
+          if (!queryResult.rowCount || queryResult.rowCount === 0) {
+            throw new Error(`No AccountHistory record found for address: ${id} (block ${blockHeight} - retrying)`);
           }
-          return { success: false, data };
+          
+          return queryResult;
+        }, 2, 50);
+        
+        // Commit individual transaction
+        await client.query('COMMIT');
+        
+        return { success: true, data };
+      } catch (error) {
+        // Rollback individual transaction on error
+        try {
+          await client.query('ROLLBACK');
+        } catch (rollbackError) {
+          console.error(`Rollback failed for ${id}:`, rollbackError);
         }
-      });
-
-      // Process chunk and wait for completion before moving to next chunk
-      const results = await Promise.all(updatePromises);
-      
-      // Group successful updates by account address to get the latest data for each account
-      for (const result of results) {
-        if (result.success) {
-          const existing = latestByAccount.get(result.data.id);
-          // Keep the update with the highest block number
-          if (!existing || result.data.blockHeight > existing.blockHeight) {
-            latestByAccount.set(result.data.id, result.data);
-          }
+        
+        // All retries exhausted - record still not found or other error
+        if (error instanceof Error && error.message.includes('No AccountHistory record found')) {
+          console.warn(`AccountHistory record not found after retries for address: ${id} (block ${blockHeight})`);
+          // Add to failed list for re-queuing
+          failedUpdates.push(data);
+        } else if (error instanceof Error && 
+                   (error.message.includes('deadlock detected') ||
+                    error.message.includes('could not serialize access') ||
+                    error.message.includes('concurrent update') ||
+                    error.message.includes('Query read timeout') ||
+                    error.message.includes('query_timeout') ||
+                    error.message.includes('statement timeout') ||
+                    error.message.includes('canceling statement due to statement timeout') ||
+                    error.message.includes('current transaction is aborted') ||
+                    (error as any).code === '40P01' || // PostgreSQL deadlock error code
+                    (error as any).code === '40001' || // PostgreSQL serialization failure
+                    (error as any).code === '57014' || // PostgreSQL query canceled error code
+                    (error as any).code === '25P02')) { // PostgreSQL transaction aborted error code
+          console.warn(`Database error for address: ${id} (block ${blockHeight}), will re-queue - ${error.message}`);
+          // Add to failed list for re-queuing
+          failedUpdates.push(data);
+        } else {
+          console.error(`Error updating AccountHistory for address ${id} after retries:`, error);
+        }
+        return { success: false, data };
+      } finally {
+        // Always release the client
+        if (client) {
+          client.release();
         }
       }
-      
-      // Small delay between chunks to give database time to breathe
-      if (i + CHUNK_SIZE < updates.length) {
-        await new Promise(resolve => setTimeout(resolve, config.dbUpdateChunkDelayMs));
+    });
+
+    // Process chunk and wait for completion before moving to next chunk
+    const results = await Promise.all(updatePromises);
+    
+    // Group successful updates by account address to get the latest data for each account
+    for (const result of results) {
+      if (result.success) {
+        const existing = latestByAccount.get(result.data.id);
+        // Keep the update with the highest block number
+        if (!existing || result.data.blockHeight > existing.blockHeight) {
+          latestByAccount.set(result.data.id, result.data);
+        }
       }
     }
-
-    await client.query('COMMIT');
     
-    console.log(`Account histories batch update completed: ${latestByAccount.size}/${updates.length} records updated, ${failedUpdates.length} failed`);
-    return { successful: latestByAccount, failed: failedUpdates };
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Account histories batch update failed, transaction rolled back:', error);
-    throw error;
-  } finally {
-    client.release();
+    // Small delay between chunks to give database time to breathe
+    if (i + CHUNK_SIZE < updates.length) {
+      await new Promise(resolve => setTimeout(resolve, config.dbUpdateChunkDelayMs));
+    }
   }
+
+  console.log(`Account histories batch update completed: ${latestByAccount.size}/${updates.length} records updated, ${failedUpdates.length} failed`);
+  return { successful: latestByAccount, failed: failedUpdates };
 };
 
 /**
@@ -462,10 +466,12 @@ const batchUpdateAccountHistoriesAndAccounts = async (updates: AccountHistoryUpd
          error.message.includes('Query read timeout') ||
          error.message.includes('query_timeout') ||
          error.message.includes('statement timeout') ||
+         error.message.includes('current transaction is aborted') ||
          (error as any).code === '40P01' || // PostgreSQL deadlock error code
          (error as any).code === '40001' || // PostgreSQL serialization failure
-         (error as any).code === '57014')) { // PostgreSQL query canceled error code
-      console.error('Critical database error (connection/deadlock/timeout), marking all updates as failed');
+         (error as any).code === '57014' || // PostgreSQL query canceled error code
+         (error as any).code === '25P02')) { // PostgreSQL transaction aborted error code
+      console.error('Critical database error (connection/deadlock/timeout/transaction abort), marking all updates as failed');
       return {
         historiesUpdated: 0,
         accountsUpdated: 0,
