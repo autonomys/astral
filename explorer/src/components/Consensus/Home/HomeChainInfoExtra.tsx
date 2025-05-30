@@ -3,7 +3,7 @@ import useMediaQuery from '@/hooks/useMediaQuery'
 import { useSpacePledged } from '@/hooks/useSpacePledged'
 import { ChainParam } from '@/types/app'
 import { cn } from '@/utils/cn'
-import type { HomeSubscription } from 'gql/graphql'
+import type { HomeQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useParams } from 'next/navigation'
 import { FC, useMemo } from 'react'
@@ -15,7 +15,7 @@ import { bigNumberToNumber, formatNumberWithUnit, safeDivide } from 'utils/numbe
 import { HomeInfoCard } from './HomeInfoCard'
 
 type Props = {
-  data: HomeSubscription | undefined
+  data: HomeQuery | undefined
   loading: boolean
 }
 
