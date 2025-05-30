@@ -32072,7 +32072,7 @@ export const CheckRoleDocument = gql`
     id
   }
   isTalismanFarmer: consensus_rewards(
-    where: {_or: [{reward_type: {_eq: "rewards.VoteReward"}}, {reward_type: {_eq: "rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}, _and: [{timestamp: {_gte: "2025-05-07T00:00:00.000"}}, {timestamp: {_lte: "2025-06-04T00:00:00.000"}}]}
+    where: {_or: [{reward_type: {_eq: "rewards.VoteReward"}}, {reward_type: {_eq: "rewards.BlockReward"}}], account_id: {_eq: $subspaceAccount}, _and: [{timestamp: {_gte: "2025-05-07T00:00:00.000"}}, {timestamp: {_lte: "2025-06-05T00:00:00.000"}}]}
     limit: 1
   ) {
     account {
