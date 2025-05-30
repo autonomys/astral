@@ -27,6 +27,16 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
 
   const startTime = Date.now();
   console.log(`Worker: Processing batch of ${tasks.length} tasks`);
+  
+  // Log task details for debugging/recovery purposes
+  if (tasks.length <= 10) {
+    // Log all tasks if small batch
+    console.log('Worker: Task details:', JSON.stringify(tasks, null, 2));
+  } else {
+    // Log sample for large batches
+    console.log(`Worker: First 5 tasks:`, JSON.stringify(tasks.slice(0, 5), null, 2));
+    console.log(`Worker: Block range: ${Math.min(...tasks.map(t => t.blockHeight))} - ${Math.max(...tasks.map(t => t.blockHeight))}`);
+  }
 
   // Filter tasks by processing depth
   const validTasks = tasks.filter(task => {
@@ -125,6 +135,33 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
       }
     } catch (error) {
       console.error('Worker: Batch database update failed:', error);
+      
+      // CRITICAL: Re-queue ALL tasks on connection/timeout errors
+      if (error instanceof Error && 
+          (error.message.includes('timeout') || 
+           error.message.includes('connection') ||
+           error.message.includes('Database pool not initialized') ||
+           error.message.includes('deadlock detected') ||
+           error.message.includes('could not serialize access') ||
+           error.message.includes('concurrent update') ||
+           (error as any).code === '40P01' || // PostgreSQL deadlock error code
+           (error as any).code === '40001')) { // PostgreSQL serialization failure
+        console.error('Worker: Critical database error detected, re-queuing all tasks to prevent data loss');
+        
+        // Re-queue all valid tasks that were attempted
+        const requeuedCount = await pushTasksToQueue(validTasks);
+        console.log(`Worker: Re-queued ALL ${requeuedCount} tasks due to database connection/deadlock error`);
+        
+        // Return 0 as no tasks were successfully processed
+        return 0;
+      }
+      
+      // For other errors, still try to re-queue all tasks as safety measure
+      console.error('Worker: Unexpected error, re-queuing all tasks as safety measure');
+      const requeuedCount = await pushTasksToQueue(validTasks);
+      console.log(`Worker: Re-queued ${requeuedCount} tasks due to unexpected error`);
+      
+      return 0;
     }
   }
 

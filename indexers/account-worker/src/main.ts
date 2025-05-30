@@ -1,13 +1,14 @@
 import { config } from './config';
 import { AccountProcessingTask } from './interfaces';
 import { connectAutonomysApi, disconnectAutonomysApi } from './services/autonomysService';
-import { connectDb, disconnectDb } from './services/dbService';
+import { connectDb, disconnectDb, ensureDbConnection } from './services/dbService';
 import { connectRedis, disconnectRedis, fetchTasksFromQueue } from './services/redisService';
 import { processBatchTasks, refreshChainHeadHeight } from './worker';
 
 let isShuttingDown = false;
 let mainLoopInterval: NodeJS.Timeout | null = null;
 let chainHeadPollInterval: NodeJS.Timeout | null = null;
+let dbHealthCheckInterval: NodeJS.Timeout | null = null;
 
 const main = async () => {
   console.log('Starting Account Worker with Batch Processing...');
@@ -27,12 +28,25 @@ const main = async () => {
         }, config.chainHeadPollIntervalMs);
     }
 
+    // Start periodic database health checks (every 30 seconds)
+    dbHealthCheckInterval = setInterval(async () => {
+      if (isShuttingDown) return;
+      try {
+        await ensureDbConnection();
+      } catch (error) {
+        console.error('Worker: Database health check failed:', error);
+      }
+    }, 10000); // Reduced from 30000ms to 10 seconds for faster detection
+
     // Start main processing loop with batch processing
     console.log(`Worker: Starting batch queue processing. Batch size: ${config.batchSize}, Interval: ${config.queueProcessingIntervalMs}ms`);
     
     mainLoopInterval = setInterval(async () => {
       if (isShuttingDown) return;
       try {
+        // Ensure database connection is healthy before processing
+        await ensureDbConnection();
+        
         // Fetch batch of tasks
         const tasks: AccountProcessingTask[] = await fetchTasksFromQueue(config.batchSize);
         
@@ -63,6 +77,9 @@ const shutdown = async (exitCode = 0) => {
   }
   if (chainHeadPollInterval) {
     clearInterval(chainHeadPollInterval);
+  }
+  if (dbHealthCheckInterval) {
+    clearInterval(dbHealthCheckInterval);
   }
 
   // Gracefully disconnect services
