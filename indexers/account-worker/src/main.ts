@@ -36,7 +36,7 @@ const main = async () => {
       } catch (error) {
         console.error('Worker: Database health check failed:', error);
       }
-    }, 10000); // Reduced from 30000ms to 10 seconds for faster detection
+    }, config.dbHealthCheckIntervalMs); // Use config value
 
     // Start main processing loop with batch processing
     console.log(`Worker: Starting batch queue processing. Batch size: ${config.batchSize}, Interval: ${config.queueProcessingIntervalMs}ms`);

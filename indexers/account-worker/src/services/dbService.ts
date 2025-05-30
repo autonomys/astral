@@ -50,12 +50,12 @@ const connectDb = async (): Promise<void> => {
       user: config.dbUser,
       password: config.dbPassword,
       database: config.dbName,
-      max: 20,
-      min: 5,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 3000,
-      query_timeout: 5000,
-      statement_timeout: 5000,
+      max: config.dbPoolMax,
+      min: config.dbPoolMin,
+      idleTimeoutMillis: config.dbIdleTimeoutMs,
+      connectionTimeoutMillis: config.dbConnectionTimeoutMs,
+      query_timeout: config.dbQueryTimeoutMs,
+      statement_timeout: config.dbStatementTimeoutMs,
       keepAlive: true,
       keepAliveInitialDelayMillis: 10000,
     });
@@ -235,88 +235,105 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
   try {
     await client.query('BEGIN');
 
-    // Update all account_histories records
-    const updatePromises = updates.map(async (data) => {
-      const { id, nonce, free, reserved, total, blockHeight } = data;
+    // Process updates in smaller chunks to avoid overwhelming the database
+    const CHUNK_SIZE = config.dbUpdateChunkSize; // Use config value
     
-      const checkQuery = `
-      SELECT created_at, nonce, free, reserved, total 
-      FROM consensus.account_histories 
-      WHERE id = $1 AND created_at = $2;
-      `;
+    for (let i = 0; i < updates.length; i += CHUNK_SIZE) {
+      const chunk = updates.slice(i, i + CHUNK_SIZE);
+      console.log(`Processing chunk ${Math.floor(i/CHUNK_SIZE) + 1}/${Math.ceil(updates.length/CHUNK_SIZE)} (${chunk.length} updates)`);
+      
+      // Update account_histories records in this chunk
+      const updatePromises = chunk.map(async (data) => {
+        const { id, nonce, free, reserved, total, blockHeight } = data;
+      
+        const checkQuery = `
+        SELECT created_at, nonce, free, reserved, total 
+        FROM consensus.account_histories 
+        WHERE id = $1 AND created_at = $2;
+        `;
 
-      const query = `
-        UPDATE consensus.account_histories
-        SET
-          nonce = $1,
-          free = $2,
-          reserved = $3,
-          total = $4
-        WHERE id = $5 AND created_at = $6;
-      `;
+        const query = `
+          UPDATE consensus.account_histories
+          SET
+            nonce = $1,
+            free = $2,
+            reserved = $3,
+            total = $4
+          WHERE id = $5 AND created_at = $6;
+        `;
 
-      const values = [nonce, free, reserved, total, id, blockHeight];
+        const values = [nonce, free, reserved, total, id, blockHeight];
 
-      try {
-        // Retry logic for finding and updating the record
-        const result = await retryOperation(async () => {
+        try {
+          // Retry logic for finding and updating the record
+          const result = await retryOperation(async () => {
 
-          const checkResult = await client.query(checkQuery, [id, blockHeight]);
-          if (checkResult.rowCount === 0) {
-            throw new Error(`No AccountHistory record found for address: ${id} at block ${blockHeight}!`);
-          }
+            const checkResult = await client.query(checkQuery, [id, blockHeight]);
+            if (checkResult.rowCount === 0) {
+              throw new Error(`No AccountHistory record found for address: ${id} at block ${blockHeight}!`);
+            }
 
-          const queryResult = await client.query(query, values);
+            const queryResult = await client.query(query, values);
+            
+            // If no rows were updated, throw an error to trigger retry
+            if (!queryResult.rowCount || queryResult.rowCount === 0) {
+              throw new Error(`No AccountHistory record found for address: ${id} (block ${blockHeight} - retrying)`);
+            }
+            
+            return queryResult;
+          }, 2, 50);
           
-          // If no rows were updated, throw an error to trigger retry
-          if (!queryResult.rowCount || queryResult.rowCount === 0) {
-            throw new Error(`No AccountHistory record found for address: ${id} (block ${blockHeight} - retrying)`);
+          return { success: true, data };
+        } catch (error) {
+          // All retries exhausted - record still not found or other error
+          if (error instanceof Error && error.message.includes('No AccountHistory record found')) {
+            console.warn(`AccountHistory record not found after retries for address: ${id} (block ${blockHeight})`);
+            // Add to failed list for re-queuing
+            failedUpdates.push(data);
+          } else if (error instanceof Error && 
+                     (error.message.includes('deadlock detected') ||
+                      error.message.includes('could not serialize access') ||
+                      error.message.includes('concurrent update') ||
+                      error.message.includes('Query read timeout') ||
+                      error.message.includes('query_timeout') ||
+                      error.message.includes('statement timeout') ||
+                      error.message.includes('canceling statement due to statement timeout') ||
+                      (error as any).code === '40P01' || // PostgreSQL deadlock error code
+                      (error as any).code === '40001' || // PostgreSQL serialization failure
+                      (error as any).code === '57014')) { // PostgreSQL query canceled error code
+            console.warn(`Deadlock/timeout error for address: ${id} (block ${blockHeight}), will re-queue`);
+            // Add to failed list for re-queuing
+            failedUpdates.push(data);
+          } else {
+            console.error(`Error updating AccountHistory for address ${id} after retries:`, error);
           }
-          
-          return queryResult;
-        }, 3, 100);
-        
-        return { success: true, data };
-      } catch (error) {
-        // All retries exhausted - record still not found or other error
-        if (error instanceof Error && error.message.includes('No AccountHistory record found')) {
-          console.warn(`AccountHistory record not found after retries for address: ${id} (block ${blockHeight})`);
-          // Add to failed list for re-queuing
-          failedUpdates.push(data);
-        } else if (error instanceof Error && 
-                   (error.message.includes('deadlock detected') ||
-                    error.message.includes('could not serialize access') ||
-                    error.message.includes('concurrent update') ||
-                    (error as any).code === '40P01' || // PostgreSQL deadlock error code
-                    (error as any).code === '40001')) { // PostgreSQL serialization failure
-          console.warn(`Deadlock/serialization error for address: ${id} (block ${blockHeight}), will re-queue`);
-          // Add to failed list for re-queuing
-          failedUpdates.push(data);
-        } else {
-          console.error(`Error updating AccountHistory for address ${id} after retries:`, error);
+          return { success: false, data };
         }
-        return { success: false, data };
+      });
+
+      // Process chunk and wait for completion before moving to next chunk
+      const results = await Promise.all(updatePromises);
+      
+      // Group successful updates by account address to get the latest data for each account
+      for (const result of results) {
+        if (result.success) {
+          const existing = latestByAccount.get(result.data.id);
+          // Keep the update with the highest block number
+          if (!existing || result.data.blockHeight > existing.blockHeight) {
+            latestByAccount.set(result.data.id, result.data);
+          }
+        }
       }
-    });
-
-    const results = await Promise.all(updatePromises);
-    let successCount = 0;
-    
-    // Group successful updates by account address to get the latest data for each account
-    for (const result of results) {
-      if (result.success) {
-        successCount++;
-        const existing = latestByAccount.get(result.data.id);
-        // Keep the update with the highest block number
-        if (!existing || result.data.blockHeight > existing.blockHeight) {
-          latestByAccount.set(result.data.id, result.data);
-        }
+      
+      // Small delay between chunks to give database time to breathe
+      if (i + CHUNK_SIZE < updates.length) {
+        await new Promise(resolve => setTimeout(resolve, config.dbUpdateChunkDelayMs));
       }
     }
 
     await client.query('COMMIT');
     
-    console.log(`Account histories batch update completed: ${successCount}/${updates.length} records updated, ${failedUpdates.length} failed`);
+    console.log(`Account histories batch update completed: ${latestByAccount.size}/${updates.length} records updated, ${failedUpdates.length} failed`);
     return { successful: latestByAccount, failed: failedUpdates };
   } catch (error) {
     await client.query('ROLLBACK');
@@ -442,9 +459,13 @@ const batchUpdateAccountHistoriesAndAccounts = async (updates: AccountHistoryUpd
          error.message.includes('deadlock detected') ||
          error.message.includes('could not serialize access') ||
          error.message.includes('concurrent update') ||
+         error.message.includes('Query read timeout') ||
+         error.message.includes('query_timeout') ||
+         error.message.includes('statement timeout') ||
          (error as any).code === '40P01' || // PostgreSQL deadlock error code
-         (error as any).code === '40001')) {
-      console.error('Critical database error (connection/deadlock), marking all updates as failed');
+         (error as any).code === '40001' || // PostgreSQL serialization failure
+         (error as any).code === '57014')) { // PostgreSQL query canceled error code
+      console.error('Critical database error (connection/deadlock/timeout), marking all updates as failed');
       return {
         historiesUpdated: 0,
         accountsUpdated: 0,

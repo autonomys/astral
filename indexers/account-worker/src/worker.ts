@@ -144,13 +144,17 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
            error.message.includes('deadlock detected') ||
            error.message.includes('could not serialize access') ||
            error.message.includes('concurrent update') ||
+           error.message.includes('Query read timeout') ||
+           error.message.includes('query_timeout') ||
+           error.message.includes('statement timeout') ||
            (error as any).code === '40P01' || // PostgreSQL deadlock error code
-           (error as any).code === '40001')) { // PostgreSQL serialization failure
+           (error as any).code === '40001' || // PostgreSQL serialization failure
+           (error as any).code === '57014')) { // PostgreSQL query canceled error code
         console.error('Worker: Critical database error detected, re-queuing all tasks to prevent data loss');
         
         // Re-queue all valid tasks that were attempted
         const requeuedCount = await pushTasksToQueue(validTasks);
-        console.log(`Worker: Re-queued ALL ${requeuedCount} tasks due to database connection/deadlock error`);
+        console.log(`Worker: Re-queued ALL ${requeuedCount} tasks due to database connection/deadlock/timeout error`);
         
         // Return 0 as no tasks were successfully processed
         return 0;
