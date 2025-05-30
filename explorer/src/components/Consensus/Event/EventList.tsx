@@ -1,14 +1,18 @@
 'use client'
 
+import { CopyButton } from '@/components/common/CopyButton'
 import { numberWithCommas } from '@/utils/number'
-import { useSubscription } from '@apollo/client'
-import { capitalizeFirstLetter } from '@autonomys/auto-utils'
+import { useQuery, useSubscription } from '@apollo/client'
+import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
+  EventsByBlockHashDocument,
+  EventsByBlockHashQuery,
+  EventsByBlockHashQueryVariables,
   EventsDocument,
   EventsSubscription,
   EventsSubscriptionVariables,
@@ -17,16 +21,18 @@ import {
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
-import { FC, useEffect, useMemo, useRef } from 'react'
+import { FC, useMemo } from 'react'
 import { useTableSettings } from 'states/tables'
 import { Cell, EventsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 
-type Row = EventsSubscription['consensus_events'][0]
+type Row =
+  | EventsSubscription['consensus_events'][0]
+  | EventsByBlockHashQuery['consensus_blocks'][0]['events'][0]
 const TABLE = 'events'
-const MAX_RECORDS = 500000
+let MAX_RECORDS = 500000
 
 export const EventList: FC = () => {
   const { network, section } = useIndexers()
@@ -36,68 +42,70 @@ export const EventList: FC = () => {
     sorting,
     selectedColumns,
     filters,
-    whereForSearch,
+    stringForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<EventsFilters>(TABLE)
 
-  const prevWhereRef = useRef<string | null>(null)
-
-  const where = useMemo(
-    () => ({
-      ...whereForSearch,
-      // Block Height
-      ...((filters.blockHeightMin || filters.blockHeightMax) && {
-        // eslint-disable-next-line camelcase
-        block_height: {
-          ...(filters.blockHeightMin && { _gte: filters.blockHeightMin }),
-          ...(filters.blockHeightMax && { _lte: filters.blockHeightMax }),
-        },
-      }),
-      // Module
-      ...(filters.section && { section: { _eq: `${filters.section}` } }),
-      ...(filters.module && { module: { _eq: `${filters.module}` } }),
-    }),
-    [filters, whereForSearch],
-  )
-
-  // Effect to reset pagination when where clause changes
-  useEffect(() => {
-    const currentWhere = JSON.stringify(where)
-    const prevWhere = prevWhereRef.current
-
-    if (prevWhere !== null && prevWhere !== currentWhere) {
-      // Reset pagination to first page when where clause changes
-      onPaginationChange({ pageIndex: 0, pageSize: pagination.pageSize })
-    }
-
-    prevWhereRef.current = currentWhere
-  }, [where, onPaginationChange, pagination.pageSize])
-
   const variables = useMemo(
     () => ({
       limit: pagination.pageSize,
+      where: stringForSearch,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
-      where,
       orderBy: {
         // eslint-disable-next-line camelcase
         block_height: Order_By.Desc,
       },
     }),
-    [pagination.pageSize, pagination.pageIndex, where],
+    [pagination.pageSize, pagination.pageIndex, stringForSearch],
   )
 
   const { loading, data } = useSubscription<EventsSubscription, EventsSubscriptionVariables>(
     EventsDocument,
     {
       variables,
+      skip: Object.keys(stringForSearch).length > 0,
     },
   )
 
-  const events = useMemo(() => (data ? data.consensus_events : []), [data])
+  const { data: dataByBlockHash, loading: loadingByBlockHash } = useQuery<
+    EventsByBlockHashQuery,
+    EventsByBlockHashQueryVariables
+  >(EventsByBlockHashDocument, {
+    variables: {
+      where: stringForSearch,
+      limit: 10,
+      offset: 0,
+      orderBy: {
+        // eslint-disable-next-line camelcase
+        sort_id: Order_By.Desc,
+      },
+    },
+    skip: !stringForSearch,
+  })
+
+  const events = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
+      return (
+        dataByBlockHash.consensus_blocks[0]?.events?.slice(
+          pagination.pageIndex * pagination.pageSize,
+          (pagination.pageIndex + 1) * pagination.pageSize,
+        ) ?? []
+      )
+    }
+
+    if (data) return data.consensus_events ?? []
+    return []
+  }, [data, dataByBlockHash, stringForSearch, pagination.pageIndex, pagination.pageSize])
+
   const pageCount = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
+      MAX_RECORDS = dataByBlockHash?.consensus_blocks[0]?.events?.length ?? 0
+    } else {
+      MAX_RECORDS = 500000
+    }
     return Math.ceil(MAX_RECORDS / pagination.pageSize)
-  }, [pagination.pageSize])
+  }, [dataByBlockHash, pagination.pageSize, stringForSearch])
 
   const columns = useMemo(
     () =>
@@ -139,6 +147,11 @@ export const EventList: FC = () => {
           ),
           module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
           indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock,
+          hash: ({ row }: Cell<Row>) => (
+            <CopyButton value={row.original.blockHash} message='Block hash copied'>
+              {shortString(row.original.blockHash)}
+            </CopyButton>
+          ),
         },
         {},
         {
@@ -156,11 +169,18 @@ export const EventList: FC = () => {
     [network, section, selectedColumns],
   )
 
+  const isDataLoaded = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0) {
+      return !loadingByBlockHash
+    }
+    return !loading && events
+  }, [loading, loadingByBlockHash, events, stringForSearch])
+
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
-    if (!data) return <NotFound />
+    if (loading || loadingByBlockHash) return <Spinner isSmall />
+    if (!data && !dataByBlockHash) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataByBlockHash, loading, loadingByBlockHash])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -171,7 +191,7 @@ export const EventList: FC = () => {
           overrideFiltersOptions={[]}
           totalCount={`(${numberWithCommas(MAX_RECORDS)}+)`}
         />
-        {!loading && events ? (
+        {isDataLoaded ? (
           <SortedTable
             data={events}
             columns={columns}

@@ -300,6 +300,19 @@ export const useTableSettings = <TFilter>(table: TableName) => {
     [availableColumns, filters],
   )
 
+  const stringForSearch = useMemo(
+    () =>
+      availableColumns
+        .filter((column) => column.searchable)
+        .reduce((conditions, column) => {
+          const searchValue = filters[`search-${column.name}` as keyof TFilter]
+          return searchValue
+            ? { ...conditions, [snakeCase(column.name)]: { _eq: searchValue } }
+            : conditions
+        }, {}),
+    [availableColumns, filters],
+  )
+
   const showReset = useMemo(() => _showReset(table), [_showReset, table])
 
   const onSortingChange = useCallback(
@@ -352,6 +365,7 @@ export const useTableSettings = <TFilter>(table: TableName) => {
     filters,
     orderBy,
     whereForSearch,
+    stringForSearch,
     showTableSettings,
     showReset,
     onPaginationChange,
