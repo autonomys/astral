@@ -104,7 +104,6 @@ const pushTasksToQueue = async (tasks: AccountProcessingTask[]): Promise<number>
     // Use pipeline for better performance with batches
     const pipeline = redisClient.pipeline();
     
-    // Push tasks in batches of 50 to avoid issues
     const BATCH_SIZE = 50;
     for (let i = 0; i < serializedTasks.length; i += BATCH_SIZE) {
       const batch = serializedTasks.slice(i, i + BATCH_SIZE);

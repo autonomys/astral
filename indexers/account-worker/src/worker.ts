@@ -3,7 +3,7 @@ import { AccountHistoryUpdateData, AccountProcessingTask } from './interfaces';
 import { getCurrentChainHeight, getMultipleAccountsDataAtBlock } from './services/autonomysService';
 import { batchUpdateAccountHistoriesAndAccounts } from './services/dbService';
 import { pushTasksToQueue } from './services/redisService';
-
+import { isRetriableDatabaseError } from './utils';
 let currentChainHeight: number = 0;
 
 /**
@@ -137,24 +137,12 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
       console.error('Worker: Batch database update failed:', error);
       
       // CRITICAL: Re-queue ALL tasks on connection/timeout errors
-      if (error instanceof Error && 
-          (error.message.includes('timeout') || 
-           error.message.includes('connection') ||
-           error.message.includes('Database pool not initialized') ||
-           error.message.includes('deadlock detected') ||
-           error.message.includes('could not serialize access') ||
-           error.message.includes('concurrent update') ||
-           error.message.includes('Query read timeout') ||
-           error.message.includes('query_timeout') ||
-           error.message.includes('statement timeout') ||
-           (error as any).code === '40P01' || // PostgreSQL deadlock error code
-           (error as any).code === '40001' || // PostgreSQL serialization failure
-           (error as any).code === '57014')) { // PostgreSQL query canceled error code
+      if (isRetriableDatabaseError(error)) {
         console.error('Worker: Critical database error detected, re-queuing all tasks to prevent data loss');
         
         // Re-queue all valid tasks that were attempted
         const requeuedCount = await pushTasksToQueue(validTasks);
-        console.log(`Worker: Re-queued ALL ${requeuedCount} tasks due to database connection/deadlock/timeout error`);
+        console.log(`Worker: Re-queued ALL ${requeuedCount} tasks due to database error`);
         
         // Return 0 as no tasks were successfully processed
         return 0;
