@@ -4,6 +4,40 @@ import { AccountHistoryUpdateData } from '../interfaces';
 
 let pool: Pool;
 
+/**
+ * Retry helper specifically for connection attempts
+ */
+const retryConnection = async <T>(
+  operation: () => Promise<T>,
+  operationName: string,
+  maxRetries: number = 3,
+  initialDelay: number = 100
+): Promise<T> => {
+  let lastError: Error;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error as Error;
+      
+      // Don't retry if it's the last attempt
+      if (attempt === maxRetries) {
+        console.error(`${operationName} failed after ${maxRetries + 1} attempts:`, error);
+        throw error;
+      }
+      
+      // Calculate delay with exponential backoff (capped at 5 seconds for fast systems)
+      const delay = Math.min(initialDelay * Math.pow(2, attempt), 5000);
+      console.log(`${operationName} attempt ${attempt + 1} failed, retrying in ${delay}ms...`);
+      
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError!;
+};
+
 const connectDb = async (): Promise<void> => {
   if (pool) {
     console.log('Database pool already created.');
@@ -16,17 +50,30 @@ const connectDb = async (): Promise<void> => {
       user: config.dbUser,
       password: config.dbPassword,
       database: config.dbName,
-      max: 10,
+      max: 20,
+      min: 5,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 5000,
+      connectionTimeoutMillis: 3000,
+      query_timeout: 5000,
+      statement_timeout: 5000,
+      keepAlive: true,
+      keepAliveInitialDelayMillis: 10000,
     });
 
-    const client = await pool.connect();
-    console.log('Connected to PostgreSQL successfully.');
-    client.release();
+    // Test the connection with retry
+    await retryConnection(async () => {
+      const client = await pool.connect();
+      console.log('Connected to PostgreSQL successfully.');
+      client.release();
+    }, 'Database connection', 3);
 
     pool.on('error', (err, client) => {
       console.error('Unexpected error on idle PostgreSQL client', err, client);
+      // Don't crash the process on pool errors
+    });
+
+    pool.on('remove', () => {
+      console.log('Client removed from pool');
     });
 
   } catch (error) {
@@ -42,6 +89,60 @@ const disconnectDb = async (): Promise<void> => {
   }
 }
 
+/**
+ * Health check for database pool
+ * Returns true if healthy, false otherwise
+ */
+const checkDbHealth = async (): Promise<boolean> => {
+  if (!pool) {
+    console.error('Database pool not initialized');
+    return false;
+  }
+  
+  try {
+    // Try to get a client and run a simple query
+    const client = await Promise.race([
+      pool.connect(),
+      new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error('Health check timeout')), 1000)
+      )
+    ]);
+    
+    try {
+      await client.query('SELECT 1');
+      return true;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('Database health check failed:', error);
+    return false;
+  }
+};
+
+/**
+ * Ensures database connection is healthy, attempts to reconnect if not
+ */
+const ensureDbConnection = async (): Promise<void> => {
+  const isHealthy = await checkDbHealth();
+  
+  if (!isHealthy) {
+    console.log('Database connection unhealthy, attempting to reconnect...');
+    
+    // Try to end the current pool gracefully
+    if (pool) {
+      try {
+        await pool.end();
+      } catch (error) {
+        console.error('Error ending unhealthy pool:', error);
+      }
+      pool = null as any;
+    }
+    
+    // Attempt to reconnect
+    await connectDb();
+  }
+};
 
 const accountLocks = new Map<string, Promise<void>>();
 
@@ -70,8 +171,8 @@ const acquireAccountLock = async (accountId: string): Promise<() => void> => {
  */
 const retryOperation = async <T>(
   operation: () => Promise<T>,
-  maxRetries: number = 3,
-  initialDelay: number = 100
+  maxRetries: number = 2,
+  initialDelay: number = 50
 ): Promise<T> => {
   let lastError: Error;
   
@@ -86,8 +187,8 @@ const retryOperation = async <T>(
         throw error;
       }
       
-      // Calculate delay with exponential backoff
-      const delay = initialDelay * Math.pow(2, attempt);
+      // Calculate delay with exponential backoff (capped at 1 second for fast systems)
+      const delay = Math.min(initialDelay * Math.pow(2, attempt), 1000);
       console.log(`Attempt ${attempt + 1} failed, retrying in ${delay}ms...`);
       
       await new Promise(resolve => setTimeout(resolve, delay));
@@ -95,6 +196,22 @@ const retryOperation = async <T>(
   }
   
   throw lastError!;
+};
+
+/**
+ * Get a database client with retry logic for connection timeouts
+ */
+const getClientWithRetry = async (): Promise<any> => {
+  if (!pool) {
+    throw new Error('Database pool not initialized. Call connectDb() first.');
+  }
+  
+  return await retryConnection(
+    async () => pool.connect(),
+    'Get database client',
+    2,
+    100
+  );
 };
 
 /**
@@ -111,7 +228,7 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
 
   if (updates.length === 0) return { successful: new Map(), failed: [] };
 
-  const client = await pool.connect();
+  const client = await getClientWithRetry(); // Use retry logic for connection
   const latestByAccount = new Map<string, AccountHistoryUpdateData>();
   const failedUpdates: AccountHistoryUpdateData[] = [];
 
@@ -166,6 +283,15 @@ const batchUpdateAccountHistories = async (updates: AccountHistoryUpdateData[]):
           console.warn(`AccountHistory record not found after retries for address: ${id} (block ${blockHeight})`);
           // Add to failed list for re-queuing
           failedUpdates.push(data);
+        } else if (error instanceof Error && 
+                   (error.message.includes('deadlock detected') ||
+                    error.message.includes('could not serialize access') ||
+                    error.message.includes('concurrent update') ||
+                    (error as any).code === '40P01' || // PostgreSQL deadlock error code
+                    (error as any).code === '40001')) { // PostgreSQL serialization failure
+          console.warn(`Deadlock/serialization error for address: ${id} (block ${blockHeight}), will re-queue`);
+          // Add to failed list for re-queuing
+          failedUpdates.push(data);
         } else {
           console.error(`Error updating AccountHistory for address ${id} after retries:`, error);
         }
@@ -212,7 +338,7 @@ const batchUpdateAccounts = async (accountUpdates: Map<string, AccountHistoryUpd
 
   if (accountUpdates.size === 0) return 0;
 
-  const client = await pool.connect();
+  const client = await getClientWithRetry(); // Use retry logic for connection
 
   try {
     await client.query('BEGIN');
@@ -294,18 +420,46 @@ const batchUpdateAccountHistoriesAndAccounts = async (updates: AccountHistoryUpd
   accountsUpdated: number;
   failedUpdates: AccountHistoryUpdateData[];
 }> => {
-  const { successful, failed } = await batchUpdateAccountHistories(updates);
-  const accountsUpdated = await batchUpdateAccounts(successful);
-  
-  return {
-    historiesUpdated: successful.size,
-    accountsUpdated,
-    failedUpdates: failed
-  };
+  try {
+    const { successful, failed } = await batchUpdateAccountHistories(updates);
+    const accountsUpdated = await batchUpdateAccounts(successful);
+    
+    return {
+      historiesUpdated: successful.size,
+      accountsUpdated,
+      failedUpdates: failed
+    };
+  } catch (error) {
+    // If we get a connection timeout or other critical error, 
+    // mark all updates as failed so they can be re-queued
+    console.error('Critical error in batchUpdateAccountHistoriesAndAccounts:', error);
+    
+    // Return all updates as failed if we couldn't even connect or hit deadlocks
+    if (error instanceof Error && 
+        (error.message.includes('timeout') || 
+         error.message.includes('connection') ||
+         error.message.includes('pool') ||
+         error.message.includes('deadlock detected') ||
+         error.message.includes('could not serialize access') ||
+         error.message.includes('concurrent update') ||
+         (error as any).code === '40P01' || // PostgreSQL deadlock error code
+         (error as any).code === '40001')) {
+      console.error('Critical database error (connection/deadlock), marking all updates as failed');
+      return {
+        historiesUpdated: 0,
+        accountsUpdated: 0,
+        failedUpdates: updates // Return ALL updates as failed
+      };
+    }
+    
+    // Re-throw other errors
+    throw error;
+  }
 };
 
 export {
-  batchUpdateAccountHistoriesAndAccounts,
-  connectDb,
-  disconnectDb
+  batchUpdateAccountHistoriesAndAccounts, // Export for potential use in other services
+  checkDbHealth, connectDb,
+  disconnectDb, ensureDbConnection, getClientWithRetry
 };
+
