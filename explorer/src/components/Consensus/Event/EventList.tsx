@@ -32,7 +32,7 @@ type Row =
   | EventsSubscription['consensus_events'][0]
   | EventsByBlockHashQuery['consensus_blocks'][0]['events'][0]
 const TABLE = 'events'
-let MAX_RECORDS = 500000
+const MAX_RECORDS = 500000
 
 export const EventList: FC = () => {
   const { network, section } = useIndexers()
@@ -84,6 +84,13 @@ export const EventList: FC = () => {
     skip: !stringForSearch,
   })
 
+  const currentTotalRecords = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
+      return dataByBlockHash.consensus_blocks[0]?.events?.length ?? 0
+    }
+    return MAX_RECORDS
+  }, [dataByBlockHash, stringForSearch])
+
   const events = useMemo(() => {
     if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
       return (
@@ -99,13 +106,8 @@ export const EventList: FC = () => {
   }, [data, dataByBlockHash, stringForSearch, pagination.pageIndex, pagination.pageSize])
 
   const pageCount = useMemo(() => {
-    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
-      MAX_RECORDS = dataByBlockHash?.consensus_blocks[0]?.events?.length ?? 0
-    } else {
-      MAX_RECORDS = 500000
-    }
-    return Math.ceil(MAX_RECORDS / pagination.pageSize)
-  }, [dataByBlockHash, pagination.pageSize, stringForSearch])
+    return Math.ceil(currentTotalRecords / pagination.pageSize)
+  }, [currentTotalRecords, pagination.pageSize])
 
   const columns = useMemo(
     () =>
@@ -189,7 +191,7 @@ export const EventList: FC = () => {
           table={TABLE}
           filters={filters}
           overrideFiltersOptions={[]}
-          totalCount={`(${numberWithCommas(MAX_RECORDS)}+)`}
+          totalCount={`(${numberWithCommas(currentTotalRecords)}${currentTotalRecords === MAX_RECORDS && Object.keys(stringForSearch).length === 0 ? '+' : ''})`}
         />
         {isDataLoaded ? (
           <SortedTable
