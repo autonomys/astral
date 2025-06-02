@@ -13,16 +13,11 @@ query EventsAggregate($where: consensus_events_bool_exp) @cached(ttl: 60000) {
   }
 }
 
-query EventsByBlockHash(
-  $limit: Int!
-  $offset: Int
-  $orderBy: [consensus_blocks_order_by!]!
-  $where: consensus_blocks_bool_exp
-) {
-  consensus_blocks(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+query EventsByBlockHash($limit: Int!, $offset: Int, $where: consensus_blocks_bool_exp) {
+  consensus_blocks(limit: $limit, offset: $offset, where: $where) {
     id
     authorId: author_id
-    events {
+    events(order_by: { index_in_block: asc }) {
       id
       sortId: sort_id
       blockHeight: block_height

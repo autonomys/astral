@@ -27416,7 +27416,6 @@ export type EventsAggregateQuery = { __typename?: 'query_root', consensus_events
 export type EventsByBlockHashQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<Consensus_Blocks_Order_By> | Consensus_Blocks_Order_By;
   where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
 }>;
 
@@ -28797,16 +28796,11 @@ export type EventsAggregateLazyQueryHookResult = ReturnType<typeof useEventsAggr
 export type EventsAggregateSuspenseQueryHookResult = ReturnType<typeof useEventsAggregateSuspenseQuery>;
 export type EventsAggregateQueryResult = Apollo.QueryResult<EventsAggregateQuery, EventsAggregateQueryVariables>;
 export const EventsByBlockHashDocument = gql`
-    query EventsByBlockHash($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!, $where: consensus_blocks_bool_exp) {
-  consensus_blocks(
-    order_by: $orderBy
-    limit: $limit
-    offset: $offset
-    where: $where
-  ) {
+    query EventsByBlockHash($limit: Int!, $offset: Int, $where: consensus_blocks_bool_exp) {
+  consensus_blocks(limit: $limit, offset: $offset, where: $where) {
     id
     authorId: author_id
-    events {
+    events(order_by: {index_in_block: asc}) {
       id
       sortId: sort_id
       blockHeight: block_height
@@ -28834,7 +28828,6 @@ export const EventsByBlockHashDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
- *      orderBy: // value for 'orderBy'
  *      where: // value for 'where'
  *   },
  * });

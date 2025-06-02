@@ -52,10 +52,12 @@ export const EventList: FC = () => {
       limit: pagination.pageSize,
       where: stringForSearch,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
-      orderBy: {
+      orderBy: [
         // eslint-disable-next-line camelcase
-        block_height: Order_By.Desc,
-      },
+        { block_height: Order_By.Desc },
+        // eslint-disable-next-line camelcase
+        { index_in_block: Order_By.Asc },
+      ],
     }),
     [pagination.pageSize, pagination.pageIndex, stringForSearch],
   )
@@ -74,14 +76,10 @@ export const EventList: FC = () => {
   >(EventsByBlockHashDocument, {
     variables: {
       where: stringForSearch,
-      limit: 10,
+      limit: 1,
       offset: 0,
-      orderBy: {
-        // eslint-disable-next-line camelcase
-        sort_id: Order_By.Desc,
-      },
     },
-    skip: !stringForSearch,
+    skip: Object.keys(stringForSearch).length === 0,
   })
 
   const currentTotalRecords = useMemo(() => {
