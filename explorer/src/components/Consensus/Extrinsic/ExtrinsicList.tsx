@@ -53,10 +53,12 @@ export const ExtrinsicList: FC = () => {
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       where: stringForSearch,
-      orderBy: {
+      orderBy: [
         // eslint-disable-next-line camelcase
-        block_height: Order_By.Desc,
-      },
+        { block_height: Order_By.Desc },
+        // eslint-disable-next-line camelcase
+        { index_in_block: Order_By.Asc },
+      ],
     }),
     [pagination.pageSize, pagination.pageIndex, stringForSearch],
   )
@@ -75,14 +77,10 @@ export const ExtrinsicList: FC = () => {
   >(ExtrinsicsByBlockHashDocument, {
     variables: {
       where: stringForSearch,
-      limit: 10,
+      limit: 1,
       offset: 0,
-      orderBy: {
-        // eslint-disable-next-line camelcase
-        sort_id: Order_By.Desc,
-      },
     },
-    skip: !stringForSearch,
+    skip: Object.keys(stringForSearch).length === 0,
   })
 
   const currentTotalRecords = useMemo(() => {

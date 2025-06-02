@@ -27455,12 +27455,11 @@ export type ExtrinsicsModulesQuery = { __typename?: 'query_root', consensus_extr
 export type ExtrinsicsByBlockHashQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<Consensus_Blocks_Order_By> | Consensus_Blocks_Order_By;
   where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
 }>;
 
 
-export type ExtrinsicsByBlockHashQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, authorId: string, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, success: boolean, timestamp: any, module: string, sortId: string, blockHeight: any, blockHash: string }> }> };
+export type ExtrinsicsByBlockHashQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, authorId: string, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, success: boolean, timestamp: any, module: string, blockHeight: any, indexInBlock: number, blockHash: string }> }> };
 
 export type ExtrinsicsByIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
@@ -29030,20 +29029,15 @@ export type ExtrinsicsModulesLazyQueryHookResult = ReturnType<typeof useExtrinsi
 export type ExtrinsicsModulesSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsModulesSuspenseQuery>;
 export type ExtrinsicsModulesQueryResult = Apollo.QueryResult<ExtrinsicsModulesQuery, ExtrinsicsModulesQueryVariables>;
 export const ExtrinsicsByBlockHashDocument = gql`
-    query ExtrinsicsByBlockHash($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!, $where: consensus_blocks_bool_exp) {
-  consensus_blocks(
-    order_by: $orderBy
-    limit: $limit
-    offset: $offset
-    where: $where
-  ) {
+    query ExtrinsicsByBlockHash($limit: Int!, $offset: Int, $where: consensus_blocks_bool_exp) {
+  consensus_blocks(limit: $limit, offset: $offset, where: $where) {
     id
     authorId: author_id
-    extrinsics {
+    extrinsics(order_by: {index_in_block: asc}) {
       id
-      sortId: sort_id
       hash
       blockHeight: block_height
+      indexInBlock: index_in_block
       section
       success
       timestamp
@@ -29068,7 +29062,6 @@ export const ExtrinsicsByBlockHashDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
- *      orderBy: // value for 'orderBy'
  *      where: // value for 'where'
  *   },
  * });
@@ -29144,7 +29137,6 @@ export type ExtrinsicsByIdQueryResult = Apollo.QueryResult<ExtrinsicsByIdQuery, 
 export const EventsByExtrinsicIdDocument = gql`
     query EventsByExtrinsicId($extrinsicId: String!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
   consensus_events(
-    order_by: $orderBy
     limit: $limit
     offset: $offset
     where: {extrinsic_id: {_eq: $extrinsicId}}
