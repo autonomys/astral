@@ -3427,6 +3427,26 @@ export type Consensus_Rewards_Variance_Order_By = {
   block_height?: InputMaybe<Order_By>;
 };
 
+export type Consensus_Search_Block_Hash_Args = {
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Consensus_Search_Events_By_Block_Hash_Args = {
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Consensus_Search_Extrinsics_By_Block_Hash_Args = {
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Consensus_Search_Extrinsics_By_Hash_Args = {
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Consensus_Search_Hash_Args = {
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** columns and relationships of "consensus.sections" */
 export type Consensus_Sections = {
   __typename?: 'consensus_sections';
@@ -13904,6 +13924,26 @@ export type Query_Root = {
   consensus_rewards_aggregate: Consensus_Rewards_Aggregate;
   /** fetch data from the table: "consensus.rewards" using primary key columns */
   consensus_rewards_by_pk?: Maybe<Consensus_Rewards>;
+  /** execute function "consensus.search_block_hash" which returns "consensus.extrinsics" */
+  consensus_search_block_hash: Array<Consensus_Extrinsics>;
+  /** execute function "consensus.search_block_hash" and query aggregates on result of table type "consensus.extrinsics" */
+  consensus_search_block_hash_aggregate: Consensus_Extrinsics_Aggregate;
+  /** execute function "consensus.search_events_by_block_hash" which returns "consensus.events" */
+  consensus_search_events_by_block_hash: Array<Consensus_Events>;
+  /** execute function "consensus.search_events_by_block_hash" and query aggregates on result of table type "consensus.events" */
+  consensus_search_events_by_block_hash_aggregate: Consensus_Events_Aggregate;
+  /** execute function "consensus.search_extrinsics_by_block_hash" which returns "consensus.extrinsics" */
+  consensus_search_extrinsics_by_block_hash: Array<Consensus_Extrinsics>;
+  /** execute function "consensus.search_extrinsics_by_block_hash" and query aggregates on result of table type "consensus.extrinsics" */
+  consensus_search_extrinsics_by_block_hash_aggregate: Consensus_Extrinsics_Aggregate;
+  /** execute function "consensus.search_extrinsics_by_hash" which returns "consensus.extrinsics" */
+  consensus_search_extrinsics_by_hash: Array<Consensus_Extrinsics>;
+  /** execute function "consensus.search_extrinsics_by_hash" and query aggregates on result of table type "consensus.extrinsics" */
+  consensus_search_extrinsics_by_hash_aggregate: Consensus_Extrinsics_Aggregate;
+  /** execute function "consensus.search_hash" which returns "consensus.extrinsics" */
+  consensus_search_hash: Array<Consensus_Extrinsics>;
+  /** execute function "consensus.search_hash" and query aggregates on result of table type "consensus.extrinsics" */
+  consensus_search_hash_aggregate: Consensus_Extrinsics_Aggregate;
   /** fetch data from the table: "consensus.sections" */
   consensus_sections: Array<Consensus_Sections>;
   /** fetch aggregated fields from the table: "consensus.sections" */
@@ -14610,6 +14650,106 @@ export type Query_RootConsensus_Rewards_AggregateArgs = {
 
 export type Query_RootConsensus_Rewards_By_PkArgs = {
   uuid: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootConsensus_Search_Block_HashArgs = {
+  args: Consensus_Search_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Search_Block_Hash_AggregateArgs = {
+  args: Consensus_Search_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Search_Events_By_Block_HashArgs = {
+  args: Consensus_Search_Events_By_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Search_Events_By_Block_Hash_AggregateArgs = {
+  args: Consensus_Search_Events_By_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Search_Extrinsics_By_Block_HashArgs = {
+  args: Consensus_Search_Extrinsics_By_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Search_Extrinsics_By_Block_Hash_AggregateArgs = {
+  args: Consensus_Search_Extrinsics_By_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Search_Extrinsics_By_HashArgs = {
+  args: Consensus_Search_Extrinsics_By_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Search_Extrinsics_By_Hash_AggregateArgs = {
+  args: Consensus_Search_Extrinsics_By_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Search_HashArgs = {
+  args: Consensus_Search_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Search_Hash_AggregateArgs = {
+  args: Consensus_Search_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
 };
 
 
@@ -23816,6 +23956,26 @@ export type Subscription_Root = {
   consensus_rewards_by_pk?: Maybe<Consensus_Rewards>;
   /** fetch data from the table in a streaming manner: "consensus.rewards" */
   consensus_rewards_stream: Array<Consensus_Rewards>;
+  /** execute function "consensus.search_block_hash" which returns "consensus.extrinsics" */
+  consensus_search_block_hash: Array<Consensus_Extrinsics>;
+  /** execute function "consensus.search_block_hash" and query aggregates on result of table type "consensus.extrinsics" */
+  consensus_search_block_hash_aggregate: Consensus_Extrinsics_Aggregate;
+  /** execute function "consensus.search_events_by_block_hash" which returns "consensus.events" */
+  consensus_search_events_by_block_hash: Array<Consensus_Events>;
+  /** execute function "consensus.search_events_by_block_hash" and query aggregates on result of table type "consensus.events" */
+  consensus_search_events_by_block_hash_aggregate: Consensus_Events_Aggregate;
+  /** execute function "consensus.search_extrinsics_by_block_hash" which returns "consensus.extrinsics" */
+  consensus_search_extrinsics_by_block_hash: Array<Consensus_Extrinsics>;
+  /** execute function "consensus.search_extrinsics_by_block_hash" and query aggregates on result of table type "consensus.extrinsics" */
+  consensus_search_extrinsics_by_block_hash_aggregate: Consensus_Extrinsics_Aggregate;
+  /** execute function "consensus.search_extrinsics_by_hash" which returns "consensus.extrinsics" */
+  consensus_search_extrinsics_by_hash: Array<Consensus_Extrinsics>;
+  /** execute function "consensus.search_extrinsics_by_hash" and query aggregates on result of table type "consensus.extrinsics" */
+  consensus_search_extrinsics_by_hash_aggregate: Consensus_Extrinsics_Aggregate;
+  /** execute function "consensus.search_hash" which returns "consensus.extrinsics" */
+  consensus_search_hash: Array<Consensus_Extrinsics>;
+  /** execute function "consensus.search_hash" and query aggregates on result of table type "consensus.extrinsics" */
+  consensus_search_hash_aggregate: Consensus_Extrinsics_Aggregate;
   /** fetch data from the table: "consensus.sections" */
   consensus_sections: Array<Consensus_Sections>;
   /** fetch aggregated fields from the table: "consensus.sections" */
@@ -24777,6 +24937,106 @@ export type Subscription_RootConsensus_Rewards_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Consensus_Rewards_Stream_Cursor_Input>>;
   where?: InputMaybe<Consensus_Rewards_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_Block_HashArgs = {
+  args: Consensus_Search_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_Block_Hash_AggregateArgs = {
+  args: Consensus_Search_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_Events_By_Block_HashArgs = {
+  args: Consensus_Search_Events_By_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_Events_By_Block_Hash_AggregateArgs = {
+  args: Consensus_Search_Events_By_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_Extrinsics_By_Block_HashArgs = {
+  args: Consensus_Search_Extrinsics_By_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_Extrinsics_By_Block_Hash_AggregateArgs = {
+  args: Consensus_Search_Extrinsics_By_Block_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_Extrinsics_By_HashArgs = {
+  args: Consensus_Search_Extrinsics_By_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_Extrinsics_By_Hash_AggregateArgs = {
+  args: Consensus_Search_Extrinsics_By_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_HashArgs = {
+  args: Consensus_Search_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Search_Hash_AggregateArgs = {
+  args: Consensus_Search_Hash_Args;
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
 };
 
 
@@ -27101,7 +27361,7 @@ export type BlocksQueryVariables = Exact<{
 }>;
 
 
-export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, timestamp: any, sortId: string, parentHash: string, specId: string, stateRoot: string, extrinsicsRoot: string, spacePledged: any, blockchainSize: any, extrinsicsCount: number, eventsCount: number, authorId: string }> };
+export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, timestamp: any, sortId: any, parentHash: string, specId: string, stateRoot: string, extrinsicsRoot: string, spacePledged: any, blockchainSize: any, extrinsicsCount: number, eventsCount: number, authorId: string }> };
 
 export type BlockByIdQueryVariables = Exact<{
   blockId: Scalars['String']['input'];
@@ -28173,7 +28433,7 @@ export const BlocksDocument = gql`
     where: $where
   ) {
     id
-    sortId: sort_id
+    sortId: height
     height
     hash
     timestamp
@@ -28838,7 +29098,7 @@ export type ExtrinsicsSubscriptionHookResult = ReturnType<typeof useExtrinsicsSu
 export type ExtrinsicsSubscriptionResult = Apollo.SubscriptionResult<ExtrinsicsSubscription>;
 export const HomeDocument = gql`
     query Home($limit: Int!, $offset: Int!) {
-  consensus_blocks(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {
+  consensus_blocks(limit: $limit, offset: $offset, order_by: {height: desc}) {
     id
     height
     timestamp

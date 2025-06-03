@@ -277,9 +277,9 @@ ALTER TABLE ONLY consensus.transfers
     ADD CONSTRAINT transfers_pkey PRIMARY KEY (_id);
 
 CREATE INDEX "0xccedb032815757ed" ON consensus.blocks USING btree (id);
-CREATE INDEX "consensus_blocks_sort_id" ON consensus.blocks USING btree (sort_id DESC);
 CREATE INDEX "consensus_blocks_hash" ON consensus.blocks USING btree (hash);
 CREATE INDEX "consensus_blocks_id_hash" ON consensus.blocks (id, hash);
+CREATE INDEX "consensus_blocks_height" ON consensus.blocks USING btree (height DESC);
 CREATE INDEX "consensus_cumulative_blocks_id" ON consensus.cumulative_blocks USING btree (id);
 CREATE INDEX "0xd8db4c8313621519" ON consensus.extrinsics USING btree (id);
 CREATE INDEX "consensus_extrinsics_sort_id" ON consensus.extrinsics USING btree (sort_id DESC);
