@@ -1,4 +1,5 @@
 import HomeInfoCardSkeleton from '@/components/common/HomeInfoCardSkeleton'
+import { useHistorySize } from '@/hooks/useHistorySize'
 import useMediaQuery from '@/hooks/useMediaQuery'
 import { useSpacePledged } from '@/hooks/useSpacePledged'
 import { ChainParam } from '@/types/app'
@@ -25,6 +26,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   const { chain } = useParams<ChainParam>()
 
   const { spacePledgedVal, loading: spacePledgedLoading } = useSpacePledged(chain || '')
+  const { historySizeVal, loading: historySizeLoading } = useHistorySize(chain || '')
 
   const eventsCount = data
     ? Number(data.consensus_blocks[0].cumulative?.cumulative_events_count)
@@ -41,7 +43,6 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   const rewardsValue = data
     ? bigNumberToNumber(data.consensus_blocks[0].cumulative?.cumulative_reward_value)
     : 'error'
-  const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
   const replicationFactor = formatNumberWithUnit(safeDivide(spacePledgedVal, historySizeVal))
 
   const listOfCards = useMemo(
@@ -123,7 +124,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
       modules={[Pagination]}
       className={cn('flex w-full items-center gap-5', isDesktop ? '!p-0' : '!pb-10')}
     >
-      {!data || loading || spacePledgedLoading
+      {!data || loading || spacePledgedLoading || historySizeLoading
         ? Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={`loader-${index}`}>
               <HomeInfoCardSkeleton

@@ -1,4 +1,5 @@
 import HomeInfoCardSkeleton from '@/components/common/HomeInfoCardSkeleton'
+import { useHistorySize } from '@/hooks/useHistorySize'
 import { useSpacePledged } from '@/hooks/useSpacePledged'
 import { ChainParam } from '@/types/app'
 import { formatSpaceToDecimalAsObject } from '@autonomys/auto-consensus'
@@ -28,6 +29,7 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const isDesktop = useMediaQuery('(min-width: 1536px)')
   const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
   const { spacePledgedVal, loading: spacePledgedLoading } = useSpacePledged(chain || '')
+  const { historySizeVal, loading: historySizeLoading } = useHistorySize(chain || '')
 
   const getTelemetryData = useCallback(async () => {
     if (!process.env.NEXT_PUBLIC_TELEMETRY_URL) return
@@ -71,7 +73,6 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   }, [telemetryData, indexerSet.telemetryNetworkName])
 
   const spacePledgedFormatted = formatSpaceToDecimalAsObject(spacePledgedVal)
-  const historySizeVal = data ? Number(data.consensus_blocks[0].blockchain_size) : 0
   const historySize = formatSpaceToDecimalAsObject(historySizeVal)
   const blocksCount = data ? Number(data.consensus_blocks[0].height) : 'error'
   const accountsCount = data ? Number(data.consensus_accounts_aggregate?.aggregate?.count) : 'error'
@@ -160,7 +161,7 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
       modules={[Pagination]}
       className={cn('flex w-full items-center', isDesktop ? 'mb-12 !p-0' : 'mb-4 !pb-10')}
     >
-      {!data || loading || spacePledgedLoading
+      {!data || loading || spacePledgedLoading || historySizeLoading
         ? Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={`loader-${index}`}>
               <HomeInfoCardSkeleton key={index} />
