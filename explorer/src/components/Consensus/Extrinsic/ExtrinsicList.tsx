@@ -33,7 +33,7 @@ type Row =
   | ExtrinsicsSubscription['consensus_extrinsics'][0]
   | ExtrinsicsByBlockHashQuery['consensus_blocks'][0]['extrinsics'][0]
 const TABLE = 'extrinsics'
-let MAX_RECORDS = 500000
+const MAX_RECORDS = 500000
 
 export const ExtrinsicList: FC = () => {
   const { network, section } = useIndexers()
@@ -53,10 +53,12 @@ export const ExtrinsicList: FC = () => {
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       where: stringForSearch,
-      orderBy: {
+      orderBy: [
         // eslint-disable-next-line camelcase
-        block_height: Order_By.Desc,
-      },
+        { block_height: Order_By.Desc },
+        // eslint-disable-next-line camelcase
+        { index_in_block: Order_By.Asc },
+      ],
     }),
     [pagination.pageSize, pagination.pageIndex, stringForSearch],
   )
@@ -75,15 +77,18 @@ export const ExtrinsicList: FC = () => {
   >(ExtrinsicsByBlockHashDocument, {
     variables: {
       where: stringForSearch,
-      limit: 10,
+      limit: 1,
       offset: 0,
-      orderBy: {
-        // eslint-disable-next-line camelcase
-        sort_id: Order_By.Desc,
-      },
     },
-    skip: !stringForSearch,
+    skip: Object.keys(stringForSearch).length === 0,
   })
+
+  const currentTotalRecords = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
+      return dataByBlockHash.consensus_blocks[0]?.extrinsics?.length ?? 0
+    }
+    return MAX_RECORDS
+  }, [dataByBlockHash, stringForSearch])
 
   const extrinsics = useMemo(() => {
     if (Object.keys(stringForSearch).length > 0 && dataByBlockHash)
@@ -98,13 +103,8 @@ export const ExtrinsicList: FC = () => {
   }, [data, dataByBlockHash, pagination.pageIndex, pagination.pageSize, stringForSearch])
 
   const pageCount = useMemo(() => {
-    if (Object.keys(stringForSearch).length > 0) {
-      MAX_RECORDS = dataByBlockHash?.consensus_blocks[0]?.extrinsics?.length ?? 0
-    } else {
-      MAX_RECORDS = 500000
-    }
-    return Math.ceil(MAX_RECORDS / pagination.pageSize)
-  }, [dataByBlockHash, pagination.pageSize, stringForSearch])
+    return Math.ceil(currentTotalRecords / pagination.pageSize)
+  }, [currentTotalRecords, pagination.pageSize])
 
   const columns = useMemo(
     () =>
@@ -183,7 +183,7 @@ export const ExtrinsicList: FC = () => {
           table={TABLE}
           filters={filters}
           overrideFiltersOptions={[]}
-          totalCount={`(${numberWithCommas(MAX_RECORDS)}+)`}
+          totalCount={`(${numberWithCommas(currentTotalRecords)}${currentTotalRecords === MAX_RECORDS && Object.keys(stringForSearch).length === 0 ? '+' : ''})`}
         />
         {isDataLoaded ? (
           <SortedTable
