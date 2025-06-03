@@ -427,7 +427,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: BlocksColumns.SortId,
+        id: BlocksColumns.Height,
         desc: true,
       },
     ],
@@ -447,7 +447,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: ExtrinsicsColumns.SortId,
+        id: ExtrinsicsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: ExtrinsicsColumns.IndexInBlock,
         desc: true,
       },
     ],
@@ -468,7 +472,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: EventsColumns.SortId,
+        id: EventsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: EventsColumns.IndexInBlock,
         desc: true,
       },
     ],
@@ -488,7 +496,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: LogsColumns.SortId,
+        id: LogsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: LogsColumns.IndexInBlock,
         desc: true,
       },
     ],
