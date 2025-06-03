@@ -21,7 +21,8 @@ import { ExtrinsicPrimitive, LogValue } from "./types";
 import { groupEventsFromBatchAll } from "./utils";
 
 export const accountsToProcess: Map<number, { blockHash: string; addresses: Set<string> }> = new Map();
-const DEPTH_TO_PUBLISH_TO_REDIS = 4;
+// Temporary large margin for sake of fast indexing. After we are fully synced, we can reduce this to lower values.
+const DEPTH_TO_PUBLISH_TO_REDIS = 10;
 
 
 /*

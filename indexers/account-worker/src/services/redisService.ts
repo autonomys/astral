@@ -46,27 +46,6 @@ const disconnectRedis = async (): Promise<void> => {
   }
 }
 
-/**
- * Fetches a task from the account processing queue.
- * Uses RPOPLPUSH to move the task to a temporary processing list for reliability.
- * If processing fails, the task can be moved back to the main queue from the processing list.
- * For simplicity here, I just use LPOP for now (less reliable if worker crashes).
- */
-const fetchTaskFromQueue = async (): Promise<AccountProcessingTask | null> => {
-  if (!redisClient) {
-    throw new Error('Redis client not initialized. Call connectRedis() first.');
-  }
-  try {
-    const taskString = await redisClient.lpop(config.accountProcessingQueueName);
-    if (taskString) {
-      return JSON.parse(taskString) as AccountProcessingTask;
-    }
-    return null;
-  } catch (error) {
-    console.error('Error fetching task from Redis queue:', error);
-    return null;
-  }
-}
 
 /**
  * Fetches multiple tasks from the account processing queue for batch processing.
@@ -105,9 +84,55 @@ const fetchTasksFromQueue = async (batchSize: number = 10): Promise<AccountProce
   }
 }
 
+/**
+ * Pushes tasks back to the queue for later processing.
+ * Uses RPUSH to add tasks to the end of the queue.
+ */
+const pushTasksToQueue = async (tasks: AccountProcessingTask[]): Promise<number> => {
+  if (!redisClient) {
+    throw new Error('Redis client not initialized. Call connectRedis() first.');
+  }
+  
+  if (tasks.length === 0) {
+    return 0;
+  }
+  
+  try {
+    // Serialize tasks
+    const serializedTasks = tasks.map(task => JSON.stringify(task));
+    
+    // Use pipeline for better performance with batches
+    const pipeline = redisClient.pipeline();
+    
+    const BATCH_SIZE = 50;
+    for (let i = 0; i < serializedTasks.length; i += BATCH_SIZE) {
+      const batch = serializedTasks.slice(i, i + BATCH_SIZE);
+      pipeline.rpush(config.accountProcessingQueueName, ...batch);
+    }
+    
+    const results = await pipeline.exec();
+    
+    let pushedCount = 0;
+    if (results) {
+      for (const [error] of results) {
+        if (!error) {
+          pushedCount += BATCH_SIZE;
+        }
+      }
+    }
+    
+    const actualPushed = Math.min(pushedCount, tasks.length);
+    console.log(`Worker: Re-queued ${actualPushed} tasks to Redis for later processing`);
+    return actualPushed;
+  } catch (error) {
+    console.error('Error pushing tasks back to Redis queue:', error);
+    return 0;
+  }
+}
+
 export {
   connectRedis,
   disconnectRedis,
-  fetchTaskFromQueue,
-  fetchTasksFromQueue
+  fetchTasksFromQueue,
+  pushTasksToQueue
 };
