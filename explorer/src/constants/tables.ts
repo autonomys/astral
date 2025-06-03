@@ -427,7 +427,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: BlocksColumns.SortId,
+        id: BlocksColumns.Height,
         desc: true,
       },
     ],

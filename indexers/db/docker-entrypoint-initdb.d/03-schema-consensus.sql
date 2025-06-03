@@ -277,9 +277,9 @@ ALTER TABLE ONLY consensus.transfers
     ADD CONSTRAINT transfers_pkey PRIMARY KEY (_id);
 
 CREATE INDEX "0xccedb032815757ed" ON consensus.blocks USING btree (id);
-CREATE INDEX "consensus_blocks_sort_id" ON consensus.blocks USING btree (sort_id DESC);
 CREATE INDEX "consensus_blocks_hash" ON consensus.blocks USING btree (hash);
 CREATE INDEX "consensus_blocks_id_hash" ON consensus.blocks (id, hash);
+CREATE INDEX "consensus_blocks_height" ON consensus.blocks USING btree (height DESC);
 CREATE INDEX "consensus_cumulative_blocks_id" ON consensus.cumulative_blocks USING btree (id);
 CREATE INDEX "0xd8db4c8313621519" ON consensus.extrinsics USING btree (id);
 CREATE INDEX "consensus_extrinsics_sort_id" ON consensus.extrinsics USING btree (sort_id DESC);
@@ -297,6 +297,7 @@ CREATE INDEX "consensus_accounts_free" ON consensus.accounts USING btree (free D
 CREATE INDEX "consensus_accounts_reserved" ON consensus.accounts USING btree (reserved DESC);
 CREATE INDEX "consensus_accounts_total" ON consensus.accounts USING btree (total DESC);
 CREATE INDEX "0xd21b20c334f80c2e" ON consensus.account_histories USING btree (id);
+CREATE INDEX "consensus_account_histories_id_created_at" ON consensus.account_histories USING btree (id, created_at DESC);
 CREATE INDEX "0xb91efc8ed4021e6e" ON consensus.transfers USING btree (id);
 CREATE INDEX "consensus_transfers_from" ON consensus.transfers USING btree ("from");
 CREATE INDEX "consensus_transfers_to" ON consensus.transfers USING btree ("to");
@@ -306,7 +307,7 @@ CREATE INDEX "0x55286926221be2e7" ON consensus.event_modules USING btree (id);
 CREATE INDEX "0x64128774d8de590c" ON consensus.log_kinds USING btree (id);
 CREATE INDEX "0x3d8ee08d232943ea" ON consensus.sections USING btree (id);
 CREATE INDEX "0x1e967733a0d5db15" ON consensus.rewards USING btree (id);
-CREATE INDEX "consensus_rewards_account_id" ON consensus.rewards USING btree (account_id);
+CREATE INDEX "consensus_rewards_account_block_height" ON consensus.rewards USING btree (account_id, block_height DESC);
 CREATE INDEX "0x09a98aa53fa2c2e3" ON consensus.logs USING btree (id);
 CREATE INDEX "consensus_logs_sort_id" ON consensus.logs USING btree (sort_id DESC);
 CREATE INDEX "consensus_logs_block_height" ON consensus.logs USING btree (block_height);
