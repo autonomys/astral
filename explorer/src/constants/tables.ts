@@ -26,7 +26,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
   ],
   blocks: [
-    { name: 'sortId', label: 'Block number', isSelected: true, searchable: true },
+    { name: 'height', label: 'Block number', isSelected: true, searchable: true },
     { name: 'hash', label: 'Hash', isSelected: true, searchable: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
     { name: 'parentHash', label: 'Parent Hash', isSelected: false, searchable: true },
