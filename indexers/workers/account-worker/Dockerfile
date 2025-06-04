@@ -1,8 +1,8 @@
 FROM node:20-alpine
 WORKDIR /app
 
-# Copy workspace configuration from the indexers directory
-COPY package.json yarn.lock lerna.json ./
+# Copy workspace configuration from the parent directory (indexers)
+COPY ../package.json ../yarn.lock ../lerna.json ./
 COPY account-worker/package.json ./account-worker/package.json
 
 # Install only production dependencies

@@ -5,7 +5,7 @@
     account-worker:
       profiles: [indexers]
       build:
-        context: ./indexers
+        context: ./indexers/workers
         dockerfile: account-worker/Dockerfile
       depends_on:
         pgcat:
