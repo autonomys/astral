@@ -26,7 +26,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
   ],
   blocks: [
-    { name: 'sortId', label: 'Block number', isSelected: true, searchable: true },
+    { name: 'height', label: 'Block number', isSelected: true, searchable: true },
     { name: 'hash', label: 'Hash', isSelected: true, searchable: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
     { name: 'parentHash', label: 'Parent Hash', isSelected: false, searchable: true },
@@ -40,7 +40,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'authorId', label: 'Block Author', isSelected: true, searchable: true },
   ],
   extrinsics: [
-    { name: 'sortId', label: 'Extrinsic Id', isSelected: true },
+    { name: 'id', label: 'Extrinsic Id', isSelected: true },
     { name: 'hash', label: 'Extrinsic Hash', isSelected: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },
@@ -48,7 +48,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],
   events: [
-    { name: 'sortId', label: 'Event Id', isSelected: true },
+    { name: 'id', label: 'Event Id', isSelected: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'extrinsicId', label: 'Extrinsic Id', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },
@@ -56,7 +56,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],
   logs: [
-    { name: 'sortId', label: 'Log Id', isSelected: true, searchable: true },
+    { name: 'id', label: 'Log Id', isSelected: true, searchable: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true, searchable: true },
     { name: 'blockHash', label: 'Block Hash', isSelected: true, searchable: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
@@ -427,7 +427,7 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: BlocksColumns.SortId,
+        id: BlocksColumns.Height,
         desc: true,
       },
     ],
@@ -447,7 +447,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: ExtrinsicsColumns.SortId,
+        id: ExtrinsicsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: ExtrinsicsColumns.IndexInBlock,
         desc: true,
       },
     ],
@@ -468,7 +472,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: EventsColumns.SortId,
+        id: EventsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: EventsColumns.IndexInBlock,
         desc: true,
       },
     ],
@@ -488,7 +496,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: LogsColumns.SortId,
+        id: LogsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: LogsColumns.IndexInBlock,
         desc: true,
       },
     ],

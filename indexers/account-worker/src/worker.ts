@@ -1,8 +1,9 @@
 import { config } from './config';
 import { AccountHistoryUpdateData, AccountProcessingTask } from './interfaces';
 import { getCurrentChainHeight, getMultipleAccountsDataAtBlock } from './services/autonomysService';
-import { batchUpdateAccountHistories } from './services/dbService';
-
+import { batchUpdateAccountHistoriesAndAccounts } from './services/dbService';
+import { pushTasksToQueue } from './services/redisService';
+import { isRetriableDatabaseError } from './utils';
 let currentChainHeight: number = 0;
 
 /**
@@ -26,11 +27,21 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
 
   const startTime = Date.now();
   console.log(`Worker: Processing batch of ${tasks.length} tasks`);
+  
+  // Log task details for debugging/recovery purposes
+  if (tasks.length <= 10) {
+    // Log all tasks if small batch
+    console.log('Worker: Task details:', JSON.stringify(tasks, null, 2));
+  } else {
+    // Log sample for large batches
+    console.log(`Worker: First 5 tasks:`, JSON.stringify(tasks.slice(0, 5), null, 2));
+    console.log(`Worker: Block range: ${Math.min(...tasks.map(t => t.blockHeight))} - ${Math.max(...tasks.map(t => t.blockHeight))}`);
+  }
 
   // Filter tasks by processing depth
   const validTasks = tasks.filter(task => {
     const blockDepth = currentChainHeight - task.blockHeight;
-    if (blockDepth < config.processingDepth) {
+    if (blockDepth < config.processingDepth && blockDepth >= 0) {
       console.log(`Worker: Skipping task for block ${task.blockHeight} (depth: ${blockDepth}, required: ${config.processingDepth})`);
       return false;
     }
@@ -79,7 +90,7 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
             free,
             reserved,
             total,
-            eventBlockNumber: task.blockHeight
+            blockHeight: task.blockHeight
           });
         } else {
           console.warn(`Worker: No account data found for ${task.address} at block ${blockHash}`);
@@ -93,11 +104,56 @@ const processBatchTasks = async (tasks: AccountProcessingTask[]): Promise<number
 
   // Batch update database
   let successCount = 0;
+  const failedTasks: AccountProcessingTask[] = [];
+  
   if (allUpdates.length > 0) {
     try {
-      successCount = await batchUpdateAccountHistories(allUpdates);
+      const { historiesUpdated, failedUpdates } = await batchUpdateAccountHistoriesAndAccounts(allUpdates);
+      successCount = historiesUpdated;
+      
+      // Convert failed updates back to tasks for re-queuing
+      if (failedUpdates.length > 0) {
+        // Group failed updates by blockHeight to find the original task info
+        const taskMap = new Map<string, AccountProcessingTask>();
+        for (const task of validTasks) {
+          taskMap.set(`${task.address}-${task.blockHeight}`, task);
+        }
+        
+        for (const failedUpdate of failedUpdates) {
+          const key = `${failedUpdate.id}-${failedUpdate.blockHeight}`;
+          const originalTask = taskMap.get(key);
+          if (originalTask) {
+            failedTasks.push(originalTask);
+          }
+        }
+        
+        // Re-queue failed tasks
+        if (failedTasks.length > 0) {
+          const requeuedCount = await pushTasksToQueue(failedTasks);
+          console.log(`Worker: Re-queued ${requeuedCount} failed tasks for later processing`);
+        }
+      }
     } catch (error) {
       console.error('Worker: Batch database update failed:', error);
+      
+      // CRITICAL: Re-queue ALL tasks on connection/timeout errors
+      if (isRetriableDatabaseError(error)) {
+        console.error('Worker: Critical database error detected, re-queuing all tasks to prevent data loss');
+        
+        // Re-queue all valid tasks that were attempted
+        const requeuedCount = await pushTasksToQueue(validTasks);
+        console.log(`Worker: Re-queued ALL ${requeuedCount} tasks due to database error`);
+        
+        // Return 0 as no tasks were successfully processed
+        return 0;
+      }
+      
+      // For other errors, still try to re-queue all tasks as safety measure
+      console.error('Worker: Unexpected error, re-queuing all tasks as safety measure');
+      const requeuedCount = await pushTasksToQueue(validTasks);
+      console.log(`Worker: Re-queued ${requeuedCount} tasks due to unexpected error`);
+      
+      return 0;
     }
   }
 

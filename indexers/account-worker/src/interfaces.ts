@@ -2,6 +2,7 @@ export interface AccountProcessingTask {
   address: string;
   blockHeight: number;
   blockHash: string;
+  timestamp: number;
 }
 
 export interface ConsensusAccountData {
@@ -25,6 +26,18 @@ export interface AppConfig {
   chainHeadPollIntervalMs: number;
   queueProcessingIntervalMs: number;
   batchSize: number;
+  // Database pool configuration
+  dbPoolMax: number;
+  dbPoolMin: number;
+  dbConnectionTimeoutMs: number;
+  dbQueryTimeoutMs: number;
+  dbStatementTimeoutMs: number;
+  dbIdleTimeoutMs: number;
+  // Processing configuration
+  dbUpdateChunkSize: number;
+  dbUpdateChunkDelayMs: number;
+  // Health check configuration
+  dbHealthCheckIntervalMs: number;
 }
 
 export interface AccountHistoryUpdateData {
@@ -33,5 +46,5 @@ export interface AccountHistoryUpdateData {
   free: bigint;
   reserved: bigint;
   total: bigint;
-  eventBlockNumber: number;
+  blockHeight: number;
 }
