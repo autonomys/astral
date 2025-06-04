@@ -11,7 +11,6 @@ query Blocks(
   }
   consensus_blocks(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
-    sortId: sort_id
     height
     hash
     timestamp

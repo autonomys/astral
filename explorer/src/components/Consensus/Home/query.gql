@@ -1,5 +1,5 @@
 query Home($limit: Int!, $offset: Int!) {
-  consensus_blocks(limit: $limit, offset: $offset, order_by: { sort_id: desc }) {
+  consensus_blocks(limit: $limit, offset: $offset, order_by: { height: desc }) {
     id
     height
     timestamp

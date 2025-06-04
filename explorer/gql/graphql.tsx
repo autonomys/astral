@@ -27361,7 +27361,7 @@ export type BlocksQueryVariables = Exact<{
 }>;
 
 
-export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, timestamp: any, sortId: string, parentHash: string, specId: string, stateRoot: string, extrinsicsRoot: string, spacePledged: any, blockchainSize: any, extrinsicsCount: number, eventsCount: number, authorId: string }> };
+export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, timestamp: any, parentHash: string, specId: string, stateRoot: string, extrinsicsRoot: string, spacePledged: any, blockchainSize: any, extrinsicsCount: number, eventsCount: number, authorId: string }> };
 
 export type BlockByIdQueryVariables = Exact<{
   blockId: Scalars['String']['input'];
@@ -28040,7 +28040,7 @@ export const AccountByIdDocument = gql`
   consensus_rewards(
     limit: 10
     order_by: {block_height: desc}
-    where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
+    where: {account_id: {_eq: $accountId}}
   ) {
     id
     blockHeight: block_height
@@ -28088,7 +28088,7 @@ export const LatestRewardsWeekDocument = gql`
   consensus_rewards(
     limit: 500
     order_by: {block_height: desc}
-    where: {timestamp: $timestampComparison, account_id: {_eq: $accountId}, amount: {_gt: 0}}
+    where: {timestamp: $timestampComparison, account_id: {_eq: $accountId}}
   ) {
     id
     block_height
@@ -28134,9 +28134,7 @@ export type LatestRewardsWeekSuspenseQueryHookResult = ReturnType<typeof useLate
 export type LatestRewardsWeekQueryResult = Apollo.QueryResult<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>;
 export const RewardsListDocument = gql`
     query RewardsList($accountId: String!, $limit: Int!, $offset: Int, $orderBy: [consensus_rewards_order_by!]!) {
-  consensus_rewards_aggregate(
-    where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
-  ) {
+  consensus_rewards_aggregate(where: {account_id: {_eq: $accountId}}) {
     aggregate {
       count
     }
@@ -28145,7 +28143,7 @@ export const RewardsListDocument = gql`
     order_by: $orderBy
     limit: $limit
     offset: $offset
-    where: {account_id: {_eq: $accountId}, amount: {_gt: 0}}
+    where: {account_id: {_eq: $accountId}}
   ) {
     id
     block_height
@@ -28435,7 +28433,6 @@ export const BlocksDocument = gql`
     where: $where
   ) {
     id
-    sortId: sort_id
     height
     hash
     timestamp
@@ -29100,7 +29097,7 @@ export type ExtrinsicsSubscriptionHookResult = ReturnType<typeof useExtrinsicsSu
 export type ExtrinsicsSubscriptionResult = Apollo.SubscriptionResult<ExtrinsicsSubscription>;
 export const HomeDocument = gql`
     query Home($limit: Int!, $offset: Int!) {
-  consensus_blocks(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {
+  consensus_blocks(limit: $limit, offset: $offset, order_by: {height: desc}) {
     id
     height
     timestamp
