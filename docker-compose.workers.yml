@@ -6,7 +6,7 @@
       profiles: [indexers]
       build:
         context: ./indexers
-        dockerfile: account-worker/Dockerfile
+        dockerfile: workers/account-worker/Dockerfile
       depends_on:
         pgcat:
           condition: service_healthy
