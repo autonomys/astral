@@ -40,7 +40,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'authorId', label: 'Block Author', isSelected: true, searchable: true },
   ],
   extrinsics: [
-    { name: 'sortId', label: 'Extrinsic Id', isSelected: true },
+    { name: 'id', label: 'Extrinsic Id', isSelected: true },
     { name: 'hash', label: 'Extrinsic Hash', isSelected: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },
@@ -48,7 +48,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],
   events: [
-    { name: 'sortId', label: 'Event Id', isSelected: true },
+    { name: 'id', label: 'Event Id', isSelected: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'extrinsicId', label: 'Extrinsic Id', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },
@@ -56,7 +56,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],
   logs: [
-    { name: 'sortId', label: 'Log Id', isSelected: true, searchable: true },
+    { name: 'id', label: 'Log Id', isSelected: true, searchable: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true, searchable: true },
     { name: 'blockHash', label: 'Block Hash', isSelected: true, searchable: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
