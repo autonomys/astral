@@ -117,7 +117,7 @@ export const BlockList: FC = () => {
   const columns = useMemo(
     () =>
       getTableColumns<Row>(TABLE, selectedColumns, {
-        sortId: ({ row }: Cell<Row>) => (
+        height: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-block-height`}
             data-testid={`block-link-${row.index}`}

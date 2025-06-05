@@ -109,7 +109,7 @@ export const ExtrinsicList: FC = () => {
         TABLE,
         selectedColumns,
         {
-          sortId: ({ row }: Cell<Row>) => (
+          id: ({ row }: Cell<Row>) => (
             <Link
               key={`${row.index}-extrinsic-id`}
               className='w-full whitespace-nowrap hover:text-primaryAccent'
@@ -144,7 +144,7 @@ export const ExtrinsicList: FC = () => {
         },
         {},
         {
-          sortId: false,
+          id: false,
           blockHeight: false,
           hash: false,
           section: false,
