@@ -18,7 +18,6 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
@@ -28,15 +27,19 @@ import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
 
 type Props = {
+  blockHeight: number
   extrinsicsCount: number
   isDesktop?: boolean
 }
 
 type Row = ExtrinsicsByBlockIdQuery['consensus_extrinsics'][number]
 
-export const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsicsCount, isDesktop = false }) => {
+export const BlockDetailsExtrinsicList: FC<Props> = ({
+  blockHeight,
+  extrinsicsCount,
+  isDesktop = false,
+}) => {
   const { ref, inView } = useInView()
-  const { blockId } = useParams()
   const { network, section } = useIndexers()
   const apolloClient = useApolloClient()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
@@ -62,9 +65,9 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsicsCount, isDeskto
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
-      blockId: Number(blockId),
+      blockId: blockHeight,
     }),
-    [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
+    [pagination.pageSize, pagination.pageIndex, orderBy, blockHeight],
   )
 
   const { loading, setIsVisible } = useIndexersQuery<

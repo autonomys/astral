@@ -56,6 +56,7 @@ export const Block: FC = () => {
           <>
             <BlockDetailsCard block={block} isDesktop={isDesktop} />
             <BlockDetailsTabs
+              blockHeight={block.height}
               extrinsicsCount={block.extrinsics_count}
               eventsCount={block.events_count}
               logsCount={block.logs_count}

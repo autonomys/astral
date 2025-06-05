@@ -16,7 +16,6 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
@@ -28,12 +27,12 @@ import { NotFound } from '../../layout/NotFound'
 type Row = EventsByBlockIdQuery['consensus_events'][number]
 
 type Props = {
+  blockHeight: number
   eventsCount: number
 }
 
-export const BlockDetailsEventList: FC<Props> = ({ eventsCount }) => {
+export const BlockDetailsEventList: FC<Props> = ({ blockHeight, eventsCount }) => {
   const { ref, inView } = useInView()
-  const { blockId } = useParams()
   const { network, section } = useIndexers()
   const apolloClient = useApolloClient()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
@@ -59,9 +58,9 @@ export const BlockDetailsEventList: FC<Props> = ({ eventsCount }) => {
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
-      blockId: Number(blockId),
+      blockId: blockHeight,
     }),
-    [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
+    [pagination.pageSize, pagination.pageIndex, orderBy, blockHeight],
   )
 
   const { loading, setIsVisible } = useIndexersQuery<
