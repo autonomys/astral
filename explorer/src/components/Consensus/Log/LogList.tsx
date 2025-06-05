@@ -94,7 +94,7 @@ export const LogList: FC = () => {
   const columns = useMemo(
     () =>
       getTableColumns<Row>(TABLE, selectedColumns, {
-        sortId: ({ row }: Cell<Row>) => (
+        id: ({ row }: Cell<Row>) => (
           <div className='flex w-full' key={`${row.index}-log-index`}>
             <Link
               className='w-full whitespace-nowrap hover:text-primaryAccent'
