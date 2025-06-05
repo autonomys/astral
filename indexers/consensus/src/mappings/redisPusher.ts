@@ -53,7 +53,7 @@ const publishAccountsToRedis = async (blockNumbersToPublish?: number[]) => {
         try {
           // Create a single LPUSH command for this batch
           const escapedTasks = batch.map(task => `"${task.replace(/"/g, '\\"')}"`).join(' ');
-          const command = `redis-cli -u "${redisUrl}" LPUSH ${queueName} ${escapedTasks}`;
+          const command = `redis-cli -u "${redisUrl}" RPUSH ${queueName} ${escapedTasks}`;
           
           const { stderr } = await execAsync(command);
           if (stderr) {
