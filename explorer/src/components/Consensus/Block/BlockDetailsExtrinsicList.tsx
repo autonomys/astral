@@ -65,7 +65,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
-      blockId: blockHeight,
+      blockHeight,
     }),
     [pagination.pageSize, pagination.pageIndex, orderBy, blockHeight],
   )

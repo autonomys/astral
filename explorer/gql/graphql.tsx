@@ -27372,7 +27372,7 @@ export type BlockByIdQueryVariables = Exact<{
 export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, extrinsics_count: number, events_count: number, logs_count: number, author_id: string }> };
 
 export type ExtrinsicsByBlockIdQueryVariables = Exact<{
-  blockId: Scalars['numeric']['input'];
+  blockHeight: Scalars['numeric']['input'];
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Consensus_Extrinsics_Order_By> | Consensus_Extrinsics_Order_By>;
@@ -27382,7 +27382,7 @@ export type ExtrinsicsByBlockIdQueryVariables = Exact<{
 export type ExtrinsicsByBlockIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, success: boolean }> };
 
 export type EventsByBlockIdQueryVariables = Exact<{
-  blockId: Scalars['numeric']['input'];
+  blockHeight: Scalars['numeric']['input'];
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Consensus_Events_Order_By> | Consensus_Events_Order_By>;
@@ -27392,7 +27392,7 @@ export type EventsByBlockIdQueryVariables = Exact<{
 export type EventsByBlockIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, phase: string, extrinsic_id: string }> };
 
 export type LogsByBlockIdQueryVariables = Exact<{
-  blockId: Scalars['numeric']['input'];
+  blockHeight: Scalars['numeric']['input'];
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Consensus_Logs_Order_By> | Consensus_Logs_Order_By>;
@@ -28539,12 +28539,12 @@ export type BlockByIdLazyQueryHookResult = ReturnType<typeof useBlockByIdLazyQue
 export type BlockByIdSuspenseQueryHookResult = ReturnType<typeof useBlockByIdSuspenseQuery>;
 export type BlockByIdQueryResult = Apollo.QueryResult<BlockByIdQuery, BlockByIdQueryVariables>;
 export const ExtrinsicsByBlockIdDocument = gql`
-    query ExtrinsicsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]) {
+    query ExtrinsicsByBlockId($blockHeight: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_extrinsics_order_by!]) {
   consensus_extrinsics(
     order_by: $orderBy
     limit: $limit
     offset: $offset
-    where: {block_height: {_eq: $blockId}}
+    where: {block_height: {_eq: $blockHeight}}
   ) {
     id
     hash
@@ -28567,7 +28567,7 @@ export const ExtrinsicsByBlockIdDocument = gql`
  * @example
  * const { data, loading, error } = useExtrinsicsByBlockIdQuery({
  *   variables: {
- *      blockId: // value for 'blockId'
+ *      blockHeight: // value for 'blockHeight'
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
  *      orderBy: // value for 'orderBy'
@@ -28591,12 +28591,12 @@ export type ExtrinsicsByBlockIdLazyQueryHookResult = ReturnType<typeof useExtrin
 export type ExtrinsicsByBlockIdSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByBlockIdSuspenseQuery>;
 export type ExtrinsicsByBlockIdQueryResult = Apollo.QueryResult<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>;
 export const EventsByBlockIdDocument = gql`
-    query EventsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
+    query EventsByBlockId($blockHeight: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
   consensus_events(
     order_by: $orderBy
     limit: $limit
     offset: $offset
-    where: {block_height: {_eq: $blockId}}
+    where: {block_height: {_eq: $blockHeight}}
   ) {
     id
     section
@@ -28619,7 +28619,7 @@ export const EventsByBlockIdDocument = gql`
  * @example
  * const { data, loading, error } = useEventsByBlockIdQuery({
  *   variables: {
- *      blockId: // value for 'blockId'
+ *      blockHeight: // value for 'blockHeight'
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
  *      orderBy: // value for 'orderBy'
@@ -28643,12 +28643,12 @@ export type EventsByBlockIdLazyQueryHookResult = ReturnType<typeof useEventsByBl
 export type EventsByBlockIdSuspenseQueryHookResult = ReturnType<typeof useEventsByBlockIdSuspenseQuery>;
 export type EventsByBlockIdQueryResult = Apollo.QueryResult<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>;
 export const LogsByBlockIdDocument = gql`
-    query LogsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_logs_order_by!]) {
+    query LogsByBlockId($blockHeight: numeric!, $limit: Int!, $offset: Int, $orderBy: [consensus_logs_order_by!]) {
   consensus_logs(
     order_by: $orderBy
     limit: $limit
     offset: $offset
-    where: {block_height: {_eq: $blockId}}
+    where: {block_height: {_eq: $blockHeight}}
   ) {
     id
     kind
@@ -28669,7 +28669,7 @@ export const LogsByBlockIdDocument = gql`
  * @example
  * const { data, loading, error } = useLogsByBlockIdQuery({
  *   variables: {
- *      blockId: // value for 'blockId'
+ *      blockHeight: // value for 'blockHeight'
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
  *      orderBy: // value for 'orderBy'

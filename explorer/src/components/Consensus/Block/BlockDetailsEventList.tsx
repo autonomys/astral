@@ -58,7 +58,7 @@ export const BlockDetailsEventList: FC<Props> = ({ blockHeight, eventsCount }) =
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
-      blockId: blockHeight,
+      blockHeight,
     }),
     [pagination.pageSize, pagination.pageIndex, orderBy, blockHeight],
   )
