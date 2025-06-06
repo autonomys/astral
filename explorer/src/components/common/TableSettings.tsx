@@ -6,7 +6,7 @@ import {
   PencilIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { TableName, useTableSettings } from 'states/tables'
 import { FilterOption } from 'types/table'
 import { numberWithCommas } from 'utils/number'
@@ -19,6 +19,7 @@ interface TableSettingsProps {
   filters: Record<string, any>
   addExtraIcons?: React.ReactNode
   overrideFiltersOptions?: FilterOption[]
+  onSearchSubmit?: (columnName: string, value: string) => boolean // Returns true if handled
 }
 
 export const TableSettings: React.FC<TableSettingsProps> = ({
@@ -28,8 +29,12 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
   filters,
   addExtraIcons,
   overrideFiltersOptions,
+  onSearchSubmit,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  // Local state for search inputs when using custom search
+  const [searchValues, setSearchValues] = useState<Record<string, string>>({})
+
   if (!tableName) {
     tableName = capitalizeFirstLetter(table)
   }
@@ -58,6 +63,44 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
   const isAvailableFilters = useMemo(() => {
     return filtersOptions?.some((filter) => filter.type !== 'range' && filter.type !== 'checkbox')
   }, [filtersOptions])
+
+  // Initialize search values from filters when using custom search
+  useEffect(() => {
+    if (onSearchSubmit) {
+      const initialValues: Record<string, string> = {}
+      availableColumns?.forEach((column) => {
+        if (column.searchable) {
+          const filterValue = filters[`search-${column.name}`]
+          if (filterValue) {
+            initialValues[column.name] = filterValue
+          }
+        }
+      })
+      setSearchValues(initialValues)
+    }
+  }, [availableColumns, filters, onSearchSubmit])
+
+  // Handle search submit
+  const handleSearchSubmit = useCallback(
+    (e: React.FormEvent, columnName: string) => {
+      e.preventDefault()
+      const value = searchValues[columnName] || ''
+
+      // If custom handler is provided and it handles the search, don't update filters
+      if (onSearchSubmit && onSearchSubmit(columnName, value)) {
+        return
+      }
+
+      // Otherwise, update filters normally
+      handleFilterChange(`search-${columnName}`, value)
+    },
+    [searchValues, onSearchSubmit, handleFilterChange],
+  )
+
+  // Handle search input change
+  const handleSearchInputChange = useCallback((columnName: string, value: string) => {
+    setSearchValues((prev) => ({ ...prev, [columnName]: value }))
+  }, [])
 
   return (
     <div className='mb-4 w-full' id='accordion-open' data-accordion='open'>
@@ -142,26 +185,50 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                         {availableColumns &&
                           availableColumns
                             .filter((column) => column.searchable)
-                            .map((column) => (
-                              <div key={column.name}>
-                                <label
-                                  htmlFor={`search-${column.name}`}
-                                  className='mb-1 block font-medium'
+                            .map((column) =>
+                              onSearchSubmit ? (
+                                <form
+                                  key={column.name}
+                                  onSubmit={(e) => handleSearchSubmit(e, column.name)}
                                 >
-                                  {column.label}
-                                </label>
-                                <input
-                                  id={`search-${column.name}`}
-                                  type='text'
-                                  placeholder={`Search by ${column.label}`}
-                                  className='w-full rounded border p-2 dark:bg-blueAccent dark:text-white'
-                                  value={filters[`search-${column.name}`] || ''}
-                                  onChange={(e) =>
-                                    handleFilterChange(`search-${column.name}`, e.target.value)
-                                  }
-                                />
-                              </div>
-                            ))}
+                                  <label
+                                    htmlFor={`search-${column.name}`}
+                                    className='mb-1 block font-medium'
+                                  >
+                                    {column.label}
+                                  </label>
+                                  <input
+                                    id={`search-${column.name}`}
+                                    type='text'
+                                    placeholder={`Search by ${column.label}`}
+                                    className='w-full rounded border p-2 dark:bg-blueAccent dark:text-white'
+                                    value={searchValues[column.name] || ''}
+                                    onChange={(e) =>
+                                      handleSearchInputChange(column.name, e.target.value)
+                                    }
+                                  />
+                                </form>
+                              ) : (
+                                <div key={column.name}>
+                                  <label
+                                    htmlFor={`search-${column.name}`}
+                                    className='mb-1 block font-medium'
+                                  >
+                                    {column.label}
+                                  </label>
+                                  <input
+                                    id={`search-${column.name}`}
+                                    type='text'
+                                    placeholder={`Search by ${column.label}`}
+                                    className='w-full rounded border p-2 dark:bg-blueAccent dark:text-white'
+                                    value={filters[`search-${column.name}`] || ''}
+                                    onChange={(e) =>
+                                      handleFilterChange(`search-${column.name}`, e.target.value)
+                                    }
+                                  />
+                                </div>
+                              ),
+                            )}
                       </div>
                     </div>
                   </>
