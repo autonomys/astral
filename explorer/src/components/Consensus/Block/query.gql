@@ -11,7 +11,6 @@ query Blocks(
   }
   consensus_blocks(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
-    sortId: sort_id
     height
     hash
     timestamp
@@ -45,7 +44,7 @@ query BlockById($blockId: String!, $blockHash: String!) {
 }
 
 query ExtrinsicsByBlockId(
-  $blockId: numeric!
+  $blockHeight: numeric!
   $limit: Int!
   $offset: Int
   $orderBy: [consensus_extrinsics_order_by!]
@@ -54,7 +53,7 @@ query ExtrinsicsByBlockId(
     order_by: $orderBy
     limit: $limit
     offset: $offset
-    where: { block_height: { _eq: $blockId } }
+    where: { block_height: { _eq: $blockHeight } }
   ) {
     id
     hash
@@ -65,7 +64,7 @@ query ExtrinsicsByBlockId(
 }
 
 query EventsByBlockId(
-  $blockId: numeric!
+  $blockHeight: numeric!
   $limit: Int!
   $offset: Int
   $orderBy: [consensus_events_order_by!]
@@ -74,7 +73,7 @@ query EventsByBlockId(
     order_by: $orderBy
     limit: $limit
     offset: $offset
-    where: { block_height: { _eq: $blockId } }
+    where: { block_height: { _eq: $blockHeight } }
   ) {
     id
     section
@@ -85,7 +84,7 @@ query EventsByBlockId(
 }
 
 query LogsByBlockId(
-  $blockId: numeric!
+  $blockHeight: numeric!
   $limit: Int!
   $offset: Int
   $orderBy: [consensus_logs_order_by!]
@@ -94,7 +93,7 @@ query LogsByBlockId(
     order_by: $orderBy
     limit: $limit
     offset: $offset
-    where: { block_height: { _eq: $blockId } }
+    where: { block_height: { _eq: $blockHeight } }
   ) {
     id
     kind

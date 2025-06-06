@@ -113,7 +113,7 @@ export const EventList: FC = () => {
         TABLE,
         selectedColumns,
         {
-          sortId: ({ row }: Cell<Row>) => (
+          id: ({ row }: Cell<Row>) => (
             <Link
               key={`${row.index}-event-id`}
               className='w-full whitespace-nowrap hover:text-primaryAccent'
@@ -155,7 +155,7 @@ export const EventList: FC = () => {
         },
         {},
         {
-          sortId: false,
+          id: false,
           blockHeight: false,
           blockHash: false,
           extrinsicId: false,
