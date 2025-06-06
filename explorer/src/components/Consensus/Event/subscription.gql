@@ -12,5 +12,6 @@ subscription Events(
     module
     indexInBlock: index_in_block
     timestamp
+    blockHash: block_hash
   }
 }

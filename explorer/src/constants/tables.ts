@@ -40,12 +40,13 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'authorId', label: 'Block Author', isSelected: true, searchable: true },
   ],
   extrinsics: [
-    { name: 'id', label: 'Extrinsic Id', isSelected: true },
-    { name: 'hash', label: 'Extrinsic Hash', isSelected: true },
+    { name: 'sortId', label: 'Extrinsic Id', isSelected: true },
+    { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },
     { name: 'success', label: 'Status', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
+    { name: 'hash', label: 'Block Hash', isSelected: false, searchable: true },
   ],
   events: [
     { name: 'id', label: 'Event Id', isSelected: true },
@@ -54,6 +55,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'module', label: 'Module', isSelected: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
+    { name: 'hash', label: 'Block Hash', isSelected: false, searchable: true },
   ],
   logs: [
     { name: 'id', label: 'Log Id', isSelected: true, searchable: true },
