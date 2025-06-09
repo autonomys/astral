@@ -418,7 +418,18 @@ BEGIN
         NEW.extrinsic_id,            -- extrinsic_id
         NEW.block_height,            -- created_at
         NEW.block_height             -- updated_at
-    );
+    ) ON CONFLICT (id) DO UPDATE SET
+        account_id = EXCLUDED.account_id,
+        domain_id = EXCLUDED.domain_id,
+        operator_id = EXCLUDED.operator_id,
+        nominator_id = EXCLUDED.nominator_id,
+        amount = EXCLUDED.amount,
+        storage_fee_deposit = EXCLUDED.storage_fee_deposit,
+        total_amount = EXCLUDED.total_amount,
+        estimated_shares = EXCLUDED.estimated_shares,
+        "timestamp" = EXCLUDED."timestamp",
+        extrinsic_id = EXCLUDED.extrinsic_id,
+        updated_at = EXCLUDED.updated_at;
 
     INSERT INTO staking.accounts (
         id,
@@ -543,7 +554,21 @@ CREATE OR REPLACE FUNCTION staking.handle_withdraw_events() RETURNS TRIGGER
         last_domain_block_number + 14400, -- domain_block_number_ready_at
         0,                           -- unlocked_at
         NEW.block_height             -- updated_at
-    );
+    ) ON CONFLICT (id) DO UPDATE SET
+        account_id = EXCLUDED.account_id,
+        domain_id = EXCLUDED.domain_id,
+        operator_id = EXCLUDED.operator_id,
+        nominator_id = EXCLUDED.nominator_id,
+        shares = EXCLUDED.shares,
+        storage_fee_refund = EXCLUDED.storage_fee_refund,
+        estimated_amount = EXCLUDED.estimated_amount,
+        "timestamp" = EXCLUDED."timestamp",
+        withdraw_extrinsic_id = EXCLUDED.withdraw_extrinsic_id,
+        epoch_withdrawal_requested_at = EXCLUDED.epoch_withdrawal_requested_at,
+        domain_block_number_withdrawal_requested_at = EXCLUDED.domain_block_number_withdrawal_requested_at,
+        created_at = EXCLUDED.created_at,
+        domain_block_number_ready_at = EXCLUDED.domain_block_number_ready_at,
+        updated_at = EXCLUDED.updated_at;
     
     RETURN NEW;
   END;
