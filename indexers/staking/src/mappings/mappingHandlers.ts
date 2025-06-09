@@ -8,8 +8,10 @@ import { ExtrinsicPrimitive } from "./types";
 import {
   aggregateByDomainId,
   createHashId,
+  detectEpochTransitions,
   groupEventsFromBatchAll,
 } from "./utils";
+
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -43,15 +45,25 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       : await unsafeApi.at(parentHash)
     : api;
 
+  /*
+    Notes:
+    1. We should get the epoch index from domainStakingSummary
+
+  */
   const query = [
     apiPatched.query.domains.operators.entries(),
     api.query.domains.domainStakingSummary.entries(),
     api.query.domains.headDomainNumber.entries(),
     api.query.domains.operatorIdOwner.entries(),
   ];
+
+
   let blockHasUnlockNominator = false;
   let blockHasWithdrawals = false;
   let withdrawalsResultId = 4;
+  
+  
+  
   if (extrinsics.length > 0) {
     if (
       extrinsics.find(
@@ -76,8 +88,41 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   }
   const queriesResults = await Promise.all(query);
 
+  // api.query.domains.operators.entries(),
+  /*
+  * signingKey
+  * currentDomainId
+  * nextDomainId
+  * minimumNominatorStake
+  * nominationTax
+  * currentTotalStake
+  * currentTotalShares
+  * partialStatus
+  * depositsInEpoch
+  * withdrawalsInEpoch
+  * totalStorageFeeDeposit
+  */
   const operators = queriesResults[0].map((o) => parseOperator(o));
 
+  // api.query.domains.domainStakingSummary.entries(),
+  /*
+  * currentEpochIndex
+  * currentTotalStake
+  * currentOperators
+  * nextOperators
+  * currentEpochRewards
+  */
+  //logging the whole queriesResults[1]
+
+  const currentDomainStakingSummary = queriesResults[1];
+  // Detect epoch transitions
+  const epochTransitions = await detectEpochTransitions(
+    currentDomainStakingSummary,
+    parentBlockApi,
+    height
+  );
+  
+  // logger.info(`queriesResults[1]: ${JSON.stringify(queriesResults[1])}`);
   queriesResults[1].forEach((data) => {
     const keyPrimitive = data[0].toPrimitive() as any;
     const valuePrimitive = data[1].toPrimitive() as any;
@@ -89,17 +134,25 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     const sharePrice = totalStake > 0 ? totalStake / totalShares : ZERO_BIGINT;
     cache.domainStakingHistory.push(
       db.createDomainStakingHistory(
-        createHashId(data),
-        keyPrimitive[0].toString(),
-        valuePrimitive.currentEpochIndex.toString(),
-        valuePrimitive.currentTotalStake.toString(),
-        totalShares,
-        sharePrice,
-        blockTimestamp,
-        height
+        createHashId(data), // id
+        keyPrimitive[0].toString(), // domainId
+        valuePrimitive.currentEpochIndex.toString(), // currentEpochIndex
+        valuePrimitive.currentTotalStake.toString(), // currentTotalStake
+        totalShares, // currentTotalShares
+        sharePrice, // sharePrice
+        blockTimestamp, // timestamp
+        height // blockHeight
       )
     );
   });
+
+
+
+  // api.query.domains.headDomainNumber.entries(),
+  /*
+  * domainId
+  * domainBlockNumber
+  */
   queriesResults[2].forEach((data) => {
     const domainId = (data[0].toHuman() as any)[0].toString();
     const domainBlockNumber = BigInt((data[1].toPrimitive() as any).toString());
@@ -114,7 +167,16 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     );
   });
 
+
+  /*
+   START createOperatorStakingHistory
+  */
   const operatorOwnerMap = new Map(
+    // api.query.domains.operatorIdOwner.entries(),
+    /*
+    * operatorId
+    * owner
+    */
     queriesResults[3].map(([key, value]) => [
       (key.toHuman() as any)[0].toString(),
       value.toPrimitive() as string,
@@ -132,7 +194,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       db.createOperatorStakingHistory(
         createHashId(operator),
         operator.operatorId.toString(),
-        operatorOwner ?? "",
+        operatorOwner ?? "", // Why it can be empty?
         operator.operatorDetails.signingKey.toString(),
         operator.operatorDetails.currentDomainId.toString(),
         operator.operatorDetails.currentTotalStake,
@@ -147,7 +209,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     );
   });
+  /*
+   END createOperatorStakingHistory
+  */
 
+
+
+  /*
+  * 
+  */
   if (blockHasUnlockNominator)
     queriesResults[4].forEach((o) =>
       cache.parentBlockOperators.push(parseOperator(o))
@@ -157,6 +227,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     queriesResults[withdrawalsResultId].forEach((o) =>
       cache.currentWithdrawal.push(parseWithdrawal(o))
     );
+
 
   const eventsByExtrinsic = new Map<number, typeof events>();
   for (const event of events) {
@@ -174,6 +245,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     const extrinsicEvents = eventsByExtrinsic.get(extrinsicIdx) || [];
     const extrinsicMethodToPrimitive =
       extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
+    // Why finding the last success event?
     const successEvent = extrinsicEvents.findLast(
       (event) =>
         event.event.section === "system" &&

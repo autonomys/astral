@@ -130,3 +130,9 @@ interface InvalidBundleType_InherentExtrinsic {
   __kind: "InherentExtrinsic";
   value: number;
 }
+
+export interface EpochTransition {
+  domainId: string;
+  parentEpoch: number;
+  currentEpoch: number;
+}

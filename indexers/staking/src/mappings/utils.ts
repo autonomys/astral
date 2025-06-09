@@ -8,7 +8,7 @@ import {
   ZERO_BIGINT,
 } from "./constants";
 import { Cache } from "./db";
-import { Transfer } from "./types";
+import { EpochTransition, Transfer } from "./types";
 
 export const getSortId = (
   blockHeight: bigint | string,
@@ -154,4 +154,57 @@ export const calculateShares = (stakeAmount: bigint, sharePrice: bigint) => {
     (stakeAmount * SHARES_CALCULATION_MULTIPLIER) /
     (sharePrice > ZERO_BIGINT ? sharePrice : SHARES_CALCULATION_MULTIPLIER)
   );
+};
+
+/**
+ * Detects epoch transitions by comparing current epoch indices with parent block epoch indices
+ * @param currentDomainStakingSummary - Current domain staking summary entries
+ * @param parentBlockApi - API instance for querying parent block data
+ * @param height - Current block height for logging
+ * @returns Array of epoch transitions with domain ID and epoch numbers
+ */
+export const detectEpochTransitions = async (
+  currentDomainStakingSummary: any[],
+  parentBlockApi: any,
+  height: bigint
+): Promise<EpochTransition[]> => {
+  // Extract domain IDs and current epochs from the current block
+  const domainIds = currentDomainStakingSummary.map(
+    (data) => (data[0].toPrimitive() as any)[0]
+  );
+  const currentEpochs = currentDomainStakingSummary.map(
+    (data) => (data[1].toPrimitive() as any).currentEpochIndex
+  );
+
+  // Query parent block for epoch indices of each domain
+  const parentEpochPromises = domainIds.map(async (domainId) => {
+    return parentBlockApi.query.domains.domainStakingSummary(domainId);
+  });
+
+  const parentEpochs = await Promise.all(parentEpochPromises);
+  const parentEpochValues = parentEpochs.map((result) => {
+    const primitive = result.toPrimitive() as any;
+    return primitive ? primitive.currentEpochIndex : null;
+  });
+
+  // Check for epoch transitions
+  const epochTransitions: EpochTransition[] = [];
+
+  domainIds.forEach((domainId, index) => {
+    const currentEpoch = currentEpochs[index];
+    const parentEpoch = parentEpochValues[index];
+
+    if (parentEpoch !== null && parentEpoch < currentEpoch) {
+      logger.info(
+        `BLOCK ${height} Epoch transition detected for domain ${domainId}: ${parentEpoch} -> ${currentEpoch}`
+      );
+      epochTransitions.push({
+        domainId,
+        parentEpoch,
+        currentEpoch,
+      });
+    }
+  });
+
+  return epochTransitions;
 };
