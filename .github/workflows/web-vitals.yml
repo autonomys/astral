@@ -59,10 +59,10 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           # Scan all discovered routes (default behavior)
-          npx unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug
+          unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug
 
           # Alternative: Scan specific routes only (uncomment and modify as needed)
-          # npx unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug --urls "/,/about,/products,/contact"
+          # unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug --urls "/,/about,/products,/contact"
         continue-on-error: true
 
       - name: Copy Unlighthouse reports to artifacts
