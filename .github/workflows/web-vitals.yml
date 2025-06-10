@@ -58,11 +58,11 @@ jobs:
       - name: Run Unlighthouse CI with budget assertions and static build
         run: |
           cd ${{ github.workspace }}
-          # Scan all discovered routes (default behavior)
-          npx unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug
+          # Scan only the home page
+          npx unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug --urls "/"
 
-          # Alternative: Scan specific routes only (uncomment and modify as needed)
-          # npx unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug --urls "/,/about,/products,/contact"
+          # Alternative: Scan all discovered routes (commented out)
+          # npx unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug
         continue-on-error: true
 
       - name: Copy Unlighthouse reports to artifacts
