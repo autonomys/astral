@@ -5,25 +5,23 @@ global.Buffer = require("buffer/").Buffer;
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { Entity } from "@subql/types-core";
-import { EMPTY_SIGNATURE, ZERO_BIGINT } from "./constants";
+import { ZERO_BIGINT } from "./constants";
 import {
   createAccountHistory,
   createBlock,
   createEvent,
-  createExtrinsic,
   createLog,
   initializeCache,
 } from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
-import { getBlockAuthor, parseDataToCid } from "./helper";
+import { processExtrinsic } from "./extrinsicHandler";
+import { getBlockAuthor } from "./helper";
 import { publishAccountsToRedis } from "./redisPusher";
-import { ExtrinsicPrimitive, LogValue } from "./types";
-import { groupEventsFromBatchAll } from "./utils";
+import { LogValue } from "./types";
 
 export const accountsToProcess: Map<number, { blockHash: string; addresses: Set<string> }> = new Map();
 // Temporary large margin for sake of fast indexing. After we are fully synced, we can reduce this to lower values.
 const DEPTH_TO_PUBLISH_TO_REDIS = 10;
-
 
 /*
 This is a very long and messy function. We must refactor it.
@@ -94,231 +92,30 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   // Process extrinsics
   const processExtrinsicsStartTime = Date.now();
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
-    const extrinsicProcessStartTime = Date.now();
-    const extrinsicHash = extrinsic.hash.toString();
-    const extrinsicMethodToPrimitive =
-      extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
-    const extrinsicEvents = eventsByExtrinsic[extrinsicIdx] || [];
-
-    const { feeEvent, errorEvent, successEvent } = extrinsicEvents.reduce(
-      (
-        acc: {
-          feeEvent?: (typeof events)[number];
-          errorEvent?: (typeof events)[number];
-          successEvent?: (typeof events)[number];
-        },
-        event
-      ) => {
-        // Check for fee event
-        if (
-          !acc.feeEvent &&
-          event.event.section === "balances" &&
-          event.event.method === "Withdraw"
-        ) {
-          acc.feeEvent = event;
-        }
-        // Check for error event
-        else if (
-          !acc.errorEvent &&
-          event.event.section === "system" &&
-          event.event.method === "ExtrinsicFailed"
-        ) {
-          acc.errorEvent = event;
-        }
-        // Check for success event
-        else if (
-          !acc.successEvent &&
-          event.event.section === "system" &&
-          event.event.method === "ExtrinsicSuccess"
-        ) {
-          acc.successEvent = event;
-        }
-        return acc;
-      },
-      {}
-    );
-
-    // Calculate fee
-    const fee = feeEvent?.event?.data[1]
-      ? BigInt(feeEvent.event.data[1].toString())
-      : ZERO_BIGINT;
-    const error = errorEvent ? stringify(errorEvent.event.data) : "";
-
-    const pos = extrinsicEvents ? extrinsicIdx : 0;
-    const extrinsicSigner = extrinsic.isSigned
-      ? extrinsic.signer.toString()
-      : "";
-    const extrinsicSignature = extrinsic.isSigned
-      ? extrinsic.signature.toString()
-      : EMPTY_SIGNATURE;
-    const extrinsicId = height + "-" + extrinsicIdx.toString();
-
-    // Detect data storage extrinsics and parse args to cid
-    let cid: string | undefined = "";
-    let extrinsicArgs: string = stringify(extrinsicMethodToPrimitive.args);
-    if (
-      (extrinsic.method.section === "historySeeding" &&
-        extrinsic.method.method === "seedHistory") ||
-      (extrinsic.method.section === "system" &&
-        (extrinsic.method.method === "remarkWithEvent" ||
-          extrinsic.method.method === "remark"))
-    ) {
-      const parsedArgs = parseDataToCid(extrinsicMethodToPrimitive.args.remark);
-      cid = parsedArgs.cid;
-      // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
-      extrinsicArgs = parsedArgs.modifiedArgs ?? extrinsicArgs;
-    }
-
-    newExtrinsics.push(
-      createExtrinsic(
-        extrinsicHash,
+    const { extrinsic: newExtrinsic, events, addressesToUpdate, eventsProcessed } = processExtrinsic(
+      extrinsic,
+      extrinsicIdx,
+      eventsByExtrinsic[extrinsicIdx] || [],
+      {
         height,
         blockHash,
-        extrinsicIdx,
-        extrinsic.method.section,
-        extrinsic.method.method,
-        successEvent ? true : false,
         blockTimestamp,
-        BigInt(extrinsic.nonce.toString()),
-        extrinsicSigner,
-        extrinsicSignature,
-        extrinsicEvents.length,
-        extrinsicArgs,
-        error,
-        BigInt(extrinsic.tip.toString()),
-        fee,
-        pos,
-        cid
-      )
+        blockNumber,
+        cache,
+        startEventIndex: eventIndex,
+      }
     );
-    if (extrinsicSigner) {
-      cache.addressToUpdate.add(extrinsicSigner);
-    }
 
-    if (
-      extrinsic.method.section === "utility" &&
-      extrinsic.method.method === "batchAll"
-    ) {
-      const batchedExtrinsicEvents = groupEventsFromBatchAll(extrinsicEvents);
-      logger.debug(`[Block: ${blockNumber}] Extrinsic ${extrinsicIdx} is batchAll with ${batchedExtrinsicEvents.length} inner calls.`);
-      batchedExtrinsicEvents.forEach((events, index) => {
-        const innerCallStartTime = Date.now();
-        const extrinsicArgs = (extrinsic.args[0].toPrimitive() as any)[index];
-        events.forEach((event) => {
-          // Process extrinsic events
-          // Detect data storage extrinsics and parse args to cid
-          let cid: string | undefined = "";
-          let eventsArgs: string = stringify(event.event.data);
-          if (
-            event.event.section === "system" &&
-            event.event.method === "Remarked"
-          ) {
-            const parsedArgs = parseDataToCid(event.event.data[1].toString());
-            cid = parsedArgs.cid;
-            // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
-            eventsArgs = parsedArgs.modifiedArgs ?? eventsArgs;
-          }
+    newExtrinsics.push(newExtrinsic);
+    newEvents.push(...events);
 
-          newEvents.push(
-            createEvent(
-              height,
-              blockHash,
-              BigInt(eventIndex),
-              extrinsicId,
-              extrinsicHash,
-              event.event.section,
-              event.event.method,
-              blockTimestamp,
-              event.phase.type,
-              pos,
-              eventsArgs,
-              cid
-            )
-          );
+    addressesToUpdate.forEach(address => {
+      cache.addressToUpdate.add(address);
+    });
 
-          // Process specific events
-          const eventKey = event.event.section + "." + event.event.method;
-          const handler = EVENT_HANDLERS[eventKey];
-          if (handler)
-            handler({
-              event,
-              cache,
-              height,
-              blockHash,
-              blockTimestamp,
-              extrinsicId,
-              eventId: height + "-" + eventIndex,
-              fee,
-              successEvent: successEvent ? true : false,
-              extrinsicSigner,
-              extrinsicMethodToPrimitive: extrinsicArgs,
-            });
-
-          // Increment event index
-          eventIndex++;
-        });
-        logger.debug(`[Block: ${blockNumber}] Extrinsic ${extrinsicIdx} - batchAll inner call ${index} processed in ${Date.now() - innerCallStartTime}ms`);
-      });
-    } else {
-      // Process extrinsic events
-      extrinsicEvents.forEach((event) => {
-        // Detect data storage extrinsics and parse args to cid
-        let cid: string | undefined = "";
-        let eventsArgs: string = stringify(event.event.data);
-        if (
-          event.event.section === "system" &&
-          event.event.method === "Remarked"
-        ) {
-          const parsedArgs = parseDataToCid(event.event.data[1].toString());
-          cid = parsedArgs.cid;
-          // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
-          eventsArgs = parsedArgs.modifiedArgs ?? eventsArgs;
-        }
-
-        newEvents.push(
-          createEvent(
-            height,
-            blockHash,
-            BigInt(eventIndex),
-            extrinsicId,
-            extrinsicHash,
-            event.event.section,
-            event.event.method,
-            blockTimestamp,
-            event.phase.type,
-            pos,
-            eventsArgs,
-            cid
-          )
-        );
-
-        // Process specific events
-        const eventKey = event.event.section + "." + event.event.method;
-        const handler = EVENT_HANDLERS[eventKey];
-        if (handler)
-          handler({
-            event,
-            cache,
-            height,
-            blockHash,
-            blockTimestamp,
-            extrinsicId,
-            eventId: height + "-" + eventIndex,
-            fee,
-            successEvent: successEvent ? true : false,
-            extrinsicSigner,
-            extrinsicMethodToPrimitive,
-          });
-
-        // Increment event index
-        eventIndex++;
-      });
-    }
-    logger.debug(`[Block: ${blockNumber}] Extrinsic ${extrinsicIdx} (${extrinsic.method.section}.${extrinsic.method.method}) processed in ${Date.now() - extrinsicProcessStartTime}ms`);
+    eventIndex += eventsProcessed;
   });
   const processExtrinsicsDuration = Date.now() - processExtrinsicsStartTime;
-  logger.info(`[Block: ${blockNumber}] All extrinsics processed in ${processExtrinsicsDuration}ms`);
-
   // Process finalization events
   const finalizationEventsStartTime = Date.now();
   finalizationEvents.forEach(async (event) => {
