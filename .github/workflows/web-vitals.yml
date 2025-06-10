@@ -41,7 +41,7 @@ jobs:
         uses: treosh/lighthouse-ci-action@v10
         with:
           configPath: "explorer/lighthouserc.js"
-          uploadArtifacts: true
+          uploadArtifacts: false
           temporaryPublicStorage: true
         env:
           AUTO_DRIVE_API_KEY: ${{ secrets.AUTO_DRIVE_API_KEY }}
