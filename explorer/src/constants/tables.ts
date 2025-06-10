@@ -33,8 +33,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'specId', label: 'Spec Id', isSelected: false },
     { name: 'stateRoot', label: 'State Root', isSelected: false },
     { name: 'extrinsicsRoot', label: 'Extrinsics Root', isSelected: false },
-    { name: 'spacePledged', label: 'Space Pledged', isSelected: true },
-    { name: 'blockchainSize', label: 'Blockchain Size', isSelected: false },
     { name: 'extrinsicsCount', label: 'Extrinsics', isSelected: true },
     { name: 'eventsCount', label: 'Events', isSelected: true },
     { name: 'authorId', label: 'Block Author', isSelected: true, searchable: true },
@@ -422,10 +420,6 @@ export const INITIAL_TABLES: InitialTables = {
     filters: {
       heightMin: '',
       heightMax: '',
-      spacePledgedMin: '',
-      spacePledgedMax: '',
-      blockchainSizeMin: '',
-      blockchainSizeMax: '',
     },
     sorting: [
       {

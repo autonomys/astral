@@ -1,6 +1,5 @@
 'use client'
 
-import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
 import { isHex, shortString } from '@autonomys/auto-utils'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
@@ -81,30 +80,6 @@ export const BlockList: FC = () => {
         height: {
           ...(filters.heightMin && { _gte: Math.floor(parseFloat(filters.heightMin)).toString() }),
           ...(filters.heightMax && { _lte: Math.floor(parseFloat(filters.heightMax)).toString() }),
-        },
-      }),
-      // Space Pledged
-      ...((filters.spacePledgedMin || filters.spacePledgedMax) && {
-        // eslint-disable-next-line camelcase
-        space_pledged: {
-          ...(filters.spacePledgedMin && {
-            _gte: Math.floor(parseFloat(filters.spacePledgedMin)).toString(),
-          }),
-          ...(filters.spacePledgedMax && {
-            _lte: Math.floor(parseFloat(filters.spacePledgedMax)).toString(),
-          }),
-        },
-      }),
-      // Blockchain Size
-      ...((filters.blockchainSizeMin || filters.blockchainSizeMax) && {
-        // eslint-disable-next-line camelcase
-        blockchain_size: {
-          ...(filters.blockchainSizeMin && {
-            _gte: Math.floor(parseFloat(filters.blockchainSizeMin)).toString(),
-          }),
-          ...(filters.blockchainSizeMax && {
-            _lte: Math.floor(parseFloat(filters.blockchainSizeMax)).toString(),
-          }),
         },
       }),
     }),
@@ -191,8 +166,6 @@ export const BlockList: FC = () => {
             {shortString(row.original.extrinsicsRoot)}
           </CopyButton>
         ),
-        spacePledged: ({ row }: Cell<Row>) => formatSpaceToDecimal(row.original.spacePledged),
-        blockchainSize: ({ row }: Cell<Row>) => formatSpaceToDecimal(row.original.blockchainSize),
       }),
     [network, selectedColumns],
   )
