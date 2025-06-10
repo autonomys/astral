@@ -8,10 +8,9 @@ Block explorer frontend that uses the Subsquid API to get the network informatio
 
 ## Table of content
 
-- [🏄 Get Started](#get-started)
-- [🔩 Requirements](#requirements)
-- [🛳 Build](#build)
-- [🔧 Environment Variables](#-environment-variables)
+- [🏄 Get Started](#-get-started)
+- [🔩 Requirements](#-requirements)
+- [🛳 Build](#-build)
 
 ## 🏄 Get Started
 
