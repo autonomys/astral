@@ -1,4 +1,4 @@
-name: Web Vitals CI with Unlighthouse
+name: Web Vitals CI
 
 on:
   push:
@@ -7,7 +7,6 @@ on:
   pull_request:
     branches: [main]
     paths: ["explorer/**"]
-  workflow_dispatch:
 
 jobs:
   web-vitals:
@@ -47,66 +46,49 @@ jobs:
       - name: Wait for deployment to be ready
         run: sleep 30
 
-      - name: Install Unlighthouse Dependencies
-        run: |
-          cd ${{ github.workspace }}
-          npm add @unlighthouse/cli puppeteer
-
       - name: Create artifacts directory
         run: mkdir -p ${{ github.workspace }}/tmp/artifacts
 
-      - name: Run Unlighthouse CI with budget assertions and static build
-        run: |
-          cd ${{ github.workspace }}
-          # Scan all discovered routes (default behavior)
-          unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug
-
-          # Alternative: Scan specific routes only (uncomment and modify as needed)
-          # unlighthouse-ci --site ${{ steps.vercel-deploy.outputs.preview-url }} --budget 75 --build-static --debug --urls "/,/about,/products,/contact"
-        continue-on-error: true
-
-      - name: Copy Unlighthouse reports to artifacts
-        run: |
-          if [ -d "${{ github.workspace }}/.lighthouse" ]; then
-            cp -r ${{ github.workspace }}/.lighthouse/* ${{ github.workspace }}/tmp/artifacts/
-          fi
-
-      - name: Deploy Unlighthouse report to Vercel
-        id: vercel-report-deploy
-        uses: amondnet/vercel-action@v25
+      - name: Run Lighthouse Check
+        id: lighthouseCheck
+        uses: foo-software/lighthouse-check-action@master
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_REPORT_PROJECT_ID }}
-          scope: ${{ secrets.VERCEL_ORG_ID }}
-          working-directory: ${{ github.workspace }}/.lighthouse/client
-        continue-on-error: true
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
+          author: ${{ github.actor }}
+          branch: ${{ github.ref }}
+          prCommentEnabled: true
+          outputDirectory: ${{ github.workspace }}/tmp/artifacts
+          emulatedFormFactor: "all"
+          urls: ${{ steps.vercel-deploy.outputs.preview-url }}
+          sha: ${{ github.sha }}
+
+      - name: Handle Lighthouse Check results
+        uses: foo-software/lighthouse-check-status-action@master
+        with:
+          lighthouseCheckResults: ${{ steps.lighthouseCheck.outputs.lighthouseCheckResults }}
+          minAccessibilityScore: "70"
+          minBestPracticesScore: "50"
+          minPerformanceScore: "75"
+          minProgressiveWebAppScore: "10"
+          minSeoScore: "50"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: unlighthouse-reports
+          name: lighthouse-reports
           path: ${{ github.workspace }}/tmp/artifacts
 
-      - name: Comment PR with preview URL and report
+      - name: Comment PR with preview URL
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
-            let body = `🚀 **Preview Deployment**: ${{ steps.vercel-deploy.outputs.preview-url }}
-
-            📊 **Web Vitals Report**: Unlighthouse analysis completed with budget threshold of 75.`;
-
-            if ('${{ steps.vercel-report-deploy.outputs.preview-url }}') {
-              body += `\n📈 **Unlighthouse Report**: ${{ steps.vercel-report-deploy.outputs.preview-url }}`;
-            }
-
-            body += `\n\n💡 **Budget Assertions**: Performance, Accessibility, Best Practices, and SEO scores must be ≥75 to pass.`;
-
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: body
+              body: `🚀 **Preview Deployment**: ${{ steps.vercel-deploy.outputs.preview-url }}
+              
+              📊 **Web Vitals Report**: Check the Lighthouse results above for performance metrics.`
             })
