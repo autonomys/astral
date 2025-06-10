@@ -2,10 +2,10 @@ name: Web Vitals CI
 
 on:
   push:
-    branches: [main, production]
+    branches: [main]
     paths: ["explorer/**"]
   pull_request:
-    branches: [main, production]
+    branches: [main]
     paths: ["explorer/**"]
 
 jobs:
