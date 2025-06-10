@@ -1,7 +1,7 @@
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: 'yarn start',
+      startServerCommand: 'cd explorer && yarn start',
       url: ['http://localhost:3000'],
       numberOfRuns: 3,
     },

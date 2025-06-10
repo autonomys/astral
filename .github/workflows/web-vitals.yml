@@ -40,10 +40,9 @@ jobs:
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v10
         with:
-          configPath: "./lighthouserc.js"
+          configPath: "explorer/lighthouserc.js"
           uploadArtifacts: true
           temporaryPublicStorage: true
-          workingDirectory: "./explorer"
         env:
           AUTO_DRIVE_API_KEY: ${{ secrets.AUTO_DRIVE_API_KEY }}
           AUTO_EVM_RPC_URL: ${{ secrets.AUTO_EVM_RPC_URL }}
