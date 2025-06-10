@@ -37,12 +37,8 @@ jobs:
           NEXT_PUBLIC_MAINNET_INDEXERS: ${{ secrets.NEXT_PUBLIC_MAINNET_INDEXERS }}
           NEXT_PUBLIC_TAURUS_INDEXERS: ${{ secrets.NEXT_PUBLIC_TAURUS_INDEXERS }}
 
-      - name: Run Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v10
-        with:
-          configPath: "explorer/lighthouserc.js"
-          uploadArtifacts: false
-          temporaryPublicStorage: true
+      - name: Start server in background
+        run: yarn start &
         env:
           AUTO_DRIVE_API_KEY: ${{ secrets.AUTO_DRIVE_API_KEY }}
           AUTO_EVM_RPC_URL: ${{ secrets.AUTO_EVM_RPC_URL }}
@@ -50,4 +46,39 @@ jobs:
           USER_SESSION_PRIVATE_KEY: ${{ secrets.USER_SESSION_PRIVATE_KEY }}
           NEXT_PUBLIC_MAINNET_INDEXERS: ${{ secrets.NEXT_PUBLIC_MAINNET_INDEXERS }}
           NEXT_PUBLIC_TAURUS_INDEXERS: ${{ secrets.NEXT_PUBLIC_TAURUS_INDEXERS }}
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for server to start
+        run: sleep 10
+
+      - name: Create temporary folder for artifacts
+        run: mkdir -p ${{ github.workspace }}/tmp/artifacts
+
+      - name: Run Lighthouse Check
+        id: lighthouseCheck
+        uses: foo-software/lighthouse-check-action@master
+        with:
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
+          author: ${{ github.actor }}
+          branch: ${{ github.ref }}
+          prCommentEnabled: true
+          outputDirectory: ${{ github.workspace }}/tmp/artifacts
+          emulatedFormFactor: "all"
+          urls: "http://localhost:3000"
+          sha: ${{ github.sha }}
+
+      - name: Handle Lighthouse Check results
+        uses: foo-software/lighthouse-check-status-action@master
+        with:
+          lighthouseCheckResults: ${{ steps.lighthouseCheck.outputs.lighthouseCheckResults }}
+          minAccessibilityScore: "70"
+          minBestPracticesScore: "50"
+          minPerformanceScore: "75"
+          minProgressiveWebAppScore: "10"
+          minSeoScore: "50"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-reports
+          path: ${{ github.workspace }}/tmp/artifacts
