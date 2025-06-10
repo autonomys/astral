@@ -36,6 +36,13 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: explorer
           scope: ${{ secrets.VERCEL_ORG_ID }}
+        env:
+          AUTO_DRIVE_API_KEY: ${{ secrets.AUTO_DRIVE_API_KEY }}
+          AUTO_EVM_RPC_URL: ${{ secrets.AUTO_EVM_RPC_URL }}
+          USER_SESSION_CONTRACT_ADDRESS: ${{ secrets.USER_SESSION_CONTRACT_ADDRESS }}
+          USER_SESSION_PRIVATE_KEY: ${{ secrets.USER_SESSION_PRIVATE_KEY }}
+          NEXT_PUBLIC_MAINNET_INDEXERS: ${{ secrets.NEXT_PUBLIC_MAINNET_INDEXERS }}
+          NEXT_PUBLIC_TAURUS_INDEXERS: ${{ secrets.NEXT_PUBLIC_TAURUS_INDEXERS }}
 
       - name: Wait for deployment to be ready
         run: sleep 30
