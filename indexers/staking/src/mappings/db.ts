@@ -7,6 +7,7 @@ import {
   DomainStakingHistory,
   NominatorsUnlockedEvent,
   OperatorDeregistration,
+  OperatorEpochSharePrice,
   OperatorRegistration,
   OperatorReward,
   OperatorStakingHistory,
@@ -32,6 +33,7 @@ export type Cache = {
   withdrawEvent: WithdrawEvent[];
   unlockedEvent: UnlockedEvent[];
   nominatorsUnlockedEvent: NominatorsUnlockedEvent[];
+  operatorEpochSharePrice: OperatorEpochSharePrice[];
   // only for caching purposes
   parentBlockOperators: Operator[];
   currentWithdrawal: Withdrawal[];
@@ -52,6 +54,7 @@ export const initializeCache = (): Cache => ({
   withdrawEvent: [],
   unlockedEvent: [],
   nominatorsUnlockedEvent: [],
+  operatorEpochSharePrice: [],
   // only for caching purposes
   parentBlockOperators: [],
   currentWithdrawal: [],
@@ -73,6 +76,7 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(`WithdrawEvent`, cache.withdrawEvent),
     store.bulkCreate(`UnlockedEvent`, cache.unlockedEvent),
     store.bulkCreate(`NominatorsUnlockedEvent`, cache.nominatorsUnlockedEvent),
+    store.bulkCreate(`OperatorEpochSharePrice`, cache.operatorEpochSharePrice),
   ]);
 };
 
@@ -437,6 +441,30 @@ export function createOperatorStakingHistory(
     totalStorageFeeDeposit,
     sharePrice,
     partialStatus,
+    timestamp,
+    blockHeight,
+  });
+}
+
+export function createOperatorEpochSharePrice(
+  operatorId: string,
+  domainId: string,
+  epochIndex: number,
+  sharePrice: bigint,
+  totalStake: bigint,
+  totalShares: bigint,
+  timestamp: Date,
+  blockHeight: bigint
+): OperatorEpochSharePrice {
+  const id = `${operatorId}-${domainId}-${epochIndex}`;
+  return OperatorEpochSharePrice.create({
+    id,
+    operatorId,
+    domainId,
+    epochIndex,
+    sharePrice,
+    totalStake,
+    totalShares,
     timestamp,
     blockHeight,
   });

@@ -8,6 +8,7 @@ import { ExtrinsicPrimitive } from "./types";
 import {
   aggregateByDomainId,
   createHashId,
+  deriveOperatorEpochSharePrices,
   detectEpochTransitions,
   groupEventsFromBatchAll,
 } from "./utils";
@@ -39,17 +40,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       : api;
 
   // Use to query the parent block operators (for the last unlock of an operator (unlockNominator))
+  /*
+    One optimization is to store the parent block api and data in global variable to avoid re-querying the same data when processing the next block!
+  */
   const parentBlockApi = unsafeApi
     ? height > 824013 && height <= 835748
       ? apiPatched
       : await unsafeApi.at(parentHash)
     : api;
 
-  /*
-    Notes:
-    1. We should get the epoch index from domainStakingSummary
-
-  */
   const query = [
     apiPatched.query.domains.operators.entries(),
     api.query.domains.domainStakingSummary.entries(),
@@ -121,7 +120,34 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     parentBlockApi,
     height
   );
-  
+
+  // -------------------------------------------------------------------
+  // Derive and store OperatorEpochSharePrice for each transitioned domain
+  // -------------------------------------------------------------------
+  if (epochTransitions.length > 0) {
+    const operatorEpochSharePrices = deriveOperatorEpochSharePrices(
+      epochTransitions,
+      operators,
+      blockTimestamp,
+      height
+    );
+
+    operatorEpochSharePrices.forEach((sharePrice) => {
+      cache.operatorEpochSharePrice.push(
+        db.createOperatorEpochSharePrice(
+          sharePrice.operatorId,
+          sharePrice.domainId,
+          sharePrice.parentEpoch,
+          sharePrice.sharePrice,
+          sharePrice.totalStake,
+          sharePrice.totalShares,
+          sharePrice.blockTimestamp,
+          sharePrice.height
+        )
+      );
+    });
+  }
+
   // logger.info(`queriesResults[1]: ${JSON.stringify(queriesResults[1])}`);
   queriesResults[1].forEach((data) => {
     const keyPrimitive = data[0].toPrimitive() as any;
@@ -145,8 +171,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     );
   });
-
-
 
   // api.query.domains.headDomainNumber.entries(),
   /*

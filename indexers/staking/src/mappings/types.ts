@@ -135,4 +135,5 @@ export interface EpochTransition {
   domainId: string;
   parentEpoch: number;
   currentEpoch: number;
+  parentSummary: any;
 }

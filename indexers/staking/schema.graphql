@@ -195,3 +195,15 @@ type OperatorStakingHistory @entity {
   timestamp: Date!
   blockHeight: BigInt!
 }
+
+type OperatorEpochSharePrice @entity {
+  id: ID! # Format: operatorId-domainId-epochIndex
+  operatorId: String! @index
+  domainId: String! @index
+  epochIndex: Int! @index
+  sharePrice: BigInt!
+  totalStake: BigInt!
+  totalShares: BigInt!
+  timestamp: Date!
+  blockHeight: BigInt!
+}
