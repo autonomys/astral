@@ -51,10 +51,3 @@ jobs:
           NEXT_PUBLIC_MAINNET_INDEXERS: ${{ secrets.NEXT_PUBLIC_MAINNET_INDEXERS }}
           NEXT_PUBLIC_TAURUS_INDEXERS: ${{ secrets.NEXT_PUBLIC_TAURUS_INDEXERS }}
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload reports
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: lighthouse-reports
-          path: explorer/.lighthouseci
