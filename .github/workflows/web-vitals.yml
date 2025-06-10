@@ -79,17 +79,3 @@ jobs:
         with:
           name: lighthouse-reports
           path: ${{ github.workspace }}/tmp/artifacts
-
-      - name: Comment PR with preview URL
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `🚀 **Preview Deployment**: ${{ steps.vercel-deploy.outputs.preview-url }}
-              
-              📊 **Web Vitals Report**: Check the Lighthouse results above for performance metrics.`
-            })
