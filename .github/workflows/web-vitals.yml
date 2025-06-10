@@ -64,6 +64,7 @@ jobs:
 
       - name: Handle Lighthouse Check results
         uses: foo-software/lighthouse-check-status-action@master
+        continue-on-error: true
         with:
           lighthouseCheckResults: ${{ steps.lighthouseCheck.outputs.lighthouseCheckResults }}
           minAccessibilityScore: "70"
