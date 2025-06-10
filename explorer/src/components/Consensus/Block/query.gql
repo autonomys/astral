@@ -18,8 +18,6 @@ query Blocks(
     specId: spec_id
     stateRoot: state_root
     extrinsicsRoot: extrinsics_root
-    spacePledged: space_pledged
-    blockchainSize: blockchain_size
     extrinsicsCount: extrinsics_count
     eventsCount: events_count
     authorId: author_id

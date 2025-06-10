@@ -27361,7 +27361,7 @@ export type BlocksQueryVariables = Exact<{
 }>;
 
 
-export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, timestamp: any, parentHash: string, specId: string, stateRoot: string, extrinsicsRoot: string, spacePledged: any, blockchainSize: any, extrinsicsCount: number, eventsCount: number, authorId: string }> };
+export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, timestamp: any, parentHash: string, specId: string, stateRoot: string, extrinsicsRoot: string, extrinsicsCount: number, eventsCount: number, authorId: string }> };
 
 export type BlockByIdQueryVariables = Exact<{
   blockId: Scalars['String']['input'];
@@ -27493,7 +27493,7 @@ export type HomeQueryVariables = Exact<{
 }>;
 
 
-export type HomeQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, extrinsics_count: number, events_count: number, space_pledged: any, blockchain_size: any, extrinsicsCount: number, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, name: string, timestamp: any, success: boolean }>, cumulative?: { __typename?: 'consensus_cumulative_blocks', cumulative_extrinsics_count: any, cumulative_events_count: any, cumulative_transfers_count: any, cumulative_transfer_value: any, cumulative_rewards_count: any, cumulative_reward_value: any } | null }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null } };
+export type HomeQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, extrinsics_count: number, events_count: number, extrinsicsCount: number, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, name: string, timestamp: any, success: boolean }>, cumulative?: { __typename?: 'consensus_cumulative_blocks', cumulative_extrinsics_count: any, cumulative_events_count: any, cumulative_transfers_count: any, cumulative_transfer_value: any, cumulative_rewards_count: any, cumulative_reward_value: any } | null }>, consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null } };
 
 export type OnChainActivityChartsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -28458,8 +28458,6 @@ export const BlocksDocument = gql`
     specId: spec_id
     stateRoot: state_root
     extrinsicsRoot: extrinsics_root
-    spacePledged: space_pledged
-    blockchainSize: blockchain_size
     extrinsicsCount: extrinsics_count
     eventsCount: events_count
     authorId: author_id
@@ -29229,8 +29227,6 @@ export const HomeDocument = gql`
     timestamp
     extrinsics_count
     events_count
-    space_pledged
-    blockchain_size
     extrinsicsCount: extrinsics_count
     extrinsics(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {
       id
