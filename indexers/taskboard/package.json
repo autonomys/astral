@@ -29,7 +29,6 @@
     "pg": "^8.14.1"
   },
   "devDependencies": {
-    "@types/bull": "^4.10.4",
     "@types/express": "^5.0.1",
     "@types/express-session": "^1.18.1",
     "@types/node": "^22.9.0",

@@ -17,23 +17,27 @@ BEGIN
         type,
         success,
         is_finalized,
-        "timestamp"
+        "timestamp",
+        _id,
+        _block_range
     ) VALUES (
         'consensus_' || NEW.id,                  -- id
         NEW.block_height,                        -- block_height
         NEW.block_hash,                          -- block_hash
         NEW.extrinsic_id,                        -- extrinsic_id
         NEW.event_id,                            -- event_id
-        NEW.from,                                -- from
+        NEW."from",                                -- from
         NEW.from_chain,                          -- from_chain
-        NEW.to,                                  -- to
+        NEW."to",                                  -- to
         NEW.to_chain,                            -- to_chain
         NEW.value,                               -- value
         NEW.fee,                                 -- fee
         NEW.type,                                -- type
         NEW.success,                             -- success
         NEW.is_finalized,                        -- is_finalized
-        NEW."timestamp"                          -- timestamp
+        NEW."timestamp",                          -- timestamp
+        gen_random_uuid(),                       -- _id
+        NEW._block_range                           -- _block_range
     );
     
     RETURN NEW;
@@ -65,23 +69,27 @@ BEGIN
         type,
         success,
         is_finalized,
-        "timestamp"
+        "timestamp",
+        _id,
+        _block_range
     ) VALUES (
         'domain_auto_evm_' || NEW.id,            -- id
         NEW.block_height,                        -- block_height
         NEW.block_hash,                          -- block_hash
         NEW.extrinsic_id,                        -- extrinsic_id
         NEW.event_id,                            -- event_id
-        NEW.from,                                -- from
+        NEW."from",                                -- from
         NEW.from_chain,                          -- from_chain
-        NEW.to,                                  -- to
+        NEW."to",                                  -- to
         NEW.to_chain,                            -- to_chain
         NEW.value,                               -- value
         NEW.fee,                                 -- fee
         NEW.type,                                -- type
         NEW.success,                             -- success
         NEW.is_finalized,                        -- is_finalized
-        NEW."timestamp"                          -- timestamp
+        NEW."timestamp",                          -- timestamp
+        gen_random_uuid(),                       -- _id
+        NEW._block_range                         -- _block_range
     );
     
     RETURN NEW;

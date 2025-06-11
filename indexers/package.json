@@ -5,7 +5,8 @@
   "main": "index.js",
   "license": "MIT",
   "workspaces": [
-    "*"
+    "*",
+    "workers/*"
   ],
   "engines": {
     "node": ">=20.19.0"
@@ -17,8 +18,8 @@
     "build": "lerna run build",
     "codegen": "lerna run codegen --skip-nx-cache",
     "docker:compose-base": "docker compose -p",
-    "docker:dev": "yarn docker:compose-base dev-astral-indexers -f ../docker-compose.yml",
-    "docker:prod": "yarn docker:compose-base prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml",
+    "docker:dev": "yarn docker:compose-base dev-astral-indexers -f ../docker-compose.yml -f ../docker-compose.workers.yml",
+    "docker:prod": "yarn docker:compose-base prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml -f ../docker-compose.workers.yml",
     "docker:dev:up": "yarn docker:dev --profile task --profile indexers up --remove-orphans",
     "docker:prod:up": "yarn docker:prod --profile task --profile indexers up --remove-orphans",
     "docker:dev:bootstrap": "yarn docker:dev up --remove-orphans",
@@ -36,9 +37,22 @@
     "console": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run console",
     "metadata": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run metadata",
     "migrate": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run migrate",
-    "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run apply-seeds:mainnet"
+    "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run apply-seeds:mainnet",
+
+    "alias-prod": "alias dc='docker compose -p prod-astral-indexers -f ../docker-compose.yml'",
+    "alias-dev": "alias dc='docker compose -p dev-astral-indexers -f ../docker-compose.yml'",
+    
+    "dev:consensus": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:dev up -d postgres pgcat hasura redis account-worker consensus_subquery_node --remove-orphans",
+    "dev:domain": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope domain-auto-evm && lerna run build --scope domain-auto-evm && yarn docker:dev -f ../docker-compose.domains.yml up postgres pgcat hasura domain_auto_evm_subquery_node node --remove-orphans",
+    "dev:staking": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope staking && lerna run build --scope staking && yarn docker:dev up -d postgres pgcat hasura staking_subquery_node --remove-orphans",
+    "dev:leaderboard": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope leaderboard && lerna run build --scope leaderboard && yarn docker:dev up postgres pgcat hasura leaderboard_subquery_node node --remove-orphans",
+
+    "prod:consensus": "export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:prod up postgres pgcat hasura redis account-worker consensus_subquery_node node --remove-orphans",
+    "prod:worker:account": "export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:prod up -d postgres pgcat hasura redis account-worker --remove-orphans"
   },
   "dependencies": {
     "lerna": "^8.2.1"
   }
 }
+
+

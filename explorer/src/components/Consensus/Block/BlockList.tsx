@@ -1,7 +1,6 @@
 'use client'
 
-import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { shortString } from '@autonomys/auto-utils'
+import { isHex, shortString } from '@autonomys/auto-utils'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
@@ -14,7 +13,8 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
+import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableSettings } from 'states/tables'
@@ -27,7 +27,8 @@ const TABLE = 'blocks'
 
 export const BlockList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section } = useIndexers()
+  const { network } = useIndexers()
+  const { push } = useRouter()
   const inFocus = useWindowFocus()
   const {
     pagination,
@@ -40,6 +41,37 @@ export const BlockList: FC = () => {
     onSortingChange,
   } = useTableSettings<BlocksFilters>(TABLE)
 
+  // Handle custom search for unique identifiers
+  const handleSearchSubmit = useCallback(
+    (columnName: string, value: string): boolean => {
+      if (value.trim()) {
+        // Block height search - navigate directly
+        if (columnName === 'height') {
+          const blockNumber = Number(value.trim())
+          if (!isNaN(blockNumber) && blockNumber >= 0) {
+            push(INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, blockNumber))
+            return true // Handled
+          }
+        }
+
+        // Hash search - navigate directly
+        if (columnName === 'hash' && isHex(value.trim())) {
+          push(INTERNAL_ROUTES.blocks.hash.page(network, Routes.consensus, value.trim()))
+          return true // Handled
+        }
+
+        // Parent hash search - navigate directly
+        if (columnName === 'parentHash' && isHex(value.trim())) {
+          push(INTERNAL_ROUTES.blocks.hash.page(network, Routes.consensus, value.trim()))
+          return true // Handled
+        }
+      }
+
+      return false // Not handled, use default behavior
+    },
+    [network, push],
+  )
+
   const where = useMemo(
     () => ({
       ...whereForSearch,
@@ -48,30 +80,6 @@ export const BlockList: FC = () => {
         height: {
           ...(filters.heightMin && { _gte: Math.floor(parseFloat(filters.heightMin)).toString() }),
           ...(filters.heightMax && { _lte: Math.floor(parseFloat(filters.heightMax)).toString() }),
-        },
-      }),
-      // Space Pledged
-      ...((filters.spacePledgedMin || filters.spacePledgedMax) && {
-        // eslint-disable-next-line camelcase
-        space_pledged: {
-          ...(filters.spacePledgedMin && {
-            _gte: Math.floor(parseFloat(filters.spacePledgedMin)).toString(),
-          }),
-          ...(filters.spacePledgedMax && {
-            _lte: Math.floor(parseFloat(filters.spacePledgedMax)).toString(),
-          }),
-        },
-      }),
-      // Blockchain Size
-      ...((filters.blockchainSizeMin || filters.blockchainSizeMax) && {
-        // eslint-disable-next-line camelcase
-        blockchain_size: {
-          ...(filters.blockchainSizeMin && {
-            _gte: Math.floor(parseFloat(filters.blockchainSizeMin)).toString(),
-          }),
-          ...(filters.blockchainSizeMax && {
-            _lte: Math.floor(parseFloat(filters.blockchainSizeMax)).toString(),
-          }),
         },
       }),
     }),
@@ -117,12 +125,12 @@ export const BlockList: FC = () => {
   const columns = useMemo(
     () =>
       getTableColumns<Row>(TABLE, selectedColumns, {
-        sortId: ({ row }: Cell<Row>) => (
+        height: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-block-height`}
             data-testid={`block-link-${row.index}`}
             className='hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.height)}
+            href={INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, row.original.height)}
           >
             <div>{row.original.id}</div>
           </Link>
@@ -144,7 +152,7 @@ export const BlockList: FC = () => {
           <AccountIconWithLink
             address={row.original.authorId}
             network={network}
-            section={section}
+            section={Routes.consensus}
           />
         ),
         specId: ({ row }: Cell<Row>) => row.original.specId,
@@ -158,10 +166,8 @@ export const BlockList: FC = () => {
             {shortString(row.original.extrinsicsRoot)}
           </CopyButton>
         ),
-        spacePledged: ({ row }: Cell<Row>) => formatSpaceToDecimal(row.original.spacePledged),
-        blockchainSize: ({ row }: Cell<Row>) => formatSpaceToDecimal(row.original.blockchainSize),
       }),
-    [network, section, selectedColumns],
+    [network, selectedColumns],
   )
 
   const pageCount = useMemo(
@@ -182,7 +188,12 @@ export const BlockList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
-        <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
+        <TableSettings
+          table={TABLE}
+          totalCount={totalCount}
+          filters={filters as BlocksFilters & Record<string, string | undefined>}
+          onSearchSubmit={handleSearchSubmit}
+        />
         {!loading && blocks ? (
           <SortedTable
             data={blocks}

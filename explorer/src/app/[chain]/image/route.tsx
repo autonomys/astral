@@ -1,9 +1,7 @@
 /* eslint-disable react/no-unknown-property */
-import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
 import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
 import { BlockIcon } from 'components/icons/BlockIcon'
 import { LogoIcon } from 'components/icons/LogoIcon'
-import { PieChartIcon } from 'components/icons/PieChartIcon'
 import { WalletIcon } from 'components/icons/WalletIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
@@ -130,37 +128,6 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
               {numberWithCommas(Number(data.consensus_accounts_aggregate.aggregate?.count))}
-            </span>
-          </div>
-        </div>
-        <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-225 mt-65 mb-4 p-6 w-60 h-50'
-          style={{
-            background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
-          }}
-        >
-          <div tw='absolute flex flex-row w-full m-6 justify-center'>
-            <PieChartIcon />
-            <span
-              style={{
-                fontFamily: 'Montserrat',
-              }}
-              tw='absolute text-md text-white mt-24 font-bold'
-            >
-              Total Space Pledged
-            </span>
-            <span
-              style={{
-                fontFamily: 'Montserrat',
-              }}
-              tw='absolute text-2xl text-white p-4 mt-28 font-bold'
-            >
-              {formatSpaceToDecimal(
-                Number(
-                  (data.consensus_blocks[0] as HomeQuery['consensus_blocks'][0])?.space_pledged ||
-                    0,
-                ),
-              )}
             </span>
           </div>
         </div>
