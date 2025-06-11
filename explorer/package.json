@@ -74,6 +74,7 @@
     "next": "^14.2.26",
     "next-auth": "^4.24.11",
     "next-pwa": "^5.6.0",
+    "nextjs-toploader": "^3.8.16",
     "pako": "^2.1.0",
     "qrcode.react": "^3.2.0",
     "rc-slider": "^10.6.2",
