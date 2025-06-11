@@ -31,7 +31,7 @@
     "lint": "eslint . -c .eslintrc --ext ts,tsx",
     "lint:fix": "yarn lint --fix",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
-    "audit:pages": "unlighthouse --site https://explorer.autonomys.xyz",
+    "audit:pages": "unlighthouse",
     "audit:pages:static": "unlighthouse --site https://explorer.autonomys.xyz --build-static"
   },
   "dependencies": {
