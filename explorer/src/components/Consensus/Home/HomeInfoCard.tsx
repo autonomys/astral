@@ -38,7 +38,7 @@ export const HomeInfoCard: FC<Props> = ({
       <div className={`flex h-full flex-col justify-center rounded-[20px] bg-white ${darkBgClass}`}>
         {imagePath && (
           <div className='mb-2 mt-2 flex w-full items-center justify-center align-middle'>
-            <Image src={imagePath} alt={title} width={96} height={96} />
+            <Image src={imagePath} alt={title} width={96} height={96} loading='lazy' />
           </div>
         )}
         {icon && (
