@@ -5,7 +5,9 @@ import {
   DomainBlockHistory,
   DomainInstantiation,
   DomainStakingHistory,
+  NominatorDeposit,
   NominatorsUnlockedEvent,
+  NominatorWithdrawal,
   OperatorDeregistration,
   OperatorEpochSharePrice,
   OperatorRegistration,
@@ -13,6 +15,7 @@ import {
   OperatorStakingHistory,
   OperatorTaxCollection,
   RuntimeCreation,
+  StorageFundAccount,
   UnlockedEvent,
   WithdrawEvent,
 } from "../types";
@@ -34,6 +37,9 @@ export type Cache = {
   unlockedEvent: UnlockedEvent[];
   nominatorsUnlockedEvent: NominatorsUnlockedEvent[];
   operatorEpochSharePrice: OperatorEpochSharePrice[];
+  nominatorDeposit: any[];
+  nominatorWithdrawal: any[];
+  storageFundAccount: any[];
   // only for caching purposes
   parentBlockOperators: Operator[];
   currentWithdrawal: Withdrawal[];
@@ -55,6 +61,9 @@ export const initializeCache = (): Cache => ({
   unlockedEvent: [],
   nominatorsUnlockedEvent: [],
   operatorEpochSharePrice: [],
+  nominatorDeposit: [],
+  nominatorWithdrawal: [],
+  storageFundAccount: [],
   // only for caching purposes
   parentBlockOperators: [],
   currentWithdrawal: [],
@@ -77,6 +86,9 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(`UnlockedEvent`, cache.unlockedEvent),
     store.bulkCreate(`NominatorsUnlockedEvent`, cache.nominatorsUnlockedEvent),
     store.bulkCreate(`OperatorEpochSharePrice`, cache.operatorEpochSharePrice),
+    store.bulkCreate(`NominatorDeposit`, cache.nominatorDeposit),
+    store.bulkCreate(`NominatorWithdrawal`, cache.nominatorWithdrawal),
+    store.bulkCreate(`StorageFundAccount`, cache.storageFundAccount),
   ]);
 };
 
@@ -465,6 +477,85 @@ export function createOperatorEpochSharePrice(
     sharePrice,
     totalStake,
     totalShares,
+    timestamp,
+    blockHeight,
+  });
+}
+
+export function createNominatorDeposit(
+  id: string,
+  accountId: string,
+  operatorId: string,
+  domainId: string,
+  knownShares: bigint,
+  knownStorageFeeDeposit: bigint,
+  pendingAmount: bigint,
+  pendingStorageFeeDeposit: bigint,
+  pendingEffectiveDomainEpoch: bigint,
+  timestamp: Date,
+  blockHeight: bigint
+) {
+  return NominatorDeposit.create({
+    id,
+    accountId,
+    operatorId,
+    domainId,
+    knownShares,
+    knownStorageFeeDeposit,
+    pendingAmount,
+    pendingStorageFeeDeposit,
+    pendingEffectiveDomainEpoch,
+    timestamp,
+    blockHeight,
+  });
+}
+
+export function createNominatorWithdrawal(
+  id: string,
+  accountId: string,
+  operatorId: string,
+  domainId: string,
+  withdrawalInSharesAmount: bigint,
+  withdrawalInSharesStorageFeeRefund: bigint,
+  withdrawalInSharesDomainEpoch: string,
+  withdrawalInSharesUnlockBlock: bigint,
+  totalWithdrawalAmount: bigint,
+  totalStorageFeeWithdrawal: bigint,
+  withdrawalsJson: string,
+  totalPendingWithdrawals: bigint,
+  timestamp: Date,
+  blockHeight: bigint
+) {
+  return NominatorWithdrawal.create({
+    id,
+    accountId,
+    operatorId,
+    domainId,
+    withdrawalInSharesAmount,
+    withdrawalInSharesStorageFeeRefund,
+    withdrawalInSharesDomainEpoch,
+    withdrawalInSharesUnlockBlock,
+    totalWithdrawalAmount,
+    totalStorageFeeWithdrawal,
+    withdrawalsJson,
+    totalPendingWithdrawals,
+    timestamp,
+    blockHeight,
+  });
+}
+
+export function createStorageFundAccount(
+  operatorId: string,
+  accountId: string,
+  balance: bigint,
+  timestamp: Date,
+  blockHeight: bigint
+) {
+  return StorageFundAccount.create({
+    id: operatorId,
+    operatorId,
+    accountId,
+    balance,
     timestamp,
     blockHeight,
   });

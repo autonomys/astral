@@ -17,7 +17,7 @@ import {
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
     block: {
-      header: { number, parentHash },
+      header: { number, parentHash, hash },
       extrinsics,
     },
     timestamp,
@@ -54,14 +54,16 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     api.query.domains.domainStakingSummary.entries(),
     api.query.domains.headDomainNumber.entries(),
     api.query.domains.operatorIdOwner.entries(),
+    // NOTE: deposits are queried later on-demand to avoid fetching large, mostly unchanged data
   ];
 
-
+  // No depositsResultId since deposits are handled later
+  let parentBlockOperatorsIndex: number | null = null;
+  let withdrawalsResultId: number | null = null;
+  let currentQueryIndex = 4; // next index after the static queries
+  
   let blockHasUnlockNominator = false;
   let blockHasWithdrawals = false;
-  let withdrawalsResultId = 4;
-  
-  
   
   if (extrinsics.length > 0) {
     if (
@@ -72,8 +74,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     ) {
       blockHasUnlockNominator = true;
-      withdrawalsResultId = 5;
+      parentBlockOperatorsIndex = currentQueryIndex;
       query.push(parentBlockApi.query.domains.operators.entries());
+      currentQueryIndex++;
     }
     if (
       extrinsics.find(
@@ -82,7 +85,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       )
     ) {
       blockHasWithdrawals = true;
+      withdrawalsResultId = currentQueryIndex;
       query.push(api.query.domains.withdrawals.entries());
+      currentQueryIndex++;
     }
   }
   const queriesResults = await Promise.all(query);
@@ -147,6 +152,22 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       );
     });
   }
+
+  // Build domain summary map for quick access (used later for deposits processing)
+  const domainSummaryMap = new Map<string, any>();
+  currentDomainStakingSummary.forEach((d: any) => {
+    const domainId = (d[0].toPrimitive() as any)[0].toString();
+    domainSummaryMap.set(domainId, d[1].toPrimitive() as any);
+  });
+
+  // Build operator epoch share price map (used later for deposits processing)
+  const oeMap = new Map<string, bigint>();
+  [...cache.operatorEpochSharePrice].forEach((p) => {
+    oeMap.set(
+      `${p.operatorId}-${p.domainId}-${p.epochIndex}`,
+      BigInt(p.sharePrice.toString())
+    );
+  });
 
   // logger.info(`queriesResults[1]: ${JSON.stringify(queriesResults[1])}`);
   queriesResults[1].forEach((data) => {
@@ -243,12 +264,12 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   * 
   */
   if (blockHasUnlockNominator)
-    queriesResults[4].forEach((o) =>
+    queriesResults[parentBlockOperatorsIndex!].forEach((o) =>
       cache.parentBlockOperators.push(parseOperator(o))
     );
 
   if (blockHasWithdrawals)
-    queriesResults[withdrawalsResultId].forEach((o) =>
+    queriesResults[withdrawalsResultId!].forEach((o) =>
       cache.currentWithdrawal.push(parseWithdrawal(o))
     );
 
@@ -339,6 +360,76 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       }
     }
   });
+
+  // -------------------------------------------------------------------
+  // Derive & store NominatorDeposit only for changed nominations or epoch transitions
+  // -------------------------------------------------------------------
+  const changedNominationKeys = new Set<string>();
+  cache.depositEvent.forEach((d) => {
+    changedNominationKeys.add(`${d.operatorId}-${d.accountId}`);
+  });
+  // cache.withdrawEvent.forEach((d) =>
+  //   changedNominationKeys.add(`${d.operatorId}-${d.accountId}`)
+  // );
+  // cache.unlockedEvent.forEach((d) =>
+  //   changedNominationKeys.add(`${d.operatorId}-${d.accountId}`)
+  // );
+
+  // const operatorsWithTransition = new Set<string>();
+  // cache.operatorEpochSharePrice.forEach((p) =>
+  //   operatorsWithTransition.add(p.operatorId)
+  // );
+
+  if (changedNominationKeys.size > 0) {
+    // Operators we need to query deposits for
+    // const operatorIdsToQuery = new Set<string>();
+    // changedNominationKeys.forEach((key) => {
+    //   const [opId] = key.split("-");
+    //   operatorIdsToQuery.add(opId);
+    // });
+    // // operatorsWithTransition.forEach((opId) => operatorIdsToQuery.add(opId));
+
+    const depositsEntries = await Promise.all(
+      cache.depositEvent.map(async (d) => {
+        const res = await api.query.domains.deposits(
+          Number(d.operatorId),
+          d.accountId.toString()
+        );
+        const result = res.toHuman() as any;
+        return {
+          id: createHashId(result),
+          accountId: d.accountId,
+          operatorId: d.operatorId,
+          domainId: result.pending.effectiveDomainEpoch[0].toString(),
+          knownShares: BigInt(result.known.shares.toString().replace(/,/g, "")),
+          knownStorageFeeDeposit: BigInt(result.known.storageFeeDeposit.toString().replace(/,/g, "")),
+          pendingAmount: BigInt(result.pending.amount.toString().replace(/,/g, "")),
+          pendingStorageFeeDeposit: BigInt(result.pending.storageFeeDeposit.toString().replace(/,/g, "")),
+          pendingEffectiveDomainEpoch: BigInt(result.pending.effectiveDomainEpoch[1].toString().replace(/,/g, "")),
+          timestamp: blockTimestamp,
+          blockHeight: height
+        }
+      })
+    );
+
+    depositsEntries.forEach((d) => {
+      cache.nominatorDeposit.push(
+        db.createNominatorDeposit(
+          d.id,
+          d.accountId,
+          d.operatorId,
+          d.domainId,
+          d.knownShares,
+          d.knownStorageFeeDeposit,
+          d.pendingAmount,
+          d.pendingStorageFeeDeposit,
+          d.pendingEffectiveDomainEpoch,
+          d.timestamp,
+          d.blockHeight
+        )
+      );
+    });
+  }
 
   // Save cache
   await db.saveCache(cache);

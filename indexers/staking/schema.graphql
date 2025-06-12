@@ -207,3 +207,45 @@ type OperatorEpochSharePrice @entity {
   timestamp: Date!
   blockHeight: BigInt!
 }
+
+# New entities for current staking state ------------------------------
+
+type NominatorDeposit @entity {
+  id: ID!
+  accountId: String! @index
+  operatorId: String! @index
+  domainId: String! @index
+  knownShares: BigInt!
+  knownStorageFeeDeposit: BigInt!
+  pendingAmount: BigInt!
+  pendingStorageFeeDeposit: BigInt!
+  pendingEffectiveDomainEpoch: BigInt!
+  timestamp: Date!
+  blockHeight: BigInt!
+}
+
+type NominatorWithdrawal @entity {
+  id: ID!
+  accountId: String! @index
+  operatorId: String! @index
+  domainId: String! @index
+  withdrawalInSharesAmount: BigInt!
+  withdrawalInSharesStorageFeeRefund: BigInt!
+  withdrawalInSharesDomainEpoch: String!
+  withdrawalInSharesUnlockBlock: BigInt!
+  totalWithdrawalAmount: BigInt!
+  totalStorageFeeWithdrawal: BigInt!
+  withdrawalsJson: String!
+  totalPendingWithdrawals: BigInt!
+  timestamp: Date!
+  blockHeight: BigInt!
+}
+
+type StorageFundAccount @entity {
+  id: ID!
+  operatorId: String! @index
+  accountId: String!
+  balance: BigInt!
+  timestamp: Date!
+  blockHeight: BigInt!
+}

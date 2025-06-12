@@ -1,4 +1,4 @@
-import { Operator, Withdrawal } from "@autonomys/auto-consensus";
+import { Operator, Withdrawal, parseDeposit } from "@autonomys/auto-consensus";
 import { EventRecord, stringify } from "@autonomys/auto-utils";
 import { createHash } from "crypto";
 import { OperatorStakingHistory } from "../types";
