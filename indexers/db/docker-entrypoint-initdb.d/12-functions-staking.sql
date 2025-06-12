@@ -1156,7 +1156,20 @@ BEGIN
             last_domain_block_number,                       -- domain_block_number_ready_at
             NEW.block_height,                               -- unlocked_at
             NEW.block_height                                -- updated_at
-        );
+        ) ON CONFLICT (id) DO UPDATE SET
+            storage_fee_refund = EXCLUDED.storage_fee_refund,
+            estimated_amount = EXCLUDED.estimated_amount,
+            unlocked_amount = EXCLUDED.unlocked_amount,
+            unlocked_storage_fee = EXCLUDED.unlocked_storage_fee,
+            total_amount = EXCLUDED.total_amount,
+            timestamp = EXCLUDED.timestamp,
+            withdraw_extrinsic_id = EXCLUDED.withdraw_extrinsic_id,
+            unlock_extrinsic_id = EXCLUDED.unlock_extrinsic_id,
+            epoch_withdrawal_requested_at = EXCLUDED.epoch_withdrawal_requested_at,
+            domain_block_number_withdrawal_requested_at = EXCLUDED.domain_block_number_withdrawal_requested_at,
+            domain_block_number_ready_at = EXCLUDED.domain_block_number_ready_at,
+            unlocked_at = EXCLUDED.unlocked_at,
+            updated_at = EXCLUDED.updated_at;
     END IF;
 
     remaining_amount := NEW.amount + NEW.storage_fee;
