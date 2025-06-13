@@ -4,9 +4,7 @@ import { formatAddress } from '@/utils/formatAddress'
 import { useApolloClient } from '@apollo/client'
 import { isAddress } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
-import { NotFound } from 'components/layout/NotFound'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountsDocument, AccountsQuery, AccountsQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
@@ -197,11 +195,10 @@ export const AccountList: FC = () => {
     [apolloClient, orderBy, where],
   )
 
-  const noData = useMemo(() => {
-    if (isLoading(consensusEntry) || loading) return <Spinner isSmall />
-    if (!data) return <NotFound />
-    return null
-  }, [data, loading, consensusEntry])
+  const isDataLoading = useMemo(() => {
+    if (isLoading(consensusEntry) || loading) return true
+    return false
+  }, [loading, consensusEntry])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -211,22 +208,21 @@ export const AccountList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
         <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
-        {!loading && accounts ? (
-          <SortedTable
-            data={accounts}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename={TABLE}
-            fullDataDownloader={fullDataDownloader}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={accounts ?? []}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename={TABLE}
+          fullDataDownloader={fullDataDownloader}
+          loading={isDataLoading}
+          emptyMessage='No accounts found'
+          skeletonLoaderClassName='py-[21px]'
+        />
       </div>
     </div>
   )

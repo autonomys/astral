@@ -1,6 +1,5 @@
 'use client'
 
-import { Spinner } from '@/components/common/Spinner'
 import useMediaQuery from '@/hooks/useMediaQuery'
 import { shortString } from '@autonomys/auto-utils'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
@@ -102,17 +101,16 @@ export const HomeExtrinsicList: FC<Props> = ({ data, loading }) => {
           <ArrowLongRightIcon stroke='#1949D2' className='size-6' />
         </Link>
       </div>
-      {loading || !extrinsics ? (
-        <Spinner isXSmall />
-      ) : (
-        <SortedTable
-          data={extrinsics}
-          columns={columns}
-          showNavigation={false}
-          pageCount={1}
-          filename='home-latest-extrinsics'
-        />
-      )}
+
+      <SortedTable
+        data={extrinsics ?? []}
+        columns={columns}
+        showNavigation={false}
+        pageCount={1}
+        filename='home-latest-extrinsics'
+        loading={loading}
+        emptyMessage='No extrinsics found'
+      />
     </div>
   )
 }
