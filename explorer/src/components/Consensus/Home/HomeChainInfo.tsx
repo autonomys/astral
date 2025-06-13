@@ -28,8 +28,8 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
   const { chain } = useParams<ChainParam>()
   const isDesktop = useMediaQuery('(min-width: 1536px)')
   const [telemetryData, setTelemetryData] = useState<TelemetryData>([])
-  const { spacePledgedVal, loading: spacePledgedLoading } = useSpacePledged(chain || '')
-  const { historySizeVal, loading: historySizeLoading } = useHistorySize(chain || '')
+  const { spacePledgedVal } = useSpacePledged(chain || '')
+  const { historySizeVal } = useHistorySize(chain || '')
 
   const getTelemetryData = useCallback(async () => {
     if (!process.env.NEXT_PUBLIC_TELEMETRY_URL) return
@@ -161,7 +161,7 @@ export const HomeChainInfo: FC<Props> = ({ data, loading }) => {
       modules={[Pagination]}
       className={cn('flex w-full items-center', isDesktop ? 'mb-12 !p-0' : 'mb-4 !pb-10')}
     >
-      {!data || loading || spacePledgedLoading || historySizeLoading
+      {!data || loading
         ? Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={`loader-${index}`}>
               <HomeInfoCardSkeleton key={index} />
