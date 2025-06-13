@@ -25,8 +25,8 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
   const isDesktop = useMediaQuery('(min-width: 1536px)')
   const { chain } = useParams<ChainParam>()
 
-  const { spacePledgedVal, loading: spacePledgedLoading } = useSpacePledged(chain || '')
-  const { historySizeVal, loading: historySizeLoading } = useHistorySize(chain || '')
+  const { spacePledgedVal } = useSpacePledged(chain || '')
+  const { historySizeVal } = useHistorySize(chain || '')
 
   const eventsCount = data
     ? Number(data.consensus_blocks[0].cumulative?.cumulative_events_count)
@@ -124,7 +124,7 @@ export const HomeChainInfoExtra: FC<Props> = ({ data, loading }) => {
       modules={[Pagination]}
       className={cn('flex w-full items-center gap-5', isDesktop ? '!p-0' : '!pb-10')}
     >
-      {!data || loading || spacePledgedLoading || historySizeLoading
+      {!data || loading
         ? Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={`loader-${index}`}>
               <HomeInfoCardSkeleton

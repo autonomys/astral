@@ -4,6 +4,7 @@ import { lang, metadata } from 'constants/metadata'
 import { Metadata, Viewport } from 'next'
 import { Libre_Franklin as LibreFranklin, Roboto_Serif as RobotoSerif } from 'next/font/google'
 import { headers } from 'next/headers'
+import NextTopLoader from 'nextjs-toploader'
 import { Provider } from 'providers'
 import { Toaster } from 'react-hot-toast'
 import type { ChainPageProps } from 'types/app'
@@ -35,6 +36,7 @@ export default async function RootLayout({
       )}
       <head lang='en' />
       <body>
+        <NextTopLoader color='#1949D2' height={2} showSpinner={false} />
         <Toaster position='bottom-center' />
         <Provider>{children}</Provider>
       </body>
