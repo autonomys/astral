@@ -1,6 +1,6 @@
 'use client'
 
-// import { CookieBanner } from 'components/common/CookieBanner'
+import { CookieBanner } from 'components/common/CookieBanner'
 import { ErrorFallback } from 'components/common/ErrorFallback'
 import { useOutOfSyncBanner } from 'components/common/OutOfSyncBanner'
 import { UnsupportedNetworkBanner } from 'components/common/UnsupportedNetworkBanner'
@@ -41,9 +41,9 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
           <Container>{children}</Container>
         </ErrorBoundary>
         <Footer />
-        {/* <div className='fixed bottom-0 z-10 w-full'>
+        <div className='fixed bottom-0 z-10 w-full'>
           <CookieBanner />
-        </div> */}
+        </div>
       </div>
     </div>
   )
