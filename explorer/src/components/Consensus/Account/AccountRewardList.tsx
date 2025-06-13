@@ -6,7 +6,6 @@ import { shortString } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
@@ -33,7 +32,6 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { countTablePages } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { NotFound } from '../../layout/NotFound'
 import { AccountDetailsCard } from './AccountDetailsCard'
 
 type Row = RewardsListQuery['consensus_rewards'][number]
@@ -217,11 +215,10 @@ export const AccountRewardList: FC = () => {
     sendGAEvent('event', 'visit_account_rewards_page', { value: accountId })
   }, [accountId])
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
-    return null
-  }, [consensusEntry, loading])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || !rewards) return true
+    return false
+  }, [consensusEntry, loading, rewards])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -230,7 +227,6 @@ export const AccountRewardList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       {accountId && <AccountDetailsCard account={account} accountAddress={accountId} />}
-
       <div className='mt-5 flex w-full justify-between'>
         <div className='text-base font-medium text-grayDark dark:text-white'>{`Rewards (${totalLabel})`}</div>
       </div>
@@ -238,21 +234,19 @@ export const AccountRewardList: FC = () => {
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='w-full'>
           <div className='my-6 rounded' ref={ref}>
-            {!loading && rewards ? (
-              <SortedTable
-                data={rewards}
-                columns={columns}
-                showNavigation={true}
-                sorting={sorting}
-                onSortingChange={setSorting}
-                pagination={pagination}
-                pageCount={pageCount}
-                onPaginationChange={setPagination}
-                fullDataDownloader={fullDataDownloader}
-              />
-            ) : (
-              noData
-            )}
+            <SortedTable
+              data={rewards || []}
+              columns={columns}
+              showNavigation={true}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              fullDataDownloader={fullDataDownloader}
+              loading={isDataLoading}
+              emptyMessage='No rewards found'
+            />
           </div>
         </div>
       </div>

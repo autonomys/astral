@@ -226,7 +226,7 @@ export const TestnetRewardsTable: FC = () => {
       {!isLoaded || !isAggregated ? (
         <Spinner isSmall />
       ) : (
-        <div className='dark:bg-boxDark mt-4 rounded-lg bg-white p-4 shadow-md dark:border-none dark:bg-gray-800'>
+        <div className='mt-4 rounded-lg bg-white p-4 shadow-md dark:border-none dark:bg-boxDark'>
           <div className='mb-4 mt-4 flex justify-center'>
             <div className='mx-8 flex w-full max-w-6xl items-center justify-between rounded-full border border-blue-600 bg-blue-50 p-8 text-blue-600'>
               <div className='text-2xl font-semibold'>TOTAL ALLOCATION</div>

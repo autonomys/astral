@@ -29072,9 +29072,7 @@ export type ExtrinsicsByBlockHashSuspenseQueryHookResult = ReturnType<typeof use
 export type ExtrinsicsByBlockHashQueryResult = Apollo.QueryResult<ExtrinsicsByBlockHashQuery, ExtrinsicsByBlockHashQueryVariables>;
 export const ExtrinsicsByIdDocument = gql`
     query ExtrinsicsById($extrinsicId: String!) {
-  consensus_extrinsics(
-    where: {_or: [{id: {_eq: $extrinsicId}}, {hash: {_eq: $extrinsicId}}]}
-  ) {
+  consensus_extrinsics(where: {id: {_eq: $extrinsicId}}) {
     id
     hash
     block_height

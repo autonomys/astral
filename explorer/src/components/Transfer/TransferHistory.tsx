@@ -4,7 +4,6 @@ import { utcToLocalRelativeTime } from '@/utils/time'
 import { useApolloClient } from '@apollo/client'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   TransferHistoryDocument,
@@ -27,7 +26,6 @@ import { countTablePages, getTableColumns } from 'utils/table'
 import { AccountIconWithLink } from '../common/AccountIcon'
 import { StatusIcon } from '../common/StatusIcon'
 import { TableSettings } from '../common/TableSettings'
-import { NotFound } from '../layout/NotFound'
 import { WalletButton } from '../WalletButton'
 
 type Row = TransferHistoryQuery['consensus_transfers'][0]
@@ -281,11 +279,10 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
     [totalCount, pagination],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(transfers)) return <Spinner isSmall />
-    if (!hasValue(transfers)) return <NotFound />
-    return null
-  }, [loading, transfers])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(transfers) || !transfersList) return true
+    return false
+  }, [loading, transfers, transfersList])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -304,22 +301,21 @@ export const TransferHistory: FC<TransferHistoryProps> = ({ domainId }) => {
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
         <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
-        {!loading && transfersList ? (
-          <SortedTable
-            data={transfersList}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename='transfer-history'
-            fullDataDownloader={fullDataDownloader}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={transfersList}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename='transfer-history'
+          fullDataDownloader={fullDataDownloader}
+          loading={isDataLoading}
+          emptyMessage='No transfers found'
+          skeletonLoaderClassName='py-[21px]'
+        />
       </div>
     </div>
   )

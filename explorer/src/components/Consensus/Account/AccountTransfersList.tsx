@@ -4,10 +4,8 @@ import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { Tooltip } from 'components/common/Tooltip'
-import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { formatUnits } from 'ethers'
@@ -250,11 +248,10 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     [accountId, network, tokenSymbol],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
-    return null
-  }, [consensusEntry, loading])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || !transfers) return true
+    return false
+  }, [consensusEntry, loading, transfers])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -263,22 +260,21 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   return (
     <div className='flex w-full flex-col sm:mt-0'>
       <div ref={ref}>
-        {!loading && transfers ? (
-          <SortedTable
-            data={transfers}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            filename='account-transfers-list'
-            fullDataDownloader={fullDataDownloader}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={transfers || []}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='account-transfers-list'
+          fullDataDownloader={fullDataDownloader}
+          loading={isDataLoading}
+          emptyMessage='No transfers found'
+          skeletonLoaderClassName='py-[22px]'
+        />
       </div>
     </div>
   )

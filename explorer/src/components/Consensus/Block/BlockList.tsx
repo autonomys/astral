@@ -4,9 +4,7 @@ import { isHex, shortString } from '@autonomys/auto-utils'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
-import { NotFound } from 'components/layout/NotFound'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { BlocksDocument, BlocksQuery, BlocksQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
@@ -175,11 +173,10 @@ export const BlockList: FC = () => {
     [totalCount, pagination],
   )
 
-  const noData = useMemo(() => {
-    if (isLoading(consensusEntry) || loading) return <Spinner isSmall />
-    if (!data) return <NotFound />
-    return null
-  }, [data, consensusEntry, loading])
+  const isDataLoading = useMemo(() => {
+    if (isLoading(consensusEntry) || loading) return true
+    return false
+  }, [consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -194,21 +191,20 @@ export const BlockList: FC = () => {
           filters={filters as BlocksFilters & Record<string, string | undefined>}
           onSearchSubmit={handleSearchSubmit}
         />
-        {!loading && blocks ? (
-          <SortedTable
-            data={blocks}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename={TABLE}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={blocks ?? []}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename={TABLE}
+          loading={isDataLoading}
+          emptyMessage='No blocks found'
+          skeletonLoaderClassName='py-[21px]'
+        />
       </div>
     </div>
   )

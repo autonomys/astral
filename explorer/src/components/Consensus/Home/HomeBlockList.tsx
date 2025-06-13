@@ -1,6 +1,5 @@
 'use client'
 
-import { Spinner } from '@/components/common/Spinner'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
@@ -66,7 +65,7 @@ export const HomeBlockList: FC<Props> = ({ data, loading }) => {
   )
 
   return (
-    <div className='dark:bg-boxDark w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none'>
+    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-boxDark'>
       <div className='mb-6 inline-flex w-full items-center justify-between align-middle'>
         <div className='text-md uppercase leading-normal text-gray-600 dark:text-white'>
           Latest Blocks
@@ -79,17 +78,16 @@ export const HomeBlockList: FC<Props> = ({ data, loading }) => {
           <ArrowLongRightIcon stroke='#1949D2' className='size-6' />
         </Link>
       </div>
-      {loading || !blocks ? (
-        <Spinner isXSmall />
-      ) : (
-        <SortedTable
-          data={blocks}
-          columns={columns}
-          showNavigation={false}
-          pageCount={1}
-          filename='home-latest-blocks'
-        />
-      )}
+
+      <SortedTable
+        data={blocks ?? []}
+        columns={columns}
+        showNavigation={false}
+        pageCount={1}
+        filename='home-latest-blocks'
+        loading={loading}
+        emptyMessage='No blocks found'
+      />
     </div>
   )
 }

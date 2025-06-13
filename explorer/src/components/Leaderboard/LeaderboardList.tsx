@@ -2,7 +2,6 @@
 
 import { DocumentNode, useApolloClient } from '@apollo/client'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   AccountTransferSenderTotalCountQuery,
@@ -24,7 +23,6 @@ import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { AccountIconWithLink } from '../common/AccountIcon'
-import { NotFound } from '../layout/NotFound'
 
 type LeaderboardListProps = {
   query: DocumentNode
@@ -234,10 +232,9 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     [totalCount, pagination.pageSize],
   )
 
-  const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
-    if (!listData) return <NotFound />
-    return null
+  const isDataLoading = useMemo(() => {
+    if (loading || !listData) return true
+    return false
   }, [listData, loading])
 
   useEffect(() => {
@@ -247,22 +244,21 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   return (
     <div className='my-6 flex w-full flex-col rounded align-middle'>
       <div ref={ref}>
-        {listData ? (
-          <SortedTable
-            data={data}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename='leaderboard-vote-block-reward-list'
-            fullDataDownloader={fullDataDownloader}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={data}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename='leaderboard-vote-block-reward-list'
+          fullDataDownloader={fullDataDownloader}
+          loading={isDataLoading}
+          emptyMessage='No data found'
+          skeletonLoaderClassName='py-[21px]'
+        />
       </div>
     </div>
   )

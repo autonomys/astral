@@ -5,7 +5,6 @@ import { useQuery, useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { TableSettings } from 'components/common/TableSettings'
 import { Tooltip } from 'components/common/Tooltip'
@@ -27,7 +26,6 @@ import { useTableSettings } from 'states/tables'
 import { Cell, ExtrinsicsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
-import { NotFound } from '../../layout/NotFound'
 
 type Row =
   | ExtrinsicsSubscription['consensus_extrinsics'][0]
@@ -170,11 +168,10 @@ export const ExtrinsicList: FC = () => {
     return !loading && extrinsics.length
   }, [loading, loadingByBlockHash, stringForSearch, extrinsics])
 
-  const noData = useMemo(() => {
-    if (loading || loadingByBlockHash) return <Spinner isSmall />
-    if (!data && !dataByBlockHash) return <NotFound />
-    return null
-  }, [data, dataByBlockHash, loading, loadingByBlockHash])
+  const isDataLoading = useMemo(() => {
+    if (loading || loadingByBlockHash || !isDataLoaded) return true
+    return false
+  }, [loading, loadingByBlockHash, isDataLoaded])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -185,21 +182,19 @@ export const ExtrinsicList: FC = () => {
           overrideFiltersOptions={[]}
           totalCount={`(${numberWithCommas(currentTotalRecords)}${currentTotalRecords === MAX_RECORDS && Object.keys(stringForSearch).length === 0 ? '+' : ''})`}
         />
-        {isDataLoaded ? (
-          <SortedTable
-            data={extrinsics}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename={TABLE}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={extrinsics}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename={TABLE}
+          loading={isDataLoading}
+          emptyMessage='No extrinsics found'
+        />
       </div>
     </div>
   )

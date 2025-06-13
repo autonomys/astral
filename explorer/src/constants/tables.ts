@@ -38,7 +38,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'authorId', label: 'Block Author', isSelected: true, searchable: true },
   ],
   extrinsics: [
-    { name: 'sortId', label: 'Extrinsic Id', isSelected: true },
+    { name: 'id', label: 'Extrinsic Id', isSelected: true },
     { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },

@@ -1,7 +1,6 @@
 'use client'
 
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { FilesDocument, FilesQuery, FilesQueryVariables } from 'gql/graphql'
@@ -15,7 +14,6 @@ import { useTableSettings } from 'states/tables'
 import { Cell, FilesFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { NotFound } from '../../layout/NotFound'
 
 type Row = FilesQuery['files_files'][0]
 const TABLE = 'files'
@@ -134,11 +132,10 @@ export const FileList: FC = () => {
     [network, section, selectedColumns],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!data) return <NotFound />
-    return null
-  }, [data, consensusEntry, loading])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || !files) return true
+    return false
+  }, [consensusEntry, loading, files])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -148,21 +145,20 @@ export const FileList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
         <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
-        {!loading && files ? (
-          <SortedTable
-            data={files}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename={TABLE}
-          />
-        ) : (
-          noData
-        )}
+
+        <SortedTable
+          data={files ?? []}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename={TABLE}
+          emptyMessage='No files found'
+          loading={isDataLoading}
+        />
       </div>
     </div>
   )

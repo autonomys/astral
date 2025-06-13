@@ -32,9 +32,7 @@ query ExtrinsicsByBlockHash($limit: Int!, $offset: Int, $where: consensus_blocks
 }
 
 query ExtrinsicsById($extrinsicId: String!) {
-  consensus_extrinsics(
-    where: { _or: [{ id: { _eq: $extrinsicId } }, { hash: { _eq: $extrinsicId } }] }
-  ) {
+  consensus_extrinsics(where: { id: { _eq: $extrinsicId } }) {
     id
     hash
     block_height
