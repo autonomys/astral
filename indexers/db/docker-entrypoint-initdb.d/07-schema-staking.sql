@@ -13,6 +13,7 @@ CREATE FUNCTION staking.schema_notification() RETURNS trigger
   $$;
 ALTER FUNCTION staking.schema_notification() OWNER TO postgres;
 
+-- _metadata
 CREATE TABLE staking._metadata (
     key character varying(255) NOT NULL,
     value jsonb,
@@ -21,7 +22,7 @@ CREATE TABLE staking._metadata (
 );
 ALTER TABLE staking._metadata OWNER TO postgres;
 
-
+-- bundle_submissions
 CREATE TABLE staking.bundle_submissions (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -56,24 +57,24 @@ CREATE TABLE staking.bundle_submissions (
 ALTER TABLE staking.bundle_submissions OWNER TO postgres;
 
 -- deposit_events
-CREATE TABLE staking.deposit_events (
+CREATE TABLE staking.nominators_deposits (
     id text NOT NULL,
     account_id text NOT NULL,
-    domain_id text NOT NULL,
     operator_id text NOT NULL,
-    nominator_id text NOT NULL,
-    amount numeric NOT NULL,
-    storage_fee_deposit numeric NOT NULL,
-    total_amount numeric NOT NULL,
-    estimated_shares numeric NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
+    domain_id text NOT NULL,
+    known_shares numeric NOT NULL,
+    known_storage_fee_deposit numeric NOT NULL,
+    pending_amount numeric NOT NULL,
+    pending_storage_fee_deposit numeric NOT NULL,
+    pending_effective_domain_epoch numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
+    block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
-ALTER TABLE staking.deposit_events OWNER TO postgres;
+ALTER TABLE staking.nominators_deposits OWNER TO postgres;
 
 
 -- domain_block_histories
@@ -106,6 +107,7 @@ CREATE TABLE staking.domain_instantiations (
 );
 ALTER TABLE staking.domain_instantiations OWNER TO postgres;
 
+-- domain_staking_histories
 CREATE TABLE staking.domain_staking_histories (
     id text NOT NULL,
     domain_id text NOT NULL,
@@ -430,8 +432,8 @@ ALTER TABLE ONLY staking.accounts
 ALTER TABLE ONLY staking.bundle_submissions
     ADD CONSTRAINT bundle_submissions_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.deposit_events
-    ADD CONSTRAINT deposit_events_pkey PRIMARY KEY (_id);
+ALTER TABLE ONLY staking.nominators_deposits
+    ADD CONSTRAINT nominators_deposits_pkey PRIMARY KEY (_id);
 
     
 ALTER TABLE ONLY staking.domain_instantiations
@@ -509,11 +511,11 @@ CREATE INDEX "staking_withdraw_events_operator_id" ON staking.withdraw_events US
 CREATE INDEX "staking_withdraw_events_nominator_id" ON staking.withdraw_events USING btree (nominator_id);
 
 
--- deposit_events
-CREATE INDEX "0x9addf36a4bded44f" ON staking.deposit_events USING btree (id);
-CREATE INDEX "staking_deposit_events_domain_id" ON staking.deposit_events USING btree (domain_id);
-CREATE INDEX "staking_deposit_events_operator_id" ON staking.deposit_events USING btree (operator_id);
-CREATE INDEX "staking_deposit_events_nominator_id" ON staking.deposit_events USING btree (nominator_id);
+-- nominators_deposits
+CREATE INDEX "0x9addf36a4bded44f" ON staking.nominators_deposits USING btree (id);
+CREATE INDEX "staking_nominators_deposits_domain_id" ON staking.nominators_deposits USING btree (domain_id);
+CREATE INDEX "staking_nominators_deposits_operator_id" ON staking.nominators_deposits USING btree (operator_id);
+CREATE INDEX "staking_nominators_deposits_nominator_id" ON staking.nominators_deposits USING btree (nominator_id);
 
 
 -- operator_registrations

@@ -38,22 +38,6 @@ type OperatorRegistration @entity {
   eventId: String!
 }
 
-type DepositEvent @entity {
-  id: ID!
-  accountId: String!
-  domainId: String!
-  operatorId: String!
-  nominatorId: String!
-  amount: BigInt!
-  storageFeeDeposit: BigInt!
-  totalAmount: BigInt!
-  estimatedShares: BigInt!
-  timestamp: Date!
-  blockHeight: BigInt!
-  extrinsicId: String!
-  eventId: String!
-}
-
 type WithdrawEvent @entity {
   id: ID!
   accountId: String!
@@ -215,6 +199,8 @@ type NominatorDeposit @entity {
   pendingAmount: BigInt!
   pendingStorageFeeDeposit: BigInt!
   pendingEffectiveDomainEpoch: BigInt!
+  extrinsicId: String!
+  eventId: String
   timestamp: Date!
   blockHeight: BigInt!
 }
