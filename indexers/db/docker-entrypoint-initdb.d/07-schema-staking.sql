@@ -75,25 +75,6 @@ CREATE TABLE staking.deposit_events (
 );
 ALTER TABLE staking.deposit_events OWNER TO postgres;
 
--- deposits
-CREATE TABLE staking.deposits (
-    id text NOT NULL,
-    account_id text NOT NULL,
-    domain_id text NOT NULL,
-    operator_id text NOT NULL,
-    nominator_id text NOT NULL,
-    amount numeric NOT NULL,
-    storage_fee_deposit numeric NOT NULL,
-    total_amount numeric NOT NULL,
-    estimated_shares numeric NOT NULL,
-    total_withdrawn numeric NOT NULL,
-    status text NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL,
-    extrinsic_id text NOT NULL,
-    created_at numeric NOT NULL,
-    updated_at numeric NOT NULL
-);
-ALTER TABLE staking.deposits OWNER TO postgres;
 
 -- domain_block_histories
 CREATE TABLE staking.domain_block_histories (
@@ -456,8 +437,6 @@ ALTER TABLE ONLY staking.bundle_submissions
 ALTER TABLE ONLY staking.deposit_events
     ADD CONSTRAINT deposit_events_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.deposits
-    ADD CONSTRAINT deposits_pkey PRIMARY KEY (id);
     
 ALTER TABLE ONLY staking.domain_instantiations
     ADD CONSTRAINT domain_instantiations_pkey PRIMARY KEY (_id);
@@ -556,12 +535,6 @@ CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btre
 -- runtime_creations
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
 
--- deposits
-CREATE INDEX "staking_deposits_id" ON staking.deposits USING btree (id);
-CREATE INDEX "staking_deposits_domain_id" ON staking.deposits USING btree (domain_id);
-CREATE INDEX "staking_deposits_operator_id" ON staking.deposits USING btree (operator_id);
-CREATE INDEX "staking_deposits_nominator_id" ON staking.deposits USING btree (nominator_id);
-CREATE INDEX "staking_deposits_status" ON staking.deposits USING btree ("status");
 
 -- domains
 CREATE INDEX "staking_domains_id" ON staking.domains USING btree (id);
