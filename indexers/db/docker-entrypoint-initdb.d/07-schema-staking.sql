@@ -21,30 +21,6 @@ CREATE TABLE staking._metadata (
 );
 ALTER TABLE staking._metadata OWNER TO postgres;
 
-CREATE TABLE staking.accounts (
-    id text NOT NULL,
-    total_deposits numeric NOT NULL,
-    total_estimated_withdrawals numeric NOT NULL,
-    total_withdrawals numeric NOT NULL,
-    total_deposits_count numeric NOT NULL,
-    total_withdrawals_count numeric NOT NULL,
-    total_tax_collected numeric NOT NULL,
-    total_tax_collected_count numeric NOT NULL,
-    total_rewards_collected numeric NOT NULL,
-    total_rewards_collected_count numeric NOT NULL,
-    current_total_stake numeric NOT NULL,
-    current_storage_fee_deposit numeric NOT NULL,
-    current_total_shares numeric NOT NULL,
-    current_share_price numeric NOT NULL,
-    accumulated_epoch_stake numeric NOT NULL,
-    accumulated_epoch_storage_fee_deposit numeric NOT NULL,
-    accumulated_epoch_shares numeric NOT NULL,
-    created_at numeric NOT NULL,
-    updated_at numeric NOT NULL
-);
-ALTER TABLE staking.accounts OWNER TO postgres;
-
-
 
 CREATE TABLE staking.bundle_submissions (
     id text NOT NULL,
@@ -579,9 +555,6 @@ CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btre
 
 -- runtime_creations
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
-
--- accounts
-CREATE INDEX "staking_accounts_id" ON staking.accounts USING btree (id);
 
 -- deposits
 CREATE INDEX "staking_deposits_id" ON staking.deposits USING btree (id);
