@@ -93,7 +93,6 @@ ALTER TABLE staking.domain_block_histories OWNER TO postgres;
 -- domain_instantiations
 CREATE TABLE staking.domain_instantiations (
     id text NOT NULL,
-    sort_id text NOT NULL,
     name text NOT NULL,
     runtime_id integer NOT NULL,
     runtime text NOT NULL,
@@ -123,10 +122,9 @@ ALTER TABLE staking.domain_staking_histories OWNER TO postgres;
 
 
 
--- domains schema
+-- domains schema  - this schema doesn't exist in graphql schema
 CREATE TABLE staking.domains (
     id text NOT NULL,
-    sort_id text NOT NULL,
     account_id text NOT NULL,
     name text NOT NULL,
     runtime_id text NOT NULL,
@@ -162,7 +160,7 @@ ALTER TABLE staking.domains OWNER TO postgres;
 
 
 
--- nominator schema
+-- nominator schema  - this schema doesn't exist in graphql schema
 CREATE TABLE staking.nominators (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -214,7 +212,6 @@ ALTER TABLE staking.operator_deregistrations OWNER TO postgres;
 
 CREATE TABLE staking.operator_registrations (
     id text NOT NULL,
-    sort_id text NOT NULL,
     owner text NOT NULL,
     domain_id text NOT NULL,
     signing_key text NOT NULL,
@@ -281,10 +278,9 @@ ALTER TABLE staking.operator_tax_collections OWNER TO postgres;
 
 
 
--- operators
+-- operators  - this schema doesn't exist in graphql schema
 CREATE TABLE staking.operators (
     id text NOT NULL,
-    sort_id text NOT NULL,
     account_id text NOT NULL,
     domain_id text NOT NULL,
     signing_key text NOT NULL,
@@ -331,7 +327,6 @@ ALTER TABLE staking.operators OWNER TO postgres;
 -- runtime_creations
 CREATE TABLE staking.runtime_creations (
     id text NOT NULL,
-    sort_id text NOT NULL,
     name text NOT NULL,
     type text NOT NULL,
     created_by text NOT NULL,
@@ -380,7 +375,6 @@ ALTER TABLE staking.nominators_unlocked_events OWNER TO postgres;
 -- withdraw_events
 CREATE TABLE staking.withdraw_events (
     id text NOT NULL,
-    sort_id text NOT NULL,
     account_id text NOT NULL,
     domain_id text NOT NULL,
     operator_id text NOT NULL,
@@ -399,7 +393,7 @@ CREATE TABLE staking.withdraw_events (
 ALTER TABLE staking.withdraw_events OWNER TO postgres;
 
 
--- withdrawals
+-- withdrawals - this schema doesn't exist in graphql schema
 CREATE TABLE staking.withdrawals (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -424,6 +418,8 @@ CREATE TABLE staking.withdrawals (
     updated_at numeric NOT NULL
 );
 ALTER TABLE staking.withdrawals OWNER TO postgres;
+
+
 
 ALTER TABLE ONLY staking._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);

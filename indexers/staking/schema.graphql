@@ -6,7 +6,6 @@
 
 type RuntimeCreation @entity {
   id: ID!
-  sortId: String!
   name: String!
   type: String!
   createdBy: String!
@@ -17,7 +16,6 @@ type RuntimeCreation @entity {
 
 type DomainInstantiation @entity {
   id: ID!
-  sortId: String!
   name: String!
   runtimeId: Int!
   runtime: String!
@@ -30,7 +28,6 @@ type DomainInstantiation @entity {
 
 type OperatorRegistration @entity {
   id: ID!
-  sortId: String!
   owner: String!
   domainId: String!
   signingKey: String!
@@ -43,7 +40,6 @@ type OperatorRegistration @entity {
 
 type DepositEvent @entity {
   id: ID!
-  sortId: String!
   accountId: String!
   domainId: String!
   operatorId: String!
@@ -60,7 +56,6 @@ type DepositEvent @entity {
 
 type WithdrawEvent @entity {
   id: ID!
-  sortId: String!
   accountId: String!
   domainId: String!
   operatorId: String!
