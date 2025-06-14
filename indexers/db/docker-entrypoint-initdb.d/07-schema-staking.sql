@@ -183,10 +183,7 @@ CREATE TABLE staking.domains (
     runtime_id text NOT NULL,
     runtime text NOT NULL,
     runtime_info text NOT NULL,
-    completed_epoch numeric NOT NULL,
-    last_domain_block_number numeric NOT NULL,
     total_deposits numeric NOT NULL,
-    total_estimated_withdrawals numeric NOT NULL,
     total_withdrawals numeric NOT NULL,
     total_deposits_count numeric NOT NULL,
     total_withdrawals_count numeric NOT NULL,
@@ -204,29 +201,10 @@ CREATE TABLE staking.domains (
     total_consensus_storage_fee numeric NOT NULL,
     total_domain_execution_fee numeric NOT NULL,
     total_burned_balance numeric NOT NULL,
-    current_total_stake numeric NOT NULL,
-    current_storage_fee_deposit numeric NOT NULL,
-    current_total_shares numeric NOT NULL,
-    current_share_price numeric NOT NULL,
-    current_1d_yield numeric NOT NULL,
-    current_7d_yield numeric NOT NULL,
-    current_30d_yield numeric NOT NULL,
-    current_1d_apy numeric NOT NULL,
-    current_7d_apy numeric NOT NULL,
-    current_30d_apy numeric NOT NULL,
-    accumulated_epoch_stake numeric NOT NULL,
     accumulated_epoch_storage_fee_deposit numeric NOT NULL,
     accumulated_epoch_rewards numeric NOT NULL,
     accumulated_epoch_shares numeric NOT NULL,
-    bundle_count numeric NOT NULL,
     reward_count numeric NOT NULL,
-    tax_collected_count numeric NOT NULL,
-    current_epoch_duration numeric NOT NULL,
-    last_epoch_duration numeric NOT NULL,
-    last6_epochs_duration numeric NOT NULL,
-    last144_epoch_duration numeric NOT NULL,
-    last1k_epoch_duration numeric NOT NULL,
-    last_bundle_at numeric NOT NULL,
     extrinsic_id text NOT NULL,
     created_at numeric NOT NULL,
     updated_at numeric NOT NULL
@@ -536,43 +514,87 @@ ALTER TABLE ONLY staking.withdraw_events
 ALTER TABLE ONLY staking.withdrawals
     ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id);
 
+
+
+-- unlocked_events
 CREATE INDEX "0x095f76af1e0896c7" ON staking.unlocked_events USING btree (id);
+
+-- operator_deregistrations
 CREATE INDEX "0x17ee75861ab4beba" ON staking.operator_deregistrations USING btree (id);
+
+-- operator_rewards
 CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
+
+-- operator_tax_collections
 CREATE INDEX "0x3a7ed99d2776ff11" ON staking.operator_tax_collections USING btree (id);
+
+
+-- domain_block_histories
 CREATE INDEX "0x59e52a1d9c35dee5" ON staking.domain_block_histories USING btree (id);
 CREATE INDEX "staking_domain_block_histories_domain_id" ON staking.domain_block_histories USING btree (domain_id);
 CREATE INDEX "staking_domain_block_histories_domain_block_height" ON staking.domain_block_histories USING btree (domain_id, block_height DESC);
+
+-- domain_instantiations
 CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (id);
+
+-- withdraw_events
 CREATE INDEX "0x72774937664e8211" ON staking.withdraw_events USING btree (id);
 CREATE INDEX "staking_withdraw_events_domain_id" ON staking.withdraw_events USING btree (domain_id);
 CREATE INDEX "staking_withdraw_events_operator_id" ON staking.withdraw_events USING btree (operator_id);
 CREATE INDEX "staking_withdraw_events_nominator_id" ON staking.withdraw_events USING btree (nominator_id);
+
+
+-- deposit_events
 CREATE INDEX "0x9addf36a4bded44f" ON staking.deposit_events USING btree (id);
 CREATE INDEX "staking_deposit_events_domain_id" ON staking.deposit_events USING btree (domain_id);
 CREATE INDEX "staking_deposit_events_operator_id" ON staking.deposit_events USING btree (operator_id);
 CREATE INDEX "staking_deposit_events_nominator_id" ON staking.deposit_events USING btree (nominator_id);
+
+
+-- operator_registrations
 CREATE INDEX "0xa3309c82ddfd9389" ON staking.operator_registrations USING btree (id);
+
+-- operator_staking_histories
 CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING btree (id);
+
+-- bundle_submissions
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
+
+-- domain_staking_histories
 CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btree (id);
+
+-- runtime_creations
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
+
+-- accounts
 CREATE INDEX "staking_accounts_id" ON staking.accounts USING btree (id);
+
+-- deposits
 CREATE INDEX "staking_deposits_id" ON staking.deposits USING btree (id);
 CREATE INDEX "staking_deposits_domain_id" ON staking.deposits USING btree (domain_id);
 CREATE INDEX "staking_deposits_operator_id" ON staking.deposits USING btree (operator_id);
 CREATE INDEX "staking_deposits_nominator_id" ON staking.deposits USING btree (nominator_id);
 CREATE INDEX "staking_deposits_status" ON staking.deposits USING btree ("status");
+
+-- domain_epochs
 CREATE INDEX "staking_domain_epochs_id" ON staking.domain_epochs USING btree (id);
 CREATE INDEX "staking_domains_id" ON staking.domains USING btree (id);
+
+-- domains
 CREATE INDEX "staking_domains_id_last_domain_block_number" ON staking.domains (id, last_domain_block_number);
+
+-- nominators
 CREATE INDEX "staking_nominators_id" ON staking.nominators USING btree (id);
 CREATE INDEX "staking_nominators_domain_id" ON staking.nominators USING btree (domain_id);
 CREATE INDEX "staking_nominators_operator_id" ON staking.nominators USING btree (operator_id);
 CREATE INDEX "staking_nominators_status" ON staking.nominators USING btree ("status");
+
+-- operators
 CREATE INDEX "staking_operators_id" ON staking.operators USING btree (id);
 CREATE INDEX "staking_operators_domain_id" ON staking.operators USING btree (domain_id);
 CREATE INDEX "staking_operators_status" ON staking.operators USING btree ("status");
+
+-- withdrawals
 CREATE INDEX "staking_withdrawals_id" ON staking.withdrawals USING btree (id);
 CREATE INDEX "staking_withdrawals_domain_id" ON staking.withdrawals USING btree (domain_id);
 CREATE INDEX "staking_withdrawals_operator_id" ON staking.withdrawals USING btree (operator_id);
