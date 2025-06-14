@@ -44,6 +44,8 @@ CREATE TABLE staking.accounts (
 );
 ALTER TABLE staking.accounts OWNER TO postgres;
 
+
+
 CREATE TABLE staking.bundle_submissions (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -77,9 +79,9 @@ CREATE TABLE staking.bundle_submissions (
 );
 ALTER TABLE staking.bundle_submissions OWNER TO postgres;
 
+-- deposit_events
 CREATE TABLE staking.deposit_events (
     id text NOT NULL,
-    sort_id text NOT NULL,
     account_id text NOT NULL,
     domain_id text NOT NULL,
     operator_id text NOT NULL,
@@ -97,6 +99,7 @@ CREATE TABLE staking.deposit_events (
 );
 ALTER TABLE staking.deposit_events OWNER TO postgres;
 
+-- deposits
 CREATE TABLE staking.deposits (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -116,6 +119,7 @@ CREATE TABLE staking.deposits (
 );
 ALTER TABLE staking.deposits OWNER TO postgres;
 
+-- domain_block_histories
 CREATE TABLE staking.domain_block_histories (
     id text NOT NULL,
     domain_id text NOT NULL,
@@ -127,24 +131,9 @@ CREATE TABLE staking.domain_block_histories (
 );
 ALTER TABLE staking.domain_block_histories OWNER TO postgres;
 
-CREATE TABLE staking.domain_epochs (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    epoch numeric NOT NULL,
-    domain_block_number_start numeric NOT NULL,
-    domain_block_number_end numeric NOT NULL,
-    domain_block_count numeric NOT NULL,
-    timestamp_start timestamp without time zone NOT NULL,
-    timestamp_end timestamp without time zone NOT NULL,
-    epoch_duration numeric NOT NULL,
-    consensus_block_number_start numeric NOT NULL,
-    consensus_block_number_end numeric NOT NULL,
-    consensus_block_count numeric NOT NULL,
-    created_at numeric NOT NULL,
-    updated_at numeric NOT NULL
-);
-ALTER TABLE staking.domain_epochs OWNER TO postgres;
 
+
+-- domain_instantiations
 CREATE TABLE staking.domain_instantiations (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -175,6 +164,9 @@ CREATE TABLE staking.domain_staking_histories (
 );
 ALTER TABLE staking.domain_staking_histories OWNER TO postgres;
 
+
+
+-- domains schema
 CREATE TABLE staking.domains (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -211,6 +203,9 @@ CREATE TABLE staking.domains (
 );
 ALTER TABLE staking.domains OWNER TO postgres;
 
+
+
+-- nominator schema
 CREATE TABLE staking.nominators (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -245,6 +240,9 @@ CREATE TABLE staking.nominators (
 );
 ALTER TABLE staking.nominators OWNER TO postgres;
 
+
+
+-- operator schema
 CREATE TABLE staking.operator_deregistrations (
     id text NOT NULL,
     owner text NOT NULL,
@@ -273,6 +271,7 @@ CREATE TABLE staking.operator_registrations (
 );
 ALTER TABLE staking.operator_registrations OWNER TO postgres;
 
+-- operator_rewards
 CREATE TABLE staking.operator_rewards (
     id text NOT NULL,
     domain_id text NOT NULL,
@@ -287,6 +286,7 @@ CREATE TABLE staking.operator_rewards (
 );
 ALTER TABLE staking.operator_rewards OWNER TO postgres;
 
+-- operator_staking_histories
 CREATE TABLE staking.operator_staking_histories (
     id text NOT NULL,
     operator_id text NOT NULL,
@@ -307,6 +307,7 @@ CREATE TABLE staking.operator_staking_histories (
 );
 ALTER TABLE staking.operator_staking_histories OWNER TO postgres;
 
+-- operator_tax_collections
 CREATE TABLE staking.operator_tax_collections (
     id text NOT NULL,
     domain_id text NOT NULL,
@@ -320,6 +321,10 @@ CREATE TABLE staking.operator_tax_collections (
 );
 ALTER TABLE staking.operator_tax_collections OWNER TO postgres;
 
+
+
+
+-- operators
 CREATE TABLE staking.operators (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -363,6 +368,10 @@ CREATE TABLE staking.operators (
 );
 ALTER TABLE staking.operators OWNER TO postgres;
 
+
+
+
+-- runtime_creations
 CREATE TABLE staking.runtime_creations (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -377,6 +386,8 @@ CREATE TABLE staking.runtime_creations (
 );
 ALTER TABLE staking.runtime_creations OWNER TO postgres;
 
+
+-- unlocked_events
 CREATE TABLE staking.unlocked_events (
     id text NOT NULL,
     domain_id text NOT NULL,
@@ -394,6 +405,8 @@ CREATE TABLE staking.unlocked_events (
 );
 ALTER TABLE staking.unlocked_events OWNER TO postgres;
 
+
+-- nominators_unlocked_events
 CREATE TABLE staking.nominators_unlocked_events (
     id text NOT NULL,
     domain_id text NOT NULL,
@@ -406,6 +419,8 @@ CREATE TABLE staking.nominators_unlocked_events (
 );
 ALTER TABLE staking.nominators_unlocked_events OWNER TO postgres;
 
+
+-- withdraw_events
 CREATE TABLE staking.withdraw_events (
     id text NOT NULL,
     sort_id text NOT NULL,
@@ -426,6 +441,8 @@ CREATE TABLE staking.withdraw_events (
 );
 ALTER TABLE staking.withdraw_events OWNER TO postgres;
 
+
+-- withdrawals
 CREATE TABLE staking.withdrawals (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -465,9 +482,6 @@ ALTER TABLE ONLY staking.deposit_events
 
 ALTER TABLE ONLY staking.deposits
     ADD CONSTRAINT deposits_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY staking.domain_epochs
-    ADD CONSTRAINT domain_epochs_pkey PRIMARY KEY (id);
     
 ALTER TABLE ONLY staking.domain_instantiations
     ADD CONSTRAINT domain_instantiations_pkey PRIMARY KEY (_id);
@@ -576,8 +590,7 @@ CREATE INDEX "staking_deposits_operator_id" ON staking.deposits USING btree (ope
 CREATE INDEX "staking_deposits_nominator_id" ON staking.deposits USING btree (nominator_id);
 CREATE INDEX "staking_deposits_status" ON staking.deposits USING btree ("status");
 
--- domain_epochs
-CREATE INDEX "staking_domain_epochs_id" ON staking.domain_epochs USING btree (id);
+-- domains
 CREATE INDEX "staking_domains_id" ON staking.domains USING btree (id);
 
 -- domains
