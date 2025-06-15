@@ -174,19 +174,12 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     const keyPrimitive = data[0].toPrimitive() as any;
     const valuePrimitive = data[1].toPrimitive() as any;
     const domainId = keyPrimitive[0].toString();
-    const { totalStake, totalShares } = aggregateByDomainId(
-      operators,
-      BigInt(domainId)
-    );
-    const sharePrice = totalStake > 0 ? totalStake / totalShares : ZERO_BIGINT;
     cache.domainStakingHistory.push(
       db.createDomainStakingHistory(
         createHashId(data), // id
-        keyPrimitive[0].toString(), // domainId
+        domainId,
         valuePrimitive.currentEpochIndex.toString(), // currentEpochIndex
         valuePrimitive.currentTotalStake.toString(), // currentTotalStake
-        totalShares, // currentTotalShares
-        sharePrice, // sharePrice
         blockTimestamp, // timestamp
         height // blockHeight
       )

@@ -270,3 +270,126 @@ export const deriveOperatorEpochSharePrices = (
   return operatorEpochSharePrices;
 };
 
+/**
+ * Derive nominator deposit entities from on-chain deposits state
+ * TO BE MOVED TO STAKING WORKER
+ */
+export const deriveNominatorDeposits = (
+  depositsEntries: any[],
+  operators: any[],
+  domainSummaryMap: Map<string, any>,
+  operatorEpochSharePriceMap: Map<string, bigint>,
+  changedNominationKeys: Set<string>,
+  blockTimestamp: Date,
+  height: bigint
+) => {
+  // Filter and process only nominations that changed or belong to operators whose
+  // share-price changed due to an epoch transition.
+  const results: any[] = [];
+
+  const operatorMap = new Map<string, any>();
+  operators.forEach((op) => operatorMap.set(op.operatorId.toString(), op));
+
+  for (const [key, value] of depositsEntries) {
+    // Use parseDeposit to properly extract operatorId and accountId
+    const deposit = parseDeposit([key, value]);
+    const operatorId = deposit.operatorId.toString();
+    const accountId = deposit.account;
+
+    const nominationKey = `${operatorId}-${accountId}`;
+
+    // We'll decide later whether to include this nomination based on either
+    // explicit extrinsic-impact (changedNominationKeys) or matured pending.
+
+    const domainId =
+      operatorMap.get(operatorId)?.operatorDetails.currentDomainId.toString() ?? "";
+    if (!domainId) continue;
+
+    const known = deposit.known;
+    const pending = deposit.pending;
+
+    const knownShares: bigint = BigInt(known.shares.toString());
+    const knownStorageFD: bigint = BigInt(known.storageFeeDeposit.toString());
+
+    let pendingAmount: bigint = ZERO_BIGINT;
+    let pendingStorageFD: bigint = ZERO_BIGINT;
+    let pendingEpochStr = "";
+
+    let postPendingShares: bigint = ZERO_BIGINT;
+    let postPendingStorageFD: bigint = ZERO_BIGINT;
+    let pendingMatured = false;
+
+    if (pending) {
+      pendingAmount = BigInt(pending.amount.toString());
+      pendingStorageFD = BigInt(pending.storageFeeDeposit.toString());
+      pendingEpochStr = JSON.stringify(pending.effectiveDomainEpoch);
+
+      // Handle effectiveDomainEpoch - it might be [domainId, epochIdx] or just epochIdx
+      let dId: number;
+      let epochIdx: number;
+
+      epochIdx = pending.effectiveDomainEpoch as number;
+      dId = parseInt(domainId);
+
+      const sharePriceKey = `${operatorId}-${dId}-${epochIdx}`;
+      const sharePrice = operatorEpochSharePriceMap.get(sharePriceKey);
+      if (sharePrice && sharePrice > ZERO_BIGINT) {
+        postPendingShares =
+          (pendingAmount * SHARES_CALCULATION_MULTIPLIER) / sharePrice;
+        postPendingStorageFD = pendingStorageFD;
+        pendingMatured = true;
+      }
+    }
+
+    // Skip if this nomination neither changed via extrinsic nor had its pending matured
+    if (!changedNominationKeys.has(nominationKey) && !pendingMatured) {
+      continue;
+    }
+
+    // instant share price
+    const operator = operatorMap.get(operatorId);
+    if (!operator) continue;
+    const domainSummary = domainSummaryMap.get(domainId);
+    const rewardMap = (domainSummary?.currentEpochRewards as any) ?? {};
+    const reward = BigInt(rewardMap[operatorId] ?? 0);
+    const nominationTax = BigInt(operator.operatorDetails.nominationTax ?? 0);
+    const taxedReward = reward - (reward * nominationTax) / BigInt(100);
+
+    const instantSharePrice =
+      operator.operatorDetails.currentTotalShares === ZERO_BIGINT
+        ? ZERO_BIGINT
+        : ((operator.operatorDetails.currentTotalStake + taxedReward) *
+            SHARES_CALCULATION_MULTIPLIER) /
+          operator.operatorDetails.currentTotalShares;
+
+    const stakedAmount =
+      ((knownShares + postPendingShares) * instantSharePrice) /
+      SHARES_CALCULATION_MULTIPLIER;
+
+    // storageFund placeholder
+    const storageFund = ZERO_BIGINT;
+    const totalReward =
+      pendingAmount + pendingStorageFD + knownStorageFD - stakedAmount - storageFund;
+
+    results.push({
+      id: `${accountId}-${domainId}-${operatorId}`,
+      accountId,
+      operatorId,
+      domainId,
+      knownShares,
+      knownStorageFeeDeposit: knownStorageFD,
+      pendingAmount,
+      pendingStorageFeeDeposit: pendingStorageFD,
+      pendingEffectiveDomainEpoch: pendingEpochStr,
+      postPendingShares,
+      postPendingStorageFeeDeposit: postPendingStorageFD,
+      stakedAmount,
+      storageFund,
+      totalReward,
+      timestamp: blockTimestamp,
+      blockHeight: height,
+    });
+  }
+
+  return results;
+};

@@ -114,8 +114,6 @@ CREATE TABLE staking.domain_staking_histories (
     domain_id text NOT NULL,
     current_epoch_index integer NOT NULL,
     current_total_stake numeric NOT NULL,
-    current_total_shares numeric NOT NULL,
-    share_price numeric NOT NULL,
     timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     _id uuid NOT NULL,
