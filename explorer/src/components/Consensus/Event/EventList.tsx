@@ -5,7 +5,6 @@ import { numberWithCommas } from '@/utils/number'
 import { useQuery, useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
@@ -26,7 +25,6 @@ import { useTableSettings } from 'states/tables'
 import { Cell, EventsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
-import { NotFound } from '../../layout/NotFound'
 
 type Row =
   | EventsSubscription['consensus_events'][0]
@@ -176,11 +174,10 @@ export const EventList: FC = () => {
     return !loading && events
   }, [loading, loadingByBlockHash, events, stringForSearch])
 
-  const noData = useMemo(() => {
-    if (loading || loadingByBlockHash) return <Spinner isSmall />
-    if (!data && !dataByBlockHash) return <NotFound />
-    return null
-  }, [data, dataByBlockHash, loading, loadingByBlockHash])
+  const isDataLoading = useMemo(() => {
+    if (loading || loadingByBlockHash || !isDataLoaded) return true
+    return false
+  }, [loading, loadingByBlockHash, isDataLoaded])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -191,21 +188,19 @@ export const EventList: FC = () => {
           overrideFiltersOptions={[]}
           totalCount={`(${numberWithCommas(currentTotalRecords)}${currentTotalRecords === MAX_RECORDS && Object.keys(stringForSearch).length === 0 ? '+' : ''})`}
         />
-        {isDataLoaded ? (
-          <SortedTable
-            data={events}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename={TABLE}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={events}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename={TABLE}
+          loading={isDataLoading}
+          emptyMessage='No events found'
+        />
       </div>
     </div>
   )

@@ -7,14 +7,22 @@ import {
 import { Table, flexRender } from '@tanstack/react-table'
 import type { SortingOptions } from '@tanstack/table-core/'
 import { ColumnMeta } from 'types/table'
+import { SkeletonRow } from './TableSkeleton'
 import { Tooltip } from './Tooltip'
 
 interface TableProps<T extends object> {
   table: Table<T>
   emptyMessage?: string
+  loading?: boolean
+  skeletonLoaderClassName?: string
 }
 
-export const DesktopTable = <T extends object>({ table, emptyMessage }: TableProps<T>) => (
+export const DesktopTable = <T extends object>({
+  table,
+  emptyMessage,
+  loading,
+  skeletonLoaderClassName,
+}: TableProps<T>) => (
   <div className='overflow-x-auto'>
     <table className='w-full min-w-max table-auto rounded-[20px] bg-white dark:border-none dark:bg-boxDark'>
       <thead className='border-b border-gray-200 text-sm text-blueShade dark:text-white/75'>
@@ -76,7 +84,17 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
         ))}
       </thead>
       <tbody className='text-sm font-light text-gray-600 dark:text-white'>
-        {table.getRowModel().rows.length ? (
+        {loading ? (
+          // Show skeleton rows when loading
+          Array.from({ length: table.getRowCount() || 10 }).map((_, index) => (
+            <SkeletonRow
+              key={index}
+              columnsCount={table.getAllColumns().length}
+              isLastRow={index === table.getRowCount() - 1}
+              className={skeletonLoaderClassName}
+            />
+          ))
+        ) : table.getRowModel().rows.length ? (
           table.getRowModel().rows.map((row, rowIndex) => (
             <tr
               key={row.id}

@@ -2,9 +2,7 @@
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { Tooltip } from 'components/common/Tooltip'
-import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { formatUnits } from 'ethers'
@@ -182,11 +180,10 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     [network, tokenSymbol],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
-    return null
-  }, [consensusEntry, loading])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || !histories) return true
+    return false
+  }, [consensusEntry, loading, histories])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -195,22 +192,20 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
   return (
     <div className='flex w-full flex-col sm:mt-0'>
       <div ref={ref}>
-        {!loading && histories ? (
-          <SortedTable
-            data={histories}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            filename='account-balance-history'
-            fullDataDownloader={fullDataDownloader}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={histories || []}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='account-balance-history'
+          fullDataDownloader={fullDataDownloader}
+          loading={isDataLoading}
+          emptyMessage='No balance history found'
+        />
       </div>
     </div>
   )

@@ -3,7 +3,6 @@
 import { useApolloClient } from '@apollo/client'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { DomainsListDocument, DomainsListQuery, DomainsListQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
@@ -14,7 +13,7 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { hasValue, useQueryStates } from 'states/query'
 import { useTableSettings } from 'states/tables'
 import type { Cell, DomainsFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
@@ -27,7 +26,6 @@ import { countTablePages, getTableColumns } from 'utils/table'
 import { AccountIconWithLink } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
-import { NotFound } from '../layout/NotFound'
 
 type Row = DomainsListQuery['staking_domains'][0]
 const TABLE = 'domains'
@@ -381,11 +379,10 @@ export const DomainsList: FC = () => {
     [totalCount, pagination],
   )
 
-  const noData = useMemo(() => {
-    if (isLoading(domains)) return <Spinner isSmall />
-    if (!hasValue(domains)) return <NotFound />
-    return null
-  }, [domains])
+  const isDataLoading = useMemo(() => {
+    if (loading || !domainsList) return true
+    return false
+  }, [domainsList, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -395,22 +392,21 @@ export const DomainsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
         <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
-        {!loading && domainsList ? (
-          <SortedTable
-            data={domainsList}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename='staking-domains-list'
-            fullDataDownloader={fullDataDownloader}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={domainsList}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename='staking-domains-list'
+          fullDataDownloader={fullDataDownloader}
+          loading={isDataLoading}
+          emptyMessage='No domains found'
+          skeletonLoaderClassName='py-6'
+        />
       </div>
     </div>
   )

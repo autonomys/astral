@@ -4,7 +4,6 @@ import { useApolloClient } from '@apollo/client'
 import { shortString } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorStatus } from 'constants/staking'
@@ -34,7 +33,6 @@ import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 // import { DomainBlockTime } from '../Domain/DomainBlockTime'
 import { DomainProgress } from '../Domain/DomainProgress'
-import { NotFound } from '../layout/NotFound'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { NominationButton } from './NominationButton'
 import { OperatorActions, OperatorActionsRow } from './OperatorActions'
@@ -533,11 +531,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     [totalCount, pagination],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(operators)) return <Spinner isSmall />
-    if (!hasValue(operators)) return <NotFound />
-    return null
-  }, [loading, operators])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(operators) || !operatorsList) return true
+    return false
+  }, [loading, operators, operatorsList])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -566,22 +563,21 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             )
           }
         />
-        {!loading && operatorsList ? (
-          <SortedTable
-            data={operatorsList}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename='staking-operators-list'
-            fullDataDownloader={fullDataDownloader}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={operatorsList}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename='staking-operators-list'
+          fullDataDownloader={fullDataDownloader}
+          loading={isDataLoading}
+          emptyMessage='No operators found'
+          skeletonLoaderClassName='py-6'
+        />
       </div>
       <ActionsModal isOpen={isOpen} action={action} onClose={handleActionClose} />
     </div>

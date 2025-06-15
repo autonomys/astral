@@ -3,7 +3,6 @@
 import { useApolloClient } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
@@ -22,7 +21,6 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
-import { NotFound } from '../../layout/NotFound'
 
 type Row = EventsByBlockIdQuery['consensus_events'][number]
 
@@ -145,11 +143,10 @@ export const BlockDetailsEventList: FC<Props> = ({ blockHeight, eventsCount }) =
     [eventsCount, pagination],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
-    return null
-  }, [loading, consensusEntry])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || !events) return true
+    return false
+  }, [consensusEntry, loading, events])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -157,22 +154,20 @@ export const BlockDetailsEventList: FC<Props> = ({ blockHeight, eventsCount }) =
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>
-      {!loading && events ? (
-        <SortedTable
-          data={events}
-          columns={columns}
-          showNavigation={true}
-          sorting={sorting}
-          onSortingChange={setSorting}
-          pagination={pagination}
-          pageCount={pageCount}
-          onPaginationChange={setPagination}
-          filename='block-details-event-list'
-          fullDataDownloader={fullDataDownloader}
-        />
-      ) : (
-        noData
-      )}
+      <SortedTable
+        data={events || []}
+        columns={columns}
+        showNavigation={true}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        pagination={pagination}
+        pageCount={pageCount}
+        onPaginationChange={setPagination}
+        filename='block-details-event-list'
+        fullDataDownloader={fullDataDownloader}
+        loading={isDataLoading}
+        emptyMessage='No events found'
+      />
     </div>
   )
 }
