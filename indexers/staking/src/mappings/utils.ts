@@ -3,22 +3,11 @@ import { EventRecord, stringify } from "@autonomys/auto-utils";
 import { createHash } from "crypto";
 import { OperatorStakingHistory } from "../types";
 import {
-  PAD_ZEROS,
   SHARES_CALCULATION_MULTIPLIER,
   ZERO_BIGINT,
 } from "./constants";
 import { Cache } from "./db";
 import { EpochTransition, Transfer } from "./types";
-
-export const getSortId = (
-  blockHeight: bigint | string,
-  indexInBlock?: bigint | string
-): string => {
-  const str1 = blockHeight.toString().padStart(32, PAD_ZEROS);
-  if (indexInBlock === undefined) return str1;
-  const str2 = indexInBlock.toString().padStart(32, PAD_ZEROS);
-  return str1 + "-" + str2;
-};
 
 export const getNominationId = (
   accountId: string,
@@ -147,13 +136,6 @@ export const groupEventsFromBatchAll = (
   if (currentGroup.length > 0) result.push(currentGroup);
 
   return result;
-};
-
-export const calculateShares = (stakeAmount: bigint, sharePrice: bigint) => {
-  return (
-    (stakeAmount * SHARES_CALCULATION_MULTIPLIER) /
-    (sharePrice > ZERO_BIGINT ? sharePrice : SHARES_CALCULATION_MULTIPLIER)
-  );
 };
 
 /**
@@ -287,3 +269,4 @@ export const deriveOperatorEpochSharePrices = (
 
   return operatorEpochSharePrices;
 };
+

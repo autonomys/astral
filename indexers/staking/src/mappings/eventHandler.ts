@@ -3,12 +3,11 @@ import {
   EventRecord,
   stringify,
 } from "@autonomys/auto-utils";
-import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
+import { SHARES_CALCULATION_MULTIPLIER } from "./constants";
 import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
 import {
-  calculateShares,
   calculateTransfer,
   findDomainIdFromOperatorsCache,
   findEpochFromDomainStakingHistoryCache,
@@ -88,15 +87,12 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     cache,
     extrinsicSigner,
     height,
-    blockTimestamp,
     extrinsicId,
     eventId,
-    extrinsicEvents,
     extrinsicMethodToPrimitive,
   }) => {
     const operatorId = event.event.data[0].toString();
     const domainId = event.event.data[1].toString();
-    const totalAmount = BigInt(String(extrinsicMethodToPrimitive.args.amount));
     const signingKey = String(
       extrinsicMethodToPrimitive.args.config.signingKey
     );
@@ -107,17 +103,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       extrinsicMethodToPrimitive.args.config.nominationTax
     );
 
-    const storageFeeDepositedEvent = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "domains",
-      "StorageFeeDeposited"
-    );
-    const storageFeeDeposit = BigInt(
-      storageFeeDepositedEvent?.event.data[2].toString() ?? 0
-    );
-    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
-    const stakeAmount = totalAmount - storageFeeDeposit;
-    const estimatedShares = calculateShares(stakeAmount, sharePrice);
 
     cache.operatorRegistration.push(
       db.createOperatorRegistration(
@@ -132,59 +117,32 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         eventId
       )
     );
-    cache.depositEvent.push(
-      db.createDepositEvent(
-        extrinsicSigner,
-        domainId,
-        operatorId,
-        stakeAmount,
-        storageFeeDeposit,
-        totalAmount,
-        estimatedShares,
-        blockTimestamp,
-        height,
-        extrinsicId,
-        eventId
-      )
-    );
+    // TODO: Add deposit event solely for the operators
+    // cache.depositEvent.push(
+    //   db.createDepositEvent(
+    //     extrinsicSigner,
+    //     domainId,
+    //     operatorId,
+    //     extrinsicId,
+    //     eventId
+    //   )
+    // );
   },
   "domains.OperatorNominated": ({
     event,
     cache,
-    height,
-    blockTimestamp,
     extrinsicId,
     eventId,
-    extrinsicEvents,
   }) => {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
-    const stakeAmount = BigInt(event.event.data[2].toString());
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
-    const storageFeeDepositedEvent = findOneExtrinsicEvent(
-      extrinsicEvents,
-      "domains",
-      "StorageFeeDeposited"
-    );
-    const storageFeeDeposit = BigInt(
-      storageFeeDepositedEvent?.event.data[2].toString() ?? 0
-    );
-    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
-    const totalAmount = stakeAmount + storageFeeDeposit;
-    const estimatedShares = calculateShares(stakeAmount, sharePrice);
-
-    cache.depositEvent.push(
-      db.createDepositEvent(
+    cache.nominatorDepositEvent.push(
+      db.createNominatorDepositEvent(
         accountId,
         domainId,
         operatorId,
-        stakeAmount,
-        storageFeeDeposit,
-        totalAmount,
-        estimatedShares,
-        blockTimestamp,
-        height,
         extrinsicId,
         eventId
       )

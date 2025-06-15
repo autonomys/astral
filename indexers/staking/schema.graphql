@@ -203,6 +203,7 @@ type NominatorDeposit @entity {
   eventId: String
   timestamp: Date!
   blockHeight: BigInt!
+  processed: Boolean! @index
 }
 
 type NominatorWithdrawal @entity {
@@ -220,6 +221,8 @@ type NominatorWithdrawal @entity {
   totalPendingWithdrawals: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
+  processed: Boolean! @index
+
 }
 
 type StorageFundAccount @entity {

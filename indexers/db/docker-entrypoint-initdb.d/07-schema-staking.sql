@@ -56,7 +56,7 @@ CREATE TABLE staking.bundle_submissions (
 );
 ALTER TABLE staking.bundle_submissions OWNER TO postgres;
 
--- deposit_events
+-- nominator_deposits
 CREATE TABLE staking.nominators_deposits (
     id text NOT NULL,
     account_id text NOT NULL,
@@ -71,6 +71,7 @@ CREATE TABLE staking.nominators_deposits (
     event_id text NOT NULL,
     timestamp timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
+    processed boolean NOT NULL DEFAULT false,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
