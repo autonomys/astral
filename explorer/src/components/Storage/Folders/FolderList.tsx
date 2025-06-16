@@ -1,7 +1,6 @@
 'use client'
 
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { FoldersDocument, FoldersQuery, FoldersQueryVariables } from 'gql/graphql'
@@ -15,7 +14,6 @@ import { useTableSettings } from 'states/tables'
 import { Cell, FoldersFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { NotFound } from '../../layout/NotFound'
 
 type Row = FoldersQuery['files_folders'][0]
 const TABLE = 'folders'
@@ -136,11 +134,10 @@ export const FolderList: FC = () => {
     [network, section, selectedColumns],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!data) return <NotFound />
-    return null
-  }, [data, consensusEntry, loading])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || !folders) return true
+    return false
+  }, [consensusEntry, loading, folders])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -150,21 +147,19 @@ export const FolderList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
         <TableSettings table={TABLE} totalCount={totalCount} filters={filters} />
-        {!loading && folders ? (
-          <SortedTable
-            data={folders}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename={TABLE}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={folders ?? []}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename={TABLE}
+          loading={isDataLoading}
+          emptyMessage='No folders found'
+        />
       </div>
     </div>
   )

@@ -4,7 +4,6 @@ import { useApolloClient } from '@apollo/client'
 import { shortString } from '@autonomys/auto-utils'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
@@ -24,7 +23,6 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
-import { NotFound } from '../../layout/NotFound'
 
 type Props = {
   blockHeight: number
@@ -164,11 +162,10 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({
     [extrinsicsCount, pagination],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
-    return null
-  }, [consensusEntry, loading])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || !extrinsics) return true
+    return false
+  }, [consensusEntry, loading, extrinsics])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -176,22 +173,20 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>
-      {!loading && extrinsics ? (
-        <SortedTable
-          data={extrinsics}
-          columns={columns}
-          showNavigation={true}
-          sorting={sorting}
-          onSortingChange={setSorting}
-          pagination={pagination}
-          pageCount={pageCount}
-          onPaginationChange={setPagination}
-          filename='block-details-extrinsics-list'
-          fullDataDownloader={fullDataDownloader}
-        />
-      ) : (
-        noData
-      )}
+      <SortedTable
+        data={extrinsics || []}
+        columns={columns}
+        showNavigation={true}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        pagination={pagination}
+        pageCount={pageCount}
+        onPaginationChange={setPagination}
+        filename='block-details-extrinsics-list'
+        fullDataDownloader={fullDataDownloader}
+        loading={isDataLoading}
+        emptyMessage='No extrinsics found'
+      />
     </div>
   )
 }
