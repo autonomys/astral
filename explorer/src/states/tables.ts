@@ -1,12 +1,21 @@
 import { PaginationState, SortingState } from '@tanstack/react-table'
 import { INITIAL_TABLES } from 'constants/tables'
-import { snakeCase } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { Filters, Table, TableSettingsTabs } from 'types/table'
 import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
 import { sortBy, sortByAggregate } from 'utils/table'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+
+// Simple snakeCase utility to replace lodash dependency
+const snakeCase = (str: string): string => {
+  return str
+    .replace(/([A-Z])/g, '_$1')
+    .toLowerCase()
+    .replace(/^_/, '')
+    .replace(/[^a-z0-9_]/g, '_')
+    .replace(/_+/g, '_')
+}
 
 type PersistentTableState = Omit<Table, 'pagination' | 'filters'>
 type VolatileTableState = Pick<Table, 'pagination' | 'filters'>

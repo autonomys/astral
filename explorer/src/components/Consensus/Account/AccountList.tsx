@@ -10,7 +10,6 @@ import { AccountsDocument, AccountsQuery, AccountsQueryVariables } from 'gql/gra
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
-import { snakeCase } from 'lodash'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -24,6 +23,16 @@ import { AccountIconWithLink } from '../../common/AccountIcon'
 
 type Row = AccountsQuery['consensus_accounts'][number]
 const TABLE = 'accounts'
+
+// Simple snakeCase utility to replace lodash dependency
+const snakeCase = (str: string): string => {
+  return str
+    .replace(/([A-Z])/g, '_$1')
+    .toLowerCase()
+    .replace(/^_/, '')
+    .replace(/[^a-z0-9_]/g, '_')
+    .replace(/_+/g, '_')
+}
 
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()

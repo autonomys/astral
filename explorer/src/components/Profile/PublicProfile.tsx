@@ -7,12 +7,10 @@ import {
   GlobeAltIcon,
 } from '@heroicons/react/24/outline'
 import { SocialLink } from 'components/common/SocialLink'
+import { FaDiscord, FaGithub, FaXTwitter, MdEmail } from 'components/icons'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { FaDiscord, FaGithub } from 'react-icons/fa'
-import { FaXTwitter } from 'react-icons/fa6'
-import { MdEmail } from 'react-icons/md'
 import { Profile } from 'states/profile'
 import { Spinner } from '../common/Spinner'
 

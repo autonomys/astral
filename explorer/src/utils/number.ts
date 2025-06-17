@@ -5,15 +5,18 @@ export const generateArrayOfNumbers = (length: number): number[] => {
 }
 
 export const formatUnitsToNumber = (value: string): number => {
-  const convertedEthers = formatEther(value)
-
-  return parseFloat(convertedEthers)
+  try {
+    const convertedEthers = formatEther(value)
+    return parseFloat(convertedEthers)
+  } catch (error) {
+    console.error('formatUnitsToNumber error:', error)
+    return 0
+  }
 }
 
 export const formatUnits = (value: string): string => {
   try {
     const convertedEthers = formatEther(value)
-
     return convertedEthers
   } catch (error) {
     console.error('formatUnits', error)
