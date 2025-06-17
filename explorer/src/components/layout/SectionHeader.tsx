@@ -22,13 +22,14 @@ import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { FC, useCallback, useMemo, useState } from 'react'
-import type { ChainParam } from 'types/app'
+import type { ChainParam, Route } from 'types/app'
 import { ProfileButton } from '../Profile/ProfileButton'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
 
 export const SectionHeader: FC = () => {
   const { chain } = useParams<ChainParam>()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const isLargeDesktop = useMediaQuery('(min-width: 1560px)')
   const pathname = usePathname()
   const { actingAccount, sessionSubspaceAccount } = useWallet()
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -59,6 +60,19 @@ export const SectionHeader: FC = () => {
     }
   }, [])
 
+  const getNavbarTitle = useCallback(
+    (item: Route, isActive: boolean) => {
+      if (isLargeDesktop) {
+        return item.title
+      }
+      if (isDesktop) {
+        return item.title.split(' ')[0]
+      }
+      return domainIcon(item, isActive)
+    },
+    [isDesktop, isLargeDesktop, domainIcon],
+  )
+
   const domainsOptions = useMemo(
     () =>
       ROUTES.filter(
@@ -79,13 +93,13 @@ export const SectionHeader: FC = () => {
                     : 'text-grayDark dark:text-white'
                 }
               >
-                {isDesktop ? item.title : domainIcon(item, isActive)}
+                {getNavbarTitle(item, isActive)}
               </button>
             </Link>
           </div>
         )
       }),
-    [isDesktop, pathname, chain, domainIcon],
+    [isDesktop, pathname, chain, getNavbarTitle],
   )
 
   const mobileNav = useMemo(() => {
