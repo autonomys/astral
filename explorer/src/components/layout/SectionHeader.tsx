@@ -29,7 +29,7 @@ import AccountListDropdown from '../WalletButton/AccountListDropdown'
 export const SectionHeader: FC = () => {
   const { chain } = useParams<ChainParam>()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const isLargeDesktop = useMediaQuery('(min-width: 1560px)')
+  const isLargeDesktop = useMediaQuery('(min-width: 1536px)')
   const pathname = usePathname()
   const { actingAccount, sessionSubspaceAccount } = useWallet()
   const [sidebarOpen, setSidebarOpen] = useState(false)
