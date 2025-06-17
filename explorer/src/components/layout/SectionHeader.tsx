@@ -162,7 +162,7 @@ export const SectionHeader: FC = () => {
       >
         <div className='container mx-auto flex h-full w-full items-center justify-between px-5 pt-0 md:px-[25px] 2xl:px-0'>
           {isDesktop ? (
-            <div className='flex gap-9'>{domainsOptions}</div>
+            <div className='flex gap-9 pr-2'>{domainsOptions}</div>
           ) : (
             <button
               onClick={toggleSidebar}
