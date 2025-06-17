@@ -46,17 +46,14 @@ const nextConfig = {
 
     return config
   },
-  // Bundle analyzer (only in production builds)
-  ...(process.env.ANALYZE === 'true' && {
-    webpack: (config) => {
-      config.plugins.push(
-        new (require('@next/bundle-analyzer')({
-          enabled: true,
-        }))(),
-      )
-      return config
-    },
-  }),
 }
 
-module.exports = nextConfig
+// Add bundle analyzer conditionally
+if (process.env.ANALYZE === 'true') {
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: true,
+  })
+  module.exports = withBundleAnalyzer(nextConfig)
+} else {
+  module.exports = nextConfig
+}
