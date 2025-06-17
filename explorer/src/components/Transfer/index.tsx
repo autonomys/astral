@@ -115,7 +115,7 @@ export const Transfer: FC = () => {
               amount,
             })
             if (hash) {
-              setHash(hash)
+              setHash(hash as Hash)
               toast.success('The transaction was sent successfully', { position: 'bottom-center' })
               sendGAEvent({
                 event: 'walletSideKick_action_sendToken',
@@ -148,7 +148,7 @@ export const Transfer: FC = () => {
                 amount,
               })
               if (hash) {
-                setHash(hash)
+                setHash(hash as Hash)
                 toast.success('The transaction was sent successfully', {
                   position: 'bottom-center',
                 })
@@ -180,7 +180,7 @@ export const Transfer: FC = () => {
                 amount,
               })
               if (hash) {
-                setHash(hash)
+                setHash(hash as Hash)
                 toast.success('The transaction was sent successfully', {
                   position: 'bottom-center',
                 })
@@ -228,7 +228,7 @@ export const Transfer: FC = () => {
               api: domainApi.api,
             })
             if (hash) {
-              setHash(hash)
+              setHash(hash as Hash)
               toast.success('The transaction was sent successfully', { position: 'bottom-center' })
               sendGAEvent({
                 event: 'walletSideKick_action_sendToken',
