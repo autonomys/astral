@@ -115,23 +115,6 @@ export const ROUTES: Route[] = [
     name: Routes.staking,
     title: 'Staking',
     networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-    children: [
-      {
-        name: RoutesStaking.operators,
-        title: 'Operators',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-      {
-        name: RoutesStaking.register,
-        title: 'Register Operator',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-      {
-        name: RoutesStaking.nominations,
-        title: 'My Nominations',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-    ],
   },
   {
     name: Routes.leaderboard,
