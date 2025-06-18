@@ -108,7 +108,7 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
       <div className='relative'>
         <Listbox.Button
           className={cn(
-            `relative w-full cursor-default font-["Montserrat"] ${
+            `relative w-full cursor-default font-sans ${
               isDesktop
                 ? 'rounded-full pr-10 dark:bg-buttonLightTo'
                 : 'rounded-l-full pr-0 dark:bg-primaryAccent'

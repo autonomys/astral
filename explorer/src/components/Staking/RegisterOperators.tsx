@@ -177,9 +177,8 @@ export const RegisterOperators = () => {
             </div>
 
             <div className='mt-6 w-full text-base font-medium leading-relaxed text-grayDarker dark:text-white'>
-              holders can stake their {tokenSymbol} to add more
-              security to the protocol and earn Staking Incentives. Learn more about the risks
-              involved.
+              holders can stake their {tokenSymbol} to add more security to the protocol and earn
+              Staking Incentives. Learn more about the risks involved.
             </div>
 
             <div className='mt-10 space-y-10'>
@@ -304,7 +303,7 @@ export const RegisterOperators = () => {
                                   onChange={(val) => setFieldValue('domainId', val)}
                                 >
                                   <div className='relative'>
-                                    <Listbox.Button className='relative mt-4 w-full cursor-default rounded-full bg-white from-primaryAccent to-blueUndertone py-[10px] pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'>
+                                    <Listbox.Button className='relative mt-4 w-full cursor-default rounded-full bg-white from-primaryAccent to-blueUndertone py-[10px] pl-3 pr-10 text-left font-sans shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'>
                                       <div className='flex items-center justify-center'>
                                         <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full'>
                                           {currentDomainLabel(values)}
