@@ -12,6 +12,7 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { FaRegClock } from 'components/icons'
 import { SwapDirection } from 'constants/transaction'
 import { AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM, WalletType } from 'constants/wallet'
+import { isAddress as isEvmAddress } from 'ethers'
 import { FieldArray, Form, Formik } from 'formik'
 import useIndexers from 'hooks/useIndexers'
 import { useTxHelper } from 'hooks/useTxHelper'
@@ -19,13 +20,11 @@ import useWallet from 'hooks/useWallet'
 import { useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
-import { isEvmAddress } from 'utils/ethers-utils'
 import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import { WalletButton } from '../WalletButton'
 import { AmountField } from './AmountField'
 import { NetworkSelector } from './NetworkSelector'
 import { ReceiverField } from './ReceiverField'
-
 type DirectionBlockProps = {
   direction: SwapDirection
   maxAmount?: number

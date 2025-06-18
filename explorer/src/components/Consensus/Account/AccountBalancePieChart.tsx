@@ -1,7 +1,7 @@
+import { ResponsivePie } from '@nivo/pie'
 import { AccountByIdQuery } from 'gql/graphql'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC } from 'react'
-import { DynamicPieChart } from 'utils/dynamicImports'
 import { bigNumberToNumber } from 'utils/number'
 
 type Props = {
@@ -52,7 +52,7 @@ export const AccountBalancePieChart: FC<Props> = ({ account }) => {
   return (
     <div className='h-80 w-2/4 lg:h-[400px] lg:w-full'>
       {!isEmpty ? (
-        <DynamicPieChart
+        <ResponsivePie
           data={isEmpty ? emptyState : data}
           enableArcLinkLabels={isEmpty}
           margin={{ top: 20, right: 0, bottom: 40, left: 0 }}

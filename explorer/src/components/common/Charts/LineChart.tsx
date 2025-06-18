@@ -1,6 +1,5 @@
 import useChartTheme from '@/hooks/useChartTheme'
-import { type LineSvgProps } from '@nivo/line'
-import { DynamicChart } from 'utils/dynamicImports'
+import { ResponsiveLine, type LineSvgProps } from '@nivo/line'
 
 export function LineChart({
   data,
@@ -15,7 +14,7 @@ export function LineChart({
   const theme = useChartTheme()
 
   return (
-    <DynamicChart
+    <ResponsiveLine
       data={data}
       margin={margin ?? { top: 10, right: 20, bottom: 50, left: 60 }}
       xScale={xScale ?? { type: 'time', useUTC: false }}
