@@ -18,12 +18,9 @@ type Props = {
   children: ReactNode
 }
 
-const WalletProvider = dynamic(
-  () => import('providers/WalletProvider').then((m) => m.WalletProvider),
-  {
-    ssr: false,
-  },
-)
+const WalletProvider = dynamic(() => import('providers/WalletProvider').then((m) => m.default), {
+  ssr: false,
+})
 
 const UpdateSelectedChainByPath = ({ children }: Props) => {
   const { setIndexerSet, setSection, network, section } = useIndexers()

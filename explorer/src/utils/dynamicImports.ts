@@ -40,3 +40,34 @@ export const DynamicReactJson = dynamic(
   () => import('react-json-view').then((mod) => ({ default: mod.default })),
   { ssr: false },
 )
+
+// Polkadot Components
+export const DynamicPolkadotIdenticon = dynamic(() => import('@polkadot/react-identicon'), {
+  ssr: false,
+})
+
+// UI Components
+export const DynamicSwaggerUI = dynamic(() => import('swagger-ui-react'), { ssr: false })
+
+export const DynamicLottieAnimation = dynamic(() => import('lottie-react'), { ssr: false })
+
+// Data Processing
+export const DynamicXLSX = dynamic(() => import('../components/common/ExcelExport'), {
+  ssr: false,
+})
+
+// Charts
+export const DynamicLineChart = dynamic(
+  () => import('@nivo/line').then((mod) => mod.ResponsiveLine),
+  { ssr: false },
+)
+
+// Blockchain
+export const DynamicEthersProvider = dynamic(() => import('../components/common/EthersProvider'), {
+  ssr: false,
+})
+
+// Wallet Components
+export const DynamicWalletProvider = dynamic(() => import('providers/WalletProvider'), {
+  ssr: false,
+})
