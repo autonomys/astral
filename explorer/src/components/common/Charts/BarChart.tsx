@@ -1,7 +1,8 @@
 'use client'
 
 import useChartTheme from '@/hooks/useChartTheme'
-import { BarDatum, BarSvgProps, ResponsiveBar } from '@nivo/bar'
+import { BarDatum, BarSvgProps } from '@nivo/bar'
+import { DynamicBarChart } from 'utils/dynamicImports'
 
 export function BarChart({
   data,
@@ -19,7 +20,7 @@ export function BarChart({
   const theme = useChartTheme()
 
   return (
-    <ResponsiveBar
+    <DynamicBarChart
       data={data}
       keys={keys}
       indexBy={indexBy ?? 'date'}

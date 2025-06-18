@@ -1,14 +1,16 @@
+'use client'
+
 import { cn } from '@/utils/cn'
 import { DomainRuntime, isAddress, shortString } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { LuBook } from 'components/icons'
 import { WalletType } from 'constants/wallet'
-import { isAddress as isEvmAddress } from 'ethers'
 import { Field, FieldArray, Form, Formik } from 'formik'
 import useWallet from 'hooks/useWallet'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FC, Fragment, useCallback, useMemo, useState } from 'react'
 import { useAddressBookStates } from 'states/addressBook'
+import { isEvmAddress } from 'utils/ethers-utils'
 import { formatAddress } from 'utils/formatAddress'
 import * as Yup from 'yup'
 

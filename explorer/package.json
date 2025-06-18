@@ -22,6 +22,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
+    "analyze:bundle": "node scripts/analyze-bundle.js",
     "clean:install": "rm -rf node_modules yarn.lock && yarn install",
     "codegen": "graphql-codegen --config codegen.ts",
     "test:coverage": "CI=true yarn test -- --env=jsdom --coverage",

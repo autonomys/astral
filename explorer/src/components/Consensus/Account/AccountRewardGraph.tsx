@@ -1,4 +1,3 @@
-import { ResponsiveLine } from '@nivo/line'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
@@ -14,6 +13,7 @@ import { useTheme } from 'providers/ThemeProvider'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, useQueryStates } from 'states/query'
+import { DynamicChart } from 'utils/dynamicImports'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 
 dayjs.extend(relativeTime)
@@ -94,7 +94,7 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
       </div>
       <div className='h-80 w-3/4 md:h-96 md:w-full'>
         {parsedData.length > 0 ? (
-          <ResponsiveLine
+          <DynamicChart
             curve='natural'
             margin={{ top: 50, right: 30, bottom: 50, left: 30 }}
             data={[

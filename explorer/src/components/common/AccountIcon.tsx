@@ -1,11 +1,11 @@
 import { shortString } from '@autonomys/auto-utils'
-import Identicon from '@polkadot/react-identicon'
 import { IconTheme } from '@polkadot/react-identicon/types'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { isAddress } from 'ethers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
+import { DynamicIdenticon } from 'utils/dynamicImports'
+import { isAddress } from 'utils/ethers-utils'
 
 interface AccountIconProps {
   address: string
@@ -25,7 +25,7 @@ export const AccountIcon: FC<AccountIconProps> = ({
   theme = 'beachball',
 }) => {
   return (
-    <Identicon
+    <DynamicIdenticon
       isAlternative={isAlternative}
       isHighlight={isHighlight}
       onCopy={onCopy}
