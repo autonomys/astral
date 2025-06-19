@@ -48,7 +48,7 @@ type Props = {
   children?: ReactNode
 }
 
-const WalletProvider: FC<Props> = ({ children }) => {
+export const WalletProvider: FC<Props> = ({ children }) => {
   const { chain } = useParams<ChainParam>()
   const [api, setApi] = useState<ApiPromise>()
   const [domainsApis, setDomainsApis] = useState<DomainsApis>({})
@@ -391,5 +391,3 @@ const WalletProvider: FC<Props> = ({ children }) => {
     </WalletContext.Provider>
   )
 }
-
-export default WalletProvider
