@@ -66,7 +66,7 @@ export const SectionHeader: FC = () => {
         return item.title
       }
       if (isDesktop) {
-        return item.title.split(' ')[0]
+        return item.shortTitle || item.title
       }
       return domainIcon(item, isActive)
     },
