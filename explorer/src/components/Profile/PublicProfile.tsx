@@ -7,12 +7,10 @@ import {
   GlobeAltIcon,
 } from '@heroicons/react/24/outline'
 import { SocialLink } from 'components/common/SocialLink'
+import { FaDiscord, FaGithub, FaXTwitter, MdEmail } from 'components/icons'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { FaDiscord, FaGithub } from 'react-icons/fa'
-import { FaXTwitter } from 'react-icons/fa6'
-import { MdEmail } from 'react-icons/md'
 import { Profile } from 'states/profile'
 import { Spinner } from '../common/Spinner'
 
@@ -252,18 +250,6 @@ export const PublicProfile: FC = () => {
                           <DocumentDuplicateIcon className='h-5 w-5' />
                         </button>
                       </div>
-                    </td>
-                    <td className='max-w-[400px] px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
-                      {/* <div className='flex flex-wrap gap-2'>
-                        {tag?.map((t, index) => (
-                          <span
-                            key={index}
-                            className='inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div> */}
                     </td>
                   </tr>
                 ))}
