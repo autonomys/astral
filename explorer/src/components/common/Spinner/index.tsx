@@ -1,10 +1,8 @@
-import dynamic from 'next/dynamic'
+import Lottie from 'lottie-react'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC } from 'react'
 import loaderDark from './Loader_Dark.json'
 import loaderLight from './Loader_Light.json'
-
-const DynamicLottie = dynamic(() => import('lottie-react'), { ssr: false })
 
 interface SpinnerProps {
   isSmall?: boolean
@@ -19,7 +17,7 @@ export const Spinner: FC<SpinnerProps> = ({ isSmall, isXSmall }) => {
         isSmall ? 'py-12' : isXSmall ? 'py-8' : 'py-32'
       }`}
     >
-      <DynamicLottie
+      <Lottie
         animationData={isDark ? loaderDark : loaderLight}
         style={isSmall ? { width: '50vw', height: '50vh' } : {}}
       />

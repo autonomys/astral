@@ -61,13 +61,3 @@ export const DynamicLineChart = dynamic(
   () => import('@nivo/line').then((mod) => mod.ResponsiveLine),
   { ssr: false },
 )
-
-// Blockchain
-export const DynamicEthersProvider = dynamic(() => import('../components/common/EthersProvider'), {
-  ssr: false,
-})
-
-// Wallet Components
-export const DynamicWalletProvider = dynamic(() => import('providers/WalletProvider'), {
-  ssr: false,
-})

@@ -1,4 +1,4 @@
-import { NetworkId } from 'constants/network'
+import { NetworkId } from '@autonomys/auto-utils'
 import { Routes } from 'constants/routes'
 import { NextRequest, NextResponse } from 'next/server'
 
