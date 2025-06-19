@@ -91,7 +91,7 @@ function Screen({
       >
         <h2
           style={{
-            fontFamily: 'Montserrat',
+            fontFamily: 'sans-serif',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
@@ -103,7 +103,7 @@ function Screen({
         </h2>
         <h3
           style={{
-            fontFamily: 'Montserrat',
+            fontFamily: 'sans-serif',
           }}
           tw='absolute text-2xl text-white p-4 mt-18 font-bold'
         >
@@ -121,7 +121,7 @@ function Screen({
             <BlockIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
@@ -129,7 +129,7 @@ function Screen({
             </span>
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
             >
@@ -137,7 +137,7 @@ function Screen({
             </span>
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
             >
@@ -155,7 +155,7 @@ function Screen({
             <DocIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
@@ -163,7 +163,7 @@ function Screen({
             </span>
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
             >
@@ -171,7 +171,7 @@ function Screen({
             </span>
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-16 font-bold'
             >
