@@ -37,7 +37,7 @@ export const TransferHeader = () => {
           <nav className='flex flex-wrap items-center justify-center gap-10 text-sm'>
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link) && index !== 0
-              const isInitialPath = pathname === `/${network}/operators` && index === 0
+              const isInitialPath = pathname === `/${network}/transfer` && index === 0
 
               return (
                 <Link

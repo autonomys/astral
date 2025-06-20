@@ -52,7 +52,7 @@ export const FarmingHeader = () => {
           <nav className='flex flex-wrap items-center justify-center gap-10 text-sm'>
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link) && index !== 0
-              const isInitialPath = pathname === `/${network}/operators` && index === 0
+              const isInitialPath = pathname === `/${network}/farming` && index === 0
 
               return (
                 <Link
