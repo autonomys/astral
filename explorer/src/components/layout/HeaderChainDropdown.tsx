@@ -4,18 +4,20 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
 import { Indexer, indexers } from 'constants/indexers'
 import useIndexers from 'hooks/useIndexers'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { FC, Fragment, useCallback, useMemo } from 'react'
 
 export const HeaderChainDropdown: FC = () => {
-  const { indexerSet, section } = useIndexers()
+  const { indexerSet } = useIndexers()
   const { push } = useRouter()
+  const pathname = usePathname()
+  const sectionPath = pathname.replace(`/${indexerSet.network}/`, '')
 
   const handleChainChange = useCallback(
     (chain: Indexer) => {
-      push(`/${chain.network}/${section}`)
+      push(`/${chain.network}/${sectionPath}`)
     },
-    [push, section],
+    [push, sectionPath],
   )
 
   const filteredChains = useMemo(() => {
