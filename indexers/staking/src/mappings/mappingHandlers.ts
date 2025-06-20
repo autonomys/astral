@@ -11,8 +11,9 @@ import {
   deriveOperatorEpochSharePrices,
   detectEpochTransitions,
   groupEventsFromBatchAll,
-  groupNominatorDepositEvents,
+  groupNominatorEvents,
   processNominatorDepositEvents,
+  processWithdrawalEvents,
 } from "./utils";
 
 
@@ -130,6 +131,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
   // -------------------------------------------------------------------
   // Derive and store OperatorEpochSharePrice for each transitioned domain
+  // Process nominator deposits and withdrawals after epoch transitions
   // -------------------------------------------------------------------
   if (epochTransitions.length > 0) {
     const operatorEpochSharePrices = deriveOperatorEpochSharePrices(
@@ -156,32 +158,25 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
     
     if (redis) {
-      let nominatorDepositEvents = await redis.lrange("nominatorDepositEvents", 0, -1);
+      // Process nominator deposits after epoch transitions
+      const nominatorDepositEvents = await redis.lrange("nominatorDepositEvents", 0, -1);
         // Group by operator
-      const operatorEventsMap = groupNominatorDepositEvents(nominatorDepositEvents);
+      const nominatorDepositEventsMap = groupNominatorEvents(nominatorDepositEvents);
 
-      if (operatorEventsMap.size > 0) {
-        const _depositsEntries = await processNominatorDepositEvents(operatorEventsMap, api, blockTimestamp, cache, height);
+      if (nominatorDepositEventsMap.size > 0) {
+        const _depositsEntries = await processNominatorDepositEvents(nominatorDepositEventsMap, api, blockTimestamp, cache, height);
         const _cleanRedis =await redis.del("nominatorDepositEvents");
+      }
+
+      const nominatorWithdrawalEvents = await redis.lrange("nominatorWithdrawalEvents", 0, -1);
+      const nominatorWithdrawalEventsMap = groupNominatorEvents(nominatorWithdrawalEvents);
+      if (nominatorWithdrawalEventsMap.size > 0) {
+        const _withdrawalEntries = await processWithdrawalEvents(nominatorWithdrawalEventsMap, api, blockTimestamp, cache, height);
+        const _cleanRedis =await redis.del("nominatorWithdrawalEvents");
       }
     }
   }
 
-  // // Build domain summary map for quick access (used later for deposits processing)
-  // const domainSummaryMap = new Map<string, any>();
-  // currentDomainStakingSummary.forEach((d: any) => {
-  //   const domainId = (d[0].toPrimitive() as any)[0].toString();
-  //   domainSummaryMap.set(domainId, d[1].toPrimitive() as any);
-  // });
-
-  // // Build operator epoch share price map (used later for deposits processing)
-  // const oeMap = new Map<string, bigint>();
-  // [...cache.operatorEpochSharePrice].forEach((p) => {
-  //   oeMap.set(
-  //     `${p.operatorId}-${p.domainId}-${p.epochIndex}`,
-  //     BigInt(p.sharePrice.toString())
-  //   );
-  // });
 
   // logger.info(`queriesResults[1]: ${JSON.stringify(queriesResults[1])}`);
   queriesResults[1].forEach((data) => {
@@ -369,13 +364,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   });
 
 
-
-  // cache.unlockedEvent.forEach((d) =>
-  //   changedNominationKeys.add(`${d.operatorId}-${d.accountId}`)
-  // );
-
   // -------------------------------------------------------------------
-  // Derive & store Nominator Deposits only for changed nominations
+  // Store Nominator Deposits only for changed nominations during an epoch
   // -------------------------------------------------------------------
   if (cache.nominatorDepositEvent.length > 0) {
     // Add the nominatorDepositEvent to the redis queue
@@ -397,92 +387,22 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
 
   // -------------------------------------------------------------------
-  // Derive & store Nominator Withdrawals only for changed nominations
+  // Store Nominator Withdrawals only for changed nominations during an epoch
   // -------------------------------------------------------------------
-  /*
-  Sample result of the query:
-    {
-      totalWithdrawalAmount: 1,600,022,075,474,813,470
-      totalStorageFeeWithdrawal: 698,484,970,837,929,109
-      withdrawals: [
-        {
-          unlockAtConfirmedDomainBlockNumber: 1,383,476
-          amountToUnlock: 1,600,022,075,474,813,470
-          storageFeeRefund: 399,122,776,157,064,938
-        }
-      ]
-      withdrawalInShares: {
-        domainEpoch: [
-          0
-          14,198
-        ]
-        unlockAtConfirmedDomainBlockNumber: 1,434,070
-        shares: 728,815,124,400,000,000
-        storageFeeRefund: 299,362,194,680,864,171
+  if (cache.withdrawEvent.length > 0) {
+    if (redis) {
+      for (const event of cache.withdrawEvent) {
+        // Append-only: just push each event to Redis list
+        const redisEntry = {
+          operatorId: event.operatorId,
+          accountId: event.accountId,
+          eventId: event.eventId,
+          extrinsicId: event.extrinsicId,
+          blockHeight: height.toString()
+        };
+        await redis.lpush("nominatorWithdrawalEvents", JSON.stringify(redisEntry));
       }
     }
-
-    totalWithdrawalAmount = sum(item_of(withdrawals).amountToUnlock) , not include the value of withdrawalInShares.shares 
-    totalStorageFeeWithdrawal = sum(item_of(withdrawals).storageFeeRefund) + withdrawalInShares.storageFeeRefund
-
-    Note: it means on staking worker after epoch transitions we have to compute shares*sharePrice of withdrawalsInShares and add a new entry for withdrawals.
-
-    Transition from withdrawalsInShares to withdrawals happens lazily.
-  */
-  if (cache.withdrawEvent.length > 0) {
-    const withdrawalsEntries = await Promise.all(
-      cache.withdrawEvent.map(async (d) => {
-        const res = await api.query.domains.withdrawals(
-          Number(d.operatorId),
-          d.accountId.toString()
-        );
-        const result = res.toHuman() as any;
-        logger.info(`result: ${JSON.stringify(result)}`);
-        return {
-          id: createHashId(result),
-          accountId: d.accountId,
-          operatorId: d.operatorId,
-          domainId: d.accountId.toString(),
-          totalWithdrawalAmount: BigInt(result.totalWithdrawalAmount.toString().replace(/,/g, "")),
-          totalStorageFeeWithdrawal: BigInt(result.totalStorageFeeWithdrawal.toString().replace(/,/g, "")),
-          // Detailed withdrawals information
-          withdrawalsJson: stringify(result.withdrawals ?? []),
-          totalPendingWithdrawals: BigInt((result.withdrawals ?? []).length),
-
-          // In-shares (pending) withdrawal details
-          domainEpoch: BigInt(result.withdrawalInShares.domainEpoch[1].toString().replace(/,/g, "")),
-          unlockAtConfirmedDomainBlockNumber: BigInt(result.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString().replace(/,/g, "")),
-          shares: BigInt(result.withdrawalInShares.shares.toString().replace(/,/g, "")),
-          storageFeeRefund: BigInt(result.withdrawalInShares.storageFeeRefund.toString().replace(/,/g, "")),
-
-          timestamp: blockTimestamp,
-          blockHeight: height
-        }
-      })
-    );
-
-    // Store each withdrawal entry as a NominatorWithdrawal entity
-    withdrawalsEntries.forEach((w) => {
-      cache.nominatorWithdrawal.push(
-        db.createNominatorWithdrawal(
-          w.id,
-          w.accountId,
-          w.operatorId,
-          w.domainId,
-          w.shares, // withdrawalInSharesAmount (shares)
-          w.storageFeeRefund, // withdrawalInSharesStorageFeeRefund
-          w.domainEpoch.toString(),
-          w.unlockAtConfirmedDomainBlockNumber,
-          w.totalWithdrawalAmount,
-          w.totalStorageFeeWithdrawal,
-          w.withdrawalsJson,
-          w.totalPendingWithdrawals,
-          w.timestamp,
-          w.blockHeight,
-          false
-        )
-      );
-    });
   }
 
 

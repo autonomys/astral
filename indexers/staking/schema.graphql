@@ -194,7 +194,7 @@ type NominatorDeposit @entity {
   pendingStorageFeeDeposit: BigInt!
   pendingEffectiveDomainEpoch: BigInt!
   extrinsicIds: String!
-  eventIds: String
+  eventIds: String!
   timestamp: Date!
   blockHeights: String!
   blockHeight: BigInt!
@@ -214,8 +214,11 @@ type NominatorWithdrawal @entity {
   totalStorageFeeWithdrawal: BigInt!
   withdrawalsJson: String!
   totalPendingWithdrawals: BigInt!
+  extrinsicIds: String!
+  eventIds: String!
   timestamp: Date!
   blockHeight: BigInt!
+  blockHeights: String!
   processed: Boolean! @index
 
 }

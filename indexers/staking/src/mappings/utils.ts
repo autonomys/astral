@@ -273,8 +273,8 @@ export const deriveOperatorEpochSharePrices = (
 
 
 
-export const groupNominatorDepositEvents = (nominatorDepositEvents: any[]) => {
-  const operatorEventsMap = new Map<string, {
+export const groupNominatorEvents = (nominatorEvents: any[]) => {
+  const nominatorEventsMap = new Map<string, {
     operatorId: string,
     accountId: string,
     eventIds: string[],
@@ -282,11 +282,11 @@ export const groupNominatorDepositEvents = (nominatorDepositEvents: any[]) => {
     blockHeights: string[]
   }>();
   
-  nominatorDepositEvents.forEach(eventStr => {
+  nominatorEvents.forEach(eventStr => {
     const event = JSON.parse(eventStr);
     
-    if (!operatorEventsMap.has(event.operatorId)) {
-      operatorEventsMap.set(event.operatorId, {
+    if (!nominatorEventsMap.has(event.operatorId)) {
+      nominatorEventsMap.set(event.operatorId, {
         operatorId: event.operatorId,
         accountId: event.accountId,
         eventIds: [],
@@ -295,25 +295,25 @@ export const groupNominatorDepositEvents = (nominatorDepositEvents: any[]) => {
       });
     }
     
-    const entry = operatorEventsMap.get(event.operatorId)!;
+    const entry = nominatorEventsMap.get(event.operatorId)!;
     entry.eventIds.push(event.eventId);
     entry.extrinsicIds.push(event.extrinsicId);
     entry.blockHeights.push(event.blockHeight);
   });
 
-  return operatorEventsMap;
+  return nominatorEventsMap;
 };
 
 
 export const processNominatorDepositEvents = async (
-  operatorEventsMap: Map<string, any>, 
+  nominatorEventsMap: Map<string, any>, 
   api: any, 
   blockTimestamp: Date, 
   cache: Cache, 
   height: bigint
 ): Promise<any[]> => {
   const depositsEntries = await Promise.all(
-    [...operatorEventsMap.values()].map(async (d: any) => {
+    [...nominatorEventsMap.values()].map(async (d: any) => {
       const res = await api.query.domains.deposits(
         Number(d.operatorId),
         d.accountId.toString()
@@ -362,6 +362,103 @@ export const processNominatorDepositEvents = async (
 }
 
 
+export const processWithdrawalEvents = async (
+  nominatorEventsMap: Map<string, any>, 
+  api: any, 
+  blockTimestamp: Date, 
+  cache: Cache, 
+  height: bigint
+): Promise<any[]> => {
+  /*
+    Sample result of the query:
+      {
+        totalWithdrawalAmount: 1,600,022,075,474,813,470
+        totalStorageFeeWithdrawal: 698,484,970,837,929,109
+        withdrawals: [
+          {
+            unlockAtConfirmedDomainBlockNumber: 1,383,476
+            amountToUnlock: 1,600,022,075,474,813,470
+            storageFeeRefund: 399,122,776,157,064,938
+          }
+        ]
+        withdrawalInShares: {
+          domainEpoch: [
+            0
+            14,198
+          ]
+          unlockAtConfirmedDomainBlockNumber: 1,434,070
+          shares: 728,815,124,400,000,000
+          storageFeeRefund: 299,362,194,680,864,171
+        }
+      }
+
+      totalWithdrawalAmount = sum(item_of(withdrawals).amountToUnlock) , not include the value of withdrawalInShares.shares 
+      totalStorageFeeWithdrawal = sum(item_of(withdrawals).storageFeeRefund) + withdrawalInShares.storageFeeRefund
+
+      Note: it means on staking worker after epoch transitions we have to compute shares*sharePrice of withdrawalsInShares and add a new entry for withdrawals.
+
+      Transition from withdrawalsInShares to withdrawals happens lazily.
+  */
+  const withdrawalsEntries = await Promise.all(
+    [...nominatorEventsMap.values()].map(async (d) => {
+      const res = await api.query.domains.withdrawals(
+        Number(d.operatorId),
+        d.accountId.toString()
+      );
+      const result = res.toHuman() as any;
+      return {
+        id: createHashId(result),
+        accountId: d.accountId,
+        operatorId: d.operatorId,
+        domainId: d.accountId.toString(),
+        totalWithdrawalAmount: BigInt(result.totalWithdrawalAmount.toString().replace(/,/g, "")),
+        totalStorageFeeWithdrawal: BigInt(result.totalStorageFeeWithdrawal.toString().replace(/,/g, "")),
+        // Detailed withdrawals information
+        withdrawalsJson: stringify(result.withdrawals ?? []),
+        totalPendingWithdrawals: BigInt((result.withdrawals ?? []).length),
+
+        // In-shares (pending) withdrawal details
+        domainEpoch: BigInt(result.withdrawalInShares.domainEpoch[1].toString().replace(/,/g, "")),
+        unlockAtConfirmedDomainBlockNumber: BigInt(result.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString().replace(/,/g, "")),
+        shares: BigInt(result.withdrawalInShares.shares.toString().replace(/,/g, "")),
+        storageFeeRefund: BigInt(result.withdrawalInShares.storageFeeRefund.toString().replace(/,/g, "")),
+
+        eventIds: JSON.stringify(d.eventIds),
+        extrinsicIds: JSON.stringify(d.extrinsicIds),
+        blockHeights: JSON.stringify(d.blockHeights),
+        timestamp: blockTimestamp,
+        blockHeight: height
+      }
+    })
+  );
+
+  // Store each withdrawal entry as a NominatorWithdrawal entity
+  withdrawalsEntries.forEach((w) => {
+    cache.nominatorWithdrawal.push(
+      db.createNominatorWithdrawal(
+        w.id,
+        w.accountId,
+        w.operatorId,
+        w.domainId,
+        w.shares, // withdrawalInSharesAmount (shares)
+        w.storageFeeRefund, // withdrawalInSharesStorageFeeRefund
+        w.domainEpoch.toString(),
+        w.unlockAtConfirmedDomainBlockNumber,
+        w.totalWithdrawalAmount,
+        w.totalStorageFeeWithdrawal,
+        w.withdrawalsJson,
+        w.totalPendingWithdrawals,
+        w.timestamp,
+        w.blockHeight,
+        w.eventIds,
+        w.extrinsicIds,
+        w.blockHeights,
+        false
+      )
+    );
+  });
+  return withdrawalsEntries;
+}
 
 
 

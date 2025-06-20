@@ -507,6 +507,9 @@ export function createNominatorWithdrawal(
   totalPendingWithdrawals: bigint,
   timestamp: Date,
   blockHeight: bigint,
+  eventIds: string,
+  extrinsicIds: string,
+  blockHeights: string,
   processed: boolean
 ) {
   return NominatorWithdrawal.create({
@@ -525,6 +528,9 @@ export function createNominatorWithdrawal(
     timestamp,
     blockHeight,
     processed,
+    eventIds,
+    extrinsicIds,
+    blockHeights,
   });
 }
 
