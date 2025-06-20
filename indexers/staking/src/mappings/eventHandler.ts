@@ -135,12 +135,12 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     eventId,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const accountId = event.event.data[1].toString();
+    const address = event.event.data[1].toString();
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     cache.nominatorDepositEvent.push(
       db.createNominatorDepositEvent(
-        accountId,
+        address,
         domainId,
         operatorId,
         extrinsicId,
@@ -157,13 +157,13 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     eventId,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const accountId = event.event.data[1].toString();
+    const address = event.event.data[1].toString();
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
   
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
-        accountId,
+        address,
         domainId,
         operatorId,
         blockTimestamp,
@@ -230,7 +230,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     eventId,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const accountId = event.event.data[1].toString();
+    const address = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
@@ -247,7 +247,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       db.createUnlockedEvent(
         domainId,
         operatorId,
-        accountId,
+        address,
         amount,
         storageFee,
         blockTimestamp,

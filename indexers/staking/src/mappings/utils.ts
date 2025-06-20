@@ -11,10 +11,10 @@ import { Cache } from "./db";
 import { EpochTransition, Transfer } from "./types";
 
 export const getNominationId = (
-  accountId: string,
+  address: string,
   domainId: string,
   operatorId: string
-): string => accountId + "-" + domainId + "-" + operatorId;
+): string => address + "-" + domainId + "-" + operatorId;
 
 export const createHashId = (data: any): string =>
   createHash("sha256").update(stringify(data)).digest("hex");
@@ -84,10 +84,10 @@ export const findEpochFromDomainStakingHistoryCache = (
 export const findWithdrawalFromWithdrawalCache = (
   cache: Cache,
   operatorId: string,
-  accountId: string
+  address: string
 ): Withdrawal["withdrawalInShares"] => {
   const withdrawal = cache.currentWithdrawal.find(
-    (w) => w.operatorId.toString() === operatorId && w.account === accountId
+    (w) => w.operatorId.toString() === operatorId && w.account === address
   );
   if (!withdrawal) throw new Error("Withdrawal not found");
   return withdrawal.withdrawalInShares;
@@ -285,7 +285,7 @@ export const deriveOperatorEpochSharePrices = (
 export const groupNominatorEvents = (nominatorEvents: any[]) => {
   const nominatorEventsMap = new Map<string, {
     operatorId: string,
-    accountId: string,
+    address: string,
     eventIds: string[],
     extrinsicIds: string[],
     blockHeights: string[]
@@ -297,7 +297,7 @@ export const groupNominatorEvents = (nominatorEvents: any[]) => {
     if (!nominatorEventsMap.has(event.operatorId)) {
       nominatorEventsMap.set(event.operatorId, {
         operatorId: event.operatorId,
-        accountId: event.accountId,
+        address: event.address,
         eventIds: [],
         extrinsicIds: [],
         blockHeights: []
@@ -325,12 +325,12 @@ export const processNominatorDepositEvents = async (
     [...nominatorEventsMap.values()].map(async (d: any) => {
       const res = await api.query.domains.deposits(
         Number(d.operatorId),
-        d.accountId.toString()
+        d.address.toString()
       );
       const result = res.toHuman() as any;
       return {
         id: createHashId(result),
-        accountId: d.accountId,
+        address: d.address,
         operatorId: d.operatorId,
         domainId: result.pending.effectiveDomainEpoch[0].toString(),
         knownShares: BigInt(result.known.shares.toString().replace(/,/g, "")),
@@ -350,7 +350,7 @@ export const processNominatorDepositEvents = async (
     cache.nominatorDeposit.push(
       db.createNominatorDeposit(
         d.id,
-        d.accountId,
+        d.address,
         d.operatorId,
         d.domainId,
         d.knownShares,
@@ -373,6 +373,7 @@ export const processNominatorDepositEvents = async (
 
 export const processWithdrawalEvents = async (
   nominatorEventsMap: Map<string, any>, 
+  domainId: string,
   api: any, 
   blockTimestamp: Date, 
   cache: Cache, 
@@ -412,14 +413,15 @@ export const processWithdrawalEvents = async (
     [...nominatorEventsMap.values()].map(async (d) => {
       const res = await api.query.domains.withdrawals(
         Number(d.operatorId),
-        d.accountId.toString()
+        d.address.toString()
       );
       const result = res.toHuman() as any;
+      logger.info(`Withdrawals result: ${JSON.stringify(result)}`);
       return {
         id: createHashId(result),
-        accountId: d.accountId,
+        address: d.address,
         operatorId: d.operatorId,
-        domainId: d.accountId.toString(),
+        domainId: domainId,
         totalWithdrawalAmount: BigInt(result.totalWithdrawalAmount.toString().replace(/,/g, "")),
         totalStorageFeeWithdrawal: BigInt(result.totalStorageFeeWithdrawal.toString().replace(/,/g, "")),
         // Detailed withdrawals information
@@ -446,7 +448,7 @@ export const processWithdrawalEvents = async (
     cache.nominatorWithdrawal.push(
       db.createNominatorWithdrawal(
         w.id,
-        w.accountId,
+        w.address,
         w.operatorId,
         w.domainId,
         w.shares, // withdrawalInSharesAmount (shares)
@@ -493,12 +495,12 @@ export const deriveNominatorDeposits = (
   operators.forEach((op) => operatorMap.set(op.operatorId.toString(), op));
 
   for (const [key, value] of depositsEntries) {
-    // Use parseDeposit to properly extract operatorId and accountId
+    // Use parseDeposit to properly extract operatorId and address
     const deposit = parseDeposit([key, value]);
     const operatorId = deposit.operatorId.toString();
-    const accountId = deposit.account;
+    const address = deposit.account;
 
-    const nominationKey = `${operatorId}-${accountId}`;
+    const nominationKey = `${operatorId}-${address}`;
 
     // We'll decide later whether to include this nomination based on either
     // explicit extrinsic-impact (changedNominationKeys) or matured pending.
@@ -574,8 +576,8 @@ export const deriveNominatorDeposits = (
       pendingAmount + pendingStorageFD + knownStorageFD - stakedAmount - storageFund;
 
     results.push({
-      id: `${accountId}-${domainId}-${operatorId}`,
-      accountId,
+      id: `${address}-${domainId}-${operatorId}`,
+      address,
       operatorId,
       domainId,
       knownShares,

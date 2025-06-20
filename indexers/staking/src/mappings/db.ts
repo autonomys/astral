@@ -96,17 +96,17 @@ export const saveCache = async (cache: Cache) => {
 
 // Helper Cache functions
 export function createNominatorDepositEvent(
-  accountId: string,
+  address: string,
   domainId: string,
   operatorId: string,
   extrinsicId: string,
   eventId: string
 ): any {
   return {
-    accountId,
+    address,
     domainId,
     operatorId,
-    nominatorId: getNominationId(accountId, domainId, operatorId),
+    nominatorId: getNominationId(address, domainId, operatorId),
     extrinsicId,
     eventId,
   };
@@ -183,7 +183,7 @@ export function createOperatorRegistration(
 }
 
 export function createWithdrawEvent(
-  accountId: string,
+  address: string,
   domainId: string,
   operatorId: string,
   timestamp: Date,
@@ -192,11 +192,11 @@ export function createWithdrawEvent(
   eventId: string
 ): WithdrawEvent {
   return WithdrawEvent.create({
-    id: eventId + "-" + getNominationId(accountId, domainId, operatorId),
-    accountId,
+    id: eventId + "-" + getNominationId(address, domainId, operatorId),
+    address,
     domainId,
     operatorId,
-    nominatorId: getNominationId(accountId, domainId, operatorId),
+    nominatorId: getNominationId(address, domainId, operatorId),
     timestamp,
     blockHeight,
     extrinsicId,
@@ -247,7 +247,7 @@ export function createOperatorTaxCollection(
 export function createUnlockedEvent(
   domainId: string,
   operatorId: string,
-  accountId: string,
+  address: string,
   amount: bigint,
   storageFee: bigint,
   timestamp: Date,
@@ -259,8 +259,8 @@ export function createUnlockedEvent(
     id: eventId,
     domainId,
     operatorId,
-    accountId,
-    nominatorId: getNominationId(accountId, domainId, operatorId),
+    address,
+    nominatorId: getNominationId(address, domainId, operatorId),
     amount,
     storageFee,
     timestamp,
@@ -307,7 +307,7 @@ export function createOperatorDeregistration(
 
 export function createBundleSubmission(
   id: string,
-  accountId: string,
+  address: string,
   domainId: string,
   domainBlockId: string,
   operatorId: string,
@@ -335,7 +335,7 @@ export function createBundleSubmission(
 ): BundleSubmission {
   return BundleSubmission.create({
     id: domainId + "-" + id,
-    accountId,
+    address,
     bundleId: id,
     domainId,
     domainBlockId,
@@ -458,7 +458,7 @@ export function createOperatorEpochSharePrice(
 
 export function createNominatorDeposit(
   id: string,
-  accountId: string,
+  address: string,
   operatorId: string,
   domainId: string,
   knownShares: bigint,
@@ -475,7 +475,7 @@ export function createNominatorDeposit(
 ) {
   return NominatorDeposit.create({
     id,
-    accountId,
+    address,
     operatorId,
     domainId,
     knownShares,
@@ -494,7 +494,7 @@ export function createNominatorDeposit(
 
 export function createNominatorWithdrawal(
   id: string,
-  accountId: string,
+  address: string,
   operatorId: string,
   domainId: string,
   withdrawalInSharesAmount: bigint,
@@ -514,7 +514,7 @@ export function createNominatorWithdrawal(
 ) {
   return NominatorWithdrawal.create({
     id,
-    accountId,
+    address,
     operatorId,
     domainId,
     withdrawalInSharesAmount,
@@ -536,7 +536,7 @@ export function createNominatorWithdrawal(
 
 export function createStorageFundAccount(
   operatorId: string,
-  accountId: string,
+  address: string,
   balance: bigint,
   timestamp: Date,
   blockHeight: bigint
@@ -544,7 +544,7 @@ export function createStorageFundAccount(
   return StorageFundAccount.create({
     id: operatorId,
     operatorId,
-    accountId,
+    address,
     balance,
     timestamp,
     blockHeight,

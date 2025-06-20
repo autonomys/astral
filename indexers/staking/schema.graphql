@@ -40,7 +40,7 @@ type OperatorRegistration @entity {
 
 type WithdrawEvent @entity {
   id: ID!
-  accountId: String!
+  address: String!
   domainId: String!
   operatorId: String!
   nominatorId: String!
@@ -73,7 +73,7 @@ type OperatorTaxCollection @entity {
 
 type BundleSubmission @entity {
   id: ID!
-  accountId: String!
+  address: String!
   bundleId: String!
   domainId: String!
   domainBlockId: String!
@@ -105,7 +105,7 @@ type UnlockedEvent @entity {
   id: ID!
   domainId: String!
   operatorId: String!
-  accountId: String!
+  address: String!
   nominatorId: String!
   amount: BigInt!
   storageFee: BigInt!
@@ -185,7 +185,7 @@ type OperatorEpochSharePrice @entity {
 
 type NominatorDeposit @entity {
   id: ID!
-  accountId: String! @index
+  address: String! @index
   operatorId: String! @index
   domainId: String! @index
   knownShares: BigInt!
@@ -203,7 +203,7 @@ type NominatorDeposit @entity {
 
 type NominatorWithdrawal @entity {
   id: ID!
-  accountId: String! @index
+  address: String! @index
   operatorId: String! @index
   domainId: String! @index
   withdrawalInSharesAmount: BigInt!
@@ -226,7 +226,7 @@ type NominatorWithdrawal @entity {
 type StorageFundAccount @entity {
   id: ID!
   operatorId: String! @index
-  accountId: String!
+  address: String!
   balance: BigInt!
   timestamp: Date!
   blockHeight: BigInt!

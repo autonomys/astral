@@ -195,7 +195,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           const nominatorWithdrawalEventsMap = groupNominatorEvents(nominatorWithdrawalEvents);
           
           if (nominatorWithdrawalEventsMap.size > 0) {
-            const _withdrawalEntries = await processWithdrawalEvents(nominatorWithdrawalEventsMap, api, blockTimestamp, cache, height);
+            const _withdrawalEntries = await processWithdrawalEvents(nominatorWithdrawalEventsMap, domainId, api, blockTimestamp, cache, height);
           }
           
           // Delete data for epoch i-1 (to handle re-orgs, we don't delete immediately)
@@ -419,7 +419,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         const redisKey = `nominatorDepositEvents:${domainId}:${currentEpoch}`;
         const redisEntry = {
           operatorId: event.operatorId,
-          accountId: event.accountId,
+          address: event.address,
           eventId: event.eventId,
           extrinsicId: event.extrinsicId,
           blockHeight: height.toString()
@@ -454,7 +454,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         const redisKey = `nominatorWithdrawalEvents:${domainId}:${currentEpoch}`;
         const redisEntry = {
           operatorId: event.operatorId,
-          accountId: event.accountId,
+          address: event.address,
           eventId: event.eventId,
           extrinsicId: event.extrinsicId,
           blockHeight: height.toString()

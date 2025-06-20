@@ -25,7 +25,7 @@ ALTER TABLE staking._metadata OWNER TO postgres;
 -- bundle_submissions
 CREATE TABLE staking.bundle_submissions (
     id text NOT NULL,
-    account_id text NOT NULL,
+    address text NOT NULL,
     bundle_id text NOT NULL,
     domain_id text NOT NULL,
     domain_block_id text NOT NULL,
@@ -59,7 +59,7 @@ ALTER TABLE staking.bundle_submissions OWNER TO postgres;
 -- nominator_deposits
 CREATE TABLE staking.nominator_deposits (
     id text NOT NULL,
-    account_id text NOT NULL,
+    address text NOT NULL,
     operator_id text NOT NULL,
     domain_id text NOT NULL,
     known_shares numeric NOT NULL,
@@ -127,7 +127,7 @@ ALTER TABLE staking.domain_staking_histories OWNER TO postgres;
 -- domains schema  - this schema doesn't exist in graphql schema
 CREATE TABLE staking.domains (
     id text NOT NULL,
-    account_id text NOT NULL,
+    address text NOT NULL,
     name text NOT NULL,
     runtime_id text NOT NULL,
     runtime text NOT NULL,
@@ -165,7 +165,7 @@ ALTER TABLE staking.domains OWNER TO postgres;
 -- nominator schema  - this schema doesn't exist in graphql schema
 CREATE TABLE staking.nominators (
     id text NOT NULL,
-    account_id text NOT NULL,
+    address text NOT NULL,
     domain_id text NOT NULL,
     operator_id text NOT NULL,
     total_deposits numeric NOT NULL,
@@ -269,7 +269,7 @@ ALTER TABLE staking.operator_tax_collections OWNER TO postgres;
 -- operators  - this schema doesn't exist in graphql schema
 CREATE TABLE staking.operators (
     id text NOT NULL,
-    account_id text NOT NULL,
+    address text NOT NULL,
     domain_id text NOT NULL,
     signing_key text NOT NULL,
     minimum_nominator_stake numeric NOT NULL,
@@ -332,7 +332,7 @@ CREATE TABLE staking.unlocked_events (
     id text NOT NULL,
     domain_id text NOT NULL,
     operator_id text NOT NULL,
-    account_id text NOT NULL,
+    address text NOT NULL,
     nominator_id text NOT NULL,
     amount numeric NOT NULL,
     storage_fee numeric NOT NULL,
@@ -363,7 +363,7 @@ ALTER TABLE staking.nominators_unlocked_events OWNER TO postgres;
 -- withdraw_events
 CREATE TABLE staking.withdraw_events (
     id text NOT NULL,
-    account_id text NOT NULL,
+    address text NOT NULL,
     domain_id text NOT NULL,
     operator_id text NOT NULL,
     nominator_id text NOT NULL,
@@ -380,7 +380,7 @@ ALTER TABLE staking.withdraw_events OWNER TO postgres;
 -- withdrawals - this schema doesn't exist in graphql schema
 CREATE TABLE staking.withdrawals (
     id text NOT NULL,
-    account_id text NOT NULL,
+    address text NOT NULL,
     domain_id text NOT NULL,
     operator_id text NOT NULL,
     nominator_id text NOT NULL,
@@ -407,9 +407,6 @@ ALTER TABLE staking.withdrawals OWNER TO postgres;
 
 ALTER TABLE ONLY staking._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
-
-ALTER TABLE ONLY staking.accounts
-    ADD CONSTRAINT accounts_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY staking.bundle_submissions
     ADD CONSTRAINT bundle_submissions_pkey PRIMARY KEY (_id);
@@ -497,7 +494,6 @@ CREATE INDEX "staking_withdraw_events_nominator_id" ON staking.withdraw_events U
 CREATE INDEX "0x9addf36a4bded44f" ON staking.nominator_deposits USING btree (id);
 CREATE INDEX "staking_nominator_deposits_domain_id" ON staking.nominator_deposits USING btree (domain_id);
 CREATE INDEX "staking_nominator_deposits_operator_id" ON staking.nominator_deposits USING btree (operator_id);
-CREATE INDEX "staking_nominator_deposits_nominator_id" ON staking.nominator_deposits USING btree (nominator_id);
 
 
 -- operator_registrations
@@ -518,9 +514,6 @@ CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);
 
 -- domains
 CREATE INDEX "staking_domains_id" ON staking.domains USING btree (id);
-
--- domains
-CREATE INDEX "staking_domains_id_last_domain_block_number" ON staking.domains (id, last_domain_block_number);
 
 -- nominators
 CREATE INDEX "staking_nominators_id" ON staking.nominators USING btree (id);
