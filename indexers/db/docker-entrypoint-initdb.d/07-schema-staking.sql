@@ -57,7 +57,7 @@ CREATE TABLE staking.bundle_submissions (
 ALTER TABLE staking.bundle_submissions OWNER TO postgres;
 
 -- nominator_deposits
-CREATE TABLE staking.nominators_deposits (
+CREATE TABLE staking.nominator_deposits (
     id text NOT NULL,
     account_id text NOT NULL,
     operator_id text NOT NULL,
@@ -67,15 +67,16 @@ CREATE TABLE staking.nominators_deposits (
     pending_amount numeric NOT NULL,
     pending_storage_fee_deposit numeric NOT NULL,
     pending_effective_domain_epoch numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
+    extrinsic_ids text NOT NULL,
+    event_ids text NOT NULL,
     timestamp timestamp with time zone NOT NULL,
+    block_heights text NOT NULL,
     block_height numeric NOT NULL,
     processed boolean NOT NULL DEFAULT false,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
-ALTER TABLE staking.nominators_deposits OWNER TO postgres;
+ALTER TABLE staking.nominator_deposits OWNER TO postgres;
 
 
 -- domain_block_histories
@@ -176,7 +177,6 @@ CREATE TABLE staking.nominators (
     total_deposits_count numeric NOT NULL,
     total_withdrawals_count numeric NOT NULL,
     unlock_at_confirmed_domain_block_number jsonb NOT NULL,
-    active_epoch_count numeric NOT NULL,
     status text NOT NULL,
     created_at numeric NOT NULL,
     updated_at numeric NOT NULL
@@ -367,10 +367,6 @@ CREATE TABLE staking.withdraw_events (
     domain_id text NOT NULL,
     operator_id text NOT NULL,
     nominator_id text NOT NULL,
-    to_withdraw text NOT NULL,
-    shares numeric NOT NULL,
-    storage_fee_refund numeric NOT NULL,
-    estimated_amount numeric NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
@@ -418,8 +414,8 @@ ALTER TABLE ONLY staking.accounts
 ALTER TABLE ONLY staking.bundle_submissions
     ADD CONSTRAINT bundle_submissions_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.nominators_deposits
-    ADD CONSTRAINT nominators_deposits_pkey PRIMARY KEY (_id);
+ALTER TABLE ONLY staking.nominator_deposits
+    ADD CONSTRAINT nominator_deposits_pkey PRIMARY KEY (_id);
 
     
 ALTER TABLE ONLY staking.domain_instantiations
@@ -497,11 +493,11 @@ CREATE INDEX "staking_withdraw_events_operator_id" ON staking.withdraw_events US
 CREATE INDEX "staking_withdraw_events_nominator_id" ON staking.withdraw_events USING btree (nominator_id);
 
 
--- nominators_deposits
-CREATE INDEX "0x9addf36a4bded44f" ON staking.nominators_deposits USING btree (id);
-CREATE INDEX "staking_nominators_deposits_domain_id" ON staking.nominators_deposits USING btree (domain_id);
-CREATE INDEX "staking_nominators_deposits_operator_id" ON staking.nominators_deposits USING btree (operator_id);
-CREATE INDEX "staking_nominators_deposits_nominator_id" ON staking.nominators_deposits USING btree (nominator_id);
+-- nominator_deposits
+CREATE INDEX "0x9addf36a4bded44f" ON staking.nominator_deposits USING btree (id);
+CREATE INDEX "staking_nominator_deposits_domain_id" ON staking.nominator_deposits USING btree (domain_id);
+CREATE INDEX "staking_nominator_deposits_operator_id" ON staking.nominator_deposits USING btree (operator_id);
+CREATE INDEX "staking_nominator_deposits_nominator_id" ON staking.nominator_deposits USING btree (nominator_id);
 
 
 -- operator_registrations

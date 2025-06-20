@@ -44,7 +44,7 @@
     
     "dev:consensus": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:dev up -d postgres pgcat hasura redis account-worker consensus_subquery_node --remove-orphans",
     "dev:domain": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope domain-auto-evm && lerna run build --scope domain-auto-evm && yarn docker:dev -f ../docker-compose.domains.yml up postgres pgcat hasura domain_auto_evm_subquery_node node --remove-orphans",
-    "dev:staking": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope staking && lerna run build --scope staking && yarn docker:dev up -d postgres pgcat hasura staking_subquery_node --remove-orphans",
+    "dev:staking": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope staking && lerna run build --scope staking && yarn docker:dev up -d postgres pgcat hasura redis staking_subquery_node --remove-orphans",
     "dev:leaderboard": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope leaderboard && lerna run build --scope leaderboard && yarn docker:dev up postgres pgcat hasura leaderboard_subquery_node node --remove-orphans",
 
     "prod:consensus": "export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:prod up postgres pgcat hasura redis account-worker consensus_subquery_node node --remove-orphans",

@@ -44,10 +44,6 @@ type WithdrawEvent @entity {
   domainId: String!
   operatorId: String!
   nominatorId: String!
-  toWithdraw: String!
-  shares: BigInt!
-  storageFeeRefund: BigInt!
-  estimatedAmount: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
   extrinsicId: String!
@@ -197,9 +193,10 @@ type NominatorDeposit @entity {
   pendingAmount: BigInt!
   pendingStorageFeeDeposit: BigInt!
   pendingEffectiveDomainEpoch: BigInt!
-  extrinsicId: String!
-  eventId: String
+  extrinsicIds: String!
+  eventIds: String
   timestamp: Date!
+  blockHeights: String!
   blockHeight: BigInt!
   processed: Boolean! @index
 }

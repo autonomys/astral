@@ -155,32 +155,17 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     blockTimestamp,
     extrinsicId,
     eventId,
-    extrinsicMethodToPrimitive,
   }) => {
     const operatorId = event.event.data[0].toString();
     const accountId = event.event.data[1].toString();
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
-    const toWithdraw = stringify(extrinsicMethodToPrimitive.args.to_withdraw);
-    const withdrawalInShares = findWithdrawalFromWithdrawalCache(
-      cache,
-      operatorId,
-      accountId
-    );
-    if (!withdrawalInShares) return;
-    const { shares, storageFeeRefund } = withdrawalInShares;
-    const { sharePrice } = findOperatorFromOperatorsCache(cache, operatorId);
-    const estimatedAmount =
-      (shares * sharePrice) / SHARES_CALCULATION_MULTIPLIER + storageFeeRefund;
+  
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
         accountId,
         domainId,
         operatorId,
-        toWithdraw,
-        shares,
-        storageFeeRefund,
-        estimatedAmount,
         blockTimestamp,
         height,
         extrinsicId,

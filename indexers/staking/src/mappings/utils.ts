@@ -6,6 +6,7 @@ import {
   SHARES_CALCULATION_MULTIPLIER,
   ZERO_BIGINT,
 } from "./constants";
+import * as db from "./db";
 import { Cache } from "./db";
 import { EpochTransition, Transfer } from "./types";
 
@@ -269,6 +270,101 @@ export const deriveOperatorEpochSharePrices = (
 
   return operatorEpochSharePrices;
 };
+
+
+
+export const groupNominatorDepositEvents = (nominatorDepositEvents: any[]) => {
+  const operatorEventsMap = new Map<string, {
+    operatorId: string,
+    accountId: string,
+    eventIds: string[],
+    extrinsicIds: string[],
+    blockHeights: string[]
+  }>();
+  
+  nominatorDepositEvents.forEach(eventStr => {
+    const event = JSON.parse(eventStr);
+    
+    if (!operatorEventsMap.has(event.operatorId)) {
+      operatorEventsMap.set(event.operatorId, {
+        operatorId: event.operatorId,
+        accountId: event.accountId,
+        eventIds: [],
+        extrinsicIds: [],
+        blockHeights: []
+      });
+    }
+    
+    const entry = operatorEventsMap.get(event.operatorId)!;
+    entry.eventIds.push(event.eventId);
+    entry.extrinsicIds.push(event.extrinsicId);
+    entry.blockHeights.push(event.blockHeight);
+  });
+
+  return operatorEventsMap;
+};
+
+
+export const processNominatorDepositEvents = async (
+  operatorEventsMap: Map<string, any>, 
+  api: any, 
+  blockTimestamp: Date, 
+  cache: Cache, 
+  height: bigint
+): Promise<any[]> => {
+  const depositsEntries = await Promise.all(
+    [...operatorEventsMap.values()].map(async (d: any) => {
+      const res = await api.query.domains.deposits(
+        Number(d.operatorId),
+        d.accountId.toString()
+      );
+      const result = res.toHuman() as any;
+      return {
+        id: createHashId(result),
+        accountId: d.accountId,
+        operatorId: d.operatorId,
+        domainId: result.pending.effectiveDomainEpoch[0].toString(),
+        knownShares: BigInt(result.known.shares.toString().replace(/,/g, "")),
+        knownStorageFeeDeposit: BigInt(result.known.storageFeeDeposit.toString().replace(/,/g, "")),
+        pendingAmount: BigInt(result.pending.amount.toString().replace(/,/g, "")),
+        pendingStorageFeeDeposit: BigInt(result.pending.storageFeeDeposit.toString().replace(/,/g, "")),
+        pendingEffectiveDomainEpoch: BigInt(result.pending.effectiveDomainEpoch[1].toString().replace(/,/g, "")),
+        eventIds: JSON.stringify(d.eventIds),
+        extrinsicIds: JSON.stringify(d.extrinsicIds),
+        timestamp: blockTimestamp,
+        blockHeights: JSON.stringify(d.blockHeights),
+      }
+    })
+  );
+
+  depositsEntries.forEach((d) => {
+    cache.nominatorDeposit.push(
+      db.createNominatorDeposit(
+        d.id,
+        d.accountId,
+        d.operatorId,
+        d.domainId,
+        d.knownShares,
+        d.knownStorageFeeDeposit,
+        d.pendingAmount,
+        d.pendingStorageFeeDeposit,
+        d.pendingEffectiveDomainEpoch,
+        d.extrinsicIds,
+        d.eventIds,
+        d.timestamp,
+        d.blockHeights,
+        height,
+        false
+      )
+    );
+  });
+  return depositsEntries;
+}
+
+
+
+
+
 
 /**
  * Derive nominator deposit entities from on-chain deposits state

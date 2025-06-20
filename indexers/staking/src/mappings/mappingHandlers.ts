@@ -11,6 +11,8 @@ import {
   deriveOperatorEpochSharePrices,
   detectEpochTransitions,
   groupEventsFromBatchAll,
+  groupNominatorDepositEvents,
+  processNominatorDepositEvents,
 } from "./utils";
 
 
@@ -151,6 +153,18 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         )
       );
     });
+
+    
+    if (redis) {
+      let nominatorDepositEvents = await redis.lrange("nominatorDepositEvents", 0, -1);
+        // Group by operator
+      const operatorEventsMap = groupNominatorDepositEvents(nominatorDepositEvents);
+
+      if (operatorEventsMap.size > 0) {
+        const _depositsEntries = await processNominatorDepositEvents(operatorEventsMap, api, blockTimestamp, cache, height);
+        const _cleanRedis =await redis.del("nominatorDepositEvents");
+      }
+    }
   }
 
   // // Build domain summary map for quick access (used later for deposits processing)
@@ -364,52 +378,22 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   // Derive & store Nominator Deposits only for changed nominations
   // -------------------------------------------------------------------
   if (cache.nominatorDepositEvent.length > 0) {
-    const depositsEntries = await Promise.all(
-      cache.nominatorDepositEvent.map(async (d) => {
-        const res = await api.query.domains.deposits(
-          Number(d.operatorId),
-          d.accountId.toString()
-        );
-        const result = res.toHuman() as any;
-        return {
-          id: createHashId(result),
-          accountId: d.accountId,
-          operatorId: d.operatorId,
-          domainId: result.pending.effectiveDomainEpoch[0].toString(),
-          knownShares: BigInt(result.known.shares.toString().replace(/,/g, "")),
-          knownStorageFeeDeposit: BigInt(result.known.storageFeeDeposit.toString().replace(/,/g, "")),
-          pendingAmount: BigInt(result.pending.amount.toString().replace(/,/g, "")),
-          pendingStorageFeeDeposit: BigInt(result.pending.storageFeeDeposit.toString().replace(/,/g, "")),
-          pendingEffectiveDomainEpoch: BigInt(result.pending.effectiveDomainEpoch[1].toString().replace(/,/g, "")),
-          eventId: d.eventId,
-          extrinsicId: d.extrinsicId,
-          timestamp: blockTimestamp,
-          blockHeight: height
-        }
-      })
-    );
-
-    depositsEntries.forEach((d) => {
-      cache.nominatorDeposit.push(
-        db.createNominatorDeposit(
-          d.id,
-          d.accountId,
-          d.operatorId,
-          d.domainId,
-          d.knownShares,
-          d.knownStorageFeeDeposit,
-          d.pendingAmount,
-          d.pendingStorageFeeDeposit,
-          d.pendingEffectiveDomainEpoch,
-          d.extrinsicId,
-          d.eventId,
-          d.timestamp,
-          d.blockHeight,
-          false
-        )
-      );
-    });
+    // Add the nominatorDepositEvent to the redis queue
+    if (redis) {
+      // Append-only: just push each event to Redis list
+      for (const event of cache.nominatorDepositEvent) {
+        const redisEntry = {
+          operatorId: event.operatorId,
+          accountId: event.accountId,
+          eventId: event.eventId,
+          extrinsicId: event.extrinsicId,
+          blockHeight: height.toString()
+        };
+        await redis.lpush("nominatorDepositEvents", JSON.stringify(redisEntry));
+      }
+    }
   }
+
 
 
   // -------------------------------------------------------------------
