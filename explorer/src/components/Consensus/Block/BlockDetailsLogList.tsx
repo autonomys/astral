@@ -3,8 +3,6 @@
 import { useApolloClient } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
-import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
@@ -17,7 +15,6 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
@@ -28,12 +25,12 @@ import { countTablePages } from 'utils/table'
 type Row = LogsByBlockIdQuery['consensus_logs'][number]
 
 type Props = {
+  blockHeight: number
   logsCount: number
 }
 
-export const BlockDetailsLogList: FC<Props> = ({ logsCount }) => {
+export const BlockDetailsLogList: FC<Props> = ({ blockHeight, logsCount }) => {
   const { ref, inView } = useInView()
-  const { blockId } = useParams()
   const { network, section } = useIndexers()
   const apolloClient = useApolloClient()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
@@ -59,9 +56,9 @@ export const BlockDetailsLogList: FC<Props> = ({ logsCount }) => {
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
-      blockId: Number(blockId),
+      blockHeight,
     }),
-    [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
+    [pagination.pageSize, pagination.pageIndex, orderBy, blockHeight],
   )
 
   const { loading, setIsVisible } = useIndexersQuery<
@@ -128,11 +125,10 @@ export const BlockDetailsLogList: FC<Props> = ({ logsCount }) => {
     [logsCount, pagination],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
-    return null
-  }, [loading, consensusEntry])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || !logs) return true
+    return false
+  }, [consensusEntry, loading, logs])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -140,22 +136,20 @@ export const BlockDetailsLogList: FC<Props> = ({ logsCount }) => {
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>
-      {!loading && logs ? (
-        <SortedTable
-          data={logs}
-          columns={columns}
-          showNavigation={true}
-          sorting={sorting}
-          onSortingChange={setSorting}
-          pagination={pagination}
-          pageCount={pageCount}
-          onPaginationChange={setPagination}
-          filename='block-details-logs-list'
-          fullDataDownloader={fullDataDownloader}
-        />
-      ) : (
-        noData
-      )}
+      <SortedTable
+        data={logs || []}
+        columns={columns}
+        showNavigation={true}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        pagination={pagination}
+        pageCount={pageCount}
+        onPaginationChange={setPagination}
+        filename='block-details-logs-list'
+        fullDataDownloader={fullDataDownloader}
+        loading={isDataLoading}
+        emptyMessage='No logs found'
+      />
     </div>
   )
 }

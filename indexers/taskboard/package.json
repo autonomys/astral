@@ -10,8 +10,8 @@
     "dev": "export $(grep -v '^#' ../../.env | xargs) && export $(grep -v '^#' ../../.env.dev | xargs) && ts-node-dev src/index.ts"
   },
   "dependencies": {
-    "@autonomys/auto-consensus": "^1.4.6",
-    "@autonomys/auto-utils": "^1.4.6",
+    "@autonomys/auto-consensus": "^1.4.14",
+    "@autonomys/auto-utils": "^1.4.14",
     "@bull-board/api": "^5.23.0",
     "@bull-board/express": "^5.23.0",
     "@bull-board/ui": "^5.23.0",
@@ -29,7 +29,6 @@
     "pg": "^8.14.1"
   },
   "devDependencies": {
-    "@types/bull": "^4.10.4",
     "@types/express": "^5.0.1",
     "@types/express-session": "^1.18.1",
     "@types/node": "^22.9.0",

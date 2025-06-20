@@ -27,11 +27,15 @@ import { Transaction } from 'types/transaction'
 
 interface PendingTransactionsProps {
   subspaceAccount: string
+  defaultOpen?: boolean
 }
 
 dayjs.extend(relativeTime)
 
-export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAccount }) => {
+export const PendingTransactions: FC<PendingTransactionsProps> = ({
+  subspaceAccount,
+  defaultOpen = false,
+}) => {
   const { ref, inView } = useInView()
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
@@ -119,6 +123,7 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
       className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'
     >
       <Accordion
+        defaultOpen={defaultOpen}
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>
             <span className='text-base font-medium text-grayDarker dark:text-white'>

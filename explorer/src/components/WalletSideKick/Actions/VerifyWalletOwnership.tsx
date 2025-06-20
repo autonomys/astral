@@ -27,10 +27,12 @@ export const VerifyWalletOwnership: FC = () => {
 
       // Sign-in using the message&signature
       await signIn('subspace', {
+        redirect: false,
         account: subspaceAccount,
         message,
         signature: signature.signature,
-        redirect: false,
+        walletSource: actingAccount.source,
+        walletType: actingAccount.type,
       })
       toast.success('You verified the ownership of your wallet!', { position: 'bottom-center' })
     } catch (error) {
@@ -42,7 +44,7 @@ export const VerifyWalletOwnership: FC = () => {
 
   return (
     <StyledListItem title='Verify the ownership of your wallet'>
-      {session?.user?.subspace?.signature ? (
+      {session?.user?.subspace?.account ? (
         <>
           <CheckMarkIcon />
           <StyledButton className='ml-2' onClick={handleWalletOwnership}>

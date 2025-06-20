@@ -125,4 +125,6 @@
 - "!include users_api_keys_monthly_usage.yaml"
 - "!include users_api_monthly_usage.yaml"
 - "!include users_profiles.yaml"
+- "!include users_session.yaml"
+- "!include users_tags.yaml"
 - "!include users_wallets.yaml"

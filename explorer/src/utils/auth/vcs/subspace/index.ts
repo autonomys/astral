@@ -21,10 +21,16 @@ const verifySubspaceAccountRolesForNetwork = async (
       farmer: data.isFarmer.length > 0,
       operator: data.isOperator.length > 0,
       nominator: data.isNominator.length > 0,
+      talismanFarmer: data.isTalismanFarmer.length > 0,
     }
   } catch (error) {
     console.error('Failed to fetch if user has any related events:', error)
-    throw new Error('Failed to fetch if user has any related events')
+    return {
+      farmer: false,
+      operator: false,
+      nominator: false,
+      talismanFarmer: false,
+    }
   }
 }
 

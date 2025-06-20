@@ -13,6 +13,7 @@ export enum Routes {
   transfer = 'transfer',
   stats = 'stats',
   testnetRewards = 'testnet-rewards',
+  profile = 'profile',
 }
 
 export enum RoutesConsensus {
@@ -20,7 +21,6 @@ export enum RoutesConsensus {
   blocks = Routes.consensus + '/blocks',
   extrinsics = Routes.consensus + '/extrinsics',
   events = Routes.consensus + '/events',
-  logs = Routes.consensus + '/logs',
   files = Routes.consensus + '/files',
 }
 
@@ -47,6 +47,19 @@ export enum RoutesDomains {
   autoid = '/auto-id',
 }
 
+export enum RoutesTransfer {
+  transfer = '/transfer',
+  history = Routes.transfer + '/history',
+}
+
+export enum RoutesProfile {
+  profile = '/profile',
+  apis = Routes.profile + '/apis',
+  wallets = Routes.profile + '/wallets',
+  apiKeys = Routes.profile + '/api-keys',
+  tags = Routes.profile + '/tags',
+}
+
 export type AnyRoutes =
   | Routes
   | RoutesConsensus
@@ -54,11 +67,14 @@ export type AnyRoutes =
   | RoutesStaking
   | RoutesLeaderboard
   | RoutesDomains
+  | RoutesTransfer
+  | RoutesProfile
 
 export const ROUTES: Route[] = [
   {
     name: Routes.consensus,
     title: 'Consensus Chain',
+    shortTitle: 'Consensus',
     children: [
       {
         name: RoutesConsensus.accounts,
@@ -76,10 +92,6 @@ export const ROUTES: Route[] = [
         name: RoutesConsensus.events,
         title: 'Events',
       },
-      {
-        name: RoutesConsensus.logs,
-        title: 'Logs',
-      },
     ],
   },
   {
@@ -89,6 +101,7 @@ export const ROUTES: Route[] = [
   {
     name: Routes.storage,
     title: 'Permanent Storage',
+    shortTitle: 'Storage',
     children: [
       {
         name: RoutesStorage.files,
@@ -104,23 +117,6 @@ export const ROUTES: Route[] = [
     name: Routes.staking,
     title: 'Staking',
     networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-    children: [
-      {
-        name: RoutesStaking.operators,
-        title: 'Operators',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-      {
-        name: RoutesStaking.register,
-        title: 'Register Operator',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-      {
-        name: RoutesStaking.nominations,
-        title: 'My Nominations',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-    ],
   },
   {
     name: Routes.leaderboard,
@@ -168,10 +164,48 @@ export const ROUTES: Route[] = [
     name: Routes.transfer,
     title: 'Transfer',
     networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
+    children: [
+      {
+        name: RoutesTransfer.transfer,
+        title: 'Transfer',
+      },
+      {
+        name: RoutesTransfer.history,
+        title: 'Transaction History',
+      },
+    ],
   },
   {
     name: Routes.testnetRewards,
     title: 'Testnet Rewards',
+    shortTitle: 'Rewards',
+  },
+  {
+    name: Routes.profile,
+    title: 'Profile',
+    hidden: true,
+    children: [
+      {
+        name: RoutesProfile.profile,
+        title: 'Profile',
+      },
+      {
+        name: RoutesProfile.wallets,
+        title: 'Wallets',
+      },
+      {
+        name: RoutesProfile.apiKeys,
+        title: 'API Keys',
+      },
+      {
+        name: RoutesProfile.apis,
+        title: 'APIs Docs',
+      },
+      {
+        name: RoutesProfile.tags,
+        title: 'Tags',
+      },
+    ],
   },
 ]
 
@@ -202,6 +236,7 @@ export const EXTERNAL_ROUTES = {
   spaceAcres: 'https://api.github.com/repos/autonomys/space-acres/releases/latest',
   autoDrivePackage: 'https://www.npmjs.com/package/@autonomys/auto-drive',
   autoDagPackage: 'https://www.npmjs.com/package/@autonomys/auto-dag-data',
+  autoDriveRestApi: 'https://mainnet.auto-drive.autonomys.xyz/api/docs',
 }
 
 export const INTERNAL_ROUTES = {
@@ -305,6 +340,12 @@ export const INTERNAL_ROUTES = {
     farmers: 'farmers',
     operators: 'operators',
     nominators: 'nominators',
+  },
+  transfer: {
+    history: 'history',
+  },
+  profile: {
+    page: (chain: string): string => `/${chain}/profile`,
   },
   notFound: '/error/404',
   catchAll: '*',

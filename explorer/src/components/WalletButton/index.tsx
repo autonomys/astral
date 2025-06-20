@@ -20,18 +20,21 @@ export const WalletButton: React.FC = () => {
       <button
         onClick={onClick}
         className={`h-10 ${
-          isDesktop ? 'w-36' : 'w-10 p-2'
-        } rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo font-medium text-white dark:bg-boxDark dark:from-buttonDarkFrom dark:to-buttonDarkTo md:mt-3`}
+          isDesktop ? 'w-36' : 'w-10'
+        } flex items-center justify-center rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo font-medium text-white dark:bg-boxDark dark:from-buttonDarkFrom dark:to-buttonDarkTo`}
       >
         {isDesktop ? (
           'Connect Wallet'
         ) : (
-          <Image
-            src='/images/icons/wallet-addresses-small.webp'
-            alt='Wallet list'
-            width={24}
-            height={24}
-          />
+          <div className='flex h-6 min-h-6 w-6 min-w-6 items-center justify-center'>
+            <Image
+              src='/images/icons/wallet-addresses-small.webp'
+              alt='Wallet list'
+              width={24}
+              height={24}
+              className='h-[24px] min-h-[24px] w-[24px] min-w-[24px]'
+            />
+          </div>
         )}
       </button>
       <PreferredExtensionModal isOpen={isOpen} onClose={onClose} />

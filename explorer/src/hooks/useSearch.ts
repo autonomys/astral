@@ -3,7 +3,7 @@
 import { useLazyQuery } from '@apollo/client'
 import { isAddress, isHex } from '@autonomys/auto-utils'
 import { GET_RESULTS } from 'components/common/queries'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { formatAddress } from 'utils//formatAddress'
@@ -17,7 +17,7 @@ type Values = {
 export const useSearch = (): Values => {
   const [isSearching, setIsSearching] = useState(false)
   const { push } = useRouter()
-  const { network, section } = useIndexers()
+  const { network } = useIndexers()
 
   const [getResults] = useLazyQuery(GET_RESULTS, { fetchPolicy: 'network-only' })
 
@@ -45,19 +45,21 @@ export const useSearch = (): Values => {
           },
         })
 
-        if (data?.accountById) push(INTERNAL_ROUTES.accounts.id.page(network, section, term))
+        if (data?.accountById)
+          push(INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, term))
         else if (data?.extrinsicById?.length > 0 && data?.eventById?.length > 0)
-          push(INTERNAL_ROUTES.extrinsics.id.page(network, section, term))
+          push(INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, term))
         else if (data?.extrinsicById?.length > 0)
-          push(INTERNAL_ROUTES.extrinsics.id.page(network, section, term))
+          push(INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, term))
         else if (data?.extrinsics?.length > 0)
-          push(INTERNAL_ROUTES.extrinsics.id.page(network, section, data.extrinsics[0].id))
+          push(INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, data.extrinsics[0].id))
         else if (data?.blockById?.length > 0 && data.blockById[0].height >= 0)
-          push(INTERNAL_ROUTES.blocks.id.page(network, section, Number(term)))
+          push(INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, Number(term)))
         else if (data?.blockByHash?.length > 0 && data.blockByHash[0].height >= 0)
-          push(INTERNAL_ROUTES.blocks.hash.page(network, section, term))
-        else if (data?.eventById) push(INTERNAL_ROUTES.events.id.page(network, section, term))
-        else push(INTERNAL_ROUTES.search.empty(network, section))
+          push(INTERNAL_ROUTES.blocks.hash.page(network, Routes.consensus, term))
+        else if (data?.eventById)
+          push(INTERNAL_ROUTES.events.id.page(network, Routes.consensus, term))
+        else push(INTERNAL_ROUTES.search.empty(network, Routes.consensus))
 
         if (error) push(INTERNAL_ROUTES.notFound)
 
@@ -67,24 +69,24 @@ export const useSearch = (): Values => {
       }
       // Account
       case 2:
-        if (!isAddress(term)) return push(INTERNAL_ROUTES.search.empty(network, section))
-        return push(INTERNAL_ROUTES.accounts.id.page(network, section, term))
+        if (!isAddress(term)) return push(INTERNAL_ROUTES.search.empty(network, Routes.consensus))
+        return push(INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, term))
       // Block
       case 3: {
         const blockId = Number(term)
-        if (isHex(term)) push(INTERNAL_ROUTES.blocks.hash.page(network, section, term))
-        else if (isNaN(blockId)) push(INTERNAL_ROUTES.search.empty(network, section))
-        else push(INTERNAL_ROUTES.blocks.id.page(network, section, Number(term)))
+        if (isHex(term)) push(INTERNAL_ROUTES.blocks.hash.page(network, Routes.consensus, term))
+        else if (isNaN(blockId)) push(INTERNAL_ROUTES.search.empty(network, Routes.consensus))
+        else push(INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, Number(term)))
         break
       }
       // Extrinsic
       case 4:
-        return push(INTERNAL_ROUTES.extrinsics.id.page(network, section, term))
+        return push(INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, term))
       // Event
       case 5:
-        return push(INTERNAL_ROUTES.events.id.page(network, section, term))
+        return push(INTERNAL_ROUTES.events.id.page(network, Routes.consensus, term))
       default:
-        return push(INTERNAL_ROUTES.search.empty(network, section))
+        return push(INTERNAL_ROUTES.search.empty(network, Routes.consensus))
     }
   }
 

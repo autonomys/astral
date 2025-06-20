@@ -1,9 +1,6 @@
 /* eslint-disable react/no-unknown-property */
-import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { ArchivedHistoryIcon } from 'components/icons/ArchivedHistoryIcon'
 import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
 import { BlockIcon } from 'components/icons/BlockIcon'
-import { DocIcon } from 'components/icons/DocIcon'
 import { WalletIcon } from 'components/icons/WalletIcon'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
@@ -53,8 +50,6 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
   const block = {
     height: data.consensus_blocks[0]?.height ?? '0',
     accountsCount: data.consensus_accounts_aggregate.aggregate?.count ?? 0,
-    spacePledged: data.consensus_blocks[0]?.space_pledged ?? '',
-    historySize: data.consensus_blocks[0]?.blockchain_size ?? '',
   }
   const title = `${metadata.title} - ${chainMatch.title}`
 
@@ -73,7 +68,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
       >
         <h2
           style={{
-            fontFamily: 'Montserrat',
+            fontFamily: 'sans-serif',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
@@ -95,7 +90,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             <BlockIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-2xl text-white p-4 ml-30 font-bold'
             >
@@ -113,47 +108,11 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             <WalletIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-2xl text-white p-4 ml-30 font-bold'
             >
               Accounts {numberWithCommas(block.accountsCount)}
-            </span>
-          </div>
-        </div>
-        <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-140 mt-60 mb-4 p-6 w-130 h-30'
-          style={{
-            background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
-          }}
-        >
-          <div tw='absolute flex flex-col w-130 m-6'>
-            <DocIcon />
-            <span
-              style={{
-                fontFamily: 'Montserrat',
-              }}
-              tw='absolute text-2xl text-white p-4 ml-30 font-bold'
-            >
-              Space Pledged {formatSpaceToDecimal(block.spacePledged)}
-            </span>
-          </div>
-        </div>
-        <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-140 mt-100 mb-1 p-6 w-130 h-30'
-          style={{
-            background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
-          }}
-        >
-          <div tw='absolute flex flex-col w-130 m-6'>
-            <ArchivedHistoryIcon />
-            <span
-              style={{
-                fontFamily: 'Montserrat',
-              }}
-              tw='absolute text-2xl text-white p-4 ml-30 font-bold'
-            >
-              History Size {formatSpaceToDecimal(block.historySize)}
             </span>
           </div>
         </div>

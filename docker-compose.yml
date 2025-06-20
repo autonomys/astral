@@ -74,7 +74,7 @@ services:
     image: postgres:17.3-alpine
     volumes:
       - postgres_db:/var/lib/postgresql/data
-      - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - ./indexers/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./indexers/db/postgresql.conf:/etc/postgresql/postgresql.conf
     restart: unless-stopped
     hostname: postgres
@@ -179,13 +179,15 @@ services:
   # Indexers Subquery Nodes
   consensus_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+    image: ghcr.io/autonomys/subql-node-substrate:latest
     ports:
       - "127.0.0.1:3001:3000"
     depends_on:
       pgcat:
         condition: service_healthy
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -208,7 +210,9 @@ services:
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
-      #  - --profiler
+      - --finalized-depth=100
+      - --log-level=info
+      # - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
       interval: 3s
@@ -217,7 +221,7 @@ services:
 
   leaderboard_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+    image: ghcr.io/autonomys/subql-node-substrate:latest
     ports:
       - "127.0.0.1:3002:3000"
     depends_on:
@@ -245,6 +249,7 @@ services:
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
+      - --finalized-depth=100
       #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
@@ -254,7 +259,7 @@ services:
 
   staking_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+    image: ghcr.io/autonomys/subql-node-substrate:latest
     ports:
       - "127.0.0.1:3003:3000"
     depends_on:
@@ -283,6 +288,7 @@ services:
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
+      - --finalized-depth=100
       #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
@@ -292,7 +298,7 @@ services:
 
   files_subquery_node:
     profiles: [indexers]
-    image: subquerynetwork/subql-node-substrate:${SUBQUERY_NODE_TAG}
+    image: ghcr.io/autonomys/subql-node-substrate:latest
     ports:
       - "127.0.0.1:3004:3000"
     depends_on:
@@ -321,13 +327,14 @@ services:
       - --scale-batch-size
       - --unfinalized-blocks=true
       - --disable-historical=false
+      - --finalized-depth=100
       #  - --profiler
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
-
+      
   # Redis
   redis:
     profiles: [task]

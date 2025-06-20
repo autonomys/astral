@@ -1,0 +1,17 @@
+subscription Events(
+  $limit: Int!
+  $offset: Int
+  $orderBy: [consensus_events_order_by!]!
+  $where: consensus_events_bool_exp
+) {
+  consensus_events(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    id
+    sortId: sort_id
+    blockHeight: block_height
+    extrinsicId: extrinsic_id
+    module
+    indexInBlock: index_in_block
+    timestamp
+    blockHash: block_hash
+  }
+}

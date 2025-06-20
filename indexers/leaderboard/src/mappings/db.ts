@@ -17,12 +17,14 @@ import {
   NominatorDepositsTotalCountHistory,
   NominatorDepositsTotalValueHistory,
   NominatorWithdrawalsTotalCountHistory,
+  NominatorWithdrawalsTotalValueHistory,
   OperatorBundleTotalCountHistory,
   OperatorDepositsTotalCountHistory,
   OperatorDepositsTotalValueHistory,
   OperatorTotalRewardsCollectedHistory,
   OperatorTotalTaxCollectedHistory,
   OperatorWithdrawalsTotalCountHistory,
+  OperatorWithdrawalsTotalValueHistory,
 } from "../types";
 
 export type Cache = {
@@ -44,12 +46,14 @@ export type Cache = {
   nominatorDepositsTotalCountHistory: NominatorDepositsTotalCountHistory[];
   nominatorDepositsTotalValueHistory: NominatorDepositsTotalValueHistory[];
   nominatorWithdrawalsTotalCountHistory: NominatorWithdrawalsTotalCountHistory[];
+  nominatorWithdrawalsTotalValueHistory: NominatorWithdrawalsTotalValueHistory[];
   operatorBundleTotalCountHistory: OperatorBundleTotalCountHistory[];
   operatorDepositsTotalCountHistory: OperatorDepositsTotalCountHistory[];
   operatorDepositsTotalValueHistory: OperatorDepositsTotalValueHistory[];
   operatorTotalRewardsCollectedHistory: OperatorTotalRewardsCollectedHistory[];
   operatorTotalTaxCollectedHistory: OperatorTotalTaxCollectedHistory[];
   operatorWithdrawalsTotalCountHistory: OperatorWithdrawalsTotalCountHistory[];
+  operatorWithdrawalsTotalValueHistory: OperatorWithdrawalsTotalValueHistory[];
 };
 
 export const initializeCache = (): Cache => ({
@@ -71,12 +75,14 @@ export const initializeCache = (): Cache => ({
   nominatorDepositsTotalCountHistory: [],
   nominatorDepositsTotalValueHistory: [],
   nominatorWithdrawalsTotalCountHistory: [],
+  nominatorWithdrawalsTotalValueHistory: [],
   operatorBundleTotalCountHistory: [],
   operatorDepositsTotalCountHistory: [],
   operatorDepositsTotalValueHistory: [],
   operatorTotalRewardsCollectedHistory: [],
   operatorTotalTaxCollectedHistory: [],
   operatorWithdrawalsTotalCountHistory: [],
+  operatorWithdrawalsTotalValueHistory: [],
 });
 
 export const saveCache = async (cache: Cache) => {
@@ -156,6 +162,10 @@ export const saveCache = async (cache: Cache) => {
       `NominatorWithdrawalsTotalCountHistory`,
       cache.nominatorWithdrawalsTotalCountHistory
     ),
+    store.bulkCreate(
+      `NominatorWithdrawalsTotalValueHistory`,
+      cache.nominatorWithdrawalsTotalValueHistory
+    ),
     // Operator entities
     store.bulkCreate(
       `OperatorBundleTotalCountHistory`,
@@ -180,6 +190,10 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(
       `OperatorWithdrawalsTotalCountHistory`,
       cache.operatorWithdrawalsTotalCountHistory
+    ),
+    store.bulkCreate(
+      `OperatorWithdrawalsTotalValueHistory`,
+      cache.operatorWithdrawalsTotalValueHistory
     ),
   ]);
 };
@@ -585,6 +599,25 @@ export function createOperatorWithdrawalsTotalCount(
   });
 }
 
+export function createOperatorWithdrawalsTotalValue(
+  accountId: string,
+  value: bigint,
+  blockHeight: bigint,
+  extrinsicId: string,
+  eventId: string,
+  lastContributionAt: Date = new Date()
+): OperatorWithdrawalsTotalValueHistory {
+  return OperatorWithdrawalsTotalValueHistory.create({
+    id: `${accountId}-${extrinsicId}-${eventId}`,
+    accountId,
+    value,
+    lastContributionAt,
+    blockHeight,
+    extrinsicId,
+    eventId,
+  });
+}
+
 // Nominator entities
 export function createNominatorDepositsTotalCount(
   accountId: string,
@@ -633,6 +666,25 @@ export function createNominatorWithdrawalsTotalCount(
   lastContributionAt: Date = new Date()
 ): NominatorWithdrawalsTotalCountHistory {
   return NominatorWithdrawalsTotalCountHistory.create({
+    id: `${accountId}-${extrinsicId}-${eventId}`,
+    accountId,
+    value,
+    lastContributionAt,
+    blockHeight,
+    extrinsicId,
+    eventId,
+  });
+}
+
+export function createNominatorWithdrawalsTotalValue(
+  accountId: string,
+  value: bigint,
+  blockHeight: bigint,
+  extrinsicId: string,
+  eventId: string,
+  lastContributionAt: Date = new Date()
+): NominatorWithdrawalsTotalValueHistory {
+  return NominatorWithdrawalsTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
     accountId,
     value,

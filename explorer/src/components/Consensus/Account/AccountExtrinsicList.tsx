@@ -3,12 +3,13 @@ import { shortString } from '@autonomys/auto-utils'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
-import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
+  ExtrinsicsByAccountIdCountDocument,
+  ExtrinsicsByAccountIdCountQuery,
+  ExtrinsicsByAccountIdCountQueryVariables,
   ExtrinsicsByAccountIdDocument,
   ExtrinsicsByAccountIdQuery,
   ExtrinsicsByAccountIdQueryVariables,
@@ -22,7 +23,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
-import { downloadFullData } from 'utils/downloadFullData'
+import { exportFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 
@@ -30,11 +31,11 @@ type Props = {
   accountId: string
 }
 
-type Row = ExtrinsicsByAccountIdQuery['consensus_extrinsics'][0]
+type Row = NonNullable<ExtrinsicsByAccountIdQuery['consensus_extrinsics']>[0]
 
 export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'index_in_block', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
@@ -85,6 +86,13 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     'accountExtrinsic',
   )
 
+  const { loading: countLoading, data: countData } = useIndexersQuery<
+    ExtrinsicsByAccountIdCountQuery,
+    ExtrinsicsByAccountIdCountQueryVariables
+  >(ExtrinsicsByAccountIdCountDocument, {
+    variables,
+  })
+
   const consensusEntry = useQueryStates((state) => state.consensus.accountExtrinsic)
 
   const extrinsics = useMemo(
@@ -92,27 +100,25 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     [consensusEntry],
   )
 
-  const fullDataDownloader = useCallback(
-    () =>
-      downloadFullData(
-        apolloClient,
-        ExtrinsicsByAccountIdDocument,
-        'consensus_extrinsics',
-        variables,
-      ),
-    [apolloClient, variables],
-  )
-
   const totalCount = useMemo(
-    () =>
-      hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics_aggregate.aggregate
-        ? consensusEntry.value.consensus_extrinsics_aggregate.aggregate.count
-        : 0,
-    [consensusEntry],
+    () => countData?.consensus_extrinsics_aggregate.aggregate?.count || 0,
+    [countData],
   )
   const pageCount = useMemo(
     () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
     [totalCount, pagination.pageSize],
+  )
+
+  const fullDataDownloader = useCallback(
+    () =>
+      exportFullData(
+        apolloClient,
+        ExtrinsicsByAccountIdDocument,
+        'consensus_extrinsics',
+        totalCount,
+        variables,
+      ),
+    [apolloClient, variables, totalCount],
   )
 
   const columns = useMemo(
@@ -180,11 +186,10 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     [network, section],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
-    return null
-  }, [consensusEntry, loading])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || countLoading) return true
+    return false
+  }, [consensusEntry, countLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -192,22 +197,20 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   return (
     <div className='flex w-full flex-col sm:mt-0' ref={ref}>
-      {!loading && extrinsics ? (
-        <SortedTable
-          data={extrinsics}
-          columns={columns}
-          showNavigation={true}
-          sorting={sorting}
-          onSortingChange={setSorting}
-          pagination={pagination}
-          pageCount={pageCount}
-          onPaginationChange={setPagination}
-          filename='account-extrinsic-list'
-          fullDataDownloader={fullDataDownloader}
-        />
-      ) : (
-        noData
-      )}
+      <SortedTable
+        data={extrinsics || []}
+        columns={columns}
+        showNavigation={true}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        pagination={pagination}
+        pageCount={pageCount}
+        onPaginationChange={setPagination}
+        filename='account-extrinsic-list'
+        fullDataDownloader={fullDataDownloader}
+        loading={isDataLoading}
+        emptyMessage='No extrinsics found'
+      />
     </div>
   )
 }

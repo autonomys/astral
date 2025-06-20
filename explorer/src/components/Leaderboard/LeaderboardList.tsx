@@ -2,7 +2,6 @@
 
 import { DocumentNode, useApolloClient } from '@apollo/client'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   AccountTransferSenderTotalCountQuery,
@@ -24,10 +23,8 @@ import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { AccountIconWithLink } from '../common/AccountIcon'
-import { NotFound } from '../layout/NotFound'
 
 type LeaderboardListProps = {
-  title: string
   query: DocumentNode
   table: string
   idLink: (id: string) => string
@@ -42,7 +39,6 @@ type Row =
 const TABLE = 'leaderboard'
 
 export const LeaderboardList: FC<LeaderboardListProps> = ({
-  title,
   query,
   table,
   idLink,
@@ -85,7 +81,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
                 link={idLink(row.original.id)}
               />
             ) : (
-              idLink(row.original.id)
+              <Link href={idLink(row.original.id)}>{row.original.id}</Link>
             ),
           value: ({ row }: Cell<Row>) =>
             `${numberWithCommas(
@@ -236,10 +232,9 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     [totalCount, pagination.pageSize],
   )
 
-  const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
-    if (!listData) return <NotFound />
-    return null
+  const isDataLoading = useMemo(() => {
+    if (loading || !listData) return true
+    return false
   }, [listData, loading])
 
   useEffect(() => {
@@ -247,31 +242,23 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   }, [inView, setIsVisible])
 
   return (
-    <div className='flex w-full flex-col align-middle'>
-      <div className='flex w-full flex-col sm:mt-0'>
-        <div className='flex w-full flex-col gap-4 px-4'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>{title}</div>
-        </div>
-        <div className='my-6 rounded'>
-          <div ref={ref}>
-            {listData ? (
-              <SortedTable
-                data={data}
-                columns={columns}
-                showNavigation={true}
-                sorting={sorting}
-                onSortingChange={onSortingChange}
-                pagination={pagination}
-                pageCount={pageCount}
-                onPaginationChange={onPaginationChange}
-                filename='leaderboard-vote-block-reward-list'
-                fullDataDownloader={fullDataDownloader}
-              />
-            ) : (
-              noData
-            )}
-          </div>
-        </div>
+    <div className='my-6 flex w-full flex-col rounded align-middle'>
+      <div ref={ref}>
+        <SortedTable
+          data={data}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename='leaderboard-vote-block-reward-list'
+          fullDataDownloader={fullDataDownloader}
+          loading={isDataLoading}
+          emptyMessage='No data found'
+          skeletonLoaderClassName='py-[21px]'
+        />
       </div>
     </div>
   )

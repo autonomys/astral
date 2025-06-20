@@ -3,7 +3,7 @@ import { AuthProvider, DEFAULT_DISCORD_TOKEN } from 'constants/session'
 import { User } from 'next-auth'
 import type { Provider } from 'next-auth/providers'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { findUserByID, saveUser, updateUser } from 'utils/fauna'
+import { findUserByID, saveUser } from '../user'
 import {
   verifySubspaceMainnetAccountRoles,
   verifySubspaceTaurusAccountRoles,
@@ -19,6 +19,9 @@ export const Subspace = () => {
       account: { label: 'Subspace Account', type: 'text', placeholder: 'st...' },
       message: { label: 'Message', type: 'text', placeholder: '0x...' },
       signature: { label: 'Signature', type: 'text', placeholder: '0x...' },
+      csrfToken: { label: 'CSRF Token', type: 'text', placeholder: '0x...' },
+      walletSource: { label: 'Wallet Source', type: 'text', placeholder: 'polkadot-js' },
+      walletType: { label: 'Wallet Type', type: 'text', placeholder: 'subspace' },
     },
 
     // The authorize function is called when the user logs in
@@ -32,17 +35,23 @@ export const Subspace = () => {
 
         // Verify the signature to ensure it is valid
         const { isValid } = signatureVerify(message, signature, account)
-
         // Return null if the credentials are invalid
         if (!isValid) return null
 
-        const did = `did:subspace:${account}`
+        // Parse the message
+        const messageObject = JSON.parse(message)
+
+        // Verify csrf token
+        if (credentials.csrfToken !== messageObject.csrfToken) return null
+
+        const did = `did:${credentials.walletType}:${account}`
 
         // Verify Subspace VCs for mainnet
         const {
           farmer: mainnetFarmer,
           operator: mainnetOperator,
           nominator: mainnetNominator,
+          talismanFarmer: mainnetTalismanFarmer,
         } = await verifySubspaceMainnetAccountRoles(account)
 
         // Verify Subspace VCs for testnet
@@ -57,38 +66,52 @@ export const Subspace = () => {
         // create the user object if the credentials are valid
         const user: User = {
           id: did,
-          DIDs: [did],
+          DIDs: [...(savedUser?.data?.DIDs || []), did],
           subspace: {
+            ...(savedUser?.data?.subspace ?? {}),
             account,
             message,
             signature,
+            source: credentials.walletSource,
+            type: credentials.walletType,
             vcs: {
+              ...(savedUser?.data?.subspace?.vcs ?? {}),
               mainnetFarmer,
               mainnetOperator,
               mainnetNominator,
               taurusFarmer,
               taurusOperator,
               taurusNominator,
+              // Temporary VCs
+              mainnetTalismanFarmer,
             },
           },
-          discord: DEFAULT_DISCORD_TOKEN,
+          discord: {
+            ...(savedUser?.data?.discord ?? DEFAULT_DISCORD_TOKEN),
+          },
         }
 
-        if (!savedUser || savedUser.length === 0) {
+        if (!savedUser) {
           console.log('User does not exist, saving user:', user)
-          await saveUser(user)
-
+          await saveUser(user.id, {
+            ...user,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
           return user
+        } else {
+          console.log('User exists, updating user:', user)
+          await saveUser(user.id, {
+            ...savedUser.data,
+            ...user,
+            [AuthProvider.subspace]: user[AuthProvider.subspace],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
         }
-        await updateUser(
-          savedUser[0].ref,
-          savedUser[0].data,
-          AuthProvider.subspace,
-          user.subspace ?? {},
-        )
 
         return {
-          ...savedUser[0].data,
+          ...savedUser.data,
           [AuthProvider.subspace]: user[AuthProvider.subspace],
         }
       } catch (error) {

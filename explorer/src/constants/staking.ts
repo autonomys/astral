@@ -14,6 +14,8 @@ export enum NominatorStatus {
 export enum DepositStatus {
   PENDING_NEXT_EPOCH = 'PENDING_NEXT_EPOCH',
   ACTIVE = 'ACTIVE',
+  PARTIALLY_WITHDRAWN = 'PARTIALLY_WITHDRAWN',
+  FULLY_WITHDRAWN = 'FULLY_WITHDRAWN',
 }
 
 export enum WithdrawalStatus {

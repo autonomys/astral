@@ -1,7 +1,7 @@
 import { EventRecord } from "@autonomys/auto-utils";
 import * as db from "./db";
 import { Cache } from "./db";
-
+import { ExtrinsicPrimitive } from "./types";
 type EventHandler = (params: {
   event: EventRecord;
   cache: Cache;
@@ -9,7 +9,8 @@ type EventHandler = (params: {
   timestamp: Date;
   extrinsicId: string;
   eventId: string;
-  extrinsic?: any;
+  extrinsicSigner: string;
+  extrinsicMethodToPrimitive?: ExtrinsicPrimitive;
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
@@ -163,11 +164,13 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     timestamp,
     extrinsicId,
     eventId,
-    extrinsic,
+    extrinsicSigner,
+    extrinsicMethodToPrimitive,
   }) => {
     const operatorId = event.event.data[1].toString();
-    const amount = BigInt(extrinsic.data[0].toString());
-    const nominatorId = extrinsic.signer.toString();
+    const amount = extrinsicMethodToPrimitive
+      ? BigInt(String(extrinsicMethodToPrimitive.args.amount))
+      : BigInt(0);
 
     cache.operatorDepositsTotalCountHistory.push(
       db.createOperatorDepositsTotalCount(
@@ -192,7 +195,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
 
     cache.nominatorDepositsTotalCountHistory.push(
       db.createNominatorDepositsTotalCount(
-        nominatorId,
+        extrinsicSigner,
         BigInt(1),
         height,
         extrinsicId,
@@ -202,7 +205,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     );
     cache.nominatorDepositsTotalValueHistory.push(
       db.createNominatorDepositsTotalValue(
-        nominatorId,
+        extrinsicSigner,
         amount,
         height,
         extrinsicId,
@@ -265,7 +268,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       )
     );
   },
-  "domains.WithdrewStake": ({
+  "domains.NominatedStakedUnlocked": ({
     event,
     cache,
     height,
@@ -275,6 +278,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const nominatorId = event.event.data[1].toString();
+    const amount = BigInt(event.event.data[2].toString());
 
     cache.operatorWithdrawalsTotalCountHistory.push(
       db.createOperatorWithdrawalsTotalCount(
@@ -286,10 +290,31 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         timestamp
       )
     );
+    cache.operatorWithdrawalsTotalValueHistory.push(
+      db.createOperatorWithdrawalsTotalValue(
+        operatorId,
+        amount,
+        height,
+        extrinsicId,
+        eventId,
+        timestamp
+      )
+    );
+
     cache.nominatorWithdrawalsTotalCountHistory.push(
       db.createNominatorWithdrawalsTotalCount(
         nominatorId,
         BigInt(1),
+        height,
+        extrinsicId,
+        eventId,
+        timestamp
+      )
+    );
+    cache.nominatorWithdrawalsTotalValueHistory.push(
+      db.createNominatorWithdrawalsTotalValue(
+        nominatorId,
+        amount,
         height,
         extrinsicId,
         eventId,

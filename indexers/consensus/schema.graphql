@@ -10,8 +10,6 @@ type Block @entity {
   specId: String!
   stateRoot: String!
   extrinsicsRoot: String!
-  spacePledged: BigInt!
-  blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
   logsCount: Int!
@@ -102,7 +100,9 @@ type Transfer @entity {
   toChain: String!
   value: BigInt!
   fee: BigInt!
+  type: String!
   success: Boolean!
+  isFinalized: Boolean!
   timestamp: Date!
 }
 

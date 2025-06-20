@@ -10,7 +10,7 @@ import { isRouteSupportingNetwork } from 'utils/route'
 export const generateMetadata = ({
   params: { chain, logId },
 }: ChainPageProps & LogIdPageProps): Metadata =>
-  getMetadata(chain, 'Log', logId, `${chain}/${RoutesConsensus.logs}/${logId}`)
+  getMetadata(chain, 'Log', logId, `${chain}/logs/${logId}`)
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
   isRouteSupportingNetwork(chain, Routes.consensus, RoutesConsensus.extrinsics) ? (

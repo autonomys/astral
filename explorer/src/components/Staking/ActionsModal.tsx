@@ -1,5 +1,7 @@
 'use client'
 
+import useIndexers from '@/hooks/useIndexers'
+import { cn } from '@/utils/cn'
 import {
   deregisterOperator,
   nominateOperator,
@@ -8,19 +10,31 @@ import {
   withdrawStake,
   WithdrawStakeParams,
 } from '@autonomys/auto-consensus'
+import { shortString } from '@autonomys/auto-utils'
+import { InformationCircleIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
+import { Routes } from 'constants/routes'
 import { WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { logTx } from 'utils/log'
-import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
+import {
+  bigNumberToFormattedString,
+  floatToStringWithDecimals,
+  formatUnitsToNumber,
+} from 'utils/number'
 import * as Yup from 'yup'
+import { AccountIcon } from '../common/AccountIcon'
+import { Tooltip } from '../common/Tooltip'
+
+// Custom slider styling
+import 'styles/slider-custom.css'
 
 export enum OperatorActionType {
   None = 'none',
@@ -40,6 +54,13 @@ export const ActionsInRed = [
 export type OperatorAction = {
   type: OperatorActionType
   operatorId: number | null
+  minimumNominatorStake?: string
+  accountId?: string
+  nominationTax?: string
+  currentTotalStake?: string
+  apy30d?: string
+  isRedirecting?: boolean
+  totalStake?: bigint
 }
 
 type Props = {
@@ -56,19 +77,29 @@ const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT = 0.0001
 
 export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
+  const { network } = useIndexers()
   const [formError, setFormError] = useState<string | null>(null)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [sliderValue, setSliderValue] = useState(0)
+  const [isRedirecting, setIsRedirecting] = useState(false)
   const { handleTxError, sendAndSaveTx } = useTxHelper()
   const pathname = usePathname()
+  const { push } = useRouter()
 
   const initialValues: FormValues = useMemo(
     () => ({
       amount: 0,
     }),
     [],
+  )
+
+  const nominationInitialValue = useMemo(
+    () => ({
+      amount: action.minimumNominatorStake ? parseFloat(action.minimumNominatorStake) : 0,
+    }),
+    [action.minimumNominatorStake],
   )
   const maxAmountToAdd = useMemo(
     () =>
@@ -78,10 +109,29 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     [walletBalance],
   )
 
+  const minimumStake = useMemo(() => {
+    return action.minimumNominatorStake ? parseFloat(action.minimumNominatorStake) : 0
+  }, [action.minimumNominatorStake])
+
+  const maximumStake = useMemo(() => {
+    if (maxAmountToAdd > minimumStake) {
+      return maxAmountToAdd
+    }
+    return minimumStake
+  }, [minimumStake, maxAmountToAdd])
+
+  const hasInsufficientBalance = useMemo(() => {
+    return maxAmountToAdd < minimumStake
+  }, [maxAmountToAdd, minimumStake])
+
   const addFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
-      .moreThan(0, `Amount need to be greater than 0 ${tokenSymbol}`)
-      .max(maxAmountToAdd, `Amount need to be less than ${maxAmountToAdd} ${tokenSymbol}`)
+      .min(
+        minimumStake,
+        `Amount need to be greater than or equal to ${minimumStake} ${tokenSymbol}`,
+      )
+      .max(maximumStake, `Amount need to be less than or equal to ${maximumStake} ${tokenSymbol}`)
+      .positive()
       .required('Amount to stake is required'),
   })
 
@@ -115,6 +165,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
   const handleClose = useCallback(() => {
     setFormError(null)
+    setIsRedirecting(false)
     onClose()
   }, [onClose])
 
@@ -146,8 +197,16 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           value: `operatorID:${action.operatorId.toString()}`,
         })
         resetForm()
-        if (hash) await logTx(pathname, hash.toString(), 'nominateOperator')
-        handleClose()
+        if (hash) {
+          await logTx(pathname, hash.toString(), 'nominateOperator')
+          setIsRedirecting(true)
+          setTimeout(() => {
+            handleClose()
+            push(`/${network}/${Routes.staking}/nominations`)
+          }, 1000)
+        } else {
+          handleClose()
+        }
       } catch (error) {
         handleTxError(
           'There was an error while adding funds to the operator',
@@ -166,6 +225,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       pathname,
       handleClose,
       handleTxError,
+      push,
+      network,
     ],
   )
 
@@ -301,95 +362,194 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     switch (OperatorActionType[action.type as keyof typeof OperatorActionType]) {
       case OperatorActionType.Nominating:
         return (
-          <div className='flex flex-col items-start gap-4'>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={addFundsFormValidationSchema}
-              onSubmit={(values, { resetForm }) =>
-                OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                OperatorActionType.Nominating
-                  ? handleAddFunds(values, resetForm)
-                  : handleWithdraw(values, resetForm)
-              }
-            >
-              {({ errors, touched, handleSubmit, setFieldValue }) => (
-                <Form
-                  className='w-full'
-                  onSubmit={handleSubmit}
-                  data-testid='testOperatorStakeForm'
-                >
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
-                    {`Amount to ${
-                      OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                      OperatorActionType.Nominating
-                        ? 'stake'
-                        : 'withdraw'
-                    }`}{' '}
-                    ({tokenSymbol})
-                  </span>
-                  <FieldArray
-                    name='dischargeNorms'
-                    render={() => (
-                      <div className='relative'>
-                        <Field
-                          name='amount'
-                          type='number'
-                          placeholder={`Amount to ${
-                            OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                            OperatorActionType.Nominating
-                              ? 'stake'
-                              : 'withdraw'
-                          }`}
-                          className={`mt-4 block w-full rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
-                            errors.amount &&
-                            'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
-                          }`}
-                        />
-                        <button
-                          className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
-                          type='button'
-                          style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
-                          onClick={() => setFieldValue('amount', maxAmountToAdd)}
-                        >
-                          Max
-                        </button>
-                      </div>
-                    )}
-                  />
-                  {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
-                    maxAmountToAdd === 0 ? (
-                      <span className='text-md h-8 text-red-500' data-testid='errorMessage'>
-                        You don&apos;t have enough balance to stake
+          <div className='flex flex-col gap-4'>
+            {isRedirecting ? (
+              <div className='flex flex-col items-center justify-center py-4 text-center'>
+                <div className='mb-4 text-lg font-medium'>Transaction successful!</div>
+                {action.isRedirecting && (
+                  <div className='mb-4 text-sm text-gray-500'>
+                    Redirecting to your nominations page...
+                  </div>
+                )}
+                <div className='h-6 w-6 animate-spin rounded-full border-b-2 border-t-2 border-primaryAccent'></div>
+              </div>
+            ) : (
+              <>
+                <div className='flex flex-row items-center justify-between'>
+                  <div className='flex items-center space-x-3'>
+                    <AccountIcon address={action.accountId || ''} size={26} theme='beachball' />
+                    <div>
+                      <span className='text-lg font-medium text-blueAccent dark:text-white'>
+                        Operator #{action.operatorId}
                       </span>
-                    ) : (
-                      <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
-                        {errors.amount}
-                      </div>
-                    )
-                  ) : (
-                    <div className='text-md mt-2 h-8' data-testid='placeHolder' />
-                  )}
-                  {ErrorPlaceholder}
-                  {!actingAccount ? (
-                    <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
-                      You need to connect your wallet
+                      <p className='text-xs text-blueAccent/70 dark:text-gray-300'>
+                        {action.accountId ? shortString(action.accountId) : ''}
+                      </p>
                     </div>
-                  ) : (
-                    <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
-                      type='submit'
-                    >
-                      {OperatorActionType[action.type as keyof typeof OperatorActionType]}
-                    </button>
+                  </div>
+                  <div className='text-right'>
+                    <div className='text-sm font-medium text-blueAccent dark:text-white'>
+                      {action.apy30d}% 30d APY
+                    </div>
+                    <div className='text-xs font-normal text-blueAccent/70 dark:text-gray-300'>
+                      Est. Annual Yield
+                    </div>
+                  </div>
+                </div>
+                <hr className='my-2' />
+                <div className='grid grid-cols-3 gap-2'>
+                  {action.nominationTax && (
+                    <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                      <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-gray-300'>
+                        <Tooltip text='The tax percentage for the operator' direction='top'>
+                          <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                        </Tooltip>
+                        Tax
+                      </div>
+                      <div className='font-bold text-blueAccent dark:text-white'>
+                        {action.nominationTax}%
+                      </div>
+                    </div>
                   )}
-                </Form>
-              )}
-            </Formik>
+                  {action.currentTotalStake && (
+                    <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                      <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-gray-300'>
+                        <Tooltip text='The total stake of the operator' direction='top'>
+                          <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                        </Tooltip>
+                        Total stake
+                      </div>
+                      <div className='font-bold text-blueAccent dark:text-white'>
+                        {action.currentTotalStake} tAI3
+                      </div>
+                    </div>
+                  )}
+                  {action.minimumNominatorStake && (
+                    <div className='rounded-lg bg-grayLight p-3 dark:bg-grayDarker'>
+                      <div className='mb-1 flex items-center text-sm text-blueAccent dark:text-gray-300'>
+                        <Tooltip
+                          text='The minimum stake required to nominate an operator'
+                          direction='top'
+                        >
+                          <InformationCircleIcon className='mr-1 h-5 w-5 cursor-pointer' />
+                        </Tooltip>
+                        Minimum stake
+                      </div>
+                      <div className='font-bold text-blueAccent dark:text-white'>
+                        {parseFloat(action.minimumNominatorStake) || 0} tAI3
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <Formik
+                  initialValues={nominationInitialValue}
+                  validationSchema={addFundsFormValidationSchema}
+                  onSubmit={(values, { resetForm }) =>
+                    OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+                    OperatorActionType.Nominating
+                      ? handleAddFunds(values, resetForm)
+                      : handleWithdraw(values, resetForm)
+                  }
+                >
+                  {({ errors, touched, handleSubmit, setFieldValue }) => (
+                    <Form
+                      className='w-full'
+                      onSubmit={handleSubmit}
+                      data-testid='testOperatorStakeForm'
+                    >
+                      <span className='text-sm font-medium text-grayDarker dark:text-white'>
+                        {`Amount to ${
+                          OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+                          OperatorActionType.Nominating
+                            ? 'stake'
+                            : 'withdraw'
+                        }`}{' '}
+                        ({tokenSymbol})
+                      </span>
+                      <FieldArray
+                        name='dischargeNorms'
+                        render={() => (
+                          <div className='relative'>
+                            <Field
+                              name='amount'
+                              type='number'
+                              placeholder={`Amount to ${
+                                OperatorActionType[
+                                  action.type as keyof typeof OperatorActionType
+                                ] === OperatorActionType.Nominating
+                                  ? 'stake'
+                                  : 'withdraw'
+                              }`}
+                              className={`mt-2 block w-full rounded-md border border-grayDark bg-white px-4 py-[10px] pr-[60px] text-sm text-gray-900 dark:bg-blueAccent dark:text-white ${
+                                errors.amount &&
+                                'block w-full rounded-full border border-red-500 bg-white px-4 py-[10px] text-sm text-gray-900'
+                              }`}
+                            />
+                            <button
+                              className='absolute flex items-center gap-2 rounded-md px-2 text-sm font-medium text-primaryAccent dark:text-white md:space-x-4 md:text-base'
+                              type='button'
+                              style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
+                              onClick={() => setFieldValue('amount', maxAmountToAdd)}
+                            >
+                              Max
+                            </button>
+                          </div>
+                        )}
+                      />
+                      {(errors.amount && touched.amount) || hasInsufficientBalance ? (
+                        hasInsufficientBalance ? (
+                          <span
+                            className='mt-2 h-6 text-xs text-red-500'
+                            data-testid='errorMessage'
+                          >
+                            Insufficient wallet balance for minimum stake requirement of{' '}
+                            {minimumStake} {tokenSymbol}
+                          </span>
+                        ) : (
+                          <div className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
+                            {errors.amount}
+                          </div>
+                        )
+                      ) : null}
+                      {ErrorPlaceholder}
+                      {!actingAccount ? (
+                        <div
+                          className='mt-4 text-center text-xs text-red-500'
+                          data-testid='errorMessage'
+                        >
+                          You need to connect your wallet
+                        </div>
+                      ) : (
+                        <div className='mt-4 flex w-full items-center justify-center gap-2'>
+                          <button
+                            className='w-full rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                            type='button'
+                            onClick={handleClose}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className={cn(
+                              'w-full rounded-full bg-buttonLightFrom px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2 dark:bg-primaryAccent dark:text-white',
+                              hasInsufficientBalance ? 'cursor-not-allowed opacity-50' : '',
+                            )}
+                            type='submit'
+                            disabled={hasInsufficientBalance}
+                          >
+                            {OperatorActionType[action.type as keyof typeof OperatorActionType]}
+                          </button>
+                        </div>
+                      )}
+                    </Form>
+                  )}
+                </Formik>
+              </>
+            )}
           </div>
         )
       case OperatorActionType.Withdraw:
         return (
-          <div className='flex flex-col items-start gap-4'>
+          <div className='flex flex-col items-start gap-4 py-3'>
             <Formik
               initialValues={initialValues}
               validationSchema={withdrawFundsFormValidationSchema}
@@ -406,7 +566,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                  <span className='pb-3 text-sm font-medium text-gray-500 dark:text-gray-400'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                       OperatorActionType.Nominating
@@ -417,10 +577,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   <FieldArray
                     name='dischargeNorms'
                     render={() => (
-                      <div className='relative w-[400px]'>
-                        <div className='mb-4 flex w-full items-center justify-between'>
+                      <div className='mt-2 flex flex-col gap-4'>
+                        <div className='flex w-full items-center gap-2'>
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 25
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(25)
@@ -430,7 +595,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             25%
                           </button>
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 50
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(50)
@@ -440,7 +610,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             50%
                           </button>
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 75
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(75)
@@ -450,7 +625,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             75%
                           </button>
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 100
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(100)
@@ -474,7 +654,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             style={{ flexGrow: 1, marginRight: '10px' }} // Added margin to the right
                           />
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            className={cn(
+                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              sliderValue === 100
+                                ? 'bg-buttonLightFrom text-white dark:border-gray-600'
+                                : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
+                            )}
                             type='button'
                             onClick={() => {
                               setSliderValue(100)
@@ -484,33 +669,42 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             Max
                           </button>
                         </div>
-                        <div className='mt-2 text-center text-sm font-medium dark:text-white'>
-                          {sliderValue.toFixed(0)}% of your stake
+                        <div className='flex items-center justify-between'>
+                          <span className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                            {sliderValue.toFixed(0)}% of your stake
+                          </span>
+                          <span className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                            {bigNumberToFormattedString(
+                              (Number(action.totalStake) || 0) * (sliderValue / 100),
+                            )}{' '}
+                            {tokenSymbol} {'(estimated.)'}
+                          </span>
                         </div>
                       </div>
                     )}
                   />
-                  {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
-                    maxAmountToAdd === 0 ? (
-                      <span className='text-md h-8 text-red-500' data-testid='errorMessage'>
-                        You don&apos;t have enough balance to stake
+                  {(errors.amount && touched.amount) || hasInsufficientBalance ? (
+                    hasInsufficientBalance ? (
+                      <span className='mt-2 h-6 text-xs text-red-500' data-testid='errorMessage'>
+                        Insufficient wallet balance for minimum stake requirement of {minimumStake}{' '}
+                        {tokenSymbol}
                       </span>
                     ) : (
-                      <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                      <div className='mt-2 h-6 text-sm text-red-500' data-testid='errorMessage'>
                         {errors.amount}
                       </div>
                     )
                   ) : (
-                    <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                    <div className='mt-2 h-6 text-sm' data-testid='placeHolder' />
                   )}
                   {ErrorPlaceholder}
                   {!actingAccount ? (
-                    <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                    <div className='mt-2 h-6 text-sm text-red-500' data-testid='errorMessage'>
                       You need to connect your wallet
                     </div>
                   ) : (
                     <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                      className='w-full rounded-full border border-gray-200 bg-buttonLightFrom px-3 py-2 text-sm font-medium text-gray-50 hover:bg-buttonLightFrom/90 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90'
                       type='submit'
                     >
                       {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -528,12 +722,21 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
               Do you really want to deregister your Operator?
             </span>
             {ErrorPlaceholder}
-            <button
-              className='flex w-full max-w-fit items-center gap-2 rounded-full bg-red-500 px-2 text-sm font-medium text-white dark:bg-red-500 md:space-x-4 md:text-base'
-              onClick={handleDeregister}
-            >
-              {OperatorActionType[action.type as keyof typeof OperatorActionType]}
-            </button>
+            <div className='mt-4 flex w-full items-center justify-center gap-2'>
+              <button
+                className='w-full rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                type='button'
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+              <button
+                className='w-full rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-500/90'
+                onClick={handleDeregister}
+              >
+                {OperatorActionType[action.type as keyof typeof OperatorActionType]}
+              </button>
+            </div>
           </div>
         )
       case OperatorActionType.UnlockFunds:
@@ -542,20 +745,33 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           <div className='flex flex-col items-start gap-4'>
             <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
               Do you really want to unlock the funds in your
-              {action.type === OperatorActionType.UnlockFunds ? 'operator' : 'nominator'} ?
+              <span className='text-blueAccent dark:text-white'>
+                {action.type === OperatorActionType.UnlockFunds ? 'operator' : 'nominator'}
+              </span>{' '}
+              ?
             </span>
             {ErrorPlaceholder}
-            <button
-              className='flex w-full max-w-fit items-center gap-2 rounded-full bg-red-500 px-2 text-sm font-medium text-white dark:bg-red-500 md:space-x-4 md:text-base'
-              onClick={
-                OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                OperatorActionType.UnlockFunds
-                  ? handleUnlockFunds
-                  : handleUnlockNominator
-              }
-            >
-              {OperatorActionType[action.type as keyof typeof OperatorActionType]}
-            </button>
+
+            <div className='mt-4 flex w-full items-center justify-center gap-2'>
+              <button
+                className='w-full rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                type='button'
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+              <button
+                className='w-full rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-500/90'
+                onClick={
+                  OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+                  OperatorActionType.UnlockFunds
+                    ? handleUnlockFunds
+                    : handleUnlockNominator
+                }
+              >
+                {OperatorActionType[action.type as keyof typeof OperatorActionType]}
+              </button>
+            </div>
           </div>
         )
       default:
@@ -563,7 +779,16 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     }
   }, [
     action.type,
+    action.apy30d,
+    action.currentTotalStake,
+    action.minimumNominatorStake,
+    action.nominationTax,
+    action.accountId,
+    action.operatorId,
+    action.isRedirecting,
+    action.totalStake,
     initialValues,
+    nominationInitialValue,
     addFundsFormValidationSchema,
     withdrawFundsFormValidationSchema,
     ErrorPlaceholder,
@@ -576,6 +801,10 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     maxAmountToAdd,
     actingAccount,
     sliderValue,
+    handleClose,
+    hasInsufficientBalance,
+    minimumStake,
+    isRedirecting,
   ])
 
   useEffect(() => {
@@ -586,19 +815,31 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     loadWalletBalance()
   }, [api, actingAccount, loadWalletBalance])
 
+  if (
+    OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+    OperatorActionType.Nominating
+  ) {
+    return (
+      <Modal
+        showTitle={false}
+        showCloseButton={false}
+        onClose={handleClose}
+        isOpen={isOpen}
+        size='lg'
+      >
+        {ActionBody}
+      </Modal>
+    )
+  }
+
   return (
-    <Modal title={action.type} onClose={handleClose} isOpen={isOpen}>
-      <div className='flex flex-col items-start gap-4'>
-        <div className='flex flex-col items-center gap-4'>
-          <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
-        </div>
-        <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
-          onClick={onClose}
-        >
-          Close
-        </button>
-      </div>
+    <Modal
+      title={OperatorActionType[action.type as keyof typeof OperatorActionType]}
+      onClose={handleClose}
+      isOpen={isOpen}
+      size='md'
+    >
+      {ActionBody}
     </Modal>
   )
 }

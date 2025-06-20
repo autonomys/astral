@@ -1,41 +1,38 @@
-query Extrinsics(
-  $limit: Int!
-  $offset: Int
-  $orderBy: [consensus_extrinsics_order_by!]!
-  $where: consensus_extrinsics_bool_exp
-) {
+query ExtrinsicsAggregate($where: consensus_extrinsics_bool_exp) @cached(ttl: 60000) {
   consensus_extrinsics_aggregate(where: $where) {
     aggregate {
       count
     }
   }
-  consensus_extrinsics(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
-    id
-    sortId: sort_id
-    hash
-    blockHeight: block_height
-    blockHash: block_hash
-    section
-    module
-    indexInBlock: index_in_block
-    success
-    timestamp
-    nonce
-    signer
-    signature
-    tip
-    fee
-  }
-  consensus_extrinsic_modules(order_by: { section: asc, method: asc }, limit: 50) {
+}
+
+query ExtrinsicsModules {
+  consensus_extrinsic_modules {
     section
     method
   }
 }
 
+query ExtrinsicsByBlockHash($limit: Int!, $offset: Int, $where: consensus_blocks_bool_exp) {
+  consensus_blocks(limit: $limit, offset: $offset, where: $where) {
+    id
+    authorId: author_id
+    extrinsics(order_by: { index_in_block: asc }) {
+      id
+      hash
+      blockHeight: block_height
+      indexInBlock: index_in_block
+      section
+      success
+      timestamp
+      module
+      blockHash: block_hash
+    }
+  }
+}
+
 query ExtrinsicsById($extrinsicId: String!) {
-  consensus_extrinsics(
-    where: { _or: [{ id: { _eq: $extrinsicId } }, { hash: { _eq: $extrinsicId } }] }
-  ) {
+  consensus_extrinsics(where: { id: { _eq: $extrinsicId } }) {
     id
     hash
     block_height
@@ -56,12 +53,7 @@ query EventsByExtrinsicId(
   $offset: Int
   $orderBy: [consensus_events_order_by!]
 ) {
-  consensus_events(
-    order_by: $orderBy
-    limit: $limit
-    offset: $offset
-    where: { extrinsic_id: { _eq: $extrinsicId } }
-  ) {
+  consensus_events(limit: $limit, offset: $offset, where: { extrinsic_id: { _eq: $extrinsicId } }) {
     id
     section
     module

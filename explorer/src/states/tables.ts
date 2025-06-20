@@ -1,9 +1,9 @@
 import { PaginationState, SortingState } from '@tanstack/react-table'
 import { INITIAL_TABLES } from 'constants/tables'
-import { snakeCase } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { Filters, Table, TableSettingsTabs } from 'types/table'
 import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
+import { snakeCase } from 'utils/string'
 import { sortBy, sortByAggregate } from 'utils/table'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
@@ -23,6 +23,7 @@ interface PersistentTableStates {
   domains: PersistentTableState
   operators: PersistentTableState
   leaderboard: PersistentTableState
+  transfers: PersistentTableState
 }
 interface VolatileTableStates {
   accounts: VolatileTableState
@@ -35,6 +36,7 @@ interface VolatileTableStates {
   domains: VolatileTableState
   operators: VolatileTableState
   leaderboard: VolatileTableState
+  transfers: VolatileTableState
 }
 
 interface PersistentTableStatesAndFn extends PersistentTableStates {
@@ -66,6 +68,7 @@ const initialPersistentState: PersistentTableStates = {
   domains: INITIAL_TABLES.domains,
   operators: INITIAL_TABLES.operators,
   leaderboard: INITIAL_TABLES.leaderboard,
+  transfers: INITIAL_TABLES.transfers,
 }
 
 const initialVolatileState: VolatileTableStates = {
@@ -108,6 +111,10 @@ const initialVolatileState: VolatileTableStates = {
   leaderboard: {
     pagination: INITIAL_TABLES.leaderboard.pagination,
     filters: INITIAL_TABLES.leaderboard.filters,
+  },
+  transfers: {
+    pagination: INITIAL_TABLES.transfers.pagination,
+    filters: INITIAL_TABLES.transfers.filters,
   },
 }
 
@@ -219,7 +226,7 @@ export const usePersistentTableStates = create<PersistentTableStatesAndFn>()(
     }),
     {
       name: 'table-storage',
-      version: 12,
+      version: 14,
       storage: createJSONStorage(() => localStorage),
       serialize: (state) => JSON.stringify(state, bigIntSerializer),
       deserialize: (str) => JSON.parse(str, bigIntDeserializer),
@@ -293,6 +300,19 @@ export const useTableSettings = <TFilter>(table: TableName) => {
     [availableColumns, filters],
   )
 
+  const stringForSearch = useMemo(
+    () =>
+      availableColumns
+        .filter((column) => column.searchable)
+        .reduce((conditions, column) => {
+          const searchValue = filters[`search-${column.name}` as keyof TFilter]
+          return searchValue
+            ? { ...conditions, [snakeCase(column.name)]: { _eq: searchValue } }
+            : conditions
+        }, {}),
+    [availableColumns, filters],
+  )
+
   const showReset = useMemo(() => _showReset(table), [_showReset, table])
 
   const onSortingChange = useCallback(
@@ -345,6 +365,7 @@ export const useTableSettings = <TFilter>(table: TableName) => {
     filters,
     orderBy,
     whereForSearch,
+    stringForSearch,
     showTableSettings,
     showReset,
     onPaginationChange,

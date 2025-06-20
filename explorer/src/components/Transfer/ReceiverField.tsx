@@ -1,5 +1,7 @@
+import { cn } from '@/utils/cn'
 import { DomainRuntime, isAddress, shortString } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
+import { LuBook } from 'components/icons'
 import { WalletType } from 'constants/wallet'
 import { isAddress as isEvmAddress } from 'ethers'
 import { Field, FieldArray, Form, Formik } from 'formik'
@@ -73,7 +75,7 @@ export const ReceiverField: FC = () => {
           enableReinitialize
           onSubmit={() => {}}
         >
-          {({ errors, touched, handleSubmit, setFieldValue }) => (
+          {({ errors, touched, handleSubmit, setFieldValue, values }) => (
             <Form className='w-full' onSubmit={handleSubmit} data-testid='testOperatorStakeForm'>
               <div className='flex items-center'>
                 <FieldArray
@@ -82,27 +84,26 @@ export const ReceiverField: FC = () => {
                     <div className='relative w-full'>
                       <Field
                         name='address'
-                        placeholder=''
+                        placeholder='Enter recipient address'
                         type='text'
                         onChange={handleSetReceiver}
-                        className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
-                        ${
-                          errors.address &&
-                          touched.address &&
-                          'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
-                        }
-                      `}
+                        value={values.address}
+                        className={cn(
+                          'mt-4 block w-full overflow-ellipsis rounded-md border-blueShade bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] pr-[120px] text-base text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder-gray-200',
+                          errors.address && touched.address && 'border-red-500',
+                        )}
                       />
 
                       <Listbox value={actingAccount}>
                         <Listbox.Button
                           className={
-                            'absolute mt-2 flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                            'absolute mt-2 flex items-center space-x-1 rounded-md px-2 text-xs font-medium text-primaryAccent dark:text-gray-100'
                           }
                           style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                           onClick={() => setAddressBookIsOpen(!addressBookIsOpen)}
                         >
-                          Address book
+                          <LuBook className='h-4 w-4' />
+                          <span className='text-xs'>Address book</span>
                         </Listbox.Button>
                         <Transition
                           as={Fragment}
@@ -128,7 +129,12 @@ export const ReceiverField: FC = () => {
                                       }`
                                     }
                                     value={account}
-                                    onClick={() => subAccount && setReceiver(subAccount)}
+                                    onClick={() => {
+                                      if (subAccount) {
+                                        setReceiver(subAccount)
+                                        setFieldValue('address', subAccount)
+                                      }
+                                    }}
                                   >
                                     {({ selected }) => {
                                       return (
@@ -137,7 +143,7 @@ export const ReceiverField: FC = () => {
                                             className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                                           >
                                             {account.name} {formattedAccount}{' '}
-                                            <span className='my-0 ml-4 rounded-full bg-grayDarker px-1 text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
+                                            <span className='my-0 ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
                                               Wallet
                                             </span>
                                           </span>
@@ -157,7 +163,10 @@ export const ReceiverField: FC = () => {
                                     }`
                                   }
                                   value={address.address}
-                                  onClick={() => setFieldValue('address', address.address)}
+                                  onClick={() => {
+                                    setFieldValue('address', address.address)
+                                    setReceiver(address.address)
+                                  }}
                                 >
                                   {({ selected }) => {
                                     const subAccount = !address.address.startsWith('st')

@@ -19,7 +19,7 @@ export function getStaticRoutes(dir = appDir, basePath = ''): string[] {
       if (entry.name.startsWith('page.') || entry.name.startsWith('route.')) {
         let route = `${basePath}`
         route = route.replace(/\[([^\]]+)\]/g, ':$1') // Convert "[id]" to ":id"
-        routes.push(route === '' ? '/' : route)
+        routes.push(route)
       }
     }
   }
@@ -37,7 +37,20 @@ const excludePatterns = [
   ':cid',
   ':operatorId',
   ':extrinsicId',
+  ':profileId',
   ':...not-found',
+]
+
+// Important routes that should have higher priority
+const highPriorityRoutes = [
+  '/staking',
+  '/farming',
+  '/permanent-storage',
+  '/consensus',
+  '/domains',
+  '/transfer',
+  '/stats',
+  '/leaderboard',
 ]
 
 export function filterRoutes(routes: string[]): string[] {
@@ -67,12 +80,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const dynamicRoutes = expandChainRoutes(filterRoutes(getStaticRoutes()))
 
   // Format the sitemap with correct type
-  const sitemapEntries: MetadataRoute.Sitemap = dynamicRoutes.map((route) => ({
-    url: `${url}/${route}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly',
-    priority: 0.8,
-  }))
+  const sitemapEntries: MetadataRoute.Sitemap = dynamicRoutes.map((route) => {
+    // Assign priority based on route importance
+    let priority = 0.7
+
+    // Check if any high priority route patterns match the current route
+    if (highPriorityRoutes.some((priorityRoute) => route.includes(priorityRoute))) {
+      priority = 1.0
+    }
+
+    return {
+      url: `${url}${route}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority,
+    }
+  })
 
   return sitemapEntries
 }

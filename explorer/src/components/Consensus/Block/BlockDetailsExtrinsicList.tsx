@@ -4,7 +4,6 @@ import { useApolloClient } from '@apollo/client'
 import { shortString } from '@autonomys/auto-utils'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
@@ -18,25 +17,27 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
-import { NotFound } from '../../layout/NotFound'
 
 type Props = {
+  blockHeight: number
   extrinsicsCount: number
   isDesktop?: boolean
 }
 
 type Row = ExtrinsicsByBlockIdQuery['consensus_extrinsics'][number]
 
-export const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsicsCount, isDesktop = false }) => {
+export const BlockDetailsExtrinsicList: FC<Props> = ({
+  blockHeight,
+  extrinsicsCount,
+  isDesktop = false,
+}) => {
   const { ref, inView } = useInView()
-  const { blockId } = useParams()
   const { network, section } = useIndexers()
   const apolloClient = useApolloClient()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
@@ -62,9 +63,9 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsicsCount, isDeskto
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
-      blockId: Number(blockId),
+      blockHeight,
     }),
-    [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
+    [pagination.pageSize, pagination.pageIndex, orderBy, blockHeight],
   )
 
   const { loading, setIsVisible } = useIndexersQuery<
@@ -161,11 +162,10 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsicsCount, isDeskto
     [extrinsicsCount, pagination],
   )
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
-    return null
-  }, [consensusEntry, loading])
+  const isDataLoading = useMemo(() => {
+    if (loading || isLoading(consensusEntry) || !extrinsics) return true
+    return false
+  }, [consensusEntry, loading, extrinsics])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -173,22 +173,20 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsicsCount, isDeskto
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>
-      {!loading && extrinsics ? (
-        <SortedTable
-          data={extrinsics}
-          columns={columns}
-          showNavigation={true}
-          sorting={sorting}
-          onSortingChange={setSorting}
-          pagination={pagination}
-          pageCount={pageCount}
-          onPaginationChange={setPagination}
-          filename='block-details-extrinsics-list'
-          fullDataDownloader={fullDataDownloader}
-        />
-      ) : (
-        noData
-      )}
+      <SortedTable
+        data={extrinsics || []}
+        columns={columns}
+        showNavigation={true}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        pagination={pagination}
+        pageCount={pageCount}
+        onPaginationChange={setPagination}
+        filename='block-details-extrinsics-list'
+        fullDataDownloader={fullDataDownloader}
+        loading={isDataLoading}
+        emptyMessage='No extrinsics found'
+      />
     </div>
   )
 }

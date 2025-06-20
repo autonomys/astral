@@ -31,8 +31,8 @@ interface ExplorerQueryState {
   [Routes.consensus]: {
     accounts: QueryState<GqlT.AccountsQuery>
     blocks: QueryState<GqlT.BlocksQuery>
-    extrinsics: QueryState<GqlT.ExtrinsicsQuery>
-    events: QueryState<GqlT.EventsQuery>
+    extrinsics: QueryState<GqlT.ExtrinsicsSubscription>
+    events: QueryState<GqlT.EventsSubscription>
     logs: QueryState<GqlT.LogsQuery>
 
     account: QueryState<GqlT.AccountByIdQuery>
@@ -80,10 +80,12 @@ interface ExplorerQueryState {
     domains: QueryState<GqlT.DomainsListQuery>
     domain: QueryState<GqlT.DomainByIdQuery>
   }
+  [Routes.transfer]: {
+    transfer: QueryState<GqlT.TransferHistoryQuery>
+    transfers: QueryState<GqlT.TransferHistoryQuery>
+  }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
-    stakingSummary: QueryState<GqlT.StakingSummaryQuery>
     lastExtrinsics: QueryState<GqlT.ExtrinsicsSummaryQuery>
-    leaderboard: QueryState<GqlT.AccountsTopLeaderboardQuery>
   }
 }
 
@@ -95,7 +97,7 @@ export type Components =
   | keyof ExplorerQueryState[Routes.staking]
   | keyof ExplorerQueryState[Routes.domains]
   | keyof ExplorerQueryState[ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]
-
+  | keyof ExplorerQueryState[Routes.transfer]
 interface ExplorerQueryStateAndHelper extends ExplorerQueryState {
   setIsLoading: (section: ExplorerSection, component: Components) => void
   setValue: <T>(section: ExplorerSection, component: Components, value: T) => void
@@ -159,9 +161,11 @@ const initialState: ExplorerQueryState = {
     domain: initialized,
   },
   walletSidekick: {
-    stakingSummary: initialized,
     lastExtrinsics: initialized,
-    leaderboard: initialized,
+  },
+  transfer: {
+    transfer: initialized,
+    transfers: initialized,
   },
 }
 

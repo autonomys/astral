@@ -26,48 +26,37 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
   ],
   blocks: [
-    { name: 'sortId', label: 'Block number', isSelected: true, searchable: true },
+    { name: 'height', label: 'Block number', isSelected: true, searchable: true },
     { name: 'hash', label: 'Hash', isSelected: true, searchable: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
     { name: 'parentHash', label: 'Parent Hash', isSelected: false, searchable: true },
     { name: 'specId', label: 'Spec Id', isSelected: false },
     { name: 'stateRoot', label: 'State Root', isSelected: false },
     { name: 'extrinsicsRoot', label: 'Extrinsics Root', isSelected: false },
-    { name: 'spacePledged', label: 'Space Pledged', isSelected: true },
-    { name: 'blockchainSize', label: 'Blockchain Size', isSelected: false },
     { name: 'extrinsicsCount', label: 'Extrinsics', isSelected: true },
     { name: 'eventsCount', label: 'Events', isSelected: true },
     { name: 'authorId', label: 'Block Author', isSelected: true, searchable: true },
   ],
   extrinsics: [
-    { name: 'sortId', label: 'Extrinsic Id', isSelected: true, searchable: true },
-    { name: 'hash', label: 'Extrinsic Hash', isSelected: true, searchable: true },
-    { name: 'blockHeight', label: 'Block Height', isSelected: true, searchable: true },
-    { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
-    { name: 'section', label: 'Section', isSelected: false, searchable: true },
-    { name: 'module', label: 'Module', isSelected: true, searchable: true },
-    { name: 'indexInBlock', label: 'Index in Block', isSelected: false },
-    { name: 'success', label: 'Status', isSelected: true, searchable: true },
+    { name: 'id', label: 'Extrinsic Id', isSelected: true },
+    { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: true },
+    { name: 'blockHeight', label: 'Block Height', isSelected: true },
+    { name: 'module', label: 'Module', isSelected: true },
+    { name: 'success', label: 'Status', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
-    { name: 'nonce', label: 'Nonce', isSelected: false },
-    { name: 'signer', label: 'Signer', isSelected: false, searchable: true },
-    { name: 'signature', label: 'Signature', isSelected: false },
-    { name: 'tip', label: 'Tip', isSelected: false },
-    { name: 'fee', label: 'Fee', isSelected: false },
+    { name: 'hash', label: 'Block Hash', isSelected: false, searchable: true },
   ],
   events: [
-    { name: 'sortId', label: 'Event Id', isSelected: true, searchable: true },
-    { name: 'blockHeight', label: 'Block Height', isSelected: true, searchable: true },
-    { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
-    { name: 'extrinsicId', label: 'Extrinsic Id', isSelected: true, searchable: true },
-    { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: false, searchable: true },
-    { name: 'section', label: 'Section', isSelected: true, searchable: true },
-    { name: 'module', label: 'Module', isSelected: true, searchable: true },
+    { name: 'id', label: 'Event Id', isSelected: true },
+    { name: 'blockHeight', label: 'Block Height', isSelected: true },
+    { name: 'extrinsicId', label: 'Extrinsic Id', isSelected: true },
+    { name: 'module', label: 'Module', isSelected: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
+    { name: 'hash', label: 'Block Hash', isSelected: false, searchable: true },
   ],
   logs: [
-    { name: 'sortId', label: 'Log Id', isSelected: true, searchable: true },
+    { name: 'id', label: 'Log Id', isSelected: true, searchable: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true, searchable: true },
     { name: 'blockHash', label: 'Block Hash', isSelected: true, searchable: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
@@ -170,11 +159,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'accumulatedEpochRewards', label: 'Accumulated Epoch Rewards', isSelected: false },
     { name: 'accumulatedEpochShares', label: 'Accumulated Epoch Shares', isSelected: false },
     { name: 'bundleCount', label: 'Bundle Count', isSelected: true },
-    // { name: 'currentEpochDuration', label: 'Current Epoch Duration', isSelected: false },
-    // { name: 'lastEpochDuration', label: 'Last Epoch Duration', isSelected: false },
-    // { name: 'last6EpochsDuration', label: 'Last 6 Epochs Duration', isSelected: false },
-    // { name: 'last144EpochDuration', label: 'Last 144 Epoch Duration', isSelected: false },
-    // { name: 'last1kEpochDuration', label: 'Last 1K Epoch Duration', isSelected: false },
     { name: 'lastBundleAt', label: 'Last Bundle At', isSelected: false },
     { name: 'createdAt', label: 'Created At', isSelected: false },
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
@@ -197,17 +181,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
       isSelected: true,
       tooltip: 'Nomination tax percentage collected on rewards',
     },
-    // { name: 'name', label: 'Name', isSelected: true },
-    // { name: 'description', label: 'Description', isSelected: false },
-    // { name: 'icon', label: 'Icon', isSelected: false },
-    // { name: 'banner', label: 'Banner', isSelected: false },
-    // { name: 'website', label: 'Website', isSelected: false },
-    // { name: 'website_verified', label: 'Website Verified', isSelected: false },
-    // { name: 'email', label: 'Email', isSelected: false },
-    // { name: 'email_verified', label: 'Email Verified', isSelected: false },
-    // { name: 'discord', label: 'Discord', isSelected: false },
-    // { name: 'github', label: 'Github', isSelected: false },
-    // { name: 'twitter', label: 'Twitter', isSelected: false },
     { name: 'currentTotalStake', label: 'Total Stake', isSelected: true },
     {
       name: 'currentStorageFeeDeposit',
@@ -291,6 +264,36 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'createdAt', label: 'Created At', isSelected: true },
     { name: 'updatedAt', label: 'Updated At', isSelected: true },
   ],
+  transfers: [
+    { name: 'extrinsicId', label: 'Extrinsic ID', isSelected: true, accessorKey: 'extrinsic_id' },
+    {
+      name: 'blockHeight',
+      label: 'Block Height',
+      isSelected: false,
+      accessorKey: 'block_height',
+    },
+    { name: 'from', label: 'From', isSelected: true, searchable: true },
+    { name: 'fromChain', label: 'From Chain', isSelected: true, accessorKey: 'from_chain' },
+    { name: 'to', label: 'To', isSelected: true, searchable: true },
+    { name: 'toChain', label: 'To Chain', isSelected: true, accessorKey: 'to_chain' },
+    { name: 'value', label: 'Amount', isSelected: true },
+    {
+      name: 'fee',
+      label: 'Fee',
+      isSelected: true,
+      tooltip: 'Transaction fee paid to the network for processing this transfer',
+    },
+    {
+      name: 'success',
+      label: 'Status',
+      isSelected: true,
+      tooltip: 'Whether the transfer was Successful/Failed/In Progress',
+    },
+    { name: 'timestamp', label: 'Time', isSelected: true },
+    { name: 'blockHash', label: 'Block Hash', isSelected: false, accessorKey: 'block_hash' },
+    { name: 'id', label: 'ID', isSelected: false },
+    { name: 'eventId', label: 'Event ID', isSelected: false, accessorKey: 'event_id' },
+  ],
 }
 
 export const FILTERS_OPTIONS: FiltersOptions = {
@@ -305,16 +308,8 @@ export const FILTERS_OPTIONS: FiltersOptions = {
     { type: 'range', label: 'Space Pledged', key: 'spacePledged' },
     { type: 'range', label: 'Blockchain Size', key: 'blockchainSize' },
   ],
-  extrinsics: [
-    { type: 'range', label: 'Block Height', key: 'blockHeight' },
-    { type: 'dropdown', label: 'Section', key: 'section', options: [] },
-    { type: 'dropdown', label: 'Module', key: 'module', options: [] },
-  ],
-  events: [
-    { type: 'range', label: 'Block Height', key: 'blockHeight' },
-    { type: 'dropdown', label: 'Section', key: 'section', options: [] },
-    { type: 'dropdown', label: 'Module', key: 'module', options: [] },
-  ],
+  extrinsics: [],
+  events: [],
   logs: [
     { type: 'range', label: 'Block Height', key: 'blockHeight' },
     { type: 'text', label: 'Kind', key: 'kind' },
@@ -338,13 +333,13 @@ export const FILTERS_OPTIONS: FiltersOptions = {
     { type: 'range', label: 'Bundle Count', key: 'bundleCount' },
   ],
   operators: [
-    { type: 'range', label: 'Total Stake', key: 'totalStake' },
-    { type: 'range', label: 'Nomination Tax', key: 'nominationTax' },
     {
       type: 'range',
       label: 'Min. Stake',
       key: 'minimumNominatorStake',
     },
+    { type: 'range', label: 'Nomination Tax', key: 'nominationTax' },
+    { type: 'range', label: 'Total Stake', key: 'totalStake' },
     { type: 'range', label: 'Total Rewards Collected', key: 'totalRewardsCollected' },
     { type: 'range', label: 'Nominator Count', key: 'nominatorsCount' },
     { type: 'range', label: 'Deposit Count', key: 'depositsCount' },
@@ -360,6 +355,22 @@ export const FILTERS_OPTIONS: FiltersOptions = {
   leaderboard: [
     { type: 'range', label: 'Rank', key: 'rank' },
     { type: 'range', label: 'Value', key: 'value' },
+  ],
+  transfers: [
+    { type: 'dropdown', label: 'From Chain', key: 'fromChain', options: ['consensus', 'domain:0'] },
+    { type: 'dropdown', label: 'To Chain', key: 'toChain', options: ['consensus', 'domain:0'] },
+    {
+      type: 'dropdown',
+      label: 'Status',
+      key: 'success',
+      options: [
+        { value: 'true', label: 'Success' },
+        { value: 'false', label: 'Failed' },
+      ],
+    },
+    { type: 'text', label: 'Block', key: 'blockHeight' },
+    { type: 'range', label: 'Amount', key: 'value' },
+    { type: 'range', label: 'Fee', key: 'fee' },
   ],
 }
 
@@ -409,14 +420,10 @@ export const INITIAL_TABLES: InitialTables = {
     filters: {
       heightMin: '',
       heightMax: '',
-      spacePledgedMin: '',
-      spacePledgedMax: '',
-      blockchainSizeMin: '',
-      blockchainSizeMax: '',
     },
     sorting: [
       {
-        id: BlocksColumns.SortId,
+        id: BlocksColumns.Height,
         desc: true,
       },
     ],
@@ -432,12 +439,15 @@ export const INITIAL_TABLES: InitialTables = {
     filters: {
       blockHeightMin: '',
       blockHeightMax: '',
-      section: '',
       module: '',
     },
     sorting: [
       {
-        id: ExtrinsicsColumns.SortId,
+        id: ExtrinsicsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: ExtrinsicsColumns.IndexInBlock,
         desc: true,
       },
     ],
@@ -458,7 +468,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: EventsColumns.SortId,
+        id: EventsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: EventsColumns.IndexInBlock,
         desc: true,
       },
     ],
@@ -478,7 +492,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: LogsColumns.SortId,
+        id: LogsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: LogsColumns.IndexInBlock,
         desc: true,
       },
     ],
@@ -606,6 +624,31 @@ export const INITIAL_TABLES: InitialTables = {
       {
         id: LeaderboardsColumns.Rank,
         desc: false,
+      },
+    ],
+  },
+  transfers: {
+    ...INITIAL_TABLE_PROPERTIES,
+    name: 'transfers',
+    columns: AVAILABLE_COLUMNS.transfers,
+    selectedColumns: AVAILABLE_COLUMNS.transfers
+      .filter((column) => column.isSelected)
+      .map((column) => column.name),
+    filtersOptions: FILTERS_OPTIONS.transfers,
+    filters: {
+      valueMin: '',
+      valueMax: '',
+      fromChain: '',
+      toChain: '',
+      success: '',
+      feeMin: '',
+      feeMax: '',
+      status: '',
+    },
+    sorting: [
+      {
+        id: 'timestamp',
+        desc: true,
       },
     ],
   },

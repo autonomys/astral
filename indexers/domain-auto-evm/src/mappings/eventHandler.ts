@@ -52,7 +52,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         DOMAIN_AUTO_EVM_CHAIN_TYPE,
         amount,
         fee,
+        "balances.Transfer",
         successEvent ? true : false,
+        true,
         blockTimestamp
       )
     );
@@ -94,7 +96,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         chainType + ":" + domainId,
         amount,
         fee,
+        "transporter.Transfer",
         successEvent ? true : false,
+        false,
         blockTimestamp
       )
     );

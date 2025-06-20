@@ -1,4 +1,3 @@
-import type { Expr } from 'faunadb'
 import 'next-auth'
 import type { DiscordToken, SubspaceToken } from 'types/jwt'
 
@@ -19,8 +18,8 @@ declare module 'next-auth' {
   }
 
   export interface SavedUser extends User {
-    createdAt: Expr
-    updatedAt: Expr
+    createdAt: Date
+    updatedAt: Date
   }
 }
 

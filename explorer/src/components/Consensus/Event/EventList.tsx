@@ -1,206 +1,206 @@
 'use client'
 
+import { CopyButton } from '@/components/common/CopyButton'
+import { numberWithCommas } from '@/utils/number'
+import { useQuery, useSubscription } from '@apollo/client'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
-import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
-import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { FILTERS_OPTIONS } from 'constants/tables'
-import { EventsDocument, EventsQuery, EventsQueryVariables } from 'gql/graphql'
+import { Tooltip } from 'components/common/Tooltip'
+import { INTERNAL_ROUTES } from 'constants/routes'
+import {
+  EventsByBlockHashDocument,
+  EventsByBlockHashQuery,
+  EventsByBlockHashQueryVariables,
+  EventsDocument,
+  EventsSubscription,
+  EventsSubscriptionVariables,
+  // eslint-disable-next-line camelcase
+  Order_By,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useIndexersQuery } from 'hooks/useIndexersQuery'
-import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useEffect, useMemo } from 'react'
-import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { FC, useMemo } from 'react'
 import { useTableSettings } from 'states/tables'
 import { Cell, EventsFilters } from 'types/table'
-import { countTablePages, getTableColumns } from 'utils/table'
-import { utcToLocalRelativeTime } from 'utils/time'
-import { NotFound } from '../../layout/NotFound'
+import { getTableColumns } from 'utils/table'
+import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 
-type Row = EventsQuery['consensus_events'][0]
+type Row =
+  | EventsSubscription['consensus_events'][0]
+  | EventsByBlockHashQuery['consensus_blocks'][0]['events'][0]
 const TABLE = 'events'
+const MAX_RECORDS = 500000
 
 export const EventList: FC = () => {
-  const { ref, inView } = useInView()
   const { network, section } = useIndexers()
-  const inFocus = useWindowFocus()
+
   const {
     pagination,
     sorting,
     selectedColumns,
     filters,
-    orderBy,
-    whereForSearch,
+    stringForSearch,
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<EventsFilters>(TABLE)
 
-  const where = useMemo(
-    () => ({
-      ...whereForSearch,
-      // Block Height
-      ...((filters.blockHeightMin || filters.blockHeightMax) && {
-        // eslint-disable-next-line camelcase
-        block_height: {
-          ...(filters.blockHeightMin && { _gte: filters.blockHeightMin }),
-          ...(filters.blockHeightMax && { _lte: filters.blockHeightMax }),
-        },
-      }),
-      // Section
-      ...(filters.section && { section: { _ilike: `%${filters.section}%` } }),
-      // Module
-      ...(filters.module && { module: { _ilike: `%${filters.module}%` } }),
-    }),
-    [filters, whereForSearch],
-  )
-
   const variables = useMemo(
     () => ({
       limit: pagination.pageSize,
+      where: stringForSearch,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
-      orderBy,
-      where,
+      orderBy: [
+        // eslint-disable-next-line camelcase
+        { block_height: Order_By.Desc },
+        // eslint-disable-next-line camelcase
+        { index_in_block: Order_By.Asc },
+      ],
     }),
-    [pagination.pageSize, pagination.pageIndex, orderBy, where],
+    [pagination.pageSize, pagination.pageIndex, stringForSearch],
   )
 
-  const { loading, setIsVisible } = useIndexersQuery<EventsQuery, EventsQueryVariables>(
+  const { loading, data } = useSubscription<EventsSubscription, EventsSubscriptionVariables>(
     EventsDocument,
     {
       variables,
-      skip: !inFocus,
-      pollInterval: 6000,
+      skip: Object.keys(stringForSearch).length > 0,
     },
-    Routes.consensus,
-    TABLE,
   )
 
-  const consensusEntry = useQueryStates((state) => state.consensus.events)
+  const { data: dataByBlockHash, loading: loadingByBlockHash } = useQuery<
+    EventsByBlockHashQuery,
+    EventsByBlockHashQueryVariables
+  >(EventsByBlockHashDocument, {
+    variables: {
+      where: stringForSearch,
+      limit: 1,
+      offset: 0,
+    },
+    skip: Object.keys(stringForSearch).length === 0,
+  })
 
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
+  const currentTotalRecords = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
+      return dataByBlockHash.consensus_blocks[0]?.events?.length ?? 0
+    }
+    return MAX_RECORDS
+  }, [dataByBlockHash, stringForSearch])
 
-  const events = useMemo(() => data && data.consensus_events, [data])
-  const filtersOptions = useMemo(
-    () =>
-      data
-        ? FILTERS_OPTIONS[TABLE].map((filter) => ({
-            ...filter,
-            ...(filter.key === 'section' && {
-              options: [...new Set(data.consensus_event_modules.map((m) => m.section))],
-            }),
-            ...(filter.key === 'module' && {
-              options: data.consensus_event_modules.map((m) => ({
-                value: m.method,
-                label: m.method + ' (' + m.section + ')',
-              })),
-            }),
-          }))
-        : undefined,
-    [data],
-  )
-  const totalCount = useMemo(
-    () =>
-      data && data.consensus_events_aggregate.aggregate
-        ? data.consensus_events_aggregate.aggregate.count
-        : 0,
-    [data],
-  )
+  const events = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0 && dataByBlockHash) {
+      return (
+        dataByBlockHash.consensus_blocks[0]?.events?.slice(
+          pagination.pageIndex * pagination.pageSize,
+          (pagination.pageIndex + 1) * pagination.pageSize,
+        ) ?? []
+      )
+    }
+
+    if (data) return data.consensus_events ?? []
+    return []
+  }, [data, dataByBlockHash, stringForSearch, pagination.pageIndex, pagination.pageSize])
+
+  const pageCount = useMemo(() => {
+    return Math.ceil(currentTotalRecords / pagination.pageSize)
+  }, [currentTotalRecords, pagination.pageSize])
 
   const columns = useMemo(
     () =>
-      getTableColumns<Row>(TABLE, selectedColumns, {
-        sortId: ({ row }: Cell<Row>) => (
-          <div className='flex w-full gap-1 whitespace-nowrap'>
+      getTableColumns<Row>(
+        TABLE,
+        selectedColumns,
+        {
+          id: ({ row }: Cell<Row>) => (
             <Link
-              className='w-full hover:text-primaryAccent'
+              key={`${row.index}-event-id`}
+              className='w-full whitespace-nowrap hover:text-primaryAccent'
               href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
             >
-              {row.original.id}
+              <div>{row.original.id}</div>
             </Link>
-            <CopyButton value={row.original.id} message='Id copied' />
-          </div>
-        ),
-        blockHeight: ({ row }: Cell<Row>) => (
-          <Link
-            key={`${row.index}-event-block`}
-            className='hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.blockHeight)}
-          >
-            {row.original.blockHeight}
-          </Link>
-        ),
-        blockHash: ({ row }: Cell<Row>) => (
-          <CopyButton value={row.original.blockHash} message='Block hash copied'>
-            {shortString(row.original.blockHash)}
-          </CopyButton>
-        ),
-        extrinsicId: ({ row }: Cell<Row>) => (
-          <Link
-            key={`${row.index}-event-extrinsic`}
-            className='hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.extrinsicId)}
-          >
-            {row.original.extrinsicId}
-          </Link>
-        ),
-        extrinsicHash: ({ row }: Cell<Row>) => (
-          <CopyButton value={row.original.extrinsicHash} message='Extrinsic hash copied'>
-            {shortString(row.original.extrinsicHash)}
-          </CopyButton>
-        ),
-        section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
-        module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
-        indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock,
-        timestamp: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.timestamp),
-      }),
+          ),
+          timestamp: ({ row }: Cell<Row>) => (
+            <Tooltip text={utcToLocalTime(row.original.timestamp)}>
+              <div>{utcToLocalRelativeTime(row.original.timestamp)}</div>
+            </Tooltip>
+          ),
+          blockHeight: ({ row }: Cell<Row>) => (
+            <Link
+              key={`${row.index}-event-block`}
+              className='hover:text-primaryAccent'
+              href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.blockHeight)}
+            >
+              {numberWithCommas(row.original.blockHeight)}
+            </Link>
+          ),
+          extrinsicId: ({ row }: Cell<Row>) => (
+            <Link
+              key={`${row.index}-event-extrinsic`}
+              className='hover:text-primaryAccent'
+              href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.extrinsicId)}
+            >
+              {row.original.extrinsicId}
+            </Link>
+          ),
+          module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
+          indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock,
+          hash: ({ row }: Cell<Row>) => (
+            <CopyButton value={row.original.blockHash} message='Block hash copied'>
+              {shortString(row.original.blockHash)}
+            </CopyButton>
+          ),
+        },
+        {},
+        {
+          id: false,
+          blockHeight: false,
+          blockHash: false,
+          extrinsicId: false,
+          extrinsicHash: false,
+          section: false,
+          module: false,
+          indexInBlock: false,
+          timestamp: false,
+        },
+      ),
     [network, section, selectedColumns],
   )
 
-  const pageCount = useMemo(
-    () => countTablePages(totalCount, pagination.pageSize),
-    [totalCount, pagination],
-  )
+  const isDataLoaded = useMemo(() => {
+    if (Object.keys(stringForSearch).length > 0) {
+      return !loadingByBlockHash
+    }
+    return !loading && events
+  }, [loading, loadingByBlockHash, events, stringForSearch])
 
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!data) return <NotFound />
-    return null
-  }, [data, consensusEntry, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  const isDataLoading = useMemo(() => {
+    if (loading || loadingByBlockHash || !isDataLoaded) return true
+    return false
+  }, [loading, loadingByBlockHash, isDataLoaded])
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='my-4' ref={ref}>
+      <div className='my-0'>
         <TableSettings
           table={TABLE}
-          totalCount={totalCount}
           filters={filters}
-          overrideFiltersOptions={filtersOptions}
+          overrideFiltersOptions={[]}
+          totalCount={`(${numberWithCommas(currentTotalRecords)}${currentTotalRecords === MAX_RECORDS && Object.keys(stringForSearch).length === 0 ? '+' : ''})`}
         />
-        {!loading && events ? (
-          <SortedTable
-            data={events}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={onSortingChange}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={onPaginationChange}
-            filename={TABLE}
-          />
-        ) : (
-          noData
-        )}
+        <SortedTable
+          data={events}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={onPaginationChange}
+          filename={TABLE}
+          loading={isDataLoading}
+          emptyMessage='No events found'
+        />
       </div>
     </div>
   )

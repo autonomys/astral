@@ -40,6 +40,8 @@ export type OperatorIdPageProps = PageProps<OperatorIdParam>
 export type Route = {
   name: string
   title: string
+  shortTitle?: string
   networks?: NetworkId[]
   children?: Route[]
+  hidden?: boolean
 }

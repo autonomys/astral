@@ -31,7 +31,7 @@ query AccountById($accountId: String!) {
   consensus_rewards(
     limit: 10
     order_by: { block_height: desc }
-    where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }
+    where: { account_id: { _eq: $accountId } }
   ) {
     id
     blockHeight: block_height
@@ -45,7 +45,7 @@ query LatestRewardsWeek($accountId: String!, $timestampComparison: timestamp_com
   consensus_rewards(
     limit: 500
     order_by: { block_height: desc }
-    where: { timestamp: $timestampComparison, account_id: { _eq: $accountId }, amount: { _gt: 0 } }
+    where: { timestamp: $timestampComparison, account_id: { _eq: $accountId } }
   ) {
     id
     block_height
@@ -61,7 +61,7 @@ query RewardsList(
   $offset: Int
   $orderBy: [consensus_rewards_order_by!]!
 ) {
-  consensus_rewards_aggregate(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }) {
+  consensus_rewards_aggregate(where: { account_id: { _eq: $accountId } }) {
     aggregate {
       count
     }
@@ -70,7 +70,7 @@ query RewardsList(
     order_by: $orderBy
     limit: $limit
     offset: $offset
-    where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }
+    where: { account_id: { _eq: $accountId } }
   ) {
     id
     block_height
@@ -92,17 +92,20 @@ query RewardsList(
   }
 }
 
+query ExtrinsicsByAccountIdCount($where: consensus_extrinsics_bool_exp) @cached(ttl: 60000) {
+  consensus_extrinsics_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+
 query ExtrinsicsByAccountId(
   $limit: Int!
   $offset: Int
   $where: consensus_extrinsics_bool_exp
   $orderBy: [consensus_extrinsics_order_by!]!
 ) {
-  consensus_extrinsics_aggregate(where: $where) {
-    aggregate {
-      count
-    }
-  }
   consensus_extrinsics(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
     id
     sort_id

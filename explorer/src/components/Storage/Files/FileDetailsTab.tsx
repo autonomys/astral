@@ -1,3 +1,4 @@
+import { Button } from '@/components/common/Button'
 import { PageTabs } from 'components/common/PageTabs'
 import { Spinner } from 'components/common/Spinner'
 import { Tab } from 'components/common/Tabs'
@@ -97,7 +98,7 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
 
   return (
     <div ref={ref}>
-      <PageTabs isDesktop={isDesktop}>
+      <PageTabs pillStyle='py-2' activePillStyle='py-2' isDesktop={isDesktop}>
         {fileType && fileUrl ? (
           <Tab title='File Preview'>
             <FilePreview
@@ -110,10 +111,16 @@ export const FileDetailsTab: FC<Props> = ({ file, isDesktop = false }) => {
         ) : (
           <></>
         )}
-        <Tab title='Download' onClick={downloadFile}>
+        <Tab title='Download'>
           <div className='flex justify-center'>
-            <div className='mb-4 flex w-full items-center justify-center break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10'>
-              Your download should start shortly.
+            <div className='mb-4 flex w-full flex-col items-center justify-center gap-4 break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10'>
+              <Button onClick={downloadFile} className='w-full'>
+                Download
+              </Button>
+
+              <ul className='text-sm text-gray-500'>
+                File name: <b>{fileData.name}</b>
+              </ul>
             </div>
           </div>
         </Tab>

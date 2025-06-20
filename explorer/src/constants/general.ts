@@ -3,7 +3,7 @@ export const PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50]
 
 export const STAKE_WARS_PAGE_SIZE = 150
 
-export const MAX_DOWNLOADER_BATCH_SIZE = 100
+export const MAX_DOWNLOADER_BATCH_SIZE = 50
 
 export const STAKE_WARS_PHASES = {
   phase2: {
@@ -44,4 +44,4 @@ export const SUBSPACE_ACC_PREFIX_TESTNET = 2254
 
 export const BIGINT_ZERO = BigInt(0)
 
-export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000)
+export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000000000)

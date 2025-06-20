@@ -6,3 +6,9 @@ node_modules
 # env files
 .env.dev
 .env.prod
+
+**/dist
+*.env
+
+.lighthouseci
+.unlighthouse
