@@ -23,7 +23,7 @@ export const AccountHeader: FC<AccountHeaderProps> = ({ walletBalance, tokenSymb
           type='text'
           value={subspaceAccount ?? actingAccount.address}
           readOnly
-          className='block w-[200px] rounded-xl border-primaryAccent bg-transparent px-4 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+          className='block w-[200px] rounded-lg border-primaryAccent bg-transparent px-4 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
         />
         <div className='ml-2'>
           <Tooltip text='Copy wallet address'>
@@ -35,7 +35,7 @@ export const AccountHeader: FC<AccountHeaderProps> = ({ walletBalance, tokenSymb
         </div>
       </div>
       <div className='m-2 flex items-center justify-center'>
-        <div className='flex items-center text-3xl text-gray-900 dark:text-white '>
+        <div className='flex items-center text-3xl text-gray-900 dark:text-white'>
           {limitNumberDecimals(walletBalance)} {tokenSymbol}
         </div>
       </div>

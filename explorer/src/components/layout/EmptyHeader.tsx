@@ -29,7 +29,7 @@ export const EmptyHeader = () => {
               <LogoIcon fillColor='currentColor' />
             </span>
           </Link>
-          <nav className='flex flex-wrap items-center justify-center gap-10 text-sm'>
+          <nav className='absolute left-1/2 flex -translate-x-1/2 flex-wrap items-center justify-center gap-10 text-sm'>
             <></>
           </nav>
           <div className='flex justify-center'>
@@ -69,7 +69,7 @@ export const EmptyHeader = () => {
           <div className='flex items-center gap-4'>
             <HeaderChainDropdown />
             <button
-              className='items-center rounded-full bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
+              className='items-center rounded-lg bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
               onClick={() => setIsOpen(true)}
             >
               <Bars3BottomRightIcon className='size-4' fill='currentColor' stroke='currentColor' />

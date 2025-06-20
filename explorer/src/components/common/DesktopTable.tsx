@@ -24,7 +24,7 @@ export const DesktopTable = <T extends object>({
   skeletonLoaderClassName,
 }: TableProps<T>) => (
   <div className='overflow-x-auto'>
-    <table className='w-full min-w-max table-auto rounded-[20px] bg-white dark:border-none dark:bg-boxDark'>
+    <table className='w-full min-w-max table-auto rounded-lg bg-white dark:border-none dark:bg-boxDark'>
       <thead className='border-b border-gray-200 text-sm text-blueShade dark:text-white/75'>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
@@ -39,7 +39,7 @@ export const DesktopTable = <T extends object>({
                     ? index === 0
                       ? 'rounded-tl-[20px]'
                       : 'rounded-tr-[20px]'
-                    : 'rounded-[20px]'
+                    : 'rounded-lg'
                 } px-3 py-4 text-start text-sm font-normal ${index === 0 ? 'sticky left-0 bg-white dark:bg-boxDark' : ''} ${index === headerGroup.headers.length - 1 ? 'sticky right-0 bg-white dark:bg-boxDark' : ''}`}
               >
                 <div className='flex justify-items-center gap-1 align-middle'>
@@ -60,17 +60,17 @@ export const DesktopTable = <T extends object>({
                   {(header.column.columnDef as SortingOptions<T>).enableSorting && (
                     <>
                       {header.column.getIsSorted() === 'asc' ? (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-lg text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronUpIcon className='size-5' aria-hidden='true' />
                         </span>
                       ) : header.column.getIsSorted() === 'desc' ? (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-lg text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronDownIcon className='size-5' aria-hidden='true' />
                         </span>
                       ) : (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-lg text-sm font-medium text-primaryAccent focus:z-20 dark:border-none dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronUpDownIcon className='size-5' aria-hidden='true' />
                         </span>

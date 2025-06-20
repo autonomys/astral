@@ -55,7 +55,7 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
         filters={filters}
         addExtraIcons={
           subspaceAccount && (
-            <div className='mr-4 flex w-44 items-center'>
+            <div className='w-40'>
               <MyPositionSwitch labels={['My rank', 'All']} />
             </div>
           )

@@ -12,7 +12,7 @@ const HomeInfoCardSkeleton = ({
 }: HomeInfoCardSkeletonProps) => {
   return (
     <div className={cn('h-[216px] w-full min-w-[200px] grow md:min-w-[228px]', className)}>
-      <div className='flex h-full flex-col justify-center rounded-[20px] bg-white dark:bg-boxDark'>
+      <div className='flex h-full flex-col justify-center rounded-lg bg-white dark:bg-boxDark'>
         {/* Image/Icon placeholder */}
         <div
           className={cn(

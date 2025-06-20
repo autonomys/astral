@@ -35,7 +35,7 @@ export const HomeInfoCard: FC<Props> = ({
     <div
       className={`h-[${icon || imagePath ? '216px' : '120px'}] w-full min-w-[200px] grow md:min-w-[228px] ${additionalClass}`}
     >
-      <div className={`flex h-full flex-col justify-center rounded-[20px] bg-white ${darkBgClass}`}>
+      <div className={`flex h-full flex-col justify-center rounded-lg bg-white ${darkBgClass}`}>
         {imagePath && (
           <div className='mb-2 mt-2 flex w-full items-center justify-center align-middle'>
             <Image src={imagePath} alt={title} width={96} height={96} priority />

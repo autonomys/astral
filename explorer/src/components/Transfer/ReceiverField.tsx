@@ -67,7 +67,7 @@ export const ReceiverField: FC = () => {
   )
 
   return (
-    <div className='bg-grayLighter dark:border-purpleDeepAccent dark:bg-purpleUndertone flex flex-col space-y-1 rounded-xl border-grayDarker'>
+    <div className='bg-grayLighter dark:border-purpleDeepAccent dark:bg-purpleUndertone flex flex-col space-y-1 rounded-lg border-grayDarker'>
       <div className='text-grayText flex items-center justify-between text-sm dark:text-white'>
         <Formik
           initialValues={initialValues}
@@ -143,7 +143,7 @@ export const ReceiverField: FC = () => {
                                             className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                                           >
                                             {account.name} {formattedAccount}{' '}
-                                            <span className='my-0 ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
+                                            <span className='my-0 ml-4 rounded-lg bg-grayDarker px-2 text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
                                               Wallet
                                             </span>
                                           </span>
@@ -179,7 +179,7 @@ export const ReceiverField: FC = () => {
                                           className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                                         >
                                           {address.label} {formattedAccount}{' '}
-                                          <span className='ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
+                                          <span className='ml-4 rounded-lg bg-grayDarker px-2 text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
                                             Saved
                                           </span>
                                         </span>

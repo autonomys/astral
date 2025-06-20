@@ -9,7 +9,7 @@ export const AutoEvmPage: FC = () => (
   <div className='flex w-full flex-col items-center space-y-4'>
     <EvmExplorerBanner />
     <div className='w-full max-w-4xl'>
-      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
+      <div className='mb-4 w-full rounded-lg border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
         <div className='mb-10 flex flex-col items-center justify-center'>
           <h1 className='mb-8 mt-6 text-center text-4xl font-bold text-gray-900 dark:text-white'>
             Auto EVM

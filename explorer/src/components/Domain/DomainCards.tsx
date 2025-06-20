@@ -84,7 +84,7 @@ export const DomainCards: FC = () => {
                   className={'h-[280px] w-1/5 min-w-[200px] grow cursor-pointer md:min-w-[228px]'}
                 >
                   <div
-                    className={`flex h-full flex-col justify-between rounded-[20px] bg-white p-4 ${darkBgClass}`}
+                    className={`flex h-full flex-col justify-between rounded-lg bg-white p-4 ${darkBgClass}`}
                   >
                     <div>
                       <div className='mb-2 mt-2 flex w-full items-center justify-center align-middle'>
@@ -103,9 +103,9 @@ export const DomainCards: FC = () => {
                       <div className='flex justify-between text-sm text-grayDarker dark:text-white'>
                         <span>Epoch: {numberWithCommas(currentEpoch)}</span>
                       </div>
-                      <div className='mt-2 h-2 w-full rounded-full bg-grayLight dark:bg-grayDarker'>
+                      <div className='mt-2 h-2 w-full rounded-lg bg-grayLight dark:bg-grayDarker'>
                         <div
-                          className='h-2 rounded-full bg-gradient-to-r from-primaryAccent to-blueUndertone dark:from-primaryAccent dark:to-pastelBlue'
+                          className='h-2 rounded-lg bg-gradient-to-r from-primaryAccent to-blueUndertone dark:from-primaryAccent dark:to-pastelBlue'
                           style={{ width: `${progress}%` }}
                         ></div>
                       </div>

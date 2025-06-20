@@ -31,12 +31,12 @@ const PasswordModal: FC<{
           id='password'
           type='password'
           placeholder='Enter Password'
-          className='w-full rounded-full border p-2 text-gray-900 dark:border-gray-700 dark:bg-blueAccent dark:text-white'
+          className='w-full rounded-lg border p-2 text-gray-900 dark:border-gray-700 dark:bg-blueAccent dark:text-white'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          className='mt-4 rounded-full bg-buttonLightFrom px-4 py-2 font-semibold leading-4 text-white dark:bg-primaryAccent'
+          className='mt-4 rounded-lg bg-buttonLightFrom px-4 py-2 font-semibold leading-4 text-white dark:bg-primaryAccent'
           onClick={handleConfirm}
         >
           Confirm

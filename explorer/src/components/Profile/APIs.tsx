@@ -66,7 +66,7 @@ export const APIs: FC = () => {
       <div className='rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-boxDark'>
         {isLoading ? (
           <div className='flex h-64 items-center justify-center'>
-            <div className='border-primary h-12 w-12 animate-spin rounded-full border-b-2 border-t-2'></div>
+            <div className='border-primary h-12 w-12 animate-spin rounded-lg border-b-2 border-t-2'></div>
           </div>
         ) : (
           <DynamicSwaggerUI spec={specData} />

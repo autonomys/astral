@@ -16,12 +16,12 @@ export const LogDetailsCard: FC<Props> = ({ log }) => {
   return (
     <div className='w-full'>
       <div className='flex'>
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
+        <div className='mb-4 w-full rounded-lg border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
           <div className='mb-10 flex items-center justify-between'>
             <h3 className='text-sm font-medium text-grayDarker dark:text-white md:text-2xl'>
               Log #{log.id}
             </h3>
-            <div className='block rounded-full bg-buttonDarkTo px-5 py-3 text-xs font-semibold leading-normal text-white'>
+            <div className='block rounded-lg bg-buttonLightFrom px-5 py-2 text-xs font-semibold leading-normal text-white'>
               #{log.block_height}
             </div>
           </div>

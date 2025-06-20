@@ -17,7 +17,7 @@ import { Spinner } from '../common/Spinner'
 const ComponentLoader = ({ className }: { className?: string }) => (
   <div
     className={cn(
-      'flex h-[200px] items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-boxDark',
+      'flex h-[200px] items-center justify-center rounded-lg bg-white shadow-sm dark:bg-boxDark',
       className,
     )}
   >
@@ -77,7 +77,7 @@ export const PublicProfile: FC = () => {
 
   if (!profile) {
     return (
-      <div className='flex min-h-screen w-full items-center justify-center gap-2 rounded-xl bg-white shadow-sm dark:bg-boxDark'>
+      <div className='flex min-h-screen w-full items-center justify-center gap-2 rounded-lg bg-white shadow-sm dark:bg-boxDark'>
         <ExclamationTriangleIcon className='h-10 w-10 text-gray-500 dark:text-gray-400' />
         <p className='text-lg text-gray-500 dark:text-gray-400'>Profile not found</p>
       </div>
@@ -86,7 +86,7 @@ export const PublicProfile: FC = () => {
 
   return (
     <div className='w-full p-6'>
-      <div className='overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-boxDark'>
+      <div className='overflow-hidden rounded-lg bg-white shadow-sm dark:bg-boxDark'>
         <div className='relative h-48'>
           <div className='relative h-full w-full overflow-hidden'>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -97,7 +97,7 @@ export const PublicProfile: FC = () => {
             />
           </div>
 
-          <div className='absolute -bottom-12 left-6 h-24 w-24 overflow-hidden rounded-full border-4 border-white shadow-lg transition-transform duration-500 hover:scale-105 dark:border-boxDark'>
+          <div className='absolute -bottom-12 left-6 h-24 w-24 overflow-hidden rounded-lg border-4 border-white shadow-lg transition-transform duration-500 hover:scale-105 dark:border-boxDark'>
             <div className='relative h-full w-full'>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -127,7 +127,7 @@ export const PublicProfile: FC = () => {
       </div>
 
       <div className='mt-6 grid gap-6 sm:grid-cols-2'>
-        <div className='rounded-2xl bg-white p-6 shadow-sm dark:bg-boxDark'>
+        <div className='rounded-lg bg-white p-6 shadow-sm dark:bg-boxDark'>
           <h2 className='mb-4 text-lg font-semibold text-gray-900 dark:text-white'>Social Links</h2>
           <div className='space-y-4'>
             {!profile.github && !profile.twitter && !profile.discord && (
@@ -162,7 +162,7 @@ export const PublicProfile: FC = () => {
           </div>
         </div>
 
-        <div className='rounded-2xl bg-white p-6 shadow-sm dark:bg-boxDark'>
+        <div className='rounded-lg bg-white p-6 shadow-sm dark:bg-boxDark'>
           <h2 className='mb-4 text-lg font-semibold text-gray-900 dark:text-white'>
             Contact Information
           </h2>
@@ -186,7 +186,7 @@ export const PublicProfile: FC = () => {
       </div>
 
       {profile.wallets && profile.wallets.length > 0 && (
-        <div className='mt-6 rounded-2xl bg-white p-6 shadow-sm dark:bg-boxDark'>
+        <div className='mt-6 rounded-lg bg-white p-6 shadow-sm dark:bg-boxDark'>
           <h2 className='mb-4 text-lg font-semibold text-gray-900 dark:text-white'>
             Connected Wallets
           </h2>
@@ -206,7 +206,7 @@ export const PublicProfile: FC = () => {
                 {profile.wallets.map((wallet) => (
                   <tr key={wallet.id} className='bg-white dark:bg-boxDark'>
                     <td className='whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900 dark:text-white'>
-                      <span className='inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200'>
+                      <span className='inline-flex items-center rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200'>
                         {wallet.type}
                       </span>
                     </td>
@@ -222,7 +222,7 @@ export const PublicProfile: FC = () => {
       )}
 
       {profile.tags && profile.tags.length > 0 && (
-        <div className='mt-6 rounded-2xl bg-white p-6 shadow-sm dark:bg-boxDark'>
+        <div className='mt-6 rounded-lg bg-white p-6 shadow-sm dark:bg-boxDark'>
           <h2 className='mb-4 text-lg font-semibold text-gray-900 dark:text-white'>Tags</h2>
           <div className='overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700'>
             <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
