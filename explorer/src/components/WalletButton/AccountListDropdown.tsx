@@ -4,13 +4,13 @@ import { cn } from '@/utils/cn'
 import { shortString } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { LuLogOut } from 'components/icons'
 import { PolkadotIcon } from 'components/icons/PolkadotIcon'
 import { SubWalletIcon } from 'components/icons/SubWalletIcon'
 import { SupportedWalletExtension, WalletType } from 'constants/wallet'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import { Fragment, useCallback, useMemo } from 'react'
-import { LuLogOut } from 'react-icons/lu'
 import { formatAddress } from 'utils//formatAddress'
 import { limitText } from 'utils/string'
 import { TalismanIcon } from '../icons/TalismanIcon'
@@ -108,7 +108,7 @@ function AccountListDropdown({ className, labelClassName }: AccountListDropdownP
       <div className='relative'>
         <Listbox.Button
           className={cn(
-            `relative w-full cursor-default font-["Montserrat"] ${
+            `relative w-full cursor-default font-sans ${
               isDesktop
                 ? 'rounded-full pr-10 dark:bg-buttonLightTo'
                 : 'rounded-l-full pr-0 dark:bg-primaryAccent'

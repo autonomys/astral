@@ -68,7 +68,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
       >
         <h2
           style={{
-            fontFamily: 'Montserrat',
+            fontFamily: 'sans-serif',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
@@ -90,7 +90,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             <BlockIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-2xl text-white p-4 ml-30 font-bold'
             >
@@ -108,7 +108,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             <WalletIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-2xl text-white p-4 ml-30 font-bold'
             >

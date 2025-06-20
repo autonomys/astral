@@ -33,7 +33,7 @@ export const HeaderChainDropdown: FC = () => {
   return (
     <Listbox value={indexerSet} onChange={handleChainChange}>
       <div className='relative'>
-        <Listbox.Button className='relative cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-blueAccent dark:text-white sm:w-full sm:text-sm md:w-48 lg:w-48'>
+        <Listbox.Button className='relative cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left font-sans shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-blueAccent dark:text-white sm:w-full sm:text-sm md:w-48 lg:w-48'>
           <div className='flex items-center justify-center'>
             <AutonomysSymbol />
             <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full'>

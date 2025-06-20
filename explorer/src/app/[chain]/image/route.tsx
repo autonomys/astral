@@ -61,7 +61,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
           <LogoIcon />
           <h2
             style={{
-              fontFamily: 'Montserrat',
+              fontFamily: 'sans-serif',
             }}
             tw='absolute text-2xl text-white font-bold ml-2 mt-48'
           >
@@ -83,7 +83,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             <BlockIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-md text-white mt-24 font-bold'
             >
@@ -91,7 +91,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             </span>
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
@@ -115,7 +115,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             <WalletIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-md text-white mt-24 font-bold'
             >
@@ -123,7 +123,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             </span>
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
@@ -137,7 +137,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
           <AutonomysSymbol fill='#000000' />
           <span
             style={{
-              fontFamily: 'Montserrat',
+              fontFamily: 'sans-serif',
             }}
             tw='absolute text-md text-black pl-8 font-bold mt-140'
           >

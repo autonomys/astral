@@ -10,3 +10,12 @@ export const allCapsToNormal = (text: string) =>
 
 export const limitText = (text: string, limit = 20) =>
   text.length > limit ? text.slice(0, limit) + '...' : text
+
+export const snakeCase = (str: string): string => {
+  return str
+    .replace(/([A-Z])/g, '_$1')
+    .toLowerCase()
+    .replace(/^_/, '')
+    .replace(/[^a-z0-9_]/g, '_')
+    .replace(/_+/g, '_')
+}
