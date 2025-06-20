@@ -8,6 +8,7 @@ import { ExtrinsicPrimitive } from "./types";
 import {
   aggregateByDomainId,
   createHashId,
+  createOperatorDomainMap,
   deriveOperatorEpochSharePrices,
   detectEpochTransitions,
   groupEventsFromBatchAll,
@@ -111,6 +112,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   */
   const operators = queriesResults[0].map((o) => parseOperator(o));
 
+  // Create a map of operatorId -> domainId for quick lookups
+  const operatorDomainMap = createOperatorDomainMap(operators);
+
   // api.query.domains.domainStakingSummary.entries(),
   /*
   * currentEpochIndex
@@ -122,8 +126,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   //logging the whole queriesResults[1]
 
   const currentDomainStakingSummary = queriesResults[1];
-  // Detect epoch transitions
-  const epochTransitions = await detectEpochTransitions(
+  // Detect epoch transitions and get domain epoch map
+  const { epochTransitions, domainEpochMap } = await detectEpochTransitions(
     currentDomainStakingSummary,
     parentBlockApi,
     height
@@ -159,20 +163,47 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     
     if (redis) {
       // Process nominator deposits after epoch transitions
-      const nominatorDepositEvents = await redis.lrange("nominatorDepositEvents", 0, -1);
-        // Group by operator
-      const nominatorDepositEventsMap = groupNominatorEvents(nominatorDepositEvents);
-
-      if (nominatorDepositEventsMap.size > 0) {
-        const _depositsEntries = await processNominatorDepositEvents(nominatorDepositEventsMap, api, blockTimestamp, cache, height);
-        const _cleanRedis =await redis.del("nominatorDepositEvents");
-      }
-
-      const nominatorWithdrawalEvents = await redis.lrange("nominatorWithdrawalEvents", 0, -1);
-      const nominatorWithdrawalEventsMap = groupNominatorEvents(nominatorWithdrawalEvents);
-      if (nominatorWithdrawalEventsMap.size > 0) {
-        const _withdrawalEntries = await processWithdrawalEvents(nominatorWithdrawalEventsMap, api, blockTimestamp, cache, height);
-        const _cleanRedis =await redis.del("nominatorWithdrawalEvents");
+      // Only process events for domains that had epoch transitions
+      for (const transition of epochTransitions) {
+        const domainId = transition.domainId;
+        const ـcurrentEpoch = transition.currentEpoch;
+        const parentEpoch = transition.parentEpoch;
+        
+        // Process deposit events for the transitioned domain
+        const depositKey = `nominatorDepositEvents:${domainId}:${parentEpoch}`;
+        const nominatorDepositEvents = await redis.lrange(depositKey, 0, -1);
+        
+        if (nominatorDepositEvents.length > 0) {
+          const nominatorDepositEventsMap = groupNominatorEvents(nominatorDepositEvents);
+          
+          if (nominatorDepositEventsMap.size > 0) {
+            const _depositsEntries = await processNominatorDepositEvents(nominatorDepositEventsMap, api, blockTimestamp, cache, height);
+          }
+          
+          // Delete data for epoch i-1 (to handle re-orgs, we don't delete immediately)
+          if (parentEpoch > 0) {
+            const oldDepositKey = `nominatorDepositEvents:${domainId}:${parentEpoch - 1}`;
+            await redis.del(oldDepositKey);
+          }
+        }
+        
+        // Process withdrawal events for the transitioned domain
+        const withdrawalKey = `nominatorWithdrawalEvents:${domainId}:${parentEpoch}`;
+        const nominatorWithdrawalEvents = await redis.lrange(withdrawalKey, 0, -1);
+        
+        if (nominatorWithdrawalEvents.length > 0) {
+          const nominatorWithdrawalEventsMap = groupNominatorEvents(nominatorWithdrawalEvents);
+          
+          if (nominatorWithdrawalEventsMap.size > 0) {
+            const _withdrawalEntries = await processWithdrawalEvents(nominatorWithdrawalEventsMap, api, blockTimestamp, cache, height);
+          }
+          
+          // Delete data for epoch i-1 (to handle re-orgs, we don't delete immediately)
+          if (parentEpoch > 0) {
+            const oldWithdrawalKey = `nominatorWithdrawalEvents:${domainId}:${parentEpoch - 1}`;
+            await redis.del(oldWithdrawalKey);
+          }
+        }
       }
     }
   }
@@ -372,6 +403,20 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     if (redis) {
       // Append-only: just push each event to Redis list
       for (const event of cache.nominatorDepositEvent) {
+        // Get the domain and epoch for this operator
+        const domainId = operatorDomainMap.get(event.operatorId);
+        if (!domainId) {
+          logger.warn(`Could not find domain for operator ${event.operatorId}`);
+          continue;
+        }
+        
+        const currentEpoch = domainEpochMap.get(domainId);
+        if (currentEpoch === undefined) {
+          logger.warn(`Could not find epoch for domain ${domainId}`);
+          continue;
+        }
+        
+        const redisKey = `nominatorDepositEvents:${domainId}:${currentEpoch}`;
         const redisEntry = {
           operatorId: event.operatorId,
           accountId: event.accountId,
@@ -379,7 +424,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           extrinsicId: event.extrinsicId,
           blockHeight: height.toString()
         };
-        await redis.lpush("nominatorDepositEvents", JSON.stringify(redisEntry));
+        await redis.lpush(redisKey, JSON.stringify(redisEntry));
       }
     }
   }
@@ -393,6 +438,20 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     if (redis) {
       for (const event of cache.withdrawEvent) {
         // Append-only: just push each event to Redis list
+        // Get the domain and epoch for this operator
+        const domainId = operatorDomainMap.get(event.operatorId);
+        if (!domainId) {
+          logger.warn(`Could not find domain for operator ${event.operatorId}`);
+          continue;
+        }
+        
+        const currentEpoch = domainEpochMap.get(domainId);
+        if (currentEpoch === undefined) {
+          logger.warn(`Could not find epoch for domain ${domainId}`);
+          continue;
+        }
+        
+        const redisKey = `nominatorWithdrawalEvents:${domainId}:${currentEpoch}`;
         const redisEntry = {
           operatorId: event.operatorId,
           accountId: event.accountId,
@@ -400,7 +459,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           extrinsicId: event.extrinsicId,
           blockHeight: height.toString()
         };
-        await redis.lpush("nominatorWithdrawalEvents", JSON.stringify(redisEntry));
+        await redis.lpush(redisKey, JSON.stringify(redisEntry));
       }
     }
   }

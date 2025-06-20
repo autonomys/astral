@@ -144,13 +144,16 @@ export const groupEventsFromBatchAll = (
  * @param currentDomainStakingSummary - Current domain staking summary entries
  * @param parentBlockApi - API instance for querying parent block data
  * @param height - Current block height for logging
- * @returns Array of epoch transitions with domain ID and epoch numbers
+ * @returns Object containing epoch transitions and domain epoch map
  */
 export const detectEpochTransitions = async (
   currentDomainStakingSummary: any[],
   parentBlockApi: any,
   height: bigint
-): Promise<EpochTransition[]> => {
+): Promise<{
+  epochTransitions: EpochTransition[];
+  domainEpochMap: Map<string, number>;
+}> => {
   // Extract domain IDs and current epochs from the current block
   const domainIds = currentDomainStakingSummary.map(
     (data) => (data[0].toPrimitive() as any)[0]
@@ -158,6 +161,12 @@ export const detectEpochTransitions = async (
   const currentEpochs = currentDomainStakingSummary.map(
     (data) => (data[1].toPrimitive() as any).currentEpochIndex
   );
+
+  // Build domainEpochMap while we're already iterating
+  const domainEpochMap = new Map<string, number>();
+  domainIds.forEach((domainId, index) => {
+    domainEpochMap.set(domainId.toString(), currentEpochs[index]);
+  });
 
   // Query parent block for epoch indices of each domain
   const parentEpochPromises = domainIds.map(async (domainId) => {
@@ -194,7 +203,7 @@ export const detectEpochTransitions = async (
     }
   });
 
-  return epochTransitions;
+  return { epochTransitions, domainEpochMap };
 };
 
 /**
@@ -585,4 +594,22 @@ export const deriveNominatorDeposits = (
   }
 
   return results;
+};
+
+/**
+ * Creates a map of operatorId to domainId from operators array
+ * @param operators - Array of operators
+ * @returns Map of operatorId to domainId
+ */
+export const createOperatorDomainMap = (
+  operators: any[]
+): Map<string, string> => {
+  const operatorDomainMap = new Map<string, string>();
+  operators.forEach((operator) => {
+    operatorDomainMap.set(
+      operator.operatorId.toString(),
+      operator.operatorDetails.currentDomainId.toString()
+    );
+  });
+  return operatorDomainMap;
 };
