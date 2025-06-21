@@ -7,7 +7,7 @@ import { currentYear } from 'utils/time'
 const Footer: FC = () => {
   return (
     <footer className='container mb-[50px] px-4 sm:mx-auto xl:px-0'>
-      <div className='body-font rounded-xl bg-footerLight p-10 text-white dark:bg-footerDark'>
+      <div className='body-font rounded-lg bg-footerLight p-10 text-white dark:bg-footerDark'>
         <div className='md:grid md:grid-cols-2'>
           <div className='mb-20 flex justify-center md:mb-0 md:justify-start'>
             <div className='flex flex-col md:justify-between'>

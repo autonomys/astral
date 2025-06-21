@@ -89,7 +89,7 @@ export const Modal: FC<Props> = ({
         aria-modal='true'
         aria-labelledby={title && showTitle ? 'modal-title' : undefined}
         className={cn(
-          'relative rounded-xl bg-white p-6 shadow transition-all dark:bg-boxDark',
+          'relative rounded-lg bg-white p-6 shadow transition-all dark:bg-boxDark',
           getSizeClass(),
           isOpen ? 'scale-100 opacity-100' : 'scale-125 opacity-0',
           contentClassName,

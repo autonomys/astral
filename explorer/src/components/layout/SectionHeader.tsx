@@ -89,7 +89,7 @@ export const SectionHeader: FC = () => {
               <button
                 className={
                   isActive
-                    ? `rounded-full bg-buttonLightFrom ${isDesktop ? 'px-4' : 'px-2'} py-2 text-white dark:bg-primaryAccent`
+                    ? `rounded-lg bg-buttonLightFrom ${isDesktop ? 'px-4' : 'px-2'} py-2 text-white dark:bg-primaryAccent`
                     : 'text-grayDark dark:text-white'
                 }
               >

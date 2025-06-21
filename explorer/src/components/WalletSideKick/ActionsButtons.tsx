@@ -48,7 +48,7 @@ export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
         <Tooltip text={`Send ${tokenSymbol}`}>
           <button
             onClick={onSendToken}
-            className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
+            className='m-2 flex cursor-default items-center justify-center rounded-lg bg-primaryAccent p-2'
           >
             <PaperAirplaneIcon className='w-8 text-white' />
           </button>
@@ -57,7 +57,7 @@ export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
       <Tooltip text={`Receive ${tokenSymbol}`}>
         <button
           onClick={onReceiveToken}
-          className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
+          className='m-2 flex cursor-default items-center justify-center rounded-lg bg-primaryAccent p-2'
         >
           <QrCodeIcon className='w-8 text-white' />
         </button>
@@ -65,7 +65,7 @@ export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
       <Tooltip text='Sign Message'>
         <button
           onClick={onSignMessage}
-          className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
+          className='m-2 flex cursor-default items-center justify-center rounded-lg bg-primaryAccent p-2'
         >
           <LockClosedIcon className='w-8 text-white' />
         </button>
@@ -73,7 +73,7 @@ export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
       <Tooltip text='Send Remark'>
         <button
           onClick={onSendRemark}
-          className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
+          className='m-2 flex cursor-default items-center justify-center rounded-lg bg-primaryAccent p-2'
         >
           <PencilIcon className='w-8 text-white' />
         </button>
@@ -81,7 +81,7 @@ export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
       <Tooltip text='Custom extrinsic'>
         <button
           onClick={onExtrinsicsLab}
-          className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
+          className='m-2 flex cursor-default items-center justify-center rounded-lg bg-primaryAccent p-2'
         >
           <AdjustmentsVerticalIcon className='w-8 text-white' />
         </button>

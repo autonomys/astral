@@ -120,7 +120,7 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({
   return (
     <div
       ref={ref}
-      className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'
+      className='m-2 mt-0 rounded-lg bg-grayLight p-5 dark:bg-blueAccent dark:text-white'
     >
       <Accordion
         defaultOpen={defaultOpen}

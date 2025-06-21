@@ -26,7 +26,7 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
   const { push } = useRouter()
 
   return (
-    <div className='flex w-full flex-col rounded-[20px] border border-gray-200 px-4 dark:border-none'>
+    <div className='flex w-full flex-col rounded-lg border border-gray-200 px-4 dark:border-none'>
       <div className='flex w-full flex-col gap-6 pl-4'>
         <div className='flex w-full justify-between'>
           <div className='flex-1 grow text-[13px] font-normal text-blueShade dark:text-white/75'>
@@ -52,7 +52,7 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
                 >
                   <div className='flex w-full flex-1 grow items-center'>
                     <div
-                      className={`absolute -left-1.5 size-3 rounded-full ${
+                      className={`absolute -left-1.5 size-3 rounded-lg ${
                         index === 0
                           ? 'bg-primaryAccent dark:bg-primaryAccent'
                           : 'bg-buttonDarkFrom dark:bg-buttonDarkTo'
@@ -96,12 +96,12 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
           onClick={() =>
             push(INTERNAL_ROUTES.accounts.rewards.page(network, section, accountId || ''))
           }
-          className='mt-4 w-full rounded-[20px] bg-blueLight py-4 dark:bg-whiteTransparent dark:text-white'
+          className='mt-4 w-full rounded-lg bg-blueLight py-4 dark:bg-whiteTransparent dark:text-white'
         >
           See All Rewards
         </button>
       ) : (
-        <div className='mt-5 flex size-full justify-center rounded-[20px] py-4 align-middle text-[13px] font-semibold text-gray-900 dark:text-white'>
+        <div className='mt-5 flex size-full justify-center rounded-lg py-4 align-middle text-[13px] font-semibold text-gray-900 dark:text-white'>
           No Rewards
         </div>
       )}

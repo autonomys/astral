@@ -28,7 +28,7 @@ export const SocialLink = ({
 
   return (
     <div className={cn('flex items-center rounded-lg p-2 transition-colors', className)}>
-      <div className={cn('flex h-9 w-9 items-center justify-center rounded-full', iconBgClass)}>
+      <div className={cn('flex h-9 w-9 items-center justify-center rounded-lg', iconBgClass)}>
         {icon}
       </div>
       <a

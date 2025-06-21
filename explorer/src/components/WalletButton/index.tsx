@@ -21,7 +21,7 @@ export const WalletButton: React.FC = () => {
         onClick={onClick}
         className={`h-10 ${
           isDesktop ? 'w-36' : 'w-10'
-        } flex items-center justify-center rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo font-medium text-white dark:bg-boxDark dark:from-buttonDarkFrom dark:to-buttonDarkTo`}
+        } flex items-center justify-center rounded-lg bg-gradient-to-r from-buttonLightFrom to-buttonLightTo font-medium text-white dark:bg-boxDark dark:from-buttonDarkFrom dark:to-buttonDarkTo`}
       >
         {isDesktop ? (
           'Connect Wallet'

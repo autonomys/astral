@@ -125,7 +125,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
 
   return (
     <div className='flex flex-col space-y-4 text-grayDarker dark:text-white sm:w-1/3'>
-      <div className='overflow-hidden rounded-2xl bg-white shadow-sm transition-all hover:shadow-md dark:border-none dark:bg-boxDark'>
+      <div className='overflow-hidden rounded-lg bg-white shadow-sm transition-all hover:shadow-md dark:border-none dark:bg-boxDark'>
         {isLoading ? (
           <div className='flex h-full w-full items-center justify-center'>
             <Spinner />
@@ -142,7 +142,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
                 />
                 <button
                   onClick={() => bannerInputRef.current?.click()}
-                  className='absolute bottom-3 right-3 rounded-full bg-white p-2.5 shadow-lg transition-all hover:bg-gray-50 hover:shadow-md dark:bg-boxDark dark:hover:bg-gray-800'
+                  className='absolute bottom-3 right-3 rounded-lg bg-white p-2.5 shadow-lg transition-all hover:bg-gray-50 hover:shadow-md dark:bg-boxDark dark:hover:bg-gray-800'
                   aria-label='Upload banner image'
                 >
                   <PencilIcon className='h-4 w-4 text-primaryAccent dark:text-gray-200' />
@@ -157,7 +157,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
                 />
               </div>
 
-              <div className='absolute -bottom-12 left-6 h-24 w-24 overflow-hidden rounded-full border-4 border-white shadow-lg transition-transform duration-300 hover:scale-105 dark:border-boxDark'>
+              <div className='absolute -bottom-12 left-6 h-24 w-24 overflow-hidden rounded-lg border-4 border-white shadow-lg transition-transform duration-300 hover:scale-105 dark:border-boxDark'>
                 <div className='relative h-full w-full'>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -194,7 +194,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
                     </h2>
                     <a
                       href={`/${chain}/profile/${profile?.id}`}
-                      className='inline-flex items-center rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
+                      className='inline-flex items-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
                       target='_blank'
                       rel='noopener noreferrer'
                     >
@@ -224,7 +224,7 @@ export const SmallProfileBox: FC<SmallProfileBoxProps> = ({ showPrivateDetails }
       </div>
 
       {showPrivateDetails && (
-        <div className='rounded-[20px] bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-none dark:bg-boxDark'>
+        <div className='rounded-lg bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-none dark:bg-boxDark'>
           {isLoading ? (
             <div className='flex h-full w-full items-center justify-center'>
               <Spinner />

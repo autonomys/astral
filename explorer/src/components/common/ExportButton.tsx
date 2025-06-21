@@ -21,7 +21,7 @@ export const ExportButton = <T extends object>({ data, filename }: Props<T>) => 
 
   return (
     <button
-      className='dark:bg-buttonDarkTo bg-buttonLightFrom flex w-full max-w-fit items-center gap-2 rounded-full p-2 text-sm font-medium text-white sm:p-3 md:space-x-4 md:text-base'
+      className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-buttonLightFrom p-2 text-sm font-medium text-white dark:bg-buttonDarkTo sm:p-3 md:space-x-4 md:text-base'
       onClick={handleClick}
     >
       <span className='block'>Download page data</span>

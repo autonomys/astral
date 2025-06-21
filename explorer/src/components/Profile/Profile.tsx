@@ -121,7 +121,7 @@ export const ProfilePage: FC = () => {
     <div className='flex min-h-screen w-full flex-col gap-6 p-6 sm:flex-row sm:gap-8'>
       <SmallProfileBox showPrivateDetails />
 
-      <div className='w-full flex-1 overflow-hidden rounded-2xl bg-white shadow-sm transition-all dark:border-gray-800 dark:bg-boxDark'>
+      <div className='w-full flex-1 overflow-hidden rounded-lg bg-white shadow-sm transition-all dark:border-gray-800 dark:bg-boxDark'>
         {isLoading ? (
           <div className='flex h-full w-full items-center justify-center'>
             <Spinner />
@@ -148,10 +148,10 @@ export const ProfilePage: FC = () => {
               {({ errors, touched, isSubmitting }) => (
                 <Form className='w-full space-y-6'>
                   <Tab.Group>
-                    <Tab.List className='mb-8 flex w-full space-x-1 rounded-full bg-gray-100 p-1 dark:bg-gray-800'>
+                    <Tab.List className='mb-8 flex w-full space-x-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-800'>
                       <Tab
                         className={({ selected }) =>
-                          `w-full rounded-full py-3 text-sm font-medium leading-5 transition-all ${
+                          `w-full rounded-lg py-3 text-sm font-medium leading-5 transition-all ${
                             selected
                               ? 'bg-white text-gray-900 shadow dark:bg-primaryAccent dark:text-white'
                               : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
@@ -162,7 +162,7 @@ export const ProfilePage: FC = () => {
                       </Tab>
                       <Tab
                         className={({ selected }) =>
-                          `w-full rounded-full py-3 text-sm font-medium leading-5 transition-all ${
+                          `w-full rounded-lg py-3 text-sm font-medium leading-5 transition-all ${
                             selected
                               ? 'bg-white text-gray-900 shadow dark:bg-primaryAccent dark:text-white'
                               : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
@@ -185,7 +185,7 @@ export const ProfilePage: FC = () => {
                             <Field
                               name='name'
                               placeholder='Your name'
-                              className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                              className='block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                             />
                             {errors.name && touched.name && (
                               <p className='text-sm text-red-500'>{errors.name}</p>
@@ -202,7 +202,7 @@ export const ProfilePage: FC = () => {
                             <Field
                               name='website'
                               placeholder='https://...'
-                              className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                              className='block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                             />
                             {errors.website && touched.website && (
                               <p className='text-sm text-red-500'>{errors.website}</p>
@@ -222,7 +222,7 @@ export const ProfilePage: FC = () => {
                             name='bio'
                             rows={4}
                             placeholder='Tell us about yourself'
-                            className='block w-full rounded-2xl bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                            className='block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                           />
                           {errors.bio && touched.bio && (
                             <p className='text-sm text-red-500'>{errors.bio}</p>
@@ -410,7 +410,7 @@ export const ProfilePage: FC = () => {
                               name='email'
                               type='email'
                               placeholder='you@example.com'
-                              className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                              className='block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                             />
                             {errors.email && touched.email && (
                               <p className='text-sm text-red-500'>{errors.email}</p>
@@ -427,7 +427,7 @@ export const ProfilePage: FC = () => {
                             <Field
                               name='discord'
                               placeholder='Your Discord handle'
-                              className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                              className='block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                             />
                             {errors.discord && touched.discord && (
                               <p className='text-sm text-red-500'>{errors.discord}</p>
@@ -446,7 +446,7 @@ export const ProfilePage: FC = () => {
                             <Field
                               name='github'
                               placeholder='Your GitHub profile'
-                              className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                              className='block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                             />
                             {errors.github && touched.github && (
                               <p className='text-sm text-red-500'>{errors.github}</p>
@@ -463,7 +463,7 @@ export const ProfilePage: FC = () => {
                             <Field
                               name='twitter'
                               placeholder='@handle'
-                              className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                              className='block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                             />
                             {errors.twitter && touched.twitter && (
                               <p className='text-sm text-red-500'>{errors.twitter}</p>

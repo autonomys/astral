@@ -82,7 +82,7 @@ function Screen({
       }}
     >
       <div
-        tw='absolute flex flex-row border-none rounded-[20px] p-4 w-240 h-40'
+        tw='absolute flex flex-row border-none rounded-lg p-4 w-240 h-40'
         style={{
           background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
         }}
@@ -110,7 +110,7 @@ function Screen({
       </div>
       <div tw='absolute flex flex-col w-full'>
         <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-30 mt-70 mb-4 p-6 w-100 h-40'
+          tw='absolute flex flex-row border-none rounded-lg ml-30 mt-70 mb-4 p-6 w-100 h-40'
           style={{
             background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}
@@ -144,7 +144,7 @@ function Screen({
           </div>
         </div>
         <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-140 mt-70 mb-4 p-6 w-130 h-40'
+          tw='absolute flex flex-row border-none rounded-lg ml-140 mt-70 mb-4 p-6 w-130 h-40'
           style={{
             background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}

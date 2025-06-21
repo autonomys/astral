@@ -101,7 +101,7 @@ export const StorageHeader: FC = () => {
             <div className='flex items-center gap-4'>
               <HeaderChainDropdown />
               <button
-                className='items-center rounded-full bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
+                className='items-center rounded-lg bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
                 onClick={() => setIsOpen(true)}
               >
                 <Bars3BottomRightIcon
