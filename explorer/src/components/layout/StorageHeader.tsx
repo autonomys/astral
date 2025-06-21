@@ -68,14 +68,16 @@ export const StorageHeader: FC = () => {
             </div>
           </div>
           {showBanner && <StorageBanner />}
-          <nav className='flex flex-wrap items-center justify-center gap-10 py-5 text-sm'>
+          <nav className='absolute left-1/2 flex -translate-x-1/2 flex-wrap items-center justify-center gap-10 text-sm'>
             {menuList.map((item, index) => {
-              const isCurrentPath = pathname.includes(item.link)
+              const isCurrentPath = pathname.includes(item.link) && index !== 0
+              const isInitialPath = pathname === `/${network}/permanent-storage` && index === 0
+
               return (
                 <Link
                   key={index}
                   className={
-                    isCurrentPath
+                    isCurrentPath || isInitialPath
                       ? 'block rounded-lg bg-buttonLightFrom px-5 py-2 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
                       : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }

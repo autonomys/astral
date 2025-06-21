@@ -45,20 +45,17 @@ export const StorageBanner = () => {
   )
 
   return (
-    <div className='relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-6 py-16 shadow-lg'>
-      <div className='bg-grid-white/10 absolute inset-0' />
-      <div className='absolute inset-0 bg-gradient-to-t from-black/20 to-transparent' />
-
+    <div className='my-t container relative mx-auto mb-8 mt-4 overflow-hidden rounded-lg bg-white p-6 py-16 shadow-lg dark:bg-boxDark'>
       <div className='container relative mx-auto text-center'>
         <div className='space-y-4'>
-          <h1 className='text-2xl font-bold tracking-tight text-white md:text-3xl'>
+          <h1 className='text-2xl font-bold tracking-tight text-gray-900 dark:text-white md:text-3xl'>
             Join Auto Drive &
-            <span className='mt-1 block bg-gradient-to-r from-blue-200 to-blue-100 bg-clip-text text-transparent'>
+            <span className='mt-1 block bg-gradient-to-r from-gradientFrom to-gradientVia bg-clip-text text-transparent dark:text-white'>
               Experience the Future of Storage!
             </span>
           </h1>
 
-          <p className='mx-auto max-w-xl text-sm text-blue-100'>
+          <p className='mx-auto max-w-xl text-sm text-gray-600 dark:text-gray-300'>
             Sign in, to Auto Drive now to store, share, and download your files securely with
             Autonomys Network decentralized permanent storage.
           </p>
@@ -72,7 +69,7 @@ export const StorageBanner = () => {
               clickable: true,
               el: '.swiper-pagination',
               renderBullet: (index, className) =>
-                `<span key="${index}" class="${className}" style="background-color: white;"></span>`,
+                `<span key="${index}" class="${className}" style="background-color: #1949D2;"></span>`,
             }}
             autoplay={
               isMobile
@@ -113,12 +110,14 @@ export const StorageBanner = () => {
                       rel='noopener noreferrer'
                       className='w-full'
                     >
-                      <div className='flex h-[90px] flex-col rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all duration-200 hover:bg-white/10'>
-                        <h3 className='text-center text-sm font-semibold text-white'>
+                      <div className='flex h-[90px] flex-col rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm transition-all duration-200 hover:bg-gray-100 hover:shadow-md dark:border-gray-700 dark:bg-boxDark dark:hover:bg-grayDarker'>
+                        <h3 className='text-center text-sm font-semibold text-gray-900 dark:text-white'>
                           {feature.title}
                         </h3>
                         <div className='flex flex-1 items-center justify-center'>
-                          <p className='text-center text-xs text-blue-100'>{feature.desc}</p>
+                          <p className='text-center text-xs text-gray-600 dark:text-gray-300'>
+                            {feature.desc}
+                          </p>
                         </div>
                       </div>
                     </Link>
@@ -132,9 +131,9 @@ export const StorageBanner = () => {
 
         <div className='mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row'>
           <Link href={EXTERNAL_ROUTES.autoDrive} target='_blank' rel='noopener noreferrer'>
-            <button className='inline-flex items-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-blue-600 transition-all duration-200 hover:scale-105 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-white/20'>
+            <button className='hover:scale-101 inline-flex items-center rounded-lg bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-6 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gradientVia/20 dark:from-buttonDarkFrom dark:to-buttonDarkTo'>
               Get Started With Auto Drive
-              <ArrowRightIcon stroke='#1949D2' className='ml-2 size-5' />
+              <ArrowRightIcon className='ml-2 size-5' />
             </button>
           </Link>
         </div>
