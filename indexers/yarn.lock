@@ -2575,10 +2575,17 @@
   dependencies:
     "@subql/types-core" "2.0.1"
 
-"@subql/types@3.12.1", "@subql/types@^3.12.1":
+"@subql/types@3.12.1":
   version "3.12.1"
   resolved "https://registry.yarnpkg.com/@subql/types/-/types-3.12.1.tgz#f3f2d6b72d7b4913b7014c0ee917e55a476d1cc8"
   integrity sha512-jDjqsSuDfUiVXg7c+udL+gsELFJrPY6Lbs2ujBnFIVeXbSydzYqnl2nvydJjusHm6Levy01w5ZqBZQD2E5+a4g==
+  dependencies:
+    "@subql/types-core" "2.0.2"
+
+"@subql/types@^3.12.2":
+  version "3.12.2"
+  resolved "https://registry.yarnpkg.com/@subql/types/-/types-3.12.2.tgz#7e261866c86d1073fb6add8a5cc07e5fedc79581"
+  integrity sha512-sphXIa0TRrPbtfFR3kig785r2cDxj1qhILza1Ov4zq9064WIYJqaELWy8m2cscmPKDizGUX4ZRk2+0gbiZKuBA==
   dependencies:
     "@subql/types-core" "2.0.2"
 
