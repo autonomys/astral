@@ -82,7 +82,7 @@ export const RewardHistory: FC = () => {
 
   return (
     <div className='w-full max-w-xl'>
-      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
+      <div className='mb-4 w-full rounded-lg border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
         <div className='mb-6 flex flex-col items-center justify-center'>
           <h1 className='mb-2 text-center text-2xl font-bold text-gray-900 dark:text-white'>
             Reward History
@@ -104,7 +104,7 @@ export const RewardHistory: FC = () => {
               {!actingAccount ? (
                 <WalletButton />
               ) : (
-                <AccountListDropdown className='rounded-full' labelClassName='block w-full' />
+                <AccountListDropdown className='rounded-lg' labelClassName='block w-full' />
               )}
             </div>
             {actingAccount && !subspaceAccount && (
@@ -117,7 +117,7 @@ export const RewardHistory: FC = () => {
             {actingAccount && (
               <div className='flex justify-center'>
                 <button
-                  className={`rounded-full px-6 py-2 font-semibold text-white ${
+                  className={`rounded-lg px-6 py-2 font-semibold text-white ${
                     isSubspaceWalletConnected
                       ? 'cursor-not-allowed bg-blue-300'
                       : 'bg-blue-600 hover:bg-blue-700'
@@ -132,7 +132,7 @@ export const RewardHistory: FC = () => {
             {isSubspaceWalletConnected && (
               <div className='flex justify-center'>
                 <button
-                  className='rounded-full bg-red-600 px-6 py-2 font-semibold text-white hover:bg-red-700'
+                  className='rounded-lg bg-red-600 px-6 py-2 font-semibold text-white hover:bg-red-700'
                   onClick={handleRemoveSubspaceWallet}
                 >
                   ⚡ Remove Wallet ⚡

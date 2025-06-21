@@ -370,11 +370,11 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 <textarea
                   name='hash'
                   value={result}
-                  className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+                  className='mt-4 block h-[80px] w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -399,16 +399,16 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                             name='receiver'
                             type='text'
                             placeholder='Send to'
-                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                            className={`mt-4 block w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                               errors.amount &&
-                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                              'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
                           />
 
                           <Listbox value={actingAccount}>
                             <Listbox.Button
                               className={
-                                'absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                                'absolute flex items-center gap-2 rounded-lg bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                               }
                               style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                               onClick={() => setAddressBookIsOpen(!addressBookIsOpen)}
@@ -448,7 +448,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                               className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                                             >
                                               {account.name} {formattedAccount}{' '}
-                                              <span className='my-0 ml-4 rounded-full bg-grayDarker text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
+                                              <span className='my-0 ml-4 rounded-lg bg-grayDarker text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
                                                 Wallet
                                               </span>
                                             </span>
@@ -481,7 +481,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                               className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                                             >
                                               {address.label} {formattedAccount}{' '}
-                                              <span className='ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
+                                              <span className='ml-4 rounded-lg bg-grayDarker px-2 text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
                                                 Saved
                                               </span>
                                             </span>
@@ -519,13 +519,13 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                             placeholder={`Amount to ${
                               WalletAction[action] === WalletAction.SendToken ? 'stake' : 'withdraw'
                             }`}
-                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                            className={`mt-4 block w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                               errors.amount &&
-                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                              'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
                           />
                           <button
-                            className='absolute flex items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
+                            className='absolute flex items-center gap-2 rounded-lg bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                             type='button'
                             style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                             onClick={() => setFieldValue('amount', maxAmount)}
@@ -561,9 +561,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                 name='nonce'
                                 type='number'
                                 placeholder={'Nonce'}
-                                className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                                className={`mt-4 block w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                                   errors.nonce &&
-                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                                  'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                                 }`}
                               />
                             </div>
@@ -585,7 +585,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium capitalize text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-buttonLightFrom px-2 text-sm font-medium capitalize text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -616,11 +616,11 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 <textarea
                   name={WalletAction[action] === WalletAction.SendRemark ? 'hash' : 'signature'}
                   value={result}
-                  className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+                  className='mt-4 block h-[80px] w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -647,9 +647,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                         <div className='relative'>
                           <Field
                             name='message'
-                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                            className={`mt-4 block w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                               errors.message &&
-                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                              'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
                           >
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -657,9 +657,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                               <textarea
                                 {...field}
                                 placeholder='Message'
-                                className={`mt-4 block h-[120px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                                className={`mt-4 block h-[120px] w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                                   errors.message &&
-                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                                  'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                                 }`}
                               />
                             )}
@@ -687,9 +687,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                 name='nonce'
                                 type='number'
                                 placeholder={'Nonce'}
-                                className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                                className={`mt-4 block w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                                   errors.nonce &&
-                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                                  'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                                 }`}
                               />
                             </div>
@@ -711,7 +711,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium capitalize text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-buttonLightFrom px-2 text-sm font-medium capitalize text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -748,7 +748,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                   type='text'
                   value={subspaceAccount}
                   readOnly
-                  className='block w-full rounded-xl bg-white px-4 py-2 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white dark:focus:bg-blueAccent'
+                  className='block w-full rounded-lg bg-white px-4 py-2 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white dark:focus:bg-blueAccent'
                 />
               </>
             )}
@@ -765,11 +765,11 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 <textarea
                   name='hash'
                   value={result}
-                  className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+                  className='mt-4 block h-[80px] w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-buttonLightFrom px-2 text-sm font-medium text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -823,9 +823,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                 name='nonce'
                                 type='number'
                                 placeholder={'Nonce'}
-                                className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                                className={`mt-4 block w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                                   errors.nonce &&
-                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                                  'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                                 }`}
                               />
                             </div>
@@ -848,7 +848,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     )}
                     {selectedCategory && selectedMethod && (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightFrom px-2 text-sm font-medium capitalize text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-buttonLightFrom px-2 text-sm font-medium capitalize text-white dark:bg-buttonDarkFrom md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(selectedMethod)}
@@ -911,7 +911,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
         </div>
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-buttonLightTo px-2 text-sm font-medium text-white dark:bg-buttonDarkTo md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-buttonLightTo px-2 text-sm font-medium text-white dark:bg-buttonDarkTo md:space-x-4 md:text-base'
           onClick={handleClose}
         >
           Close

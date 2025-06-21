@@ -18,7 +18,7 @@ type Props = {
 
 export const OperatorStatusBadge: FC<Props> = ({ status }) => (
   <span
-    className={`rounded-full px-2.5 py-1 text-sm font-normal ${OPERATOR_STATUS_CLASSNAME[status]}`}
+    className={`rounded-lg px-2.5 py-1 text-sm font-normal ${OPERATOR_STATUS_CLASSNAME[status]}`}
   >
     {allCapsToNormal(status)}
   </span>

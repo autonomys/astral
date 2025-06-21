@@ -53,7 +53,7 @@ export const SearchBar: FC<SearchBarProps> = ({ fixSearchType }) => {
                 data-testid='search-type-list'
               >
                 <div className='relative w-48'>
-                  <Listbox.Button className='relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-blueAccent dark:text-white sm:text-sm'>
+                  <Listbox.Button className='relative w-full cursor-default rounded-lg bg-white py-2.5 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-blueAccent dark:text-white sm:text-sm'>
                     <div className='flex'>
                       <span className='ml-2 block truncate'>{values['searchType'].name}</span>
                       <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
@@ -114,7 +114,7 @@ export const SearchBar: FC<SearchBarProps> = ({ fixSearchType }) => {
                   disabled={isSearching}
                   type='submit'
                   data-testid='testSearchSubmit'
-                  className='absolute bottom-0 right-1 rounded-full px-4 py-2 text-sm font-medium focus:outline-none focus:ring-4 md:right-2.5 '
+                  className='absolute bottom-0 right-1 rounded-lg px-4 py-2 text-sm font-medium focus:outline-none focus:ring-4 md:right-2.5'
                 >
                   {isSearching ? (
                     <div className='mt-4 flex justify-center align-middle'>

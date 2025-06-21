@@ -371,7 +371,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     Redirecting to your nominations page...
                   </div>
                 )}
-                <div className='h-6 w-6 animate-spin rounded-full border-b-2 border-t-2 border-primaryAccent'></div>
+                <div className='h-6 w-6 animate-spin rounded-lg border-b-2 border-t-2 border-primaryAccent'></div>
               </div>
             ) : (
               <>
@@ -482,7 +482,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                               }`}
                               className={`mt-2 block w-full rounded-md border border-grayDark bg-white px-4 py-[10px] pr-[60px] text-sm text-gray-900 dark:bg-blueAccent dark:text-white ${
                                 errors.amount &&
-                                'block w-full rounded-full border border-red-500 bg-white px-4 py-[10px] text-sm text-gray-900'
+                                'block w-full rounded-lg border border-red-500 bg-white px-4 py-[10px] text-sm text-gray-900'
                               }`}
                             />
                             <button
@@ -522,7 +522,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       ) : (
                         <div className='mt-4 flex w-full items-center justify-center gap-2'>
                           <button
-                            className='w-full rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                            className='w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
                             type='button'
                             onClick={handleClose}
                           >
@@ -530,7 +530,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                           </button>
                           <button
                             className={cn(
-                              'w-full rounded-full bg-buttonLightFrom px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2 dark:bg-primaryAccent dark:text-white',
+                              'w-full rounded-lg bg-buttonLightFrom px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2 dark:bg-primaryAccent dark:text-white',
                               hasInsufficientBalance ? 'cursor-not-allowed opacity-50' : '',
                             )}
                             type='submit'
@@ -581,7 +581,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                         <div className='flex w-full items-center gap-2'>
                           <button
                             className={cn(
-                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              'rounded-lg border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
                               sliderValue === 25
                                 ? 'bg-buttonLightFrom text-white dark:border-gray-600'
                                 : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
@@ -596,7 +596,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                           </button>
                           <button
                             className={cn(
-                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              'rounded-lg border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
                               sliderValue === 50
                                 ? 'bg-buttonLightFrom text-white dark:border-gray-600'
                                 : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
@@ -611,7 +611,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                           </button>
                           <button
                             className={cn(
-                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              'rounded-lg border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
                               sliderValue === 75
                                 ? 'bg-buttonLightFrom text-white dark:border-gray-600'
                                 : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
@@ -626,7 +626,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                           </button>
                           <button
                             className={cn(
-                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              'rounded-lg border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
                               sliderValue === 100
                                 ? 'bg-buttonLightFrom text-white dark:border-gray-600'
                                 : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
@@ -655,7 +655,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                           />
                           <button
                             className={cn(
-                              'rounded-full border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
+                              'rounded-lg border border-gray-200 px-3 py-1 text-sm font-medium transition-colors',
                               sliderValue === 100
                                 ? 'bg-buttonLightFrom text-white dark:border-gray-600'
                                 : 'bg-white text-gray-900 hover:bg-gray-50 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90',
@@ -704,7 +704,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     </div>
                   ) : (
                     <button
-                      className='w-full rounded-full border border-gray-200 bg-buttonLightFrom px-3 py-2 text-sm font-medium text-gray-50 hover:bg-buttonLightFrom/90 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90'
+                      className='w-full rounded-lg border border-gray-200 bg-buttonLightFrom px-3 py-2 text-sm font-medium text-gray-50 hover:bg-buttonLightFrom/90 dark:border-primaryAccent dark:bg-primaryAccent dark:text-white dark:hover:bg-primaryAccent/90'
                       type='submit'
                     >
                       {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -724,14 +724,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
             {ErrorPlaceholder}
             <div className='mt-4 flex w-full items-center justify-center gap-2'>
               <button
-                className='w-full rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                className='w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
                 type='button'
                 onClick={handleClose}
               >
                 Cancel
               </button>
               <button
-                className='w-full rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-500/90'
+                className='w-full rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-500/90'
                 onClick={handleDeregister}
               >
                 {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -754,14 +754,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
             <div className='mt-4 flex w-full items-center justify-center gap-2'>
               <button
-                className='w-full rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                className='w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
                 type='button'
                 onClick={handleClose}
               >
                 Cancel
               </button>
               <button
-                className='w-full rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-500/90'
+                className='w-full rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-500/90'
                 onClick={
                   OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                   OperatorActionType.UnlockFunds

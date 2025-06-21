@@ -241,19 +241,19 @@ export const NominationsTable: FC = () => {
         const label = capitalizeFirstLetter(type)
         if (type === 'deposit')
           return (
-            <span className='rounded-full bg-blue-200 px-2.5 py-1 text-sm text-blue-500 dark:bg-blue-800 dark:text-blue-300'>
+            <span className='rounded-lg bg-blue-200 px-2.5 py-1 text-sm text-blue-500 dark:bg-blue-800 dark:text-blue-300'>
               {label}
             </span>
           )
         if (type === 'withdrawal')
           return (
-            <span className='rounded-full bg-red-200 px-2.5 py-1 text-sm text-red-500 dark:bg-red-800 dark:text-red-300'>
+            <span className='rounded-lg bg-red-200 px-2.5 py-1 text-sm text-red-500 dark:bg-red-800 dark:text-red-300'>
               {label}
             </span>
           )
         if (type === 'unlocked')
           return (
-            <span className='rounded-full bg-green-200 px-2.5 py-1 text-sm text-green-700 dark:bg-green-800 dark:text-green-300'>
+            <span className='rounded-lg bg-green-200 px-2.5 py-1 text-sm text-green-700 dark:bg-green-800 dark:text-green-300'>
               {label}
             </span>
           )
@@ -395,7 +395,7 @@ export const NominationsTable: FC = () => {
                   nominatorsList.map((nominator, index) => (
                     <div
                       key={index}
-                      className='w-full rounded-[20px] bg-grayLight p-4 shadow-lg dark:border dark:border-white dark:bg-transparent'
+                      className='w-full rounded-lg bg-grayLight p-4 shadow-lg dark:border dark:border-white dark:bg-transparent'
                     >
                       <div className='mb-4 flex flex-col items-start justify-between text-lg font-semibold dark:text-white sm:flex-row sm:items-center'>
                         <div className='mb-2 flex flex-col sm:mb-0'>
@@ -569,7 +569,7 @@ export const NominationsTable: FC = () => {
                                     )}
                                   </div>
                                 </div>
-                                <div className='mb-2 flex w-full items-center justify-between rounded-md bg-blueLight p-2 dark:bg-buttonDarkTo'>
+                                <div className='mb-2 flex w-full items-center justify-between rounded-md bg-blueLight p-2 dark:bg-buttonLightFrom'>
                                   <div className='m-4 flex w-1/4 flex-col rounded-md bg-boxLight p-2 dark:bg-boxDark'>
                                     <span className='font-xs text-grayDark dark:text-buttonLightTo'>
                                       Staked Amount
@@ -653,7 +653,7 @@ export const NominationsTable: FC = () => {
                   <div className='flex flex-col items-center justify-center gap-4'>
                     <span className='py-4 dark:text-white'>You have no nominations.</span>
                     <Link href={`/${network}/${Routes.staking}`}>
-                      <button className='relative w-full cursor-pointer rounded-full bg-primaryAccent from-primaryAccent to-blueUndertone py-[10px] pl-3 pr-16 text-left font-sans text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
+                      <button className='relative w-full cursor-pointer rounded-lg bg-primaryAccent from-primaryAccent to-blueUndertone py-[10px] pl-3 pr-16 text-left font-sans text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
                         <div className='flex items-center justify-center'>
                           <span className='ml-2 w-28 text-center text-sm'>Operator list</span>
                         </div>

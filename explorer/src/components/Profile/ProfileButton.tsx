@@ -30,7 +30,7 @@ export const ProfileButton: FC = () => {
       onClick={() => push(INTERNAL_ROUTES.profile.page(network))}
       className={cn(
         'inline-flex items-center bg-white p-0 text-base shadow-md hover:bg-gray-200 focus:outline-none dark:bg-buttonLightTo',
-        isDesktop ? 'ml-4 h-10 w-10 rounded-full' : 'ml-2',
+        isDesktop ? 'ml-4 h-10 w-10 rounded-lg' : 'ml-2',
       )}
     >
       {profile?.avatar ? (
@@ -39,10 +39,10 @@ export const ProfileButton: FC = () => {
           alt='Profile'
           width={40}
           height={40}
-          className='h-10 w-10 rounded-full'
+          className='h-10 w-10 rounded-lg'
         />
       ) : (
-        <div className='flex h-10 w-10 items-center justify-center rounded-full'>
+        <div className='flex h-10 w-10 items-center justify-center rounded-lg'>
           <AvatarIcon width='24' height='24' />
         </div>
       )}

@@ -32,7 +32,7 @@ const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
           onClick={onClose}
         >
           Close
@@ -70,7 +70,7 @@ export const GetDiscordRoles: FC = () => {
 
   if (hasAnyRoles)
     return (
-      <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+      <div className='m-2 mt-0 rounded-lg bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
         <Accordion title='Your verified roles on Discord'>
           <List>
             {session?.user?.discord?.vcs.roles.mainnetFarmer && (
@@ -117,7 +117,7 @@ export const GetDiscordRoles: FC = () => {
     )
 
   return (
-    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+    <div className='m-2 mt-0 rounded-lg bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion title='Get verified roles on Discord'>
         <List>
           <VerifyWalletOwnership />

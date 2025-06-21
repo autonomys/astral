@@ -61,7 +61,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
       }}
     >
       <div
-        tw='absolute flex flex-row border-none rounded-[20px] p-4 w-240 h-30'
+        tw='absolute flex flex-row border-none rounded-lg p-4 w-240 h-30'
         style={{
           background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
         }}
@@ -81,7 +81,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
       </div>
       <div tw='absolute flex flex-col w-full'>
         <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-30 mt-60 mb-2 p-6 w-100 h-30'
+          tw='absolute flex flex-row border-none rounded-lg ml-30 mt-60 mb-2 p-6 w-100 h-30'
           style={{
             background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}
@@ -99,7 +99,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
           </div>
         </div>
         <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-30 mt-100 mb-1 p-6 w-100 h-30'
+          tw='absolute flex flex-row border-none rounded-lg ml-30 mt-100 mb-1 p-6 w-100 h-30'
           style={{
             background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}

@@ -173,7 +173,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
         id='accordion-open-body-1'
         aria-labelledby='accordion-open-heading-1'
       >
-        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-boxDark'>
+        <div className='w-full rounded-lg bg-grayLight p-5 shadow dark:border-none dark:bg-boxDark'>
           <div>
             <div className='mt-4'>
               <div className='flex flex-col gap-3'>
@@ -434,7 +434,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
 
       {mobileMenuOpen && (
         <div className='mt-4 w-full sm:hidden'>
-          <div className='flex flex-col space-y-2 rounded-[20px] bg-grayLight p-4 shadow dark:border-none dark:bg-boxDark dark:to-gradientTo'>
+          <div className='flex flex-col space-y-2 rounded-lg bg-grayLight p-4 shadow dark:border-none dark:bg-boxDark dark:to-gradientTo'>
             {addExtraIcons && (
               <div className='mb-1 w-full'>
                 {React.Children.map(addExtraIcons, (child) =>
@@ -445,7 +445,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               </div>
             )}
             <button
-              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
+              className='w-full rounded-lg bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
               onClick={() => {
                 showSettings('search')
                 setMobileMenuOpen(false)
@@ -457,7 +457,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               </div>
             </button>
             <button
-              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
+              className='w-full rounded-lg bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
               onClick={() => {
                 showSettings('columns')
                 setMobileMenuOpen(false)
@@ -469,7 +469,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               </div>
             </button>
             <button
-              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
+              className='w-full rounded-lg bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
               onClick={() => {
                 showSettings('filters')
                 setMobileMenuOpen(false)
@@ -482,7 +482,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             </button>
             {showReset && (
               <button
-                className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
+                className='w-full rounded-lg bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
                 onClick={() => {
                   handleReset()
                   setMobileMenuOpen(false)
