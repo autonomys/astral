@@ -161,7 +161,7 @@ export const RegisterOperators = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='mt-5 flex w-full flex-col pt-20 sm:mt-0'>
-        <div className='w-full overflow-hidden rounded-[20px] bg-white shadow-lg dark:border-none dark:bg-boxDark'>
+        <div className='w-full overflow-hidden rounded-lg bg-white shadow-lg dark:border-none dark:bg-boxDark'>
           <div className='p-10'>
             <div className='flex items-center'>
               <WalletIcon width='44' height='44' />
@@ -177,16 +177,15 @@ export const RegisterOperators = () => {
             </div>
 
             <div className='mt-6 w-full text-base font-medium leading-relaxed text-grayDarker dark:text-white'>
-              holders can stake their {tokenSymbol} to add more
-              security to the protocol and earn Staking Incentives. Learn more about the risks
-              involved.
+              holders can stake their {tokenSymbol} to add more security to the protocol and earn
+              Staking Incentives. Learn more about the risks involved.
             </div>
 
             <div className='mt-10 space-y-10'>
               {/* Step 1 */}
               <div>
                 <div className='mb-4 inline-flex items-center gap-3'>
-                  <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primaryAccent text-lg font-semibold text-white'>
+                  <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-primaryAccent text-lg font-semibold text-white'>
                     1
                   </div>
                   <div className='text-2xl font-bold leading-tight tracking-tight text-grayDarker dark:text-white'>
@@ -216,7 +215,7 @@ export const RegisterOperators = () => {
               {/* Step 2 */}
               <div>
                 <div className='mb-4 inline-flex items-center gap-3'>
-                  <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primaryAccent text-lg font-semibold text-white'>
+                  <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-primaryAccent text-lg font-semibold text-white'>
                     2
                   </div>
                   <div className='text-2xl font-bold leading-tight tracking-tight text-grayDarker dark:text-white'>
@@ -230,7 +229,7 @@ export const RegisterOperators = () => {
                   ) : (
                     <div
                       className={
-                        'flex w-full items-center rounded-xl bg-grayLight/50 p-4 text-base font-medium text-grayDarker dark:bg-blueAccent/50 dark:text-white'
+                        'flex w-full items-center rounded-lg bg-grayLight/50 p-4 text-base font-medium text-grayDarker dark:bg-blueAccent/50 dark:text-white'
                       }
                     >
                       {subspaceAccount ? (
@@ -258,7 +257,7 @@ export const RegisterOperators = () => {
               {/* Step 3 */}
               <div>
                 <div className='mb-4 inline-flex items-center gap-3'>
-                  <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primaryAccent text-lg font-semibold text-white'>
+                  <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-primaryAccent text-lg font-semibold text-white'>
                     3
                   </div>
                   <div className='text-xl font-bold leading-tight tracking-tight text-grayDarker dark:text-white'>
@@ -277,7 +276,7 @@ export const RegisterOperators = () => {
                       onSubmit={handleSubmit}
                       data-testid='testOperatorStakeForm'
                     >
-                      <div className='mt-8 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+                      <div className='mt-8 rounded-lg bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
                         <div className='ml-4 w-full'>
                           <div className='relative'>
                             <div
@@ -304,7 +303,7 @@ export const RegisterOperators = () => {
                                   onChange={(val) => setFieldValue('domainId', val)}
                                 >
                                   <div className='relative'>
-                                    <Listbox.Button className='relative mt-4 w-full cursor-default rounded-full bg-white from-primaryAccent to-blueUndertone py-[10px] pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'>
+                                    <Listbox.Button className='relative mt-4 w-full cursor-default rounded-lg bg-white from-primaryAccent to-blueUndertone py-[10px] pl-3 pr-10 text-left font-sans shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'>
                                       <div className='flex items-center justify-center'>
                                         <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full'>
                                           {currentDomainLabel(values)}
@@ -323,7 +322,7 @@ export const RegisterOperators = () => {
                                       leaveFrom='opacity-100'
                                       leaveTo='opacity-0'
                                     >
-                                      <Listbox.Options className='absolute mt-1 max-h-60 w-auto overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+                                      <Listbox.Options className='absolute mt-1 max-h-60 w-auto overflow-auto rounded-lg bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
                                         {filteredDomainsList.map((domain, index) => (
                                           <Listbox.Option
                                             key={index}
@@ -380,10 +379,10 @@ export const RegisterOperators = () => {
                                 <Field
                                   name='publicKey'
                                   placeholder='Public Key'
-                                  className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white ${
+                                  className={`mt-4 block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white ${
                                     errors.publicKey &&
                                     touched.publicKey &&
-                                    'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
+                                    'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
                                   } `}
                                 />
                                 {errors.publicKey && touched.publicKey && (
@@ -412,10 +411,10 @@ export const RegisterOperators = () => {
                                   placeholder='Amount to Stake'
                                   type='number'
                                   min='0'
-                                  className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white ${
+                                  className={`mt-4 block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white ${
                                     errors.amountToStake &&
                                     touched.amountToStake &&
-                                    'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
+                                    'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
                                   } `}
                                 />
                                 {errors.amountToStake && touched.amountToStake ? (
@@ -448,10 +447,10 @@ export const RegisterOperators = () => {
                                   min='0'
                                   max='100'
                                   step='1'
-                                  className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white ${
+                                  className={`mt-4 block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white ${
                                     errors.nominatorTax &&
                                     touched.nominatorTax &&
-                                    'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                                    'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                                   } `}
                                 />
                                 {errors.nominatorTax && touched.nominatorTax ? (
@@ -484,10 +483,10 @@ export const RegisterOperators = () => {
                                   placeholder='Minimum Nominator Stake'
                                   type='number'
                                   min='1'
-                                  className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white ${
+                                  className={`mt-4 block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white ${
                                     errors.minimumNominatorStake &&
                                     touched.minimumNominatorStake &&
-                                    'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                                    'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                                   } `}
                                 />
                                 {errors.minimumNominatorStake && touched.minimumNominatorStake ? (
@@ -517,14 +516,14 @@ export const RegisterOperators = () => {
                         {!actingAccount ? (
                           <button
                             onClick={(e) => handleConnectWallet(e)}
-                            className='h-10 w-36 rounded-full bg-gradient-to-r from-primaryAccent to-blueUndertone font-medium text-white'
+                            className='h-10 w-36 rounded-lg bg-gradient-to-r from-primaryAccent to-blueUndertone font-medium text-white'
                           >
                             Connect Wallet
                           </button>
                         ) : (
                           <button
                             className={cn(
-                              'h-10 w-48 rounded-full bg-gradient-to-r from-primaryAccent to-blueUndertone font-medium text-white disabled:opacity-70',
+                              'h-10 w-48 rounded-lg bg-gradient-to-r from-primaryAccent to-blueUndertone font-medium text-white disabled:opacity-70',
                               (!isValid || !dirty) && 'cursor-not-allowed',
                             )}
                             type='submit'

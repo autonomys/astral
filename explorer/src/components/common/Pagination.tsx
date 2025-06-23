@@ -31,14 +31,14 @@ export const Pagination: FC<Props> = ({
         <button
           onClick={previousPage}
           disabled={!hasPreviousPage}
-          className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-none dark:bg-blueAccent dark:text-white'
+          className='relative inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-none dark:bg-blueAccent dark:text-white'
         >
           Previous
         </button>
         <button
           onClick={nextPage}
           disabled={!hasNextPage}
-          className='relative ml-3 inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-none dark:bg-blueAccent dark:text-white'
+          className='relative ml-3 inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-none dark:bg-blueAccent dark:text-white'
         >
           Next
         </button>
@@ -49,11 +49,11 @@ export const Pagination: FC<Props> = ({
           pageCount={pageCount}
           disabledClassName='disabled'
           breakLabel={
-            <span className='relative mx-1 inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-700 dark:bg-blueAccent dark:text-white'>
+            <span className='relative mx-1 inline-flex items-center rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 dark:bg-blueAccent dark:text-white'>
               ...
             </span>
           }
-          nextClassName='relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-blueAccent dark:border-none'
+          nextClassName='relative inline-flex items-center rounded-lg bg-white px-2 py-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-blueAccent dark:border-none'
           nextLabel={
             <span>
               <span className='sr-only'>Next</span>
@@ -61,7 +61,7 @@ export const Pagination: FC<Props> = ({
             </span>
           }
           pageRangeDisplayed={3}
-          previousClassName='relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-blueAccent dark:border-none'
+          previousClassName='relative inline-flex items-center rounded-lg bg-white px-2 py-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-blueAccent dark:border-none'
           previousLabel={
             <span>
               <span className='sr-only'>Previous</span>
@@ -69,9 +69,9 @@ export const Pagination: FC<Props> = ({
             </span>
           }
           onPageChange={(page) => onChange(page.selected)}
-          pageClassName='relative inline-flex items-center bg-white px-4 py-2 text-sm font-medium text-grayDark hover:bg-gray-50 focus:z-20 rounded-full mx-1 dark:text-white dark:bg-blueAccent dark:border-none '
+          pageClassName='relative inline-flex items-center bg-white px-4 py-2 text-sm font-medium text-grayDark hover:bg-gray-50 focus:z-20 rounded-lg mx-1 dark:text-white dark:bg-blueAccent dark:border-none '
           renderOnZeroPageCount={null}
-          activeClassName='relative z-10 inline-flex items-center bg-black px-4 py-2 text-sm font-medium text-white focus:z-20 rounded-full mx-1 dark:text-white dark:bg-primaryAccent dark:border-none'
+          activeClassName='relative z-10 inline-flex items-center bg-black px-4 py-2 text-sm font-medium text-white focus:z-20 rounded-lg mx-1 dark:text-white dark:bg-primaryAccent dark:border-none'
           containerClassName='flex items-center justify-between'
         />
       </div>

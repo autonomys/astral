@@ -97,7 +97,7 @@ export const ExtrinsicsCategorySelector: FC<ExtrinsicsCategorySelectorProps> = (
     <Listbox value={selectedCategory} onChange={handleSetCategory}>
       <div className='relative'>
         <Listbox.Button
-          className='relative h-8 w-full cursor-default rounded-full bg-white from-primaryAccent to-blueUndertone py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-boxDark dark:text-white sm:text-sm'
+          className='relative h-8 w-full cursor-default rounded-lg bg-white from-primaryAccent to-blueUndertone py-2 pl-3 pr-10 text-left font-sans shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-boxDark dark:text-white sm:text-sm'
           onClick={resetCategory}
         >
           <div className='flex items-center justify-center'>
@@ -185,7 +185,7 @@ export const ExtrinsicsMethodSelector: FC<ExtrinsicsMethodSelectorProps> = ({
     <Listbox value={selectedMethod} onChange={handleSetMethod}>
       <div className='relative'>
         <Listbox.Button
-          className='relative mt-4 h-8 w-full cursor-default rounded-full bg-white from-primaryAccent to-blueUndertone py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-boxDark dark:text-white sm:text-sm'
+          className='relative mt-4 h-8 w-full cursor-default rounded-lg bg-white from-primaryAccent to-blueUndertone py-2 pl-3 pr-10 text-left font-sans shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-boxDark dark:text-white sm:text-sm'
           onClick={resetMethod}
         >
           <div className='flex items-center justify-center'>
@@ -263,12 +263,12 @@ export const ExtrinsicsInputs: FC<ExtrinsicsInputsProps> = ({
                   )})`}
                   value={selectedValues && selectedValues[field.name]}
                   onChange={handleSetValues}
-                  className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm capitalize text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                  className={`mt-4 block w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm capitalize text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                     errors &&
                     errors[field.name] &&
                     touched &&
                     touched[field.name] &&
-                    'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
+                    'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
                   }`}
                 />
               </div>

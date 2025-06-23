@@ -171,11 +171,11 @@ export const ApiKeysPage: FC = () => {
         <SmallProfileBox />
 
         {isLoading ? (
-          <div className='flex h-full w-full items-center justify-center rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+          <div className='flex h-full w-full items-center justify-center rounded-lg bg-white shadow-sm dark:border-none dark:bg-boxDark'>
             <Spinner />
           </div>
         ) : (
-          <div className='w-full flex-1 overflow-hidden rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+          <div className='w-full flex-1 overflow-hidden rounded-lg bg-white shadow-sm dark:border-none dark:bg-boxDark'>
             <div className='p-6 sm:p-8'>
               <h1 className='mb-6 text-2xl font-bold text-gray-900 dark:text-white'>API Keys</h1>
               <p className='mb-6 text-sm text-gray-600 dark:text-gray-300'>
@@ -199,7 +199,7 @@ export const ApiKeysPage: FC = () => {
                           type='text'
                           name='description'
                           placeholder='Enter description for new API key'
-                          className='block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                          className='block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                         />
                         {errors.description && touched.description && (
                           <div className='mt-1 text-sm text-red-500'>{errors.description}</div>
@@ -208,7 +208,7 @@ export const ApiKeysPage: FC = () => {
                       <button
                         type='submit'
                         disabled={isCreating}
-                        className='inline-flex justify-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none disabled:opacity-70 dark:bg-primaryAccent'
+                        className='inline-flex justify-center rounded-lg border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none disabled:opacity-70 dark:bg-primaryAccent'
                       >
                         {isCreating ? (
                           <div className='flex items-center'>
@@ -337,7 +337,7 @@ export const ApiKeysPage: FC = () => {
                 leaveFrom='opacity-100 scale-100'
                 leaveTo='opacity-0 scale-95'
               >
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-boxDark'>
+                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-boxDark'>
                   <Dialog.Title
                     as='h3'
                     className='text-lg font-bold leading-6 text-gray-900 dark:text-white'
@@ -353,14 +353,14 @@ export const ApiKeysPage: FC = () => {
                   <div className='mt-6 flex justify-end space-x-3'>
                     <button
                       type='button'
-                      className='inline-flex justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
+                      className='inline-flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
                       onClick={() => setShowDeleteModal(false)}
                     >
                       Cancel
                     </button>
                     <button
                       type='button'
-                      className='inline-flex justify-center rounded-full border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2'
+                      className='inline-flex justify-center rounded-lg border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2'
                       onClick={handleConfirmDelete}
                     >
                       Delete

@@ -22,14 +22,14 @@ export const RegisteredSwitch: FC = () => {
         }}
         className={`${
           registeredOnly ? 'bg-primaryAccent' : 'bg-transparent'
-        } border-color-grayDarker dark:border-color-white relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full border-2`}
+        } border-color-grayDarker dark:border-color-white relative inline-flex h-6 w-11 cursor-pointer items-center rounded-lg border-2`}
         role='switch'
         aria-checked={registeredOnly}
       >
         <span
           className={`${
             registeredOnly ? 'translate-x-6' : 'translate-x-1'
-          } dark:bg-blueLight inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+          } inline-block h-4 w-4 transform rounded-lg bg-white transition-transform dark:bg-blueLight`}
         />
         <span className='sr-only'>{label}</span>
       </button>

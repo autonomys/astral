@@ -40,7 +40,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
   }, [])
 
   return (
-    <div className='m-2 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+    <div className='m-2 rounded-lg bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion
         title={
           <Link
@@ -54,7 +54,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
                 <span className='ml-2 hidden w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white sm:block md:w-full'>
                   {actingAccountName}{' '}
                   {enableDevMode && (
-                    <span className='bg-blueLighterAccent ml-2 rounded-full p-2 text-white'>
+                    <span className='bg-blueLighterAccent ml-2 rounded-lg p-2 text-white'>
                       <code>[Dev Mode]</code>
                     </span>
                   )}
@@ -91,7 +91,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
           <Tooltip text='Address book'>
             <button
               onClick={() => onClick(AccountPreferenceSection.AddressBook)}
-              className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
+              className='m-2 flex cursor-default items-center justify-center rounded-lg bg-primaryAccent p-2'
             >
               <BookOpenIcon className='w-8 text-white' />
             </button>
@@ -99,7 +99,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
           <Tooltip text='Account settings'>
             <button
               onClick={() => onClick(AccountPreferenceSection.Settings)}
-              className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
+              className='m-2 flex cursor-default items-center justify-center rounded-lg bg-primaryAccent p-2'
             >
               <WrenchIcon className='w-8 text-white' />
             </button>

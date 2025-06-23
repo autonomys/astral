@@ -71,12 +71,14 @@ export const StorageHeader: FC = () => {
           <nav className='flex flex-wrap items-center justify-center gap-10 py-5 text-sm'>
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link)
+              const isInitialPath = pathname === `/${network}/permanent-storage` && index === 0
+
               return (
                 <Link
                   key={index}
                   className={
-                    isCurrentPath
-                      ? 'block rounded-full bg-buttonLightFrom px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
+                    isCurrentPath || isInitialPath
+                      ? 'block rounded-lg bg-buttonLightFrom px-5 py-2 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
                       : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }
                   href={item.link}
@@ -99,7 +101,7 @@ export const StorageHeader: FC = () => {
             <div className='flex items-center gap-4'>
               <HeaderChainDropdown />
               <button
-                className='items-center rounded-full bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
+                className='items-center rounded-lg bg-buttonLightFrom p-3 text-white dark:bg-white dark:text-blueAccent'
                 onClick={() => setIsOpen(true)}
               >
                 <Bars3BottomRightIcon

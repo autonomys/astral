@@ -14,7 +14,7 @@ export const StyledButton: FC<StyledButtonProps> = ({
   onClick,
 }) => (
   <button
-    className={`w-[100px] rounded-xl border border-purpleAccent bg-transparent px-4 shadow-lg ${className}`}
+    className={`border-purpleAccent w-[100px] rounded-lg border bg-transparent px-4 shadow-lg ${className}`}
     disabled={isDisabled}
     onClick={onClick}
   >

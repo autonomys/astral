@@ -16,7 +16,7 @@ const OutOfSyncBanner: FC = () => {
   return (
     <div className='container mx-auto mb-4 flex grow justify-center px-5 md:px-[25px] 2xl:px-0'>
       <div className='sticky top-0 z-10 w-full'>
-        <div className='w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-boxDark'>
+        <div className='w-full rounded-lg bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-boxDark'>
           <div className='flex flex-col gap-4'>
             <div className='text-[20px] font-bold text-[#282929] dark:text-white'>
               Indexer Currently Out of Sync
@@ -29,13 +29,13 @@ const OutOfSyncBanner: FC = () => {
             <div>
               {network === NetworkId.MAINNET && (
                 <Link href={EXTERNAL_ROUTES.subscan} target='_blank'>
-                  <button className='self-start rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'>
+                  <button className='self-start rounded-lg bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'>
                     Visit Subscan
                   </button>
                 </Link>
               )}
               <Link className='ml-4' href={EXTERNAL_ROUTES.polkadot(network)} target='_blank'>
-                <button className='self-start rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'>
+                <button className='self-start rounded-lg bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'>
                   Visit Polkadot.js Apps
                 </button>
               </Link>

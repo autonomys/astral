@@ -81,7 +81,7 @@ export const HistoryIncreaseChart: FC<HistoryIncreaseChartProps> = ({ data, load
   if (loading || !data) return <div>Loading...</div>
 
   return (
-    <div className='rounded-[20px] bg-white p-4 shadow-sm dark:bg-boxDark'>
+    <div className='rounded-lg bg-white p-4 shadow-sm dark:bg-boxDark'>
       <div className='mb-4 flex items-center justify-between'>
         <h2 className='text-lg font-medium dark:text-white'>On-Chain Activity</h2>
         <TimeFrameSelector selected={timeFrame} onChange={setTimeFrame} />

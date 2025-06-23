@@ -61,20 +61,20 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
           <LogoIcon />
           <h2
             style={{
-              fontFamily: 'Montserrat',
+              fontFamily: 'sans-serif',
             }}
             tw='absolute text-2xl text-white font-bold ml-2 mt-48'
           >
             {metadata.title}
           </h2>
-          <div tw='absolute flex flex-row border-none rounded-[20px] bg-blueAccent text-xl text-white ml-230 mt-12 mb-4 p-2 pl-4 w-44 h-12'>
+          <div tw='absolute flex flex-row border-none rounded-lg bg-blueAccent text-xl text-white ml-230 mt-12 mb-4 p-2 pl-4 w-44 h-12'>
             {chainMatch.title}
           </div>
         </div>
       </div>
       <div tw='absolute flex flex-col w-full'>
         <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-15 mt-65 mb-4 p-6 w-60 h-50'
+          tw='absolute flex flex-row border-none rounded-lg ml-15 mt-65 mb-4 p-6 w-60 h-50'
           style={{
             background: 'linear-gradient(180deg, #6E6ECD 0%, #A196E1 50%, #C2B0EE 100%)',
           }}
@@ -83,7 +83,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             <BlockIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-md text-white mt-24 font-bold'
             >
@@ -91,7 +91,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             </span>
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
@@ -100,13 +100,13 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
           </div>
         </div>
         <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-155 mt-65 mb-4 p-6 w-60 h-50'
+          tw='absolute flex flex-row border-none rounded-lg ml-155 mt-65 mb-4 p-6 w-60 h-50'
           style={{
             background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}
         ></div>
         <div
-          tw='absolute flex flex-row border-none rounded-[20px] ml-155 mt-65 mb-4 p-6 w-60 h-50'
+          tw='absolute flex flex-row border-none rounded-lg ml-155 mt-65 mb-4 p-6 w-60 h-50'
           style={{
             background: 'linear-gradient(180deg, #032372 0%, #1949D2 100%)',
           }}
@@ -115,7 +115,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             <WalletIcon />
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-md text-white mt-24 font-bold'
             >
@@ -123,7 +123,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
             </span>
             <span
               style={{
-                fontFamily: 'Montserrat',
+                fontFamily: 'sans-serif',
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
@@ -137,7 +137,7 @@ function Screen({ chainMatch, data }: { chainMatch: (typeof indexers)[number]; d
           <AutonomysSymbol fill='#000000' />
           <span
             style={{
-              fontFamily: 'Montserrat',
+              fontFamily: 'sans-serif',
             }}
             tw='absolute text-md text-black pl-8 font-bold mt-140'
           >

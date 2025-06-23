@@ -40,7 +40,7 @@ export const Button: FC<ButtonProps> = ({
       type='submit'
       disabled={isDisabled}
       className={cn(
-        'inline-flex w-full items-center justify-center rounded-full bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-buttonLightFrom/90 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-primaryAccent dark:hover:bg-primaryAccent/90 sm:w-auto',
+        'inline-flex w-full items-center justify-center rounded-lg bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-buttonLightFrom/90 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-primaryAccent dark:hover:bg-primaryAccent/90 sm:w-auto',
         className,
       )}
       onClick={onClick}
