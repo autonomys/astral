@@ -103,7 +103,7 @@ type TabContentProps = {
 
 export const TabContent: React.FC<TabContentProps> = ({ children, selectedTab }) => {
   if (!Array.isArray(children)) {
-    return null
+    return <div>{children}</div>
   }
   if (typeof selectedTab === 'string') {
     return <div id={selectedTab}>{children.find((child) => child.props.id === selectedTab)}</div>
