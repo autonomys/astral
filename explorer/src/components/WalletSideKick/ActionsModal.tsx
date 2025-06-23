@@ -4,7 +4,6 @@ import { Listbox, Transition } from '@headlessui/react'
 import { sendGAEvent } from '@next/third-parties/google'
 import { CopyButton } from 'components/common/CopyButton'
 import { Modal } from 'components/common/Modal'
-import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
   AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT,
@@ -738,9 +737,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       {actingAccount.name}
                     </span>
                   </Link>
-                  <Tooltip text='Copy wallet address'>
-                    <CopyButton value={subspaceAccount} message='Wallet address copied' />
-                  </Tooltip>
+                  <CopyButton value={subspaceAccount} message='Wallet address copied' />
                 </div>
                 <QRCodeSVG value={subspaceAccount} size={256} />
                 <input
