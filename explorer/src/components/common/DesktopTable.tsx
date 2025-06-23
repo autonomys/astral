@@ -40,7 +40,7 @@ export const DesktopTable = <T extends object>({
                       ? 'rounded-tl-[20px]'
                       : 'rounded-tr-[20px]'
                     : 'rounded-lg'
-                } px-3 py-4 text-start text-sm font-normal ${index === 0 ? 'sticky left-0 bg-white dark:bg-boxDark' : ''} ${index === headerGroup.headers.length - 1 ? 'sticky right-0 bg-white dark:bg-boxDark' : ''}`}
+                } px-3 py-4 text-start text-sm font-semibold ${index === 0 ? 'sticky left-0 bg-white dark:bg-boxDark' : ''} ${index === headerGroup.headers.length - 1 ? 'sticky right-0 bg-white dark:bg-boxDark' : ''}`}
               >
                 <div className='flex justify-items-center gap-1 align-middle'>
                   {header.isPlaceholder
