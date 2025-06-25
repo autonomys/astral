@@ -78,6 +78,60 @@ CREATE TABLE staking.nominator_deposits (
 );
 ALTER TABLE staking.nominator_deposits OWNER TO postgres;
 
+-- nominator_withdrawals
+CREATE TABLE staking.nominator_withdrawals (
+    id text NOT NULL,
+    address text NOT NULL,
+    operator_id text NOT NULL,
+    domain_id text NOT NULL,
+    withdrawal_in_shares_amount numeric NOT NULL,
+    withdrawal_in_shares_storage_fee_refund numeric NOT NULL,
+    withdrawal_in_shares_domain_epoch text NOT NULL,
+    withdrawal_in_shares_unlock_block numeric NOT NULL,
+    total_withdrawal_amount numeric NOT NULL,
+    total_storage_fee_withdrawal numeric NOT NULL,
+    withdrawals_json text NOT NULL,
+    total_pending_withdrawals numeric NOT NULL,
+    extrinsic_ids text NOT NULL,
+    event_ids text NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
+    block_height numeric NOT NULL,
+    block_heights text NOT NULL,
+    processed boolean NOT NULL DEFAULT false,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.nominator_withdrawals OWNER TO postgres;
+
+-- operator_epoch_share_prices
+CREATE TABLE staking.operator_epoch_share_prices (
+    id text NOT NULL,
+    operator_id text NOT NULL,
+    domain_id text NOT NULL,
+    epoch_index integer NOT NULL,
+    share_price numeric NOT NULL,
+    total_stake numeric NOT NULL,
+    total_shares numeric NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
+    block_height numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.operator_epoch_share_prices OWNER TO postgres;
+
+-- storage_fund_accounts
+CREATE TABLE staking.storage_fund_accounts (
+    id text NOT NULL,
+    operator_id text NOT NULL,
+    address text NOT NULL,
+    balance numeric NOT NULL,
+    timestamp timestamp with time zone NOT NULL,
+    block_height numeric NOT NULL,
+    _id uuid NOT NULL,
+    _block_range int8range NOT NULL
+);
+ALTER TABLE staking.storage_fund_accounts OWNER TO postgres;
+
 
 -- domain_block_histories
 CREATE TABLE staking.domain_block_histories (
@@ -172,7 +226,6 @@ CREATE TABLE staking.nominators (
     total_withdrawals numeric NOT NULL,
     known_shares numeric NOT NULL,
     known_storage_fee_deposit numeric NOT NULL,
-    total_withdrawal_amounts numeric NOT NULL,
     total_storage_fee_refund numeric NOT NULL,
     total_deposits_count numeric NOT NULL,
     total_withdrawals_count numeric NOT NULL,
@@ -414,6 +467,15 @@ ALTER TABLE ONLY staking.bundle_submissions
 ALTER TABLE ONLY staking.nominator_deposits
     ADD CONSTRAINT nominator_deposits_pkey PRIMARY KEY (_id);
 
+ALTER TABLE ONLY staking.nominator_withdrawals
+    ADD CONSTRAINT nominator_withdrawals_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.operator_epoch_share_prices
+    ADD CONSTRAINT operator_epoch_share_prices_pkey PRIMARY KEY (_id);
+
+ALTER TABLE ONLY staking.storage_fund_accounts
+    ADD CONSTRAINT storage_fund_accounts_pkey PRIMARY KEY (_id);
+
     
 ALTER TABLE ONLY staking.domain_instantiations
     ADD CONSTRAINT domain_instantiations_pkey PRIMARY KEY (_id);
@@ -489,11 +551,37 @@ CREATE INDEX "staking_withdraw_events_domain_id" ON staking.withdraw_events USIN
 CREATE INDEX "staking_withdraw_events_operator_id" ON staking.withdraw_events USING btree (operator_id);
 CREATE INDEX "staking_withdraw_events_nominator_id" ON staking.withdraw_events USING btree (nominator_id);
 
-
 -- nominator_deposits
 CREATE INDEX "0x9addf36a4bded44f" ON staking.nominator_deposits USING btree (id);
 CREATE INDEX "staking_nominator_deposits_domain_id" ON staking.nominator_deposits USING btree (domain_id);
 CREATE INDEX "staking_nominator_deposits_operator_id" ON staking.nominator_deposits USING btree (operator_id);
+CREATE INDEX "staking_nominator_deposits_address" ON staking.nominator_deposits USING btree (address);
+CREATE INDEX "staking_nominator_deposits_processed" ON staking.nominator_deposits USING btree (processed);
+-- Composite index for fast total deposits calculation
+CREATE INDEX "staking_nominator_deposits_address_domain_operator_processed" ON staking.nominator_deposits USING btree (address, domain_id, operator_id, processed);
+-- Index for fetching unprocessed deposits
+CREATE INDEX "staking_nominator_deposits_processed_pending_amount" ON staking.nominator_deposits USING btree (processed, pending_amount) WHERE processed = false;
+
+-- nominator_withdrawals
+CREATE INDEX "staking_nominator_withdrawals_id" ON staking.nominator_withdrawals USING btree (id);
+CREATE INDEX "staking_nominator_withdrawals_address" ON staking.nominator_withdrawals USING btree (address);
+CREATE INDEX "staking_nominator_withdrawals_operator_id" ON staking.nominator_withdrawals USING btree (operator_id);
+CREATE INDEX "staking_nominator_withdrawals_domain_id" ON staking.nominator_withdrawals USING btree (domain_id);
+CREATE INDEX "staking_nominator_withdrawals_processed" ON staking.nominator_withdrawals USING btree (processed);
+-- Index for fetching unprocessed withdrawals
+CREATE INDEX "staking_nominator_withdrawals_processed_idx" ON staking.nominator_withdrawals USING btree (processed) WHERE processed = false;
+
+-- operator_epoch_share_prices
+CREATE INDEX "staking_operator_epoch_share_prices_id" ON staking.operator_epoch_share_prices USING btree (id);
+CREATE INDEX "staking_operator_epoch_share_prices_operator_id" ON staking.operator_epoch_share_prices USING btree (operator_id);
+CREATE INDEX "staking_operator_epoch_share_prices_domain_id" ON staking.operator_epoch_share_prices USING btree (domain_id);
+CREATE INDEX "staking_operator_epoch_share_prices_epoch_index" ON staking.operator_epoch_share_prices USING btree (epoch_index);
+-- Composite index for share price lookups
+CREATE INDEX "staking_operator_epoch_share_prices_lookup" ON staking.operator_epoch_share_prices USING btree (operator_id, domain_id, epoch_index);
+
+-- storage_fund_accounts
+CREATE INDEX "staking_storage_fund_accounts_id" ON staking.storage_fund_accounts USING btree (id);
+CREATE INDEX "staking_storage_fund_accounts_operator_id" ON staking.storage_fund_accounts USING btree (operator_id);
 
 
 -- operator_registrations
