@@ -113,6 +113,7 @@ type UnlockedEvent @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 type NominatorsUnlockedEvent @entity {
@@ -122,6 +123,7 @@ type NominatorsUnlockedEvent @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 type OperatorDeregistration @entity {

@@ -393,6 +393,7 @@ CREATE TABLE staking.unlocked_events (
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
+    processed boolean NOT NULL DEFAULT false,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -407,6 +408,7 @@ CREATE TABLE staking.nominators_unlocked_events (
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
+    processed boolean NOT NULL DEFAULT false,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -526,6 +528,10 @@ ALTER TABLE ONLY staking.withdrawals
 
 -- unlocked_events
 CREATE INDEX "0x095f76af1e0896c7" ON staking.unlocked_events USING btree (id);
+CREATE INDEX "staking_unlocked_events_nominator_id" ON staking.unlocked_events USING btree (nominator_id);
+CREATE INDEX "staking_unlocked_events_processed" ON staking.unlocked_events USING btree (processed);
+-- Partial index for efficient fetching of unprocessed events
+CREATE INDEX "staking_unlocked_events_unprocessed" ON staking.unlocked_events USING btree (processed, block_height) WHERE processed = false;
 
 -- operator_deregistrations
 CREATE INDEX "0x17ee75861ab4beba" ON staking.operator_deregistrations USING btree (id);
@@ -550,6 +556,14 @@ CREATE INDEX "0x72774937664e8211" ON staking.withdraw_events USING btree (id);
 CREATE INDEX "staking_withdraw_events_domain_id" ON staking.withdraw_events USING btree (domain_id);
 CREATE INDEX "staking_withdraw_events_operator_id" ON staking.withdraw_events USING btree (operator_id);
 CREATE INDEX "staking_withdraw_events_nominator_id" ON staking.withdraw_events USING btree (nominator_id);
+
+-- nominators_unlocked_events
+CREATE INDEX "staking_nominators_unlocked_events_id" ON staking.nominators_unlocked_events USING btree (id);
+CREATE INDEX "staking_nominators_unlocked_events_domain_id" ON staking.nominators_unlocked_events USING btree (domain_id);
+CREATE INDEX "staking_nominators_unlocked_events_operator_id" ON staking.nominators_unlocked_events USING btree (operator_id);
+CREATE INDEX "staking_nominators_unlocked_events_processed" ON staking.nominators_unlocked_events USING btree (processed);
+-- Partial index for efficient fetching of unprocessed events
+CREATE INDEX "staking_nominators_unlocked_events_unprocessed" ON staking.nominators_unlocked_events USING btree (processed, block_height) WHERE processed = false;
 
 -- nominator_deposits
 CREATE INDEX "0x9addf36a4bded44f" ON staking.nominator_deposits USING btree (id);

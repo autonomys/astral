@@ -267,6 +267,7 @@ export function createUnlockedEvent(
     blockHeight,
     extrinsicId,
     eventId,
+    processed: false,
   });
 }
 
@@ -284,6 +285,7 @@ export function createNominatorsUnlockedEvent(
     blockHeight,
     extrinsicId,
     eventId,
+    processed: false,
   });
 }
 
