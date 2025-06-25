@@ -1,15 +1,14 @@
 import { config, validateConfig } from './config';
 import { StakingProcessingTask } from './interfaces';
 import { connectAutonomysApi, disconnectAutonomysApi } from './services/autonomysService';
-import { connectDb, disconnectDb, ensureDbConnection } from './services/dbService';
-import { connectRedis, disconnectRedis, fetchTasksFromQueue } from './services/redisService';
-import { checkEpochTransitions, processBatchTasks } from './worker';
+import { connectDb, disconnectDb, ensureDbConnection } from './services/database/connection';
+import { fetchStakingTasks } from './services/database/dbService';
+import { connectRedis, disconnectRedis } from './services/redisService';
+import { processBatchTasks } from './worker';
 
 let isShuttingDown = false;
 let mainLoopInterval: NodeJS.Timeout | null = null;
-let chainHeadPollInterval: NodeJS.Timeout | null = null;
 let dbHealthCheckInterval: NodeJS.Timeout | null = null;
-let epochCheckInterval: NodeJS.Timeout | null = null;
 
 const main = async () => {
   console.log('Starting Staking Worker with Batch Processing...');
@@ -19,16 +18,11 @@ const main = async () => {
     validateConfig();
 
     // Initialize connections
+    // Note: Redis connection is kept for potential future use (caching, distributed locking, etc.)
+    // Currently, tasks are fetched directly from the database
     await connectRedis();
     await connectDb();
     await connectAutonomysApi();
-
-    // Start periodic polling for chain head height
-    if (config.chainHeadPollIntervalMs > 0) {
-      chainHeadPollInterval = setInterval(async () => {
-        if (isShuttingDown) return;
-      }, config.chainHeadPollIntervalMs);
-    }
 
     // Start periodic database health checks
     dbHealthCheckInterval = setInterval(async () => {
@@ -40,18 +34,6 @@ const main = async () => {
       }
     }, config.dbHealthCheckIntervalMs);
 
-    // Start periodic epoch transition checks for staking
-    if (config.epochTransitionCheckIntervalMs > 0) {
-      epochCheckInterval = setInterval(async () => {
-        if (isShuttingDown) return;
-        try {
-          await checkEpochTransitions();
-        } catch (error) {
-          console.error('Worker: Epoch transition check failed:', error);
-        }
-      }, config.epochTransitionCheckIntervalMs);
-    }
-
     // Start main processing loop with batch processing
     console.log(`Worker: Starting staking batch queue processing. Batch size: ${config.batchSize}, Interval: ${config.queueProcessingIntervalMs}ms`);
     
@@ -61,15 +43,15 @@ const main = async () => {
         // Ensure database connection is healthy before processing
         await ensureDbConnection();
         
-        // Fetch batch of tasks from different queues
-        const tasks: StakingProcessingTask[] = await fetchTasksFromQueue(config.batchSize);
+        // Fetch batch of tasks from database
+        const tasks: StakingProcessingTask[] = await fetchStakingTasks(config.batchSize);
         
         if (tasks.length > 0) {
           const successCount = await processBatchTasks(tasks);
           console.log(`Worker: Processed batch of ${tasks.length} staking tasks, ${successCount} successful updates`);
         } else {
           if (config.enableDebugLogs) {
-            console.log('Worker: No staking tasks in queue.');
+            console.log('Worker: No staking tasks to process.');
           }
         }
       } catch (loopError) {
@@ -92,14 +74,8 @@ const shutdown = async (exitCode = 0) => {
   if (mainLoopInterval) {
     clearInterval(mainLoopInterval);
   }
-  if (chainHeadPollInterval) {
-    clearInterval(chainHeadPollInterval);
-  }
   if (dbHealthCheckInterval) {
     clearInterval(dbHealthCheckInterval);
-  }
-  if (epochCheckInterval) {
-    clearInterval(epochCheckInterval);
   }
 
   // Gracefully disconnect services

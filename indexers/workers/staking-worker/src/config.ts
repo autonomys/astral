@@ -3,11 +3,37 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
+// Parse Redis URL if provided
+const parseRedisConfig = () => {
+  const redisUrl = process.env.REDIS_URL;
+  if (redisUrl) {
+    try {
+      const url = new URL(redisUrl);
+      return {
+        host: url.hostname,
+        port: parseInt(url.port || '6379', 10),
+        password: url.password || undefined,
+      };
+    } catch (error) {
+      console.error('Failed to parse REDIS_URL:', error);
+    }
+  }
+  
+  // Fallback to individual env vars
+  return {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: parseInt(process.env.REDIS_PORT || '6379', 10),
+    password: process.env.REDIS_PASSWORD || undefined,
+  };
+};
+
+const redisConfig = parseRedisConfig();
+
 export const config = {
   // Redis configuration
-  redisHost: process.env.REDIS_HOST || 'localhost',
-  redisPort: parseInt(process.env.REDIS_PORT || '6379', 10),
-  redisPassword: process.env.REDIS_PASSWORD || undefined,
+  redisHost: redisConfig.host,
+  redisPort: redisConfig.port,
+  redisPassword: redisConfig.password,
   
   // Queue configuration
   stakingQueueName: process.env.STAKING_QUEUE_NAME || 'staking:updates:queue',
@@ -21,8 +47,8 @@ export const config = {
   dbPassword: process.env.DB_PASSWORD || 'postgres',
   dbName: process.env.DB_NAME || 'indexer',
   
-  // Autonomys API configuration
-  autonomysApiEndpoint: process.env.AUTONOMYS_API_ENDPOINT || 'ws://localhost:9944',
+  // Autonomys API configuration (using same var name as account worker)
+  autonomysApiEndpoint: process.env.AUTONOMYS_NODE_URL || 'ws://localhost:9944',
   
   // Worker configuration
   batchSize: parseInt(process.env.BATCH_SIZE || '100', 10),
