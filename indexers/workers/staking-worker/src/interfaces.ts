@@ -1,7 +1,7 @@
 // Interfaces for staking worker
 
 export interface StakingProcessingTask {
-  type: 'deposit' | 'withdrawal';
+  type: 'deposit' | 'withdrawal' | 'unlock';
   id: string;
   operatorId: string;
   domainId: string;
@@ -27,6 +27,14 @@ export interface WithdrawalTask extends StakingProcessingTask {
   totalWithdrawalAmount: string;
   totalStorageFeeWithdrawal: string;
   withdrawalsJson: string;
+}
+
+export interface UnlockTask extends StakingProcessingTask {
+  type: 'unlock';
+  nominatorId: string;
+  amount: string;
+  storageFee: string;
+  eventId: string;
 }
 
 export interface OperatorSharePrice {
@@ -115,4 +123,7 @@ export interface RewardUpdate {
 
 export interface StakingError {
   // TODO: Define the structure of staking errors
-} 
+}
+
+// Union type for all staking tasks
+export type AnyStakingTask = DepositTask | WithdrawalTask | UnlockTask;

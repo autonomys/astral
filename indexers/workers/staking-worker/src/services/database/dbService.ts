@@ -41,6 +41,25 @@ export const fetchUnprocessedWithdrawals = async (limit: number): Promise<any[]>
 };
 
 /**
+ * Fetch unprocessed unlock events from the database
+ */
+export const fetchUnprocessedUnlocks = async (limit: number): Promise<any[]> => {
+  const result = await query(`
+    SELECT 
+      id, address, operator_id, domain_id, nominator_id,
+      amount, storage_fee, block_height, event_id
+    FROM staking.unlocked_events
+    WHERE processed = false
+    ORDER BY block_height ASC
+    LIMIT $1
+  `, [limit]);
+  
+  return result.rows;
+};
+
+
+
+/**
  * Mark a deposit as processed
  */
 export const markDepositAsProcessed = async (id: string, client?: PoolClient): Promise<void> => {
@@ -65,6 +84,21 @@ export const markWithdrawalAsProcessed = async (id: string, client?: PoolClient)
     await query(queryText, [id]);
   }
 };
+
+/**
+ * Mark an unlock event as processed
+ */
+export const markUnlockAsProcessed = async (eventId: string, client?: PoolClient): Promise<void> => {
+  const queryText = 'UPDATE staking.unlocked_events SET processed = true WHERE event_id = $1';
+  
+  if (client) {
+    await client.query(queryText, [eventId]);
+  } else {
+    await query(queryText, [eventId]);
+  }
+};
+
+
 
 /**
  * Get share price for a specific epoch
@@ -96,14 +130,15 @@ export const getEpochSharePrice = async (
 };
 
 /**
- * Fetch staking tasks (deposits and withdrawals) that need processing
+ * Fetch staking tasks (deposits, withdrawals, and unlock events) that need processing
  */
 export const fetchStakingTasks = async (batchSize: number): Promise<any[]> => {
   const tasks: any[] = [];
   
-  // Calculate batch size for each type (split evenly)
-  const depositsLimit = Math.floor(batchSize / 2);
-  const withdrawalsLimit = batchSize - depositsLimit;
+  // Calculate batch size for each type (split evenly between 3 types)
+  const unlocksLimit = Math.floor(batchSize / 3);
+  const depositsLimit = Math.floor(batchSize / 3);
+  const withdrawalsLimit = batchSize - depositsLimit - unlocksLimit;
   
   try {
     // Fetch unprocessed deposits
@@ -148,8 +183,27 @@ export const fetchStakingTasks = async (batchSize: number): Promise<any[]> => {
       });
     }
     
+    // Fetch unprocessed unlock events
+    const unlocks = await fetchUnprocessedUnlocks(unlocksLimit);
+    
+    // Convert to UnlockTask format
+    for (const unlock of unlocks) {
+      tasks.push({
+        type: 'unlock',
+        id: unlock.id,
+        operatorId: unlock.operator_id,
+        domainId: unlock.domain_id,
+        address: unlock.address,
+        nominatorId: unlock.nominator_id,
+        amount: unlock.amount,
+        storageFee: unlock.storage_fee,
+        eventId: unlock.event_id,
+        timestamp: new Date()
+      });
+    }
+    
     if (tasks.length > 0) {
-      console.log(`Fetched ${tasks.length} tasks (${withdrawals.length} withdrawals)`);
+      console.log(`Fetched ${tasks.length} tasks (${deposits.length} deposits, ${withdrawals.length} withdrawals, ${unlocks.length} unlocks)`);
     }
   } catch (error) {
     console.error('Error fetching staking tasks from database:', error);
@@ -335,6 +389,23 @@ export const upsertNominatorAfterWithdrawal = async (
     await query(queryText, params);
   }
 };
+
+/**
+ * Update nominator after successful unlock claim
+ */
+export const updateNominatorAfterUnlock = async (
+  nominatorId: string,
+  claimedAmount: string,
+  storageFeeRefund: string,
+  updatedUnlockBlocks: any[],
+  client?: PoolClient
+): Promise<void> => {
+    // TODO
+};
+
+
+
+
 
 /**
  * Execute transaction with rollback on error
