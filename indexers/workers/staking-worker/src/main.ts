@@ -3,11 +3,12 @@ import { StakingProcessingTask } from './interfaces';
 import { connectAutonomysApi, disconnectAutonomysApi } from './services/autonomysService';
 import { connectDb, disconnectDb, ensureDbConnection } from './services/database/connection';
 import { fetchStakingTasks } from './services/database/dbService';
-import { connectRedis, disconnectRedis } from './services/redisService';
-import { processBatchTasks } from './worker';
+import { connectRedis, disconnectRedis, getChainTip } from './services/redisService';
+import { processBatchTasks, refreshChainHeadHeight } from './worker';
 
 let isShuttingDown = false;
 let mainLoopInterval: NodeJS.Timeout | null = null;
+let chainHeadPollInterval: NodeJS.Timeout | null = null;
 let dbHealthCheckInterval: NodeJS.Timeout | null = null;
 
 const main = async () => {
@@ -18,11 +19,20 @@ const main = async () => {
     validateConfig();
 
     // Initialize connections
-    // Note: Redis connection is kept for potential future use (caching, distributed locking, etc.)
-    // Currently, tasks are fetched directly from the database
     await connectRedis();
     await connectDb();
     await connectAutonomysApi();
+
+    // Initial chain head height refresh
+    await refreshChainHeadHeight();
+
+    // Start periodic polling for chain head height
+    if (config.chainTipUpdateIntervalMs > 0) {
+      chainHeadPollInterval = setInterval(async () => {
+        if (isShuttingDown) return;
+        await refreshChainHeadHeight();
+      }, config.chainTipUpdateIntervalMs);
+    }
 
     // Start periodic database health checks
     dbHealthCheckInterval = setInterval(async () => {
@@ -36,6 +46,7 @@ const main = async () => {
 
     // Start main processing loop with batch processing
     console.log(`Worker: Starting staking batch queue processing. Batch size: ${config.batchSize}, Interval: ${config.queueProcessingIntervalMs}ms`);
+    console.log(`Worker: Finality threshold: ${config.finalityThreshold} blocks`);
     
     mainLoopInterval = setInterval(async () => {
       if (isShuttingDown) return;
@@ -43,8 +54,16 @@ const main = async () => {
         // Ensure database connection is healthy before processing
         await ensureDbConnection();
         
+        // Get current chain tip for finality checking
+        const chainTip = await getChainTip();
+        const maxBlockHeight = chainTip ? chainTip - config.finalityThreshold : undefined;
+        
+        if (chainTip) {
+          console.log(`Worker: Processing events up to block ${maxBlockHeight} (chain tip: ${chainTip})`);
+        }
+        
         // Fetch batch of tasks from database
-        const tasks: StakingProcessingTask[] = await fetchStakingTasks(config.batchSize);
+        const tasks: StakingProcessingTask[] = await fetchStakingTasks(config.batchSize, maxBlockHeight);
         
         if (tasks.length > 0) {
           const successCount = await processBatchTasks(tasks);
@@ -73,6 +92,9 @@ const shutdown = async (exitCode = 0) => {
   // Clear all intervals
   if (mainLoopInterval) {
     clearInterval(mainLoopInterval);
+  }
+  if (chainHeadPollInterval) {
+    clearInterval(chainHeadPollInterval);
   }
   if (dbHealthCheckInterval) {
     clearInterval(dbHealthCheckInterval);

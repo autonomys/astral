@@ -5,8 +5,8 @@ import {
   StakingProcessingTask,
   WithdrawalTask
 } from './interfaces';
+import { getChainHead } from './services/autonomysService';
 import {
-  calculateProcessedDepositsTotal,
   getEpochSharePrice,
   getNominatorUnlockBlocks,
   markDepositAsProcessed,
@@ -15,10 +15,30 @@ import {
   upsertNominatorAfterWithdrawal,
   withTransaction
 } from './services/database/dbService';
+import { storeChainTip } from './services/redisService';
 
 
 // Constants for share price calculations
 const SHARES_CALCULATION_MULTIPLIER = BigInt('1000000000000000000'); // 10^18
+
+// Current chain height for finality checking
+let currentChainHeight = 0;
+
+/**
+ * Refresh the current chain head height for finality checking
+ */
+export const refreshChainHeadHeight = async (): Promise<void> => {
+  try {
+    currentChainHeight = Number(await getChainHead());
+    
+    // Store in Redis for distributed access
+    await storeChainTip(currentChainHeight);
+    
+    console.log(`Worker: Updated chain head height to ${currentChainHeight}`);
+  } catch (error) {
+    console.error('Worker: Failed to refresh chain head height:', error);
+  }
+};
 
 /**
  * Process a batch of staking tasks
@@ -109,18 +129,11 @@ const processDepositConversion = async (task: DepositTask, client: PoolClient): 
   const totalKnownShares = BigInt(task.knownShares) + newShares;
   const totalKnownStorageFeeDeposit = BigInt(task.knownStorageFeeDeposit) + newStorageFeeDeposit;
 
-  // FIRST mark the deposit as processed
-  await markDepositAsProcessed(task.id, client);
-  
-  // THEN calculate total deposits from all processed deposits (including this one)
-  const totalDeposits = await calculateProcessedDepositsTotal(
-    task.address,
-    task.domainId,
-    task.operatorId,
-    client
-  );
+  // Calculate the deposit amount to add (pending_amount + pending_storage_fee_deposit)
+  const depositAmount = pendingAmount + newStorageFeeDeposit;
 
-  // Use the dbService function to upsert nominator with the calculated total
+
+  // Use the dbService function to upsert nominator with incremental deposit amount
   await upsertNominatorAfterDeposit(
     nominatorId,
     task.address,
@@ -128,9 +141,11 @@ const processDepositConversion = async (task: DepositTask, client: PoolClient): 
     task.operatorId,
     totalKnownShares.toString(),
     totalKnownStorageFeeDeposit.toString(),
-    totalDeposits,
+    depositAmount.toString(),
     client
   );
+
+  await markDepositAsProcessed(task.id, client);
 
   return { 
     hasConverted: true

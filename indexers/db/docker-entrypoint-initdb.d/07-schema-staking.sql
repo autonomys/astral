@@ -530,8 +530,8 @@ ALTER TABLE ONLY staking.withdrawals
 CREATE INDEX "0x095f76af1e0896c7" ON staking.unlocked_events USING btree (id);
 CREATE INDEX "staking_unlocked_events_nominator_id" ON staking.unlocked_events USING btree (nominator_id);
 CREATE INDEX "staking_unlocked_events_processed" ON staking.unlocked_events USING btree (processed);
--- Partial index for efficient fetching of unprocessed events
-CREATE INDEX "staking_unlocked_events_unprocessed" ON staking.unlocked_events USING btree (processed, block_height) WHERE processed = false;
+-- Composite index for finality-based queries (processed = false AND block_height <= X)
+CREATE INDEX "staking_unlocked_events_processed_block_height" ON staking.unlocked_events USING btree (processed, block_height) WHERE processed = false;
 
 -- operator_deregistrations
 CREATE INDEX "0x17ee75861ab4beba" ON staking.operator_deregistrations USING btree (id);
@@ -573,8 +573,8 @@ CREATE INDEX "staking_nominator_deposits_address" ON staking.nominator_deposits 
 CREATE INDEX "staking_nominator_deposits_processed" ON staking.nominator_deposits USING btree (processed);
 -- Composite index for fast total deposits calculation
 CREATE INDEX "staking_nominator_deposits_address_domain_operator_processed" ON staking.nominator_deposits USING btree (address, domain_id, operator_id, processed);
--- Index for fetching unprocessed deposits
-CREATE INDEX "staking_nominator_deposits_processed_pending_amount" ON staking.nominator_deposits USING btree (processed, pending_amount) WHERE processed = false;
+-- Composite index for finality-based queries (processed = false AND pending_amount > 0 AND block_height <= X)
+CREATE INDEX "staking_nominator_deposits_processed_block_height" ON staking.nominator_deposits USING btree (processed, block_height) WHERE processed = false AND pending_amount > 0;
 
 -- nominator_withdrawals
 CREATE INDEX "staking_nominator_withdrawals_id" ON staking.nominator_withdrawals USING btree (id);
@@ -582,8 +582,8 @@ CREATE INDEX "staking_nominator_withdrawals_address" ON staking.nominator_withdr
 CREATE INDEX "staking_nominator_withdrawals_operator_id" ON staking.nominator_withdrawals USING btree (operator_id);
 CREATE INDEX "staking_nominator_withdrawals_domain_id" ON staking.nominator_withdrawals USING btree (domain_id);
 CREATE INDEX "staking_nominator_withdrawals_processed" ON staking.nominator_withdrawals USING btree (processed);
--- Index for fetching unprocessed withdrawals
-CREATE INDEX "staking_nominator_withdrawals_processed_idx" ON staking.nominator_withdrawals USING btree (processed) WHERE processed = false;
+-- Composite index for finality-based queries (processed = false AND block_height <= X)
+CREATE INDEX "staking_nominator_withdrawals_processed_block_height" ON staking.nominator_withdrawals USING btree (processed, block_height) WHERE processed = false;
 
 -- operator_epoch_share_prices
 CREATE INDEX "staking_operator_epoch_share_prices_id" ON staking.operator_epoch_share_prices USING btree (id);

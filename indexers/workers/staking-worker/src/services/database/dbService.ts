@@ -2,38 +2,65 @@ import { PoolClient } from 'pg';
 import { getDbClient, query } from './connection';
 
 /**
- * Fetch unprocessed deposit tasks from the database
+ * Fetch unprocessed deposit tasks from the database that are finalized
  */
-export const fetchUnprocessedDeposits = async (limit: number): Promise<any[]> => {
-  const result = await query(`
+export const fetchUnprocessedDeposits = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+  let queryText = `
     SELECT 
       id, address, operator_id, domain_id,
       known_shares, known_storage_fee_deposit,
       pending_amount, pending_storage_fee_deposit,
-      pending_effective_domain_epoch, timestamp
+      pending_effective_domain_epoch, timestamp, block_height
     FROM staking.nominator_deposits
     WHERE processed = false AND pending_amount > 0
-    LIMIT $1
-  `, [limit]);
+  `;
   
+  const params: any[] = [];
+  
+  // Only fetch events below the finality threshold
+  if (maxBlockHeight !== undefined) {
+    queryText += ` AND block_height <= $1`;
+    params.push(maxBlockHeight);
+    queryText += ` ORDER BY block_height ASC LIMIT $2`;
+    params.push(limit);
+  } else {
+    queryText += ` ORDER BY block_height ASC LIMIT $1`;
+    params.push(limit);
+  }
+  
+  const result = await query(queryText, params);
   return result.rows;
 };
 
 /**
- * Fetch unprocessed withdrawal tasks from the database
+ * Fetch unprocessed withdrawal tasks from the database that are finalized
  */
-export const fetchUnprocessedWithdrawals = async (limit: number): Promise<any[]> => {
-  const result = await query(`
+export const fetchUnprocessedWithdrawals = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+  let queryText = `
     SELECT 
       id, address, operator_id, domain_id,
       withdrawal_in_shares_amount, withdrawal_in_shares_storage_fee_refund,
       withdrawal_in_shares_domain_epoch, withdrawal_in_shares_unlock_block,
       total_withdrawal_amount, total_storage_fee_withdrawal,
-      withdrawals_json, timestamp
+      withdrawals_json, timestamp, block_height
     FROM staking.nominator_withdrawals
     WHERE processed = false
-    LIMIT $1
-  `, [limit]);
+  `;
+  
+  const params: any[] = [];
+  
+  // Only fetch events below the finality threshold
+  if (maxBlockHeight !== undefined) {
+    queryText += ` AND block_height <= $1`;
+    params.push(maxBlockHeight);
+    queryText += ` ORDER BY block_height ASC LIMIT $2`;
+    params.push(limit);
+  } else {
+    queryText += ` ORDER BY block_height ASC LIMIT $1`;
+    params.push(limit);
+  }
+  
+  const result = await query(queryText, params);
   /*
   Sometimes we get duplicated withdrawals, so we need to deduplicate them later on when processing.
   */
@@ -41,19 +68,31 @@ export const fetchUnprocessedWithdrawals = async (limit: number): Promise<any[]>
 };
 
 /**
- * Fetch unprocessed unlock events from the database
+ * Fetch unprocessed unlock events from the database that are finalized
  */
-export const fetchUnprocessedUnlocks = async (limit: number): Promise<any[]> => {
-  const result = await query(`
+export const fetchUnprocessedUnlocks = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+  let queryText = `
     SELECT 
       id, address, operator_id, domain_id, nominator_id,
       amount, storage_fee, block_height, event_id
     FROM staking.unlocked_events
     WHERE processed = false
-    ORDER BY block_height ASC
-    LIMIT $1
-  `, [limit]);
+  `;
   
+  const params: any[] = [];
+  
+  // Only fetch events below the finality threshold
+  if (maxBlockHeight !== undefined) {
+    queryText += ` AND block_height <= $1`;
+    params.push(maxBlockHeight);
+    queryText += ` ORDER BY block_height ASC LIMIT $2`;
+    params.push(limit);
+  } else {
+    queryText += ` ORDER BY block_height ASC LIMIT $1`;
+    params.push(limit);
+  }
+  
+  const result = await query(queryText, params);
   return result.rows;
 };
 
@@ -132,7 +171,7 @@ export const getEpochSharePrice = async (
 /**
  * Fetch staking tasks (deposits, withdrawals, and unlock events) that need processing
  */
-export const fetchStakingTasks = async (batchSize: number): Promise<any[]> => {
+export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: number): Promise<any[]> => {
   const tasks: any[] = [];
   
   // Calculate batch size for each type (split evenly between 3 types)
@@ -142,7 +181,7 @@ export const fetchStakingTasks = async (batchSize: number): Promise<any[]> => {
   
   try {
     // Fetch unprocessed deposits
-    const deposits = await fetchUnprocessedDeposits(depositsLimit);
+    const deposits = await fetchUnprocessedDeposits(depositsLimit, maxBlockHeight);
     
     // Convert to DepositTask format
     for (const deposit of deposits) {
@@ -162,7 +201,7 @@ export const fetchStakingTasks = async (batchSize: number): Promise<any[]> => {
     }
     
     // Fetch unprocessed withdrawals
-    const withdrawals = await fetchUnprocessedWithdrawals(withdrawalsLimit);
+    const withdrawals = await fetchUnprocessedWithdrawals(withdrawalsLimit, maxBlockHeight);
     
     // Convert to WithdrawalTask format
     for (const withdrawal of withdrawals) {
@@ -184,7 +223,7 @@ export const fetchStakingTasks = async (batchSize: number): Promise<any[]> => {
     }
     
     // Fetch unprocessed unlock events
-    const unlocks = await fetchUnprocessedUnlocks(unlocksLimit);
+    const unlocks = await fetchUnprocessedUnlocks(unlocksLimit, maxBlockHeight);
     
     // Convert to UnlockTask format
     for (const unlock of unlocks) {
@@ -223,7 +262,7 @@ export const upsertNominatorAfterDeposit = async (
   operatorId: string,
   totalKnownShares: string,
   totalKnownStorageFeeDeposit: string,
-  totalDeposits: string,
+  depositAmount: string,
   client?: PoolClient
 ): Promise<void> => {
   const queryText = `
@@ -235,11 +274,11 @@ export const upsertNominatorAfterDeposit = async (
       total_storage_fee_refund,
       unlock_at_confirmed_domain_block_number,
       status, created_at, updated_at
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 0, 0, 0, '[]'::jsonb, 'active', $9, $9)
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7::numeric, $8, 0, 0, 0, '[]'::jsonb, 'active', $9, $9)
     ON CONFLICT (id) DO UPDATE SET
       known_shares = $5,
       known_storage_fee_deposit = $6,
-      total_deposits = $7,
+      total_deposits = nominators.total_deposits + $7::numeric,
       total_deposits_count = nominators.total_deposits_count + 1,
       updated_at = $9
   `;
@@ -251,7 +290,7 @@ export const upsertNominatorAfterDeposit = async (
     operatorId,                               // $4 - operator_id
     totalKnownShares,                         // $5 - known_shares
     totalKnownStorageFeeDeposit,              // $6 - known_storage_fee_deposit
-    totalDeposits,                            // $7 - total_deposits
+    depositAmount,                            // $7 - deposit amount to add
     1,                                        // $8 - total_deposits_count (initial value)
     Date.now()                                // $9 - created_at, updated_at
   ];
@@ -283,28 +322,7 @@ export const getNominatorUnlockBlocks = async (
   return [];
 };
 
-/**
- * Calculate total deposits from all processed deposits for a nominator
- */
-export const calculateProcessedDepositsTotal = async (
-  address: string,
-  domainId: string,
-  operatorId: string,
-  client?: PoolClient
-): Promise<string> => {
-  const queryText = `
-    SELECT COALESCE(SUM(pending_amount + pending_storage_fee_deposit), 0) as total
-    FROM staking.nominator_deposits
-    WHERE address = $1 AND domain_id = $2 AND operator_id = $3
-    AND processed = true
-  `;
-  
-  const result = client 
-    ? await client.query(queryText, [address, domainId, operatorId])
-    : await query(queryText, [address, domainId, operatorId]);
-  
-  return result.rows[0].total;
-};
+
 
 /**
  * Update nominator after withdrawal conversion

@@ -69,6 +69,10 @@ export const config = {
   epochTransitionCheckIntervalMs: parseInt(process.env.EPOCH_TRANSITION_CHECK_INTERVAL_MS || '12000', 10),
   sharePriceCalculationEnabled: process.env.SHARE_PRICE_CALCULATION_ENABLED === 'true',
   
+  // Finality configuration
+  finalityThreshold: parseInt(process.env.FINALITY_THRESHOLD || '100', 10), // Only process events 100 blocks behind tip
+  chainTipUpdateIntervalMs: parseInt(process.env.CHAIN_TIP_UPDATE_INTERVAL_MS || '10000', 10), // Update chain tip every 10s
+  
   // Logging configuration
   logLevel: process.env.LOG_LEVEL || 'info',
   enableDebugLogs: process.env.ENABLE_DEBUG_LOGS === 'true',

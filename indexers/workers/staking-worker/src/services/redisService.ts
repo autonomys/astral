@@ -237,3 +237,20 @@ export const getKeysMatching = async (pattern: string): Promise<string[]> => {
 
   return redis.keys(pattern);
 };
+
+/**
+ * Store the current chain tip (latest block height)
+ */
+export const storeChainTip = async (blockHeight: number): Promise<void> => {
+  const key = 'staking:chain:tip';
+  await cacheData(key, { blockHeight, timestamp: Date.now() }, 300); // Cache for 5 minutes
+};
+
+/**
+ * Get the current chain tip
+ */
+export const getChainTip = async (): Promise<number | null> => {
+  const key = 'staking:chain:tip';
+  const data = await getCachedData<{ blockHeight: number; timestamp: number }>(key);
+  return data ? data.blockHeight : null;
+};
