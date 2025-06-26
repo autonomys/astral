@@ -15,7 +15,7 @@
     "url": "https://github.com/autonomys/astral/issues"
   },
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=23.11.0"
   },
   "packageManager": "yarn@1.22.19",
   "scripts": {
@@ -39,9 +39,11 @@
     "@apollo/client": "^3.13.5",
     "@apollo/experimental-nextjs-app-support": "^0.11.11",
     "@autonomys/auto-consensus": "^1.4.18",
+    "@autonomys/auto-design-system": "file:../../auto-sdk/packages/auto-design-system",
     "@autonomys/auto-drive": "^1.4.18",
     "@autonomys/auto-utils": "^1.4.18",
     "@autonomys/auto-xdm": "^1.4.18",
+    "@autonomys/design-tokens": "^1.5.2",
     "@autonomys/user-session": "^1.4.18",
     "@floating-ui/react": "^0.27.5",
     "@headlessui/react": "^1.7.19",
@@ -56,6 +58,7 @@
     "@polkadot/extension-dapp": "^0.46.7",
     "@polkadot/extension-inject": "^0.46.7",
     "@polkadot/react-identicon": "^3.12.2",
+    "@radix-ui/react-dialog": "^1.1.13",
     "@tailwindcss/forms": "^0.5.10",
     "@talismn/connect-wallets": "^1.2.8",
     "@tanstack/match-sorter-utils": "^8.19.4",
@@ -141,6 +144,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "prop-types": "^15.8.1",
     "tailwindcss": "^3.4.17",
+    "tailwindcss-animate": "^1.0.7",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "unlighthouse": "^0.16.3"
   }

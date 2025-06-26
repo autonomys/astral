@@ -1,3 +1,4 @@
+import { autoTokens } from '@autonomys/design-tokens'
 import type { Config } from 'tailwindcss'
 import plugin from 'tailwindcss/plugin'
 
@@ -7,6 +8,7 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './public/index.html',
     './node_modules/tailwind-datepicker-react/dist/**/*.js',
+    './node_modules/@autonomys/auto-design-system/dist/**/*.js',
   ],
   darkMode: 'class',
   variants: {
@@ -19,6 +21,7 @@ const config: Config = {
         light: 'linear-gradient(180deg, #EBEFFC 0%, #3654A6 100%)',
       },
       colors: {
+        ...autoTokens.colors,
         // Gradients
         gradientFrom: '#032372',
         gradientVia: '#1949D2',
@@ -201,6 +204,7 @@ const config: Config = {
   },
   plugins: [
     require('@headlessui/tailwindcss'),
+    require('tailwindcss-animate'),
     require('@tailwindcss/forms'),
     plugin(function ({ addBase }) {
       addBase({
@@ -290,6 +294,10 @@ const config: Config = {
         },
       })
     }),
+  ],
+  safelist: [
+    { pattern: /^(text|font|bg|shadow|m|p|rounded|w|h|border)-auto-/ }, // All auto prefix classes
+    { pattern: /^(text|border)-auto-(drive|explorer)-/ }, // App-specific text and border colors
   ],
 }
 

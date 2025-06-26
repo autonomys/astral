@@ -1,3 +1,5 @@
+import path from 'path'
+
 /** @type {import('next').NextConfig;} */
 const nextConfig = {
   reactStrictMode: true,
@@ -42,6 +44,10 @@ const nextConfig = {
 
     if (!isServer) {
       config.resolve.fallback.fs = false
+      config.resolve.alias['stream-fork'] = path.resolve(
+        import.meta.dirname,
+        'stubs/stream-fork.ts',
+      )
     }
 
     return config
@@ -49,11 +55,14 @@ const nextConfig = {
 }
 
 // Add bundle analyzer conditionally
+let finalConfig = nextConfig
+
 if (process.env.ANALYZE === 'true') {
-  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  const { default: withBundleAnalyzer } = await import('@next/bundle-analyzer')
+  const bundleAnalyzer = withBundleAnalyzer({
     enabled: true,
   })
-  module.exports = withBundleAnalyzer(nextConfig)
-} else {
-  module.exports = nextConfig
+  finalConfig = bundleAnalyzer(nextConfig)
 }
+
+export default finalConfig
