@@ -3,6 +3,7 @@ import {
   ConversionResult,
   DepositTask,
   StakingProcessingTask,
+  UnlockTask,
   WithdrawalTask
 } from './interfaces';
 import { getChainHead } from './services/autonomysService';
@@ -10,7 +11,9 @@ import {
   getEpochSharePrice,
   getNominatorUnlockBlocks,
   markDepositAsProcessed,
+  markUnlockAsProcessed,
   markWithdrawalAsProcessed,
+  updateNominatorAfterUnlock,
   upsertNominatorAfterDeposit,
   upsertNominatorAfterWithdrawal,
   withTransaction
@@ -51,6 +54,7 @@ export const processBatchTasks = async (tasks: StakingProcessingTask[]): Promise
   // Group tasks by type for batch processing
   const depositTasks = tasks.filter(t => t.type === 'deposit') as DepositTask[];
   const withdrawalTasks = tasks.filter(t => t.type === 'withdrawal') as WithdrawalTask[];
+  const unlockTasks = tasks.filter(t => t.type === 'unlock') as UnlockTask[];
   
   // Process deposits
   if (depositTasks.length > 0) {
@@ -62,6 +66,12 @@ export const processBatchTasks = async (tasks: StakingProcessingTask[]): Promise
   if (withdrawalTasks.length > 0) {
     const withdrawalResults = await processWithdrawalBatch(withdrawalTasks);
     successCount += withdrawalResults;
+  }
+  
+  // Process unlock events
+  if (unlockTasks.length > 0) {
+    const unlockResults = await processUnlockBatch(unlockTasks);
+    successCount += unlockResults;
   }
   
   return successCount;
@@ -320,6 +330,54 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
   return { 
     hasConverted: true
   };
+};
+
+/**
+ * Process a batch of unlock tasks
+ */
+const processUnlockBatch = async (tasks: UnlockTask[]): Promise<number> => {
+  let successCount = 0;
+  
+  // Process each unlock in its own transaction for better error isolation
+  for (const task of tasks) {
+    try {
+      await withTransaction(async (client: PoolClient) => {
+        await processUnlockClaim(task, client);
+        successCount++;
+      });
+    } catch (error) {
+      console.error(`Failed to process unlock ${task.eventId}:`, error);
+      // Log the actual error details for debugging
+      if (error instanceof Error && 'code' in error) {
+        console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+      }
+      // Continue processing other unlocks
+    }
+  }
+  
+  return successCount;
+};
+
+/**
+ * Process individual unlock claim
+ */
+const processUnlockClaim = async (task: UnlockTask, client: PoolClient): Promise<void> => {
+  const nominatorId = `${task.address}-${task.domainId}-${task.operatorId}`;
+  
+  console.log(`Processing unlock claim for nominator ${nominatorId}: amount=${task.amount}, storageFee=${task.storageFee}`);
+  
+  // Update nominator with claimed amounts
+  await updateNominatorAfterUnlock(
+    nominatorId,
+    task.amount,
+    task.storageFee,
+    client
+  );
+  
+  // Mark the unlock event as processed
+  await markUnlockAsProcessed(task.eventId, client);
+  
+  console.log(`Successfully processed unlock for nominator ${nominatorId}`);
 };
 
 

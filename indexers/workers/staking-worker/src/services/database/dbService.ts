@@ -272,9 +272,10 @@ export const upsertNominatorAfterDeposit = async (
       total_deposits, total_deposits_count,
       total_withdrawals, total_withdrawals_count,
       total_storage_fee_refund,
+      total_claimed_amount, total_claimed_storage_fee,
       unlock_at_confirmed_domain_block_number,
       status, created_at, updated_at
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7::numeric, $8, 0, 0, 0, '[]'::jsonb, 'active', $9, $9)
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7::numeric, $8, 0, 0, 0, 0, 0, '[]'::jsonb, 'active', $9, $9)
     ON CONFLICT (id) DO UPDATE SET
       known_shares = $5,
       known_storage_fee_deposit = $6,
@@ -379,9 +380,10 @@ export const upsertNominatorAfterWithdrawal = async (
       total_deposits, total_deposits_count,
       total_withdrawals, total_withdrawals_count,
       total_storage_fee_refund,
+      total_claimed_amount, total_claimed_storage_fee,
       unlock_at_confirmed_domain_block_number,
       status, created_at, updated_at
-    ) VALUES ($1, $2, $3, $4, 0, 0, 0, 0, $5, 1, $6, $7::jsonb, 'active', $8, $8)
+    ) VALUES ($1, $2, $3, $4, 0, 0, 0, 0, $5, 1, $6, 0, 0, $7::jsonb, 'active', $8, $8)
     ON CONFLICT (id) DO UPDATE SET
       total_withdrawals = $5,
       total_withdrawals_count = nominators.total_withdrawals_count + 1,
@@ -415,10 +417,43 @@ export const updateNominatorAfterUnlock = async (
   nominatorId: string,
   claimedAmount: string,
   storageFeeRefund: string,
-  updatedUnlockBlocks: any[],
   client?: PoolClient
 ): Promise<void> => {
-    // TODO
+  // Parse nominator ID to get address, domain_id, and operator_id
+  const [address, domainId, operatorId] = nominatorId.split('-');
+  
+  const queryText = `
+    INSERT INTO staking.nominators (
+      id, address, domain_id, operator_id,
+      known_shares, known_storage_fee_deposit,
+      total_deposits, total_deposits_count,
+      total_withdrawals, total_withdrawals_count,
+      total_storage_fee_refund,
+      total_claimed_amount, total_claimed_storage_fee,
+      unlock_at_confirmed_domain_block_number,
+      status, created_at, updated_at
+    ) VALUES ($1, $2, $3, $4, 0, 0, 0, 0, 0, 0, 0, $5::numeric, $6::numeric, '[]'::jsonb, 'active', $7, $7)
+    ON CONFLICT (id) DO UPDATE SET
+      total_claimed_amount = nominators.total_claimed_amount + $5::numeric,
+      total_claimed_storage_fee = nominators.total_claimed_storage_fee + $6::numeric,
+      updated_at = $7
+  `;
+  
+  const params = [
+    nominatorId,                              // $1 - id
+    address,                                  // $2 - address
+    domainId,                                 // $3 - domain_id
+    operatorId,                               // $4 - operator_id
+    claimedAmount,                            // $5 - claimed amount to add
+    storageFeeRefund,                         // $6 - storage fee to add
+    Date.now()                                // $7 - created_at, updated_at
+  ];
+  
+  if (client) {
+    await client.query(queryText, params);
+  } else {
+    await query(queryText, params);
+  }
 };
 
 

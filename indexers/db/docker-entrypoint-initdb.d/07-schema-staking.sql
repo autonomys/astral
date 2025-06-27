@@ -229,6 +229,8 @@ CREATE TABLE staking.nominators (
     total_storage_fee_refund numeric NOT NULL,
     total_deposits_count numeric NOT NULL,
     total_withdrawals_count numeric NOT NULL,
+    total_claimed_amount numeric NOT NULL DEFAULT 0,
+    total_claimed_storage_fee numeric NOT NULL DEFAULT 0,
     unlock_at_confirmed_domain_block_number jsonb NOT NULL,
     status text NOT NULL,
     created_at numeric NOT NULL,
