@@ -137,14 +137,6 @@ type OperatorDeregistration @entity {
 
 # Chain states entities
 
-type DomainBlockHistory @entity {
-  id: ID!
-  domainId: String!
-  domainBlockNumber: BigInt!
-  timestamp: Date!
-  blockHeight: BigInt!
-}
-
 type DomainStakingHistory @entity {
   id: ID!
   domainId: String!

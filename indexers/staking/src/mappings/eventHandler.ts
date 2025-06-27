@@ -3,7 +3,6 @@ import {
   EventRecord,
   stringify,
 } from "@autonomys/auto-utils";
-import { SHARES_CALCULATION_MULTIPLIER } from "./constants";
 import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
@@ -13,7 +12,6 @@ import {
   findEpochFromDomainStakingHistoryCache,
   findOneExtrinsicEvent,
   findOperatorFromOperatorsCache,
-  findWithdrawalFromWithdrawalCache,
 } from "./utils";
 
 type EventHandler = (params: {

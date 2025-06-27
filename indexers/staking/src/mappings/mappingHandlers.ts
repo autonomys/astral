@@ -6,7 +6,6 @@ import * as db from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
 import { ExtrinsicPrimitive } from "./types";
 import {
-  aggregateByDomainId,
   createHashId,
   createOperatorDomainMap,
   deriveOperatorEpochSharePrices,
@@ -56,15 +55,13 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const query = [
     apiPatched.query.domains.operators.entries(),
     api.query.domains.domainStakingSummary.entries(),
-    api.query.domains.headDomainNumber.entries(),
     api.query.domains.operatorIdOwner.entries(),
-    // NOTE: deposits are queried later on-demand to avoid fetching large, mostly unchanged data
   ];
 
   // No depositsResultId since deposits are handled later
   let parentBlockOperatorsIndex: number | null = null;
   let withdrawalsResultId: number | null = null;
-  let currentQueryIndex = 4; // next index after the static queries
+  let currentQueryIndex = 3; // next index after the static queries
   
   let blockHasUnlockNominator = false;
   let blockHasWithdrawals = false;
@@ -231,19 +228,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   * domainId
   * domainBlockNumber
   */
-  queriesResults[2].forEach((data) => {
-    const domainId = (data[0].toHuman() as any)[0].toString();
-    const domainBlockNumber = BigInt((data[1].toPrimitive() as any).toString());
-    cache.domainBlockHistory.push(
-      db.createDomainBlockHistory(
-        createHashId(data),
-        domainId,
-        domainBlockNumber,
-        blockTimestamp,
-        height
-      )
-    );
-  });
 
 
   /*
@@ -255,7 +239,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     * operatorId
     * owner
     */
-    queriesResults[3].map(([key, value]) => [
+    queriesResults[2].map(([key, value]) => [
       (key.toHuman() as any)[0].toString(),
       value.toPrimitive() as string,
     ])

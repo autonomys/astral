@@ -132,21 +132,6 @@ CREATE TABLE staking.storage_fund_accounts (
 );
 ALTER TABLE staking.storage_fund_accounts OWNER TO postgres;
 
-
--- domain_block_histories
-CREATE TABLE staking.domain_block_histories (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    domain_block_number numeric NOT NULL,
-    timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.domain_block_histories OWNER TO postgres;
-
-
-
 -- domain_instantiations
 CREATE TABLE staking.domain_instantiations (
     id text NOT NULL,
@@ -543,12 +528,6 @@ CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
 
 -- operator_tax_collections
 CREATE INDEX "0x3a7ed99d2776ff11" ON staking.operator_tax_collections USING btree (id);
-
-
--- domain_block_histories
-CREATE INDEX "0x59e52a1d9c35dee5" ON staking.domain_block_histories USING btree (id);
-CREATE INDEX "staking_domain_block_histories_domain_id" ON staking.domain_block_histories USING btree (domain_id);
-CREATE INDEX "staking_domain_block_histories_domain_block_height" ON staking.domain_block_histories USING btree (domain_id, block_height DESC);
 
 -- domain_instantiations
 CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (id);

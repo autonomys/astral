@@ -1,7 +1,6 @@
 import { Operator, Withdrawal } from "@autonomys/auto-consensus";
 import {
   BundleSubmission,
-  DomainBlockHistory,
   DomainInstantiation,
   DomainStakingHistory,
   NominatorDeposit,
@@ -22,7 +21,6 @@ import { getNominationId } from "./utils";
 
 export type Cache = {
   bundleSubmission: BundleSubmission[];
-  domainBlockHistory: DomainBlockHistory[];
   domainInstantiation: DomainInstantiation[];
   domainStakingHistory: DomainStakingHistory[];
   operatorRegistration: OperatorRegistration[];
@@ -48,7 +46,6 @@ export type Cache = {
 
 export const initializeCache = (): Cache => ({
   bundleSubmission: [],
-  domainBlockHistory: [],
   domainInstantiation: [],
   domainStakingHistory: [],
   operatorRegistration: [],
@@ -75,7 +72,6 @@ export const initializeCache = (): Cache => ({
 export const saveCache = async (cache: Cache) => {
   await Promise.all([
     store.bulkCreate(`BundleSubmission`, cache.bundleSubmission),
-    store.bulkCreate(`DomainBlockHistory`, cache.domainBlockHistory),
     store.bulkCreate(`DomainInstantiation`, cache.domainInstantiation),
     store.bulkCreate(`DomainStakingHistory`, cache.domainStakingHistory),
     store.bulkCreate(`OperatorRegistration`, cache.operatorRegistration),
@@ -363,22 +359,6 @@ export function createBundleSubmission(
     blockHeight,
     extrinsicId,
     eventId,
-  });
-}
-
-export function createDomainBlockHistory(
-  hash: string,
-  domainId: string,
-  domainBlockNumber: bigint,
-  timestamp: Date,
-  blockHeight: bigint
-): DomainBlockHistory {
-  return DomainBlockHistory.create({
-    id: hash,
-    domainId,
-    domainBlockNumber,
-    timestamp,
-    blockHeight,
   });
 }
 

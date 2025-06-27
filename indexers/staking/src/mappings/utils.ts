@@ -1,4 +1,3 @@
-import { Operator, Withdrawal, parseDeposit } from "@autonomys/auto-consensus";
 import { EventRecord, stringify } from "@autonomys/auto-utils";
 import { createHash } from "crypto";
 import { OperatorStakingHistory } from "../types";
@@ -79,41 +78,6 @@ export const findEpochFromDomainStakingHistoryCache = (
   );
   if (!domainFromCache) throw new Error("Domain from cache not found");
   return domainFromCache.currentEpochIndex;
-};
-
-export const findWithdrawalFromWithdrawalCache = (
-  cache: Cache,
-  operatorId: string,
-  address: string
-): Withdrawal["withdrawalInShares"] => {
-  const withdrawal = cache.currentWithdrawal.find(
-    (w) => w.operatorId.toString() === operatorId && w.account === address
-  );
-  if (!withdrawal) throw new Error("Withdrawal not found");
-  return withdrawal.withdrawalInShares;
-};
-
-export const aggregateByDomainId = (
-  operators: Operator[],
-  targetDomainId: bigint
-) => {
-  const filteredOperators = operators.filter(
-    (operator) => operator.operatorDetails.currentDomainId === targetDomainId
-  );
-
-  let totalStakeSum = BigInt(0);
-  let totalSharesSum = BigInt(0);
-
-  for (const operator of filteredOperators) {
-    totalStakeSum += operator.operatorDetails.currentTotalStake;
-    totalSharesSum += operator.operatorDetails.currentTotalShares;
-  }
-
-  return {
-    domainId: targetDomainId,
-    totalStake: totalStakeSum,
-    totalShares: totalSharesSum,
-  };
 };
 
 export const groupEventsFromBatchAll = (
@@ -221,18 +185,6 @@ export const deriveOperatorEpochSharePrices = (
   blockTimestamp: Date,
   height: bigint
 ) => {
-  /*
-    let operator = Operators::get(operator_id);
-
-    // The operator's current epoch reward after tax
-    let taxed_reward = match DomainStakingSummary::get(domain_id).current_epoch_rewards.get(operator_id) {
-        Some(reward) = reward - operator.nomination_tax * reward,
-        None = 0,
-    };
-
-    let instant_share_price = (operator.current_total_stake + taxed_reward) / operator.current_total_shares;
-  */
-
   // Future improvement is to make this parallel
   const operatorEpochSharePrices: any[] = [];
 
@@ -379,36 +331,7 @@ export const processWithdrawalEvents = async (
   cache: Cache, 
   height: bigint
 ): Promise<any[]> => {
-  /*
-    Sample result of the query:
-      {
-        totalWithdrawalAmount: 1,600,022,075,474,813,470
-        totalStorageFeeWithdrawal: 698,484,970,837,929,109
-        withdrawals: [
-          {
-            unlockAtConfirmedDomainBlockNumber: 1,383,476
-            amountToUnlock: 1,600,022,075,474,813,470
-            storageFeeRefund: 399,122,776,157,064,938
-          }
-        ]
-        withdrawalInShares: {
-          domainEpoch: [
-            0
-            14,198
-          ]
-          unlockAtConfirmedDomainBlockNumber: 1,434,070
-          shares: 728,815,124,400,000,000
-          storageFeeRefund: 299,362,194,680,864,171
-        }
-      }
 
-      totalWithdrawalAmount = sum(item_of(withdrawals).amountToUnlock) , not include the value of withdrawalInShares.shares 
-      totalStorageFeeWithdrawal = sum(item_of(withdrawals).storageFeeRefund) + withdrawalInShares.storageFeeRefund
-
-      Note: it means on staking worker after epoch transitions we have to compute shares*sharePrice of withdrawalsInShares and add a new entry for withdrawals.
-
-      Transition from withdrawalsInShares to withdrawals happens lazily.
-  */
   const withdrawalsEntries = await Promise.all(
     [...nominatorEventsMap.values()].map(async (d) => {
       const res = await api.query.domains.withdrawals(
@@ -471,132 +394,6 @@ export const processWithdrawalEvents = async (
   return withdrawalsEntries;
 }
 
-
-
-
-/**
- * Derive nominator deposit entities from on-chain deposits state
- * TO BE MOVED TO STAKING WORKER
- */
-export const deriveNominatorDeposits = (
-  depositsEntries: any[],
-  operators: any[],
-  domainSummaryMap: Map<string, any>,
-  operatorEpochSharePriceMap: Map<string, bigint>,
-  changedNominationKeys: Set<string>,
-  blockTimestamp: Date,
-  height: bigint
-) => {
-  // Filter and process only nominations that changed or belong to operators whose
-  // share-price changed due to an epoch transition.
-  const results: any[] = [];
-
-  const operatorMap = new Map<string, any>();
-  operators.forEach((op) => operatorMap.set(op.operatorId.toString(), op));
-
-  for (const [key, value] of depositsEntries) {
-    // Use parseDeposit to properly extract operatorId and address
-    const deposit = parseDeposit([key, value]);
-    const operatorId = deposit.operatorId.toString();
-    const address = deposit.account;
-
-    const nominationKey = `${operatorId}-${address}`;
-
-    // We'll decide later whether to include this nomination based on either
-    // explicit extrinsic-impact (changedNominationKeys) or matured pending.
-
-    const domainId =
-      operatorMap.get(operatorId)?.operatorDetails.currentDomainId.toString() ?? "";
-    if (!domainId) continue;
-
-    const known = deposit.known;
-    const pending = deposit.pending;
-
-    const knownShares: bigint = BigInt(known.shares.toString());
-    const knownStorageFD: bigint = BigInt(known.storageFeeDeposit.toString());
-
-    let pendingAmount: bigint = ZERO_BIGINT;
-    let pendingStorageFD: bigint = ZERO_BIGINT;
-    let pendingEpochStr = "";
-
-    let postPendingShares: bigint = ZERO_BIGINT;
-    let postPendingStorageFD: bigint = ZERO_BIGINT;
-    let pendingMatured = false;
-
-    if (pending) {
-      pendingAmount = BigInt(pending.amount.toString());
-      pendingStorageFD = BigInt(pending.storageFeeDeposit.toString());
-      pendingEpochStr = JSON.stringify(pending.effectiveDomainEpoch);
-
-      // Handle effectiveDomainEpoch - it might be [domainId, epochIdx] or just epochIdx
-      let dId: number;
-      let epochIdx: number;
-
-      epochIdx = pending.effectiveDomainEpoch as number;
-      dId = parseInt(domainId);
-
-      const sharePriceKey = `${operatorId}-${dId}-${epochIdx}`;
-      const sharePrice = operatorEpochSharePriceMap.get(sharePriceKey);
-      if (sharePrice && sharePrice > ZERO_BIGINT) {
-        postPendingShares =
-          (pendingAmount * SHARES_CALCULATION_MULTIPLIER) / sharePrice;
-        postPendingStorageFD = pendingStorageFD;
-        pendingMatured = true;
-      }
-    }
-
-    // Skip if this nomination neither changed via extrinsic nor had its pending matured
-    if (!changedNominationKeys.has(nominationKey) && !pendingMatured) {
-      continue;
-    }
-
-    // instant share price
-    const operator = operatorMap.get(operatorId);
-    if (!operator) continue;
-    const domainSummary = domainSummaryMap.get(domainId);
-    const rewardMap = (domainSummary?.currentEpochRewards as any) ?? {};
-    const reward = BigInt(rewardMap[operatorId] ?? 0);
-    const nominationTax = BigInt(operator.operatorDetails.nominationTax ?? 0);
-    const taxedReward = reward - (reward * nominationTax) / BigInt(100);
-
-    const instantSharePrice =
-      operator.operatorDetails.currentTotalShares === ZERO_BIGINT
-        ? ZERO_BIGINT
-        : ((operator.operatorDetails.currentTotalStake + taxedReward) *
-            SHARES_CALCULATION_MULTIPLIER) /
-          operator.operatorDetails.currentTotalShares;
-
-    const stakedAmount =
-      ((knownShares + postPendingShares) * instantSharePrice) /
-      SHARES_CALCULATION_MULTIPLIER;
-
-    // storageFund placeholder
-    const storageFund = ZERO_BIGINT;
-    const totalReward =
-      pendingAmount + pendingStorageFD + knownStorageFD - stakedAmount - storageFund;
-
-    results.push({
-      id: `${address}-${domainId}-${operatorId}`,
-      address,
-      operatorId,
-      domainId,
-      knownShares,
-      knownStorageFeeDeposit: knownStorageFD,
-      pendingAmount,
-      pendingStorageFeeDeposit: pendingStorageFD,
-      pendingEffectiveDomainEpoch: pendingEpochStr,
-      postPendingShares,
-      postPendingStorageFeeDeposit: postPendingStorageFD,
-      stakedAmount,
-      storageFund,
-      totalReward,
-      timestamp: blockTimestamp,
-      blockHeight: height,
-    });
-  }
-
-  return results;
-};
 
 /**
  * Creates a map of operatorId to domainId from operators array
