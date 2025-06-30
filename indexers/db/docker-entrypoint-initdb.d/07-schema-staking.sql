@@ -402,22 +402,6 @@ CREATE TABLE staking.nominators_unlocked_events (
 ALTER TABLE staking.nominators_unlocked_events OWNER TO postgres;
 
 
--- withdraw_events
-CREATE TABLE staking.withdraw_events (
-    id text NOT NULL,
-    address text NOT NULL,
-    domain_id text NOT NULL,
-    operator_id text NOT NULL,
-    nominator_id text NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    extrinsic_id text NOT NULL,
-    event_id text NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.withdraw_events OWNER TO postgres;
-
 
 -- withdrawals - this schema doesn't exist in graphql schema
 CREATE TABLE staking.withdrawals (
@@ -505,9 +489,6 @@ ALTER TABLE ONLY staking.unlocked_events
 ALTER TABLE ONLY staking.nominators_unlocked_events
     ADD CONSTRAINT nominators_unlocked_events_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.withdraw_events
-    ADD CONSTRAINT withdraw_events_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY staking.withdrawals
     ADD CONSTRAINT withdrawals_pkey PRIMARY KEY (id);
 
@@ -531,12 +512,6 @@ CREATE INDEX "0x3a7ed99d2776ff11" ON staking.operator_tax_collections USING btre
 
 -- domain_instantiations
 CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (id);
-
--- withdraw_events
-CREATE INDEX "0x72774937664e8211" ON staking.withdraw_events USING btree (id);
-CREATE INDEX "staking_withdraw_events_domain_id" ON staking.withdraw_events USING btree (domain_id);
-CREATE INDEX "staking_withdraw_events_operator_id" ON staking.withdraw_events USING btree (operator_id);
-CREATE INDEX "staking_withdraw_events_nominator_id" ON staking.withdraw_events USING btree (nominator_id);
 
 -- nominators_unlocked_events
 CREATE INDEX "staking_nominators_unlocked_events_id" ON staking.nominators_unlocked_events USING btree (id);

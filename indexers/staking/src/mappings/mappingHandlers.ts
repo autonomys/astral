@@ -244,6 +244,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       value.toPrimitive() as string,
     ])
   );
+
+  
   operators.forEach((operator) => {
     const operatorOwner = operatorOwnerMap.get(operator.operatorId.toString());
     const sharePrice = operator.operatorDetails.currentTotalShares

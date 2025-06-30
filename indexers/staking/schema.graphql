@@ -38,18 +38,6 @@ type OperatorRegistration @entity {
   eventId: String!
 }
 
-type WithdrawEvent @entity {
-  id: ID!
-  address: String!
-  domainId: String!
-  operatorId: String!
-  nominatorId: String!
-  timestamp: Date!
-  blockHeight: BigInt!
-  extrinsicId: String!
-  eventId: String!
-}
-
 type OperatorReward @entity {
   id: ID!
   domainId: String!
@@ -174,8 +162,6 @@ type OperatorEpochSharePrice @entity {
   timestamp: Date!
   blockHeight: BigInt!
 }
-
-# New entities for current staking state ------------------------------
 
 type NominatorDeposit @entity {
   id: ID!
