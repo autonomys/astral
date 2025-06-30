@@ -207,21 +207,21 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
 
   // logger.info(`queriesResults[1]: ${JSON.stringify(queriesResults[1])}`);
-  queriesResults[1].forEach((data) => {
-    const keyPrimitive = data[0].toPrimitive() as any;
-    const valuePrimitive = data[1].toPrimitive() as any;
-    const domainId = keyPrimitive[0].toString();
-    cache.domainStakingHistory.push(
-      db.createDomainStakingHistory(
-        createHashId(data), // id
-        domainId,
-        valuePrimitive.currentEpochIndex.toString(), // currentEpochIndex
-        valuePrimitive.currentTotalStake.toString(), // currentTotalStake
-        blockTimestamp, // timestamp
-        height // blockHeight
-      )
-    );
-  });
+  // queriesResults[1].forEach((data) => {
+  //   const keyPrimitive = data[0].toPrimitive() as any;
+  //   const valuePrimitive = data[1].toPrimitive() as any;
+  //   const domainId = keyPrimitive[0].toString();
+  //   cache.domainStakingHistory.push(
+  //     db.createDomainStakingHistory(
+  //       createHashId(data), // id
+  //       domainId,
+  //       valuePrimitive.currentEpochIndex.toString(), // currentEpochIndex
+  //       valuePrimitive.currentTotalStake.toString(), // currentTotalStake
+  //       blockTimestamp, // timestamp
+  //       height // blockHeight
+  //     )
+  //   );
+  // });
 
   // api.query.domains.headDomainNumber.entries(),
   /*
@@ -245,7 +245,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     ])
   );
 
-  
+
   operators.forEach((operator) => {
     const operatorOwner = operatorOwnerMap.get(operator.operatorId.toString());
     const sharePrice = operator.operatorDetails.currentTotalShares
@@ -346,6 +346,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
                 eventId,
                 extrinsicSigner,
                 extrinsicEvents: events,
+                domainEpochMap,
               });
 
             // Increment event index
@@ -371,6 +372,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
               eventId,
               extrinsicSigner,
               extrinsicEvents,
+              domainEpochMap,
             });
 
           // Increment event index

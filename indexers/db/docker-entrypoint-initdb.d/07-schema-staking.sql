@@ -148,20 +148,6 @@ CREATE TABLE staking.domain_instantiations (
 );
 ALTER TABLE staking.domain_instantiations OWNER TO postgres;
 
--- domain_staking_histories
-CREATE TABLE staking.domain_staking_histories (
-    id text NOT NULL,
-    domain_id text NOT NULL,
-    current_epoch_index integer NOT NULL,
-    current_total_stake numeric NOT NULL,
-    timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.domain_staking_histories OWNER TO postgres;
-
-
 
 -- domains schema  - this schema doesn't exist in graphql schema
 CREATE TABLE staking.domains (
@@ -453,9 +439,6 @@ ALTER TABLE ONLY staking.storage_fund_accounts
 ALTER TABLE ONLY staking.domain_instantiations
     ADD CONSTRAINT domain_instantiations_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.domain_staking_histories
-    ADD CONSTRAINT domain_staking_histories_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY staking.domains
     ADD CONSTRAINT domains_pkey PRIMARY KEY (id);
 
@@ -563,8 +546,6 @@ CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING bt
 -- bundle_submissions
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
 
--- domain_staking_histories
-CREATE INDEX "0xb67017dc1891f52d" ON staking.domain_staking_histories USING btree (id);
 
 -- runtime_creations
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);

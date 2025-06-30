@@ -9,7 +9,6 @@ import { SealedBundleHeader } from "./types";
 import {
   calculateTransfer,
   findDomainIdFromOperatorsCache,
-  findEpochFromDomainStakingHistoryCache,
   findOneExtrinsicEvent,
   findOperatorFromOperatorsCache,
 } from "./utils";
@@ -24,6 +23,7 @@ type EventHandler = (params: {
   extrinsicSigner: string;
   extrinsicEvents: EventRecord[];
   extrinsicMethodToPrimitive: any;
+  domainEpochMap: any;
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
@@ -304,6 +304,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     extrinsicId,
     eventId,
     extrinsicMethodToPrimitive,
+    domainEpochMap,
   }) => {
     const bundleHash = event.event.data[1].toString();
     const { header } = extrinsicMethodToPrimitive.args.opaque_bundle
@@ -340,7 +341,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const totalVolume = totalTransfersIn + totalTransfersOut;
 
     const { operatorOwner } = findOperatorFromOperatorsCache(cache, operatorId);
-    const epoch = findEpochFromDomainStakingHistoryCache(cache, domainId);
+    const epoch = domainEpochMap[domainId];
 
     cache.bundleSubmission.push(
       db.createBundleSubmission(

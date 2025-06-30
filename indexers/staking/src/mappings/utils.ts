@@ -69,17 +69,6 @@ export const findDomainIdFromOperatorsCache = (
   return opFromCache.currentDomainId;
 };
 
-export const findEpochFromDomainStakingHistoryCache = (
-  cache: Cache,
-  domainId: string
-): number => {
-  const domainFromCache = cache.domainStakingHistory.find(
-    (o) => o.domainId === domainId
-  );
-  if (!domainFromCache) throw new Error("Domain from cache not found");
-  return domainFromCache.currentEpochIndex;
-};
-
 export const groupEventsFromBatchAll = (
   events: EventRecord[]
 ): EventRecord[][] => {

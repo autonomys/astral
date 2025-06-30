@@ -2,7 +2,6 @@ import { Operator, Withdrawal } from "@autonomys/auto-consensus";
 import {
   BundleSubmission,
   DomainInstantiation,
-  DomainStakingHistory,
   NominatorDeposit,
   NominatorsUnlockedEvent,
   NominatorWithdrawal,
@@ -21,7 +20,7 @@ import { getNominationId } from "./utils";
 export type Cache = {
   bundleSubmission: BundleSubmission[];
   domainInstantiation: DomainInstantiation[];
-  domainStakingHistory: DomainStakingHistory[];
+  // domainStakingHistory: DomainStakingHistory[];
   operatorRegistration: OperatorRegistration[];
   operatorStakingHistory: OperatorStakingHistory[];
   operatorReward: OperatorReward[];
@@ -46,7 +45,7 @@ export type Cache = {
 export const initializeCache = (): Cache => ({
   bundleSubmission: [],
   domainInstantiation: [],
-  domainStakingHistory: [],
+  // domainStakingHistory: [],
   operatorRegistration: [],
   operatorStakingHistory: [],
   operatorReward: [],
@@ -72,7 +71,6 @@ export const saveCache = async (cache: Cache) => {
   await Promise.all([
     store.bulkCreate(`BundleSubmission`, cache.bundleSubmission),
     store.bulkCreate(`DomainInstantiation`, cache.domainInstantiation),
-    store.bulkCreate(`DomainStakingHistory`, cache.domainStakingHistory),
     store.bulkCreate(`OperatorRegistration`, cache.operatorRegistration),
     store.bulkCreate(`OperatorStakingHistory`, cache.operatorStakingHistory),
     store.bulkCreate(`OperatorReward`, cache.operatorReward),
@@ -320,23 +318,23 @@ export function createBundleSubmission(
   });
 }
 
-export function createDomainStakingHistory(
-  hash: string,
-  domainId: string,
-  currentEpochIndex: number,
-  currentTotalStake: bigint,
-  timestamp: Date,
-  blockHeight: bigint
-): DomainStakingHistory {
-  return DomainStakingHistory.create({
-    id: hash,
-    domainId,
-    currentEpochIndex,
-    currentTotalStake,
-    timestamp,
-    blockHeight,
-  });
-}
+// export function createDomainStakingHistory(
+//   hash: string,
+//   domainId: string,
+//   currentEpochIndex: number,
+//   currentTotalStake: bigint,
+//   timestamp: Date,
+//   blockHeight: bigint
+// ): DomainStakingHistory {
+//   return DomainStakingHistory.create({
+//     id: hash,
+//     domainId,
+//     currentEpochIndex,
+//     currentTotalStake,
+//     timestamp,
+//     blockHeight,
+//   });
+// }
 
 export function createOperatorStakingHistory(
   hash: string,
