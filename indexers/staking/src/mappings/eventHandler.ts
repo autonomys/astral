@@ -303,6 +303,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     eventId,
     extrinsicMethodToPrimitive,
     domainEpochMap,
+    height,
   }) => {
     const bundleHash = event.event.data[1].toString();
     const { header } = extrinsicMethodToPrimitive.args.opaque_bundle
@@ -334,7 +335,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         BigInt(epoch),
         BigInt(consensusBlockNumber),
         extrinsicId,
-        eventId
+        eventId,
+        BigInt(height)
       )
     );
   },

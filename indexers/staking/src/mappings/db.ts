@@ -152,6 +152,7 @@ export function createOperatorRegistration(
     blockHeight,
     extrinsicId,
     eventId,
+    processed: false,
   });
 }
 
@@ -174,6 +175,7 @@ export function createOperatorReward(
     blockHeight,
     extrinsicId,
     eventId,
+    processed: false,
   });
 }
 
@@ -193,6 +195,7 @@ export function createOperatorTaxCollection(
     blockHeight,
     extrinsicId,
     eventId,
+    processed: false,
   });
 }
 
@@ -256,7 +259,8 @@ export function createOperatorDeregistration(
     blockHeight,
     extrinsicId,
     eventId,
-  });
+    processed: false,
+    });
 }
 
 export function createBundleSubmission(
@@ -268,7 +272,8 @@ export function createBundleSubmission(
   epoch: bigint,
   consensusBlockNumber: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
+  blockHeight: bigint
 ): BundleSubmission {
   return BundleSubmission.create({
     id: domainId + "-" + id,
@@ -281,6 +286,8 @@ export function createBundleSubmission(
     consensusBlockNumber,
     extrinsicId,
     eventId,
+    blockHeight,
+    processed: false,
   });
 }
 

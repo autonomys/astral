@@ -34,6 +34,8 @@ CREATE TABLE staking.bundle_submissions (
     consensus_block_number numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
+    processed boolean NOT NULL DEFAULT false,
+    block_height numeric NOT NULL,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -202,6 +204,7 @@ CREATE TABLE staking.operator_deregistrations (
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
+    processed boolean NOT NULL DEFAULT false,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -217,6 +220,7 @@ CREATE TABLE staking.operator_registrations (
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
+    processed boolean NOT NULL DEFAULT false,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -232,6 +236,7 @@ CREATE TABLE staking.operator_rewards (
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
+    processed boolean NOT NULL DEFAULT false,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -267,6 +272,7 @@ CREATE TABLE staking.operator_tax_collections (
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
+    processed boolean NOT NULL DEFAULT false,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -443,12 +449,18 @@ CREATE INDEX "staking_unlocked_events_processed_block_height" ON staking.unlocke
 
 -- operator_deregistrations
 CREATE INDEX "0x17ee75861ab4beba" ON staking.operator_deregistrations USING btree (id);
+-- Composite index for finality-based queries (processed = false AND block_height <= X)
+CREATE INDEX "staking_operator_deregistrations_processed_block_height" ON staking.operator_deregistrations USING btree (processed, block_height) WHERE processed = false;
 
 -- operator_rewards
 CREATE INDEX "0x386761c4d1c44502" ON staking.operator_rewards USING btree (id);
+-- Composite index for finality-based queries (processed = false AND block_height <= X)
+CREATE INDEX "staking_operator_rewards_processed_block_height" ON staking.operator_rewards USING btree (processed, block_height) WHERE processed = false;
 
 -- operator_tax_collections
 CREATE INDEX "0x3a7ed99d2776ff11" ON staking.operator_tax_collections USING btree (id);
+-- Composite index for finality-based queries (processed = false AND block_height <= X)
+CREATE INDEX "staking_operator_tax_collections_processed_block_height" ON staking.operator_tax_collections USING btree (processed, block_height) WHERE processed = false;
 
 -- domain_instantiations
 CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (id);
@@ -496,13 +508,16 @@ CREATE INDEX "staking_storage_fund_accounts_operator_id" ON staking.storage_fund
 
 -- operator_registrations
 CREATE INDEX "0xa3309c82ddfd9389" ON staking.operator_registrations USING btree (id);
+-- Composite index for finality-based queries (processed = false AND block_height <= X)
+CREATE INDEX "staking_operator_registrations_processed_block_height" ON staking.operator_registrations USING btree (processed, block_height) WHERE processed = false;
 
 -- operator_staking_histories
 CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING btree (id);
 
 -- bundle_submissions
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);
-
+-- Composite index for finality-based queries (processed = false AND block_height <= X)
+CREATE INDEX "staking_bundle_submissions_processed_block_height" ON staking.bundle_submissions USING btree (processed, block_height) WHERE processed = false;
 
 -- runtime_creations
 CREATE INDEX "0xd831d19987080dd5" ON staking.runtime_creations USING btree (id);

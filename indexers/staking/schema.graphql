@@ -36,6 +36,7 @@ type OperatorRegistration @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 type OperatorReward @entity {
@@ -47,6 +48,7 @@ type OperatorReward @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 type OperatorTaxCollection @entity {
@@ -57,6 +59,7 @@ type OperatorTaxCollection @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 type BundleSubmission @entity {
@@ -70,6 +73,8 @@ type BundleSubmission @entity {
   consensusBlockNumber: BigInt!
   extrinsicId: String!
   eventId: String!
+  blockHeight: BigInt!
+  processed: Boolean! @index
 }
 
 type UnlockedEvent @entity {
@@ -104,6 +109,7 @@ type OperatorDeregistration @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 # Chain states entities
