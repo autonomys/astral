@@ -7,7 +7,7 @@ import {
 } from "./constants";
 import * as db from "./db";
 import { Cache } from "./db";
-import { EpochTransition, Transfer } from "./types";
+import { EpochTransition } from "./types";
 
 export const getNominationId = (
   address: string,
@@ -17,16 +17,6 @@ export const getNominationId = (
 
 export const createHashId = (data: any): string =>
   createHash("sha256").update(stringify(data)).digest("hex");
-
-export const calculateTransfer = (transfers: Transfer) => {
-  if (!transfers) return [ZERO_BIGINT, ZERO_BIGINT];
-  let total = ZERO_BIGINT;
-  const length = Object.keys(transfers).length;
-  for (const key in transfers) {
-    total += BigInt(transfers[key]);
-  }
-  return [total, BigInt(length)];
-};
 
 export const findOneExtrinsicEvent = (
   events: EventRecord[],

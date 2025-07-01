@@ -261,80 +261,28 @@ export function createOperatorDeregistration(
 
 export function createBundleSubmission(
   id: string,
-  address: string,
+  proposer: string,
   domainId: string,
-  domainBlockId: string,
   operatorId: string,
   domainBlockNumber: bigint,
-  domainBlockHash: string,
-  domainBlockExtrinsicRoot: string,
   epoch: bigint,
   consensusBlockNumber: bigint,
-  consensusBlockHash: string,
-  totalTransfersIn: bigint,
-  transfersInCount: bigint,
-  totalTransfersOut: bigint,
-  transfersOutCount: bigint,
-  totalRejectedTransfersClaimed: bigint,
-  rejectedTransfersClaimedCount: bigint,
-  totalTransfersRejected: bigint,
-  transfersRejectedCount: bigint,
-  totalVolume: bigint,
-  consensusStorageFee: bigint,
-  domainExecutionFee: bigint,
-  burnedBalance: bigint,
-  blockHeight: bigint,
   extrinsicId: string,
   eventId: string
 ): BundleSubmission {
   return BundleSubmission.create({
     id: domainId + "-" + id,
-    address,
+    proposer,
     bundleId: id,
     domainId,
-    domainBlockId,
     operatorId,
     domainBlockNumber,
-    domainBlockHash,
-    domainBlockExtrinsicRoot,
     epoch,
     consensusBlockNumber,
-    consensusBlockHash,
-    totalTransfersIn,
-    transfersInCount,
-    totalTransfersOut,
-    transfersOutCount,
-    totalRejectedTransfersClaimed,
-    rejectedTransfersClaimedCount,
-    totalTransfersRejected,
-    transfersRejectedCount,
-    totalVolume,
-    consensusStorageFee,
-    domainExecutionFee,
-    burnedBalance,
-    blockHeight,
     extrinsicId,
     eventId,
   });
 }
-
-// export function createDomainStakingHistory(
-//   hash: string,
-//   domainId: string,
-//   currentEpochIndex: number,
-//   currentTotalStake: bigint,
-//   timestamp: Date,
-//   blockHeight: bigint
-// ): DomainStakingHistory {
-//   return DomainStakingHistory.create({
-//     id: hash,
-//     domainId,
-//     currentEpochIndex,
-//     currentTotalStake,
-//     timestamp,
-//     blockHeight,
-//   });
-// }
 
 export function createOperatorStakingHistory(
   hash: string,

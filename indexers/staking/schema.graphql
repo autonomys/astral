@@ -61,30 +61,13 @@ type OperatorTaxCollection @entity {
 
 type BundleSubmission @entity {
   id: ID!
-  address: String!
+  proposer: String!
   bundleId: String!
   domainId: String!
-  domainBlockId: String!
   operatorId: String!
   domainBlockNumber: BigInt!
-  domainBlockHash: String!
-  domainBlockExtrinsicRoot: String!
   epoch: BigInt!
   consensusBlockNumber: BigInt!
-  consensusBlockHash: String!
-  totalTransfersIn: BigInt!
-  transfersInCount: BigInt!
-  totalTransfersOut: BigInt!
-  transfersOutCount: BigInt!
-  totalRejectedTransfersClaimed: BigInt!
-  rejectedTransfersClaimedCount: BigInt!
-  totalTransfersRejected: BigInt!
-  transfersRejectedCount: BigInt!
-  totalVolume: BigInt!
-  consensusStorageFee: BigInt!
-  domainExecutionFee: BigInt!
-  burnedBalance: BigInt!
-  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
 }

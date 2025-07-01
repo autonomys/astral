@@ -7,7 +7,6 @@ import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
 import {
-  calculateTransfer,
   findDomainIdFromOperatorsCache,
   findOneExtrinsicEvent,
   findOperatorFromOperatorsCache,
@@ -23,7 +22,7 @@ type EventHandler = (params: {
   extrinsicSigner: string;
   extrinsicEvents: EventRecord[];
   extrinsicMethodToPrimitive: any;
-  domainEpochMap: any;
+  domainEpochMap: Map<string, number>;
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
@@ -300,7 +299,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   "domains.BundleStored": ({
     event,
     cache,
-    height,
     extrinsicId,
     eventId,
     extrinsicMethodToPrimitive,
@@ -314,61 +312,27 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
 
     const {
       domainBlockNumber,
-      domainBlockHash,
-      domainBlockExtrinsicRoot,
       consensusBlockNumber,
-      consensusBlockHash,
-      blockFees,
-      transfers,
     } = header.receipt;
 
-    const { consensusStorageFee, domainExecutionFee, burnedBalance } =
-      blockFees;
-    const {
-      transfersIn,
-      transfersOut,
-      rejectedTransfersClaimed,
-      transfersRejected,
-    } = transfers;
-
-    const [totalTransfersIn, transfersInCount] = calculateTransfer(transfersIn);
-    const [totalTransfersOut, transfersOutCount] =
-      calculateTransfer(transfersOut);
-    const [totalRejectedTransfersClaimed, rejectedTransfersClaimedCount] =
-      calculateTransfer(rejectedTransfersClaimed);
-    const [totalTransfersRejected, transfersRejectedCount] =
-      calculateTransfer(transfersRejected);
-    const totalVolume = totalTransfersIn + totalTransfersOut;
-
     const { operatorOwner } = findOperatorFromOperatorsCache(cache, operatorId);
-    const epoch = domainEpochMap[domainId];
+    const epoch = domainEpochMap.get(domainId);
+
+    // Check if epoch exists before converting to BigInt
+    if (epoch === undefined) {
+      logger.error(`No epoch found for domainId: ${domainId} in domainEpochMap`);
+      return; // Skip this event or use a default value
+    }
 
     cache.bundleSubmission.push(
       db.createBundleSubmission(
         bundleHash,
         operatorOwner,
-        String(domainId),
-        String(domainBlockNumber),
+        domainId,
         operatorId,
         BigInt(domainBlockNumber),
-        String(domainBlockHash),
-        String(domainBlockExtrinsicRoot),
         BigInt(epoch),
         BigInt(consensusBlockNumber),
-        String(consensusBlockHash),
-        totalTransfersIn,
-        transfersInCount,
-        totalTransfersOut,
-        transfersOutCount,
-        totalRejectedTransfersClaimed,
-        rejectedTransfersClaimedCount,
-        totalTransfersRejected,
-        transfersRejectedCount,
-        totalVolume,
-        BigInt(consensusStorageFee),
-        BigInt(domainExecutionFee),
-        BigInt(burnedBalance),
-        height,
         extrinsicId,
         eventId
       )
