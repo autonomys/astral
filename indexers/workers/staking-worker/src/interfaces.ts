@@ -1,7 +1,7 @@
 // Interfaces for staking worker
 
 export interface StakingProcessingTask {
-  type: 'deposit' | 'withdrawal' | 'unlock';
+  type: 'deposit' | 'withdrawal' | 'unlock' | 'operator-registration' | 'operator-reward' | 'operator-tax' | 'bundle-submission' | 'operator-deregistration';
   id: string;
   operatorId: string;
   domainId: string;
@@ -34,6 +34,53 @@ export interface UnlockTask extends StakingProcessingTask {
   nominatorId: string;
   amount: string;
   storageFee: string;
+  eventId: string;
+}
+
+export interface OperatorRegistrationTask extends StakingProcessingTask {
+  type: 'operator-registration';
+  owner: string;
+  signingKey: string;
+  minimumNominatorStake: string;
+  nominationTax: number;
+  blockHeight: string;
+  extrinsicId: string;
+  eventId: string;
+}
+
+export interface OperatorRewardTask extends StakingProcessingTask {
+  type: 'operator-reward';
+  amount: string;
+  atBlockNumber: string;
+  blockHeight: string;
+  extrinsicId: string;
+  eventId: string;
+}
+
+export interface OperatorTaxCollectionTask extends StakingProcessingTask {
+  type: 'operator-tax';
+  amount: string;
+  blockHeight: string;
+  extrinsicId: string;
+  eventId: string;
+}
+
+export interface BundleSubmissionTask extends StakingProcessingTask {
+  type: 'bundle-submission';
+  proposer: string;
+  bundleId: string;
+  domainBlockNumber: string;
+  epoch: string;
+  consensusBlockNumber: string;
+  extrinsicId: string;
+  eventId: string;
+}
+
+export interface OperatorDeregistrationTask extends StakingProcessingTask {
+  type: 'operator-deregistration';
+  owner: string;
+  blockHeight: string;
+  extrinsicId: string;
   eventId: string;
 }
 
@@ -126,4 +173,4 @@ export interface StakingError {
 }
 
 // Union type for all staking tasks
-export type AnyStakingTask = DepositTask | WithdrawalTask | UnlockTask;
+export type AnyStakingTask = DepositTask | WithdrawalTask | UnlockTask | OperatorRegistrationTask | OperatorRewardTask | OperatorTaxCollectionTask | BundleSubmissionTask | OperatorDeregistrationTask;

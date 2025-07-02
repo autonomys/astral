@@ -1,22 +1,30 @@
 import { PoolClient } from 'pg';
 import {
-  ConversionResult,
-  DepositTask,
-  StakingProcessingTask,
-  UnlockTask,
-  WithdrawalTask
+    BundleSubmissionTask,
+    ConversionResult,
+    DepositTask,
+    OperatorDeregistrationTask,
+    OperatorRegistrationTask,
+    OperatorRewardTask,
+    OperatorTaxCollectionTask,
+    StakingProcessingTask,
+    UnlockTask,
+    WithdrawalTask
 } from './interfaces';
 import { getChainHead } from './services/autonomysService';
 import {
-  getEpochSharePrice,
-  getNominatorUnlockBlocks,
-  markDepositAsProcessed,
-  markUnlockAsProcessed,
-  markWithdrawalAsProcessed,
-  updateNominatorAfterUnlock,
-  upsertNominatorAfterDeposit,
-  upsertNominatorAfterWithdrawal,
-  withTransaction
+    getEpochSharePrice,
+    getNominatorUnlockBlocks,
+    markDepositAsProcessed,
+    markOperatorEventsAsProcessed,
+    markUnlockAsProcessed,
+    markWithdrawalAsProcessed,
+    OperatorUpdates,
+    updateNominatorAfterUnlock,
+    upsertNominatorAfterDeposit,
+    upsertNominatorAfterWithdrawal,
+    upsertOperator,
+    withTransaction
 } from './services/database/dbService';
 import { storeChainTip } from './services/redisService';
 
@@ -56,6 +64,15 @@ export const processBatchTasks = async (tasks: StakingProcessingTask[]): Promise
   const withdrawalTasks = tasks.filter(t => t.type === 'withdrawal') as WithdrawalTask[];
   const unlockTasks = tasks.filter(t => t.type === 'unlock') as UnlockTask[];
   
+  // Group operator tasks by operatorId for consolidated processing
+  const operatorTasks = tasks.filter(t => 
+    t.type === 'operator-registration' || 
+    t.type === 'operator-reward' || 
+    t.type === 'operator-tax' || 
+    t.type === 'bundle-submission' || 
+    t.type === 'operator-deregistration'
+  );
+  
   // Process deposits
   if (depositTasks.length > 0) {
     const depositResults = await processDepositBatch(depositTasks);
@@ -72,6 +89,12 @@ export const processBatchTasks = async (tasks: StakingProcessingTask[]): Promise
   if (unlockTasks.length > 0) {
     const unlockResults = await processUnlockBatch(unlockTasks);
     successCount += unlockResults;
+  }
+  
+  // Process operator tasks (grouped by operator)
+  if (operatorTasks.length > 0) {
+    const operatorResults = await processOperatorTasksBatch(operatorTasks);
+    successCount += operatorResults;
   }
   
   return successCount;
@@ -378,6 +401,138 @@ const processUnlockClaim = async (task: UnlockTask, client: PoolClient): Promise
   await markUnlockAsProcessed(task.eventId, client);
   
   console.log(`Successfully processed unlock for nominator ${nominatorId}`);
+};
+
+/**
+ * Process a batch of operator tasks
+ */
+const processOperatorTasksBatch = async (tasks: StakingProcessingTask[]): Promise<number> => {
+  let successCount = 0;
+  
+  // Group tasks by operatorId for consolidated processing
+  const tasksByOperator = new Map<string, StakingProcessingTask[]>();
+  
+  for (const task of tasks) {
+    const operatorTasks = tasksByOperator.get(task.operatorId) || [];
+    operatorTasks.push(task);
+    tasksByOperator.set(task.operatorId, operatorTasks);
+  }
+  
+  // Process all tasks for each operator in a single transaction
+  for (const [operatorId, operatorTasks] of tasksByOperator) {
+    try {
+      await withTransaction(async (client: PoolClient) => {
+        await processOperatorTasksInTransaction(operatorId, operatorTasks, client);
+        successCount += operatorTasks.length;
+      });
+    } catch (error) {
+      console.error(`Failed to process tasks for operator ${operatorId}:`, error);
+      if (error instanceof Error && 'code' in error) {
+        console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+      }
+    }
+  }
+  
+  return successCount;
+};
+
+/**
+ * Process all tasks for a single operator in one transaction
+ */
+const processOperatorTasksInTransaction = async (
+  operatorId: string,
+  tasks: StakingProcessingTask[],
+  client: PoolClient
+): Promise<void> => {
+  console.log(`Processing ${tasks.length} tasks for operator ${operatorId}`);
+  
+  // Build consolidated update object
+  const updates: OperatorUpdates = {
+    operatorId
+  };
+  
+  // Track event IDs by type for marking as processed
+  const eventIdsByType = {
+    registrationIds: [] as string[],
+    rewardIds: [] as string[],
+    taxCollectionIds: [] as string[],
+    bundleSubmissionIds: [] as string[],
+    deregistrationIds: [] as string[]
+  };
+  
+  // Aggregate all updates for this operator
+  let totalRewards = BigInt(0);
+  let totalTax = BigInt(0);
+  let bundleCount = 0;
+  
+  for (const task of tasks) {
+    switch (task.type) {
+      case 'operator-registration': {
+        const regTask = task as OperatorRegistrationTask;
+        updates.registration = {
+          owner: regTask.owner,
+          domainId: regTask.domainId,
+          signingKey: regTask.signingKey,
+          minimumNominatorStake: regTask.minimumNominatorStake,
+          nominationTax: regTask.nominationTax
+        };
+        eventIdsByType.registrationIds.push(regTask.id);
+        console.log(`Including operator registration for operator ${operatorId}`);
+        break;
+      }
+      
+      case 'operator-reward': {
+        const rewardTask = task as OperatorRewardTask;
+        totalRewards += BigInt(rewardTask.amount);
+        eventIdsByType.rewardIds.push(rewardTask.id);
+        console.log(`Including reward for operator ${operatorId}: amount=${rewardTask.amount}`);
+        break;
+      }
+      
+      case 'operator-tax': {
+        const taxTask = task as OperatorTaxCollectionTask;
+        totalTax += BigInt(taxTask.amount);
+        eventIdsByType.taxCollectionIds.push(taxTask.id);
+        console.log(`Including tax collection for operator ${operatorId}: amount=${taxTask.amount}`);
+        break;
+      }
+      
+      case 'bundle-submission': {
+        const bundleTask = task as BundleSubmissionTask;
+        bundleCount++;
+        eventIdsByType.bundleSubmissionIds.push(bundleTask.id);
+        console.log(`Including bundle submission for operator ${operatorId}: bundle=${bundleTask.bundleId}`);
+        break;
+      }
+      
+      case 'operator-deregistration': {
+        const deregTask = task as OperatorDeregistrationTask;
+        updates.deregistered = true;
+        eventIdsByType.deregistrationIds.push(deregTask.id);
+        console.log(`Including deregistration for operator ${operatorId}`);
+        break;
+      }
+    }
+  }
+  
+  // Add aggregated values to updates
+  if (totalRewards > 0) {
+    updates.totalRewardsToAdd = totalRewards.toString();
+  }
+  if (totalTax > 0) {
+    updates.totalTaxToAdd = totalTax.toString();
+  }
+  if (bundleCount > 0) {
+    updates.bundleCountToAdd = bundleCount;
+  }
+  
+  // Perform the consolidated update
+  await upsertOperator(updates, client);
+  
+  // Mark all events as processed
+  await markOperatorEventsAsProcessed(eventIdsByType, client);
+  
+  console.log(`Successfully processed ${tasks.length} tasks for operator ${operatorId}`);
 };
 
 

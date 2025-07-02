@@ -96,7 +96,145 @@ export const fetchUnprocessedUnlocks = async (limit: number, maxBlockHeight?: nu
   return result.rows;
 };
 
+/**
+ * Fetch unprocessed operator registrations from the database that are finalized
+ */
+export const fetchUnprocessedOperatorRegistrations = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+  let queryText = `
+    SELECT 
+      id, owner, domain_id, signing_key, minimum_nominator_stake,
+      nomination_tax, block_height, extrinsic_id, event_id
+    FROM staking.operator_registrations
+    WHERE processed = false
+  `;
+  
+  const params: any[] = [];
+  
+  if (maxBlockHeight !== undefined) {
+    queryText += ` AND block_height <= $1`;
+    params.push(maxBlockHeight);
+    queryText += ` ORDER BY block_height ASC LIMIT $2`;
+    params.push(limit);
+  } else {
+    queryText += ` ORDER BY block_height ASC LIMIT $1`;
+    params.push(limit);
+  }
+  
+  const result = await query(queryText, params);
+  return result.rows;
+};
 
+/**
+ * Fetch unprocessed operator rewards from the database that are finalized
+ */
+export const fetchUnprocessedOperatorRewards = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+  let queryText = `
+    SELECT 
+      id, domain_id, operator_id, amount, at_block_number,
+      block_height, extrinsic_id, event_id
+    FROM staking.operator_rewards
+    WHERE processed = false
+  `;
+  
+  const params: any[] = [];
+  
+  if (maxBlockHeight !== undefined) {
+    queryText += ` AND block_height <= $1`;
+    params.push(maxBlockHeight);
+    queryText += ` ORDER BY block_height ASC LIMIT $2`;
+    params.push(limit);
+  } else {
+    queryText += ` ORDER BY block_height ASC LIMIT $1`;
+    params.push(limit);
+  }
+  
+  const result = await query(queryText, params);
+  return result.rows;
+};
+
+/**
+ * Fetch unprocessed operator tax collections from the database that are finalized
+ */
+export const fetchUnprocessedOperatorTaxCollections = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+  let queryText = `
+    SELECT 
+      id, domain_id, operator_id, amount,
+      block_height, extrinsic_id, event_id
+    FROM staking.operator_tax_collections
+    WHERE processed = false
+  `;
+  
+  const params: any[] = [];
+  
+  if (maxBlockHeight !== undefined) {
+    queryText += ` AND block_height <= $1`;
+    params.push(maxBlockHeight);
+    queryText += ` ORDER BY block_height ASC LIMIT $2`;
+    params.push(limit);
+  } else {
+    queryText += ` ORDER BY block_height ASC LIMIT $1`;
+    params.push(limit);
+  }
+  
+  const result = await query(queryText, params);
+  return result.rows;
+};
+
+/**
+ * Fetch unprocessed bundle submissions from the database that are finalized
+ */
+export const fetchUnprocessedBundleSubmissions = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+  let queryText = `
+    SELECT 
+      id, proposer, bundle_id, domain_id, operator_id,
+      domain_block_number, epoch, consensus_block_number,
+      extrinsic_id, event_id
+    FROM staking.bundle_submissions
+    WHERE processed = false
+  `;
+  
+  const params: any[] = [];
+  
+  if (maxBlockHeight !== undefined) {
+    queryText += ` AND consensus_block_number <= $1`;
+    params.push(maxBlockHeight);
+    queryText += ` ORDER BY consensus_block_number ASC LIMIT $2`;
+    params.push(limit);
+  } else {
+    queryText += ` ORDER BY consensus_block_number ASC LIMIT $1`;
+    params.push(limit);
+  }
+  
+  const result = await query(queryText, params);
+  return result.rows;
+};
+
+/**
+ * Fetch unprocessed operator deregistrations from the database that are finalized
+ */
+export const fetchUnprocessedOperatorDeregistrations = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+  let queryText = `
+    SELECT 
+      id, owner, domain_id, block_height, extrinsic_id, event_id
+    FROM staking.operator_deregistrations
+    WHERE processed = false
+  `;
+  
+  const params: any[] = [];
+  
+  if (maxBlockHeight !== undefined) {
+    queryText += ` AND block_height <= $1`;
+    params.push(maxBlockHeight);
+    queryText += ` ORDER BY block_height ASC LIMIT $2`;
+    params.push(limit);
+  } else {
+    queryText += ` ORDER BY block_height ASC LIMIT $1`;
+    params.push(limit);
+  }
+  
+  const result = await query(queryText, params);
+  return result.rows;
+};
 
 /**
  * Mark a deposit as processed
@@ -174,10 +312,17 @@ export const getEpochSharePrice = async (
 export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: number): Promise<any[]> => {
   const tasks: any[] = [];
   
-  // Calculate batch size for each type (split evenly between 3 types)
-  const unlocksLimit = Math.floor(batchSize / 3);
-  const depositsLimit = Math.floor(batchSize / 3);
-  const withdrawalsLimit = batchSize - depositsLimit - unlocksLimit;
+  // Calculate batch size for each type (split evenly between 8 types now)
+  const taskTypes = 8;
+  const baseLimit = Math.floor(batchSize / taskTypes);
+  const unlocksLimit = baseLimit;
+  const depositsLimit = baseLimit;
+  const withdrawalsLimit = baseLimit;
+  const operatorRegistrationsLimit = baseLimit;
+  const operatorRewardsLimit = baseLimit;
+  const operatorTaxLimit = baseLimit;
+  const bundleSubmissionsLimit = baseLimit;
+  const operatorDeregistrationsLimit = batchSize - (baseLimit * 7); // Take any remainder
   
   try {
     // Fetch unprocessed deposits
@@ -241,8 +386,110 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
       });
     }
     
+    // Fetch unprocessed operator registrations
+    const operatorRegistrations = await fetchUnprocessedOperatorRegistrations(operatorRegistrationsLimit, maxBlockHeight);
+    
+    // Convert to OperatorRegistrationTask format
+    for (const registration of operatorRegistrations) {
+      tasks.push({
+        type: 'operator-registration',
+        id: registration.id,
+        operatorId: registration.id, // The registration ID is the operator ID
+        domainId: registration.domain_id,
+        address: registration.owner,
+        owner: registration.owner,
+        signingKey: registration.signing_key,
+        minimumNominatorStake: registration.minimum_nominator_stake,
+        nominationTax: registration.nomination_tax,
+        blockHeight: registration.block_height,
+        extrinsicId: registration.extrinsic_id,
+        eventId: registration.event_id,
+        timestamp: new Date()
+      });
+    }
+    
+    // Fetch unprocessed operator rewards
+    const operatorRewards = await fetchUnprocessedOperatorRewards(operatorRewardsLimit, maxBlockHeight);
+    
+    // Convert to OperatorRewardTask format
+    for (const reward of operatorRewards) {
+      tasks.push({
+        type: 'operator-reward',
+        id: reward.id,
+        operatorId: reward.operator_id,
+        domainId: reward.domain_id,
+        address: '', // Not needed for rewards
+        amount: reward.amount,
+        atBlockNumber: reward.at_block_number,
+        blockHeight: reward.block_height,
+        extrinsicId: reward.extrinsic_id,
+        eventId: reward.event_id,
+        timestamp: new Date()
+      });
+    }
+    
+    // Fetch unprocessed operator tax collections
+    const operatorTaxCollections = await fetchUnprocessedOperatorTaxCollections(operatorTaxLimit, maxBlockHeight);
+    
+    // Convert to OperatorTaxCollectionTask format
+    for (const tax of operatorTaxCollections) {
+      tasks.push({
+        type: 'operator-tax',
+        id: tax.id,
+        operatorId: tax.operator_id,
+        domainId: tax.domain_id,
+        address: '', // Not needed for tax collections
+        amount: tax.amount,
+        blockHeight: tax.block_height,
+        extrinsicId: tax.extrinsic_id,
+        eventId: tax.event_id,
+        timestamp: new Date()
+      });
+    }
+    
+    // Fetch unprocessed bundle submissions
+    const bundleSubmissions = await fetchUnprocessedBundleSubmissions(bundleSubmissionsLimit, maxBlockHeight);
+    
+    // Convert to BundleSubmissionTask format
+    for (const bundle of bundleSubmissions) {
+      tasks.push({
+        type: 'bundle-submission',
+        id: bundle.id,
+        operatorId: bundle.operator_id,
+        domainId: bundle.domain_id,
+        address: bundle.proposer,
+        proposer: bundle.proposer,
+        bundleId: bundle.bundle_id,
+        domainBlockNumber: bundle.domain_block_number,
+        epoch: bundle.epoch,
+        consensusBlockNumber: bundle.consensus_block_number,
+        extrinsicId: bundle.extrinsic_id,
+        eventId: bundle.event_id,
+        timestamp: new Date()
+      });
+    }
+    
+    // Fetch unprocessed operator deregistrations
+    const operatorDeregistrations = await fetchUnprocessedOperatorDeregistrations(operatorDeregistrationsLimit, maxBlockHeight);
+    
+    // Convert to OperatorDeregistrationTask format
+    for (const deregistration of operatorDeregistrations) {
+      tasks.push({
+        type: 'operator-deregistration',
+        id: deregistration.id,
+        operatorId: deregistration.id, // The deregistration ID is the operator ID
+        domainId: deregistration.domain_id,
+        address: deregistration.owner,
+        owner: deregistration.owner,
+        blockHeight: deregistration.block_height,
+        extrinsicId: deregistration.extrinsic_id,
+        eventId: deregistration.event_id,
+        timestamp: new Date()
+      });
+    }
+    
     if (tasks.length > 0) {
-      console.log(`Fetched ${tasks.length} tasks (${deposits.length} deposits, ${withdrawals.length} withdrawals, ${unlocks.length} unlocks)`);
+      console.log(`Fetched ${tasks.length} tasks (${deposits.length} deposits, ${withdrawals.length} withdrawals, ${unlocks.length} unlocks, ${operatorRegistrations.length} registrations, ${operatorRewards.length} rewards, ${operatorTaxCollections.length} tax collections, ${bundleSubmissions.length} bundles, ${operatorDeregistrations.length} deregistrations)`);
     }
   } catch (error) {
     console.error('Error fetching staking tasks from database:', error);
@@ -322,8 +569,6 @@ export const getNominatorUnlockBlocks = async (
   
   return [];
 };
-
-
 
 /**
  * Update nominator after withdrawal conversion
@@ -458,7 +703,164 @@ export const updateNominatorAfterUnlock = async (
 
 
 
+/**
+ * Consolidated operator upsert function that handles all operator updates in one transaction
+ */
+export interface OperatorUpdates {
+  operatorId: string;
+  registration?: {
+    owner: string;
+    domainId: string;
+    signingKey: string;
+    minimumNominatorStake: string;
+    nominationTax: number;
+  };
+  totalRewardsToAdd?: string;
+  totalTaxToAdd?: string;
+  bundleCountToAdd?: number;
+  deregistered?: boolean;
+}
 
+export const upsertOperator = async (
+  updates: OperatorUpdates,
+  client?: PoolClient
+): Promise<void> => {
+  const { operatorId, registration, totalRewardsToAdd, totalTaxToAdd, bundleCountToAdd, deregistered } = updates;
+  
+  // If this is a registration, try to insert first
+  if (registration) {
+    const insertQuery = `
+      INSERT INTO staking.operators (
+        id, address, domain_id, signing_key,
+        minimum_nominator_stake, nomination_tax,
+        total_tax_collected, total_rewards_collected,
+        bundle_count, status, created_at, updated_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, 0, 0, 0, 'active', $7, $7)
+      ON CONFLICT (id) DO NOTHING
+    `;
+    
+    const insertParams = [
+      operatorId,
+      registration.owner,
+      registration.domainId,
+      registration.signingKey,
+      registration.minimumNominatorStake,
+      registration.nominationTax,
+      Date.now()
+    ];
+    
+    if (client) {
+      await client.query(insertQuery, insertParams);
+    } else {
+      await query(insertQuery, insertParams);
+    }
+  }
+  
+  // Build update query dynamically based on what needs updating
+  const updateParts: string[] = [];
+  const updateParams: any[] = [];
+  let paramCount = 0;
+  
+  if (totalRewardsToAdd && totalRewardsToAdd !== '0') {
+    updateParts.push(`total_rewards_collected = total_rewards_collected + $${++paramCount}::numeric`);
+    updateParams.push(totalRewardsToAdd);
+  }
+  
+  if (totalTaxToAdd && totalTaxToAdd !== '0') {
+    updateParts.push(`total_tax_collected = total_tax_collected + $${++paramCount}::numeric`);
+    updateParams.push(totalTaxToAdd);
+  }
+  
+  if (bundleCountToAdd && bundleCountToAdd > 0) {
+    updateParts.push(`bundle_count = bundle_count + $${++paramCount}`);
+    updateParams.push(bundleCountToAdd);
+  }
+  
+  if (deregistered) {
+    updateParts.push(`status = 'deregistered'`);
+  }
+  
+  // Always update the updated_at timestamp
+  updateParts.push(`updated_at = $${++paramCount}`);
+  updateParams.push(Date.now());
+  
+  // Add operator ID for WHERE clause
+  updateParams.push(operatorId);
+  
+  if (updateParts.length > 1) { // More than just updated_at
+    const updateQuery = `
+      UPDATE staking.operators 
+      SET ${updateParts.join(', ')}
+      WHERE id = $${++paramCount}
+    `;
+    
+    if (client) {
+      await client.query(updateQuery, updateParams);
+    } else {
+      await query(updateQuery, updateParams);
+    }
+  }
+};
+
+/**
+ * Mark multiple operator events as processed in one query
+ */
+export const markOperatorEventsAsProcessed = async (
+  eventsByType: {
+    registrationIds?: string[];
+    rewardIds?: string[];
+    taxCollectionIds?: string[];
+    bundleSubmissionIds?: string[];
+    deregistrationIds?: string[];
+  },
+  client?: PoolClient
+): Promise<void> => {
+  const queries: Array<{ text: string; values: any[] }> = [];
+  
+  if (eventsByType.registrationIds?.length) {
+    queries.push({
+      text: `UPDATE staking.operator_registrations SET processed = true WHERE id = ANY($1)`,
+      values: [eventsByType.registrationIds]
+    });
+  }
+  
+  if (eventsByType.rewardIds?.length) {
+    queries.push({
+      text: `UPDATE staking.operator_rewards SET processed = true WHERE id = ANY($1)`,
+      values: [eventsByType.rewardIds]
+    });
+  }
+  
+  if (eventsByType.taxCollectionIds?.length) {
+    queries.push({
+      text: `UPDATE staking.operator_tax_collections SET processed = true WHERE id = ANY($1)`,
+      values: [eventsByType.taxCollectionIds]
+    });
+  }
+  
+  if (eventsByType.bundleSubmissionIds?.length) {
+    queries.push({
+      text: `UPDATE staking.bundle_submissions SET processed = true WHERE id = ANY($1)`,
+      values: [eventsByType.bundleSubmissionIds]
+    });
+  }
+  
+  if (eventsByType.deregistrationIds?.length) {
+    queries.push({
+      text: `UPDATE staking.operator_deregistrations SET processed = true WHERE id = ANY($1)`,
+      values: [eventsByType.deregistrationIds]
+    });
+  }
+  
+  // Execute all queries
+  for (const queryDef of queries) {
+    if (client) {
+      await client.query(queryDef.text, queryDef.values);
+    } else {
+      await query(queryDef.text, queryDef.values);
+    }
+  }
+};
 
 /**
  * Execute transaction with rollback on error
