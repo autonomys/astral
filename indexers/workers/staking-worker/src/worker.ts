@@ -1,33 +1,34 @@
 import { PoolClient } from 'pg';
+import { config } from './config';
 import {
-    BundleSubmissionTask,
-    ConversionResult,
-    DepositTask,
-    OperatorDeregistrationTask,
-    OperatorRegistrationTask,
-    OperatorRewardTask,
-    OperatorTaxCollectionTask,
-    StakingProcessingTask,
-    UnlockTask,
-    WithdrawalTask
+  BundleSubmissionTask,
+  ConversionResult,
+  DepositTask,
+  OperatorDeregistrationTask,
+  OperatorRegistrationTask,
+  OperatorRewardTask,
+  OperatorTaxCollectionTask,
+  OperatorUpdates,
+  StakingProcessingTask,
+  UnlockTask,
+  WithdrawalTask
 } from './interfaces';
 import { getChainHead } from './services/autonomysService';
 import {
-    getEpochSharePrice,
-    getNominatorUnlockBlocks,
-    markDepositAsProcessed,
-    markOperatorEventsAsProcessed,
-    markUnlockAsProcessed,
-    markWithdrawalAsProcessed,
-    OperatorUpdates,
-    updateNominatorAfterUnlock,
-    upsertNominatorAfterDeposit,
-    upsertNominatorAfterWithdrawal,
-    upsertOperator,
-    withTransaction
+  getEpochSharePrice,
+  markDepositAsProcessed,
+  markOperatorEventsAsProcessed,
+  markUnlockAsProcessed,
+  markWithdrawalAsProcessed,
+  updateNominatorAfterUnlock,
+  upsertNominatorAfterDeposit,
+  upsertNominatorAfterWithdrawal,
+  upsertOperator,
+  withTransaction
 } from './services/database/dbService';
 import { storeChainTip } from './services/redisService';
-
+import { monitor } from './utils/monitoring';
+import { processGroupedInParallel, processInParallel, retryWithBackoff } from './utils/parallel';
 
 // Constants for share price calculations
 const SHARES_CALCULATION_MULTIPLIER = BigInt('1000000000000000000'); // 10^18
@@ -57,6 +58,9 @@ export const refreshChainHeadHeight = async (): Promise<void> => {
 export const processBatchTasks = async (tasks: StakingProcessingTask[]): Promise<number> => {
   console.log(`Processing ${tasks.length} staking tasks...`);
   
+  const batchId = `batch-${Date.now()}`;
+  monitor.startBatch(batchId, 'all-tasks', tasks.length, config.dbPoolSize);
+  
   let successCount = 0;
   
   // Group tasks by type for batch processing
@@ -73,57 +77,72 @@ export const processBatchTasks = async (tasks: StakingProcessingTask[]): Promise
     t.type === 'operator-deregistration'
   );
   
-  // Process deposits
-  if (depositTasks.length > 0) {
-    const depositResults = await processDepositBatch(depositTasks);
-    successCount += depositResults;
-  }
+  // Process different task types in parallel
+  const results = await Promise.all([
+    depositTasks.length > 0 ? processDepositBatch(depositTasks) : Promise.resolve(0),
+    withdrawalTasks.length > 0 ? processWithdrawalBatch(withdrawalTasks) : Promise.resolve(0),
+    unlockTasks.length > 0 ? processUnlockBatch(unlockTasks) : Promise.resolve(0),
+    operatorTasks.length > 0 ? processOperatorTasksBatch(operatorTasks) : Promise.resolve(0)
+  ]);
   
-  // Process withdrawals
-  if (withdrawalTasks.length > 0) {
-    const withdrawalResults = await processWithdrawalBatch(withdrawalTasks);
-    successCount += withdrawalResults;
-  }
+  successCount = results.reduce((sum, count) => sum + count, 0);
   
-  // Process unlock events
-  if (unlockTasks.length > 0) {
-    const unlockResults = await processUnlockBatch(unlockTasks);
-    successCount += unlockResults;
-  }
+  monitor.endBatch(batchId, successCount);
   
-  // Process operator tasks (grouped by operator)
-  if (operatorTasks.length > 0) {
-    const operatorResults = await processOperatorTasksBatch(operatorTasks);
-    successCount += operatorResults;
+  // Log current statistics periodically
+  if (Math.random() < 0.1) { // 10% chance to log stats
+    console.log('Current processing statistics:', monitor.getStats());
   }
   
   return successCount;
 };
 
 /**
- * Process a batch of deposit tasks
+ * Process a batch of deposit tasks in parallel
  */
 const processDepositBatch = async (tasks: DepositTask[]): Promise<number> => {
-  let successCount = 0;
+  const batchId = `deposits-${Date.now()}`;
+  const parallelism = Math.floor(config.dbPoolSize * 0.6);
   
-  // Process each deposit in its own transaction for better error isolation
-  for (const task of tasks) {
-    try {
-      await withTransaction(async (client: PoolClient) => {
-        const result = await processDepositConversion(task, client);
-        if (result.hasConverted) {
-          successCount++;
+  monitor.startBatch(batchId, 'deposits', tasks.length, parallelism);
+  
+  // Sort deposits by operator ID and address to minimize deadlocks
+  // IMPORTANT: Consistent ordering prevents deadlocks when multiple transactions
+  // try to lock the same rows in different orders
+  const sortedTasks = [...tasks].sort((a, b) => {
+    // First sort by operatorId
+    const operatorCompare = a.operatorId.localeCompare(b.operatorId);
+    if (operatorCompare !== 0) return operatorCompare;
+    // Then by domainId to ensure consistent ordering across domains
+    const domainCompare = a.domainId.localeCompare(b.domainId);
+    if (domainCompare !== 0) return domainCompare;
+    // Finally by address
+    return a.address.localeCompare(b.address);
+  });
+  
+  // Process deposits in parallel with concurrency limit
+  const results = await processInParallel(
+    sortedTasks,
+    async (task) => {
+      try {
+        return await retryWithBackoff(async () => {
+          return await withTransaction(async (client: PoolClient) => {
+            return await processDepositConversion(task, client);
+          });
+        });
+      } catch (error) {
+        console.error(`Failed to process deposit ${task.id}:`, error);
+        if (error instanceof Error && 'code' in error) {
+          console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
         }
-      });
-    } catch (error) {
-      console.error(`Failed to process deposit ${task.id}:`, error);
-      // Log the actual error details for debugging
-      if (error instanceof Error && 'code' in error) {
-        console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+        return { hasConverted: false };
       }
-      // Continue processing other deposits
-    }
-  }
+    },
+    parallelism
+  );
+  
+  const successCount = results.filter(r => r.hasConverted).length;
+  monitor.endBatch(batchId, successCount);
   
   return successCount;
 };
@@ -186,29 +205,46 @@ const processDepositConversion = async (task: DepositTask, client: PoolClient): 
 };
 
 /**
- * Process a batch of withdrawal tasks
+ * Process a batch of withdrawal tasks in parallel
  */
 const processWithdrawalBatch = async (tasks: WithdrawalTask[]): Promise<number> => {
-  let successCount = 0;
+  const batchId = `withdrawals-${Date.now()}`;
+  const parallelism = Math.floor(config.dbPoolSize * 0.6);
   
-  // Process each withdrawal in its own transaction for better error isolation
-  for (const task of tasks) {
-    try {
-      await withTransaction(async (client: PoolClient) => {
-        const result = await processWithdrawalConversion(task, client);
-        if (result.hasConverted) {
-          successCount++;
+  monitor.startBatch(batchId, 'withdrawals', tasks.length, parallelism);
+  
+  // Sort withdrawals with same strategy as deposits for consistency
+  const sortedTasks = [...tasks].sort((a, b) => {
+    const operatorCompare = a.operatorId.localeCompare(b.operatorId);
+    if (operatorCompare !== 0) return operatorCompare;
+    const domainCompare = a.domainId.localeCompare(b.domainId);
+    if (domainCompare !== 0) return domainCompare;
+    return a.address.localeCompare(b.address);
+  });
+  
+  // Process withdrawals in parallel with concurrency limit
+  const results = await processInParallel(
+    sortedTasks,
+    async (task) => {
+      try {
+        return await retryWithBackoff(async () => {
+          return await withTransaction(async (client: PoolClient) => {
+            return await processWithdrawalConversion(task, client);
+          });
+        });
+      } catch (error) {
+        console.error(`Failed to process withdrawal ${task.id}:`, error);
+        if (error instanceof Error && 'code' in error) {
+          console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
         }
-      });
-    } catch (error) {
-      console.error(`Failed to process withdrawal ${task.id}:`, error);
-      // Log the actual error details for debugging
-      if (error instanceof Error && 'code' in error) {
-        console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+        return { hasConverted: false };
       }
-      // Continue processing other withdrawals
-    }
-  }
+    },
+    parallelism
+  );
+  
+  const successCount = results.filter(r => r.hasConverted).length;
+  monitor.endBatch(batchId, successCount);
   
   return successCount;
 };
@@ -356,27 +392,47 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
 };
 
 /**
- * Process a batch of unlock tasks
+ * Process a batch of unlock tasks in parallel
  */
 const processUnlockBatch = async (tasks: UnlockTask[]): Promise<number> => {
-  let successCount = 0;
+  const batchId = `unlocks-${Date.now()}`;
+  const parallelism = Math.floor(config.dbPoolSize * 0.6);
   
-  // Process each unlock in its own transaction for better error isolation
-  for (const task of tasks) {
-    try {
-      await withTransaction(async (client: PoolClient) => {
-        await processUnlockClaim(task, client);
-        successCount++;
-      });
-    } catch (error) {
-      console.error(`Failed to process unlock ${task.eventId}:`, error);
-      // Log the actual error details for debugging
-      if (error instanceof Error && 'code' in error) {
-        console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+  monitor.startBatch(batchId, 'unlocks', tasks.length, parallelism);
+  
+  // Sort unlocks with same strategy for consistency
+  const sortedTasks = [...tasks].sort((a, b) => {
+    const operatorCompare = a.operatorId.localeCompare(b.operatorId);
+    if (operatorCompare !== 0) return operatorCompare;
+    const domainCompare = a.domainId.localeCompare(b.domainId);
+    if (domainCompare !== 0) return domainCompare;
+    return a.address.localeCompare(b.address);
+  });
+  
+  // Process unlocks in parallel with concurrency limit
+  const results = await processInParallel(
+    sortedTasks,
+    async (task) => {
+      try {
+        await retryWithBackoff(async () => {
+          await withTransaction(async (client: PoolClient) => {
+            await processUnlockClaim(task, client);
+          });
+        });
+        return true;
+      } catch (error) {
+        console.error(`Failed to process unlock ${task.eventId}:`, error);
+        if (error instanceof Error && 'code' in error) {
+          console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+        }
+        return false;
       }
-      // Continue processing other unlocks
-    }
-  }
+    },
+    parallelism
+  );
+  
+  const successCount = results.filter(success => success).length;
+  monitor.endBatch(batchId, successCount);
   
   return successCount;
 };
@@ -404,36 +460,38 @@ const processUnlockClaim = async (task: UnlockTask, client: PoolClient): Promise
 };
 
 /**
- * Process a batch of operator tasks
+ * Process a batch of operator tasks using grouped parallel processing
  */
 const processOperatorTasksBatch = async (tasks: StakingProcessingTask[]): Promise<number> => {
-  let successCount = 0;
-  
-  // Group tasks by operatorId for consolidated processing
-  const tasksByOperator = new Map<string, StakingProcessingTask[]>();
-  
-  for (const task of tasks) {
-    const operatorTasks = tasksByOperator.get(task.operatorId) || [];
-    operatorTasks.push(task);
-    tasksByOperator.set(task.operatorId, operatorTasks);
-  }
-  
-  // Process all tasks for each operator in a single transaction
-  for (const [operatorId, operatorTasks] of tasksByOperator) {
-    try {
-      await withTransaction(async (client: PoolClient) => {
-        await processOperatorTasksInTransaction(operatorId, operatorTasks, client);
-        successCount += operatorTasks.length;
-      });
-    } catch (error) {
-      console.error(`Failed to process tasks for operator ${operatorId}:`, error);
-      if (error instanceof Error && 'code' in error) {
-        console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+  // Group tasks by operatorId to avoid conflicts
+  const results = await processGroupedInParallel(
+    tasks,
+    task => task.operatorId, // Group by operatorId
+    async (operatorTasks) => {
+      // Process all tasks for this operator in a single transaction
+      try {
+        await retryWithBackoff(async () => {
+          await withTransaction(async (client: PoolClient) => {
+            await processOperatorTasksInTransaction(
+              operatorTasks[0].operatorId,
+              operatorTasks,
+              client
+            );
+          });
+        });
+        return operatorTasks.length;
+      } catch (error) {
+        console.error(`Failed to process tasks for operator ${operatorTasks[0].operatorId}:`, error);
+        if (error instanceof Error && 'code' in error) {
+          console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+        }
+        return 0;
       }
-    }
-  }
+    },
+    Math.floor(config.dbPoolSize * 0.7) // Use 70% of pool for operator tasks
+  );
   
-  return successCount;
+  return results.reduce((sum, count) => sum + count, 0);
 };
 
 /**
@@ -534,6 +592,3 @@ const processOperatorTasksInTransaction = async (
   
   console.log(`Successfully processed ${tasks.length} tasks for operator ${operatorId}`);
 };
-
-
-

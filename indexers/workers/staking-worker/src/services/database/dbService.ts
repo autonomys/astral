@@ -1,4 +1,5 @@
 import { PoolClient } from 'pg';
+import { OperatorUpdates } from '../../interfaces';
 import { getDbClient, query } from './connection';
 
 /**
@@ -550,25 +551,6 @@ export const upsertNominatorAfterDeposit = async (
   }
 };
 
-/**
- * Get nominator unlock blocks
- */
-export const getNominatorUnlockBlocks = async (
-  nominatorId: string,
-  client?: PoolClient
-): Promise<any[]> => {
-  const queryText = 'SELECT unlock_at_confirmed_domain_block_number FROM staking.nominators WHERE id = $1';
-  
-  const result = client 
-    ? await client.query(queryText, [nominatorId])
-    : await query(queryText, [nominatorId]);
-  
-  if (result.rows.length > 0 && result.rows[0].unlock_at_confirmed_domain_block_number) {
-    return result.rows[0].unlock_at_confirmed_domain_block_number;
-  }
-  
-  return [];
-};
 
 /**
  * Update nominator after withdrawal conversion
@@ -700,26 +682,7 @@ export const updateNominatorAfterUnlock = async (
     await query(queryText, params);
   }
 };
-
-
-
-/**
- * Consolidated operator upsert function that handles all operator updates in one transaction
- */
-export interface OperatorUpdates {
-  operatorId: string;
-  registration?: {
-    owner: string;
-    domainId: string;
-    signingKey: string;
-    minimumNominatorStake: string;
-    nominationTax: number;
-  };
-  totalRewardsToAdd?: string;
-  totalTaxToAdd?: string;
-  bundleCountToAdd?: number;
-  deregistered?: boolean;
-}
+  
 
 export const upsertOperator = async (
   updates: OperatorUpdates,

@@ -58,10 +58,6 @@ const main = async () => {
         const chainTip = await getChainTip();
         const maxBlockHeight = chainTip ? chainTip - config.finalityThreshold : undefined;
         
-        if (chainTip) {
-          console.log(`Worker: Processing events up to block ${maxBlockHeight} (chain tip: ${chainTip})`);
-        }
-        
         // Fetch batch of tasks from database
         const tasks: StakingProcessingTask[] = await fetchStakingTasks(config.batchSize, maxBlockHeight);
         

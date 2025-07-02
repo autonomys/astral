@@ -1,5 +1,3 @@
-
-
   # Account Worker
   services:
     account-worker:
@@ -72,20 +70,24 @@
           DB_PASSWORD: ${DB_PASSWORD}
           DB_NAME: ${DB_DATABASE}
           REDIS_URL: "redis://${REDIS_SERVICE_HOST:-redis}:${REDIS_SERVICE_PORT:-6379}"
-          BATCH_SIZE: "${BATCH_SIZE:-500}"
-          QUEUE_PROCESSING_INTERVAL_MS: "${QUEUE_PROCESSING_INTERVAL_MS:-5000}"
-          # Database Pool Configuration
-          DB_POOL_MAX: "${DB_POOL_MAX:-20}"
-          DB_POOL_MIN: "${DB_POOL_MIN:-5}"
+          BATCH_SIZE: "${BATCH_SIZE:-1000}"
+          QUEUE_PROCESSING_INTERVAL_MS: "${QUEUE_PROCESSING_INTERVAL_MS:-500}"
+          # Performance configuration
+          MAX_CONCURRENT_BATCHES: "${MAX_CONCURRENT_BATCHES:-8}"
+          DB_POOL_SIZE: "${DB_POOL_SIZE:-25}"
           DB_CONNECTION_TIMEOUT_MS: "${DB_CONNECTION_TIMEOUT_MS:-3000}"
-          DB_QUERY_TIMEOUT_MS: "${DB_QUERY_TIMEOUT_MS:-10000}"
-          DB_STATEMENT_TIMEOUT_MS: "${DB_STATEMENT_TIMEOUT_MS:-10000}"
-          DB_IDLE_TIMEOUT_MS: "${DB_IDLE_TIMEOUT_MS:-30000}"
-          # Database Update Processing
-          DB_UPDATE_CHUNK_SIZE: "${DB_UPDATE_CHUNK_SIZE:-25}"
-          DB_UPDATE_CHUNK_DELAY_MS: "${DB_UPDATE_CHUNK_DELAY_MS:-100}"
+          # Retry configuration
+          MAX_RETRIES: "${MAX_RETRIES:-3}"
+          RETRY_DELAY_MS: "${RETRY_DELAY_MS:-5000}"
+          # Finality and chain monitoring
+          FINALITY_THRESHOLD: "${FINALITY_THRESHOLD:-100}"
+          CHAIN_TIP_UPDATE_INTERVAL_MS: "${CHAIN_TIP_UPDATE_INTERVAL_MS:-10000}"
+          CHAIN_HEAD_POLL_INTERVAL_MS: "${CHAIN_HEAD_POLL_INTERVAL_MS:-6000}"
           # Health Check Configuration
-          DB_HEALTH_CHECK_INTERVAL_MS: "${DB_HEALTH_CHECK_INTERVAL_MS:-10000}"
+          DB_HEALTH_CHECK_INTERVAL_MS: "${DB_HEALTH_CHECK_INTERVAL_MS:-30000}"
+          # Logging
+          ENABLE_DEBUG_LOGS: "${ENABLE_DEBUG_LOGS:-false}"
+          LOG_LEVEL: "${LOG_LEVEL:-info}"
       healthcheck:
         test: ["CMD", "node", "-e", "process.exit(0)"]
         interval: 30s
