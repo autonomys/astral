@@ -30,34 +30,6 @@ export const findOneExtrinsicEvent = (
   );
 };
 
-export const findOperatorFromOperatorsCache = (
-  cache: Cache,
-  operatorId: string
-): any => {
-  const opFromCache = cache.operatorStakingHistory.find(
-    (o) => o.operatorId === operatorId
-  );
-  if (!opFromCache) throw new Error("Operator from cache not found");
-  return opFromCache;
-};
-
-export const findDomainIdFromOperatorsCache = (
-  cache: Cache,
-  operatorId: string
-): string => {
-  const opFromCache = cache.operatorStakingHistory.find(
-    (o) => o.operatorId === operatorId
-  );
-  if (!opFromCache) {
-    const parentOpFromCache = cache.parentBlockOperators.find(
-      (o) => o.operatorId.toString() === operatorId
-    );
-    if (!parentOpFromCache) throw new Error("Operator from cache not found");
-    return parentOpFromCache.operatorDetails.currentDomainId.toString();
-  }
-  return opFromCache.currentDomainId;
-};
-
 export const groupEventsFromBatchAll = (
   events: EventRecord[]
 ): EventRecord[][] => {

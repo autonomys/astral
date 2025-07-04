@@ -19,7 +19,6 @@ import { getNominationId } from "./utils";
 export type Cache = {
   bundleSubmission: BundleSubmission[];
   domainInstantiation: DomainInstantiation[];
-  // domainStakingHistory: DomainStakingHistory[];
   operatorRegistration: OperatorRegistration[];
   operatorReward: OperatorReward[];
   operatorTaxCollection: OperatorTaxCollection[];
@@ -34,8 +33,6 @@ export type Cache = {
   // only for caching purposes
   parentBlockOperators: Operator[];
   currentWithdrawal: Withdrawal[];
-  operatorStakingHistory: any[];
-
   // Event tracking
   nominatorDepositEvent: any[];
   withdrawEvent: any[];
@@ -44,7 +41,6 @@ export type Cache = {
 export const initializeCache = (): Cache => ({
   bundleSubmission: [],
   domainInstantiation: [],
-  // domainStakingHistory: [],
   operatorRegistration: [],
   operatorReward: [],
   operatorTaxCollection: [],
@@ -59,7 +55,6 @@ export const initializeCache = (): Cache => ({
   // only for caching purposes
   parentBlockOperators: [],
   currentWithdrawal: [],
-  operatorStakingHistory: [],
   // Event tracking
   nominatorDepositEvent: [],
   withdrawEvent: [],
@@ -290,39 +285,6 @@ export function createBundleSubmission(
   });
 }
 
-export function createOperatorStakingHistory(
-  hash: string,
-  operatorId: string,
-  operatorOwner: string,
-  signingKey: string,
-  currentDomainId: string,
-  currentTotalStake: bigint,
-  currentTotalShares: bigint,
-  depositsInEpoch: bigint,
-  withdrawalsInEpoch: bigint,
-  totalStorageFeeDeposit: bigint,
-  sharePrice: bigint,
-  partialStatus: string,
-  timestamp: Date,
-  blockHeight: bigint
-): any {
-  return {
-    id: hash,
-    operatorId,
-    operatorOwner,
-    signingKey,
-    currentDomainId,
-    currentTotalStake,
-    currentTotalShares,
-    depositsInEpoch,
-    withdrawalsInEpoch,
-    totalStorageFeeDeposit,
-    sharePrice,
-    partialStatus,
-    timestamp,
-    blockHeight,
-  };
-}
 
 export function createOperatorEpochSharePrice(
   operatorId: string,

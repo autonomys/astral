@@ -1,12 +1,9 @@
 import { parseOperator, parseWithdrawal } from "@autonomys/auto-consensus";
-import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
-import { SHARES_CALCULATION_MULTIPLIER, ZERO_BIGINT } from "./constants";
 import * as db from "./db";
 import { EVENT_HANDLERS } from "./eventHandler";
 import { ExtrinsicPrimitive } from "./types";
 import {
-  createHashId,
   createOperatorDomainMap,
   deriveOperatorEpochSharePrices,
   detectEpochTransitions,
@@ -111,7 +108,12 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
   // Create a map of operatorId -> domainId for quick lookups
   const operatorDomainMap = createOperatorDomainMap(operators);
-
+  const operatorOwnerMap = new Map(
+    queriesResults[2].map(([key, value]) => [
+      (key.toHuman() as any)[0].toString(),
+      value.toPrimitive() as string,
+    ])
+  );
   // api.query.domains.domainStakingSummary.entries(),
   /*
   * currentEpochIndex
@@ -206,82 +208,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   }
 
 
-  // logger.info(`queriesResults[1]: ${JSON.stringify(queriesResults[1])}`);
-  // queriesResults[1].forEach((data) => {
-  //   const keyPrimitive = data[0].toPrimitive() as any;
-  //   const valuePrimitive = data[1].toPrimitive() as any;
-  //   const domainId = keyPrimitive[0].toString();
-  //   cache.domainStakingHistory.push(
-  //     db.createDomainStakingHistory(
-  //       createHashId(data), // id
-  //       domainId,
-  //       valuePrimitive.currentEpochIndex.toString(), // currentEpochIndex
-  //       valuePrimitive.currentTotalStake.toString(), // currentTotalStake
-  //       blockTimestamp, // timestamp
-  //       height // blockHeight
-  //     )
-  //   );
-  // });
-
-  // api.query.domains.headDomainNumber.entries(),
-  /*
-  * domainId
-  * domainBlockNumber
-  */
-
-
-  /*
-   START createOperatorStakingHistory
-  */
-  const operatorOwnerMap = new Map(
-    // api.query.domains.operatorIdOwner.entries(),
-    /*
-    * operatorId
-    * owner
-    */
-    queriesResults[2].map(([key, value]) => [
-      (key.toHuman() as any)[0].toString(),
-      value.toPrimitive() as string,
-    ])
-  );
-
-
-  operators.forEach((operator) => {
-    const operatorOwner = operatorOwnerMap.get(operator.operatorId.toString());
-    const sharePrice = operator.operatorDetails.currentTotalShares
-      ? BigInt(
-          operator.operatorDetails.currentTotalStake *
-            SHARES_CALCULATION_MULTIPLIER
-        ) / BigInt(operator.operatorDetails.currentTotalShares)
-      : ZERO_BIGINT;
-    cache.operatorStakingHistory.push(
-      db.createOperatorStakingHistory(
-        createHashId(operator),
-        operator.operatorId.toString(),
-        operatorOwner ?? "", // Why it can be empty?
-        operator.operatorDetails.signingKey.toString(),
-        operator.operatorDetails.currentDomainId.toString(),
-        operator.operatorDetails.currentTotalStake,
-        operator.operatorDetails.currentTotalShares,
-        operator.operatorDetails.depositsInEpoch,
-        operator.operatorDetails.withdrawalsInEpoch,
-        operator.operatorDetails.totalStorageFeeDeposit,
-        sharePrice,
-        stringify(operator.operatorDetails.partialStatus),
-        blockTimestamp,
-        height
-      )
-    );
-  });
-  /*
-   END createOperatorStakingHistory
-  */
-
-
-
-  /*
-  * 
-  */
   if (blockHasUnlockNominator)
     queriesResults[parentBlockOperatorsIndex!].forEach((o) =>
       cache.parentBlockOperators.push(parseOperator(o))
@@ -347,6 +273,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
                 extrinsicSigner,
                 extrinsicEvents: events,
                 domainEpochMap,
+                operatorOwnerMap,
+                operatorDomainMap,
               });
 
             // Increment event index
@@ -373,6 +301,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
               extrinsicSigner,
               extrinsicEvents,
               domainEpochMap,
+              operatorOwnerMap,
+              operatorDomainMap,
             });
 
           // Increment event index

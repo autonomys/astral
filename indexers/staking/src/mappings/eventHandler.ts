@@ -7,9 +7,7 @@ import * as db from "./db";
 import { Cache } from "./db";
 import { SealedBundleHeader } from "./types";
 import {
-  findDomainIdFromOperatorsCache,
   findOneExtrinsicEvent,
-  findOperatorFromOperatorsCache,
 } from "./utils";
 
 type EventHandler = (params: {
@@ -23,6 +21,8 @@ type EventHandler = (params: {
   extrinsicEvents: EventRecord[];
   extrinsicMethodToPrimitive: any;
   domainEpochMap: Map<string, number>;
+  operatorOwnerMap: Map<string, string>;
+  operatorDomainMap: Map<string, string>;
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
@@ -130,10 +130,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     cache,
     extrinsicId,
     eventId,
+    operatorDomainMap,
   }) => {
     const operatorId = event.event.data[0].toString();
     const address = event.event.data[1].toString();
-    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+    const domainId = operatorDomainMap.get(operatorId) ?? "";
 
     cache.nominatorDepositEvent.push(
       db.createNominatorDepositEvent(
@@ -152,10 +153,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     blockTimestamp,
     extrinsicId,
     eventId,
+    operatorDomainMap,
   }) => {
     const operatorId = event.event.data[0].toString();
     const address = event.event.data[1].toString();
-    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+    const domainId = operatorDomainMap.get(operatorId) ?? "";
   
 
     cache.withdrawEvent.push(
@@ -176,12 +178,13 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     height,
     extrinsicId,
     eventId,
+    operatorDomainMap,
   }) => {
     const bundleDetails = event.event.data[0].toPrimitive() as any;
     const operatorId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
     const atBlockNumber = BigInt(bundleDetails.bundle.atBlockNumber.toString());
-    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+    const domainId = operatorDomainMap.get(operatorId) ?? "";
 
     cache.operatorReward.push(
       db.createOperatorReward(
@@ -201,10 +204,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     height,
     extrinsicId,
     eventId,
+    operatorDomainMap,
   }) => {
     const operatorId = event.event.data[0].toString();
+    const domainId = operatorDomainMap.get(operatorId) ?? "";
     const tax = BigInt(event.event.data[1].toString());
-    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     cache.operatorTaxCollection.push(
       db.createOperatorTaxCollection(
@@ -225,11 +229,12 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     blockTimestamp,
     extrinsicId,
     eventId,
+    operatorDomainMap,
   }) => {
     const operatorId = event.event.data[0].toString();
     const address = event.event.data[1].toString();
+    const domainId = operatorDomainMap.get(operatorId) ?? "";
     const amount = BigInt(event.event.data[2].toString());
-    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
 
     const StorageFeeUnlockedEvent = findOneExtrinsicEvent(
       extrinsicEvents,
@@ -261,9 +266,10 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     extrinsicId,
     eventId,
     extrinsicSigner,
+    operatorDomainMap,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+    const domainId = operatorDomainMap.get(operatorId) ?? "";
 
     cache.nominatorsUnlockedEvent.push(
       db.createNominatorsUnlockedEvent(
@@ -283,9 +289,10 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     height,
     extrinsicId,
     eventId,
+    operatorDomainMap,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
+    const domainId = operatorDomainMap.get(operatorId) ?? "";
 
     cache.operatorDeregistration.push(
       db.createOperatorDeregistration(
@@ -306,6 +313,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     extrinsicMethodToPrimitive,
     domainEpochMap,
     height,
+    operatorOwnerMap,
   }) => {
     const bundleHash = event.event.data[1].toString();
     const { header } = extrinsicMethodToPrimitive.args.opaque_bundle
@@ -318,7 +326,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       consensusBlockNumber,
     } = header.receipt;
 
-    const { operatorOwner } = findOperatorFromOperatorsCache(cache, operatorId);
+    const operatorOwner = operatorOwnerMap.get(operatorId) ?? "";
     const epoch = domainEpochMap.get(domainId);
 
     // Check if epoch exists before converting to BigInt
