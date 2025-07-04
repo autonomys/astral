@@ -1,6 +1,5 @@
 import { EventRecord, stringify } from "@autonomys/auto-utils";
 import { createHash } from "crypto";
-import { OperatorStakingHistory } from "../types";
 import {
   SHARES_CALCULATION_MULTIPLIER,
   ZERO_BIGINT,
@@ -34,7 +33,7 @@ export const findOneExtrinsicEvent = (
 export const findOperatorFromOperatorsCache = (
   cache: Cache,
   operatorId: string
-): OperatorStakingHistory => {
+): any => {
   const opFromCache = cache.operatorStakingHistory.find(
     (o) => o.operatorId === operatorId
   );

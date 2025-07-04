@@ -243,27 +243,6 @@ CREATE TABLE staking.operator_rewards (
 );
 ALTER TABLE staking.operator_rewards OWNER TO postgres;
 
--- operator_staking_histories
-CREATE TABLE staking.operator_staking_histories (
-    id text NOT NULL,
-    operator_id text NOT NULL,
-    operator_owner text NOT NULL,
-    signing_key text NOT NULL,
-    current_domain_id text NOT NULL,
-    current_total_stake numeric NOT NULL,
-    current_total_shares numeric NOT NULL,
-    deposits_in_epoch numeric NOT NULL,
-    withdrawals_in_epoch numeric NOT NULL,
-    total_storage_fee_deposit numeric NOT NULL,
-    share_price numeric NOT NULL,
-    partial_status text NOT NULL,
-    timestamp timestamp with time zone NOT NULL,
-    block_height numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE staking.operator_staking_histories OWNER TO postgres;
-
 -- operator_tax_collections
 CREATE TABLE staking.operator_tax_collections (
     id text NOT NULL,
@@ -421,9 +400,6 @@ ALTER TABLE ONLY staking.operator_registrations
 ALTER TABLE ONLY staking.operator_rewards
     ADD CONSTRAINT operator_rewards_pkey PRIMARY KEY (_id);
 
-ALTER TABLE ONLY staking.operator_staking_histories
-    ADD CONSTRAINT operator_staking_histories_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY staking.operator_tax_collections
     ADD CONSTRAINT operator_tax_collections_pkey PRIMARY KEY (_id);
 
@@ -515,9 +491,6 @@ CREATE INDEX "staking_storage_fund_accounts_operator_id" ON staking.storage_fund
 CREATE INDEX "0xa3309c82ddfd9389" ON staking.operator_registrations USING btree (id);
 -- Composite index for finality-based queries (processed = false AND block_height <= X)
 CREATE INDEX "staking_operator_registrations_processed_block_height" ON staking.operator_registrations USING btree (processed, block_height) WHERE processed = false;
-
--- operator_staking_histories
-CREATE INDEX "0xb23efd2ff4b502c0" ON staking.operator_staking_histories USING btree (id);
 
 -- bundle_submissions
 CREATE INDEX "0xb4799973a65fa29b" ON staking.bundle_submissions USING btree (id);

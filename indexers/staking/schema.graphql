@@ -113,24 +113,6 @@ type OperatorDeregistration @entity {
   processed: Boolean! @index
 }
 
-# Chain states entities
-
-type OperatorStakingHistory @entity {
-  id: ID!
-  operatorId: String!
-  operatorOwner: String!
-  signingKey: String!
-  currentDomainId: String!
-  currentTotalStake: BigInt!
-  currentTotalShares: BigInt!
-  depositsInEpoch: BigInt!
-  withdrawalsInEpoch: BigInt!
-  totalStorageFeeDeposit: BigInt!
-  sharePrice: BigInt!
-  partialStatus: String!
-  timestamp: Date!
-  blockHeight: BigInt!
-}
 
 type OperatorEpochSharePrice @entity {
   id: ID! # Format: operatorId-domainId-epochIndex

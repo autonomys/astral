@@ -1,19 +1,18 @@
 import { Operator, Withdrawal } from "@autonomys/auto-consensus";
 import {
-    BundleSubmission,
-    DomainInstantiation,
-    NominatorDeposit,
-    NominatorsUnlockedEvent,
-    NominatorWithdrawal,
-    OperatorDeregistration,
-    OperatorEpochSharePrice,
-    OperatorRegistration,
-    OperatorReward,
-    OperatorStakingHistory,
-    OperatorTaxCollection,
-    RuntimeCreation,
-    StorageFundAccount,
-    UnlockedEvent,
+  BundleSubmission,
+  DomainInstantiation,
+  NominatorDeposit,
+  NominatorsUnlockedEvent,
+  NominatorWithdrawal,
+  OperatorDeregistration,
+  OperatorEpochSharePrice,
+  OperatorRegistration,
+  OperatorReward,
+  OperatorTaxCollection,
+  RuntimeCreation,
+  StorageFundAccount,
+  UnlockedEvent,
 } from "../types";
 import { getNominationId } from "./utils";
 
@@ -22,7 +21,6 @@ export type Cache = {
   domainInstantiation: DomainInstantiation[];
   // domainStakingHistory: DomainStakingHistory[];
   operatorRegistration: OperatorRegistration[];
-  operatorStakingHistory: OperatorStakingHistory[];
   operatorReward: OperatorReward[];
   operatorTaxCollection: OperatorTaxCollection[];
   operatorDeregistration: OperatorDeregistration[];
@@ -36,6 +34,7 @@ export type Cache = {
   // only for caching purposes
   parentBlockOperators: Operator[];
   currentWithdrawal: Withdrawal[];
+  operatorStakingHistory: any[];
 
   // Event tracking
   nominatorDepositEvent: any[];
@@ -47,7 +46,6 @@ export const initializeCache = (): Cache => ({
   domainInstantiation: [],
   // domainStakingHistory: [],
   operatorRegistration: [],
-  operatorStakingHistory: [],
   operatorReward: [],
   operatorTaxCollection: [],
   operatorDeregistration: [],
@@ -61,7 +59,7 @@ export const initializeCache = (): Cache => ({
   // only for caching purposes
   parentBlockOperators: [],
   currentWithdrawal: [],
-
+  operatorStakingHistory: [],
   // Event tracking
   nominatorDepositEvent: [],
   withdrawEvent: [],
@@ -72,7 +70,6 @@ export const saveCache = async (cache: Cache) => {
     store.bulkCreate(`BundleSubmission`, cache.bundleSubmission),
     store.bulkCreate(`DomainInstantiation`, cache.domainInstantiation),
     store.bulkCreate(`OperatorRegistration`, cache.operatorRegistration),
-    store.bulkCreate(`OperatorStakingHistory`, cache.operatorStakingHistory),
     store.bulkCreate(`OperatorReward`, cache.operatorReward),
     store.bulkCreate(`OperatorTaxCollection`, cache.operatorTaxCollection),
     store.bulkCreate(`OperatorDeregistration`, cache.operatorDeregistration),
@@ -308,8 +305,8 @@ export function createOperatorStakingHistory(
   partialStatus: string,
   timestamp: Date,
   blockHeight: bigint
-): OperatorStakingHistory {
-  return OperatorStakingHistory.create({
+): any {
+  return {
     id: hash,
     operatorId,
     operatorOwner,
@@ -324,7 +321,7 @@ export function createOperatorStakingHistory(
     partialStatus,
     timestamp,
     blockHeight,
-  });
+  };
 }
 
 export function createOperatorEpochSharePrice(
