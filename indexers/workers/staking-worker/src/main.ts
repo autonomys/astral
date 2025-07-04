@@ -1,10 +1,8 @@
 import { config, validateConfig } from './config';
+import { refreshChainHeadHeight } from './core';
 import { StakingProcessingTask } from './interfaces';
-import { connectAutonomysApi, disconnectAutonomysApi } from './services/autonomysService';
-import { connectDb, disconnectDb, ensureDbConnection } from './services/database/connection';
-import { fetchStakingTasks } from './services/database/dbService';
-import { connectRedis, disconnectRedis, getChainTip } from './services/redisService';
-import { processBatchTasks, refreshChainHeadHeight } from './worker';
+import { connectAutonomysApi, connectDb, connectRedis, disconnectAutonomysApi, disconnectDb, disconnectRedis, ensureDbConnection, getChainTip } from './services';
+import { fetchStakingTasks, processBatchTasks } from './worker';
 
 let isShuttingDown = false;
 let mainLoopInterval: NodeJS.Timeout | null = null;
