@@ -96,6 +96,7 @@ type NominatorsUnlockedEvent @entity {
   id: ID!
   domainId: String!
   operatorId: String!
+  address: String! @index
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!

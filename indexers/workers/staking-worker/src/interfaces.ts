@@ -1,7 +1,7 @@
 // Interfaces for staking worker
 
 export interface StakingProcessingTask {
-  type: 'deposit' | 'withdrawal' | 'unlock' | 'operator-registration' | 'operator-reward' | 'operator-tax' | 'bundle-submission' | 'operator-deregistration';
+  type: 'deposit' | 'withdrawal' | 'unlock' | 'operator-registration' | 'operator-reward' | 'operator-tax' | 'bundle-submission' | 'operator-deregistration' | 'nominators-unlocked';
   id: string;
   operatorId: string;
   domainId: string;
@@ -34,6 +34,14 @@ export interface UnlockTask extends StakingProcessingTask {
   nominatorId: string;
   amount: string;
   storageFee: string;
+  eventId: string;
+}
+
+export interface NominatorsUnlockedTask extends StakingProcessingTask {
+  type: 'nominators-unlocked';
+  address: string; // The address that called unlock_nominator (from extrinsicSigner)
+  blockHeight: string;
+  extrinsicId: string;
   eventId: string;
 }
 
@@ -153,7 +161,9 @@ export interface OperatorUpdates {
   totalTaxToAdd?: string;
   bundleCountToAdd?: number;
   deregistered?: boolean;
+  unlockAtConfirmedDomainBlockNumber?: string;
+  deregistrationDomainEpoch?: string;
 }
 
 // Union type for all staking tasks
-export type AnyStakingTask = DepositTask | WithdrawalTask | UnlockTask | OperatorRegistrationTask | OperatorRewardTask | OperatorTaxCollectionTask | BundleSubmissionTask | OperatorDeregistrationTask;
+export type AnyStakingTask = DepositTask | WithdrawalTask | UnlockTask | OperatorRegistrationTask | OperatorRewardTask | OperatorTaxCollectionTask | BundleSubmissionTask | OperatorDeregistrationTask | NominatorsUnlockedTask;

@@ -69,6 +69,35 @@ export const fetchUnprocessedWithdrawals = async (limit: number, maxBlockHeight?
 };
 
 /**
+ * Fetch unprocessed nominators unlocked events from the database that are finalized
+ */
+export const fetchUnprocessedNominatorsUnlockedEvents = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+  let queryText = `
+    SELECT 
+      id, domain_id, operator_id, address,
+      block_height, extrinsic_id, event_id
+    FROM staking.nominators_unlocked_events
+    WHERE processed = false
+  `;
+  
+  const params: any[] = [];
+  
+  // Only fetch events below the finality threshold
+  if (maxBlockHeight !== undefined) {
+    queryText += ` AND block_height <= $1`;
+    params.push(maxBlockHeight);
+    queryText += ` ORDER BY block_height ASC LIMIT $2`;
+    params.push(limit);
+  } else {
+    queryText += ` ORDER BY block_height ASC LIMIT $1`;
+    params.push(limit);
+  }
+  
+  const result = await query(queryText, params);
+  return result.rows;
+};
+
+/**
  * Fetch unprocessed unlock events from the database that are finalized
  */
 export const fetchUnprocessedUnlocks = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
@@ -313,8 +342,8 @@ export const getEpochSharePrice = async (
 export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: number): Promise<any[]> => {
   const tasks: any[] = [];
   
-  // Calculate batch size for each type (split evenly between 8 types now)
-  const taskTypes = 8;
+  // Calculate batch size for each type (split evenly between 9 types now)
+  const taskTypes = 9;
   const baseLimit = Math.floor(batchSize / taskTypes);
   const unlocksLimit = baseLimit;
   const depositsLimit = baseLimit;
@@ -323,7 +352,8 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
   const operatorRewardsLimit = baseLimit;
   const operatorTaxLimit = baseLimit;
   const bundleSubmissionsLimit = baseLimit;
-  const operatorDeregistrationsLimit = batchSize - (baseLimit * 7); // Take any remainder
+  const operatorDeregistrationsLimit = baseLimit;
+  const nominatorsUnlockedLimit = batchSize - (baseLimit * 8); // Take any remainder
   
   try {
     // Fetch unprocessed deposits
@@ -489,8 +519,26 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
       });
     }
     
+    // Fetch unprocessed nominators unlocked events
+    const nominatorsUnlockedEvents = await fetchUnprocessedNominatorsUnlockedEvents(nominatorsUnlockedLimit, maxBlockHeight);
+    
+    // Convert to NominatorsUnlockedTask format
+    for (const event of nominatorsUnlockedEvents) {
+      tasks.push({
+        type: 'nominators-unlocked',
+        id: event.id,
+        operatorId: event.operator_id,
+        domainId: event.domain_id,
+        address: event.address,
+        blockHeight: event.block_height,
+        extrinsicId: event.extrinsic_id,
+        eventId: event.event_id,
+        timestamp: new Date()
+      });
+    }
+    
     if (tasks.length > 0) {
-      console.log(`Fetched ${tasks.length} tasks (${deposits.length} deposits, ${withdrawals.length} withdrawals, ${unlocks.length} unlocks, ${operatorRegistrations.length} registrations, ${operatorRewards.length} rewards, ${operatorTaxCollections.length} tax collections, ${bundleSubmissions.length} bundles, ${operatorDeregistrations.length} deregistrations)`);
+      console.log(`Fetched ${tasks.length} tasks (${deposits.length} deposits, ${withdrawals.length} withdrawals, ${unlocks.length} unlocks, ${operatorRegistrations.length} registrations, ${operatorRewards.length} rewards, ${operatorTaxCollections.length} tax collections, ${bundleSubmissions.length} bundles, ${operatorDeregistrations.length} deregistrations, ${nominatorsUnlockedEvents.length} nominators unlocked)`);
     }
   } catch (error) {
     console.error('Error fetching staking tasks from database:', error);
@@ -688,7 +736,7 @@ export const upsertOperator = async (
   updates: OperatorUpdates,
   client?: PoolClient
 ): Promise<void> => {
-  const { operatorId, registration, totalRewardsToAdd, totalTaxToAdd, bundleCountToAdd, deregistered } = updates;
+  const { operatorId, registration, totalRewardsToAdd, totalTaxToAdd, bundleCountToAdd, deregistered, unlockAtConfirmedDomainBlockNumber, deregistrationDomainEpoch } = updates;
   
   // If this is a registration, try to insert first
   if (registration) {
@@ -741,6 +789,14 @@ export const upsertOperator = async (
   
   if (deregistered) {
     updateParts.push(`status = 'deregistered'`);
+    if (unlockAtConfirmedDomainBlockNumber) {
+      updateParts.push(`unlock_at_confirmed_domain_block_number = $${++paramCount}::numeric`);
+      updateParams.push(unlockAtConfirmedDomainBlockNumber);
+    }
+    if (deregistrationDomainEpoch) {
+      updateParts.push(`deregistration_domain_epoch = $${++paramCount}::numeric`);
+      updateParams.push(deregistrationDomainEpoch);
+    }
   }
   
   // Always update the updated_at timestamp
@@ -762,6 +818,118 @@ export const upsertOperator = async (
     } else {
       await query(updateQuery, updateParams);
     }
+  }
+};
+
+/**
+ * Mark nominators unlocked event as processed
+ */
+export const markNominatorsUnlockedEventAsProcessed = async (eventId: string, client?: PoolClient): Promise<void> => {
+  const queryText = 'UPDATE staking.nominators_unlocked_events SET processed = true WHERE event_id = $1';
+  
+  if (client) {
+    await client.query(queryText, [eventId]);
+  } else {
+    await query(queryText, [eventId]);
+  }
+};
+
+/**
+ * Get operator deregistration info
+ */
+export const getOperatorDeregistrationInfo = async (
+  operatorId: string,
+  client?: PoolClient
+): Promise<{ unlockBlock: string | null; deregistrationEpoch: string | null } | null> => {
+  const queryText = `
+    SELECT unlock_at_confirmed_domain_block_number, deregistration_domain_epoch
+    FROM staking.operators
+    WHERE id = $1 AND status = 'deregistered'
+  `;
+  
+  const result = client 
+    ? await client.query(queryText, [operatorId])
+    : await query(queryText, [operatorId]);
+  
+  if (result.rows.length === 0) {
+    return null;
+  }
+  
+  return {
+    unlockBlock: result.rows[0].unlock_at_confirmed_domain_block_number,
+    deregistrationEpoch: result.rows[0].deregistration_domain_epoch
+  };
+};
+
+/**
+ * Get a specific nominator's data to process their unlock after operator deregistration
+ * THIS IS NOT COMPLETE YET. THE known_shares and known_storage_fee_deposit values include the withdrew amount but not unlocked/claimed yet.
+ */
+export const fetchNominatorForUnlock = async (
+  address: string,
+  operatorId: string,
+  domainId: string,
+  client?: PoolClient
+): Promise<any | null> => {
+  const nominatorId = `${address}-${domainId}-${operatorId}`;
+  const queryText = `
+    SELECT 
+      id, address, domain_id, operator_id,
+      known_shares, known_storage_fee_deposit,
+      unlock_at_confirmed_domain_block_number,
+      status
+    FROM staking.nominators
+    WHERE id = $1
+  `;
+  
+  const result = client
+    ? await client.query(queryText, [nominatorId])
+    : await query(queryText, [nominatorId]);
+  
+  return result.rows.length > 0 ? result.rows[0] : null;
+};
+
+/**
+ * Update nominator when they unlock after operator deregistration
+ */
+export const updateNominatorForOperatorDeregistration = async (
+  nominatorId: string,
+  unlockBlock: string,
+  amount: string,
+  storageFeeRefund: string,
+  client?: PoolClient
+): Promise<void> => {
+  // Build the new unlock entry
+  const newUnlockEntry = {
+    block: unlockBlock,
+    amount: amount,
+    storageFeeRefund: storageFeeRefund
+  };
+  
+  const updateQuery = `
+    UPDATE staking.nominators
+    SET 
+      unlock_at_confirmed_domain_block_number = 
+        CASE 
+          WHEN jsonb_typeof(unlock_at_confirmed_domain_block_number) = 'array' 
+          THEN unlock_at_confirmed_domain_block_number || $1::jsonb
+          ELSE jsonb_build_array(unlock_at_confirmed_domain_block_number, $1::jsonb)
+        END,
+      status = 'inactive',
+      updated_at = $2
+    WHERE id = $3
+  `;
+  
+  const params = [
+    JSON.stringify(newUnlockEntry),
+    Date.now(),
+    nominatorId
+  ];
+  
+  if (client) {
+    await client.query(updateQuery, params);
+  } else {
+    await query(updateQuery, params);
   }
 };
 

@@ -1,19 +1,19 @@
 import { Operator, Withdrawal } from "@autonomys/auto-consensus";
 import {
-  BundleSubmission,
-  DomainInstantiation,
-  NominatorDeposit,
-  NominatorsUnlockedEvent,
-  NominatorWithdrawal,
-  OperatorDeregistration,
-  OperatorEpochSharePrice,
-  OperatorRegistration,
-  OperatorReward,
-  OperatorStakingHistory,
-  OperatorTaxCollection,
-  RuntimeCreation,
-  StorageFundAccount,
-  UnlockedEvent,
+    BundleSubmission,
+    DomainInstantiation,
+    NominatorDeposit,
+    NominatorsUnlockedEvent,
+    NominatorWithdrawal,
+    OperatorDeregistration,
+    OperatorEpochSharePrice,
+    OperatorRegistration,
+    OperatorReward,
+    OperatorStakingHistory,
+    OperatorTaxCollection,
+    RuntimeCreation,
+    StorageFundAccount,
+    UnlockedEvent,
 } from "../types";
 import { getNominationId } from "./utils";
 
@@ -229,6 +229,7 @@ export function createUnlockedEvent(
 export function createNominatorsUnlockedEvent(
   domainId: string,
   operatorId: string,
+  address: string,
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string
@@ -237,6 +238,7 @@ export function createNominatorsUnlockedEvent(
     id: eventId,
     domainId,
     operatorId,
+    address,
     blockHeight,
     extrinsicId,
     eventId,

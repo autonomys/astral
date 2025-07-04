@@ -293,6 +293,8 @@ CREATE TABLE staking.operators (
     total_rewards_collected numeric NOT NULL,
     bundle_count numeric NOT NULL,
     status text NOT NULL,
+    unlock_at_confirmed_domain_block_number numeric DEFAULT NULL,
+    deregistration_domain_epoch numeric DEFAULT NULL,
     created_at numeric NOT NULL,
     updated_at numeric NOT NULL
 );
@@ -341,6 +343,7 @@ CREATE TABLE staking.nominators_unlocked_events (
     id text NOT NULL,
     domain_id text NOT NULL,
     operator_id text NOT NULL,
+    address text NOT NULL,
     block_height numeric NOT NULL,
     extrinsic_id text NOT NULL,
     event_id text NOT NULL,
@@ -469,6 +472,7 @@ CREATE INDEX "0x6414082d1dcaa951" ON staking.domain_instantiations USING btree (
 CREATE INDEX "staking_nominators_unlocked_events_id" ON staking.nominators_unlocked_events USING btree (id);
 CREATE INDEX "staking_nominators_unlocked_events_domain_id" ON staking.nominators_unlocked_events USING btree (domain_id);
 CREATE INDEX "staking_nominators_unlocked_events_operator_id" ON staking.nominators_unlocked_events USING btree (operator_id);
+CREATE INDEX "staking_nominators_unlocked_events_address" ON staking.nominators_unlocked_events USING btree (address);
 CREATE INDEX "staking_nominators_unlocked_events_processed" ON staking.nominators_unlocked_events USING btree (processed);
 -- Partial index for efficient fetching of unprocessed events
 CREATE INDEX "staking_nominators_unlocked_events_unprocessed" ON staking.nominators_unlocked_events USING btree (processed, block_height) WHERE processed = false;

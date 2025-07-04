@@ -260,6 +260,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     height,
     extrinsicId,
     eventId,
+    extrinsicSigner,
   }) => {
     const operatorId = event.event.data[0].toString();
     const domainId = findDomainIdFromOperatorsCache(cache, operatorId);
@@ -268,6 +269,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       db.createNominatorsUnlockedEvent(
         domainId,
         operatorId,
+        extrinsicSigner,
         height,
         extrinsicId,
         eventId

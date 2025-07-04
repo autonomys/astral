@@ -4,6 +4,7 @@ import {
   BundleSubmissionTask,
   ConversionResult,
   DepositTask,
+  NominatorsUnlockedTask,
   OperatorDeregistrationTask,
   OperatorRegistrationTask,
   OperatorRewardTask,
@@ -13,14 +14,18 @@ import {
   UnlockTask,
   WithdrawalTask
 } from './interfaces';
-import { getChainHead } from './services/autonomysService';
+import { getBlockHash, getChainHead, queryOperatorById } from './services/autonomysService';
 import {
+  fetchNominatorForUnlock,
   getEpochSharePrice,
+  getOperatorDeregistrationInfo,
   markDepositAsProcessed,
+  markNominatorsUnlockedEventAsProcessed,
   markOperatorEventsAsProcessed,
   markUnlockAsProcessed,
   markWithdrawalAsProcessed,
   updateNominatorAfterUnlock,
+  updateNominatorForOperatorDeregistration,
   upsertNominatorAfterDeposit,
   upsertNominatorAfterWithdrawal,
   upsertOperator,
@@ -67,6 +72,7 @@ export const processBatchTasks = async (tasks: StakingProcessingTask[]): Promise
   const depositTasks = tasks.filter(t => t.type === 'deposit') as DepositTask[];
   const withdrawalTasks = tasks.filter(t => t.type === 'withdrawal') as WithdrawalTask[];
   const unlockTasks = tasks.filter(t => t.type === 'unlock') as UnlockTask[];
+  const nominatorsUnlockedTasks = tasks.filter(t => t.type === 'nominators-unlocked') as NominatorsUnlockedTask[];
   
   // Group operator tasks by operatorId for consolidated processing
   const operatorTasks = tasks.filter(t => 
@@ -82,10 +88,11 @@ export const processBatchTasks = async (tasks: StakingProcessingTask[]): Promise
     depositTasks.length > 0 ? processDepositBatch(depositTasks) : Promise.resolve(0),
     withdrawalTasks.length > 0 ? processWithdrawalBatch(withdrawalTasks) : Promise.resolve(0),
     unlockTasks.length > 0 ? processUnlockBatch(unlockTasks) : Promise.resolve(0),
-    operatorTasks.length > 0 ? processOperatorTasksBatch(operatorTasks) : Promise.resolve(0)
+    operatorTasks.length > 0 ? processOperatorTasksBatch(operatorTasks) : Promise.resolve(0),
+    nominatorsUnlockedTasks.length > 0 ? processNominatorsUnlockedBatch(nominatorsUnlockedTasks) : Promise.resolve(0)
   ]);
   
-  successCount = results.reduce((sum, count) => sum + count, 0);
+  successCount = results.reduce((sum: number, count: number) => sum + count, 0);
   
   monitor.endBatch(batchId, successCount);
   
@@ -460,6 +467,105 @@ const processUnlockClaim = async (task: UnlockTask, client: PoolClient): Promise
 };
 
 /**
+ * Process a batch of nominators unlocked tasks
+ */
+const processNominatorsUnlockedBatch = async (tasks: NominatorsUnlockedTask[]): Promise<number> => {
+  const batchId = `nominators-unlocked-${Date.now()}`;
+  const parallelism = Math.floor(config.dbPoolSize * 0.6);
+  
+  monitor.startBatch(batchId, 'nominators-unlocked', tasks.length, parallelism);
+  
+  // Process nominators unlocked events in parallel
+  const results = await processInParallel(
+    tasks,
+    async (task) => {
+      try {
+        await retryWithBackoff(async () => {
+          await withTransaction(async (client: PoolClient) => {
+            await processNominatorUnlocked(task, client);
+          });
+        });
+        return true;
+      } catch (error) {
+        console.error(`Failed to process nominators unlocked ${task.eventId}:`, error);
+        if (error instanceof Error && 'code' in error) {
+          console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+        }
+        return false;
+      }
+    },
+    parallelism
+  );
+  
+  const successCount = results.filter(success => success).length;
+  monitor.endBatch(batchId, successCount);
+  
+  return successCount;
+};
+
+/**
+ * Process individual nominator unlocked event (after operator deregistration)
+ */
+const processNominatorUnlocked = async (task: NominatorsUnlockedTask, client: PoolClient): Promise<void> => {
+  const { operatorId, domainId, address, eventId } = task;
+  
+  console.log(`Processing nominator unlocked for address ${address} on operator ${operatorId} in domain ${domainId}`);
+  
+  // Get operator deregistration info
+  const operatorInfo = await getOperatorDeregistrationInfo(operatorId, client);
+  
+  if (!operatorInfo || !operatorInfo.unlockBlock || !operatorInfo.deregistrationEpoch) {
+    console.error(`Operator ${operatorId} deregistration info not found or incomplete`);
+    // Mark as processed anyway to avoid stuck events
+    await markNominatorsUnlockedEventAsProcessed(eventId, client);
+    return;
+  }
+  
+  // Fetch the nominator's current state
+  const nominator = await fetchNominatorForUnlock(address, operatorId, domainId, client);
+  
+  if (!nominator) {
+    console.warn(`Nominator ${address} not found for operator ${operatorId}`);
+    // It's possible the nominator doesn't exist in our table yet if they never had deposits converted
+    // Mark as processed to avoid stuck events
+    await markNominatorsUnlockedEventAsProcessed(eventId, client);
+    return;
+  }
+  
+  // Get the share price at the deregistration epoch
+  const sharePrice = await getEpochSharePrice(operatorId, domainId, operatorInfo.deregistrationEpoch, client);
+  
+  if (!sharePrice) {
+    console.error(`Share price not available for epoch ${operatorInfo.deregistrationEpoch}, operator ${operatorId}, domain ${domainId}`);
+    // Don't mark as processed - we'll retry later when share price is available
+    return;
+  }
+  
+  const sharePriceBigInt = BigInt(sharePrice);
+  const knownShares = BigInt(nominator.known_shares);
+  const knownStorageFee = BigInt(nominator.known_storage_fee_deposit);
+  
+  // Calculate the amount based on shares and share price
+  const amount = (knownShares * sharePriceBigInt) / SHARES_CALCULATION_MULTIPLIER;
+  
+  console.log(`Updating nominator ${nominator.id} for operator deregistration: shares=${knownShares.toString()}, amount=${amount.toString()}, storageFee=${knownStorageFee.toString()}`);
+  
+  // Update the nominator with the calculated amount
+  await updateNominatorForOperatorDeregistration(
+    nominator.id,
+    operatorInfo.unlockBlock,
+    amount.toString(),
+    knownStorageFee.toString(),
+    client
+  );
+  
+  // Mark the event as processed
+  await markNominatorsUnlockedEventAsProcessed(eventId, client);
+  
+  console.log(`Successfully processed nominator unlocked for ${address} on operator ${operatorId}`);
+};
+
+/**
  * Process a batch of operator tasks using grouped parallel processing
  */
 const processOperatorTasksBatch = async (tasks: StakingProcessingTask[]): Promise<number> => {
@@ -566,6 +672,32 @@ const processOperatorTasksInTransaction = async (
       case 'operator-deregistration': {
         const deregTask = task as OperatorDeregistrationTask;
         updates.deregistered = true;
+        
+        // Fetch operator data at the block where deregistration happened
+        try {
+          const blockHash = await getBlockHash(BigInt(deregTask.blockHeight));
+          const operatorData = await queryOperatorById(operatorId, blockHash);
+          
+          if (operatorData && operatorData.partialStatus && operatorData.partialStatus.deregistered) {
+            const deregistered = operatorData.partialStatus.deregistered;
+            
+            // Extract unlock block number
+            if (deregistered.unlockAtConfirmedDomainBlockNumber) {
+              updates.unlockAtConfirmedDomainBlockNumber = deregistered.unlockAtConfirmedDomainBlockNumber.toString();
+              console.log(`Operator ${operatorId} will unlock at domain block ${deregistered.unlockAtConfirmedDomainBlockNumber}`);
+            }
+            
+            // Extract domain epoch (second element of the array)
+            if (deregistered.domainEpoch && Array.isArray(deregistered.domainEpoch) && deregistered.domainEpoch.length >= 2) {
+              updates.deregistrationDomainEpoch = deregistered.domainEpoch[1].toString();
+              console.log(`Operator ${operatorId} deregistered at domain epoch ${deregistered.domainEpoch[1]}`);
+            }
+          }
+        } catch (error) {
+          console.error(`Failed to fetch operator data for deregistration ${operatorId}:`, error);
+          // Continue processing even if we can't get the unlock block
+        }
+        
         eventIdsByType.deregistrationIds.push(deregTask.id);
         console.log(`Including deregistration for operator ${operatorId}`);
         break;

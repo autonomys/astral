@@ -87,13 +87,35 @@ export const queryOperators = async (): Promise<any[]> => {
 };
 
 /**
- * Query operator by ID
+ * Query operator by ID at a specific block
+ * @param operatorId The operator ID to query
+ * @param blockHash The block hash to query at (optional, uses latest if not provided)
  */
-export const queryOperatorById = async (operatorId: string): Promise<any | null> => {
+export const queryOperatorById = async (operatorId: string, blockHash?: string): Promise<any | null> => {
   const api = getAutonomysApi();
-  // TODO: Implement single operator query
-  console.log(`Querying operator ${operatorId} from chain...`);
-  return null;
+  
+  try {
+    let operatorData;
+    if (blockHash) {
+      // Query at specific block
+      const apiAt = await api.at(blockHash);
+      operatorData = await apiAt.query.domains.operators(operatorId);
+    } else {
+      // Query at latest block
+      operatorData = await api.query.domains.operators(operatorId);
+    }
+    
+    // Check if operator exists
+    if (operatorData.isEmpty) {
+      console.log(`Operator ${operatorId} not found`);
+      return null;
+    }
+    
+    return operatorData.toJSON();
+  } catch (error) {
+    console.error(`Failed to query operator ${operatorId}:`, error);
+    throw error;
+  }
 };
 
 /**
