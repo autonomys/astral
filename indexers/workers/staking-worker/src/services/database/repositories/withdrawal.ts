@@ -97,25 +97,27 @@ export const upsertNominatorAfterWithdrawal = async (
   totalWithdrawals: string,
   storageFeeRefund: string,
   unlockBlocks: any[],
+  withdrawnShares: string,
   client?: PoolClient
 ): Promise<void> => {
   const queryText = `
     INSERT INTO staking.nominators (
       id, address, domain_id, operator_id,
-      known_shares, known_storage_fee_deposit,
+      known_shares, withdrawn_shares, known_storage_fee_deposit,
       total_deposits, total_deposits_count,
       total_withdrawals, total_withdrawals_count,
       total_storage_fee_refund,
       total_claimed_amount, total_claimed_storage_fee,
       unlock_at_confirmed_domain_block_number,
       status, created_at, updated_at
-    ) VALUES ($1, $2, $3, $4, 0, 0, 0, 0, $5, 1, $6, 0, 0, $7::jsonb, 'active', $8, $8)
+    ) VALUES ($1, $2, $3, $4, 0, $5, 0, 0, 0, $6, 1, $7, 0, 0, $8::jsonb, 'active', $9, $9)
     ON CONFLICT (id) DO UPDATE SET
-      total_withdrawals = $5,
+      total_withdrawals = $6,
       total_withdrawals_count = nominators.total_withdrawals_count + 1,
-      total_storage_fee_refund = $6,
-      unlock_at_confirmed_domain_block_number = $7::jsonb,
-      updated_at = $8
+      total_storage_fee_refund = $7,
+      withdrawn_shares = nominators.withdrawn_shares + $5,
+      unlock_at_confirmed_domain_block_number = $8::jsonb,
+      updated_at = $9
   `;
   
   const params = [
@@ -123,10 +125,11 @@ export const upsertNominatorAfterWithdrawal = async (
     address,                                  // $2 - address
     domainId,                                 // $3 - domain_id
     operatorId,                               // $4 - operator_id
-    totalWithdrawals,                         // $5 - total_withdrawals
-    storageFeeRefund,                         // $6 - total_storage_fee_refund
-    JSON.stringify(unlockBlocks),             // $7 - unlock_at_confirmed_domain_block_number
-    Date.now()                                // $8 - created_at, updated_at
+    withdrawnShares,                          // $5 - withdrawn_shares
+    totalWithdrawals,                         // $6 - total_withdrawals
+    storageFeeRefund,                         // $7 - total_storage_fee_refund
+    JSON.stringify(unlockBlocks),             // $8 - unlock_at_confirmed_domain_block_number
+    Date.now()                                // $9 - created_at, updated_at
   ];
   
   if (client) {

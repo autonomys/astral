@@ -124,6 +124,7 @@ export interface NominatorState {
   domainId: string;
   operatorId: string;
   knownShares: string;
+  withdrawnShares: string;
   knownStorageFeeDeposit: string;
   pendingAmount: string;
   pendingStorageFeeDeposit: string;

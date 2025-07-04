@@ -122,6 +122,7 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
         amount: w.amountToUnlock.toString(),
         storageFeeRefund: w.storageFeeRefund.toString()
       })),
+      '0', // No new shares withdrawn in this case
       client
     );
 
@@ -182,6 +183,7 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
     updatedTotalWithdrawalAmount.toString(),
     withdrawalData.totalStorageFeeWithdrawal.toString(),
     unlockBlocks,
+    newSharesAmount.toString(), // Track the shares being withdrawn
     client
   );
 

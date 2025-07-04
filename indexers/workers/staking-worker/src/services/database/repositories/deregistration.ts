@@ -63,6 +63,7 @@ export const updateNominatorForOperatorDeregistration = async (
   unlockBlock: string,
   amount: string,
   storageFeeRefund: string,
+  remainingShares: string,
   client?: PoolClient
 ): Promise<void> => {
   // Build the new unlock entry
@@ -81,13 +82,15 @@ export const updateNominatorForOperatorDeregistration = async (
           THEN unlock_at_confirmed_domain_block_number || $1::jsonb
           ELSE jsonb_build_array(unlock_at_confirmed_domain_block_number, $1::jsonb)
         END,
+      withdrawn_shares = withdrawn_shares + $2,
       status = 'inactive',
-      updated_at = $2
-    WHERE id = $3
+      updated_at = $3
+    WHERE id = $4
   `;
   
   const params = [
     JSON.stringify(newUnlockEntry),
+    remainingShares,
     Date.now(),
     nominatorId
   ];

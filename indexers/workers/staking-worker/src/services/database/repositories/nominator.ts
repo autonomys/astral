@@ -17,7 +17,7 @@ export const fetchNominatorForUnlock = async (
   const queryText = `
     SELECT 
       id, address, domain_id, operator_id,
-      known_shares, known_storage_fee_deposit,
+      known_shares, withdrawn_shares, known_storage_fee_deposit,
       unlock_at_confirmed_domain_block_number,
       status
     FROM staking.nominators

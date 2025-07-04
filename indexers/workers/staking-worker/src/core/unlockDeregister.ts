@@ -83,12 +83,23 @@ const processNominatorUnlocked = async (task: NominatorsUnlockedTask, client: Po
   
   const sharePriceBigInt = BigInt(sharePrice);
   const knownShares = BigInt(nominator.known_shares);
+  const withdrawnShares = BigInt(nominator.withdrawn_shares || '0');
   const knownStorageFee = BigInt(nominator.known_storage_fee_deposit);
   
-  // Calculate the amount based on shares and share price
-  const amount = (knownShares * sharePriceBigInt) / SHARES_CALCULATION_MULTIPLIER;
+  // Calculate remaining shares (known_shares - withdrawn_shares)
+  const remainingShares = knownShares - withdrawnShares;
   
-  console.log(`Updating nominator ${nominator.id} for operator deregistration: shares=${knownShares.toString()}, amount=${amount.toString()}, storageFee=${knownStorageFee.toString()}`);
+  if (remainingShares <= BigInt(0)) {
+    console.log(`Nominator ${nominator.id} has no remaining shares to unlock`);
+    // Still mark as processed
+    await dbService.markNominatorsUnlockedEventAsProcessed(eventId, client);
+    return;
+  }
+  
+  // Calculate the amount based on remaining shares and share price
+  const amount = (remainingShares * sharePriceBigInt) / SHARES_CALCULATION_MULTIPLIER;
+  
+  console.log(`Updating nominator ${nominator.id} for operator deregistration: remainingShares=${remainingShares.toString()}, amount=${amount.toString()}, storageFee=${knownStorageFee.toString()}`);
   
   // Update the nominator with the calculated amount
   await dbService.updateNominatorForOperatorDeregistration(
@@ -96,6 +107,7 @@ const processNominatorUnlocked = async (task: NominatorsUnlockedTask, client: Po
     operatorInfo.unlockBlock,
     amount.toString(),
     knownStorageFee.toString(),
+    remainingShares.toString(),
     client
   );
   

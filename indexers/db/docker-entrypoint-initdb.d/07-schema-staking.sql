@@ -181,6 +181,7 @@ CREATE TABLE staking.nominators (
     total_deposits numeric NOT NULL,
     total_withdrawals numeric NOT NULL,
     known_shares numeric NOT NULL,
+    withdrawn_shares numeric NOT NULL DEFAULT 0,
     known_storage_fee_deposit numeric NOT NULL,
     total_storage_fee_refund numeric NOT NULL,
     total_deposits_count numeric NOT NULL,

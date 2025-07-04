@@ -64,14 +64,14 @@ export const upsertNominatorAfterDeposit = async (
   const queryText = `
     INSERT INTO staking.nominators (
       id, address, domain_id, operator_id,
-      known_shares, known_storage_fee_deposit,
+      known_shares, withdrawn_shares, known_storage_fee_deposit,
       total_deposits, total_deposits_count,
       total_withdrawals, total_withdrawals_count,
       total_storage_fee_refund,
       total_claimed_amount, total_claimed_storage_fee,
       unlock_at_confirmed_domain_block_number,
       status, created_at, updated_at
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7::numeric, $8, 0, 0, 0, 0, 0, '[]'::jsonb, 'active', $9, $9)
+    ) VALUES ($1, $2, $3, $4, $5, 0, $6, $7::numeric, $8, 0, 0, 0, 0, 0, '[]'::jsonb, 'active', $9, $9)
     ON CONFLICT (id) DO UPDATE SET
       known_shares = $5,
       known_storage_fee_deposit = $6,
