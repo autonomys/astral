@@ -2,13 +2,13 @@
 
 import { numberWithCommas } from '@/utils/number'
 import { useQuery, useSubscription } from '@apollo/client'
-import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
+import { capitalizeFirstLetter, isHex, shortString } from '@autonomys/auto-utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { TableSettings } from 'components/common/TableSettings'
 import { Tooltip } from 'components/common/Tooltip'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   ExtrinsicsByBlockHashDocument,
   ExtrinsicsByBlockHashQuery,
@@ -21,7 +21,8 @@ import {
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
-import { FC, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
+import { FC, useCallback, useMemo } from 'react'
 import { useTableSettings } from 'states/tables'
 import { Cell, ExtrinsicsFilters } from 'types/table'
 import { getTableColumns } from 'utils/table'
@@ -35,6 +36,7 @@ const MAX_RECORDS = 500000
 
 export const ExtrinsicList: FC = () => {
   const { network, section } = useIndexers()
+  const { push } = useRouter()
 
   const {
     pagination,
@@ -45,6 +47,22 @@ export const ExtrinsicList: FC = () => {
     onPaginationChange,
     onSortingChange,
   } = useTableSettings<ExtrinsicsFilters>(TABLE)
+
+  // Handle custom search for unique identifiers
+  const handleSearchSubmit = useCallback(
+    (columnName: string, value: string): boolean => {
+      if (value.trim()) {
+        // Extrinsic hash search - navigate directly
+        if (columnName === 'extrinsicHash' && isHex(value.trim())) {
+          push(INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, value.trim()))
+          return true // Handled
+        }
+      }
+
+      return false // Not handled, use default behavior
+    },
+    [network, push],
+  )
 
   const variables = useMemo(
     () => ({
@@ -180,6 +198,7 @@ export const ExtrinsicList: FC = () => {
           table={TABLE}
           filters={filters}
           overrideFiltersOptions={[]}
+          onSearchSubmit={handleSearchSubmit}
           totalCount={`(${numberWithCommas(currentTotalRecords)}${currentTotalRecords === MAX_RECORDS && Object.keys(stringForSearch).length === 0 ? '+' : ''})`}
         />
         <SortedTable
