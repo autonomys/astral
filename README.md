@@ -2,7 +2,7 @@
 
 ![Autonomys Banner](https://github.com/autonomys/astral/blob/main/.github/images/autonomys-banner.webp)
 
-![build](https://github.com/autonomys/astral/actions/workflows/build.yaml/badge.svg)
+[![build](https://github.com/autonomys/astral/actions/workflows/build.yaml/badge.svg)](https://github.com/autonomys/astral/actions/workflows/build.yaml)
 
 - [Astral Block Explorer](https://explorer.autonomys.xyz/) Astral Block Explorer
 

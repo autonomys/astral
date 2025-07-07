@@ -8,11 +8,10 @@ This is a public API for the Autonomys Network, built with NestJS and documented
 
 ## Table of content
 
-- [🏄 Get Started](#get-started)
-- [🔩 Requirements](#requirements)
-- [🛳 Build](#build)
-- [🔧 Environment Variables](#-environment-variables)
-- [📜 API Documentation](#api-documentation)
+- [🏄 Get Started](#-get-started)
+- [🔩 Requirements](#-requirements)
+- [🛳 Build](#-build)
+- [📜 API Documentation](#-api-documentation)
 
 ## 🏄 Get Started
 
