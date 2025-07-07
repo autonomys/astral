@@ -4,6 +4,9 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import {
+  ExtrinsicsByHashDocument,
+  ExtrinsicsByHashQuery,
+  ExtrinsicsByHashQueryVariables,
   ExtrinsicsByIdDocument,
   ExtrinsicsByIdQuery,
   ExtrinsicsByIdQueryVariables,
@@ -26,13 +29,16 @@ export const Extrinsic: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1440px)')
   const isLargeDesktop = useMediaQuery('(min-width: 1440px)')
 
+  // Detect if extrinsicId is a hash (0x...) or numeric ID
+  const isHash = useMemo(() => extrinsicId?.startsWith('0x'), [extrinsicId])
+
   const { loading, setIsVisible } = useIndexersQuery<
-    ExtrinsicsByIdQuery,
-    ExtrinsicsByIdQueryVariables
+    ExtrinsicsByIdQuery | ExtrinsicsByHashQuery,
+    ExtrinsicsByIdQueryVariables | ExtrinsicsByHashQueryVariables
   >(
-    ExtrinsicsByIdDocument,
+    isHash ? ExtrinsicsByHashDocument : ExtrinsicsByIdDocument,
     {
-      variables: { extrinsicId: extrinsicId ?? '' },
+      variables: isHash ? { extrinsicHash: extrinsicId ?? '' } : { extrinsicId: extrinsicId ?? '' },
       skip: !inFocus,
     },
     Routes.consensus,

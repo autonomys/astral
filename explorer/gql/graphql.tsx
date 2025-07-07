@@ -27467,6 +27467,13 @@ export type ExtrinsicsByIdQueryVariables = Exact<{
 
 export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, section: string, module: string, timestamp: any, success: boolean, signature: string, signer: string, args: any, events_count: number }> };
 
+export type ExtrinsicsByHashQueryVariables = Exact<{
+  extrinsicHash: Scalars['String']['input'];
+}>;
+
+
+export type ExtrinsicsByHashQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, section: string, module: string, timestamp: any, success: boolean, signature: string, signer: string, args: any, events_count: number }> };
+
 export type EventsByExtrinsicIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
   limit: Scalars['Int']['input'];
@@ -29120,6 +29127,56 @@ export type ExtrinsicsByIdQueryHookResult = ReturnType<typeof useExtrinsicsByIdQ
 export type ExtrinsicsByIdLazyQueryHookResult = ReturnType<typeof useExtrinsicsByIdLazyQuery>;
 export type ExtrinsicsByIdSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByIdSuspenseQuery>;
 export type ExtrinsicsByIdQueryResult = Apollo.QueryResult<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>;
+export const ExtrinsicsByHashDocument = gql`
+    query ExtrinsicsByHash($extrinsicHash: String!) {
+  consensus_extrinsics(where: {hash: {_eq: $extrinsicHash}}) {
+    id
+    hash
+    block_height
+    section
+    module
+    timestamp
+    success
+    signature
+    signer
+    args
+    events_count
+  }
+}
+    `;
+
+/**
+ * __useExtrinsicsByHashQuery__
+ *
+ * To run a query within a React component, call `useExtrinsicsByHashQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtrinsicsByHashQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtrinsicsByHashQuery({
+ *   variables: {
+ *      extrinsicHash: // value for 'extrinsicHash'
+ *   },
+ * });
+ */
+export function useExtrinsicsByHashQuery(baseOptions: Apollo.QueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables> & ({ variables: ExtrinsicsByHashQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
+      }
+export function useExtrinsicsByHashLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
+        }
+export function useExtrinsicsByHashSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(ExtrinsicsByHashDocument, options);
+        }
+export type ExtrinsicsByHashQueryHookResult = ReturnType<typeof useExtrinsicsByHashQuery>;
+export type ExtrinsicsByHashLazyQueryHookResult = ReturnType<typeof useExtrinsicsByHashLazyQuery>;
+export type ExtrinsicsByHashSuspenseQueryHookResult = ReturnType<typeof useExtrinsicsByHashSuspenseQuery>;
+export type ExtrinsicsByHashQueryResult = Apollo.QueryResult<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>;
 export const EventsByExtrinsicIdDocument = gql`
     query EventsByExtrinsicId($extrinsicId: String!, $limit: Int!, $offset: Int, $orderBy: [consensus_events_order_by!]) {
   consensus_events(
