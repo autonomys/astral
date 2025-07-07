@@ -39,7 +39,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
   ],
   extrinsics: [
     { name: 'id', label: 'Extrinsic Id', isSelected: true },
-    { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: true },
+    { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: true, searchable: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },
     { name: 'success', label: 'Status', isSelected: true },
