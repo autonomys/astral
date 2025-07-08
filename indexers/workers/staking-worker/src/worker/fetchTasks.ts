@@ -17,7 +17,7 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
   const operatorTaxLimit = baseLimit;
   const bundleSubmissionsLimit = baseLimit;
   const operatorDeregistrationsLimit = baseLimit;
-  const nominatorsUnlockedLimit = batchSize - (baseLimit * 8); // Take any remainder
+  const nominatorsUnlockedLimit = batchSize - (baseLimit * (taskTypes-1)); // Take any remainder
   
   try {
     // Fetch unprocessed deposits
