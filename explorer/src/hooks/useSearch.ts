@@ -52,7 +52,7 @@ export const useSearch = (): Values => {
         else if (data?.extrinsicById?.length > 0)
           push(INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, term))
         else if (data?.extrinsics?.length > 0)
-          push(INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, data.extrinsics[0].id))
+          push(INTERNAL_ROUTES.extrinsics.id.page(network, Routes.consensus, term))
         else if (data?.blockById?.length > 0 && data.blockById[0].height >= 0)
           push(INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, Number(term)))
         else if (data?.blockByHash?.length > 0 && data.blockByHash[0].height >= 0)
