@@ -138,11 +138,11 @@ export const WalletsPage: FC = () => {
         {/* Right Side: Wallets Container */}
 
         {isLoading ? (
-          <div className='flex h-full w-full items-center justify-center rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+          <div className='flex h-full w-full items-center justify-center rounded-lg bg-white shadow-sm dark:border-none dark:bg-boxDark'>
             <Spinner />
           </div>
         ) : (
-          <div className='w-full flex-1 overflow-hidden rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+          <div className='w-full flex-1 overflow-hidden rounded-lg bg-white shadow-sm dark:border-none dark:bg-boxDark'>
             <div className='p-6 sm:p-8'>
               <h1 className='mb-6 text-2xl font-bold text-gray-900 dark:text-white'>Wallets</h1>
               <p className='mb-6 text-sm text-gray-600 dark:text-gray-300'>
@@ -178,7 +178,7 @@ export const WalletsPage: FC = () => {
                           className='flex items-center justify-between rounded-lg border border-gray-100 p-4 shadow-sm dark:border-gray-700'
                         >
                           <div className='space-y-1'>
-                            <div className='inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200'>
+                            <div className='inline-flex items-center rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200'>
                               {walletType}
                             </div>
                             <div className='text-sm font-medium text-gray-700 dark:text-gray-300'>
@@ -239,7 +239,7 @@ export const WalletsPage: FC = () => {
                           wallets?.map((wallet) => (
                             <tr key={wallet.id} className='bg-white dark:bg-boxDark'>
                               <td className='whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900 dark:text-white'>
-                                <span className='inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200'>
+                                <span className='inline-flex items-center rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200'>
                                   {wallet.type}
                                 </span>
                               </td>
@@ -293,7 +293,7 @@ export const WalletsPage: FC = () => {
                 leaveFrom='opacity-100 scale-100'
                 leaveTo='opacity-0 scale-95'
               >
-                <Dialog.Panel className='w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-boxDark'>
+                <Dialog.Panel className='w-full max-w-lg transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-boxDark'>
                   <Dialog.Title
                     as='h3'
                     className='text-lg font-bold leading-6 text-gray-900 dark:text-white'
@@ -319,14 +319,14 @@ export const WalletsPage: FC = () => {
                   <div className='mt-6 flex justify-end space-x-3'>
                     <button
                       type='button'
-                      className='inline-flex justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
+                      className='inline-flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
                       onClick={() => setShowConfirmModal(false)}
                     >
                       Cancel
                     </button>
                     <button
                       type='button'
-                      className='inline-flex justify-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none dark:bg-primaryAccent'
+                      className='inline-flex justify-center rounded-lg border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none dark:bg-primaryAccent'
                       onClick={handleConfirmLinking}
                     >
                       Confirm

@@ -294,7 +294,7 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
                 <div className='my-4 flex items-center justify-center space-x-4'>
                   <button
                     onClick={handleZoomOut}
-                    className='rounded-full bg-gray-200 p-2 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
+                    className='rounded-lg bg-gray-200 p-2 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
                   >
                     <MinusIcon className='h-5 w-5' />
                   </button>
@@ -303,7 +303,7 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
                   </span>
                   <button
                     onClick={handleZoomIn}
-                    className='rounded-full bg-gray-200 p-2 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
+                    className='rounded-lg bg-gray-200 p-2 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
                   >
                     <PlusIcon className='h-5 w-5' />
                   </button>
@@ -315,9 +315,9 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
                     <div className='mb-1 text-sm text-gray-700 dark:text-gray-300'>
                       Uploading: {uploadProgress}%
                     </div>
-                    <div className='h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700'>
+                    <div className='h-2.5 w-full rounded-lg bg-gray-200 dark:bg-gray-700'>
                       <div
-                        className='h-2.5 rounded-full bg-blue-600 transition-all duration-300 ease-in-out'
+                        className='h-2.5 rounded-lg bg-blue-600 transition-all duration-300 ease-in-out'
                         style={{ width: `${uploadProgress}%` }}
                       />
                     </div>
@@ -327,7 +327,7 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
                 <div className='mt-4 flex justify-end space-x-3'>
                   <button
                     type='button'
-                    className='inline-flex justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
+                    className='inline-flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
                     onClick={() => onClose()}
                     disabled={isUploading}
                   >
@@ -336,7 +336,7 @@ export const ImageCropModal: FC<ImageCropModalProps> = ({
                   <button
                     onClick={handleSave}
                     disabled={isUploading}
-                    className={`inline-flex justify-center rounded-full border border-transparent px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none ${
+                    className={`inline-flex justify-center rounded-lg border border-transparent px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none ${
                       isUploading
                         ? 'cursor-not-allowed bg-gray-400'
                         : 'bg-buttonLightFrom hover:bg-buttonLightTo dark:bg-primaryAccent dark:hover:bg-blue-700'

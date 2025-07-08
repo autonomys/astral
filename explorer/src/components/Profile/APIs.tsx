@@ -1,9 +1,11 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
-import SwaggerUI from 'swagger-ui-react'
 import 'swagger-ui-react/swagger-ui.css'
+
+const DynamicSwaggerUI = dynamic(() => import('swagger-ui-react'), { ssr: false })
 
 export const APIs: FC = () => {
   const { chain } = useParams()
@@ -64,10 +66,10 @@ export const APIs: FC = () => {
       <div className='rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-boxDark'>
         {isLoading ? (
           <div className='flex h-64 items-center justify-center'>
-            <div className='border-primary h-12 w-12 animate-spin rounded-full border-b-2 border-t-2'></div>
+            <div className='border-primary h-12 w-12 animate-spin rounded-lg border-b-2 border-t-2'></div>
           </div>
         ) : (
-          <SwaggerUI spec={specData} />
+          <DynamicSwaggerUI spec={specData} />
         )}
       </div>
     </div>

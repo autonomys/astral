@@ -13,5 +13,6 @@ subscription Extrinsics(
     success
     timestamp
     module
+    blockHash: block_hash
   }
 }

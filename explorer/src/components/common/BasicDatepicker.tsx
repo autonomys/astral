@@ -17,7 +17,7 @@ const defaultOptions = {
   theme: {
     background: 'bg-white dark:bg-blueAccent dark:text-white',
     disabledText: 'text-gray-500/75 dark:text-gray-400/75',
-    input: 'py-3 w-full rounded-[20px] bg-white dark:bg-blueAccent dark:text-white',
+    input: 'py-3 w-full rounded-lg bg-white dark:bg-blueAccent dark:text-white',
   },
 } as IOptions
 

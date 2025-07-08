@@ -172,11 +172,11 @@ export const TagsPage: FC = () => {
       <SmallProfileBox />
 
       {isLoading ? (
-        <div className='flex h-full w-full items-center justify-center rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+        <div className='flex h-full w-full items-center justify-center rounded-lg bg-white shadow-sm dark:border-none dark:bg-boxDark'>
           <Spinner />
         </div>
       ) : (
-        <div className='w-full flex-1 overflow-hidden rounded-2xl bg-white shadow-sm dark:border-none dark:bg-boxDark'>
+        <div className='w-full flex-1 overflow-hidden rounded-lg bg-white shadow-sm dark:border-none dark:bg-boxDark'>
           <div className='p-6 sm:p-8'>
             <h1 className='mb-6 text-2xl font-bold text-gray-900 dark:text-white'>Tags</h1>
             <p className='mb-6 text-sm text-gray-600 dark:text-gray-300'>
@@ -186,7 +186,7 @@ export const TagsPage: FC = () => {
             <div className='mb-8'>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className='inline-flex items-center rounded-full border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none dark:bg-primaryAccent'
+                className='inline-flex items-center rounded-lg border border-transparent bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none dark:bg-primaryAccent'
               >
                 <PlusIcon className='mr-2 h-4 w-4' />
                 Create New Tag
@@ -223,7 +223,7 @@ export const TagsPage: FC = () => {
                       <tr key={tag.id} className='bg-white dark:bg-boxDark'>
                         <td className='max-w-[400px] px-4 py-3 text-sm text-gray-700 dark:text-gray-300'>
                           <div className='flex flex-wrap gap-2'>
-                            <span className='inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'>
+                            <span className='inline-flex items-center rounded-lg bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'>
                               {tag.name}
                             </span>
                           </div>
@@ -294,7 +294,7 @@ export const TagsPage: FC = () => {
                 leaveFrom='opacity-100 scale-100'
                 leaveTo='opacity-0 scale-95'
               >
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-boxDark'>
+                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-boxDark'>
                   <Dialog.Title
                     as='h3'
                     className='text-lg font-bold leading-6 text-gray-900 dark:text-white'
@@ -318,7 +318,7 @@ export const TagsPage: FC = () => {
                           </label>
                           <Field
                             name='name'
-                            className='mt-1 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                            className='mt-1 block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                             placeholder='Enter tag name'
                           />
                           {errors.name && touched.name && (
@@ -335,7 +335,7 @@ export const TagsPage: FC = () => {
                           </label>
                           <Field
                             name='value'
-                            className='mt-1 block w-full rounded-full bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
+                            className='mt-1 block w-full rounded-lg bg-white from-primaryAccent to-blueUndertone px-4 py-[10px] text-sm text-gray-900 shadow dark:bg-gradient-to-r dark:text-white dark:placeholder:text-gray-200'
                             placeholder='Enter wallet address'
                           />
                           {errors.value && touched.value && (
@@ -347,14 +347,14 @@ export const TagsPage: FC = () => {
                           <button
                             type='button'
                             onClick={() => setShowCreateModal(false)}
-                            className='rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                            className='rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
                           >
                             Cancel
                           </button>
                           <button
                             type='submit'
                             disabled={isCreating}
-                            className='inline-flex items-center rounded-full bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90 disabled:opacity-70 dark:bg-primaryAccent'
+                            className='inline-flex items-center rounded-lg bg-buttonLightFrom px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90 disabled:opacity-70 dark:bg-primaryAccent'
                           >
                             {isCreating ? (
                               <>
@@ -401,7 +401,7 @@ export const TagsPage: FC = () => {
                 leaveFrom='opacity-100 scale-100'
                 leaveTo='opacity-0 scale-95'
               >
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-boxDark'>
+                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-boxDark'>
                   <Dialog.Title
                     as='h3'
                     className='text-lg font-bold leading-6 text-gray-900 dark:text-white'
@@ -417,14 +417,14 @@ export const TagsPage: FC = () => {
                   <div className='mt-6 flex justify-end space-x-3'>
                     <button
                       type='button'
-                      className='inline-flex justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
+                      className='inline-flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
                       onClick={() => setShowDeleteModal(false)}
                     >
                       Cancel
                     </button>
                     <button
                       type='button'
-                      className='inline-flex justify-center rounded-full border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2'
+                      className='inline-flex justify-center rounded-lg border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2'
                       onClick={handleConfirmDelete}
                     >
                       Delete

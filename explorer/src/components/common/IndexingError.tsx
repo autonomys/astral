@@ -45,7 +45,7 @@ export const IndexingError: FC = () => {
         </p>
       </div>
       <button
-        className='mx-2 w-8 rounded-[20px] bg-white p-1 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-orange-600/40 dark:text-white'
+        className='mx-2 w-8 rounded-lg bg-white p-1 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-orange-600/40 dark:text-white'
         onClick={handleHideWarning}
       >
         <XMarkIcon className='size-6 text-grayDark dark:text-white' />

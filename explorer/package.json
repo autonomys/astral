@@ -17,9 +17,11 @@
   "engines": {
     "node": ">=20.19.0"
   },
+  "packageManager": "yarn@1.22.19",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "codegen": "graphql-codegen --config codegen.ts",
     "test:coverage": "CI=true yarn test -- --env=jsdom --coverage",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!@polkadot/*)/'",
@@ -29,7 +31,9 @@
     "predeploy": "yarn build",
     "lint": "eslint . -c .eslintrc --ext ts,tsx",
     "lint:fix": "yarn lint --fix",
-    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
+    "audit:pages": "unlighthouse",
+    "audit:pages:static": "unlighthouse --site https://explorer.autonomys.xyz --build-static"
   },
   "dependencies": {
     "@apollo/client": "^3.13.5",
@@ -68,11 +72,11 @@
     "graphql": "^16.10.0",
     "graphql-ws": "^6.0.5",
     "jsonwebtoken": "^9.0.2",
-    "lodash": "^4.17.21",
     "lottie-react": "^2.4.1",
     "next": "^14.2.26",
     "next-auth": "^4.24.11",
     "next-pwa": "^5.6.0",
+    "nextjs-toploader": "^3.8.16",
     "pako": "^2.1.0",
     "qrcode.react": "^3.2.0",
     "rc-slider": "^10.6.2",
@@ -106,17 +110,19 @@
     "@graphql-codegen/cli": "^5.0.5",
     "@graphql-codegen/client-preset": "^4.8.0",
     "@graphql-codegen/typescript-react-apollo": "^4.3.2",
+    "@next/bundle-analyzer": "^15.3.3",
     "@next/eslint-plugin-next": "^14.2.26",
     "@svgr/webpack": "^8.1.0",
     "@types/jest": "^29.5.14",
-    "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^20.17.27",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.17.28",
     "@types/pako": "^2.0.3",
-    "@types/react": "^18.3.20",
-    "@types/react-dom": "^18.3.5",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "autoprefixer": "^10.4.21",
+    "critters": "^0.0.25",
     "discord-api-types": "^0.37.119",
     "eslint": "^8.57.1",
     "eslint-config-love": "^43.1.0",
@@ -125,7 +131,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.2.5",
     "eslint-plugin-promise": "^6.6.0",
-    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-tailwindcss": "^3.18.0",
     "gh-pages": "^6.3.0",
@@ -135,6 +141,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "prop-types": "^15.8.1",
     "tailwindcss": "^3.4.17",
-    "tsconfig-paths-webpack-plugin": "^4.2.0"
+    "tsconfig-paths-webpack-plugin": "^4.2.0",
+    "unlighthouse": "^0.16.3"
   }
 }

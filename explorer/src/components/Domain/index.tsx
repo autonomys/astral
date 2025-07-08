@@ -8,7 +8,7 @@ export const DomainPage: FC = () => {
   return (
     <div className='flex w-full flex-col items-center space-y-4'>
       <div className='w-full max-w-4xl'>
-        <div className='dark:bg-boxDark w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none sm:p-6'>
+        <div className='w-full rounded-lg border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
           <div className='flex flex-col items-center justify-center'>
             <h1 className='mt-4 text-center text-4xl font-bold text-gray-900 dark:text-white'>
               Domains

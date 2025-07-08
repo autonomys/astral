@@ -74,6 +74,7 @@ export const ROUTES: Route[] = [
   {
     name: Routes.consensus,
     title: 'Consensus Chain',
+    shortTitle: 'Consensus',
     children: [
       {
         name: RoutesConsensus.accounts,
@@ -100,6 +101,7 @@ export const ROUTES: Route[] = [
   {
     name: Routes.storage,
     title: 'Permanent Storage',
+    shortTitle: 'Storage',
     children: [
       {
         name: RoutesStorage.files,
@@ -115,23 +117,6 @@ export const ROUTES: Route[] = [
     name: Routes.staking,
     title: 'Staking',
     networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-    children: [
-      {
-        name: RoutesStaking.operators,
-        title: 'Operators',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-      {
-        name: RoutesStaking.register,
-        title: 'Register Operator',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-      {
-        name: RoutesStaking.nominations,
-        title: 'My Nominations',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-    ],
   },
   {
     name: Routes.leaderboard,
@@ -193,6 +178,7 @@ export const ROUTES: Route[] = [
   {
     name: Routes.testnetRewards,
     title: 'Testnet Rewards',
+    shortTitle: 'Rewards',
   },
   {
     name: Routes.profile,

@@ -26,37 +26,37 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'updatedAt', label: 'Updated At', isSelected: false },
   ],
   blocks: [
-    { name: 'sortId', label: 'Block number', isSelected: true, searchable: true },
+    { name: 'height', label: 'Block number', isSelected: true, searchable: true },
     { name: 'hash', label: 'Hash', isSelected: true, searchable: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
     { name: 'parentHash', label: 'Parent Hash', isSelected: false, searchable: true },
     { name: 'specId', label: 'Spec Id', isSelected: false },
     { name: 'stateRoot', label: 'State Root', isSelected: false },
     { name: 'extrinsicsRoot', label: 'Extrinsics Root', isSelected: false },
-    { name: 'spacePledged', label: 'Space Pledged', isSelected: true },
-    { name: 'blockchainSize', label: 'Blockchain Size', isSelected: false },
     { name: 'extrinsicsCount', label: 'Extrinsics', isSelected: true },
     { name: 'eventsCount', label: 'Events', isSelected: true },
     { name: 'authorId', label: 'Block Author', isSelected: true, searchable: true },
   ],
   extrinsics: [
-    { name: 'sortId', label: 'Extrinsic Id', isSelected: true },
-    { name: 'hash', label: 'Extrinsic Hash', isSelected: true },
+    { name: 'id', label: 'Extrinsic Id', isSelected: true },
+    { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: true, searchable: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },
     { name: 'success', label: 'Status', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
+    { name: 'hash', label: 'Block Hash', isSelected: false, searchable: true },
   ],
   events: [
-    { name: 'sortId', label: 'Event Id', isSelected: true },
+    { name: 'id', label: 'Event Id', isSelected: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'extrinsicId', label: 'Extrinsic Id', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
+    { name: 'hash', label: 'Block Hash', isSelected: false, searchable: true },
   ],
   logs: [
-    { name: 'sortId', label: 'Log Id', isSelected: true, searchable: true },
+    { name: 'id', label: 'Log Id', isSelected: true, searchable: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true, searchable: true },
     { name: 'blockHash', label: 'Block Hash', isSelected: true, searchable: true },
     { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
@@ -420,14 +420,10 @@ export const INITIAL_TABLES: InitialTables = {
     filters: {
       heightMin: '',
       heightMax: '',
-      spacePledgedMin: '',
-      spacePledgedMax: '',
-      blockchainSizeMin: '',
-      blockchainSizeMax: '',
     },
     sorting: [
       {
-        id: BlocksColumns.SortId,
+        id: BlocksColumns.Height,
         desc: true,
       },
     ],
@@ -447,7 +443,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: ExtrinsicsColumns.SortId,
+        id: ExtrinsicsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: ExtrinsicsColumns.IndexInBlock,
         desc: true,
       },
     ],
@@ -468,7 +468,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: EventsColumns.SortId,
+        id: EventsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: EventsColumns.IndexInBlock,
         desc: true,
       },
     ],
@@ -488,7 +492,11 @@ export const INITIAL_TABLES: InitialTables = {
     },
     sorting: [
       {
-        id: LogsColumns.SortId,
+        id: LogsColumns.BlockHeight,
+        desc: true,
+      },
+      {
+        id: LogsColumns.IndexInBlock,
         desc: true,
       },
     ],

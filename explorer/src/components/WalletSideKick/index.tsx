@@ -79,7 +79,7 @@ export const WalletSidekick: FC = () => {
       <button
         onClick={onClick}
         className={`inline-flex items-center justify-center bg-white text-base hover:bg-gray-200 focus:outline-none ${
-          isDesktop ? 'ml-2 rounded-full p-2' : 'w-10 rounded-r-full'
+          isDesktop ? 'ml-2 rounded-lg p-2' : 'w-10 rounded-r-full'
         } shadow-md dark:bg-buttonLightTo`}
       >
         <div className='flex h-6 min-h-6 w-6 min-w-6 items-center justify-center'>
@@ -164,7 +164,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onCloseSidebar }) => {
           </button>
           <div className='flex items-center gap-3'>
             <button
-              className='items-center rounded-full bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
+              className='items-center rounded-lg bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
               onClick={onCloseSidebar}
             >
               x

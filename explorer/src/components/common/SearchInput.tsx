@@ -5,9 +5,14 @@ import React, { FC } from 'react'
 import { FormValues } from './SearchBar'
 
 export const SearchInput: FC = () => {
-  const { values, errors, touched, handleChange } = useFormikContext<FormValues>()
+  const { values, errors, touched, setFieldValue } = useFormikContext<FormValues>()
   const { network } = useIndexers()
   const isDesktop = useMediaQuery('(min-width: 640px)')
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const trimmedValue = e.target.value.trim()
+    setFieldValue('searchTerm', trimmedValue)
+  }
 
   let placeholder: string
   switch (values['searchType'].name) {
@@ -31,18 +36,18 @@ export const SearchInput: FC = () => {
     <input
       data-testid='search-term-input'
       id='searchTerm'
-      className={`
-                    block w-full rounded-md bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white
-                    ${
-                      errors.searchTerm &&
-                      touched.searchTerm &&
-                      'block w-full rounded-md bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
-                    } 
-                  `}
+      className={`block w-full rounded-md border-none bg-white px-4 py-2.5 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+        errors.searchTerm &&
+        touched.searchTerm &&
+        'block w-full rounded-md bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+      } `}
       placeholder={isDesktop ? `${placeholder}` : 'Search...'}
       name='searchTerm'
       value={values.searchTerm}
-      onChange={handleChange}
+      onChange={handleInputChange}
+      autoCorrect='off'
+      spellCheck='false'
+      autoComplete='off'
     />
   )
 }

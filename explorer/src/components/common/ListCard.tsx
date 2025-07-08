@@ -1,17 +1,34 @@
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { Table, flexRender } from '@tanstack/react-table'
 import { ColumnMeta } from 'types/table'
+import { SkeletonCard } from './TableSkeleton'
 import { Tooltip } from './Tooltip'
 
 type ListCardProps<T extends object> = {
   table: Table<T>
   emptyMessage?: string
+  loading?: boolean
+  skeletonLoaderClassName?: string
 }
 
-export const ListCard = <T extends object>({ table, emptyMessage }: ListCardProps<T>) => (
+export const ListCard = <T extends object>({
+  table,
+  emptyMessage,
+  loading,
+  skeletonLoaderClassName,
+}: ListCardProps<T>) => (
   <div>
     <div className='w-full divide-y divide-gray-200 dark:divide-white/20'>
-      {table.getRowModel().rows.length ? (
+      {loading ? (
+        // Show skeleton cards when loading
+        Array.from({ length: table.getRowCount() || 10 }).map((_, index) => (
+          <SkeletonCard
+            key={`skeleton-card-${index}`}
+            fieldsCount={table.getAllColumns().length}
+            className={skeletonLoaderClassName}
+          />
+        ))
+      ) : table.getRowModel().rows.length ? (
         table.getRowModel().rows.map((row, index) => (
           <div
             key={`row-${index}`}

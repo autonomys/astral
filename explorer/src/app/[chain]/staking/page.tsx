@@ -1,5 +1,5 @@
 import { NotFound } from 'components/layout/NotFound'
-import { OperatorsList } from 'components/Staking/OperatorsList'
+import { StakingComingSoon } from 'components/Staking/StakingComingSoon'
 import { Routes } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
@@ -18,6 +18,6 @@ export const generateMetadata = ({ params: { chain } }: ChainPageProps): Metadat
 }
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
-  isRouteSupportingNetwork(chain, Routes.staking) ? <OperatorsList /> : <NotFound />
+  isRouteSupportingNetwork(chain, Routes.staking) ? <StakingComingSoon /> : <NotFound />
 
 export default Page

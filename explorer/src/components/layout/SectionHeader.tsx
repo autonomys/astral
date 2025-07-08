@@ -22,13 +22,14 @@ import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { FC, useCallback, useMemo, useState } from 'react'
-import type { ChainParam } from 'types/app'
+import type { ChainParam, Route } from 'types/app'
 import { ProfileButton } from '../Profile/ProfileButton'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
 
 export const SectionHeader: FC = () => {
   const { chain } = useParams<ChainParam>()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const isLargeDesktop = useMediaQuery('(min-width: 1536px)')
   const pathname = usePathname()
   const { actingAccount, sessionSubspaceAccount } = useWallet()
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -59,6 +60,19 @@ export const SectionHeader: FC = () => {
     }
   }, [])
 
+  const getNavbarTitle = useCallback(
+    (item: Route, isActive: boolean) => {
+      if (isLargeDesktop) {
+        return item.title
+      }
+      if (isDesktop) {
+        return item.shortTitle || item.title
+      }
+      return domainIcon(item, isActive)
+    },
+    [isDesktop, isLargeDesktop, domainIcon],
+  )
+
   const domainsOptions = useMemo(
     () =>
       ROUTES.filter(
@@ -75,17 +89,17 @@ export const SectionHeader: FC = () => {
               <button
                 className={
                   isActive
-                    ? `rounded-full bg-buttonLightFrom ${isDesktop ? 'px-4' : 'px-2'} py-2 text-white dark:bg-primaryAccent`
+                    ? `rounded-lg bg-buttonLightFrom ${isDesktop ? 'px-4' : 'px-2'} py-2 text-white dark:bg-primaryAccent`
                     : 'text-grayDark dark:text-white'
                 }
               >
-                {isDesktop ? item.title : domainIcon(item, isActive)}
+                {getNavbarTitle(item, isActive)}
               </button>
             </Link>
           </div>
         )
       }),
-    [isDesktop, pathname, chain, domainIcon],
+    [isDesktop, pathname, chain, getNavbarTitle],
   )
 
   const mobileNav = useMemo(() => {
@@ -148,7 +162,7 @@ export const SectionHeader: FC = () => {
       >
         <div className='container mx-auto flex h-full w-full items-center justify-between px-5 pt-0 md:px-[25px] 2xl:px-0'>
           {isDesktop ? (
-            <div className='flex gap-9'>{domainsOptions}</div>
+            <div className='flex gap-9 pr-2'>{domainsOptions}</div>
           ) : (
             <button
               onClick={toggleSidebar}

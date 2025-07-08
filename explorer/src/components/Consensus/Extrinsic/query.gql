@@ -13,10 +13,42 @@ query ExtrinsicsModules {
   }
 }
 
+query ExtrinsicsByBlockHash($limit: Int!, $offset: Int, $where: consensus_blocks_bool_exp) {
+  consensus_blocks(limit: $limit, offset: $offset, where: $where) {
+    id
+    authorId: author_id
+    extrinsics(order_by: { index_in_block: asc }) {
+      id
+      hash
+      blockHeight: block_height
+      indexInBlock: index_in_block
+      section
+      success
+      timestamp
+      module
+      blockHash: block_hash
+    }
+  }
+}
+
 query ExtrinsicsById($extrinsicId: String!) {
-  consensus_extrinsics(
-    where: { _or: [{ id: { _eq: $extrinsicId } }, { hash: { _eq: $extrinsicId } }] }
-  ) {
+  consensus_extrinsics(where: { id: { _eq: $extrinsicId } }) {
+    id
+    hash
+    block_height
+    section
+    module
+    timestamp
+    success
+    signature
+    signer
+    args
+    events_count
+  }
+}
+
+query ExtrinsicsByHash($extrinsicHash: String!) {
+  consensus_extrinsics(where: { hash: { _eq: $extrinsicHash } }) {
     id
     hash
     block_height
@@ -37,12 +69,7 @@ query EventsByExtrinsicId(
   $offset: Int
   $orderBy: [consensus_events_order_by!]
 ) {
-  consensus_events(
-    order_by: $orderBy
-    limit: $limit
-    offset: $offset
-    where: { extrinsic_id: { _eq: $extrinsicId } }
-  ) {
+  consensus_events(limit: $limit, offset: $offset, where: { extrinsic_id: { _eq: $extrinsicId } }) {
     id
     section
     module

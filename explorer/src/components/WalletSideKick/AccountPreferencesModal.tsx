@@ -127,11 +127,11 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
         return (
           <div className='flex flex-col items-start gap-4'>
             {addresses.length > 0 ? (
-              <div className='grid w-full grid-cols-1 gap-4 '>
+              <div className='grid w-full grid-cols-1 gap-4'>
                 {addresses.map((address, index) => (
                   <div
                     key={index}
-                    className='flex w-full items-center justify-between rounded-xl bg-white px-4 py-2 shadow-lg dark:bg-blueAccent'
+                    className='flex w-full items-center justify-between rounded-lg bg-white px-4 py-2 shadow-lg dark:bg-blueAccent'
                   >
                     <div className='flex items-center gap-4'>
                       <div className='text-sm font-medium text-grayDarker dark:text-white'>
@@ -163,7 +163,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                     </div>
                     <div className='flex items-center gap-4'>
                       <button
-                        className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                        className='flex items-center gap-2 rounded-lg bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                         onClick={() => handleDeleteClick(address)}
                       >
                         Delete
@@ -195,9 +195,9 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                           name='address'
                           type='text'
                           placeholder='Enter address'
-                          className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                          className={`mt-4 block w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                             errors.address &&
-                            'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                           }`}
                         />
                       </div>
@@ -221,9 +221,9 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                           name='label'
                           type='text'
                           placeholder='Enter label'
-                          className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                          className={`mt-4 block w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                             errors.address &&
-                            'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            'block w-full rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                           }`}
                         />
                       </div>
@@ -243,7 +243,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                     </div>
                   ) : (
                     <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                      className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                       type='submit'
                     >
                       Add address
@@ -284,7 +284,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                     </div>
                   </div>
                   <button
-                    className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
+                    className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                     type='submit'
                   >
                     Save Settings
@@ -325,7 +325,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
           <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
         </div>
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-lg bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
           onClick={handleClose}
         >
           Close

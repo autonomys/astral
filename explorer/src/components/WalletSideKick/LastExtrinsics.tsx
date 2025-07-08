@@ -70,7 +70,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
   }, [inView, setIsVisible])
 
   return (
-    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+    <div className='m-2 mt-0 rounded-lg bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>

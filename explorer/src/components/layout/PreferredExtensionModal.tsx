@@ -68,11 +68,11 @@ const ConnectingState: FC<ConnectingStateProps> = ({ wallet, onBack, error }) =>
       <div className='flex flex-col items-center gap-6 p-5'>
         <div className='relative'>
           {!error ? (
-            <div className='absolute -inset-2 animate-spin rounded-full border-2 border-b-primaryAccent border-l-transparent border-r-primaryAccent border-t-transparent p-8 opacity-50'></div>
+            <div className='absolute -inset-2 animate-spin rounded-lg border-2 border-b-primaryAccent border-l-transparent border-r-primaryAccent border-t-transparent p-8 opacity-50'></div>
           ) : (
-            <div className='absolute -inset-2 rounded-full border-2 border-red-500 p-8 opacity-50'></div>
+            <div className='absolute -inset-2 rounded-lg border-2 border-red-500 p-8 opacity-50'></div>
           )}
-          <Image src={icon} alt={wallet.title} width={60} height={60} className='rounded-full' />
+          <Image src={icon} alt={wallet.title} width={60} height={60} className='rounded-lg' />
         </div>
 
         <div className='flex flex-col items-center gap-4 text-center'>

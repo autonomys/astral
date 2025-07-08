@@ -32,7 +32,114 @@ import {
   PERCENTAGE_PRECISION,
   Rewards,
 } from 'utils/testnetRewards'
-import { Spinner } from '../common/Spinner'
+
+const TestnetRewardsTableSkeleton: FC = () => {
+  const campaigns = [
+    {
+      name: 'Aries Stress Test',
+      icon: <div className='h-6 w-6 animate-pulse rounded bg-gray-200 dark:bg-gray-700' />,
+    },
+    {
+      name: 'Gemini 1',
+      icon: <div className='h-6 w-6 animate-pulse rounded bg-gray-200 dark:bg-gray-700' />,
+    },
+    {
+      name: 'Gemini 2',
+      icon: <div className='h-6 w-6 animate-pulse rounded bg-gray-200 dark:bg-gray-700' />,
+    },
+    {
+      name: 'Gemini 3',
+      icon: <div className='h-6 w-6 animate-pulse rounded bg-gray-200 dark:bg-gray-700' />,
+    },
+    {
+      name: 'Stake Wars I',
+      icon: <div className='h-6 w-6 animate-pulse rounded bg-gray-200 dark:bg-gray-700' />,
+    },
+  ]
+
+  return (
+    <div className='max-w-8xl mt-8 w-full'>
+      <div className='mt-4 rounded-lg bg-white p-4 shadow-md dark:border-none dark:bg-boxDark'>
+        {/* Header skeleton */}
+        <div className='mb-4 mt-4 flex justify-center'>
+          <div className='flex w-full max-w-6xl items-center justify-between rounded-lg border border-blue-600 bg-blue-50 px-8 py-3 text-blue-600'>
+            <div className='text-2xl font-semibold'>TOTAL ALLOCATION</div>
+            <div className='h-8 w-32 animate-pulse rounded bg-blue-200'></div>
+            <div className='text-2xl font-semibold'>TESTNETS PHASES IN TOTAL</div>
+            <div className='h-8 w-8 animate-pulse rounded bg-blue-200'></div>
+          </div>
+        </div>
+
+        <div className='overflow-x-auto'>
+          <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
+            <thead className='bg-gray-50 dark:bg-gray-700'>
+              <tr>
+                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
+                  TESTNET
+                </th>
+                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
+                  EARNINGS, % {TESTNET_TOKEN.symbol}
+                </th>
+                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
+                  EARNINGS, {TESTNET_TOKEN.symbol}
+                </th>
+                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
+                  EARNINGS, % {DEFAULT_TOKEN_SYMBOL}
+                </th>
+                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
+                  EARNINGS, {DEFAULT_TOKEN_SYMBOL}
+                </th>
+                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
+                  Date Range
+                </th>
+              </tr>
+            </thead>
+            <tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800'>
+              {campaigns.map((campaign, index) => (
+                <tr key={index}>
+                  <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white'>
+                    <div className='flex items-center'>
+                      <span className='mr-2'>{campaign.icon}</span>
+                      <div className='h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+                    </div>
+                  </td>
+                  <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
+                    <div className='h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+                  </td>
+                  <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
+                    <div className='h-4 w-20 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+                    <div className='mt-1 h-3 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+                  </td>
+                  <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
+                    <div className='h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+                  </td>
+                  <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
+                    <div className='h-4 w-20 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+                    <div className='mt-1 h-3 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+                  </td>
+                  <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
+                    <div className='h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {/* Footer skeleton */}
+          <div className='mt-4 flex justify-between bg-gray-50 p-4 dark:bg-gray-700'>
+            <div className='text-xl font-medium text-gray-900 dark:text-white'>TOTAL EARNINGS</div>
+            <div className='h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+            <div className='h-4 w-20 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+            <div className='h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+            <div className='h-4 w-20 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+            <div className='h-4 w-8 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+            <div className='h-4 w-8 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+            <div className='h-4 w-8 animate-pulse rounded bg-gray-200 dark:bg-gray-700'></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   if (!isOpen) return null
@@ -43,7 +150,7 @@ const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }
         <h2 className='mb-4 text-xl font-bold'>How it&apos;s calculated</h2>
         <p>Explanation of how the rewards are calculated...</p>
         <button
-          className='mt-4 rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700'
+          className='mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700'
           onClick={onClose}
         >
           Close
@@ -224,15 +331,16 @@ export const TestnetRewardsTable: FC = () => {
   return (
     <div className='max-w-8xl mt-8 w-full'>
       {!isLoaded || !isAggregated ? (
-        <Spinner isSmall />
+        <TestnetRewardsTableSkeleton />
       ) : (
-        <div className='dark:bg-boxDark mt-4 rounded-lg bg-white p-4 shadow-md dark:border-none dark:bg-gray-800'>
-          <div className='mb-4 mt-4 flex justify-center'>
-            <div className='mx-8 flex w-full max-w-6xl items-center justify-between rounded-full border border-blue-600 bg-blue-50 p-8 text-blue-600'>
+        <div className='mt-4 rounded-lg bg-white p-4 shadow-md dark:border-none dark:bg-boxDark'>
+          <div className='mb-8 mt-4 flex justify-center'>
+            <div className='flex w-full max-w-7xl items-center justify-between rounded-lg border border-blue-600 bg-blue-50 px-8 py-3 text-blue-600'>
               <div className='text-2xl font-semibold'>TOTAL ALLOCATION</div>
               <div className='text-4xl font-bold'>
                 {numberFormattedString(totalUserMainnetAllocation)} {DEFAULT_TOKEN_SYMBOL}
               </div>
+
               <div className='text-2xl font-semibold'>TESTNETS PHASES IN TOTAL</div>
               <div className='text-4xl font-bold'>{testnetsWithRewardsCount}</div>
             </div>

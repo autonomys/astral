@@ -9,6 +9,7 @@ import {
 } from '@autonomys/auto-xdm'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
+import { FaRegClock } from 'components/icons'
 import { SwapDirection } from 'constants/transaction'
 import { AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT_FOR_XDM, WalletType } from 'constants/wallet'
 import { isAddress as isEvmAddress } from 'ethers'
@@ -19,7 +20,6 @@ import useWallet from 'hooks/useWallet'
 import { useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
-import { FaRegClock } from 'react-icons/fa'
 import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import { WalletButton } from '../WalletButton'
 import { AmountField } from './AmountField'
@@ -318,7 +318,7 @@ export const Transfer: FC = () => {
 
   return (
     <div className='w-full max-w-[500px]'>
-      <div className='mb-4 w-full rounded-2xl border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
+      <div className='mb-4 w-full rounded-lg border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-boxDark sm:p-6'>
         {hash ? (
           <div className='mb-6 flex flex-col items-center justify-center'>
             {hash && (
@@ -329,19 +329,19 @@ export const Transfer: FC = () => {
             <textarea
               name='hash'
               value={hash.toString()}
-              className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+              className='mt-4 block h-[80px] w-[400px] rounded-lg bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
             />
             <div className='mt-4 flex gap-4'>
               <button
                 onClick={() => handleCopy(hash.toString())}
-                className='dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                className='dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-lg bg-grayDarker px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                 type='submit'
               >
                 Copy
               </button>
               <button
                 onClick={() => setHash(undefined)}
-                className='dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                className='dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-lg bg-grayDarker px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                 type='submit'
               >
                 Reset
@@ -354,7 +354,7 @@ export const Transfer: FC = () => {
               <h2 className='text-2xl font-semibold text-blueAccent dark:text-white'>
                 Transfer Tokens
               </h2>
-              <span className='inline-flex items-center rounded-full border border-blueShade bg-blueLight px-3 py-1 text-sm font-medium text-primaryAccent dark:border-blueDarkAccent dark:bg-blueDarkAccent dark:text-white'>
+              <span className='inline-flex items-center rounded-lg border border-blueShade bg-blueLight px-3 py-1 text-sm font-medium text-primaryAccent dark:border-blueDarkAccent dark:bg-blueDarkAccent dark:text-white'>
                 Balance: {walletBalance.toFixed(5)} {tokenSymbol}
               </span>
             </div>
@@ -370,7 +370,7 @@ export const Transfer: FC = () => {
                             <DirectionBlock direction={SwapDirection.FROM} maxAmount={maxAmount} />
 
                             <div className='mb-8 flex justify-center'>
-                              <div className='flex h-10 w-10 items-center justify-center rounded-full bg-blueLight'>
+                              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-blueLight'>
                                 <ArrowRightIcon className='h-5 w-5 text-primaryAccent' />
                               </div>
                             </div>
@@ -412,7 +412,7 @@ export const Transfer: FC = () => {
                               <span className='text-red-500'>Insufficient wallet balance</span>
                             ) : (
                               <button
-                                className='h-10 w-full rounded-full bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2'
+                                className='h-10 w-full rounded-lg bg-gradient-to-r from-buttonLightFrom to-buttonLightTo px-4 py-2 font-medium text-white transition-colors hover:from-gradientVia hover:to-gradientTo focus:outline-none focus:ring-2 focus:ring-primaryAccent focus:ring-offset-2'
                                 type='submit'
                               >
                                 Send token
