@@ -1,6 +1,5 @@
 import Redis from 'ioredis';
 import { config } from '../config';
-import { StakingProcessingTask } from '../interfaces';
 
 let redis: Redis | null = null;
 
@@ -70,62 +69,6 @@ export const getRedis = (): Redis => {
   return redis;
 };
 
-/**
- * Fetch tasks from the staking queue
- */
-export const fetchTasksFromQueue = async (batchSize: number): Promise<StakingProcessingTask[]> => {
-  if (!redis) {
-    throw new Error('Redis not connected');
-  }
-
-  const tasks: StakingProcessingTask[] = [];
-  
-  // TODO: Implement fetching from multiple queues (staking, operator, withdrawal)
-  
-  console.log(`Fetching up to ${batchSize} tasks from staking queues`);
-  
-  return tasks;
-};
-
-/**
- * Add task to queue
- */
-export const addTaskToQueue = async (queueName: string, task: any): Promise<void> => {
-  if (!redis) {
-    throw new Error('Redis not connected');
-  }
-
-  // TODO: Implement adding task to queue
-  await redis.rpush(queueName, JSON.stringify(task));
-  console.log(`Added task to ${queueName}`);
-};
-
-/**
- * Add multiple tasks to queue
- */
-export const addTasksToQueue = async (queueName: string, tasks: any[]): Promise<void> => {
-  if (!redis) {
-    throw new Error('Redis not connected');
-  }
-
-  if (tasks.length === 0) return;
-
-  // TODO: Implement batch adding of tasks
-  const serializedTasks = tasks.map(task => JSON.stringify(task));
-  await redis.rpush(queueName, ...serializedTasks);
-  console.log(`Added ${tasks.length} tasks to ${queueName}`);
-};
-
-/**
- * Get queue length
- */
-export const getQueueLength = async (queueName: string): Promise<number> => {
-  if (!redis) {
-    throw new Error('Redis not connected');
-  }
-
-  return redis.llen(queueName);
-};
 
 /**
  * Cache data with expiration
@@ -189,54 +132,6 @@ export const getCachedDomainEpoch = async (domainId: string, epoch: number): Pro
   return getCachedData(key);
 };
 
-/**
- * Lock resource for processing
- */
-export const acquireLock = async (resource: string, ttlMs: number = 30000): Promise<boolean> => {
-  if (!redis) {
-    throw new Error('Redis not connected');
-  }
-
-  const lockKey = `lock:${resource}`;
-  const lockValue = Date.now().toString();
-  
-  const result = await redis.set(lockKey, lockValue, 'PX', ttlMs, 'NX');
-  return result === 'OK';
-};
-
-/**
- * Release lock
- */
-export const releaseLock = async (resource: string): Promise<void> => {
-  if (!redis) {
-    throw new Error('Redis not connected');
-  }
-
-  const lockKey = `lock:${resource}`;
-  await redis.del(lockKey);
-};
-
-/**
- * Publish event
- */
-export const publishEvent = async (channel: string, event: any): Promise<void> => {
-  if (!redis) {
-    throw new Error('Redis not connected');
-  }
-
-  await redis.publish(channel, JSON.stringify(event));
-};
-
-/**
- * Get all keys matching pattern
- */
-export const getKeysMatching = async (pattern: string): Promise<string[]> => {
-  if (!redis) {
-    throw new Error('Redis not connected');
-  }
-
-  return redis.keys(pattern);
-};
 
 /**
  * Store the current chain tip (latest block height)

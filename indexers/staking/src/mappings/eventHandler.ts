@@ -114,16 +114,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         eventId
       )
     );
-    // TODO: Add deposit event solely for the operators
-    // cache.depositEvent.push(
-    //   db.createDepositEvent(
-    //     extrinsicSigner,
-    //     domainId,
-    //     operatorId,
-    //     extrinsicId,
-    //     eventId
-    //   )
-    // );
   },
   "domains.OperatorNominated": ({
     event,

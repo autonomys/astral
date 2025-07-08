@@ -164,9 +164,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       // Process nominator deposits after epoch transitions
       // Only process events for domains that had epoch transitions
       for (const transition of epochTransitions) {
-        const domainId = transition.domainId;
-        const ـcurrentEpoch = transition.currentEpoch;
-        const parentEpoch = transition.parentEpoch;
+        const {domainId, parentEpoch} = transition;
         
         // Process deposit events for the transitioned domain
         const depositKey = `nominatorDepositEvents:${domainId}:${parentEpoch}`;
@@ -235,7 +233,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     const extrinsicEvents = eventsByExtrinsic.get(extrinsicIdx) || [];
     const extrinsicMethodToPrimitive =
       extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
-    // Why finding the last success event?
     const successEvent = extrinsicEvents.findLast(
       (event) =>
         event.event.section === "system" &&
