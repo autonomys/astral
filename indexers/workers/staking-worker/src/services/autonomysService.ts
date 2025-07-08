@@ -1,11 +1,11 @@
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { operator } from '@autonomys/auto-consensus';
+import { ApiPromise, createConnection, disconnect } from '@autonomys/auto-utils';
 import { config } from '../config';
 
 let api: ApiPromise | null = null;
-let provider: WsProvider | null = null;
 
 /**
- * Connect to Autonomys API
+ * Connect to Autonomys API using the Autonomys SDK
  */
 export const connectAutonomysApi = async (): Promise<void> => {
   if (api) {
@@ -14,10 +14,8 @@ export const connectAutonomysApi = async (): Promise<void> => {
   }
 
   try {
-    provider = new WsProvider(config.autonomysApiEndpoint);
-    api = await ApiPromise.create({ provider });
-    
-    await api.isReady;
+    // Use createConnection for custom endpoints
+    api = await createConnection(config.autonomysApiEndpoint);
     
     console.log('Autonomys API connected successfully');
     console.log(`Connected to chain: ${api.runtimeChain}`);
@@ -38,9 +36,8 @@ export const disconnectAutonomysApi = async (): Promise<void> => {
   }
 
   try {
-    await api.disconnect();
+    await disconnect(api);
     api = null;
-    provider = null;
     console.log('Autonomys API disconnected successfully');
   } catch (error) {
     console.error('Error disconnecting from Autonomys API:', error);
@@ -76,15 +73,6 @@ export const getBlockHash = async (blockNumber: bigint): Promise<string> => {
   return hash.toString();
 };
 
-/**
- * Query operators
- */
-export const queryOperators = async (): Promise<any[]> => {
-  const api = getAutonomysApi();
-  // TODO: Implement operator query
-  console.log('Querying operators from chain...');
-  return [];
-};
 
 /**
  * Query operator by ID at a specific block
@@ -95,118 +83,30 @@ export const queryOperatorById = async (operatorId: string, blockHash?: string):
   const api = getAutonomysApi();
   
   try {
-    let operatorData;
     if (blockHash) {
-      // Query at specific block
+      // For querying at a specific block, we need to use the raw API
       const apiAt = await api.at(blockHash);
-      operatorData = await apiAt.query.domains.operators(operatorId);
+      const operatorData = await apiAt.query.domains.operators(operatorId);
+      
+      if (operatorData.isEmpty) {
+        console.log(`Operator ${operatorId} not found`);
+        return null;
+      }
+      
+      return operatorData.toJSON();
     } else {
-      // Query at latest block
-      operatorData = await api.query.domains.operators(operatorId);
+      // Use the SDK's operator function for latest block queries
+      try {
+        const operatorData = await operator(api, operatorId);
+        return operatorData;
+      } catch (error) {
+        // If the operator doesn't exist, the SDK will throw an error
+        console.log(`Operator ${operatorId} not found`);
+        return null;
+      }
     }
-    
-    // Check if operator exists
-    if (operatorData.isEmpty) {
-      console.log(`Operator ${operatorId} not found`);
-      return null;
-    }
-    
-    return operatorData.toJSON();
   } catch (error) {
     console.error(`Failed to query operator ${operatorId}:`, error);
     throw error;
   }
-};
-
-/**
- * Query domain staking summary
- */
-export const queryDomainStakingSummary = async (domainId: string): Promise<any | null> => {
-  const api = getAutonomysApi();
-  // TODO: Implement domain staking summary query
-  console.log(`Querying domain staking summary for ${domainId}...`);
-  return null;
-};
-
-/**
- * Query all domain staking summaries
- */
-export const queryAllDomainStakingSummaries = async (): Promise<Map<string, any>> => {
-  const api = getAutonomysApi();
-  // TODO: Implement all domain staking summaries query
-  console.log('Querying all domain staking summaries...');
-  return new Map();
-};
-
-/**
- * Query deposits for operator and nominator
- */
-export const queryDeposits = async (operatorId: string, nominatorId: string): Promise<any | null> => {
-  const api = getAutonomysApi();
-  // TODO: Implement deposits query
-  console.log(`Querying deposits for nominator ${nominatorId} on operator ${operatorId}...`);
-  return null;
-};
-
-/**
- * Query withdrawals for operator and nominator
- */
-export const queryWithdrawals = async (operatorId: string, nominatorId: string): Promise<any | null> => {
-  const api = getAutonomysApi();
-  // TODO: Implement withdrawals query
-  console.log(`Querying withdrawals for nominator ${nominatorId} on operator ${operatorId}...`);
-  return null;
-};
-
-/**
- * Query domain head block number
- */
-export const queryDomainHeadNumber = async (domainId: string): Promise<bigint | null> => {
-  const api = getAutonomysApi();
-  // TODO: Implement domain head number query
-  console.log(`Querying head block number for domain ${domainId}...`);
-  return null;
-};
-
-/**
- * Query operator owner
- */
-export const queryOperatorOwner = async (operatorId: string): Promise<string | null> => {
-  const api = getAutonomysApi();
-  // TODO: Implement operator owner query
-  console.log(`Querying owner for operator ${operatorId}...`);
-  return null;
-};
-
-/**
- * Subscribe to new blocks
- */
-export const subscribeToNewBlocks = async (callback: (blockNumber: bigint) => void): Promise<() => void> => {
-  const api = getAutonomysApi();
-  
-  const unsubscribe = await api.rpc.chain.subscribeNewHeads((header) => {
-    callback(BigInt(header.number.toString()));
-  });
-  
-  return unsubscribe;
-};
-
-/**
- * Query at specific block
- */
-export const queryAtBlock = async <T>(
-  blockHash: string,
-  queryFn: (api: ApiPromise) => Promise<T>
-): Promise<T> => {
-  const api = getAutonomysApi();
-  const apiAt = await api.at(blockHash);
-  return queryFn(apiAt as any);
-};
-
-/**
- * Batch query multiple items
- */
-export const batchQuery = async <T>(queries: (() => Promise<T>)[]): Promise<T[]> => {
-  // Execute queries in parallel for better performance
-  return Promise.all(queries.map(q => q()));
 };

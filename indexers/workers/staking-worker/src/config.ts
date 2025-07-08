@@ -48,7 +48,7 @@ export const config = {
   dbName: process.env.DB_NAME || 'indexer',
   
   // Autonomys API configuration (using same var name as account worker)
-  autonomysApiEndpoint: process.env.AUTONOMYS_NODE_URL || 'ws://localhost:9944',
+  autonomysApiEndpoint: process.env.AUTONOMYS_NODE_URL || 'wss://rpc.taurus.autonomys.xyz/ws',
   
   // Worker configuration
   batchSize: parseInt(process.env.BATCH_SIZE || '100', 10),

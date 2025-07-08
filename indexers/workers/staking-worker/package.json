@@ -17,7 +17,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@polkadot/api": "^15.8.1",
+    "@autonomys/auto-utils": "^1.5.5",
+    "@autonomys/auto-consensus": "^1.5.5",
     "dotenv": "^16.3.1",
     "ioredis": "^5.3.2",
     "pg": "^8.11.3"
