@@ -42,4 +42,4 @@ declare global {
   const redis: SafeRedisClient | undefined;
 }
 
-export {}; 
+export {};

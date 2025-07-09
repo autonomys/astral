@@ -1,7 +1,7 @@
-import { EventRecord } from "@autonomys/auto-utils";
-import * as db from "./db";
-import { Cache } from "./db";
-import { ExtrinsicPrimitive } from "./types";
+import { EventRecord } from '@autonomys/auto-utils';
+import * as db from './db';
+import { Cache } from './db';
+import { ExtrinsicPrimitive } from './types';
 type EventHandler = (params: {
   event: EventRecord;
   cache: Cache;
@@ -14,14 +14,7 @@ type EventHandler = (params: {
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
-  "balances.Transfer": ({
-    event,
-    cache,
-    height,
-    timestamp,
-    extrinsicId,
-    eventId,
-  }) => {
+  'balances.Transfer': ({ event, cache, height, timestamp, extrinsicId, eventId }) => {
     const from = event.event.data[0].toString();
     const to = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
@@ -33,8 +26,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.accountTransferSenderTotalValueHistory.push(
       db.createAccountTransferSenderTotalValue(
@@ -43,8 +36,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
 
     cache.accountTransferReceiverTotalCountHistory.push(
@@ -54,8 +47,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.accountTransferReceiverTotalValueHistory.push(
       db.createAccountTransferReceiverTotalValue(
@@ -64,11 +57,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
   },
-  "transactionPayment.TransactionFeePaid": ({
+  'transactionPayment.TransactionFeePaid': ({
     event,
     cache,
     height,
@@ -87,18 +80,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
   },
-  "domains.OperatorRewarded": ({
-    event,
-    cache,
-    height,
-    timestamp,
-    extrinsicId,
-    eventId,
-  }) => {
+  'domains.OperatorRewarded': ({ event, cache, height, timestamp, extrinsicId, eventId }) => {
     const operatorId = event.event.data[1].toString();
     const reward = BigInt(event.event.data[1].toString());
     if (reward === BigInt(0)) return;
@@ -110,40 +96,19 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
   },
-  "domains.OperatorTaxCollected": ({
-    event,
-    cache,
-    height,
-    timestamp,
-    extrinsicId,
-    eventId,
-  }) => {
+  'domains.OperatorTaxCollected': ({ event, cache, height, timestamp, extrinsicId, eventId }) => {
     const operatorId = event.event.data[0].toString();
     const tax = BigInt(event.event.data[1].toString());
 
     cache.operatorTotalTaxCollectedHistory.push(
-      db.createOperatorTotalTaxCollected(
-        operatorId,
-        tax,
-        height,
-        extrinsicId,
-        eventId,
-        timestamp
-      )
+      db.createOperatorTotalTaxCollected(operatorId, tax, height, extrinsicId, eventId, timestamp),
     );
   },
-  "domains.BundleStored": ({
-    event,
-    cache,
-    height,
-    timestamp,
-    extrinsicId,
-    eventId,
-  }) => {
+  'domains.BundleStored': ({ event, cache, height, timestamp, extrinsicId, eventId }) => {
     const bundleAuthor = event.event.data[0].toString();
 
     cache.operatorBundleTotalCountHistory.push(
@@ -153,11 +118,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
   },
-  "domains.OperatorRegistered": ({
+  'domains.OperatorRegistered': ({
     event,
     cache,
     height,
@@ -179,8 +144,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.operatorDepositsTotalValueHistory.push(
       db.createOperatorDepositsTotalValue(
@@ -189,8 +154,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
 
     cache.nominatorDepositsTotalCountHistory.push(
@@ -200,8 +165,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.nominatorDepositsTotalValueHistory.push(
       db.createNominatorDepositsTotalValue(
@@ -210,18 +175,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
   },
-  "domains.OperatorNominated": ({
-    event,
-    cache,
-    height,
-    timestamp,
-    extrinsicId,
-    eventId,
-  }) => {
+  'domains.OperatorNominated': ({ event, cache, height, timestamp, extrinsicId, eventId }) => {
     const operatorId = event.event.data[0].toString();
     const nominatorId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
@@ -233,8 +191,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.operatorDepositsTotalValueHistory.push(
       db.createOperatorDepositsTotalValue(
@@ -243,8 +201,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
 
     cache.nominatorDepositsTotalCountHistory.push(
@@ -254,8 +212,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.nominatorDepositsTotalValueHistory.push(
       db.createNominatorDepositsTotalValue(
@@ -264,11 +222,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
   },
-  "domains.NominatedStakedUnlocked": ({
+  'domains.NominatedStakedUnlocked': ({
     event,
     cache,
     height,
@@ -287,8 +245,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.operatorWithdrawalsTotalValueHistory.push(
       db.createOperatorWithdrawalsTotalValue(
@@ -297,8 +255,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
 
     cache.nominatorWithdrawalsTotalCountHistory.push(
@@ -308,8 +266,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.nominatorWithdrawalsTotalValueHistory.push(
       db.createNominatorWithdrawalsTotalValue(
@@ -318,41 +276,20 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
   },
   // Finalization events
-  "rewards.VoteReward": ({
-    event,
-    cache,
-    height,
-    timestamp,
-    extrinsicId,
-    eventId,
-  }) => {
+  'rewards.VoteReward': ({ event, cache, height, timestamp, extrinsicId, eventId }) => {
     const voter = event.event.data[0].toString();
     const reward = BigInt(event.event.data[1].toString());
 
     cache.farmerVoteTotalCountHistory.push(
-      db.createFarmerVoteTotalCount(
-        voter,
-        BigInt(1),
-        height,
-        extrinsicId,
-        eventId,
-        timestamp
-      )
+      db.createFarmerVoteTotalCount(voter, BigInt(1), height, extrinsicId, eventId, timestamp),
     );
     cache.farmerVoteTotalValueHistory.push(
-      db.createFarmerVoteTotalValue(
-        voter,
-        reward,
-        height,
-        extrinsicId,
-        eventId,
-        timestamp
-      )
+      db.createFarmerVoteTotalValue(voter, reward, height, extrinsicId, eventId, timestamp),
     );
 
     cache.farmerVoteAndBlockTotalCountHistory.push(
@@ -362,28 +299,14 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.farmerVoteAndBlockTotalValueHistory.push(
-      db.createFarmerVoteAndBlockTotalValue(
-        voter,
-        reward,
-        height,
-        extrinsicId,
-        eventId,
-        timestamp
-      )
+      db.createFarmerVoteAndBlockTotalValue(voter, reward, height, extrinsicId, eventId, timestamp),
     );
   },
-  "rewards.BlockReward": ({
-    event,
-    cache,
-    height,
-    timestamp,
-    extrinsicId,
-    eventId,
-  }) => {
+  'rewards.BlockReward': ({ event, cache, height, timestamp, extrinsicId, eventId }) => {
     const blockAuthor = event.event.data[0].toString();
     const reward = BigInt(event.event.data[1].toString());
 
@@ -394,18 +317,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.farmerBlockTotalValueHistory.push(
-      db.createFarmerBlockTotalValue(
-        blockAuthor,
-        reward,
-        height,
-        extrinsicId,
-        eventId,
-        timestamp
-      )
+      db.createFarmerBlockTotalValue(blockAuthor, reward, height, extrinsicId, eventId, timestamp),
     );
 
     cache.farmerVoteAndBlockTotalCountHistory.push(
@@ -415,8 +331,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
     cache.farmerVoteAndBlockTotalValueHistory.push(
       db.createFarmerVoteAndBlockTotalValue(
@@ -425,8 +341,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         height,
         extrinsicId,
         eventId,
-        timestamp
-      )
+        timestamp,
+      ),
     );
   },
 };

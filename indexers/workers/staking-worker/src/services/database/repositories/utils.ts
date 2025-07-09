@@ -5,10 +5,10 @@ import { getDbClient } from '../connection';
  * Execute transaction with rollback on error
  */
 export const withTransaction = async <T>(
-  callback: (client: PoolClient) => Promise<T>
+  callback: (client: PoolClient) => Promise<T>,
 ): Promise<T> => {
   const client = await getDbClient();
-  
+
   try {
     await client.query('BEGIN');
     const result = await callback(client);

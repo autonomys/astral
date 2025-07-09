@@ -31,12 +31,11 @@ const connectRedis = async (): Promise<void> => {
     redisClient.on('reconnecting', () => {
       console.log('Redis reconnecting...');
     });
-
   } catch (error) {
     console.error('Failed to connect to Redis:', error);
     throw error;
   }
-}
+};
 
 const disconnectRedis = async (): Promise<void> => {
   if (redisClient) {
@@ -44,8 +43,7 @@ const disconnectRedis = async (): Promise<void> => {
     // redisClient = null; // Dereference, but ioredis might handle this internally upon quit
     console.log('Disconnected from Redis.');
   }
-}
-
+};
 
 /**
  * Fetches multiple tasks from the account processing queue for batch processing.
@@ -57,13 +55,13 @@ const fetchTasksFromQueue = async (batchSize: number = 10): Promise<AccountProce
   }
   try {
     const tasks: AccountProcessingTask[] = [];
-    
+
     // Use pipeline for better performance
     const pipeline = redisClient.pipeline();
     for (let i = 0; i < batchSize; i++) {
       pipeline.lpop(config.accountProcessingQueueName);
     }
-    
+
     const results = await pipeline.exec();
     if (results) {
       for (const [error, taskString] of results) {
@@ -76,13 +74,13 @@ const fetchTasksFromQueue = async (batchSize: number = 10): Promise<AccountProce
         }
       }
     }
-    
+
     return tasks;
   } catch (error) {
     console.error('Error fetching tasks from Redis queue:', error);
     return [];
   }
-}
+};
 
 /**
  * Pushes tasks back to the queue for later processing.
@@ -92,26 +90,26 @@ const pushTasksToQueue = async (tasks: AccountProcessingTask[]): Promise<number>
   if (!redisClient) {
     throw new Error('Redis client not initialized. Call connectRedis() first.');
   }
-  
+
   if (tasks.length === 0) {
     return 0;
   }
-  
+
   try {
     // Serialize tasks
-    const serializedTasks = tasks.map(task => JSON.stringify(task));
-    
+    const serializedTasks = tasks.map((task) => JSON.stringify(task));
+
     // Use pipeline for better performance with batches
     const pipeline = redisClient.pipeline();
-    
+
     const BATCH_SIZE = 50;
     for (let i = 0; i < serializedTasks.length; i += BATCH_SIZE) {
       const batch = serializedTasks.slice(i, i + BATCH_SIZE);
       pipeline.rpush(config.accountProcessingQueueName, ...batch);
     }
-    
+
     const results = await pipeline.exec();
-    
+
     let pushedCount = 0;
     if (results) {
       for (const [error] of results) {
@@ -120,7 +118,7 @@ const pushTasksToQueue = async (tasks: AccountProcessingTask[]): Promise<number>
         }
       }
     }
-    
+
     const actualPushed = Math.min(pushedCount, tasks.length);
     console.log(`Worker: Re-queued ${actualPushed} tasks to Redis for later processing`);
     return actualPushed;
@@ -128,11 +126,6 @@ const pushTasksToQueue = async (tasks: AccountProcessingTask[]): Promise<number>
     console.error('Error pushing tasks back to Redis queue:', error);
     return 0;
   }
-}
-
-export {
-  connectRedis,
-  disconnectRedis,
-  fetchTasksFromQueue,
-  pushTasksToQueue
 };
+
+export { connectRedis, disconnectRedis, fetchTasksFromQueue, pushTasksToQueue };

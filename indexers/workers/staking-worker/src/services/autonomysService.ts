@@ -16,10 +16,12 @@ export const connectAutonomysApi = async (): Promise<void> => {
   try {
     // Use createConnection for custom endpoints
     api = await createConnection(config.autonomysApiEndpoint);
-    
+
     console.log('Autonomys API connected successfully');
     console.log(`Connected to chain: ${api.runtimeChain}`);
-    console.log(`Runtime version: ${api.runtimeVersion.specName} v${api.runtimeVersion.specVersion}`);
+    console.log(
+      `Runtime version: ${api.runtimeVersion.specName} v${api.runtimeVersion.specVersion}`,
+    );
   } catch (error) {
     console.error('Failed to connect to Autonomys API:', error);
     throw error;
@@ -73,26 +75,28 @@ export const getBlockHash = async (blockNumber: bigint): Promise<string> => {
   return hash.toString();
 };
 
-
 /**
  * Query operator by ID at a specific block
  * @param operatorId The operator ID to query
  * @param blockHash The block hash to query at (optional, uses latest if not provided)
  */
-export const queryOperatorById = async (operatorId: string, blockHash?: string): Promise<any | null> => {
+export const queryOperatorById = async (
+  operatorId: string,
+  blockHash?: string,
+): Promise<any | null> => {
   const api = getAutonomysApi();
-  
+
   try {
     if (blockHash) {
       // For querying at a specific block, we need to use the raw API
       const apiAt = await api.at(blockHash);
       const operatorData = await apiAt.query.domains.operators(operatorId);
-      
+
       if (operatorData.isEmpty) {
         console.log(`Operator ${operatorId} not found`);
         return null;
       }
-      
+
       return operatorData.toJSON();
     } else {
       // Use the SDK's operator function for latest block queries
@@ -101,7 +105,7 @@ export const queryOperatorById = async (operatorId: string, blockHash?: string):
         return operatorData;
       } catch (error) {
         // If the operator doesn't exist, the SDK will throw an error
-        console.log(`Operator ${operatorId} not found`);
+        console.log(`Operator ${operatorId} not found, ${error}`);
         return null;
       }
     }

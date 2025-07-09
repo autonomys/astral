@@ -9,7 +9,7 @@ const getEnvVar = (key: string, defaultValue?: string): string => {
     throw new Error(`Environment variable ${key} is not set and no default value was provided.`);
   }
   return value;
-}
+};
 
 const parseIntEnvVar = (key: string, defaultValue?: number): number => {
   const valueStr = getEnvVar(key, defaultValue?.toString());
@@ -18,7 +18,7 @@ const parseIntEnvVar = (key: string, defaultValue?: number): number => {
     throw new Error(`Environment variable ${key} with value "${valueStr}" is not a valid integer.`);
   }
   return valueInt;
-}
+};
 
 const config: AppConfig = {
   autonomysNodeUrl: getEnvVar('AUTONOMYS_NODE_URL', 'ws://127.0.0.1:9944'),
@@ -73,11 +73,15 @@ console.log(`- DB Host: ${config.dbHost}:${config.dbPort}`);
 console.log(`- DB Name: ${config.dbName}`);
 console.log(`- Redis URL: ${config.redisUrl}`);
 console.log(`- Queue Name: ${config.accountProcessingQueueName}`);
-console.log(`- Processing Depth: ${config.processingDepth}`); 
+console.log(`- Processing Depth: ${config.processingDepth}`);
 console.log(`- Batch Size: ${config.batchSize}`);
 console.log(`- DB Pool: min=${config.dbPoolMin}, max=${config.dbPoolMax}`);
-console.log(`- DB Timeouts: connection=${config.dbConnectionTimeoutMs}ms, query=${config.dbQueryTimeoutMs}ms`);
-console.log(`- DB Update Chunks: size=${config.dbUpdateChunkSize}, delay=${config.dbUpdateChunkDelayMs}ms`);
+console.log(
+  `- DB Timeouts: connection=${config.dbConnectionTimeoutMs}ms, query=${config.dbQueryTimeoutMs}ms`,
+);
+console.log(
+  `- DB Update Chunks: size=${config.dbUpdateChunkSize}, delay=${config.dbUpdateChunkDelayMs}ms`,
+);
 console.log(`- Health Check Interval: ${config.dbHealthCheckIntervalMs}ms`);
 
 export { config };

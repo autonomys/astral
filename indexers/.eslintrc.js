@@ -1,8 +1,8 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.json',
     sourceType: 'module',
+    ecmaVersion: 2020,
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
@@ -14,11 +14,22 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js', 'dist/**/*', 'node_modules/**/*'],
+  ignorePatterns: [
+    '.eslintrc.js',
+    'dist/**/*',
+    'node_modules/**/*',
+    '*/src/types/**/*',
+  ],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/no-require-imports': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
   },
 }; 

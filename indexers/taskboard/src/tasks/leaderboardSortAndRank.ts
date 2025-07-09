@@ -1,10 +1,6 @@
-import { Pool, PoolClient } from "pg";
-import { LEADERBOARD_ENTRY_TYPE } from "../constants";
-import {
-  connectToDB,
-  entryTypeToTable,
-  updateLeaderboardRanking,
-} from "../utils/db";
+import { Pool, PoolClient } from 'pg';
+import { LEADERBOARD_ENTRY_TYPE } from '../constants';
+import { connectToDB, entryTypeToTable, updateLeaderboardRanking } from '../utils/db';
 
 interface UpdatedTable {
   table: string;
@@ -32,12 +28,10 @@ export const leaderboardSortAndRank = async (): Promise<LeaderboardResult> => {
       // Set work_mem for this session
       await client.query("SET work_mem = '256MB'");
 
-      await client.query("BEGIN");
+      await client.query('BEGIN');
 
       const updateQueries = Object.keys(LEADERBOARD_ENTRY_TYPE).map((key) => {
-        const sourceTable = entryTypeToTable(
-          LEADERBOARD_ENTRY_TYPE[key] + "Historie"
-        );
+        const sourceTable = entryTypeToTable(LEADERBOARD_ENTRY_TYPE[key] + 'Historie');
         const targetTable = entryTypeToTable(LEADERBOARD_ENTRY_TYPE[key]);
         const rankingQuery = updateLeaderboardRanking(sourceTable, targetTable);
         return client.query(rankingQuery).then((queryResult) => {
@@ -52,10 +46,10 @@ export const leaderboardSortAndRank = async (): Promise<LeaderboardResult> => {
       const updatedTables = await Promise.all(updateQueries);
       result.updatedTables.push(...updatedTables);
 
-      await client.query("COMMIT");
+      await client.query('COMMIT');
     } catch (err) {
-      await client.query("ROLLBACK");
-      console.error("Error updating rankings:", err);
+      await client.query('ROLLBACK');
+      console.error('Error updating rankings:', err);
       throw new Error(`Failed to update rankings: ${err}`);
     } finally {
       client.release();
@@ -63,7 +57,7 @@ export const leaderboardSortAndRank = async (): Promise<LeaderboardResult> => {
 
     return result;
   } catch (err) {
-    console.error("Error in leaderboardSortAndRank:", err);
+    console.error('Error in leaderboardSortAndRank:', err);
     throw new Error(`Failed to sort and rank leaderboard: ${err}`);
   }
 };

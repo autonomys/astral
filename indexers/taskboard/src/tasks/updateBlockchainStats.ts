@@ -1,5 +1,5 @@
-import { Pool, PoolClient } from "pg";
-import { connectToDB, generateStatsQuery, STATS_TABLES } from "../utils/db";
+import { Pool, PoolClient } from 'pg';
+import { connectToDB, generateStatsQuery, STATS_TABLES } from '../utils/db';
 
 interface UpdatedTable {
   table: string;
@@ -27,7 +27,7 @@ export const updateBlockchainStats = async (): Promise<StatsResult> => {
       // Set work_mem for this session
       await client.query("SET work_mem = '256MB'");
 
-      await client.query("BEGIN");
+      await client.query('BEGIN');
 
       const updateQueries = STATS_TABLES.map((timeFrame) => {
         const query = generateStatsQuery(timeFrame);
@@ -43,10 +43,10 @@ export const updateBlockchainStats = async (): Promise<StatsResult> => {
       const updatedTables = await Promise.all(updateQueries);
       result.updatedTables.push(...updatedTables);
 
-      await client.query("COMMIT");
+      await client.query('COMMIT');
     } catch (err) {
-      await client.query("ROLLBACK");
-      console.error("Error updating blockchain stats:", err);
+      await client.query('ROLLBACK');
+      console.error('Error updating blockchain stats:', err);
       throw new Error(`Failed to update blockchain stats: ${err}`);
     } finally {
       client.release();
@@ -54,7 +54,7 @@ export const updateBlockchainStats = async (): Promise<StatsResult> => {
 
     return result;
   } catch (err) {
-    console.error("Error in updateBlockchainStats:", err);
+    console.error('Error in updateBlockchainStats:', err);
     throw new Error(`Failed to update blockchain stats: ${err}`);
   }
 };

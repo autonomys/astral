@@ -1,6 +1,6 @@
-import { EventRecord } from "@autonomys/auto-utils";
-import { DOMAIN_AUTO_EVM_CHAIN_TYPE } from "./constants";
-import { Cache, createTransfer } from "./db";
+import { EventRecord } from '@autonomys/auto-utils';
+import { DOMAIN_AUTO_EVM_CHAIN_TYPE } from './constants';
+import { Cache, createTransfer } from './db';
 
 type EventHandler = (params: {
   event: EventRecord;
@@ -18,10 +18,10 @@ type EventHandler = (params: {
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
-  "balances.Deposit": ({ event, cache }) => {
+  'balances.Deposit': ({ event, cache }) => {
     cache.addressToUpdate.add(event.event.data[0].toString());
   },
-  "balances.Transfer": ({
+  'balances.Transfer': ({
     event,
     cache,
     height,
@@ -52,15 +52,14 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         DOMAIN_AUTO_EVM_CHAIN_TYPE,
         amount,
         fee,
-        "balances.Transfer",
+        'balances.Transfer',
         successEvent ? true : false,
         true,
-        blockTimestamp
-      )
+        blockTimestamp,
+      ),
     );
   },
-  "transporter.OutgoingTransferInitiated": ({
-    event,
+  'transporter.OutgoingTransferInitiated': ({
     cache,
     height,
     blockHash,
@@ -73,11 +72,12 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     extrinsicMethodToPrimitive,
   }) => {
     const [chainType, domainId] = Object.entries(
-      extrinsicMethodToPrimitive.args.dst_location.chainId
+      extrinsicMethodToPrimitive.args.dst_location.chainId,
     )[0] as [string, string | undefined];
-    const [_, to] = Object.entries(
-      extrinsicMethodToPrimitive.args.dst_location.accountId
-    )[0] as [string, string];
+    const [_, to] = Object.entries(extrinsicMethodToPrimitive.args.dst_location.accountId)[0] as [
+      string,
+      string,
+    ];
     const amount = BigInt(extrinsicMethodToPrimitive.args.amount.toString());
 
     cache.addressToUpdate.add(extrinsicSigner);
@@ -93,17 +93,17 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         extrinsicSigner,
         DOMAIN_AUTO_EVM_CHAIN_TYPE,
         to,
-        chainType + ":" + domainId,
+        chainType + ':' + domainId,
         amount,
         fee,
-        "transporter.Transfer",
+        'transporter.Transfer',
         successEvent ? true : false,
         false,
-        blockTimestamp
-      )
+        blockTimestamp,
+      ),
     );
   },
-  "balances.Burned": ({ event, cache }) => {
+  'balances.Burned': ({ event, cache }) => {
     cache.addressToUpdate.add(event.event.data[0].toString());
   },
 };

@@ -14,30 +14,32 @@ import { config } from '../config';
 export const processInParallel = async <T, R>(
   items: T[],
   processor: (item: T) => Promise<R>,
-  concurrencyLimit?: number
+  concurrencyLimit?: number,
 ): Promise<R[]> => {
   const limit = concurrencyLimit || Math.floor(config.dbPoolSize * 0.8); // Use 80% of pool by default
   const results: R[] = new Array(items.length);
   const executing = new Set<Promise<void>>();
-  
+
   for (let i = 0; i < items.length; i++) {
-    const promise = processor(items[i]).then(result => {
-      results[i] = result;
-    }).finally(() => {
-      executing.delete(promise);
-    });
-    
+    const promise = processor(items[i])
+      .then((result) => {
+        results[i] = result;
+      })
+      .finally(() => {
+        executing.delete(promise);
+      });
+
     executing.add(promise);
-    
+
     // If we've reached the concurrency limit, wait for one to complete
     if (executing.size >= limit) {
       await Promise.race(executing);
     }
   }
-  
+
   // Wait for all remaining promises
   await Promise.all(executing);
-  
+
   return results;
 };
 
@@ -53,17 +55,17 @@ export const processInBatches = async <T, R>(
   items: T[],
   processor: (item: T) => Promise<R>,
   batchSize?: number,
-  concurrencyLimit?: number
+  concurrencyLimit?: number,
 ): Promise<R[]> => {
   const size = batchSize || config.batchSize;
   const results: R[] = [];
-  
+
   for (let i = 0; i < items.length; i += size) {
     const batch = items.slice(i, i + size);
     const batchResults = await processInParallel(batch, processor, concurrencyLimit);
     results.push(...batchResults);
   }
-  
+
   return results;
 };
 
@@ -75,7 +77,7 @@ export const processGroupedInParallel = async <T, K, R>(
   items: T[],
   keyFn: (item: T) => K,
   processor: (items: T[]) => Promise<R>,
-  concurrencyLimit?: number
+  concurrencyLimit?: number,
 ): Promise<R[]> => {
   // Group items by key
   const groups = new Map<K, T[]>();
@@ -85,7 +87,7 @@ export const processGroupedInParallel = async <T, K, R>(
     group.push(item);
     groups.set(key, group);
   }
-  
+
   // Process each group in parallel
   const groupEntries = Array.from(groups.values());
   return processInParallel(groupEntries, processor, concurrencyLimit);
@@ -97,27 +99,27 @@ export const processGroupedInParallel = async <T, K, R>(
 export const retryWithBackoff = async <T>(
   fn: () => Promise<T>,
   maxRetries: number = config.maxRetries,
-  baseDelay: number = config.retryDelayMs
+  baseDelay: number = config.retryDelayMs,
 ): Promise<T> => {
   let lastError: Error;
-  
+
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error as Error;
-      
+
       // Check if it's a deadlock error (PostgreSQL error code 40P01)
       if ((error as any).code === '40P01') {
         console.log(`Deadlock detected, retrying attempt ${attempt + 1}/${maxRetries}...`);
       }
-      
+
       if (attempt < maxRetries - 1) {
         const delay = baseDelay * Math.pow(2, attempt);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
-  
+
   throw lastError!;
 };

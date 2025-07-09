@@ -4,7 +4,10 @@ import { query } from '../connection';
 /**
  * Fetch unprocessed withdrawal tasks from the database that are finalized
  */
-export const fetchUnprocessedWithdrawals = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+export const fetchUnprocessedWithdrawals = async (
+  limit: number,
+  maxBlockHeight?: number,
+): Promise<any[]> => {
   let queryText = `
     SELECT 
       id, address, operator_id, domain_id,
@@ -15,9 +18,9 @@ export const fetchUnprocessedWithdrawals = async (limit: number, maxBlockHeight?
     FROM staking.nominator_withdrawals
     WHERE processed = false
   `;
-  
+
   const params: any[] = [];
-  
+
   // Only fetch events below the finality threshold
   if (maxBlockHeight !== undefined) {
     queryText += ` AND block_height <= $1`;
@@ -28,7 +31,7 @@ export const fetchUnprocessedWithdrawals = async (limit: number, maxBlockHeight?
     queryText += ` ORDER BY block_height ASC LIMIT $1`;
     params.push(limit);
   }
-  
+
   const result = await query(queryText, params);
   /*
   Sometimes we get duplicated withdrawals, so we need to deduplicate them later on when processing.
@@ -36,13 +39,12 @@ export const fetchUnprocessedWithdrawals = async (limit: number, maxBlockHeight?
   return result.rows;
 };
 
-
 /**
  * Mark a withdrawal as processed
  */
 export const markWithdrawalAsProcessed = async (id: string, client?: PoolClient): Promise<void> => {
   const queryText = 'UPDATE staking.nominator_withdrawals SET processed = true WHERE id = $1';
-  
+
   if (client) {
     await client.query(queryText, [id]);
   } else {
@@ -58,7 +60,7 @@ export const updateNominatorAfterWithdrawal = async (
   convertedAmount: string,
   storageFeeRefund: string,
   unlockBlocks: any[],
-  client?: PoolClient
+  client?: PoolClient,
 ): Promise<void> => {
   const queryText = `
     UPDATE staking.nominators 
@@ -69,22 +71,21 @@ export const updateNominatorAfterWithdrawal = async (
       updated_at = $4
     WHERE id = $5
   `;
-  
+
   const params = [
-    convertedAmount,                          // $1 - amount to add to total_withdrawals
-    storageFeeRefund,                         // $2 - amount to add to total_storage_fee_refund
-    JSON.stringify(unlockBlocks),             // $3 - unlock_at_confirmed_domain_block_number (JSONB array)
-    Date.now(),                               // $4 - updated_at
-    nominatorId                               // $5 - id (WHERE clause)
+    convertedAmount, // $1 - amount to add to total_withdrawals
+    storageFeeRefund, // $2 - amount to add to total_storage_fee_refund
+    JSON.stringify(unlockBlocks), // $3 - unlock_at_confirmed_domain_block_number (JSONB array)
+    Date.now(), // $4 - updated_at
+    nominatorId, // $5 - id (WHERE clause)
   ];
-  
+
   if (client) {
     await client.query(queryText, params);
   } else {
     await query(queryText, params);
   }
 };
-
 
 /**
  * Create or update nominator record after withdrawal conversion
@@ -98,7 +99,7 @@ export const upsertNominatorAfterWithdrawal = async (
   storageFeeRefund: string,
   unlockBlocks: any[],
   withdrawnShares: string,
-  client?: PoolClient
+  client?: PoolClient,
 ): Promise<void> => {
   const queryText = `
     INSERT INTO staking.nominators (
@@ -119,19 +120,19 @@ export const upsertNominatorAfterWithdrawal = async (
       unlock_at_confirmed_domain_block_number = $8::jsonb,
       updated_at = $9
   `;
-  
+
   const params = [
-    nominatorId,                              // $1 - id
-    address,                                  // $2 - address
-    domainId,                                 // $3 - domain_id
-    operatorId,                               // $4 - operator_id
-    withdrawnShares,                          // $5 - withdrawn_shares
-    totalWithdrawals,                         // $6 - total_withdrawals
-    storageFeeRefund,                         // $7 - total_storage_fee_refund
-    JSON.stringify(unlockBlocks),             // $8 - unlock_at_confirmed_domain_block_number
-    Date.now()                                // $9 - created_at, updated_at
+    nominatorId, // $1 - id
+    address, // $2 - address
+    domainId, // $3 - domain_id
+    operatorId, // $4 - operator_id
+    withdrawnShares, // $5 - withdrawn_shares
+    totalWithdrawals, // $6 - total_withdrawals
+    storageFeeRefund, // $7 - total_storage_fee_refund
+    JSON.stringify(unlockBlocks), // $8 - unlock_at_confirmed_domain_block_number
+    Date.now(), // $9 - created_at, updated_at
   ];
-  
+
   if (client) {
     await client.query(queryText, params);
   } else {

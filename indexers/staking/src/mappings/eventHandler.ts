@@ -1,14 +1,8 @@
-import {
-  capitalizeFirstLetter,
-  EventRecord,
-  stringify,
-} from "@autonomys/auto-utils";
-import * as db from "./db";
-import { Cache } from "./db";
-import { SealedBundleHeader } from "./types";
-import {
-  findOneExtrinsicEvent,
-} from "./utils";
+import { capitalizeFirstLetter, EventRecord, stringify } from '@autonomys/auto-utils';
+import * as db from './db';
+import { Cache } from './db';
+import { SealedBundleHeader } from './types';
+import { findOneExtrinsicEvent } from './utils';
 
 type EventHandler = (params: {
   event: EventRecord;
@@ -26,7 +20,7 @@ type EventHandler = (params: {
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
-  "domains.DomainRuntimeCreated": ({
+  'domains.DomainRuntimeCreated': ({
     event,
     cache,
     extrinsicSigner,
@@ -47,11 +41,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         extrinsicSigner,
         height,
         extrinsicId,
-        eventId
-      )
+        eventId,
+      ),
     );
   },
-  "domains.DomainInstantiated": ({
+  'domains.DomainInstantiated': ({
     event,
     cache,
     extrinsicSigner,
@@ -75,11 +69,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         extrinsicSigner,
         height,
         extrinsicId,
-        eventId
-      )
+        eventId,
+      ),
     );
   },
-  "domains.OperatorRegistered": ({
+  'domains.OperatorRegistered': ({
     event,
     cache,
     extrinsicSigner,
@@ -90,16 +84,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const domainId = event.event.data[1].toString();
-    const signingKey = String(
-      extrinsicMethodToPrimitive.args.config.signingKey
-    );
+    const signingKey = String(extrinsicMethodToPrimitive.args.config.signingKey);
     const minimumNominatorStake = BigInt(
-      extrinsicMethodToPrimitive.args.config.minimumNominatorStake
+      extrinsicMethodToPrimitive.args.config.minimumNominatorStake,
     );
-    const nominationTax = Number(
-      extrinsicMethodToPrimitive.args.config.nominationTax
-    );
-
+    const nominationTax = Number(extrinsicMethodToPrimitive.args.config.nominationTax);
 
     cache.operatorRegistration.push(
       db.createOperatorRegistration(
@@ -111,32 +100,20 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         nominationTax,
         height,
         extrinsicId,
-        eventId
-      )
+        eventId,
+      ),
     );
   },
-  "domains.OperatorNominated": ({
-    event,
-    cache,
-    extrinsicId,
-    eventId,
-    operatorDomainMap,
-  }) => {
+  'domains.OperatorNominated': ({ event, cache, extrinsicId, eventId, operatorDomainMap }) => {
     const operatorId = event.event.data[0].toString();
     const address = event.event.data[1].toString();
-    const domainId = operatorDomainMap.get(operatorId) ?? "";
+    const domainId = operatorDomainMap.get(operatorId) ?? '';
 
     cache.nominatorDepositEvent.push(
-      db.createNominatorDepositEvent(
-        address,
-        domainId,
-        operatorId,
-        extrinsicId,
-        eventId
-      )
+      db.createNominatorDepositEvent(address, domainId, operatorId, extrinsicId, eventId),
     );
   },
-  "domains.WithdrewStake": ({
+  'domains.WithdrewStake': ({
     event,
     cache,
     height,
@@ -147,8 +124,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const address = event.event.data[1].toString();
-    const domainId = operatorDomainMap.get(operatorId) ?? "";
-  
+    const domainId = operatorDomainMap.get(operatorId) ?? '';
 
     cache.withdrawEvent.push(
       db.createWithdrawEvent(
@@ -158,11 +134,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         blockTimestamp,
         height,
         extrinsicId,
-        eventId
-      )
+        eventId,
+      ),
     );
   },
-  "domains.OperatorRewarded": ({
+  'domains.OperatorRewarded': ({
     event,
     cache,
     height,
@@ -174,7 +150,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const operatorId = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
     const atBlockNumber = BigInt(bundleDetails.bundle.atBlockNumber.toString());
-    const domainId = operatorDomainMap.get(operatorId) ?? "";
+    const domainId = operatorDomainMap.get(operatorId) ?? '';
 
     cache.operatorReward.push(
       db.createOperatorReward(
@@ -184,11 +160,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         atBlockNumber,
         height,
         extrinsicId,
-        eventId
-      )
+        eventId,
+      ),
     );
   },
-  "domains.OperatorTaxCollected": ({
+  'domains.OperatorTaxCollected': ({
     event,
     cache,
     height,
@@ -197,21 +173,14 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     operatorDomainMap,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const domainId = operatorDomainMap.get(operatorId) ?? "";
+    const domainId = operatorDomainMap.get(operatorId) ?? '';
     const tax = BigInt(event.event.data[1].toString());
 
     cache.operatorTaxCollection.push(
-      db.createOperatorTaxCollection(
-        domainId,
-        operatorId,
-        tax,
-        height,
-        extrinsicId,
-        eventId
-      )
+      db.createOperatorTaxCollection(domainId, operatorId, tax, height, extrinsicId, eventId),
     );
   },
-  "domains.NominatedStakedUnlocked": ({
+  'domains.NominatedStakedUnlocked': ({
     event,
     cache,
     height,
@@ -223,17 +192,15 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
   }) => {
     const operatorId = event.event.data[0].toString();
     const address = event.event.data[1].toString();
-    const domainId = operatorDomainMap.get(operatorId) ?? "";
+    const domainId = operatorDomainMap.get(operatorId) ?? '';
     const amount = BigInt(event.event.data[2].toString());
 
     const StorageFeeUnlockedEvent = findOneExtrinsicEvent(
       extrinsicEvents,
-      "domains",
-      "StorageFeeUnlocked"
+      'domains',
+      'StorageFeeUnlocked',
     );
-    const storageFee = BigInt(
-      StorageFeeUnlockedEvent?.event.data[2].toString() ?? 0
-    );
+    const storageFee = BigInt(StorageFeeUnlockedEvent?.event.data[2].toString() ?? 0);
 
     cache.unlockedEvent.push(
       db.createUnlockedEvent(
@@ -245,11 +212,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         blockTimestamp,
         height,
         extrinsicId,
-        eventId
-      )
+        eventId,
+      ),
     );
   },
-  "domains.NominatorUnlocked": ({
+  'domains.NominatorUnlocked': ({
     event,
     cache,
     height,
@@ -259,7 +226,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     operatorDomainMap,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const domainId = operatorDomainMap.get(operatorId) ?? "";
+    const domainId = operatorDomainMap.get(operatorId) ?? '';
 
     cache.nominatorsUnlockedEvent.push(
       db.createNominatorsUnlockedEvent(
@@ -268,11 +235,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         extrinsicSigner,
         height,
         extrinsicId,
-        eventId
-      )
+        eventId,
+      ),
     );
   },
-  "domains.OperatorDeregistered": ({
+  'domains.OperatorDeregistered': ({
     event,
     cache,
     extrinsicSigner,
@@ -282,7 +249,7 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     operatorDomainMap,
   }) => {
     const operatorId = event.event.data[0].toString();
-    const domainId = operatorDomainMap.get(operatorId) ?? "";
+    const domainId = operatorDomainMap.get(operatorId) ?? '';
 
     cache.operatorDeregistration.push(
       db.createOperatorDeregistration(
@@ -291,11 +258,11 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         domainId,
         height,
         extrinsicId,
-        eventId
-      )
+        eventId,
+      ),
     );
   },
-  "domains.BundleStored": ({
+  'domains.BundleStored': ({
     event,
     cache,
     extrinsicId,
@@ -311,12 +278,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const domainId = header.proofOfElection.domainId.toString();
     const operatorId = header.proofOfElection.operatorId.toString();
 
-    const {
-      domainBlockNumber,
-      consensusBlockNumber,
-    } = header.receipt;
+    const { domainBlockNumber, consensusBlockNumber } = header.receipt;
 
-    const operatorOwner = operatorOwnerMap.get(operatorId) ?? "";
+    const operatorOwner = operatorOwnerMap.get(operatorId) ?? '';
     const epoch = domainEpochMap.get(domainId);
 
     // Check if epoch exists before converting to BigInt
@@ -336,8 +300,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         BigInt(consensusBlockNumber),
         extrinsicId,
         eventId,
-        BigInt(height)
-      )
+        BigInt(height),
+      ),
     );
   },
 };

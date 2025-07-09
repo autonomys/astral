@@ -1,4 +1,4 @@
-import { Operator, Withdrawal } from "@autonomys/auto-consensus";
+import { Operator, Withdrawal } from '@autonomys/auto-consensus';
 import {
   BundleSubmission,
   DomainInstantiation,
@@ -13,8 +13,8 @@ import {
   RuntimeCreation,
   StorageFundAccount,
   UnlockedEvent,
-} from "../types";
-import { getNominationId } from "./utils";
+} from '../types';
+import { getNominationId } from './utils';
 
 export type Cache = {
   bundleSubmission: BundleSubmission[];
@@ -85,7 +85,7 @@ export function createRuntimeCreation(
   createdBy: string,
   blockHeight: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): RuntimeCreation {
   return RuntimeCreation.create({
     id: runtimeId,
@@ -107,7 +107,7 @@ export function createDomainInstantiation(
   createdBy: string,
   blockHeight: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): DomainInstantiation {
   const id = domainId.toLowerCase();
   return DomainInstantiation.create({
@@ -132,7 +132,7 @@ export function createOperatorRegistration(
   nominationTax: number,
   blockHeight: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): OperatorRegistration {
   return OperatorRegistration.create({
     id: operatorId,
@@ -148,7 +148,6 @@ export function createOperatorRegistration(
   });
 }
 
-
 export function createOperatorReward(
   domainId: string,
   operatorId: string,
@@ -156,7 +155,7 @@ export function createOperatorReward(
   atBlockNumber: bigint,
   blockHeight: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): OperatorReward {
   return OperatorReward.create({
     id: eventId,
@@ -177,7 +176,7 @@ export function createOperatorTaxCollection(
   amount: bigint,
   blockHeight: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): OperatorTaxCollection {
   return OperatorTaxCollection.create({
     id: eventId,
@@ -200,7 +199,7 @@ export function createUnlockedEvent(
   timestamp: Date,
   blockHeight: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): UnlockedEvent {
   return UnlockedEvent.create({
     id: eventId,
@@ -224,7 +223,7 @@ export function createNominatorsUnlockedEvent(
   address: string,
   blockHeight: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): NominatorsUnlockedEvent {
   return NominatorsUnlockedEvent.create({
     id: eventId,
@@ -244,7 +243,7 @@ export function createOperatorDeregistration(
   domainId: string,
   blockHeight: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): OperatorDeregistration {
   return OperatorDeregistration.create({
     id: operatorId,
@@ -254,7 +253,7 @@ export function createOperatorDeregistration(
     extrinsicId,
     eventId,
     processed: false,
-    });
+  });
 }
 
 export function createBundleSubmission(
@@ -267,10 +266,10 @@ export function createBundleSubmission(
   consensusBlockNumber: bigint,
   extrinsicId: string,
   eventId: string,
-  blockHeight: bigint
+  blockHeight: bigint,
 ): BundleSubmission {
   return BundleSubmission.create({
-    id: domainId + "-" + id,
+    id: domainId + '-' + id,
     proposer,
     bundleId: id,
     domainId,
@@ -285,7 +284,6 @@ export function createBundleSubmission(
   });
 }
 
-
 export function createOperatorEpochSharePrice(
   operatorId: string,
   domainId: string,
@@ -294,7 +292,7 @@ export function createOperatorEpochSharePrice(
   totalStake: bigint,
   totalShares: bigint,
   timestamp: Date,
-  blockHeight: bigint
+  blockHeight: bigint,
 ): OperatorEpochSharePrice {
   const id = `${operatorId}-${domainId}-${epochIndex}`;
   return OperatorEpochSharePrice.create({
@@ -325,7 +323,7 @@ export function createNominatorDeposit(
   timestamp: Date,
   blockHeights: string,
   blockHeight: bigint,
-  processed: boolean
+  processed: boolean,
 ) {
   return NominatorDeposit.create({
     id,
@@ -364,7 +362,7 @@ export function createNominatorWithdrawal(
   eventIds: string,
   extrinsicIds: string,
   blockHeights: string,
-  processed: boolean
+  processed: boolean,
 ) {
   return NominatorWithdrawal.create({
     id,
@@ -393,7 +391,7 @@ export function createStorageFundAccount(
   address: string,
   balance: bigint,
   timestamp: Date,
-  blockHeight: bigint
+  blockHeight: bigint,
 ) {
   return StorageFundAccount.create({
     id: operatorId,
@@ -405,8 +403,6 @@ export function createStorageFundAccount(
   });
 }
 
-
-
 // RUNTIME CACHE FUNCTIONS
 
 export function createWithdrawEvent(
@@ -416,7 +412,7 @@ export function createWithdrawEvent(
   timestamp: Date,
   blockHeight: bigint,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): any {
   return {
     address,
@@ -435,7 +431,7 @@ export function createNominatorDepositEvent(
   domainId: string,
   operatorId: string,
   extrinsicId: string,
-  eventId: string
+  eventId: string,
 ): any {
   return {
     address,

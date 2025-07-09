@@ -1,9 +1,9 @@
-import { SubstrateBlock } from "@subql/types";
-import * as db from "./db";
-import { EVENT_HANDLERS } from "./eventHandler";
-import { EXTRINSIC_HANDLERS } from "./extrinsicHandler";
-import { ExtrinsicPrimitive } from "./types";
-import { groupEventsFromBatchAll } from "./utils";
+import { SubstrateBlock } from '@subql/types';
+import * as db from './db';
+import { EVENT_HANDLERS } from './eventHandler';
+import { EXTRINSIC_HANDLERS } from './extrinsicHandler';
+import { ExtrinsicPrimitive } from './types';
+import { groupEventsFromBatchAll } from './utils';
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -17,7 +17,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const height = BigInt(number.toString());
   const timestamp = blockTimestamp ? blockTimestamp : new Date();
 
-  let cache = db.initializeCache();
+  const cache = db.initializeCache();
   let eventIndex = 0;
 
   const eventsByExtrinsic = new Map<number, typeof events>();
@@ -37,17 +37,12 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
     const extrinsicEvents = eventsByExtrinsic.get(extrinsicIdx) || [];
     const successEvent = extrinsicEvents.findLast(
-      (event) =>
-        event.event.section === "system" &&
-        event.event.method === "ExtrinsicSuccess"
+      (event) => event.event.section === 'system' && event.event.method === 'ExtrinsicSuccess',
     );
-    const successEventId = successEvent?.event.index.toString() || "";
-    const extrinsicId = extrinsic ? height + "-" + extrinsicIdx.toString() : "";
-    const extrinsicMethodToPrimitive =
-      extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
-    const extrinsicSigner = extrinsic.isSigned
-      ? extrinsic.signer.toString()
-      : "";
+    const successEventId = successEvent?.event.index.toString() || '';
+    const extrinsicId = extrinsic ? height + '-' + extrinsicIdx.toString() : '';
+    const extrinsicMethodToPrimitive = extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
+    const extrinsicSigner = extrinsic.isSigned ? extrinsic.signer.toString() : '';
 
     if (extrinsic.isSigned)
       cache.accountExtrinsicTotalCountHistory.push(
@@ -56,9 +51,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           BigInt(1),
           height,
           extrinsicId,
-          height + "-" + successEventId,
-          timestamp
-        )
+          height + '-' + successEventId,
+          timestamp,
+        ),
       );
     if (extrinsic.isSigned && successEvent) {
       cache.accountExtrinsicSuccessTotalCountHistory.push(
@@ -67,14 +62,13 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           BigInt(1),
           height,
           extrinsicId,
-          height + "-" + successEventId,
-          timestamp
-        )
+          height + '-' + successEventId,
+          timestamp,
+        ),
       );
 
       // Process specific extrinsic
-      const extrinsicKey =
-        extrinsic.method.section + "." + extrinsic.method.method;
+      const extrinsicKey = extrinsic.method.section + '.' + extrinsic.method.method;
       const handler = EXTRINSIC_HANDLERS[extrinsicKey];
       if (handler)
         handler({
@@ -86,18 +80,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           extrinsicSigner,
         });
 
-      if (
-        extrinsic.method.section === "utility" &&
-        extrinsic.method.method === "batchAll"
-      ) {
+      if (extrinsic.method.section === 'utility' && extrinsic.method.method === 'batchAll') {
         const batchedExtrinsicEvents = groupEventsFromBatchAll(extrinsicEvents);
         batchedExtrinsicEvents.forEach((events, index) => {
           const extrinsicArgs = (extrinsic.args[0].toPrimitive() as any)[index];
           events.forEach((event) => {
-            const eventId = height + "-" + eventIndex;
+            const eventId = height + '-' + eventIndex;
 
             // Process specific events
-            const eventKey = event.event.section + "." + event.event.method;
+            const eventKey = event.event.section + '.' + event.event.method;
             const handler = EVENT_HANDLERS[eventKey];
             if (handler)
               handler({
@@ -118,10 +109,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       } else {
         // Process extrinsic events
         extrinsicEvents.forEach((event) => {
-          const eventId = height + "-" + eventIndex;
+          const eventId = height + '-' + eventIndex;
 
           // Process specific events
-          const eventKey = event.event.section + "." + event.event.method;
+          const eventKey = event.event.section + '.' + event.event.method;
           const handler = EVENT_HANDLERS[eventKey];
           if (handler)
             handler({
@@ -148,20 +139,20 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
             BigInt(1),
             height,
             extrinsicId,
-            height + "-" + successEventId.toString(),
-            timestamp
-          )
+            height + '-' + successEventId.toString(),
+            timestamp,
+          ),
         );
     }
   });
 
   // Process finalization events
   finalizationEvents.forEach((event) => {
-    const extrinsicId = height + "-" + event.phase.type; // AKA (blockHeight-Finalization)
-    const eventId = height + "-" + eventIndex;
+    const extrinsicId = height + '-' + event.phase.type; // AKA (blockHeight-Finalization)
+    const eventId = height + '-' + eventIndex;
 
     // Process specific events
-    const eventKey = event.event.section + "." + event.event.method;
+    const eventKey = event.event.section + '.' + event.event.method;
     const handler = EVENT_HANDLERS[eventKey];
     if (handler)
       handler({
@@ -170,7 +161,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         height,
         timestamp,
         extrinsicId,
-        extrinsicSigner: "",
+        extrinsicSigner: '',
         eventId,
       });
 
