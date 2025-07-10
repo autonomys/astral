@@ -50,7 +50,7 @@
     "dev:leaderboard": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope leaderboard && lerna run build --scope leaderboard && yarn docker:dev up postgres pgcat hasura leaderboard_subquery_node node --remove-orphans",
     "prod:consensus": "export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:prod up postgres pgcat hasura redis account-worker consensus_subquery_node node --remove-orphans",
     "prod:worker:account": "export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:prod up -d postgres pgcat hasura redis account-worker --remove-orphans",
-    "dev:worker:staking": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope staking && lerna run build --scope staking && yarn docker:dev up -d postgres pgcat postgres-staking hasura redis staking-worker --remove-orphans"
+    "dev:worker:staking": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope staking && lerna run build --scope staking && yarn docker:dev up -d postgres pgcat postgres-staking pgcat-staking hasura redis staking-worker --remove-orphans"
   },
   "dependencies": {
     "lerna": "^8.2.1"
