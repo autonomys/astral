@@ -1,0 +1,86 @@
+#
+# PgCat config for Staking Database
+#
+
+#
+# General pooler settings
+[general]
+# What IP to run on, 0.0.0.0 means accessible from everywhere.
+host = "0.0.0.0"
+
+# Port to run on, same as PgBouncer used in this example.
+port = 6432
+
+# Whether to enable prometheus exporter or not.
+enable_prometheus_exporter = true
+
+# Port at which prometheus exporter listens on.
+prometheus_exporter_port = 9931
+
+# The number of Tokio worker threads to launch. This should match the number of CPU cores available.
+worker_threads = 8
+
+# How long to wait before aborting a server connection (ms).
+connect_timeout = 10000
+
+# How much time to give `SELECT 1` health check query to return with a result (ms).
+healthcheck_timeout = 30000
+
+# How long to keep connection available for immediate re-use, without running a healthcheck query on it
+healthcheck_delay = 30000
+
+# How much time to give clients during shutdown before forcibly killing client connections (ms).
+shutdown_timeout = 60000
+
+# For how long to ban a server if it fails a health check (seconds).
+ban_time = 60 # seconds
+
+# If we should log client connections
+log_client_connections = false
+
+# If we should log client disconnections
+log_client_disconnections = false
+
+# Credentials to access the virtual administrative database (pgbouncer or pgcat)
+# Connecting to that database allows running commands like `SHOW POOLS`, `SHOW DATABASES`, etc..
+admin_username = "postgres"
+admin_password = "postgres"
+
+# pool
+# configs are structured as pool.<pool_name>
+# the pool_name is what clients use as database name when connecting
+
+[pools.staking]
+# Pool mode (see PgBouncer docs for more).
+# session: one server connection per connected client
+# transaction: one server connection per client transaction
+pool_mode = "transaction"
+
+# If the client doesn't specify, route traffic to
+# this role by default.
+#
+# any: round-robin between primary and replicas,
+# replica: round-robin between replicas only without touching the primary,
+# primary: all queries go to the primary unless otherwise specified.
+default_role = "primary"
+
+# Credentials for users that may connect to this cluster
+[pools.staking.users.0]
+username = "postgres"
+password = "postgres"
+# Maximum number of server connections that can be established for this user
+# The maximum number of connection from a single Pgcat process to any database in the cluster
+# is the sum of pool_size across all users.
+pool_size = 150
+
+# Maximum query duration. Dangerous, but protects against DBs that died in a non-obvious way.
+statement_timeout = 0
+
+# Shard 0
+[pools.staking.shards.0]
+# [ host, port, role ]
+servers = [
+    [ "postgres-staking", 5432, "primary" ],
+]
+# Database name (e.g. "staking")
+database = "staking" 

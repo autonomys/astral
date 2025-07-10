@@ -53,9 +53,9 @@
         context: ./indexers
         dockerfile: workers/staking-worker/Dockerfile
       depends_on:
-        pgcat:
+        pgcat-staking:
           condition: service_healthy
-        postgres:
+        postgres-staking:
           condition: service_healthy
         redis:
           condition: service_healthy
@@ -64,11 +64,11 @@
       restart: unless-stopped
       environment:
           AUTONOMYS_NODE_URL: ${RPC_URLS}
-          DB_HOST: ${DB_HOST}
-          DB_PORT: ${DB_PORT}
-          DB_USER: ${DB_USER}
-          DB_PASSWORD: ${DB_PASSWORD}
-          DB_NAME: ${DB_DATABASE}
+          DB_HOST: ${STAKING_DB_HOST:-postgres-staking}
+          DB_PORT: ${STAKING_INTERNAL_PORT:-5432}  # Internal port, not external
+          DB_USER: ${STAKING_DB_USER:-postgres}
+          DB_PASSWORD: ${STAKING_DB_PASSWORD:-postgres}
+          DB_NAME: ${STAKING_DB_DATABASE:-staking}
           REDIS_URL: "redis://${REDIS_SERVICE_HOST:-redis}:${REDIS_SERVICE_PORT:-6379}"
           BATCH_SIZE: "${BATCH_SIZE:-1000}"
           QUEUE_PROCESSING_INTERVAL_MS: "${QUEUE_PROCESSING_INTERVAL_MS:-500}"
