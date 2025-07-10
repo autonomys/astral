@@ -11,7 +11,7 @@ export interface ConsensusAccountData {
     free: any;
     reserved: any;
   };
-} 
+}
 
 export interface AppConfig {
   autonomysNodeUrl: string;

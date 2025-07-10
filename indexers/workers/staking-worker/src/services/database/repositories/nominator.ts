@@ -1,7 +1,5 @@
-
 import { PoolClient } from 'pg';
 import { query } from '../connection';
-
 
 /**
  * Get a specific nominator's data to process their unlock after operator deregistration
@@ -11,7 +9,7 @@ export const fetchNominatorForUnlock = async (
   address: string,
   operatorId: string,
   domainId: string,
-  client?: PoolClient
+  client?: PoolClient,
 ): Promise<any | null> => {
   const nominatorId = `${address}-${domainId}-${operatorId}`;
   const queryText = `
@@ -23,10 +21,10 @@ export const fetchNominatorForUnlock = async (
     FROM staking.nominators
     WHERE id = $1
   `;
-  
+
   const result = client
     ? await client.query(queryText, [nominatorId])
     : await query(queryText, [nominatorId]);
-  
+
   return result.rows.length > 0 ? result.rows[0] : null;
 };

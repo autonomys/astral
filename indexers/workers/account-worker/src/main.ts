@@ -22,10 +22,10 @@ const main = async () => {
 
     // Start periodic polling for chain head height
     if (config.chainHeadPollIntervalMs > 0) {
-        chainHeadPollInterval = setInterval(async () => {
-            if (isShuttingDown) return;
-            const _refreshChainHeadHeight = await refreshChainHeadHeight();
-        }, config.chainHeadPollIntervalMs);
+      chainHeadPollInterval = setInterval(async () => {
+        if (isShuttingDown) return;
+        const _refreshChainHeadHeight = await refreshChainHeadHeight();
+      }, config.chainHeadPollIntervalMs);
     }
 
     // Start periodic database health checks (every 30 seconds)
@@ -39,20 +39,24 @@ const main = async () => {
     }, config.dbHealthCheckIntervalMs); // Use config value
 
     // Start main processing loop with batch processing
-    console.log(`Worker: Starting batch queue processing. Batch size: ${config.batchSize}, Interval: ${config.queueProcessingIntervalMs}ms`);
-    
+    console.log(
+      `Worker: Starting batch queue processing. Batch size: ${config.batchSize}, Interval: ${config.queueProcessingIntervalMs}ms`,
+    );
+
     mainLoopInterval = setInterval(async () => {
       if (isShuttingDown) return;
       try {
         // Ensure database connection is healthy before processing
         await ensureDbConnection();
-        
+
         // Fetch batch of tasks
         const tasks: AccountProcessingTask[] = await fetchTasksFromQueue(config.batchSize);
-        
+
         if (tasks.length > 0) {
           const successCount = await processBatchTasks(tasks);
-          console.log(`Worker: Processed batch of ${tasks.length} tasks, ${successCount} successful updates`);
+          console.log(
+            `Worker: Processed batch of ${tasks.length} tasks, ${successCount} successful updates`,
+          );
         } else {
           console.log('Worker: No tasks in queue.');
         }
@@ -60,12 +64,11 @@ const main = async () => {
         console.error('Worker: Error in main processing loop:', loopError);
       }
     }, config.queueProcessingIntervalMs);
-
   } catch (error) {
     console.error('Worker: Failed to initialize or critical error during startup:', error);
     await shutdown(1);
   }
-}
+};
 
 const shutdown = async (exitCode = 0) => {
   if (isShuttingDown) return;
@@ -89,13 +92,13 @@ const shutdown = async (exitCode = 0) => {
 
   console.log('Worker: Shutdown complete.');
   process.exit(exitCode);
-}
+};
 
 // Handle graceful shutdown signals
 process.on('SIGTERM', () => shutdown(0));
 process.on('SIGINT', () => shutdown(0));
 
 main().catch(async (err) => {
-    console.error("Worker: Unhandled error in main execution:", err);
-    await shutdown(1);
+  console.error('Worker: Unhandled error in main execution:', err);
+  await shutdown(1);
 });

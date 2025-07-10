@@ -5,41 +5,45 @@
 /**
  * Convert shares to amount based on share price
  */
-export const sharesToAmount = (shares: bigint, sharePrice: bigint, precision: bigint = BigInt(1e18)): bigint => {
+export const sharesToAmount = (
+  shares: bigint,
+  sharePrice: bigint,
+  precision: bigint = BigInt(1e18),
+): bigint => {
   // TODO: Implement shares to amount conversion
   return (shares * sharePrice) / precision;
-}
+};
 
 /**
  * Convert amount to shares based on share price
  */
-export const amountToShares = (amount: bigint, sharePrice: bigint, precision: bigint = BigInt(1e18)): bigint => {
+export const amountToShares = (
+  amount: bigint,
+  sharePrice: bigint,
+  precision: bigint = BigInt(1e18),
+): bigint => {
   // TODO: Implement amount to shares conversion
   if (sharePrice === BigInt(0)) {
     return BigInt(0);
   }
   return (amount * precision) / sharePrice;
-}
+};
 
 /**
  * Calculate percentage yield
  */
-export const calculateYield = (initialAmount: bigint, finalAmount: bigint, decimals: number = 4): number => {
+export const calculateYield = (
+  initialAmount: bigint,
+  finalAmount: bigint,
+  decimals: number = 4,
+): number => {
   // TODO: Implement yield calculation
   if (initialAmount === BigInt(0)) {
     return 0;
   }
   const yieldBigInt = ((finalAmount - initialAmount) * BigInt(10 ** decimals)) / initialAmount;
-  return Number(yieldBigInt) / (10 ** decimals);
-}
-
-/**
- * Format bigint for display
- */
-export const formatBigInt = (value: bigint, decimals: number = 18): string => {
-  // TODO: Implement proper bigint formatting
-  return value.toString();
-}
+  return Number(yieldBigInt) / 10 ** decimals;
+};
 
 /**
  * Parse JSON safely with error handling
@@ -51,14 +55,14 @@ export const safeParseJson = <T>(jsonString: string, defaultValue: T): T => {
     console.error('Failed to parse JSON:', error);
     return defaultValue;
   }
-}
+};
 
 /**
  * Sleep for a specified duration
  */
 export const sleep = (ms: number): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 /**
  * Batch array into chunks
@@ -69,7 +73,7 @@ export const batchArray = <T>(array: T[], batchSize: number): T[][] => {
     batches.push(array.slice(i, i + batchSize));
   }
   return batches;
-}
+};
 
 /**
  * Retry a function with exponential backoff
@@ -77,10 +81,10 @@ export const batchArray = <T>(array: T[], batchSize: number): T[][] => {
 export const retryWithBackoff = async <T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
-  initialDelay: number = 1000
+  initialDelay: number = 1000,
 ): Promise<T> => {
   let lastError: Error;
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
@@ -93,6 +97,6 @@ export const retryWithBackoff = async <T>(
       }
     }
   }
-  
+
   throw lastError!;
 };

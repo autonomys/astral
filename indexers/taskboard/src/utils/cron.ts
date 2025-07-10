@@ -1,5 +1,5 @@
-import { Queue } from "bullmq";
-import { Task } from "../tasks";
+import { Queue } from 'bullmq';
+import { Task } from '../tasks';
 
 export interface CronQueue {
   queue: Queue;
@@ -18,6 +18,6 @@ export const setupCronTasks = (cronQueue: CronQueue) => {
         pattern: cronQueue.task.cron.pattern,
       },
       jobId: `cron:${cronQueue.name}`,
-    }
+    },
   );
 };

@@ -1,12 +1,13 @@
-
 import { PoolClient } from 'pg';
 import { query } from '../connection';
-
 
 /**
  * Fetch unprocessed deposit tasks from the database that are finalized
  */
-export const fetchUnprocessedDeposits = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+export const fetchUnprocessedDeposits = async (
+  limit: number,
+  maxBlockHeight?: number,
+): Promise<any[]> => {
   let queryText = `
     SELECT 
       id, address, operator_id, domain_id,
@@ -16,9 +17,9 @@ export const fetchUnprocessedDeposits = async (limit: number, maxBlockHeight?: n
     FROM staking.nominator_deposits
     WHERE processed = false AND pending_amount > 0
   `;
-  
+
   const params: any[] = [];
-  
+
   // Only fetch events below the finality threshold
   if (maxBlockHeight !== undefined) {
     queryText += ` AND block_height <= $1`;
@@ -29,7 +30,7 @@ export const fetchUnprocessedDeposits = async (limit: number, maxBlockHeight?: n
     queryText += ` ORDER BY block_height ASC LIMIT $1`;
     params.push(limit);
   }
-  
+
   const result = await query(queryText, params);
   return result.rows;
 };
@@ -39,14 +40,13 @@ export const fetchUnprocessedDeposits = async (limit: number, maxBlockHeight?: n
  */
 export const markDepositAsProcessed = async (id: string, client?: PoolClient): Promise<void> => {
   const queryText = 'UPDATE staking.nominator_deposits SET processed = true WHERE id = $1';
-  
+
   if (client) {
     await client.query(queryText, [id]);
   } else {
     await query(queryText, [id]);
   }
 };
-
 
 /**
  * Create or update nominator record after deposit conversion
@@ -59,7 +59,7 @@ export const upsertNominatorAfterDeposit = async (
   totalKnownShares: string,
   totalKnownStorageFeeDeposit: string,
   depositAmount: string,
-  client?: PoolClient
+  client?: PoolClient,
 ): Promise<void> => {
   const queryText = `
     INSERT INTO staking.nominators (
@@ -79,19 +79,19 @@ export const upsertNominatorAfterDeposit = async (
       total_deposits_count = nominators.total_deposits_count + 1,
       updated_at = $9
   `;
-  
+
   const params = [
-    nominatorId,                              // $1 - id
-    address,                                  // $2 - address
-    domainId,                                 // $3 - domain_id
-    operatorId,                               // $4 - operator_id
-    totalKnownShares,                         // $5 - known_shares
-    totalKnownStorageFeeDeposit,              // $6 - known_storage_fee_deposit
-    depositAmount,                            // $7 - deposit amount to add
-    1,                                        // $8 - total_deposits_count (initial value)
-    Date.now()                                // $9 - created_at, updated_at
+    nominatorId, // $1 - id
+    address, // $2 - address
+    domainId, // $3 - domain_id
+    operatorId, // $4 - operator_id
+    totalKnownShares, // $5 - known_shares
+    totalKnownStorageFeeDeposit, // $6 - known_storage_fee_deposit
+    depositAmount, // $7 - deposit amount to add
+    1, // $8 - total_deposits_count (initial value)
+    Date.now(), // $9 - created_at, updated_at
   ];
-  
+
   if (client) {
     await client.query(queryText, params);
   } else {

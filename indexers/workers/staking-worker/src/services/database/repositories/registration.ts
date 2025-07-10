@@ -1,10 +1,12 @@
 import { query } from '../connection';
 
-
 /**
  * Fetch unprocessed operator registrations from the database that are finalized
  */
-export const fetchUnprocessedOperatorRegistrations = async (limit: number, maxBlockHeight?: number): Promise<any[]> => {
+export const fetchUnprocessedOperatorRegistrations = async (
+  limit: number,
+  maxBlockHeight?: number,
+): Promise<any[]> => {
   let queryText = `
     SELECT 
       id, owner, domain_id, signing_key, minimum_nominator_stake,
@@ -12,9 +14,9 @@ export const fetchUnprocessedOperatorRegistrations = async (limit: number, maxBl
     FROM staking.operator_registrations
     WHERE processed = false
   `;
-  
+
   const params: any[] = [];
-  
+
   if (maxBlockHeight !== undefined) {
     queryText += ` AND block_height <= $1`;
     params.push(maxBlockHeight);
@@ -24,7 +26,7 @@ export const fetchUnprocessedOperatorRegistrations = async (limit: number, maxBl
     queryText += ` ORDER BY block_height ASC LIMIT $1`;
     params.push(limit);
   }
-  
+
   const result = await query(queryText, params);
   return result.rows;
 };

@@ -1,7 +1,16 @@
 import { config, validateConfig } from './config';
 import { refreshChainHeadHeight } from './core';
 import { StakingProcessingTask } from './interfaces';
-import { connectAutonomysApi, connectDb, connectRedis, disconnectAutonomysApi, disconnectDb, disconnectRedis, ensureDbConnection, getChainTip } from './services';
+import {
+  connectAutonomysApi,
+  connectDb,
+  connectRedis,
+  disconnectAutonomysApi,
+  disconnectDb,
+  disconnectRedis,
+  ensureDbConnection,
+  getChainTip,
+} from './services';
 import { fetchStakingTasks, processBatchTasks } from './worker';
 
 let isShuttingDown = false;
@@ -43,25 +52,32 @@ const main = async () => {
     }, config.dbHealthCheckIntervalMs);
 
     // Start main processing loop with batch processing
-    console.log(`Worker: Starting staking batch queue processing. Batch size: ${config.batchSize}, Interval: ${config.queueProcessingIntervalMs}ms`);
+    console.log(
+      `Worker: Starting staking batch queue processing. Batch size: ${config.batchSize}, Interval: ${config.queueProcessingIntervalMs}ms`,
+    );
     console.log(`Worker: Finality threshold: ${config.finalityThreshold} blocks`);
-    
+
     mainLoopInterval = setInterval(async () => {
       if (isShuttingDown) return;
       try {
         // Ensure database connection is healthy before processing
         await ensureDbConnection();
-        
+
         // Get current chain tip for finality checking
         const chainTip = await getChainTip();
         const maxBlockHeight = chainTip ? chainTip - config.finalityThreshold : undefined;
-        
+
         // Fetch batch of tasks from database
-        const tasks: StakingProcessingTask[] = await fetchStakingTasks(config.batchSize, maxBlockHeight);
-        
+        const tasks: StakingProcessingTask[] = await fetchStakingTasks(
+          config.batchSize,
+          maxBlockHeight,
+        );
+
         if (tasks.length > 0) {
           const successCount = await processBatchTasks(tasks);
-          console.log(`Worker: Processed batch of ${tasks.length} staking tasks, ${successCount} successful updates`);
+          console.log(
+            `Worker: Processed batch of ${tasks.length} staking tasks, ${successCount} successful updates`,
+          );
         } else {
           if (config.enableDebugLogs) {
             console.log('Worker: No staking tasks to process.');
@@ -71,12 +87,11 @@ const main = async () => {
         console.error('Worker: Error in main processing loop:', loopError);
       }
     }, config.queueProcessingIntervalMs);
-
   } catch (error) {
     console.error('Worker: Failed to initialize or critical error during startup:', error);
     await shutdown(1);
   }
-}
+};
 
 const shutdown = async (exitCode = 0) => {
   if (isShuttingDown) return;
@@ -101,7 +116,7 @@ const shutdown = async (exitCode = 0) => {
 
   console.log('Worker: Staking worker shutdown complete.');
   process.exit(exitCode);
-}
+};
 
 // Handle graceful shutdown signals
 process.on('SIGTERM', () => shutdown(0));
@@ -114,6 +129,6 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 main().catch(async (err) => {
-  console.error("Worker: Unhandled error in main execution:", err);
+  console.error('Worker: Unhandled error in main execution:', err);
   await shutdown(1);
-}); 
+});

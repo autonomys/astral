@@ -1,7 +1,16 @@
 // Interfaces for staking worker
 
 export interface StakingProcessingTask {
-  type: 'deposit' | 'withdrawal' | 'unlock' | 'operator-registration' | 'operator-reward' | 'operator-tax' | 'bundle-submission' | 'operator-deregistration' | 'nominators-unlocked';
+  type:
+    | 'deposit'
+    | 'withdrawal'
+    | 'unlock'
+    | 'operator-registration'
+    | 'operator-reward'
+    | 'operator-tax'
+    | 'bundle-submission'
+    | 'operator-deregistration'
+    | 'nominators-unlocked';
   id: string;
   operatorId: string;
   domainId: string;
@@ -145,7 +154,6 @@ export interface ConversionResult {
   updatedValues?: any;
 }
 
-
 /**
  * Consolidated operator upsert function that handles all operator updates in one transaction
  */
@@ -167,4 +175,13 @@ export interface OperatorUpdates {
 }
 
 // Union type for all staking tasks
-export type AnyStakingTask = DepositTask | WithdrawalTask | UnlockTask | OperatorRegistrationTask | OperatorRewardTask | OperatorTaxCollectionTask | BundleSubmissionTask | OperatorDeregistrationTask | NominatorsUnlockedTask;
+export type AnyStakingTask =
+  | DepositTask
+  | WithdrawalTask
+  | UnlockTask
+  | OperatorRegistrationTask
+  | OperatorRewardTask
+  | OperatorTaxCollectionTask
+  | BundleSubmissionTask
+  | OperatorDeregistrationTask
+  | NominatorsUnlockedTask;

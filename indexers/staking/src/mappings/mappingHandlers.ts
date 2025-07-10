@@ -1,8 +1,8 @@
-import { parseOperator, parseWithdrawal } from "@autonomys/auto-consensus";
-import { SubstrateBlock } from "@subql/types";
-import * as db from "./db";
-import { EVENT_HANDLERS } from "./eventHandler";
-import { ExtrinsicPrimitive } from "./types";
+import { parseOperator, parseWithdrawal } from '@autonomys/auto-consensus';
+import { SubstrateBlock } from '@subql/types';
+import * as db from './db';
+import { EVENT_HANDLERS } from './eventHandler';
+import { ExtrinsicPrimitive } from './types';
 import {
   createOperatorDomainMap,
   deriveOperatorEpochSharePrices,
@@ -11,32 +11,29 @@ import {
   groupNominatorEvents,
   processNominatorDepositEvents,
   processWithdrawalEvents,
-} from "./utils";
-
+} from './utils';
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
     block: {
-      header: { number, parentHash, hash },
+      header: { number, parentHash },
       extrinsics,
     },
     timestamp,
     events,
   } = _block;
-  if (!extrinsics.find((e) => e.method.section === "domains")) return;
+  if (!extrinsics.find((e) => e.method.section === 'domains')) return;
 
   const height = BigInt(number.toString());
   const blockTimestamp = timestamp ? timestamp : new Date();
 
-  let cache = db.initializeCache();
+  const cache = db.initializeCache();
   let eventIndex = 0;
 
   // FIX: Between 824014 and 835747 on Taurus Testnet domains.operators() return a parsing error, so in between these blocks, we query at the last valid block instead
   const apiPatched =
     unsafeApi && height > 824013 && height < 835748
-      ? await unsafeApi.at(
-          "0x77cc55c79e3adfbe38c79ce3475e2cace1c47e3a04166dc2ca9b1cfd49c26f5f"
-        )
+      ? await unsafeApi.at('0x77cc55c79e3adfbe38c79ce3475e2cace1c47e3a04166dc2ca9b1cfd49c26f5f')
       : api;
 
   // Use to query the parent block operators (for the last unlock of an operator (unlockNominator))
@@ -59,16 +56,14 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   let parentBlockOperatorsIndex: number | null = null;
   let withdrawalsResultId: number | null = null;
   let currentQueryIndex = 3; // next index after the static queries
-  
+
   let blockHasUnlockNominator = false;
   let blockHasWithdrawals = false;
-  
+
   if (extrinsics.length > 0) {
     if (
       extrinsics.find(
-        (e) =>
-          e.method.section === "domains" &&
-          e.method.method === "unlockNominator"
+        (e) => e.method.section === 'domains' && e.method.method === 'unlockNominator',
       )
     ) {
       blockHasUnlockNominator = true;
@@ -77,10 +72,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       currentQueryIndex++;
     }
     if (
-      extrinsics.find(
-        (e) =>
-          e.method.section === "domains" && e.method.method === "withdrawStake"
-      )
+      extrinsics.find((e) => e.method.section === 'domains' && e.method.method === 'withdrawStake')
     ) {
       blockHasWithdrawals = true;
       withdrawalsResultId = currentQueryIndex;
@@ -92,18 +84,18 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
   // api.query.domains.operators.entries(),
   /*
-  * signingKey
-  * currentDomainId
-  * nextDomainId
-  * minimumNominatorStake
-  * nominationTax
-  * currentTotalStake
-  * currentTotalShares
-  * partialStatus
-  * depositsInEpoch
-  * withdrawalsInEpoch
-  * totalStorageFeeDeposit
-  */
+   * signingKey
+   * currentDomainId
+   * nextDomainId
+   * minimumNominatorStake
+   * nominationTax
+   * currentTotalStake
+   * currentTotalShares
+   * partialStatus
+   * depositsInEpoch
+   * withdrawalsInEpoch
+   * totalStorageFeeDeposit
+   */
   const operators = queriesResults[0].map((o) => parseOperator(o));
 
   // Create a map of operatorId -> domainId for quick lookups
@@ -112,16 +104,16 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     queriesResults[2].map(([key, value]) => [
       (key.toHuman() as any)[0].toString(),
       value.toPrimitive() as string,
-    ])
+    ]),
   );
   // api.query.domains.domainStakingSummary.entries(),
   /*
-  * currentEpochIndex
-  * currentTotalStake
-  * currentOperators
-  * nextOperators
-  * currentEpochRewards
-  */
+   * currentEpochIndex
+   * currentTotalStake
+   * currentOperators
+   * nextOperators
+   * currentEpochRewards
+   */
   //logging the whole queriesResults[1]
 
   const currentDomainStakingSummary = queriesResults[1];
@@ -129,7 +121,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const { epochTransitions, domainEpochMap } = await detectEpochTransitions(
     currentDomainStakingSummary,
     parentBlockApi,
-    height
+    height,
   );
 
   // -------------------------------------------------------------------
@@ -141,7 +133,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       epochTransitions,
       operators,
       blockTimestamp,
-      height
+      height,
     );
 
     operatorEpochSharePrices.forEach((sharePrice) => {
@@ -154,47 +146,59 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           sharePrice.totalStake,
           sharePrice.totalShares,
           sharePrice.blockTimestamp,
-          sharePrice.height
-        )
+          sharePrice.height,
+        ),
       );
     });
 
-    
     if (redis) {
       // Process nominator deposits after epoch transitions
       // Only process events for domains that had epoch transitions
       for (const transition of epochTransitions) {
-        const {domainId, parentEpoch} = transition;
-        
+        const { domainId, parentEpoch } = transition;
+
         // Process deposit events for the transitioned domain
         const depositKey = `nominatorDepositEvents:${domainId}:${parentEpoch}`;
         const nominatorDepositEvents = await redis.lrange(depositKey, 0, -1);
-        
+
         if (nominatorDepositEvents.length > 0) {
           const nominatorDepositEventsMap = groupNominatorEvents(nominatorDepositEvents);
-          
+
           if (nominatorDepositEventsMap.size > 0) {
-            const _depositsEntries = await processNominatorDepositEvents(nominatorDepositEventsMap, api, blockTimestamp, cache, height);
+            const _depositsEntries = await processNominatorDepositEvents(
+              nominatorDepositEventsMap,
+              api,
+              blockTimestamp,
+              cache,
+              height,
+            );
           }
-          
+
           // Delete data for epoch i-1 (to handle re-orgs, we don't delete immediately)
           if (parentEpoch > 0) {
             const oldDepositKey = `nominatorDepositEvents:${domainId}:${parentEpoch - 1}`;
             await redis.del(oldDepositKey);
           }
         }
-        
+
         // Process withdrawal events for the transitioned domain
         const withdrawalKey = `nominatorWithdrawalEvents:${domainId}:${parentEpoch}`;
         const nominatorWithdrawalEvents = await redis.lrange(withdrawalKey, 0, -1);
-        
+
         if (nominatorWithdrawalEvents.length > 0) {
           const nominatorWithdrawalEventsMap = groupNominatorEvents(nominatorWithdrawalEvents);
-          
+
           if (nominatorWithdrawalEventsMap.size > 0) {
-            const _withdrawalEntries = await processWithdrawalEvents(nominatorWithdrawalEventsMap, domainId, api, blockTimestamp, cache, height);
+            const _withdrawalEntries = await processWithdrawalEvents(
+              nominatorWithdrawalEventsMap,
+              domainId,
+              api,
+              blockTimestamp,
+              cache,
+              height,
+            );
           }
-          
+
           // Delete data for epoch i-1 (to handle re-orgs, we don't delete immediately)
           if (parentEpoch > 0) {
             const oldWithdrawalKey = `nominatorWithdrawalEvents:${domainId}:${parentEpoch - 1}`;
@@ -205,17 +209,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     }
   }
 
-
   if (blockHasUnlockNominator)
     queriesResults[parentBlockOperatorsIndex!].forEach((o) =>
-      cache.parentBlockOperators.push(parseOperator(o))
+      cache.parentBlockOperators.push(parseOperator(o)),
     );
 
   if (blockHasWithdrawals)
     queriesResults[withdrawalsResultId!].forEach((o) =>
-      cache.currentWithdrawal.push(parseWithdrawal(o))
+      cache.currentWithdrawal.push(parseWithdrawal(o)),
     );
-
 
   const eventsByExtrinsic = new Map<number, typeof events>();
   for (const event of events) {
@@ -231,32 +233,24 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   // Process extrinsics
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
     const extrinsicEvents = eventsByExtrinsic.get(extrinsicIdx) || [];
-    const extrinsicMethodToPrimitive =
-      extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
+    const extrinsicMethodToPrimitive = extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
     const successEvent = extrinsicEvents.findLast(
-      (event) =>
-        event.event.section === "system" &&
-        event.event.method === "ExtrinsicSuccess"
+      (event) => event.event.section === 'system' && event.event.method === 'ExtrinsicSuccess',
     );
     // const successEventId = successEvent?.event.index.toString() || "";
-    const extrinsicId = extrinsic ? height + "-" + extrinsicIdx.toString() : "";
-    const extrinsicSigner = extrinsic.isSigned
-      ? extrinsic.signer.toString()
-      : "";
+    const extrinsicId = extrinsic ? height + '-' + extrinsicIdx.toString() : '';
+    const extrinsicSigner = extrinsic.isSigned ? extrinsic.signer.toString() : '';
 
     if (successEvent) {
-      if (
-        extrinsic.method.section === "utility" &&
-        extrinsic.method.method === "batchAll"
-      ) {
+      if (extrinsic.method.section === 'utility' && extrinsic.method.method === 'batchAll') {
         const batchedExtrinsicEvents = groupEventsFromBatchAll(extrinsicEvents);
         batchedExtrinsicEvents.forEach((events, index) => {
           const extrinsicArgs = (extrinsic.args[0].toPrimitive() as any)[index];
           events.forEach((event) => {
-            const eventId = height + "-" + eventIndex;
+            const eventId = height + '-' + eventIndex;
 
             // Process specific events
-            const eventKey = event.event.section + "." + event.event.method;
+            const eventKey = event.event.section + '.' + event.event.method;
             const handler = EVENT_HANDLERS[eventKey];
             if (handler)
               handler({
@@ -281,10 +275,10 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       } else {
         // Process extrinsic events
         extrinsicEvents.forEach((event) => {
-          const eventId = height + "-" + eventIndex;
+          const eventId = height + '-' + eventIndex;
 
           // Process specific events
-          const eventKey = event.event.section + "." + event.event.method;
+          const eventKey = event.event.section + '.' + event.event.method;
           const handler = EVENT_HANDLERS[eventKey];
           if (handler)
             handler({
@@ -309,7 +303,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     }
   });
 
-
   // -------------------------------------------------------------------
   // Store Nominator Deposits only for changed nominations during an epoch
   // -------------------------------------------------------------------
@@ -324,27 +317,25 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           logger.warn(`Could not find domain for operator ${event.operatorId}`);
           continue;
         }
-        
+
         const currentEpoch = domainEpochMap.get(domainId);
         if (currentEpoch === undefined) {
           logger.warn(`Could not find epoch for domain ${domainId}`);
           continue;
         }
-        
+
         const redisKey = `nominatorDepositEvents:${domainId}:${currentEpoch}`;
         const redisEntry = {
           operatorId: event.operatorId,
           address: event.address,
           eventId: event.eventId,
           extrinsicId: event.extrinsicId,
-          blockHeight: height.toString()
+          blockHeight: height.toString(),
         };
         await redis.lpush(redisKey, JSON.stringify(redisEntry));
       }
     }
   }
-
-
 
   // -------------------------------------------------------------------
   // Store Nominator Withdrawals only for changed nominations during an epoch
@@ -359,26 +350,25 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           logger.warn(`Could not find domain for operator ${event.operatorId}`);
           continue;
         }
-        
+
         const currentEpoch = domainEpochMap.get(domainId);
         if (currentEpoch === undefined) {
           logger.warn(`Could not find epoch for domain ${domainId}`);
           continue;
         }
-        
+
         const redisKey = `nominatorWithdrawalEvents:${domainId}:${currentEpoch}`;
         const redisEntry = {
           operatorId: event.operatorId,
           address: event.address,
           eventId: event.eventId,
           extrinsicId: event.extrinsicId,
-          blockHeight: height.toString()
+          blockHeight: height.toString(),
         };
         await redis.lpush(redisKey, JSON.stringify(redisEntry));
       }
     }
   }
-
 
   // Save cache
   await db.saveCache(cache);

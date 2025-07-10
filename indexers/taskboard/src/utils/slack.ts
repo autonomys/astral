@@ -22,15 +22,15 @@ interface SlackPayload {
 export const sendSlackMessage = async (
   message: string,
   blocks: any[],
-  messageIdToEdit?: string
+  messageIdToEdit?: string,
 ): Promise<string | undefined> => {
   const token = process.env.SLACK_TOKEN;
-  const conversationId = process.env.SLACK_CONVERSATION_ID || "";
+  const conversationId = process.env.SLACK_CONVERSATION_ID || '';
   const url = messageIdToEdit
-    ? "https://slack.com/api/chat.update"
-    : "https://slack.com/api/chat.postMessage";
+    ? 'https://slack.com/api/chat.update'
+    : 'https://slack.com/api/chat.postMessage';
 
-  let payload: SlackPayload = {
+  const payload: SlackPayload = {
     channel: conversationId,
     text: message,
     blocks: blocks,
@@ -42,9 +42,9 @@ export const sendSlackMessage = async (
 
   try {
     const response = await fetch(url, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json; charset=utf-8",
+        'Content-Type': 'application/json; charset=utf-8',
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(payload),
@@ -58,7 +58,7 @@ export const sendSlackMessage = async (
 
     return data.ts;
   } catch (e) {
-    console.error("Error sending slack message", e);
+    console.error('Error sending slack message', e);
     return undefined;
   }
 };

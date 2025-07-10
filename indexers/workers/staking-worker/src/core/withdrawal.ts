@@ -1,10 +1,10 @@
-import { PoolClient } from "pg";
-import { config } from "../config";
-import { ConversionResult, WithdrawalTask } from "../interfaces";
-import * as dbService from "../services/database";
-import { SHARES_CALCULATION_MULTIPLIER } from "../utils/constant";
-import { monitor } from "../utils/monitoring";
-import { processInParallel, retryWithBackoff } from "../utils/parallel";
+import { PoolClient } from 'pg';
+import { config } from '../config';
+import { ConversionResult, WithdrawalTask } from '../interfaces';
+import * as dbService from '../services/database';
+import { SHARES_CALCULATION_MULTIPLIER } from '../utils/constant';
+import { monitor } from '../utils/monitoring';
+import { processInParallel, retryWithBackoff } from '../utils/parallel';
 
 /**
  * Process a batch of withdrawal tasks in parallel
@@ -12,9 +12,9 @@ import { processInParallel, retryWithBackoff } from "../utils/parallel";
 export const processWithdrawalBatch = async (tasks: WithdrawalTask[]): Promise<number> => {
   const batchId = `withdrawals-${Date.now()}`;
   const parallelism = Math.floor(config.dbPoolSize * 0.6);
-  
+
   monitor.startBatch(batchId, 'withdrawals', tasks.length, parallelism);
-  
+
   // Sort withdrawals with same strategy as deposits for consistency
   const sortedTasks = [...tasks].sort((a, b) => {
     const operatorCompare = a.operatorId.localeCompare(b.operatorId);
@@ -23,7 +23,7 @@ export const processWithdrawalBatch = async (tasks: WithdrawalTask[]): Promise<n
     if (domainCompare !== 0) return domainCompare;
     return a.address.localeCompare(b.address);
   });
-  
+
   // Process withdrawals in parallel with concurrency limit
   const results = await processInParallel(
     sortedTasks,
@@ -37,26 +37,30 @@ export const processWithdrawalBatch = async (tasks: WithdrawalTask[]): Promise<n
       } catch (error) {
         console.error(`Failed to process withdrawal ${task.id}:`, error);
         if (error instanceof Error && 'code' in error) {
-          console.error(`Database error code: ${(error as any).code}, detail: ${(error as any).detail}`);
+          console.error(
+            `Database error code: ${(error as any).code}, detail: ${(error as any).detail}`,
+          );
         }
         return { hasConverted: false };
       }
     },
-    parallelism
+    parallelism,
   );
-  
-  const successCount = results.filter(r => r.hasConverted).length;
+
+  const successCount = results.filter((r) => r.hasConverted).length;
   monitor.endBatch(batchId, successCount);
-  
+
   return successCount;
 };
 
 /**
  * Process withdrawal conversion from shares to amount
  */
-const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolClient): Promise<ConversionResult> => {
-
-    /*
+const processWithdrawalConversion = async (
+  task: WithdrawalTask,
+  client: PoolClient,
+): Promise<ConversionResult> => {
+  /*
       each withdrawal entry in the database will be in the following format:
       {
         totalWithdrawalAmount: 1,600,022,075,474,813,470
@@ -101,15 +105,15 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
       domainEpoch: task.withdrawalInSharesDomainEpoch,
       unlockAtConfirmedDomainBlockNumber: task.withdrawalInSharesUnlockBlock,
       shares: BigInt(task.withdrawalInSharesAmount || '0'),
-      storageFeeRefund: BigInt(task.withdrawalInSharesStorageFeeRefund || '0')
-    }
+      storageFeeRefund: BigInt(task.withdrawalInSharesStorageFeeRefund || '0'),
+    },
   };
 
   // Check if there are shares to convert
   const newSharesAmount = withdrawalData.withdrawalInShares.shares;
 
   if (newSharesAmount === BigInt(0)) {
-      // Update nominator with all withdrawals
+    // Update nominator with all withdrawals
     await dbService.upsertNominatorAfterWithdrawal(
       nominatorId,
       task.address,
@@ -120,17 +124,17 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
       withdrawalData.withdrawals.map((w: any) => ({
         block: w.unlockAtConfirmedDomainBlockNumber.toString(),
         amount: w.amountToUnlock.toString(),
-        storageFeeRefund: w.storageFeeRefund.toString()
+        storageFeeRefund: w.storageFeeRefund.toString(),
       })),
       '0', // No new shares withdrawn in this case
-      client
+      client,
     );
 
     // Mark withdrawal as processed
     await dbService.markWithdrawalAsProcessed(task.id, client);
 
-    return { 
-      hasConverted: true
+    return {
+      hasConverted: true,
     };
   }
   // Step 1: Convert the amount of shares with the epoch number
@@ -138,7 +142,7 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
     task.operatorId,
     task.domainId,
     withdrawalData.withdrawalInShares.domainEpoch,
-    client
+    client,
   );
 
   if (!sharePrice) {
@@ -154,9 +158,10 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
 
   // Step 2: Add the new entry in the same format as withdrawals field
   const newWithdrawalEntry = {
-    unlockAtConfirmedDomainBlockNumber: withdrawalData.withdrawalInShares.unlockAtConfirmedDomainBlockNumber,
+    unlockAtConfirmedDomainBlockNumber:
+      withdrawalData.withdrawalInShares.unlockAtConfirmedDomainBlockNumber,
     amountToUnlock: amountToUnlock.toString(),
-    storageFeeRefund: withdrawalData.withdrawalInShares.storageFeeRefund.toString()
+    storageFeeRefund: withdrawalData.withdrawalInShares.storageFeeRefund.toString(),
   };
 
   // Add to withdrawals array
@@ -164,14 +169,12 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
 
   // Step 3: Update totalWithdrawalAmount
   const updatedTotalWithdrawalAmount = withdrawalData.totalWithdrawalAmount + amountToUnlock;
-  
 
-  
   // Convert the updated withdrawals to unlock blocks format for nominator
   const unlockBlocks = updatedWithdrawals.map((w: any) => ({
     block: w.unlockAtConfirmedDomainBlockNumber.toString(),
     amount: w.amountToUnlock.toString(),
-    storageFeeRefund: w.storageFeeRefund.toString()
+    storageFeeRefund: w.storageFeeRefund.toString(),
   }));
 
   // Update nominator with all withdrawals
@@ -184,13 +187,13 @@ const processWithdrawalConversion = async (task: WithdrawalTask, client: PoolCli
     withdrawalData.totalStorageFeeWithdrawal.toString(),
     unlockBlocks,
     newSharesAmount.toString(), // Track the shares being withdrawn
-    client
+    client,
   );
 
   // Mark withdrawal as processed
   await dbService.markWithdrawalAsProcessed(task.id, client);
 
-  return { 
-    hasConverted: true
+  return {
+    hasConverted: true,
   };
 };

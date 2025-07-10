@@ -3,9 +3,12 @@ import * as services from '../services';
 /**
  * Fetch staking tasks (deposits, withdrawals, and unlock events) that need processing
  */
-export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: number): Promise<any[]> => {
+export const fetchStakingTasks = async (
+  batchSize: number,
+  maxBlockHeight?: number,
+): Promise<any[]> => {
   const tasks: any[] = [];
-  
+
   // Calculate batch size for each type (split evenly between 9 types now)
   const taskTypes = 9;
   const baseLimit = Math.floor(batchSize / taskTypes);
@@ -17,12 +20,12 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
   const operatorTaxLimit = baseLimit;
   const bundleSubmissionsLimit = baseLimit;
   const operatorDeregistrationsLimit = baseLimit;
-  const nominatorsUnlockedLimit = batchSize - (baseLimit * (taskTypes-1)); // Take any remainder
-  
+  const nominatorsUnlockedLimit = batchSize - baseLimit * (taskTypes - 1); // Take any remainder
+
   try {
     // Fetch unprocessed deposits
     const deposits = await services.fetchUnprocessedDeposits(depositsLimit, maxBlockHeight);
-    
+
     // Convert to DepositTask format
     for (const deposit of deposits) {
       tasks.push({
@@ -36,13 +39,16 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
         knownStorageFeeDeposit: deposit.known_storage_fee_deposit,
         pendingAmount: deposit.pending_amount,
         pendingStorageFeeDeposit: deposit.pending_storage_fee_deposit,
-        pendingEffectiveDomainEpoch: deposit.pending_effective_domain_epoch
+        pendingEffectiveDomainEpoch: deposit.pending_effective_domain_epoch,
       });
     }
-    
+
     // Fetch unprocessed withdrawals
-    const withdrawals = await services.fetchUnprocessedWithdrawals(withdrawalsLimit, maxBlockHeight);
-    
+    const withdrawals = await services.fetchUnprocessedWithdrawals(
+      withdrawalsLimit,
+      maxBlockHeight,
+    );
+
     // Convert to WithdrawalTask format
     for (const withdrawal of withdrawals) {
       tasks.push({
@@ -58,13 +64,13 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
         withdrawalInSharesUnlockBlock: withdrawal.withdrawal_in_shares_unlock_block,
         totalWithdrawalAmount: withdrawal.total_withdrawal_amount,
         totalStorageFeeWithdrawal: withdrawal.total_storage_fee_withdrawal,
-        withdrawalsJson: withdrawal.withdrawals_json
+        withdrawalsJson: withdrawal.withdrawals_json,
       });
     }
-    
+
     // Fetch unprocessed unlock events
     const unlocks = await services.fetchUnprocessedUnlocks(unlocksLimit, maxBlockHeight);
-    
+
     // Convert to UnlockTask format
     for (const unlock of unlocks) {
       tasks.push({
@@ -77,13 +83,16 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
         amount: unlock.amount,
         storageFee: unlock.storage_fee,
         eventId: unlock.event_id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
-    
+
     // Fetch unprocessed operator registrations
-    const operatorRegistrations = await services.fetchUnprocessedOperatorRegistrations(operatorRegistrationsLimit, maxBlockHeight);
-    
+    const operatorRegistrations = await services.fetchUnprocessedOperatorRegistrations(
+      operatorRegistrationsLimit,
+      maxBlockHeight,
+    );
+
     // Convert to OperatorRegistrationTask format
     for (const registration of operatorRegistrations) {
       tasks.push({
@@ -99,13 +108,16 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
         blockHeight: registration.block_height,
         extrinsicId: registration.extrinsic_id,
         eventId: registration.event_id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
-    
+
     // Fetch unprocessed operator rewards
-    const operatorRewards = await services.fetchUnprocessedOperatorRewards(operatorRewardsLimit, maxBlockHeight);
-    
+    const operatorRewards = await services.fetchUnprocessedOperatorRewards(
+      operatorRewardsLimit,
+      maxBlockHeight,
+    );
+
     // Convert to OperatorRewardTask format
     for (const reward of operatorRewards) {
       tasks.push({
@@ -119,13 +131,16 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
         blockHeight: reward.block_height,
         extrinsicId: reward.extrinsic_id,
         eventId: reward.event_id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
-    
+
     // Fetch unprocessed operator tax collections
-    const operatorTaxCollections = await services.fetchUnprocessedOperatorTaxCollections(operatorTaxLimit, maxBlockHeight);
-    
+    const operatorTaxCollections = await services.fetchUnprocessedOperatorTaxCollections(
+      operatorTaxLimit,
+      maxBlockHeight,
+    );
+
     // Convert to OperatorTaxCollectionTask format
     for (const tax of operatorTaxCollections) {
       tasks.push({
@@ -138,13 +153,16 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
         blockHeight: tax.block_height,
         extrinsicId: tax.extrinsic_id,
         eventId: tax.event_id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
-    
+
     // Fetch unprocessed bundle submissions
-    const bundleSubmissions = await services.fetchUnprocessedBundleSubmissions(bundleSubmissionsLimit, maxBlockHeight);
-    
+    const bundleSubmissions = await services.fetchUnprocessedBundleSubmissions(
+      bundleSubmissionsLimit,
+      maxBlockHeight,
+    );
+
     // Convert to BundleSubmissionTask format
     for (const bundle of bundleSubmissions) {
       tasks.push({
@@ -160,13 +178,16 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
         consensusBlockNumber: bundle.consensus_block_number,
         extrinsicId: bundle.extrinsic_id,
         eventId: bundle.event_id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
-    
+
     // Fetch unprocessed operator deregistrations
-    const operatorDeregistrations = await services.fetchUnprocessedOperatorDeregistrations(operatorDeregistrationsLimit, maxBlockHeight);
-    
+    const operatorDeregistrations = await services.fetchUnprocessedOperatorDeregistrations(
+      operatorDeregistrationsLimit,
+      maxBlockHeight,
+    );
+
     // Convert to OperatorDeregistrationTask format
     for (const deregistration of operatorDeregistrations) {
       tasks.push({
@@ -179,13 +200,16 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
         blockHeight: deregistration.block_height,
         extrinsicId: deregistration.extrinsic_id,
         eventId: deregistration.event_id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
-    
+
     // Fetch unprocessed nominators unlocked events
-    const nominatorsUnlockedEvents = await services.fetchUnprocessedNominatorsUnlockedEvents(nominatorsUnlockedLimit, maxBlockHeight);
-    
+    const nominatorsUnlockedEvents = await services.fetchUnprocessedNominatorsUnlockedEvents(
+      nominatorsUnlockedLimit,
+      maxBlockHeight,
+    );
+
     // Convert to NominatorsUnlockedTask format
     for (const event of nominatorsUnlockedEvents) {
       tasks.push({
@@ -197,10 +221,10 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
         blockHeight: event.block_height,
         extrinsicId: event.extrinsic_id,
         eventId: event.event_id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
-    
+
     if (tasks.length > 0) {
       console.log(`Fetched ${tasks.length} tasks 
         (${deposits.length} deposits,
@@ -217,8 +241,6 @@ export const fetchStakingTasks = async (batchSize: number, maxBlockHeight?: numb
     console.error('Error fetching staking tasks from database:', error);
     throw error;
   }
-  
+
   return tasks;
 };
-
-

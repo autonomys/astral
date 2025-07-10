@@ -17,6 +17,10 @@
     "graph": "nx graph",
     "build": "lerna run build",
     "codegen": "lerna run codegen --skip-nx-cache",
+    "lint": "eslint \"*/src/**/*.ts\" \"workers/*/src/**/*.ts\"",
+    "lint:fix": "eslint \"*/src/**/*.ts\" \"workers/*/src/**/*.ts\" --fix",
+    "format": "prettier --write \"*/src/**/*.ts\" \"workers/*/src/**/*.ts\" \"!*/src/types/**/*\" \"!workers/*/src/types/**/*\"",
+    "format:check": "prettier --check \"*/src/**/*.ts\" \"workers/*/src/**/*.ts\" \"!*/src/types/**/*\" \"!workers/*/src/types/**/*\"",
     "docker:compose-base": "docker compose -p",
     "docker:dev": "yarn docker:compose-base dev-astral-indexers -f ../docker-compose.yml -f ../docker-compose.workers.yml",
     "docker:prod": "yarn docker:compose-base prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml -f ../docker-compose.workers.yml",
@@ -50,5 +54,13 @@
   },
   "dependencies": {
     "lerna": "^8.2.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.5",
+    "prettier": "^3.5.3"
   }
 }

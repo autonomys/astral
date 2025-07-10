@@ -69,7 +69,6 @@ export const getRedis = (): Redis => {
   return redis;
 };
 
-
 /**
  * Cache data with expiration
  */
@@ -119,7 +118,11 @@ export const deleteCachedData = async (key: string): Promise<void> => {
 /**
  * Cache domain epoch data
  */
-export const cacheDomainEpoch = async (domainId: string, epoch: number, data: any): Promise<void> => {
+export const cacheDomainEpoch = async (
+  domainId: string,
+  epoch: number,
+  data: any,
+): Promise<void> => {
   const key = `staking:domain:${domainId}:epoch:${epoch}`;
   await cacheData(key, data, 3600); // Cache for 1 hour
 };
@@ -127,11 +130,13 @@ export const cacheDomainEpoch = async (domainId: string, epoch: number, data: an
 /**
  * Get cached domain epoch data
  */
-export const getCachedDomainEpoch = async (domainId: string, epoch: number): Promise<any | null> => {
+export const getCachedDomainEpoch = async (
+  domainId: string,
+  epoch: number,
+): Promise<any | null> => {
   const key = `staking:domain:${domainId}:epoch:${epoch}`;
   return getCachedData(key);
 };
-
 
 /**
  * Store the current chain tip (latest block height)

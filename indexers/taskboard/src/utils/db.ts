@@ -1,11 +1,11 @@
-import { Pool, PoolConfig } from "pg";
+import { Pool, PoolConfig } from 'pg';
 
 export const connectToDB = async (): Promise<Pool> => {
   const dbConfig: PoolConfig = {
-    user: process.env.DB_USER || "postgres",
-    host: process.env.DB_HOST || "localhost",
-    database: process.env.DB_DATABASE || "postgres",
-    password: process.env.DB_PASSWORD || "postgres",
+    user: process.env.DB_USER || 'postgres',
+    host: process.env.DB_HOST || 'localhost',
+    database: process.env.DB_DATABASE || 'postgres',
+    password: process.env.DB_PASSWORD || 'postgres',
     port: Number(process.env.DB_PORT) || 5432,
     max: 20,
     idleTimeoutMillis: 30000,
@@ -18,15 +18,12 @@ export const connectToDB = async (): Promise<Pool> => {
 
 export const entryTypeToTable = (entryType: string): string =>
   entryType
-    .replace(/([A-Z])/g, "_$1")
+    .replace(/([A-Z])/g, '_$1')
     .toLowerCase()
-    .replace(/^_/, "") + "s";
+    .replace(/^_/, '') + 's';
 
 // Get unique sections from both extrinsics and events
-export const updateLeaderboardRanking = (
-  sourceTable: string,
-  targetTable: string
-) => `
+export const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
   WITH aggregated_entries AS (
     SELECT account_id, 
           SUM(value) AS total_value,
@@ -51,15 +48,15 @@ export const updateLeaderboardRanking = (
   DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, updated_at = EXCLUDED.updated_at;
 `;
 
-export const STATS_TABLES = ["hourly", "daily", "weekly", "monthly"] as const;
+export const STATS_TABLES = ['hourly', 'daily', 'weekly', 'monthly'] as const;
 type StatsTableType = (typeof STATS_TABLES)[number];
 
 const getPostgresTimeUnit = (timeFrame: StatsTableType): string => {
   const timeUnits = {
-    hourly: "hour",
-    daily: "day",
-    weekly: "week",
-    monthly: "month",
+    hourly: 'hour',
+    daily: 'day',
+    weekly: 'week',
+    monthly: 'month',
   } as const;
 
   return timeUnits[timeFrame];
