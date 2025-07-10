@@ -179,7 +179,7 @@ services:
       # Essential Environment Variables
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
       HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE} # Main database connection
-      STAKING_DATABASE_URL: postgres://${STAKING_DB_USER:-postgres}:${STAKING_DB_PASSWORD:-postgres}@${STAKING_DB_HOST:-postgres-staking}:{STAKING_INTERNAL_PORT:-5432}/${STAKING_DB_DATABASE:-staking} # Staking database connection
+      STAKING_DATABASE_URL: postgres://${STAKING_DB_USER:-postgres}:${STAKING_DB_PASSWORD:-postgres}@${STAKING_DB_HOST:-postgres-staking}:${STAKING_INTERNAL_PORT:-5432}/${STAKING_DB_DATABASE:-staking} # Staking database connection
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET} # Admin access secret
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET} # JWT authentication secret
 
