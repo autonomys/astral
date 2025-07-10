@@ -8,7 +8,7 @@ jobs:
     defaults:
       run:
         working-directory: indexers
-    name: Indexers - Run codegen, linting, and build
+    name: Indexers - Run codegen and build
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
