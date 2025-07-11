@@ -313,3 +313,14 @@ CREATE INDEX "consensus_logs_sort_id" ON consensus.logs USING btree (sort_id DES
 CREATE INDEX "consensus_logs_block_height" ON consensus.logs USING btree (block_height);
 
 CREATE TRIGGER "0x648269cc35867c16" AFTER UPDATE ON consensus._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION consensus.schema_notification();
+
+-- GIST indexes for SubQuery _block_range queries
+-- These are critical for performance as SubQuery uses WHERE _block_range @> current_block
+CREATE INDEX consensus_account_histories_block_range_gist ON consensus.account_histories USING gist (_block_range);
+CREATE INDEX consensus_account_rewards_block_range_gist ON consensus.account_rewards USING gist (_block_range);
+CREATE INDEX consensus_blocks_block_range_gist ON consensus.blocks USING gist (_block_range);
+CREATE INDEX consensus_events_block_range_gist ON consensus.events USING gist (_block_range);
+CREATE INDEX consensus_extrinsics_block_range_gist ON consensus.extrinsics USING gist (_block_range);
+CREATE INDEX consensus_logs_block_range_gist ON consensus.logs USING gist (_block_range);
+CREATE INDEX consensus_rewards_block_range_gist ON consensus.rewards USING gist (_block_range);
+CREATE INDEX consensus_transfers_block_range_gist ON consensus.transfers USING gist (_block_range);

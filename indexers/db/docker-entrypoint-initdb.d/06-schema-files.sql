@@ -178,3 +178,15 @@ CREATE INDEX "0xd9be8718ef6c7984" ON files.folder_cids USING btree (id);
 CREATE INDEX "files_folder_cids_parent_cid" ON files.folder_cids USING btree (parent_cid);
 
 CREATE TRIGGER "0x22152f0c663c5f9e" AFTER UPDATE ON files._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION files.schema_notification();
+
+-- GIST indexes for SubQuery _block_range queries
+-- These are critical for performance as SubQuery uses WHERE _block_range @> current_block
+CREATE INDEX files_chunks_block_range_gist ON files.chunks USING gist (_block_range);
+CREATE INDEX files_cids_block_range_gist ON files.cids USING gist (_block_range);
+CREATE INDEX files_errors_block_range_gist ON files.errors USING gist (_block_range);
+CREATE INDEX files_file_cids_block_range_gist ON files.file_cids USING gist (_block_range);
+CREATE INDEX files_files_block_range_gist ON files.files USING gist (_block_range);
+CREATE INDEX files_folder_cids_block_range_gist ON files.folder_cids USING gist (_block_range);
+CREATE INDEX files_folders_block_range_gist ON files.folders USING gist (_block_range);
+CREATE INDEX files_metadata_block_range_gist ON files.metadata USING gist (_block_range);
+CREATE INDEX files_metadata_cids_block_range_gist ON files.metadata_cids USING gist (_block_range);
