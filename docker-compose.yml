@@ -1,6 +1,7 @@
 volumes:
   node-data: {}
   postgres_db: {}
+  postgres_staking_db: {}
   redis_db: {}
   caddy_config: {}
   caddy_data: {}
@@ -95,6 +96,33 @@ services:
       retries: 5
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
+  # Postgres Database for Staking
+  postgres-staking:
+    image: postgres:17.3-alpine
+    volumes:
+      - postgres_staking_db:/var/lib/postgresql/data
+      - ./indexers/db/docker-entrypoint-initdb.d/staking-only/00-staking-setup.sql:/docker-entrypoint-initdb.d/00-staking-setup.sql
+      - ./indexers/db/docker-entrypoint-initdb.d/staking-only/07-schema-staking.sql:/docker-entrypoint-initdb.d/01-schema-staking.sql
+      - ./indexers/db/postgresql.conf:/etc/postgresql/postgresql.conf
+    restart: unless-stopped
+    hostname: postgres-staking
+    shm_size: 4g
+    environment:
+      POSTGRES_DB: ${STAKING_DB_DATABASE:-staking}
+      POSTGRES_USER: ${STAKING_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${STAKING_DB_PASSWORD:-postgres}
+      POSTGRES_MAX_CONNECTIONS: 200
+      POSTGRES_HOST_AUTH_METHOD: md5
+      POSTGRES_INITDB_ARGS: --auth=md5
+    ports:
+      - "${STAKING_DB_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${STAKING_DB_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+
   # PGCat Proxy
   pgcat:
     image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
@@ -115,11 +143,33 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # PGCat Proxy for Staking
+  pgcat-staking:
+    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
+    command:
+      - "pgcat"
+      - "/etc/pgcat/pgcat.toml"
+    volumes:
+      - "./indexers/db/pgcat-staking.toml:/etc/pgcat/pgcat.toml"
+    ports:
+      - "6433:6432"
+    healthcheck:
+      test: ["CMD", "pgcat", "--version"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      postgres-staking:
+        condition: service_healthy
+    restart: unless-stopped
+
   # Hasura GraphQL Engine
   hasura:
     image: hasura/graphql-engine:v2.40.0
     depends_on:
       postgres:
+        condition: service_healthy
+      postgres-staking:
         condition: service_healthy
     volumes:
       - ./indexers/db/migrations:/hasura-migrations
@@ -129,6 +179,7 @@ services:
       # Essential Environment Variables
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
       HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE} # Main database connection
+      STAKING_DATABASE_URL: postgres://${STAKING_DB_USER:-postgres}:${STAKING_DB_PASSWORD:-postgres}@${STAKING_DB_HOST:-postgres-staking}:${STAKING_INTERNAL_PORT:-5432}/${STAKING_DB_DATABASE:-staking} # Staking database connection
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET} # Admin access secret
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET} # JWT authentication secret
 
@@ -263,9 +314,9 @@ services:
     ports:
       - "127.0.0.1:3003:3000"
     depends_on:
-      pgcat:
+      pgcat-staking:
         condition: service_healthy
-      postgres:
+      postgres-staking:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -273,11 +324,11 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      DB_USER: ${STAKING_DB_USER:-postgres}
+      DB_PASS: ${STAKING_DB_PASSWORD:-postgres}
+      DB_DATABASE: ${STAKING_DB_DATABASE:-staking}
+      DB_HOST: ${STAKING_DB_HOST:-postgres-staking}
+      DB_PORT: ${STAKING_INTERNAL_PORT:-5432}  # Internal port, not external
       REDIS_HOST: redis
       REDIS_PORT: ${REDIS_PORT}
     volumes:
