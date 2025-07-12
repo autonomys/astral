@@ -524,3 +524,19 @@ CREATE INDEX "staking_withdrawals_status" ON staking.withdrawals USING btree ("s
 CREATE INDEX "staking_withdrawals_status_domain_block_number_withdrawal_requested_at" ON staking.withdrawals (status, domain_block_number_withdrawal_requested_at);
 
 CREATE TRIGGER "0x36531371aced88b2" AFTER UPDATE ON staking._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION staking.schema_notification();
+
+-- GIST indexes for SubQuery _block_range queries
+-- These are critical for performance as SubQuery uses WHERE _block_range @> current_block
+CREATE INDEX staking_bundle_submissions_block_range_gist ON staking.bundle_submissions USING gist (_block_range);
+CREATE INDEX staking_nominator_deposits_block_range_gist ON staking.nominator_deposits USING gist (_block_range);
+CREATE INDEX staking_nominator_withdrawals_block_range_gist ON staking.nominator_withdrawals USING gist (_block_range);
+CREATE INDEX staking_operator_epoch_share_prices_block_range_gist ON staking.operator_epoch_share_prices USING gist (_block_range);
+CREATE INDEX staking_storage_fund_accounts_block_range_gist ON staking.storage_fund_accounts USING gist (_block_range);
+CREATE INDEX staking_domain_instantiations_block_range_gist ON staking.domain_instantiations USING gist (_block_range);
+CREATE INDEX staking_operator_deregistrations_block_range_gist ON staking.operator_deregistrations USING gist (_block_range);
+CREATE INDEX staking_operator_registrations_block_range_gist ON staking.operator_registrations USING gist (_block_range);
+CREATE INDEX staking_operator_rewards_block_range_gist ON staking.operator_rewards USING gist (_block_range);
+CREATE INDEX staking_operator_tax_collections_block_range_gist ON staking.operator_tax_collections USING gist (_block_range);
+CREATE INDEX staking_runtime_creations_block_range_gist ON staking.runtime_creations USING gist (_block_range);
+CREATE INDEX staking_unlocked_events_block_range_gist ON staking.unlocked_events USING gist (_block_range);
+CREATE INDEX staking_nominators_unlocked_events_block_range_gist ON staking.nominators_unlocked_events USING gist (_block_range);

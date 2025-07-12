@@ -29,3 +29,7 @@ CREATE INDEX "transfers_transfers_id" ON transfers.transfers USING btree (id);
 CREATE INDEX "transfers_transfers_from" ON transfers.transfers USING btree ("from");
 CREATE INDEX "transfers_transfers_to" ON transfers.transfers USING btree ("to");
 CREATE INDEX "transfers_transfers_type" ON transfers.transfers USING btree (type);
+
+-- GIST indexes for SubQuery _block_range queries
+-- These are critical for performance as SubQuery uses WHERE _block_range @> current_block
+CREATE INDEX transfers_transfers_block_range_gist ON transfers.transfers USING gist (_block_range);
