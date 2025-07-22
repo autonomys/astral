@@ -1,4 +1,3 @@
-import { account } from '@autonomys/auto-consensus';
 import { stringify } from '@autonomys/auto-utils';
 import { SubstrateBlock } from '@subql/types';
 import { Entity } from '@subql/types-core';
@@ -9,7 +8,6 @@ import {
   ZERO_BIGINT,
 } from './constants';
 import {
-  createAccountHistory,
   createBlock,
   createEvent,
   createEvmBlock,
@@ -137,7 +135,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         pos,
       ),
     );
-    cache.addressToUpdate.add(extrinsicSigner);
 
     // Process extrinsic events
     extrinsicEvents.forEach((event) => {
@@ -281,31 +278,27 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         ),
       );
       if (creates) codesToFetch.push(creates);
-      cache.addressToUpdate.add(from);
-      if (to) {
-        cache.addressToUpdate.add(to);
 
-        if (value > ZERO_BIGINT) {
-          cache.totalTransferValue += value;
-          cache.transfers.push(
-            createTransfer(
-              height,
-              blockHash,
-              height + '-evm-tx-' + transactionIndex,
-              height + '-evm-tx-' + transactionIndex,
-              from,
-              DOMAIN_AUTO_EVM_CHAIN_TYPE,
-              to,
-              DOMAIN_AUTO_EVM_CHAIN_TYPE,
-              value,
-              gas,
-              'evm.Transfer',
-              true,
-              true,
-              blockTimestamp,
-            ),
-          );
-        }
+      if (to && value > ZERO_BIGINT) {
+        cache.totalTransferValue += value;
+        cache.transfers.push(
+          createTransfer(
+            height,
+            blockHash,
+            height + '-evm-tx-' + transactionIndex,
+            height + '-evm-tx-' + transactionIndex,
+            from,
+            DOMAIN_AUTO_EVM_CHAIN_TYPE,
+            to,
+            DOMAIN_AUTO_EVM_CHAIN_TYPE,
+            value,
+            gas,
+            'evm.Transfer',
+            true,
+            true,
+            blockTimestamp,
+          ),
+        );
       }
 
       if (!to && creates && input !== '0x')
@@ -319,26 +312,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     }
   }
 
-  // Update accounts
-  const uniqueAddresses = Array.from(cache.addressToUpdate).filter(
-    (address) => address !== '' && address !== DEFAULT_ACCOUNT_ID,
-  );
-  const accounts = await Promise.all(
-    uniqueAddresses.map((address) => account(api as any, address)),
-  );
-
-  // Create and save accounts
-  const accountHistories = accounts.map((account, i) =>
-    createAccountHistory(
-      uniqueAddresses[i],
-      height,
-      BigInt(account.nonce.toString()),
-      account.data.free,
-      account.data.reserved,
-      account.data.free + account.data.reserved,
-    ),
-  );
-
   // Save many entities in parallel
   await Promise.all([
     // Save extrinsic, events and logs
@@ -348,9 +321,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
     // Save transfers
     store.bulkCreate(`Transfer`, cache.transfers),
-
-    // Save account
-    store.bulkCreate(`AccountHistory`, accountHistories),
 
     // Create and save block
     store.bulkCreate(`Block`, [
