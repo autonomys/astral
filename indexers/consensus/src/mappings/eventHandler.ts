@@ -30,8 +30,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const voter = event.event.data[0].toString();
     const reward = BigInt(event.event.data[1].toString());
 
-    cache.addressToUpdate.add(voter);
-
     cache.totalVoteRewardsCount++;
     cache.totalRewardValue += reward;
     cache.totalVoteRewardValue += reward;
@@ -61,8 +59,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const blockAuthor = event.event.data[0].toString();
     const reward = BigInt(event.event.data[1].toString());
 
-    cache.addressToUpdate.add(blockAuthor);
-
     cache.totalBlockRewardsCount++;
     cache.totalRewardValue += reward;
     cache.totalBlockRewardValue += reward;
@@ -80,8 +76,9 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       ),
     );
   },
-  'balances.Deposit': ({ event, cache }) => {
-    cache.addressToUpdate.add(event.event.data[0].toString());
+  'balances.Deposit': ({ event: _event, cache: _cache }) => {
+    // Note: We no longer track account balance changes
+    // Account balances should be queried via RPC when needed
   },
   'balances.Transfer': ({
     event,
@@ -97,9 +94,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const from = event.event.data[0].toString();
     const to = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
-
-    cache.addressToUpdate.add(from);
-    cache.addressToUpdate.add(to);
 
     cache.totalTransferValue += amount;
 
@@ -142,9 +136,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     ];
     const amount = BigInt(extrinsicMethodToPrimitive.args.amount.toString());
 
-    cache.addressToUpdate.add(extrinsicSigner);
-    if (chainType === CONSENSUS_CHAIN_TYPE) cache.addressToUpdate.add(to);
-
     cache.totalTransferValue += amount;
 
     const newTransfer = createTransfer(
@@ -165,7 +156,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     );
     cache.transfers.push(newTransfer);
   },
-  'balances.Burned': ({ event, cache }) => {
-    cache.addressToUpdate.add(event.event.data[0].toString());
+  'balances.Burned': ({ event: _event, cache: _cache }) => {
+    // Note: We no longer track account balance changes
+    // Account balances should be queried via RPC when needed
   },
 };

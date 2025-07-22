@@ -6,7 +6,6 @@ export type Cache = {
   rewards: Entity[];
   transfers: Entity[];
 
-  addressToUpdate: Set<string>;
   // Totals
   totalBlockRewardsCount: number;
   totalVoteRewardsCount: number;
@@ -20,7 +19,6 @@ export const initializeCache = (): Cache => ({
   rewards: [],
   transfers: [],
 
-  addressToUpdate: new Set<string>(),
   // Totals
   totalBlockRewardsCount: 0,
   totalVoteRewardsCount: 0,
@@ -173,27 +171,6 @@ export function createEvent(
     pos,
     args,
     cid,
-  };
-}
-
-// Accounts DB Functions
-
-export function createAccountHistory(
-  id: string,
-  blockNumber: bigint,
-  nonce: bigint,
-  free: bigint,
-  reserved: bigint,
-  total: bigint,
-) {
-  return {
-    id,
-    nonce,
-    free,
-    reserved,
-    total,
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
   };
 }
 

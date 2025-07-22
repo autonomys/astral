@@ -77,17 +77,6 @@ type Event @entity {
   cid: String
 }
 
-# Accounts Entities
-
-type AccountHistory @entity {
-  id: ID!
-  nonce: BigInt!
-  free: BigInt!
-  reserved: BigInt!
-  total: BigInt
-  createdAt: BigInt!
-}
-
 type Transfer @entity {
   id: ID!
   blockHeight: BigInt!

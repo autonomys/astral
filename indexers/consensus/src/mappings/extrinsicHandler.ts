@@ -29,8 +29,6 @@ const processExtrinsic = (
 ): {
   extrinsic: Entity;
   events: Entity[];
-  addressesToUpdate: Set<string>;
-  eventsProcessed: number;
 } => {
   const extrinsicProcessStartTime = Date.now();
   const extrinsicHash = extrinsic.hash.toString();
@@ -49,9 +47,9 @@ const processExtrinsic = (
   let cid: string | undefined = '';
   let extrinsicArgs: string = stringify(extrinsicMethodToPrimitive.args);
   if (
-    (extrinsic.method.section === 'historySeeding' && extrinsic.method.method === 'seedHistory') ||
-    (extrinsic.method.section === 'system' &&
-      (extrinsic.method.method === 'remarkWithEvent' || extrinsic.method.method === 'remark'))
+    extrinsic.method.section === 'system' &&
+    extrinsic.method.method === 'remark' &&
+    extrinsicMethodToPrimitive.args.remark
   ) {
     const parsedArgs = parseDataToCid(extrinsicMethodToPrimitive.args.remark);
     cid = parsedArgs.cid;
@@ -59,7 +57,6 @@ const processExtrinsic = (
   }
 
   const newEvents: Entity[] = [];
-  const addressesToUpdate = new Set<string>();
   let localEventIndex = context.startEventIndex;
 
   const processSingleEvent = (
@@ -129,15 +126,21 @@ const processExtrinsic = (
     logger.debug(
       `[Block: ${context.blockNumber}] Extrinsic ${extrinsicIdx} is batchAll with ${batchedExtrinsicEvents.length} inner calls.`,
     );
-    batchedExtrinsicEvents.forEach((events, index) => {
-      const innerPrimitive = (extrinsic.args[0].toPrimitive() as any)[index];
-      events.forEach((evt) => processSingleEvent(evt, innerPrimitive));
-    });
+
+    for (let batchIdx = 0; batchIdx < batchedExtrinsicEvents.length; batchIdx++) {
+      const batchEvents = batchedExtrinsicEvents[batchIdx];
+      const batchArgs = extrinsicMethodToPrimitive.args.calls[batchIdx];
+
+      for (const event of batchEvents) {
+        processSingleEvent(event, batchArgs);
+      }
+    }
   } else {
-    extrinsicEvents.forEach((evt) => processSingleEvent(evt));
+    for (const event of extrinsicEvents) {
+      processSingleEvent(event);
+    }
   }
 
-  // Create extrinsic entity (we now have fee, error, success)
   const newExtrinsic = createExtrinsic(
     extrinsicHash,
     context.height,
@@ -147,21 +150,17 @@ const processExtrinsic = (
     extrinsic.method.method,
     success,
     context.blockTimestamp,
-    BigInt(extrinsic.nonce.toString()),
+    extrinsic.nonce ? BigInt(extrinsic.nonce.toString()) : ZERO_BIGINT,
     extrinsicSigner,
     extrinsicSignature,
-    extrinsicEvents.length,
+    newEvents.length,
     extrinsicArgs,
     error,
-    BigInt(extrinsic.tip.toString()),
+    ZERO_BIGINT, // tip
     fee,
     pos,
     cid,
   );
-
-  if (extrinsicSigner) {
-    addressesToUpdate.add(extrinsicSigner);
-  }
 
   logger.debug(
     `[Block: ${context.blockNumber}] Extrinsic ${extrinsicIdx} (${extrinsic.method.section}.${extrinsic.method.method}) processed in ${Date.now() - extrinsicProcessStartTime}ms`,
@@ -170,8 +169,6 @@ const processExtrinsic = (
   return {
     extrinsic: newExtrinsic,
     events: newEvents,
-    addressesToUpdate,
-    eventsProcessed: localEventIndex - context.startEventIndex,
   };
 };
 
