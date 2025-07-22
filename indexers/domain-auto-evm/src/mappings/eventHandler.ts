@@ -18,8 +18,9 @@ type EventHandler = (params: {
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
-  'balances.Deposit': ({ event, cache }) => {
-    cache.addressToUpdate.add(event.event.data[0].toString());
+  'balances.Deposit': ({ event: _event, cache: _cache }) => {
+    // Note: We no longer track account balance changes
+    // Account balances should be queried via RPC when needed
   },
   'balances.Transfer': ({
     event,
@@ -35,9 +36,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     const from = event.event.data[0].toString();
     const to = event.event.data[1].toString();
     const amount = BigInt(event.event.data[2].toString());
-
-    cache.addressToUpdate.add(from);
-    cache.addressToUpdate.add(to);
 
     cache.totalTransferValue += amount;
     cache.transfers.push(
@@ -80,9 +78,6 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
     ];
     const amount = BigInt(extrinsicMethodToPrimitive.args.amount.toString());
 
-    cache.addressToUpdate.add(extrinsicSigner);
-    if (chainType === DOMAIN_AUTO_EVM_CHAIN_TYPE) cache.addressToUpdate.add(to);
-
     cache.totalTransferValue += amount;
     cache.transfers.push(
       createTransfer(
@@ -103,7 +98,8 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
       ),
     );
   },
-  'balances.Burned': ({ event, cache }) => {
-    cache.addressToUpdate.add(event.event.data[0].toString());
+  'balances.Burned': ({ event: _event, cache: _cache }) => {
+    // Note: We no longer track account balance changes
+    // Account balances should be queried via RPC when needed
   },
 };
