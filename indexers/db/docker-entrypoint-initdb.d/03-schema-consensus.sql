@@ -21,17 +21,6 @@ CREATE TABLE consensus._metadata (
 );
 ALTER TABLE consensus._metadata OWNER TO postgres;
 
-CREATE TABLE consensus.account_histories (
-    id TEXT NOT NULL,
-    nonce NUMERIC NOT NULL,
-    free NUMERIC NOT NULL,
-    reserved NUMERIC NOT NULL,
-    total NUMERIC,
-    created_at NUMERIC NOT NULL,
-    _id UUID NOT NULL,
-    _block_range INT8RANGE NOT NULL
-);
-ALTER TABLE consensus.account_histories OWNER TO postgres;
 
 CREATE TABLE consensus.account_rewards (
     id TEXT NOT NULL,
@@ -231,9 +220,6 @@ ALTER TABLE consensus.transfers OWNER TO postgres;
 ALTER TABLE ONLY consensus._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
 
-ALTER TABLE ONLY consensus.account_histories
-    ADD CONSTRAINT account_histories_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY consensus.account_rewards
     ADD CONSTRAINT account_rewards_id_key UNIQUE (id);
 
@@ -296,8 +282,6 @@ CREATE INDEX "0x4cb388e53e3e30f3" ON consensus.accounts USING btree (id);
 CREATE INDEX "consensus_accounts_free" ON consensus.accounts USING btree (free DESC);
 CREATE INDEX "consensus_accounts_reserved" ON consensus.accounts USING btree (reserved DESC);
 CREATE INDEX "consensus_accounts_total" ON consensus.accounts USING btree (total DESC);
-CREATE INDEX "0xd21b20c334f80c2e" ON consensus.account_histories USING btree (id);
-CREATE INDEX "consensus_account_histories_id_created_at" ON consensus.account_histories USING btree (id, created_at DESC);
 CREATE INDEX "0xb91efc8ed4021e6e" ON consensus.transfers USING btree (id);
 CREATE INDEX "consensus_transfers_from" ON consensus.transfers USING btree ("from");
 CREATE INDEX "consensus_transfers_to" ON consensus.transfers USING btree ("to");
@@ -315,8 +299,7 @@ CREATE INDEX "consensus_logs_block_height" ON consensus.logs USING btree (block_
 CREATE TRIGGER "0x648269cc35867c16" AFTER UPDATE ON consensus._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION consensus.schema_notification();
 
 -- GIST indexes for SubQuery _block_range queries
--- These are critical for performance as SubQuery uses WHERE _block_range @> current_block
-CREATE INDEX consensus_account_histories_block_range_gist ON consensus.account_histories USING gist (_block_range);
+    -- These are critical for performance as SubQuery uses WHERE _block_range @> current_block
 CREATE INDEX consensus_account_rewards_block_range_gist ON consensus.account_rewards USING gist (_block_range);
 CREATE INDEX consensus_blocks_block_range_gist ON consensus.blocks USING gist (_block_range);
 CREATE INDEX consensus_events_block_range_gist ON consensus.events USING gist (_block_range);

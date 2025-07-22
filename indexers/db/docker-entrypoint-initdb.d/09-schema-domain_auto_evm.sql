@@ -21,18 +21,6 @@ CREATE TABLE domain_auto_evm._metadata (
 );
 ALTER TABLE domain_auto_evm._metadata OWNER TO postgres;
 
-CREATE TABLE domain_auto_evm.account_histories (
-    id text NOT NULL,
-    nonce numeric NOT NULL,
-    free numeric NOT NULL,
-    reserved numeric NOT NULL,
-    total numeric,
-    created_at numeric NOT NULL,
-    _id uuid NOT NULL,
-    _block_range int8range NOT NULL
-);
-ALTER TABLE domain_auto_evm.account_histories OWNER TO postgres;
-
 CREATE TABLE domain_auto_evm.accounts (
     id text NOT NULL,
     nonce numeric NOT NULL,
@@ -264,9 +252,6 @@ ALTER TABLE domain_auto_evm.transfers OWNER TO postgres;
 ALTER TABLE ONLY domain_auto_evm._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
 
-ALTER TABLE ONLY domain_auto_evm.account_histories
-    ADD CONSTRAINT account_histories_pkey PRIMARY KEY (_id);
-
 ALTER TABLE ONLY domain_auto_evm.accounts
     ADD CONSTRAINT accounts_id_key PRIMARY KEY (id);
 
@@ -334,7 +319,6 @@ CREATE INDEX "domain_auto_evm_accounts_id" ON domain_auto_evm.accounts USING btr
 CREATE INDEX "domain_auto_evm_accounts_free" ON domain_auto_evm.accounts USING btree (free DESC);
 CREATE INDEX "domain_auto_evm_accounts_reserved" ON domain_auto_evm.accounts USING btree (reserved DESC);
 CREATE INDEX "domain_auto_evm_accounts_total" ON domain_auto_evm.accounts USING btree (total DESC);
-CREATE INDEX "0xd21b20c334f80c2e" ON domain_auto_evm.account_histories USING btree (id);
 CREATE INDEX "0xb91efc8ed4021e6e" ON domain_auto_evm.transfers USING btree (id);
 CREATE INDEX "domain_auto_evm_transfers_from" ON domain_auto_evm.transfers USING btree ("from");
 CREATE INDEX "domain_auto_evm_transfers_to" ON domain_auto_evm.transfers USING btree ("to");
@@ -355,7 +339,6 @@ CREATE TRIGGER "0x8741811e70475b76" AFTER UPDATE ON domain_auto_evm._metadata FO
 
 -- GIST indexes for SubQuery _block_range queries
 -- These are critical for performance as SubQuery uses WHERE _block_range @> current_block
-CREATE INDEX domain_auto_evm_account_histories_block_range_gist ON domain_auto_evm.account_histories USING gist (_block_range);
 CREATE INDEX domain_auto_evm_blocks_block_range_gist ON domain_auto_evm.blocks USING gist (_block_range);
 CREATE INDEX domain_auto_evm_events_block_range_gist ON domain_auto_evm.events USING gist (_block_range);
 CREATE INDEX domain_auto_evm_evm_blocks_block_range_gist ON domain_auto_evm.evm_blocks USING gist (_block_range);
