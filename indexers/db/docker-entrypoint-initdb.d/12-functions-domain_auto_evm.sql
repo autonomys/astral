@@ -60,44 +60,47 @@ CREATE TRIGGER ensure_domain_auto_evm_extrinsic_module
     FOR EACH ROW
     EXECUTE FUNCTION domain_auto_evm.insert_extrinsic_module();
 
-CREATE FUNCTION domain_auto_evm.update_account() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    INSERT INTO domain_auto_evm.accounts (
-      id,
-      nonce,
-      free,
-      reserved,
-      total,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      NEW.id,
-      NEW.nonce,
-      NEW.free,
-      NEW.reserved,
-      NEW.total,
-      NEW.created_at,
-      EXTRACT(EPOCH FROM NOW())
-    )
-    ON CONFLICT (id) DO UPDATE SET
-      nonce = EXCLUDED.nonce,
-      free = EXCLUDED.free,
-      reserved = EXCLUDED.reserved,
-      total = EXCLUDED.total,
-      updated_at = EXTRACT(EPOCH FROM NOW());
-    
-    RETURN NEW;
-  END;
-  $$;
-ALTER FUNCTION domain_auto_evm.update_account() OWNER TO postgres;
+-- Removed trigger and update_account function to prevent deadlocks and improve performance
+-- Account balances should be queried via RPC when needed
 
-CREATE TRIGGER ensure_domain_auto_evm_account_updated
-    BEFORE INSERT ON domain_auto_evm.account_histories
-    FOR EACH ROW
-    EXECUTE FUNCTION domain_auto_evm.update_account();
+-- CREATE FUNCTION domain_auto_evm.update_account() RETURNS trigger
+--     LANGUAGE plpgsql
+--     AS $$
+--   BEGIN
+--     INSERT INTO domain_auto_evm.accounts (
+--       id,
+--       nonce,
+--       free,
+--       reserved,
+--       total,
+--       created_at,
+--       updated_at
+--     )
+--     VALUES (
+--       NEW.id,
+--       NEW.nonce,
+--       NEW.free,
+--       NEW.reserved,
+--       NEW.total,
+--       NEW.created_at,
+--       EXTRACT(EPOCH FROM NOW())
+--     )
+--     ON CONFLICT (id) DO UPDATE SET
+--       nonce = EXCLUDED.nonce,
+--       free = EXCLUDED.free,
+--       reserved = EXCLUDED.reserved,
+--       total = EXCLUDED.total,
+--       updated_at = EXTRACT(EPOCH FROM NOW());
+--     
+--     RETURN NEW;
+--   END;
+--   $$;
+-- ALTER FUNCTION domain_auto_evm.update_account() OWNER TO postgres;
+
+-- CREATE TRIGGER ensure_domain_auto_evm_account_updated
+--     BEFORE INSERT ON domain_auto_evm.account_histories
+--     FOR EACH ROW
+--     EXECUTE FUNCTION domain_auto_evm.update_account();
 
 CREATE FUNCTION domain_auto_evm.update_cumulative_blocks() RETURNS trigger
     LANGUAGE plpgsql
