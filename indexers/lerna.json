@@ -1,6 +1,14 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "version": "0.0.0",
-  "packages": ["*", "workers/*"],
+  "packages": [
+    "consensus",
+    "domain-auto-evm",
+    "files",
+    "leaderboard",
+    "staking",
+    "taskboard",
+    "workers/*"
+  ],
   "npmClient": "yarn"
 }
