@@ -5,6 +5,7 @@ import { getSortId, moduleName } from './utils';
 export type Cache = {
   rewards: Entity[];
   transfers: Entity[];
+  accountsToUpdate: Set<string>;
 
   // Totals
   totalTransferValue: bigint;
@@ -17,6 +18,7 @@ export type Cache = {
 export const initializeCache = (): Cache => ({
   rewards: [],
   transfers: [],
+  accountsToUpdate: new Set(),
 
   // Totals
   totalTransferValue: ZERO_BIGINT,
@@ -313,5 +315,24 @@ export function createEvmCodeSelector(address: string, selector: string) {
     selector,
     name: '',
     signature: '',
+  };
+}
+
+export function createAccount(
+  id: string,
+  nonce: bigint,
+  free: bigint,
+  reserved: bigint,
+  createdAt: bigint,
+  updatedAt: bigint,
+) {
+  return {
+    id,
+    nonce,
+    free,
+    reserved,
+    total: free + reserved,
+    createdAt,
+    updatedAt,
   };
 }

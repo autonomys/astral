@@ -18,6 +18,16 @@ type Block @entity {
   authorId: String!
 }
 
+type Account @entity {
+  id: ID!
+  nonce: BigInt!
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt!
+  createdAt: BigInt!
+  updatedAt: BigInt!
+}
+
 type Log @entity {
   id: ID!
   sortId: String!

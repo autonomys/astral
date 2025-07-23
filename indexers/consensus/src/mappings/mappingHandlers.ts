@@ -6,7 +6,7 @@ import { stringify } from '@autonomys/auto-utils';
 import { SubstrateBlock } from '@subql/types';
 import { Entity } from '@subql/types-core';
 import { ZERO_BIGINT } from './constants';
-import { createBlock, createEvent, createLog, initializeCache } from './db';
+import { createAccount, createBlock, createEvent, createLog, initializeCache } from './db';
 import { EVENT_HANDLERS } from './eventHandler';
 import { processExtrinsic } from './extrinsicHandler';
 import { getBlockAuthor } from './helper';
@@ -172,6 +172,45 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
 
   // Save entities in parallel
   const bulkSaveStartTime = Date.now();
+
+  // Fetch account balances for all affected accounts
+  const accountUpdateStartTime = Date.now();
+  const accountsToUpdate = Array.from(cache.accountsToUpdate);
+  const newAccounts: Entity[] = [];
+
+  if (accountsToUpdate.length > 0) {
+    logger.info(
+      `[Block: ${blockNumber}] Fetching balances for ${accountsToUpdate.length} accounts`,
+    );
+
+    // Batch fetch account info from chain state
+    const accountInfoPromises = accountsToUpdate.map((accountId) =>
+      api.query.system.account(accountId),
+    );
+
+    const accountInfos = await Promise.all(accountInfoPromises);
+
+    accountInfos.forEach((accountInfo, index) => {
+      const accountId = accountsToUpdate[index];
+      const account = accountInfo.toPrimitive() as any;
+
+      newAccounts.push(
+        createAccount(
+          accountId,
+          BigInt(account.nonce || 0),
+          BigInt(account.data.free || 0),
+          BigInt(account.data.reserved || 0),
+          height,
+          height,
+        ),
+      );
+    });
+  }
+  const accountUpdateDuration = Date.now() - accountUpdateStartTime;
+  logger.info(
+    `[Block: ${blockNumber}] Account balance fetch completed in ${accountUpdateDuration}ms`,
+  );
+
   await Promise.all([
     // Save extrinsic, events and logs
     store.bulkCreate(`Extrinsic`, newExtrinsics),
@@ -181,6 +220,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     // Save transfers and rewards
     store.bulkCreate(`Transfer`, cache.transfers),
     store.bulkCreate(`Reward`, cache.rewards),
+
+    // Save/update accounts with current balances
+    ...(newAccounts.length > 0 ? [store.bulkUpdate(`Account`, newAccounts)] : []),
 
     // Create and save block
     store.bulkCreate(`Block`, [

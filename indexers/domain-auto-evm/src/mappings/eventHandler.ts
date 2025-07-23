@@ -18,9 +18,10 @@ type EventHandler = (params: {
 }) => void;
 
 export const EVENT_HANDLERS: Record<string, EventHandler> = {
-  'balances.Deposit': ({ event: _event, cache: _cache }) => {
-    // Note: We no longer track account balance changes
-    // Account balances should be queried via RPC when needed
+  'balances.Deposit': ({ event, cache }) => {
+    // Track account that received deposit
+    const who = event.event.data[0].toString();
+    cache.accountsToUpdate.add(who);
   },
   'balances.Transfer': ({
     event,
@@ -56,6 +57,10 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         blockTimestamp,
       ),
     );
+
+    // Track accounts that need balance updates
+    cache.accountsToUpdate.add(from);
+    cache.accountsToUpdate.add(to);
   },
   'transporter.OutgoingTransferInitiated': ({
     cache,
@@ -97,9 +102,13 @@ export const EVENT_HANDLERS: Record<string, EventHandler> = {
         blockTimestamp,
       ),
     );
+
+    // Track sender account for balance update
+    cache.accountsToUpdate.add(extrinsicSigner);
   },
-  'balances.Burned': ({ event: _event, cache: _cache }) => {
-    // Note: We no longer track account balance changes
-    // Account balances should be queried via RPC when needed
+  'balances.Burned': ({ event, cache }) => {
+    // Track account that had balance burned
+    const who = event.event.data[0].toString();
+    cache.accountsToUpdate.add(who);
   },
 };
