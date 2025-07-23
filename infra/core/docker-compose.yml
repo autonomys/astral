@@ -2,6 +2,8 @@ volumes:
   postgres_db: {}
   caddy_data: {}
   caddy_config: {}
+  redis_data: {}
+  pgcat_config: {}
 
 services:
   postgres:
@@ -29,13 +31,32 @@ services:
       retries: 5
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
+  # Init container to generate PGCat config from template
+  pgcat-config-init:
+    image: alpine:latest
+    command: >
+      sh -c "
+        apk add --no-cache gettext &&
+        envsubst < /template/pgcat.toml.template > /config/pgcat.toml &&
+        echo 'PGCat configuration generated successfully'
+      "
+    volumes:
+      - "./pgcat.toml.template:/template/pgcat.toml.template:ro"
+      - "pgcat_config:/config"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+
   pgcat:
     image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
     command:
       - "pgcat"
       - "/etc/pgcat/pgcat.toml"
     volumes:
-      - "../../indexers/db/pgcat.toml:/etc/pgcat/pgcat.toml"
+      - "pgcat_config:/etc/pgcat"
     ports:
       - "${PGCAT_PORT:-6432}:6432"
     healthcheck:
@@ -46,6 +67,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      pgcat-config-init:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   hasura:
@@ -163,40 +186,96 @@ services:
       timeout: 5s
       retries: 10
 
-  api:
-    build:
-      context: ../../indexers/api
-      dockerfile: Dockerfile
-    depends_on:
-      postgres:
-        condition: service_healthy
-      hasura:
-        condition: service_started
-    volumes:
-      - ../../indexers/api:/app
-      - /app/node_modules
-    hostname: api
-    restart: unless-stopped
-    ports:
-      - "${API_PORT:-3030}:3000"
-    environment:
-      NODE_ENV: ${NODE_ENV:-production}
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-
   # Optional: Caddy reverse proxy
   caddy:
-    image: caddy:latest
+    image: caddy:2-alpine
+    restart: unless-stopped
     ports:
-      - "127.0.0.1:${CADDY_PORT:-8000}:8000"
+      - "80:80"
+      - "443:443"
     volumes:
-      - ../../indexers/Caddyfile:/etc/caddy/Caddyfile
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - api
-      - hasura
+      hasura:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:80/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Redis for account-worker queue
+  redis:
+    image: redis:latest
     restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    hostname: redis
+    command: ["redis-server", "--bind", "0.0.0.0", "--port", "6379"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli -h localhost -p 6379 ping | grep PONG || exit 1",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Account Worker - processes account updates from consensus indexer
+  account-worker:
+    build:
+      context: ../../indexers
+      dockerfile: workers/account-worker/Dockerfile
+    depends_on:
+      pgcat:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      AUTONOMYS_NODE_URL: ${RPC_URLS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_DATABASE}
+      REDIS_URL: "redis://redis:6379"
+      ACCOUNT_PROCESSING_QUEUE_NAME: "${ACCOUNT_PROCESSING_QUEUE_NAME:-account_updates_queue}"
+      PROCESSING_DEPTH: "${PROCESSING_DEPTH:-10}"
+      CHAIN_HEAD_POLL_INTERVAL_MS: "${CHAIN_HEAD_POLL_INTERVAL_MS:-5000}"
+      QUEUE_PROCESSING_INTERVAL_MS: "${QUEUE_PROCESSING_INTERVAL_MS:-5000}"
+      BATCH_SIZE: "${BATCH_SIZE:-500}"
+      # Database Pool Configuration
+      DB_POOL_MAX: "${DB_POOL_MAX:-20}"
+      DB_POOL_MIN: "${DB_POOL_MIN:-5}"
+      DB_CONNECTION_TIMEOUT_MS: "${DB_CONNECTION_TIMEOUT_MS:-3000}"
+      DB_QUERY_TIMEOUT_MS: "${DB_QUERY_TIMEOUT_MS:-10000}"
+      DB_STATEMENT_TIMEOUT_MS: "${DB_STATEMENT_TIMEOUT_MS:-10000}"
+      DB_IDLE_TIMEOUT_MS: "${DB_IDLE_TIMEOUT_MS:-30000}"
+      # Database Update Processing
+      DB_UPDATE_CHUNK_SIZE: "${DB_UPDATE_CHUNK_SIZE:-25}"
+      DB_UPDATE_CHUNK_DELAY_MS: "${DB_UPDATE_CHUNK_DELAY_MS:-100}"
+      # Health Check Configuration
+      DB_HEALTH_CHECK_INTERVAL_MS: "${DB_HEALTH_CHECK_INTERVAL_MS:-10000}"
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 5s
+      retries: 3

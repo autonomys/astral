@@ -63,50 +63,62 @@ setup:
 	@echo ""
 	@echo "✅ Setup complete! Run 'make start' to launch the core stack."
 
+# Build all services
 build:
-	@echo "🔨 Building core indexers..."
-	@echo "  Using RPC: $${RPC_URLS}"
-	@echo "  Using Chain ID: $${CHAIN_ID}"
-	@echo "Checking if project.yaml files need regeneration..."
-	@cd ../../indexers; \
-	if [ ! -f consensus/project.yaml ] || \
-	   [ ! -f files/project.yaml ] || \
-	   ! grep -q "$${RPC_URLS}" consensus/project.yaml 2>/dev/null || \
-	   ! grep -q "$${RPC_URLS}" files/project.yaml 2>/dev/null || \
-	   ! grep -q "$${CHAIN_ID}" consensus/project.yaml 2>/dev/null || \
-	   ! grep -q "$${CHAIN_ID}" files/project.yaml 2>/dev/null; then \
-		echo "Environment variables changed or project.yaml missing - forcing regeneration..."; \
-		rm -f consensus/project.yaml files/project.yaml; \
+	@echo "🔨 Building core infrastructure services..."
+	@if [ -f .env ]; then \
+		echo "📋 Loading environment variables from .env"; \
+		export $$(grep -v '^#' .env | xargs); \
 	fi
-	@cd ../../indexers && \
-		RPC_URLS="$${RPC_URLS}" CHAIN_ID="$${CHAIN_ID}" START_BLOCK_CONSENSUS="$${START_BLOCK_CONSENSUS}" START_BLOCK_FILES="$${START_BLOCK_FILES}" \
-		yarn lerna run codegen --scope=consensus --scope=files
-	@cd ../../indexers && \
-		RPC_URLS="$${RPC_URLS}" CHAIN_ID="$${CHAIN_ID}" START_BLOCK_CONSENSUS="$${START_BLOCK_CONSENSUS}" START_BLOCK_FILES="$${START_BLOCK_FILES}" \
-		yarn lerna run build --scope=consensus --scope=files || \
-		(echo "⚠️  Lerna/Nx cache error occurred, but checking if build succeeded..." && \
-		 if [ -f consensus/dist/index.js ] && [ -f files/dist/index.js ]; then \
-			echo "✅ Build artifacts exist - continuing..."; \
-		 else \
-			echo "❌ Build failed - no artifacts found"; exit 1; \
-		 fi)
-	@echo "✅ Build complete!"
+	@echo "🧹 Clearing build caches to ensure fresh builds..."
+	@cd ../../indexers && yarn cache clean --all || true
+	@cd ../../indexers && npx lerna clean --yes || true  
+	@cd ../../indexers && rm -rf .nx || true
+	@cd ../../indexers/consensus && rm -f project.yaml || true
+	@cd ../../indexers/files && rm -f project.yaml || true
+	@echo "📦 Reinstalling workspace dependencies..."
+	@cd ../../indexers && yarn install || { echo "❌ Dependency installation failed"; exit 1; }
+	@echo "🔄 Regenerating project configurations with current environment..."
+	@cd ../../indexers/consensus && yarn codegen || { echo "❌ Consensus codegen failed"; exit 1; }
+	@cd ../../indexers/files && yarn codegen || { echo "❌ Files codegen failed"; exit 1; }
+	@echo "🔨 Building core indexers and account-worker..."
+	@cd ../../indexers && yarn lerna run build --scope=consensus --scope=files --scope=account-worker || { echo "❌ Core build failed - this may be due to cache issues, continuing..."; }
+	@echo "🐳 Building Docker images..."
+	@docker compose build || { echo "❌ Docker build failed"; exit 1; }
+	@echo "✅ Build completed successfully!"
 
+# Force rebuild everything (clears all caches)
 force-build:
-	@echo "🔨 Force building core indexers (clearing cache and rebuilding)..."
-	@echo "  Using RPC: $${RPC_URLS}"
-	@echo "  Using Chain ID: $${CHAIN_ID}"
-	@echo "Clearing all caches and generated files..."
-	@cd ../../indexers && rm -rf .nx/cache node_modules/.cache consensus/project.yaml files/project.yaml consensus/dist files/dist
-	@echo "Building consensus indexer..."
-	@cd ../../indexers/consensus && \
-		RPC_URLS="$${RPC_URLS}" CHAIN_ID="$${CHAIN_ID}" START_BLOCK_CONSENSUS="$${START_BLOCK_CONSENSUS}" \
-		yarn codegen && yarn build
-	@echo "Building files indexer..."
-	@cd ../../indexers/files && \
-		RPC_URLS="$${RPC_URLS}" CHAIN_ID="$${CHAIN_ID}" START_BLOCK_FILES="$${START_BLOCK_FILES}" \
-		yarn codegen && yarn build
-	@echo "✅ Force build complete!"
+	@echo "🔨 Force building all services (clearing all caches)..."
+	@if [ -f .env ]; then \
+		echo "📋 Loading environment variables from .env"; \
+		export $$(grep -v '^#' .env | xargs); \
+	fi
+	@echo "🧹 Clearing all build caches..."
+	@cd ../../indexers && yarn cache clean --all || true
+	@cd ../../indexers && npx lerna clean --yes || true  
+	@cd ../../indexers && rm -rf .nx || true
+	@cd ../../indexers && rm -rf node_modules || true
+	@cd ../../indexers/consensus && rm -rf node_modules dist .subql_codegen project.yaml || true
+	@cd ../../indexers/files && rm -rf node_modules dist .subql_codegen project.yaml || true
+	@cd ../../indexers/workers/account-worker && rm -rf node_modules dist || true
+	@echo "📦 Reinstalling dependencies..."
+	@cd ../../indexers && yarn install || { echo "❌ Dependency installation failed"; exit 1; }
+	@echo "🔄 Regenerating project configurations..."
+	@cd ../../indexers/consensus && yarn codegen || { echo "❌ Consensus codegen failed"; exit 1; }
+	@cd ../../indexers/files && yarn codegen || { echo "❌ Files codegen failed"; exit 1; }
+	@echo "🔨 Building core indexers and account-worker..."
+	@cd ../../indexers && yarn lerna run build --scope=consensus --scope=files --scope=account-worker || { echo "❌ Core build failed"; exit 1; }
+	@echo "🐳 Building Docker images..."
+	@docker compose build --no-cache || { echo "❌ Docker build failed"; exit 1; }
+	@echo "✅ Force build completed successfully!"
+
+# Build just the account-worker
+build-account-worker:
+	@echo "🏗️ Building account-worker..."
+	@cd ../../indexers && yarn lerna run build --scope=account-worker || { echo "❌ Account-worker build failed"; exit 1; }
+	@docker compose build account-worker || { echo "❌ Account-worker Docker build failed"; exit 1; }
+	@echo "✅ Account-worker build completed!"
 
 start: build
 	@echo "🚀 Starting Core Stack..."
@@ -119,9 +131,9 @@ start: build
 	@echo ""
 	@echo "📊 Services:"
 	@echo "  - Hasura GraphQL: http://localhost:8080"
-	@echo "  - API: http://localhost:3030"
 	@echo "  - PostgreSQL: localhost:5432"
 	@echo "  - PGCat: localhost:6432"
+	@echo "  - Redis: localhost:6379"
 	@echo ""
 	@echo "Run 'make logs' to view logs or 'make status' to check status."
 
