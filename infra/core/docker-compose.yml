@@ -1,0 +1,202 @@
+volumes:
+  postgres_db: {}
+  caddy_data: {}
+  caddy_config: {}
+
+services:
+  postgres:
+    image: postgres:17.3-alpine
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+      - ../../indexers/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ../../indexers/db/postgresql.conf:/etc/postgresql/postgresql.conf
+    restart: unless-stopped
+    hostname: postgres
+    shm_size: 8g
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_MAX_CONNECTIONS: 500
+      POSTGRES_HOST_AUTH_METHOD: md5
+      POSTGRES_INITDB_ARGS: --auth=md5
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+
+  pgcat:
+    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
+    command:
+      - "pgcat"
+      - "/etc/pgcat/pgcat.toml"
+    volumes:
+      - "../../indexers/db/pgcat.toml:/etc/pgcat/pgcat.toml"
+    ports:
+      - "${PGCAT_PORT:-6432}:6432"
+    healthcheck:
+      test: ["CMD", "pgcat", "--version"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  hasura:
+    image: hasura/graphql-engine:v2.40.0
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../../indexers/db/migrations:/hasura-migrations
+      - ../../indexers/db/metadata:/hasura-metadata
+    restart: unless-stopped
+    environment:
+      # Database
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_DATABASE}
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_DATABASE}
+
+      # Security
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: user
+
+      # Configuration
+      HASURA_GRAPHQL_ENABLE_CONSOLE: ${HASURA_GRAPHQL_ENABLE_CONSOLE:-false}
+      HASURA_GRAPHQL_DEV_MODE: ${HASURA_GRAPHQL_DEV_MODE:-false}
+      HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
+
+      # CORS
+      HASURA_GRAPHQL_CORS_DOMAIN: ${HASURA_GRAPHQL_CORS_DOMAIN:-"*"}
+
+      # Performance
+      HASURA_GRAPHQL_MAX_CONNECTIONS: 100
+      HASURA_GRAPHQL_STRIPES: 2
+      HASURA_GRAPHQL_CONNECTIONS_PER_STRIPE: 50
+      HASURA_GRAPHQL_IDLE_TIMEOUT: 180
+      HASURA_GRAPHQL_TIMEOUT: 60
+
+      # Logging
+      HASURA_GRAPHQL_LOG_LEVEL: ${HASURA_GRAPHQL_LOG_LEVEL:-warn}
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: "startup,http-log,webhook-log,websocket-log,query-log"
+    ports:
+      - "${HASURA_GRAPHQL_PORT:-8080}:8080"
+    command:
+      - graphql-engine
+      - serve
+
+  consensus_indexer:
+    image: ghcr.io/autonomys/subql-node-substrate:latest
+    ports:
+      - "127.0.0.1:${CONSENSUS_INDEXER_PORT:-3001}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${RPC_URLS}
+      CHAIN_ID: ${CHAIN_ID}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - ../../indexers/consensus:/consensus
+    command:
+      - ${SUB_COMMAND:-}
+      - -f=/consensus
+      - --db-schema=consensus
+      - --workers=1
+      - --unsafe
+      - --batch-size=120
+      - --scale-batch-size
+      - --unfinalized-blocks=true
+      - --disable-historical=false
+      - --finalized-depth=100
+      - --log-level=${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  files_indexer:
+    image: ghcr.io/autonomys/subql-node-substrate:latest
+    ports:
+      - "127.0.0.1:${FILES_INDEXER_PORT:-3004}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${RPC_URLS}
+      CHAIN_ID: ${CHAIN_ID}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - ../../indexers/files:/files
+    command:
+      - ${SUB_COMMAND:-}
+      - -f=/files
+      - --db-schema=files
+      - --workers=1
+      - --unsafe
+      - --batch-size=50
+      - --scale-batch-size
+      - --unfinalized-blocks=true
+      - --disable-historical=false
+      - --finalized-depth=100
+      - --log-level=${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../../indexers/api
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      hasura:
+        condition: service_started
+    volumes:
+      - ../../indexers/api:/app
+      - /app/node_modules
+    hostname: api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-3030}:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+
+  # Optional: Caddy reverse proxy
+  caddy:
+    image: caddy:latest
+    ports:
+      - "127.0.0.1:${CADDY_PORT:-8000}:8000"
+    volumes:
+      - ../../indexers/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+      - hasura
+    restart: unless-stopped
