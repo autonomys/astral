@@ -105,6 +105,8 @@ services:
       postgres:
         condition: service_healthy
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
@@ -163,6 +165,8 @@ services:
       - --disable-historical=false
       - --finalized-depth=100
       - --log-level=${LOG_LEVEL:-info}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
       interval: 3s
@@ -256,6 +260,8 @@ services:
       DB_UPDATE_CHUNK_DELAY_MS: "${DB_UPDATE_CHUNK_DELAY_MS:-100}"
       # Health Check Configuration
       DB_HEALTH_CHECK_INTERVAL_MS: "${DB_HEALTH_CHECK_INTERVAL_MS:-10000}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test: ["CMD", "node", "-e", "process.exit(0)"]
       interval: 30s
