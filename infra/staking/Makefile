@@ -55,7 +55,7 @@ setup:
 	@echo ""
 	@echo "📋 Checking prerequisites..."
 	@command -v docker >/dev/null 2>&1 || { echo "❌ Docker is required but not installed."; exit 1; }
-	@command -v docker-compose >/dev/null 2>&1 || { echo "❌ Docker Compose is required but not installed."; exit 1; }
+	@docker compose version >/dev/null 2>&1 || { echo "❌ Docker Compose plugin is required but not installed."; exit 1; }
 	@command -v yarn >/dev/null 2>&1 || { echo "❌ Yarn is required but not installed."; exit 1; }
 	@echo "✅ All prerequisites installed."
 	@echo ""
@@ -109,7 +109,7 @@ force-build:
 
 start: build
 	@echo "🚀 Starting Staking Stack..."
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) up -d
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) up -d
 	@echo ""
 	@echo "✅ Staking stack started!"
 	@echo ""
@@ -122,22 +122,22 @@ start: build
 
 stop:
 	@echo "🛑 Stopping Staking Stack..."
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
 	@echo "✅ Staking stack stopped."
 
 restart: stop start
 
 reload: force-build
 	@echo "🔄 Reloading Staking Stack (recreating containers)..."
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) up -d --force-recreate --remove-orphans
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) up -d --force-recreate --remove-orphans
 	@echo "✅ Staking stack reloaded with new configuration!"
 
 logs:
 ifdef SVC
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) logs -f $(SVC)
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) logs -f $(SVC)
 else
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) logs -f
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) logs -f
 endif
 
 config:
@@ -149,19 +149,19 @@ config:
 	@echo "  STAKING_DB_DATABASE: $${STAKING_DB_DATABASE:-not set}"
 	@echo ""
 	@echo "Docker Compose resolved configuration for staking_indexer:"
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) config | sed -n '/staking_indexer:/,/staking_worker:/p' | grep -E "ENDPOINT:|CHAIN_ID:" | sed 's/^      /  /'
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) config | sed -n '/staking_indexer:/,/staking_worker:/p' | grep -E "ENDPOINT:|CHAIN_ID:" | sed 's/^      /  /'
 
 status:
 	@echo "📊 Staking Stack Status:"
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps
 
 ps:
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
 
 clean:
 	@echo "⚠️  WARNING: This will delete all staking data!"
 	@echo "Press Ctrl+C to cancel, or Enter to continue."
 	@read confirm
 	@echo "🧹 Cleaning up staking stack..."
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down -v
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down -v
 	@echo "✅ Clean complete." 

@@ -57,7 +57,7 @@ setup:
 	@echo ""
 	@echo "📋 Checking prerequisites..."
 	@command -v docker >/dev/null 2>&1 || { echo "❌ Docker is required but not installed."; exit 1; }
-	@command -v docker-compose >/dev/null 2>&1 || { echo "❌ Docker Compose is required but not installed."; exit 1; }
+	@docker compose version >/dev/null 2>&1 || { echo "❌ Docker Compose plugin is required but not installed."; exit 1; }
 	@command -v yarn >/dev/null 2>&1 || { echo "❌ Yarn is required but not installed."; exit 1; }
 	@echo "✅ All prerequisites installed."
 	@echo ""
@@ -122,7 +122,7 @@ build-account-worker:
 
 start: build
 	@echo "🚀 Starting Core Stack..."
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) up -d
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) up -d
 	@echo ""
 	@echo "🔧 Initializing services..."
 	@$(MAKE) init-hasura
@@ -139,22 +139,22 @@ start: build
 
 stop:
 	@echo "🛑 Stopping Core Stack..."
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
 	@echo "✅ Core stack stopped."
 
 restart: stop start
 
 reload: force-build
 	@echo "🔄 Reloading Core Stack (recreating containers)..."
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) up -d --force-recreate --remove-orphans
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) up -d --force-recreate --remove-orphans
 	@echo "✅ Core stack reloaded with new configuration!"
 
 logs:
 ifdef SVC
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) logs -f $(SVC)
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) logs -f $(SVC)
 else
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) logs -f
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) logs -f
 endif
 
 config:
@@ -165,7 +165,7 @@ config:
 	@echo "  CHAIN_ID: $${CHAIN_ID:-not set}"
 	@echo ""
 	@echo "Docker Compose resolved configuration for consensus_indexer:"
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) config | sed -n '/consensus_indexer:/,/files_indexer:/p' | grep -E "ENDPOINT:|CHAIN_ID:" | sed 's/^      /  /'
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) config | sed -n '/consensus_indexer:/,/files_indexer:/p' | grep -E "ENDPOINT:|CHAIN_ID:" | sed 's/^      /  /'
 
 init-hasura:
 	@echo "🔧 Initializing Hasura metadata..."
@@ -209,15 +209,15 @@ force-init-hasura:
 
 status:
 	@echo "📊 Core Stack Status:"
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps
 
 ps:
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
 
 clean:
 	@echo "⚠️  WARNING: This will delete all data!"
 	@echo "Press Ctrl+C to cancel, or Enter to continue."
 	@read confirm
 	@echo "🧹 Cleaning up core stack..."
-	@docker-compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down -v
+	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down -v
 	@echo "✅ Clean complete." 
