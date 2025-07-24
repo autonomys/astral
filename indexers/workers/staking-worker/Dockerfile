@@ -1,17 +1,23 @@
 FROM node:20-alpine
 WORKDIR /app
 
-# Copy workspace configuration from the parent directory (indexers)
-COPY package.json yarn.lock lerna.json ./
-COPY workers/staking-worker/package.json ./workers/staking-worker/package.json
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
 
-# Install only production dependencies
-RUN yarn install --frozen-lockfile
+# Enable corepack
+RUN corepack enable
 
-# Copy pre-built application
-COPY workers/staking-worker/dist ./workers/staking-worker/dist/
+# Copy entire workspace
+COPY . .
+
+# Install all dependencies
+RUN yarn install
+
+# Build the staking-worker
+RUN yarn lerna run build --scope=staking-worker
 
 # Set working directory
 WORKDIR /app/workers/staking-worker
 
-CMD ["yarn", "start"] 
+# Use node directly to run the built file
+CMD ["node", "dist/main.js"] 

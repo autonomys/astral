@@ -1,0 +1,47 @@
+# PGCat configuration for Staking database
+
+[general]
+host = "0.0.0.0"
+port = 6432
+admin_username = "pgcat"
+admin_password = "pgcat"
+
+# Pool mode
+pool_mode = "transaction"
+
+# Connection settings
+connect_timeout = 5000
+idle_timeout = 30000
+server_lifetime = 86400000  # 24 hours
+
+# Pool configuration
+default_pool_size = 25
+max_pool_size = 50
+
+# Health check
+healthcheck_timeout = 1000
+healthcheck_delay = 10000
+
+# Logging
+log_level = "info"
+
+# Ban settings
+ban_time = 60
+ban_total_connections = 5
+ban_max_login_attempts = 5
+
+[pools.astral_staking]
+pool_mode = "transaction"
+default_pool_size = 15
+max_pool_size = 30
+query_timeout = 10000
+connect_timeout = 3000
+
+[pools.astral_staking.users.0]
+username = "${STAKING_DB_USER}"
+password = "${STAKING_DB_PASSWORD}"
+pool_size = 10
+
+[pools.astral_staking.shards.0]
+servers = [["staking_postgres", 5432, "primary"]]
+database = "${STAKING_DB_DATABASE}" 

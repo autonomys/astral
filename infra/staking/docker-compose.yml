@@ -1,0 +1,160 @@
+volumes:
+  staking_postgres_db: {}
+  staking_pgcat_config: {}
+  staking_redis_data: {}
+
+services:
+  # Dedicated PostgreSQL for staking
+  staking_postgres:
+    image: postgres:17.3-alpine
+    volumes:
+      - staking_postgres_db:/var/lib/postgresql/data
+      - ../../indexers/db/docker-entrypoint-initdb.d/staking-only:/docker-entrypoint-initdb.d
+      - ../../indexers/db/postgresql.conf:/etc/postgresql/postgresql.conf
+    restart: unless-stopped
+    hostname: staking_postgres
+    shm_size: 4g
+    environment:
+      POSTGRES_DB: ${STAKING_DB_DATABASE}
+      POSTGRES_USER: ${STAKING_DB_USER}
+      POSTGRES_PASSWORD: ${STAKING_DB_PASSWORD}
+      POSTGRES_MAX_CONNECTIONS: 200
+      POSTGRES_HOST_AUTH_METHOD: md5
+      POSTGRES_INITDB_ARGS: --auth=md5
+    ports:
+      - "${STAKING_DB_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${STAKING_DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+
+  # Init container to generate Staking PGCat config from template
+  staking-pgcat-config-init:
+    image: alpine:latest
+    command: >
+      sh -c "
+        apk add --no-cache gettext &&
+        envsubst < /template/pgcat.toml.template > /config/pgcat.toml &&
+        echo 'Staking PGCat configuration generated successfully'
+      "
+    volumes:
+      - "./pgcat.toml.template:/template/pgcat.toml.template:ro"
+      - "staking_pgcat_config:/config"
+    environment:
+      - STAKING_DB_USER=${STAKING_DB_USER}
+      - STAKING_DB_PASSWORD=${STAKING_DB_PASSWORD}
+      - STAKING_DB_DATABASE=${STAKING_DB_DATABASE}
+
+  # PGCat for staking connection pooling
+  staking_pgcat:
+    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
+    command:
+      - "pgcat"
+      - "/etc/pgcat/pgcat.toml"
+    volumes:
+      - "staking_pgcat_config:/etc/pgcat"
+    ports:
+      - "${STAKING_PGCAT_PORT:-6433}:6432"
+    healthcheck:
+      test: ["CMD", "pgcat", "--version"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      staking_postgres:
+        condition: service_healthy
+      staking-pgcat-config-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  # Staking Indexer
+  staking_indexer:
+    image: ghcr.io/autonomys/subql-node-substrate:latest
+    ports:
+      - "127.0.0.1:${STAKING_INDEXER_PORT:-3002}:3000"
+    depends_on:
+      staking_postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${RPC_URLS}
+      CHAIN_ID: ${CHAIN_ID}
+      DB_USER: ${STAKING_DB_USER}
+      DB_PASS: ${STAKING_DB_PASSWORD}
+      DB_DATABASE: ${STAKING_DB_DATABASE}
+      DB_HOST: staking_postgres
+      DB_PORT: 5432
+    volumes:
+      - ../../indexers/staking:/staking
+    command:
+      - ${SUB_COMMAND:-}
+      - -f=/staking
+      - --db-schema=staking
+      - --workers=1
+      - --unsafe
+      - --batch-size=50
+      - --scale-batch-size
+      - --unfinalized-blocks=true
+      - --disable-historical=false
+      - --finalized-depth=100
+      - --log-level=${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  # Redis for staking worker coordination
+  staking_redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    volumes:
+      - staking_redis_data:/data
+    ports:
+      - "${STAKING_REDIS_PORT:-6380}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Staking Worker - processes staking rewards
+  staking_worker:
+    build:
+      context: ../../indexers
+      dockerfile: workers/staking-worker/Dockerfile
+    depends_on:
+      staking_pgcat:
+        condition: service_healthy
+      staking_postgres:
+        condition: service_healthy
+      staking_redis:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      AUTONOMYS_NODE_URL: ${RPC_URLS}
+      DB_HOST: staking_pgcat
+      DB_PORT: 6432
+      DB_USER: ${STAKING_DB_USER}
+      DB_PASSWORD: ${STAKING_DB_PASSWORD}
+      DB_NAME: ${STAKING_DB_DATABASE}
+      REDIS_URL: "redis://staking_redis:6379"
+      # Worker Configuration
+      NODE_ENV: ${NODE_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # Processing Configuration
+      PROCESSING_INTERVAL_MS: ${STAKING_PROCESSING_INTERVAL_MS:-60000}
+      BATCH_SIZE: ${STAKING_BATCH_SIZE:-100}
+      # Database Pool Configuration
+      DB_POOL_MAX: ${STAKING_DB_POOL_MAX:-10}
+      DB_POOL_MIN: ${STAKING_DB_POOL_MIN:-2}
+      DB_CONNECTION_TIMEOUT_MS: ${DB_CONNECTION_TIMEOUT_MS:-3000}
+      DB_QUERY_TIMEOUT_MS: ${DB_QUERY_TIMEOUT_MS:-10000}
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 5s
+      retries: 3
