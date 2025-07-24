@@ -1,6 +1,5 @@
 volumes:
   staking_postgres_db: {}
-  staking_pgcat_config: {}
   staking_redis_data: {}
 
 services:
@@ -30,33 +29,19 @@ services:
       retries: 5
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
-  # Init container to generate Staking PGCat config from template
-  staking-pgcat-config-init:
-    image: alpine:latest
-    command: >
-      sh -c "
-        apk add --no-cache gettext &&
-        envsubst < /template/pgcat.toml.template > /config/pgcat.toml &&
-        echo 'Staking PGCat configuration generated successfully'
-      "
+  # PGCat for staking connection pooling
+  staking_pgcat:
+    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
+    entrypoint: ["/entrypoint.sh"]
     volumes:
-      - "./pgcat.toml.template:/template/pgcat.toml.template:ro"
-      - "staking_pgcat_config:/config"
+      - "./pgcat.toml.template:/etc/pgcat/pgcat.toml.template:ro"
+      - "./pgcat-entrypoint.sh:/entrypoint.sh:ro"
+    ports:
+      - "${STAKING_PGCAT_PORT:-6433}:6432"
     environment:
       - STAKING_DB_USER=${STAKING_DB_USER}
       - STAKING_DB_PASSWORD=${STAKING_DB_PASSWORD}
       - STAKING_DB_DATABASE=${STAKING_DB_DATABASE}
-
-  # PGCat for staking connection pooling
-  staking_pgcat:
-    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
-    command:
-      - "pgcat"
-      - "/etc/pgcat/pgcat.toml"
-    volumes:
-      - "staking_pgcat_config:/etc/pgcat"
-    ports:
-      - "${STAKING_PGCAT_PORT:-6433}:6432"
     healthcheck:
       test: ["CMD", "pgcat", "--version"]
       interval: 10s
@@ -65,8 +50,6 @@ services:
     depends_on:
       staking_postgres:
         condition: service_healthy
-      staking-pgcat-config-init:
-        condition: service_completed_successfully
     restart: unless-stopped
 
   # Staking Indexer

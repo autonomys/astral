@@ -3,15 +3,14 @@ volumes:
   caddy_data: {}
   caddy_config: {}
   redis_data: {}
-  pgcat_config: {}
 
 services:
   postgres:
     image: postgres:17.3-alpine
     volumes:
       - postgres_db:/var/lib/postgresql/data
-      - ../../indexers/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - ../../indexers/db/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ../../indexers/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - ../../indexers/db/postgresql.conf:/etc/postgresql/postgresql.conf:ro
     restart: unless-stopped
     hostname: postgres
     shm_size: 8g
@@ -31,34 +30,20 @@ services:
       retries: 5
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
-  # Init container to generate PGCat config from template
-  pgcat-config-init:
-    image: alpine:latest
-    command: >
-      sh -c "
-        apk add --no-cache gettext &&
-        envsubst < /template/pgcat.toml.template > /config/pgcat.toml &&
-        echo 'PGCat configuration generated successfully'
-      "
+  pgcat:
+    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
+    entrypoint: ["/entrypoint.sh"]
     volumes:
-      - "./pgcat.toml.template:/template/pgcat.toml.template:ro"
-      - "pgcat_config:/config"
+      - "./pgcat.toml.template:/etc/pgcat/pgcat.toml.template:ro"
+      - "./pgcat-entrypoint.sh:/entrypoint.sh:ro"
+    ports:
+      - "${PGCAT_PORT:-6432}:6432"
     environment:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DATABASE=${DB_DATABASE}
-
-  pgcat:
-    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
-    command:
-      - "pgcat"
-      - "/etc/pgcat/pgcat.toml"
-    volumes:
-      - "pgcat_config:/etc/pgcat"
-    ports:
-      - "${PGCAT_PORT:-6432}:6432"
     healthcheck:
       test: ["CMD", "pgcat", "--version"]
       interval: 10s
@@ -67,8 +52,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      pgcat-config-init:
-        condition: service_completed_successfully
     restart: unless-stopped
 
   hasura:
