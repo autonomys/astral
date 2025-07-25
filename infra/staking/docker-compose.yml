@@ -21,7 +21,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: md5
       POSTGRES_INITDB_ARGS: --auth=md5
     ports:
-      - "${STAKING_DB_PORT:-5433}:5432"
+      - "${STAKING_DB_EXTERNAL_PORT:-5433}:${STAKING_DB_INTERNAL_PORT:-5432}"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${STAKING_DB_USER}"]
       interval: 5s
@@ -40,7 +40,7 @@ services:
       - "${STAKING_PGCAT_PORT:-6433}:6432"
     environment:
       - STAKING_DB_HOST=${STAKING_DB_HOST}
-      - STAKING_DB_PORT=${STAKING_DB_PORT}
+      - STAKING_DB_PORT=${STAKING_DB_INTERNAL_PORT:-5432} # Use internal port
       - STAKING_DB_USER=${STAKING_DB_USER}
       - STAKING_DB_PASSWORD=${STAKING_DB_PASSWORD}
       - STAKING_DB_DATABASE=${STAKING_DB_DATABASE}

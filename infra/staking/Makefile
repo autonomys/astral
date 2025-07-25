@@ -158,7 +158,7 @@ ps:
 	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
 
 show-urls:
-	@echo "  - Staking PostgreSQL: localhost:$${STAKING_DB_PORT:-5433}"
+	@echo "  - Staking PostgreSQL: localhost:$${STAKING_DB_EXTERNAL_PORT:-5433}"
 	@echo "  - Staking PGCat: localhost:$${STAKING_PGCAT_PORT:-6433}"
 	@echo "  - Staking Indexer: http://localhost:$${STAKING_INDEXER_PORT:-3002}"
 

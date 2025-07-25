@@ -214,7 +214,7 @@ ps:
 
 show-urls:
 	@echo "  - Hasura GraphQL: http://localhost:$${HASURA_GRAPHQL_PORT:-8080}"
-	@echo "  - PostgreSQL: localhost:$${DB_PORT:-5432}"
+	@echo "  - PostgreSQL: localhost:$${DB_EXTERNAL_PORT:-5432}"
 	@echo "  - PGCat: localhost:$${PGCAT_PORT:-6432}"
 	@echo "  - Redis: localhost:$${REDIS_PORT:-6379}"
 
