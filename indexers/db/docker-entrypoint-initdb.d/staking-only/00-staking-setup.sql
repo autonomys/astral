@@ -1,4 +1,3 @@
-\c staking
 CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 SET statement_timeout = 0;

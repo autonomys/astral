@@ -1,0 +1,270 @@
+volumes:
+  postgres_db: {}
+  caddy_data: {}
+  caddy_config: {}
+  redis_data: {}
+
+services:
+  postgres:
+    image: postgres:17.3-alpine
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+      - ../../indexers/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - ../../indexers/db/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    restart: unless-stopped
+    hostname: postgres
+    shm_size: 8g
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_MAX_CONNECTIONS: 500
+      POSTGRES_HOST_AUTH_METHOD: md5
+      POSTGRES_INITDB_ARGS: --auth=md5
+    ports:
+      - "${DB_EXTERNAL_PORT:-5432}:${DB_INTERNAL_PORT:-5432}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+
+  pgcat:
+    image: ghcr.io/postgresml/pgcat:4a7a6a8e7a78354b889002a4db118a8e2f2d6d79
+    entrypoint: ["/entrypoint.sh"]
+    volumes:
+      - "./pgcat.toml.template:/etc/pgcat/pgcat.toml.template:ro"
+      - "./pgcat-entrypoint.sh:/entrypoint.sh:ro"
+    ports:
+      - "${PGCAT_PORT:-6432}:6432"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_INTERNAL_PORT:-5432} # Use internal port
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+    healthcheck:
+      test: ["CMD", "pgcat", "--version"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  hasura:
+    image: hasura/graphql-engine:v2.40.0
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../../indexers/db/migrations:/hasura-migrations
+      - ../../indexers/db/metadata:/hasura-metadata
+    restart: unless-stopped
+    environment:
+      # Database
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:${DB_INTERNAL_PORT:-5432}/${DB_DATABASE}
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:${DB_INTERNAL_PORT:-5432}/${DB_DATABASE}
+
+      # Security
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: user
+
+      # Configuration
+      HASURA_GRAPHQL_ENABLE_CONSOLE: ${HASURA_GRAPHQL_ENABLE_CONSOLE:-false}
+      HASURA_GRAPHQL_DEV_MODE: ${HASURA_GRAPHQL_DEV_MODE:-false}
+      HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
+
+      # CORS
+      HASURA_GRAPHQL_CORS_DOMAIN: ${HASURA_GRAPHQL_CORS_DOMAIN:-"*"}
+
+      # Performance
+      HASURA_GRAPHQL_MAX_CONNECTIONS: 100
+      HASURA_GRAPHQL_STRIPES: 2
+      HASURA_GRAPHQL_CONNECTIONS_PER_STRIPE: 50
+      HASURA_GRAPHQL_IDLE_TIMEOUT: 180
+      HASURA_GRAPHQL_TIMEOUT: 60
+
+      # Logging
+      HASURA_GRAPHQL_LOG_LEVEL: ${HASURA_GRAPHQL_LOG_LEVEL:-warn}
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: "startup,http-log,webhook-log,websocket-log,query-log"
+    ports:
+      - "${HASURA_GRAPHQL_PORT:-8080}:8080"
+    command:
+      - graphql-engine
+      - serve
+
+  consensus_indexer:
+    image: ghcr.io/autonomys/subql-node-substrate:latest
+    ports:
+      - "127.0.0.1:${CONSENSUS_INDEXER_PORT:-3001}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      ENDPOINT: ${RPC_URLS}
+      CHAIN_ID: ${CHAIN_ID}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - ../../indexers/consensus:/consensus
+    command:
+      - ${SUB_COMMAND:-}
+      - -f=/consensus
+      - --db-schema=consensus
+      - --workers=1
+      - --unsafe
+      - --batch-size=120
+      - --scale-batch-size
+      - --unfinalized-blocks=true
+      - --disable-historical=false
+      - --finalized-depth=100
+      - --log-level=${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  files_indexer:
+    image: ghcr.io/autonomys/subql-node-substrate:latest
+    ports:
+      - "127.0.0.1:${FILES_INDEXER_PORT:-3004}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${RPC_URLS}
+      CHAIN_ID: ${CHAIN_ID}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - ../../indexers/files:/files
+    command:
+      - ${SUB_COMMAND:-}
+      - -f=/files
+      - --db-schema=files
+      - --workers=1
+      - --unsafe
+      - --batch-size=50
+      - --scale-batch-size
+      - --unfinalized-blocks=true
+      - --disable-historical=false
+      - --finalized-depth=100
+      - --log-level=${LOG_LEVEL:-info}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  # Optional: Caddy reverse proxy
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      hasura:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:80/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Redis for account-worker queue
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    hostname: redis
+    command: ["redis-server", "--bind", "0.0.0.0", "--port", "6379"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli -h localhost -p 6379 ping | grep PONG || exit 1",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Account Worker - processes account updates from consensus indexer
+  account-worker:
+    build:
+      context: ../../indexers
+      dockerfile: workers/account-worker/Dockerfile
+    depends_on:
+      pgcat:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      AUTONOMYS_NODE_URL: ${RPC_URLS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_INTERNAL_PORT:-5432} # Use internal port
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_DATABASE}
+      REDIS_URL: "redis://redis:6379"
+      ACCOUNT_PROCESSING_QUEUE_NAME: "${ACCOUNT_PROCESSING_QUEUE_NAME:-account_updates_queue}"
+      PROCESSING_DEPTH: "${PROCESSING_DEPTH:-10}"
+      CHAIN_HEAD_POLL_INTERVAL_MS: "${CHAIN_HEAD_POLL_INTERVAL_MS:-5000}"
+      QUEUE_PROCESSING_INTERVAL_MS: "${QUEUE_PROCESSING_INTERVAL_MS:-5000}"
+      BATCH_SIZE: "${BATCH_SIZE:-500}"
+      # Database Pool Configuration
+      DB_POOL_MAX: "${DB_POOL_MAX:-20}"
+      DB_POOL_MIN: "${DB_POOL_MIN:-5}"
+      DB_CONNECTION_TIMEOUT_MS: "${DB_CONNECTION_TIMEOUT_MS:-3000}"
+      DB_QUERY_TIMEOUT_MS: "${DB_QUERY_TIMEOUT_MS:-10000}"
+      DB_STATEMENT_TIMEOUT_MS: "${DB_STATEMENT_TIMEOUT_MS:-10000}"
+      DB_IDLE_TIMEOUT_MS: "${DB_IDLE_TIMEOUT_MS:-30000}"
+      # Database Update Processing
+      DB_UPDATE_CHUNK_SIZE: "${DB_UPDATE_CHUNK_SIZE:-25}"
+      DB_UPDATE_CHUNK_DELAY_MS: "${DB_UPDATE_CHUNK_DELAY_MS:-100}"
+      # Health Check Configuration
+      DB_HEALTH_CHECK_INTERVAL_MS: "${DB_HEALTH_CHECK_INTERVAL_MS:-10000}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 5s
+      retries: 3

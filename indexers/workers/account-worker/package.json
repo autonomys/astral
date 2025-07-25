@@ -24,11 +24,11 @@
     "pg": "^8.11.3"
   },
   "devDependencies": {
+    "@types/ioredis": "^5.0.0",
     "@types/node": "^20.8.9",
     "@types/pg": "^8.10.7",
-    "@types/ioredis": "^5.0.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
-} 
+}
