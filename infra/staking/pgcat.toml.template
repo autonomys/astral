@@ -43,5 +43,5 @@ password = "${STAKING_DB_PASSWORD}"
 pool_size = 10
 
 [pools.astral_staking.shards.0]
-servers = [["staking_postgres", 5432, "primary"]]
+servers = [["${STAKING_DB_HOST}", ${STAKING_DB_PORT}, "primary"]]
 database = "${STAKING_DB_DATABASE}" 
