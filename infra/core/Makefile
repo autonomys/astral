@@ -44,6 +44,7 @@ help:
 	@echo "  make start ENV=prod - Start with prod config"
 	@echo "  make logs SVC=hasura - View hasura logs"
 	@echo "  make reload         - Recreate after changing .env"
+	@echo "  make show-urls      - Display service URLs"
 
 setup:
 	@echo "🔧 Setting up Core Stack..."
@@ -130,10 +131,7 @@ start: build
 	@echo "✅ Core stack started!"
 	@echo ""
 	@echo "📊 Services:"
-	@echo "  - Hasura GraphQL: http://localhost:8080"
-	@echo "  - PostgreSQL: localhost:5432"
-	@echo "  - PGCat: localhost:6432"
-	@echo "  - Redis: localhost:6379"
+	@$(MAKE) show-urls
 	@echo ""
 	@echo "Run 'make logs' to view logs or 'make status' to check status."
 
@@ -213,6 +211,12 @@ status:
 
 ps:
 	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+
+show-urls:
+	@echo "  - Hasura GraphQL: http://localhost:$${HASURA_GRAPHQL_PORT:-8080}"
+	@echo "  - PostgreSQL: localhost:$${DB_PORT:-5432}"
+	@echo "  - PGCat: localhost:$${PGCAT_PORT:-6432}"
+	@echo "  - Redis: localhost:$${REDIS_PORT:-6379}"
 
 clean:
 	@echo "⚠️  WARNING: This will delete all data!"

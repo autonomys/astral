@@ -42,6 +42,7 @@ help:
 	@echo "  make start ENV=prod - Start with prod config"
 	@echo "  make logs SVC=staking_worker - View staking worker logs"
 	@echo "  make reload         - Recreate after changing .env"
+	@echo "  make show-urls      - Display service URLs"
 
 setup:
 	@echo "🔧 Setting up Staking Stack..."
@@ -114,9 +115,7 @@ start: build
 	@echo "✅ Staking stack started!"
 	@echo ""
 	@echo "📊 Services:"
-	@echo "  - Staking PostgreSQL: localhost:5433"
-	@echo "  - Staking PGCat: localhost:6433"
-	@echo "  - Staking Indexer: http://localhost:3002"
+	@$(MAKE) show-urls
 	@echo ""
 	@echo "Run 'make logs' to view logs or 'make status' to check status."
 
@@ -157,6 +156,11 @@ status:
 
 ps:
 	@docker compose -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+
+show-urls:
+	@echo "  - Staking PostgreSQL: localhost:$${STAKING_DB_PORT:-5433}"
+	@echo "  - Staking PGCat: localhost:$${STAKING_PGCAT_PORT:-6433}"
+	@echo "  - Staking Indexer: http://localhost:$${STAKING_INDEXER_PORT:-3002}"
 
 clean:
 	@echo "⚠️  WARNING: This will delete all staking data!"
