@@ -3488,7 +3488,7 @@ __metadata:
     "@types/pg": "npm:^8.10.7"
     dotenv: "npm:^16.3.1"
     ioredis: "npm:^5.3.2"
-    nodemon: "npm:^3.0.1"
+    nodemon: "npm:^3.1.10"
     pg: "npm:^8.11.3"
     ts-node: "npm:^10.9.1"
     typescript: "npm:^5.2.2"
@@ -8861,7 +8861,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemon@npm:^3.0.1":
+"nodemon@npm:^3.1.10":
   version: 3.1.10
   resolution: "nodemon@npm:3.1.10"
   dependencies:
@@ -11332,7 +11332,7 @@ __metadata:
     "@types/pg": "npm:^8.10.7"
     dotenv: "npm:^16.3.1"
     ioredis: "npm:^5.3.2"
-    nodemon: "npm:^3.0.1"
+    nodemon: "npm:^3.1.10"
     pg: "npm:^8.11.3"
     ts-node: "npm:^10.9.1"
     typescript: "npm:^5.2.2"
