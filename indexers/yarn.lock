@@ -2519,6 +2519,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@subql/types-core@npm:~2.1.1":
+  version: 2.1.1
+  resolution: "@subql/types-core@npm:2.1.1"
+  dependencies:
+    package-json-type: "npm:^1.0.3"
+    pino: "npm:^6.13.3"
+  checksum: 10c0/1c41b42be42819360cbc931b47df5166f23d0940915c3a7f693e289b5e39969e4ece600858d4d77bd9b6e63fa37add078bc0c0383df70dcec81c67c0114db948
+  languageName: node
+  linkType: hard
+
 "@subql/types@npm:3.11.5":
   version: 3.11.5
   resolution: "@subql/types@npm:3.11.5"
@@ -2530,7 +2540,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@subql/types@npm:3.12.1, @subql/types@npm:^3.12.1":
+"@subql/types@npm:3.12.1":
   version: 3.12.1
   resolution: "@subql/types@npm:3.12.1"
   dependencies:
@@ -2538,6 +2548,17 @@ __metadata:
   peerDependencies:
     "@polkadot/api": ^15
   checksum: 10c0/c0acdb1b490eb1fc42ee943b93cb83184119bfe6fe15f44829db0b19d31dcd5b5ef50813b6eb2e0d5b6e574d2ba7f2fcd5bdc3fc88fa5c2bc2f74cc97fb4afa3
+  languageName: node
+  linkType: hard
+
+"@subql/types@npm:^3.14.1":
+  version: 3.14.1
+  resolution: "@subql/types@npm:3.14.1"
+  dependencies:
+    "@subql/types-core": "npm:~2.1.1"
+  peerDependencies:
+    "@polkadot/api": ^16
+  checksum: 10c0/bfaba53812f7bce027f1f345f89b190083bc90fec24965253491bb98cb633fe0e856bcae0ea102f78fad4f1b08377e07a7959c1631bb23eeeaa06338b3c267b1
   languageName: node
   linkType: hard
 
@@ -4610,7 +4631,7 @@ __metadata:
     "@subql/cli": "npm:^5.7.0"
     "@subql/common-substrate": "npm:^4.3.7"
     "@subql/node": "npm:^5.10.0"
-    "@subql/types": "npm:^3.12.1"
+    "@subql/types": "npm:^3.14.1"
     "@types/node": "npm:^22.9.0"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.14.1"
@@ -5176,7 +5197,7 @@ __metadata:
     "@subql/cli": "npm:^5.7.0"
     "@subql/common-substrate": "npm:^4.3.7"
     "@subql/node": "npm:^5.10.0"
-    "@subql/types": "npm:^3.12.1"
+    "@subql/types": "npm:^3.14.1"
     "@types/node": "npm:^22.9.0"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.14.1"
@@ -6065,7 +6086,7 @@ __metadata:
     "@subql/cli": "npm:^5.7.0"
     "@subql/common-substrate": "npm:^4.3.7"
     "@subql/node": "npm:^5.10.0"
-    "@subql/types": "npm:^3.12.1"
+    "@subql/types": "npm:^3.14.1"
     "@types/node": "npm:^22.9.0"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.14.1"
@@ -7662,7 +7683,7 @@ __metadata:
     "@subql/cli": "npm:^5.7.0"
     "@subql/common-substrate": "npm:^4.3.7"
     "@subql/node": "npm:^5.10.0"
-    "@subql/types": "npm:^3.12.1"
+    "@subql/types": "npm:^3.14.1"
     "@types/node": "npm:^22.9.0"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.14.1"
@@ -9435,6 +9456,13 @@ __metadata:
   version: 1.0.1
   resolution: "package-json-from-dist@npm:1.0.1"
   checksum: 10c0/62ba2785eb655fec084a257af34dbe24292ab74516d6aecef97ef72d4897310bc6898f6c85b5cd22770eaa1ce60d55a0230e150fb6a966e3ecd6c511e23d164b
+  languageName: node
+  linkType: hard
+
+"package-json-type@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "package-json-type@npm:1.0.3"
+  checksum: 10c0/770e72935a10e92de4170bed18b356d534da2ca4727441a1fa4334faccb6e04046c3391d38c8a67dfc26fa821111f97e5ed604f40ebd320394033eea7fc89503
   languageName: node
   linkType: hard
 
@@ -11353,7 +11381,7 @@ __metadata:
     "@subql/cli": "npm:^5.7.0"
     "@subql/common-substrate": "npm:^4.3.7"
     "@subql/node": "npm:^5.10.0"
-    "@subql/types": "npm:^3.12.1"
+    "@subql/types": "npm:^3.14.1"
     "@types/node": "npm:^22.9.0"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.14.1"
