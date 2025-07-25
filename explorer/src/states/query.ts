@@ -73,9 +73,7 @@ interface ExplorerQueryState {
     operatorRewards: QueryState<GqlT.OperatorRewardsByIdQuery>
     operatorTaxCollected: QueryState<GqlT.OperatorTaxCollectedByIdQuery>
   }
-  [Routes.leaderboard]: {
-    leaderboard: QueryState<GqlT.AccountTransferSenderTotalCountQuery>
-  }
+
   [Routes.domains]: {
     domains: QueryState<GqlT.DomainsListQuery>
     domain: QueryState<GqlT.DomainByIdQuery>
@@ -152,9 +150,7 @@ const initialState: ExplorerQueryState = {
     operatorRewards: initialized,
     operatorTaxCollected: initialized,
   },
-  leaderboard: {
-    leaderboard: initialized,
-  },
+
   domains: {
     domains: initialized,
 
