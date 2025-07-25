@@ -143,13 +143,6 @@ export type OperatorsFilters = {
   bundleCountMax: string
 }
 
-export type LeaderboardFilters = {
-  rankMin: string
-  rankMax: string
-  valueMin: string
-  valueMax: string
-}
-
 export type TransfersFilters = {
   fromChain: string
   toChain: string
