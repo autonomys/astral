@@ -6,7 +6,6 @@ import {
   Consensus_Extrinsics_Select_Column as ExtrinsicsColumns,
   Files_Files_Select_Column as FilesColumns,
   Files_Folders_Select_Column as FoldersColumns,
-  Leaderboard_Account_Extrinsic_Failed_Total_Counts_Select_Column as LeaderboardsColumns,
   Consensus_Logs_Select_Column as LogsColumns,
   Staking_Operators_Select_Column as OperatorsColumns,
 } from 'gql/graphql'
@@ -39,7 +38,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
   ],
   extrinsics: [
     { name: 'id', label: 'Extrinsic Id', isSelected: true },
-    { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: true },
+    { name: 'extrinsicHash', label: 'Extrinsic Hash', isSelected: true, searchable: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true },
     { name: 'module', label: 'Module', isSelected: true },
     { name: 'success', label: 'Status', isSelected: true },
@@ -256,14 +255,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'myStake', label: 'My Stake', isSelected: false },
     { name: 'actions', label: 'Actions', isSelected: true },
   ],
-  leaderboard: [
-    { name: 'id', label: 'Id', isSelected: true, searchable: true },
-    { name: 'rank', label: 'Rank', isSelected: true, searchable: true },
-    { name: 'value', label: 'Value', isSelected: true, searchable: true },
-    { name: 'lastContributionAt', label: 'Last Contribution', isSelected: true },
-    { name: 'createdAt', label: 'Created At', isSelected: true },
-    { name: 'updatedAt', label: 'Updated At', isSelected: true },
-  ],
+
   transfers: [
     { name: 'extrinsicId', label: 'Extrinsic ID', isSelected: true, accessorKey: 'extrinsic_id' },
     {
@@ -352,10 +344,7 @@ export const FILTERS_OPTIONS: FiltersOptions = {
     { type: 'range', label: 'Active Epoch Count', key: 'activeEpochCount' },
     { type: 'range', label: 'Bundle Count', key: 'bundleCount' },
   ],
-  leaderboard: [
-    { type: 'range', label: 'Rank', key: 'rank' },
-    { type: 'range', label: 'Value', key: 'value' },
-  ],
+
   transfers: [
     { type: 'dropdown', label: 'From Chain', key: 'fromChain', options: ['consensus', 'domain:0'] },
     { type: 'dropdown', label: 'To Chain', key: 'toChain', options: ['consensus', 'domain:0'] },
@@ -606,27 +595,7 @@ export const INITIAL_TABLES: InitialTables = {
       },
     ],
   },
-  leaderboard: {
-    ...INITIAL_TABLE_PROPERTIES,
-    name: 'leaderboard',
-    columns: AVAILABLE_COLUMNS.leaderboard,
-    selectedColumns: AVAILABLE_COLUMNS.leaderboard
-      .filter((column) => column.isSelected)
-      .map((column) => column.name),
-    filtersOptions: FILTERS_OPTIONS.leaderboard,
-    filters: {
-      rankMin: '',
-      rankMax: '',
-      valueMin: '',
-      valueMax: '',
-    },
-    sorting: [
-      {
-        id: LeaderboardsColumns.Rank,
-        desc: false,
-      },
-    ],
-  },
+
   transfers: {
     ...INITIAL_TABLE_PROPERTIES,
     name: 'transfers',

@@ -11,7 +11,6 @@ import {
   IdentificationIcon,
   LinkIcon,
   QueueListIcon,
-  TrophyIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { WalletButton } from 'components/WalletButton'
@@ -45,8 +44,6 @@ export const SectionHeader: FC = () => {
         return <CpuChipIcon className={className} />
       case Routes.staking:
         return <CircleStackIcon className={className} />
-      case Routes.leaderboard:
-        return <TrophyIcon className={className} />
       case Routes.domains:
         return <GlobeAltIcon className={className} />
       case Routes.autoevm:

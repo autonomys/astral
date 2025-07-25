@@ -47,6 +47,22 @@ query ExtrinsicsById($extrinsicId: String!) {
   }
 }
 
+query ExtrinsicsByHash($extrinsicHash: String!) {
+  consensus_extrinsics(where: { hash: { _eq: $extrinsicHash } }) {
+    id
+    hash
+    block_height
+    section
+    module
+    timestamp
+    success
+    signature
+    signer
+    args
+    events_count
+  }
+}
+
 query EventsByExtrinsicId(
   $extrinsicId: String!
   $limit: Int!

@@ -1,4 +1,4 @@
 export enum DomainRuntime {
-  EVM = "EVM",
-  AUTO_ID = "AUTO_ID",
+  EVM = 'EVM',
+  AUTO_ID = 'AUTO_ID',
 }

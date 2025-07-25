@@ -5,7 +5,13 @@
   "main": "index.js",
   "license": "MIT",
   "workspaces": [
-    "*",
+    "consensus",
+    "db",
+    "domain-auto-evm",
+    "files",
+    "leaderboard",
+    "staking",
+    "taskboard",
     "workers/*"
   ],
   "engines": {
@@ -17,6 +23,10 @@
     "graph": "nx graph",
     "build": "lerna run build",
     "codegen": "lerna run codegen --skip-nx-cache",
+    "lint": "eslint \"*/src/**/*.ts\" \"workers/*/src/**/*.ts\"",
+    "lint:fix": "eslint \"*/src/**/*.ts\" \"workers/*/src/**/*.ts\" --fix",
+    "format": "prettier --write \"*/src/**/*.ts\" \"workers/*/src/**/*.ts\" \"!*/src/types/**/*\" \"!workers/*/src/types/**/*\"",
+    "format:check": "prettier --check \"*/src/**/*.ts\" \"workers/*/src/**/*.ts\" \"!*/src/types/**/*\" \"!workers/*/src/types/**/*\"",
     "docker:compose-base": "docker compose -p",
     "docker:dev": "yarn docker:compose-base dev-astral-indexers -f ../docker-compose.yml -f ../docker-compose.workers.yml",
     "docker:prod": "yarn docker:compose-base prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml -f ../docker-compose.workers.yml",
@@ -38,21 +48,26 @@
     "metadata": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run metadata",
     "migrate": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run migrate",
     "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.prod | xargs) && lerna run apply-seeds:mainnet",
-
     "alias-prod": "alias dc='docker compose -p prod-astral-indexers -f ../docker-compose.yml'",
     "alias-dev": "alias dc='docker compose -p dev-astral-indexers -f ../docker-compose.yml'",
-    
     "dev:consensus": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:dev up -d postgres pgcat hasura redis account-worker consensus_subquery_node --remove-orphans",
     "dev:domain": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope domain-auto-evm && lerna run build --scope domain-auto-evm && yarn docker:dev -f ../docker-compose.domains.yml up postgres pgcat hasura domain_auto_evm_subquery_node node --remove-orphans",
-    "dev:staking": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope staking && lerna run build --scope staking && yarn docker:dev up -d postgres pgcat hasura staking_subquery_node --remove-orphans",
+    "dev:staking": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope staking && lerna run build --scope staking && yarn docker:dev up -d postgres pgcat postgres-staking pgcat-staking hasura redis staking_subquery_node --remove-orphans",
     "dev:leaderboard": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope leaderboard && lerna run build --scope leaderboard && yarn docker:dev up postgres pgcat hasura leaderboard_subquery_node node --remove-orphans",
-
     "prod:consensus": "export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:prod up postgres pgcat hasura redis account-worker consensus_subquery_node node --remove-orphans",
-    "prod:worker:account": "export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:prod up -d postgres pgcat hasura redis account-worker --remove-orphans"
+    "prod:worker:account": "export $(grep -v '^#' ../.env.prod | xargs) && lerna run codegen --scope consensus && lerna run build --scope consensus && yarn docker:prod up -d postgres pgcat hasura redis account-worker --remove-orphans",
+    "dev:worker:staking": "export $(grep -v '^#' ../.env.dev | xargs) && lerna run codegen --scope staking && lerna run build --scope staking && yarn docker:dev up -d postgres pgcat postgres-staking pgcat-staking hasura redis staking-worker --remove-orphans"
   },
   "dependencies": {
     "lerna": "^8.2.1"
-  }
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.5",
+    "prettier": "^3.5.3"
+  },
+  "packageManager": "yarn@4.9.2+sha512.1fc009bc09d13cfd0e19efa44cbfc2b9cf6ca61482725eb35bbc5e257e093ebf4130db6dfe15d604ff4b79efd8e1e8e99b25fa7d0a6197c9f9826358d4d65c3c"
 }
-
-
