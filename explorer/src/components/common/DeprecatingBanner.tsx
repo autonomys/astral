@@ -11,12 +11,11 @@ export const DeprecatingBanner = () => {
         <div className='w-full rounded-lg bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-boxDark'>
           <div className='flex flex-col gap-4 text-center md:text-left'>
             <div className='text-[20px] font-bold text-[#282929] dark:text-white'>
-              Astral will be deprecated soon
+              ⚠️ Astral will be deprecated soon ⚠️
             </div>
             <div className='text-[15px] text-[#282929] dark:text-white'>
-              Astral will be deprecated soon. From that point Subscan will be the only way to access
-              up-to-date network data and features. You can also use Polkadot.js Apps to interact
-              with the chain.
+              Please use Subscan for up-to-date network data and Polkadot.js Apps to interact with
+              the chain.
             </div>
             <div className='flex flex-col items-center gap-4 md:flex-row md:items-center'>
               {network === NetworkId.MAINNET && (
