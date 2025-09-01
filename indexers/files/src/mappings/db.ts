@@ -8,8 +8,8 @@ import {
   FolderCid,
   Metadata,
   MetadataCid,
-} from "../types";
-import { getSortId } from "./utils";
+} from '../types';
+import { getSortId } from './utils';
 
 export type Cache = {
   cid: Cid[];
@@ -58,7 +58,7 @@ export function createCid(
   indexInBlock: number,
   links: string[],
   blake3Hash: string,
-  timestamp: Date
+  timestamp: Date,
 ): Cid {
   return Cid.create({
     id: cid,
@@ -81,7 +81,7 @@ export function createChunk(
   size?: bigint,
   name?: string,
   data?: string,
-  uploadOptions?: string
+  uploadOptions?: string,
 ): Chunk {
   return Chunk.create({
     id: cid,
@@ -95,7 +95,7 @@ export function createChunk(
 }
 
 const prepareRelation = (cid: string, link: string) => ({
-  id: cid + ":" + link,
+  id: cid + ':' + link,
   parentCid: cid,
   childCid: link,
 });
@@ -105,7 +105,7 @@ export function createMetadata(
   links: string[],
   name: string,
   blockHeight: bigint,
-  extrinsicId: string
+  extrinsicId: string,
 ): { metadata: Metadata; relations: MetadataCid[] } {
   const metadata = Metadata.create({
     id: cid,
@@ -118,9 +118,7 @@ export function createMetadata(
   if (links.length > 0)
     return {
       metadata,
-      relations: links.map((link) =>
-        MetadataCid.create(prepareRelation(cid, link))
-      ),
+      relations: links.map((link) => MetadataCid.create(prepareRelation(cid, link))),
     };
   return { metadata, relations: [] };
 }
@@ -130,7 +128,7 @@ export function createFolder(
   links: string[],
   name: string,
   blockHeight: bigint,
-  extrinsicId: string
+  extrinsicId: string,
 ): { folder: Folder; relations: FolderCid[] } {
   const folder = Folder.create({
     id: cid,
@@ -143,9 +141,7 @@ export function createFolder(
   if (links.length > 0)
     return {
       folder,
-      relations: links.map((link) =>
-        FolderCid.create(prepareRelation(cid, link))
-      ),
+      relations: links.map((link) => FolderCid.create(prepareRelation(cid, link))),
     };
   return { folder, relations: [] };
 }
@@ -155,7 +151,7 @@ export function createFile(
   links: string[],
   name: string,
   blockHeight: bigint,
-  extrinsicId: string
+  extrinsicId: string,
 ): { file: File; relations: FileCid[] } {
   const file = File.create({
     id: cid,
@@ -168,9 +164,7 @@ export function createFile(
   if (links.length > 0)
     return {
       file,
-      relations: links.map((link) =>
-        FileCid.create(prepareRelation(cid, link))
-      ),
+      relations: links.map((link) => FileCid.create(prepareRelation(cid, link))),
     };
   return { file, relations: [] };
 }
@@ -182,7 +176,7 @@ export function createError(
   extrinsicHash: string,
   indexInBlock: number,
   error: string,
-  timestamp: Date
+  timestamp: Date,
 ): Error {
   return Error.create({
     id: extrinsicId,

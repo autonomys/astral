@@ -1,0 +1,51 @@
+volumes:
+  node_data: {}
+
+networks:
+  astral_network:
+    name: astral_network
+    driver: bridge
+
+services:
+  node:
+    image: ghcr.io/autonomys/node:${NODE_DOCKER_TAG:-mainnet-2025-jul-14}
+    container_name: astral_node
+    volumes:
+      - node_data:/var/subspace:rw
+    ports:
+      - "30333:30333/tcp"
+      - "30433:30433/tcp"
+      - "9944:9944/tcp"
+    networks:
+      - astral_network
+    restart: unless-stopped
+    command:
+      [
+        "run",
+        "--chain",
+        "${NETWORK_ID:-mainnet}",
+        "--base-path",
+        "/var/subspace",
+        "--sync",
+        "full",
+        "--state-pruning",
+        "archive",
+        "--blocks-pruning",
+        "archive",
+        "--listen-on",
+        "/ip4/0.0.0.0/tcp/30333",
+        "--dsn-listen-on",
+        "/ip4/0.0.0.0/tcp/30433",
+        "--rpc-cors",
+        "all",
+        "--rpc-methods",
+        "unsafe",
+        "--rpc-listen-on",
+        "0.0.0.0:9944",
+      ]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9944/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s

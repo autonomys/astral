@@ -25,7 +25,7 @@ import {
   OperatorTotalTaxCollectedHistory,
   OperatorWithdrawalsTotalCountHistory,
   OperatorWithdrawalsTotalValueHistory,
-} from "../types";
+} from '../types';
 
 export type Cache = {
   accountExtrinsicFailedTotalCountHistory: AccountExtrinsicFailedTotalCountHistory[];
@@ -90,110 +90,80 @@ export const saveCache = async (cache: Cache) => {
   await Promise.all([
     store.bulkCreate(
       `AccountTransferSenderTotalCountHistory`,
-      cache.accountTransferSenderTotalCountHistory
+      cache.accountTransferSenderTotalCountHistory,
     ),
     store.bulkCreate(
       `AccountTransferReceiverTotalCountHistory`,
-      cache.accountTransferReceiverTotalCountHistory
+      cache.accountTransferReceiverTotalCountHistory,
     ),
     store.bulkCreate(
       `AccountTransferSenderTotalValueHistory`,
-      cache.accountTransferSenderTotalValueHistory
+      cache.accountTransferSenderTotalValueHistory,
     ),
     store.bulkCreate(
       `AccountTransferReceiverTotalValueHistory`,
-      cache.accountTransferReceiverTotalValueHistory
+      cache.accountTransferReceiverTotalValueHistory,
     ),
-    store.bulkCreate(
-      `AccountRemarkCountHistory`,
-      cache.accountRemarkCountHistory
-    ),
-    store.bulkCreate(
-      `AccountExtrinsicTotalCountHistory`,
-      cache.accountExtrinsicTotalCountHistory
-    ),
+    store.bulkCreate(`AccountRemarkCountHistory`, cache.accountRemarkCountHistory),
+    store.bulkCreate(`AccountExtrinsicTotalCountHistory`, cache.accountExtrinsicTotalCountHistory),
     store.bulkCreate(
       `AccountExtrinsicSuccessTotalCountHistory`,
-      cache.accountExtrinsicSuccessTotalCountHistory
+      cache.accountExtrinsicSuccessTotalCountHistory,
     ),
     store.bulkCreate(
       `AccountExtrinsicFailedTotalCountHistory`,
-      cache.accountExtrinsicFailedTotalCountHistory
+      cache.accountExtrinsicFailedTotalCountHistory,
     ),
     store.bulkCreate(
       `AccountTransactionFeePaidTotalValueHistory`,
-      cache.accountTransactionFeePaidTotalValueHistory
+      cache.accountTransactionFeePaidTotalValueHistory,
     ),
     // Farmer entities
-    store.bulkCreate(
-      `FarmerVoteTotalCountHistory`,
-      cache.farmerVoteTotalCountHistory
-    ),
-    store.bulkCreate(
-      `FarmerVoteTotalValueHistory`,
-      cache.farmerVoteTotalValueHistory
-    ),
-    store.bulkCreate(
-      `FarmerBlockTotalCountHistory`,
-      cache.farmerBlockTotalCountHistory
-    ),
-    store.bulkCreate(
-      `FarmerBlockTotalValueHistory`,
-      cache.farmerBlockTotalValueHistory
-    ),
+    store.bulkCreate(`FarmerVoteTotalCountHistory`, cache.farmerVoteTotalCountHistory),
+    store.bulkCreate(`FarmerVoteTotalValueHistory`, cache.farmerVoteTotalValueHistory),
+    store.bulkCreate(`FarmerBlockTotalCountHistory`, cache.farmerBlockTotalCountHistory),
+    store.bulkCreate(`FarmerBlockTotalValueHistory`, cache.farmerBlockTotalValueHistory),
     store.bulkCreate(
       `FarmerVoteAndBlockTotalCountHistory`,
-      cache.farmerVoteAndBlockTotalCountHistory
+      cache.farmerVoteAndBlockTotalCountHistory,
     ),
     store.bulkCreate(
       `FarmerVoteAndBlockTotalValueHistory`,
-      cache.farmerVoteAndBlockTotalValueHistory
+      cache.farmerVoteAndBlockTotalValueHistory,
     ),
     // Nominator entities
     store.bulkCreate(
       `NominatorDepositsTotalCountHistory`,
-      cache.nominatorDepositsTotalCountHistory
+      cache.nominatorDepositsTotalCountHistory,
     ),
     store.bulkCreate(
       `NominatorDepositsTotalValueHistory`,
-      cache.nominatorDepositsTotalValueHistory
+      cache.nominatorDepositsTotalValueHistory,
     ),
     store.bulkCreate(
       `NominatorWithdrawalsTotalCountHistory`,
-      cache.nominatorWithdrawalsTotalCountHistory
+      cache.nominatorWithdrawalsTotalCountHistory,
     ),
     store.bulkCreate(
       `NominatorWithdrawalsTotalValueHistory`,
-      cache.nominatorWithdrawalsTotalValueHistory
+      cache.nominatorWithdrawalsTotalValueHistory,
     ),
     // Operator entities
-    store.bulkCreate(
-      `OperatorBundleTotalCountHistory`,
-      cache.operatorBundleTotalCountHistory
-    ),
-    store.bulkCreate(
-      `OperatorDepositsTotalCountHistory`,
-      cache.operatorDepositsTotalCountHistory
-    ),
-    store.bulkCreate(
-      `OperatorDepositsTotalValueHistory`,
-      cache.operatorDepositsTotalValueHistory
-    ),
+    store.bulkCreate(`OperatorBundleTotalCountHistory`, cache.operatorBundleTotalCountHistory),
+    store.bulkCreate(`OperatorDepositsTotalCountHistory`, cache.operatorDepositsTotalCountHistory),
+    store.bulkCreate(`OperatorDepositsTotalValueHistory`, cache.operatorDepositsTotalValueHistory),
     store.bulkCreate(
       `OperatorTotalRewardsCollectedHistory`,
-      cache.operatorTotalRewardsCollectedHistory
+      cache.operatorTotalRewardsCollectedHistory,
     ),
-    store.bulkCreate(
-      `OperatorTotalTaxCollectedHistory`,
-      cache.operatorTotalTaxCollectedHistory
-    ),
+    store.bulkCreate(`OperatorTotalTaxCollectedHistory`, cache.operatorTotalTaxCollectedHistory),
     store.bulkCreate(
       `OperatorWithdrawalsTotalCountHistory`,
-      cache.operatorWithdrawalsTotalCountHistory
+      cache.operatorWithdrawalsTotalCountHistory,
     ),
     store.bulkCreate(
       `OperatorWithdrawalsTotalValueHistory`,
-      cache.operatorWithdrawalsTotalValueHistory
+      cache.operatorWithdrawalsTotalValueHistory,
     ),
   ]);
 };
@@ -204,7 +174,7 @@ export function createAccountTransferSenderTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): AccountTransferSenderTotalCountHistory {
   return AccountTransferSenderTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -223,7 +193,7 @@ export function createAccountTransferSenderTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): AccountTransferSenderTotalValueHistory {
   return AccountTransferSenderTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -242,7 +212,7 @@ export function createAccountTransferReceiverTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): AccountTransferReceiverTotalCountHistory {
   return AccountTransferReceiverTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -261,7 +231,7 @@ export function createAccountTransferReceiverTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): AccountTransferReceiverTotalValueHistory {
   return AccountTransferReceiverTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -280,7 +250,7 @@ export function createAccountRemarkCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): AccountRemarkCountHistory {
   return AccountRemarkCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -299,7 +269,7 @@ export function createAccountExtrinsicTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): AccountExtrinsicTotalCountHistory {
   return AccountExtrinsicTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -318,7 +288,7 @@ export function createAccountExtrinsicSuccessTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): AccountExtrinsicSuccessTotalCountHistory {
   return AccountExtrinsicSuccessTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -337,7 +307,7 @@ export function createAccountExtrinsicFailedTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): AccountExtrinsicFailedTotalCountHistory {
   return AccountExtrinsicFailedTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -356,7 +326,7 @@ export function createAccountTransactionFeePaidTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): AccountTransactionFeePaidTotalValueHistory {
   return AccountTransactionFeePaidTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -376,7 +346,7 @@ export function createFarmerVoteTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): FarmerVoteTotalCountHistory {
   return FarmerVoteTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -395,7 +365,7 @@ export function createFarmerVoteTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): FarmerVoteTotalValueHistory {
   return FarmerVoteTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -414,7 +384,7 @@ export function createFarmerBlockTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): FarmerBlockTotalCountHistory {
   return FarmerBlockTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -433,7 +403,7 @@ export function createFarmerBlockTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): FarmerBlockTotalValueHistory {
   return FarmerBlockTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -452,7 +422,7 @@ export function createFarmerVoteAndBlockTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): FarmerVoteAndBlockTotalCountHistory {
   return FarmerVoteAndBlockTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -471,7 +441,7 @@ export function createFarmerVoteAndBlockTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): FarmerVoteAndBlockTotalValueHistory {
   return FarmerVoteAndBlockTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -491,7 +461,7 @@ export function createOperatorTotalRewardsCollected(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): OperatorTotalRewardsCollectedHistory {
   return OperatorTotalRewardsCollectedHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -510,7 +480,7 @@ export function createOperatorTotalTaxCollected(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): OperatorTotalTaxCollectedHistory {
   return OperatorTotalTaxCollectedHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -529,7 +499,7 @@ export function createOperatorBundleTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): OperatorBundleTotalCountHistory {
   return OperatorBundleTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -548,7 +518,7 @@ export function createOperatorDepositsTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): OperatorDepositsTotalCountHistory {
   return OperatorDepositsTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -567,7 +537,7 @@ export function createOperatorDepositsTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): OperatorDepositsTotalValueHistory {
   return OperatorDepositsTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -586,7 +556,7 @@ export function createOperatorWithdrawalsTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): OperatorWithdrawalsTotalCountHistory {
   return OperatorWithdrawalsTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -605,7 +575,7 @@ export function createOperatorWithdrawalsTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): OperatorWithdrawalsTotalValueHistory {
   return OperatorWithdrawalsTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -625,7 +595,7 @@ export function createNominatorDepositsTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): NominatorDepositsTotalCountHistory {
   return NominatorDepositsTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -644,7 +614,7 @@ export function createNominatorDepositsTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): NominatorDepositsTotalValueHistory {
   return NominatorDepositsTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -663,7 +633,7 @@ export function createNominatorWithdrawalsTotalCount(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): NominatorWithdrawalsTotalCountHistory {
   return NominatorWithdrawalsTotalCountHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,
@@ -682,7 +652,7 @@ export function createNominatorWithdrawalsTotalValue(
   blockHeight: bigint,
   extrinsicId: string,
   eventId: string,
-  lastContributionAt: Date = new Date()
+  lastContributionAt: Date = new Date(),
 ): NominatorWithdrawalsTotalValueHistory {
   return NominatorWithdrawalsTotalValueHistory.create({
     id: `${accountId}-${extrinsicId}-${eventId}`,

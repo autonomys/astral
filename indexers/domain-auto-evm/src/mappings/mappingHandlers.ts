@@ -1,13 +1,13 @@
-import { account } from "@autonomys/auto-consensus";
-import { stringify } from "@autonomys/auto-utils";
-import { SubstrateBlock } from "@subql/types";
-import { Entity } from "@subql/types-core";
+import { account } from '@autonomys/auto-consensus';
+import { stringify } from '@autonomys/auto-utils';
+import { SubstrateBlock } from '@subql/types';
+import { Entity } from '@subql/types-core';
 import {
   DEFAULT_ACCOUNT_ID,
   DOMAIN_AUTO_EVM_CHAIN_TYPE,
   EMPTY_SIGNATURE,
   ZERO_BIGINT,
-} from "./constants";
+} from './constants';
 import {
   createAccountHistory,
   createBlock,
@@ -20,9 +20,9 @@ import {
   createLog,
   createTransfer,
   initializeCache,
-} from "./db";
-import { EVENT_HANDLERS } from "./eventHandler";
-import { ExtrinsicPrimitive, LogValue } from "./types";
+} from './db';
+import { EVENT_HANDLERS } from './eventHandler';
+import { ExtrinsicPrimitive, LogValue } from './types';
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -41,7 +41,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const eventsCount = events.length;
   const extrinsicsCount = extrinsics.length;
 
-  let cache = initializeCache();
+  const cache = initializeCache();
   const newExtrinsics = new Array<Entity>(extrinsics.length);
   const newEvents = new Array<Entity>(events.length);
   let eventIndex = 0;
@@ -59,14 +59,13 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       }
       return acc;
     },
-    [{}, []]
+    [{}, []],
   );
 
   // Process extrinsics
   extrinsics.forEach((extrinsic, extrinsicIdx) => {
     const extrinsicHash = extrinsic.hash.toString();
-    const extrinsicMethodToPrimitive =
-      extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
+    const extrinsicMethodToPrimitive = extrinsic.method.toPrimitive() as ExtrinsicPrimitive;
     const extrinsicEvents = eventsByExtrinsic[extrinsicIdx] || [];
 
     const { feeEvent, errorEvent, successEvent } = extrinsicEvents.reduce(
@@ -76,47 +75,43 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           errorEvent?: (typeof events)[number];
           successEvent?: (typeof events)[number];
         },
-        event
+        event,
       ) => {
         // Check for fee event
         if (
           !acc.feeEvent &&
-          event.event.section === "balances" &&
-          event.event.method === "Withdraw"
+          event.event.section === 'balances' &&
+          event.event.method === 'Withdraw'
         ) {
           acc.feeEvent = event;
         }
         // Check for error event
         else if (
           !acc.errorEvent &&
-          event.event.section === "system" &&
-          event.event.method === "ExtrinsicFailed"
+          event.event.section === 'system' &&
+          event.event.method === 'ExtrinsicFailed'
         ) {
           acc.errorEvent = event;
         }
         // Check for success event
         else if (
           !acc.successEvent &&
-          event.event.section === "system" &&
-          event.event.method === "ExtrinsicSuccess"
+          event.event.section === 'system' &&
+          event.event.method === 'ExtrinsicSuccess'
         ) {
           acc.successEvent = event;
         }
         return acc;
       },
-      {}
+      {},
     );
 
     // Calculate fee
-    const fee = feeEvent?.event?.data[1]
-      ? BigInt(feeEvent.event.data[1].toString())
-      : ZERO_BIGINT;
-    const error = errorEvent ? stringify(errorEvent.event.data) : "";
+    const fee = feeEvent?.event?.data[1] ? BigInt(feeEvent.event.data[1].toString()) : ZERO_BIGINT;
+    const error = errorEvent ? stringify(errorEvent.event.data) : '';
 
     const pos = extrinsicEvents ? extrinsicIdx : 0;
-    const extrinsicSigner = extrinsic.isSigned
-      ? extrinsic.signer.toString()
-      : DEFAULT_ACCOUNT_ID;
+    const extrinsicSigner = extrinsic.isSigned ? extrinsic.signer.toString() : DEFAULT_ACCOUNT_ID;
     const extrinsicSignature = extrinsic.isSigned
       ? extrinsic.signature.toString()
       : EMPTY_SIGNATURE;
@@ -139,16 +134,14 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         error,
         BigInt(extrinsic.tip.toString()),
         fee,
-        pos
-      )
+        pos,
+      ),
     );
     cache.addressToUpdate.add(extrinsicSigner);
 
     // Process extrinsic events
     extrinsicEvents.forEach((event) => {
-      const extrinsicId = extrinsic
-        ? height + "-" + extrinsicIdx.toString()
-        : "";
+      const extrinsicId = extrinsic ? height + '-' + extrinsicIdx.toString() : '';
 
       newEvents.push(
         createEvent(
@@ -162,12 +155,12 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           blockTimestamp,
           event.phase.type,
           pos,
-          stringify(event.event.data)
-        )
+          stringify(event.event.data),
+        ),
       );
 
       // Process specific events
-      const eventKey = event.event.section + "." + event.event.method;
+      const eventKey = event.event.section + '.' + event.event.method;
       const handler = EVENT_HANDLERS[eventKey];
       if (handler)
         handler({
@@ -177,7 +170,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           blockHash,
           blockTimestamp,
           extrinsicId,
-          eventId: height + "-" + eventIndex,
+          eventId: height + '-' + eventIndex,
           fee,
           successEvent: successEvent ? true : false,
           extrinsicSigner,
@@ -196,20 +189,20 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         height,
         blockHash,
         BigInt(eventIndex),
-        "",
-        "",
+        '',
+        '',
         event.event.section,
         event.event.method,
         blockTimestamp,
         event.phase.type,
         0,
         stringify(event.event.data),
-        ""
-      )
+        '',
+      ),
     );
 
     // Process specific events
-    const eventKey = event.event.section + "." + event.event.method;
+    const eventKey = event.event.section + '.' + event.event.method;
     const handler = EVENT_HANDLERS[eventKey];
     if (handler)
       handler({
@@ -218,11 +211,11 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         height,
         blockHash,
         blockTimestamp,
-        extrinsicId: height + "-" + event.phase.type,
-        eventId: height + "-" + eventIndex,
+        extrinsicId: height + '-' + event.phase.type,
+        eventId: height + '-' + eventIndex,
         fee: ZERO_BIGINT,
         successEvent: true,
-        extrinsicSigner: "",
+        extrinsicSigner: '',
         extrinsicMethodToPrimitive: {},
       });
 
@@ -234,22 +227,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const newLogs = digest.logs.map((log, i) => {
     const logData = log.toHuman();
     const logJson = log.toPrimitive();
-    const kind = logData ? Object.keys(logData)[0] : "";
-    const rawKind = logJson ? Object.keys(logJson)[0] : "";
-    const _value = logJson ? logJson[rawKind as keyof typeof logJson] : "";
+    const kind = logData ? Object.keys(logData)[0] : '';
+    const rawKind = logJson ? Object.keys(logJson)[0] : '';
+    const _value = logJson ? logJson[rawKind as keyof typeof logJson] : '';
     const value: LogValue =
       Array.isArray(_value) && _value.length === 2
         ? { data: _value[1], engine: _value[0] }
         : { data: _value };
 
-    return createLog(
-      height,
-      blockHash,
-      i,
-      kind,
-      stringify(value),
-      blockTimestamp
-    );
+    return createLog(height, blockHash, i, kind, stringify(value), blockTimestamp);
   });
 
   const evmBlock = await unsafeApi?.rpc.eth.getBlockByNumber(height, true);
@@ -291,8 +277,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
           transaction.r.toString(),
           transaction.s.toString(),
           transaction.accessList.toString(),
-          BigInt(transaction.transactionType.toString())
-        )
+          BigInt(transaction.transactionType.toString()),
+        ),
       );
       if (creates) codesToFetch.push(creates);
       cache.addressToUpdate.add(from);
@@ -305,46 +291,40 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
             createTransfer(
               height,
               blockHash,
-              height + "-evm-tx-" + transactionIndex,
-              height + "-evm-tx-" + transactionIndex,
+              height + '-evm-tx-' + transactionIndex,
+              height + '-evm-tx-' + transactionIndex,
               from,
               DOMAIN_AUTO_EVM_CHAIN_TYPE,
               to,
               DOMAIN_AUTO_EVM_CHAIN_TYPE,
               value,
               gas,
-              "evm.Transfer",
+              'evm.Transfer',
               true,
               true,
-              blockTimestamp
-            )
+              blockTimestamp,
+            ),
           );
         }
       }
 
-      if (!to && creates && input !== "0x")
-        cache.evmCodeSelectors.push(
-          createEvmCodeSelector(creates, input.slice(0, 10))
-        );
+      if (!to && creates && input !== '0x')
+        cache.evmCodeSelectors.push(createEvmCodeSelector(creates, input.slice(0, 10)));
     });
     if (codesToFetch.length > 0) {
-      const codes = await Promise.all(
-        codesToFetch.map((code) => unsafeApi?.rpc.eth.getCode(code))
-      );
+      const codes = await Promise.all(codesToFetch.map((code) => unsafeApi?.rpc.eth.getCode(code)));
       codes.forEach((code, i) =>
-        cache.evmCodes.push(
-          createEvmCode(codesToFetch[i], code?.toString() ?? "0x", "[]")
-        )
+        cache.evmCodes.push(createEvmCode(codesToFetch[i], code?.toString() ?? '0x', '[]')),
       );
     }
   }
 
   // Update accounts
   const uniqueAddresses = Array.from(cache.addressToUpdate).filter(
-    (address) => address !== "" && address !== DEFAULT_ACCOUNT_ID
+    (address) => address !== '' && address !== DEFAULT_ACCOUNT_ID,
   );
   const accounts = await Promise.all(
-    uniqueAddresses.map((address) => account(api as any, address))
+    uniqueAddresses.map((address) => account(api as any, address)),
   );
 
   // Create and save accounts
@@ -355,8 +335,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       BigInt(account.nonce.toString()),
       account.data.free,
       account.data.reserved,
-      account.data.free + account.data.reserved
-    )
+      account.data.free + account.data.reserved,
+    ),
   );
 
   // Save many entities in parallel
@@ -387,32 +367,32 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         newLogs.length,
         cache.transfers.length,
         cache.totalTransferValue,
-        DEFAULT_ACCOUNT_ID
+        DEFAULT_ACCOUNT_ID,
       ),
     ]),
     // Create and save block
     store.bulkCreate(`EvmBlock`, [
       createEvmBlock(
-        evmBlockData?.hash.toString() ?? "",
+        evmBlockData?.hash.toString() ?? '',
         height,
         blockTimestamp,
         evmBlockData?.timestamp.toNumber() ?? 0,
-        evmBlockData?.parentHash.toString() ?? "",
-        evmBlockData?.stateRoot.toString() ?? "",
-        evmBlockData?.transactionsRoot.toString() ?? "",
-        evmBlockData?.receiptsRoot.toString() ?? "",
+        evmBlockData?.parentHash.toString() ?? '',
+        evmBlockData?.stateRoot.toString() ?? '',
+        evmBlockData?.transactionsRoot.toString() ?? '',
+        evmBlockData?.receiptsRoot.toString() ?? '',
         evmBlockData?.transactions.length ?? 0,
         evmBlockData?.transactions.reduce(
-          (sum, tx) => sum + BigInt(tx.value.toString() ?? "0"),
-          ZERO_BIGINT
+          (sum, tx) => sum + BigInt(tx.value.toString() ?? '0'),
+          ZERO_BIGINT,
         ) ?? ZERO_BIGINT,
-        evmBlockData?.author?.toString() ?? "",
-        BigInt(evmBlockData?.gasUsed?.toString() ?? "0"),
-        BigInt(evmBlockData?.gasLimit?.toString() ?? "0"),
-        evmBlockData?.extraData?.toString() ?? "",
-        BigInt(evmBlockData?.difficulty.toString() ?? "0"),
-        BigInt(evmBlockData?.totalDifficulty.toString() ?? "0"),
-        BigInt(evmBlockData?.size.toString() ?? "0")
+        evmBlockData?.author?.toString() ?? '',
+        BigInt(evmBlockData?.gasUsed?.toString() ?? '0'),
+        BigInt(evmBlockData?.gasLimit?.toString() ?? '0'),
+        evmBlockData?.extraData?.toString() ?? '',
+        BigInt(evmBlockData?.difficulty.toString() ?? '0'),
+        BigInt(evmBlockData?.totalDifficulty.toString() ?? '0'),
+        BigInt(evmBlockData?.size.toString() ?? '0'),
       ),
     ]),
     // Create and save evm transactions

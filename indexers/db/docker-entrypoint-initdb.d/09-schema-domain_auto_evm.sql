@@ -352,3 +352,16 @@ CREATE INDEX "0xee1355606a0eb5b7" ON domain_auto_evm.evm_transactions USING btre
 CREATE INDEX "0xf54a20ed40ef7dea" ON domain_auto_evm.evm_codes USING btree (id);
 
 CREATE TRIGGER "0x8741811e70475b76" AFTER UPDATE ON domain_auto_evm._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION domain_auto_evm.schema_notification();
+
+-- GIST indexes for SubQuery _block_range queries
+-- These are critical for performance as SubQuery uses WHERE _block_range @> current_block
+CREATE INDEX domain_auto_evm_account_histories_block_range_gist ON domain_auto_evm.account_histories USING gist (_block_range);
+CREATE INDEX domain_auto_evm_blocks_block_range_gist ON domain_auto_evm.blocks USING gist (_block_range);
+CREATE INDEX domain_auto_evm_events_block_range_gist ON domain_auto_evm.events USING gist (_block_range);
+CREATE INDEX domain_auto_evm_evm_blocks_block_range_gist ON domain_auto_evm.evm_blocks USING gist (_block_range);
+CREATE INDEX domain_auto_evm_evm_code_selectors_block_range_gist ON domain_auto_evm.evm_code_selectors USING gist (_block_range);
+CREATE INDEX domain_auto_evm_evm_codes_block_range_gist ON domain_auto_evm.evm_codes USING gist (_block_range);
+CREATE INDEX domain_auto_evm_evm_transactions_block_range_gist ON domain_auto_evm.evm_transactions USING gist (_block_range);
+CREATE INDEX domain_auto_evm_extrinsics_block_range_gist ON domain_auto_evm.extrinsics USING gist (_block_range);
+CREATE INDEX domain_auto_evm_logs_block_range_gist ON domain_auto_evm.logs USING gist (_block_range);
+CREATE INDEX domain_auto_evm_transfers_block_range_gist ON domain_auto_evm.transfers USING gist (_block_range);

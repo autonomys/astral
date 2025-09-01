@@ -1,4 +1,4 @@
-import { sendSlackMessage } from "../utils/slack";
+import { sendSlackMessage } from '../utils/slack';
 
 interface JobData {
   title: string;
@@ -16,11 +16,9 @@ interface NotificationResult extends JobData {
   slackMessage?: string;
 }
 
-export const slackNotification = async (
-  job: Job
-): Promise<NotificationResult> => {
+export const slackNotification = async (job: Job): Promise<NotificationResult> => {
   const { title, path, message, logData, messageId } = job.data;
-  let result: NotificationResult = {
+  const result: NotificationResult = {
     title,
     path,
     message,
@@ -31,40 +29,37 @@ export const slackNotification = async (
   try {
     const blocks = [
       {
-        type: "header",
+        type: 'header',
         text: {
-          type: "plain_text",
+          type: 'plain_text',
           text: title,
         },
       },
     ];
     if (path) {
       blocks.push({
-        type: "section",
+        type: 'section',
         text: {
-          type: "mrkdwn",
+          type: 'mrkdwn',
           text: `Path: ${path}`,
         },
       });
     }
     if (message) {
       blocks.push({
-        type: "section",
+        type: 'section',
         text: {
-          type: "mrkdwn",
+          type: 'mrkdwn',
           text: message,
         },
       });
     }
     if (logData) {
       blocks.push({
-        type: "section",
+        type: 'section',
         text: {
-          type: "mrkdwn",
-          text: `\`\`\`${JSON.stringify(logData, null, 2).slice(
-            0,
-            25000
-          )}\`\`\``,
+          type: 'mrkdwn',
+          text: `\`\`\`${JSON.stringify(logData, null, 2).slice(0, 25000)}\`\`\``,
         },
       });
     }
@@ -74,7 +69,7 @@ export const slackNotification = async (
 
     return result;
   } catch (err) {
-    console.error("Error in slackNotification:", err);
+    console.error('Error in slackNotification:', err);
     throw new Error(`Failed to send slack notification: ${err}`);
   }
 };

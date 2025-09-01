@@ -6,7 +6,6 @@ export enum Routes {
   farming = 'farming',
   storage = 'permanent-storage',
   staking = 'staking',
-  leaderboard = 'leaderboard',
   domains = 'domains',
   autoevm = 'auto-evm',
   autoid = 'auto-id',
@@ -35,13 +34,6 @@ export enum RoutesStaking {
   nominations = Routes.staking + '/nominations',
 }
 
-export enum RoutesLeaderboard {
-  farmers = Routes.leaderboard + '/farmers',
-  accounts = Routes.leaderboard + '/accounts',
-  operators = Routes.leaderboard + '/operators',
-  nominators = Routes.leaderboard + '/nominators',
-}
-
 export enum RoutesDomains {
   autoevm = '/auto-evm',
   autoid = '/auto-id',
@@ -65,7 +57,6 @@ export type AnyRoutes =
   | RoutesConsensus
   | RoutesStorage
   | RoutesStaking
-  | RoutesLeaderboard
   | RoutesDomains
   | RoutesTransfer
   | RoutesProfile
@@ -118,31 +109,7 @@ export const ROUTES: Route[] = [
     title: 'Staking',
     networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
   },
-  {
-    name: Routes.leaderboard,
-    title: 'Leaderboard',
-    children: [
-      {
-        name: RoutesLeaderboard.farmers,
-        title: 'Top Farmers',
-      },
-      {
-        name: RoutesLeaderboard.accounts,
-        title: 'Top Accounts',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-      {
-        name: RoutesLeaderboard.operators,
-        title: 'Top Operators',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-      {
-        name: RoutesLeaderboard.nominators,
-        title: 'Top Nominators',
-        networks: [NetworkId.TAURUS, NetworkId.LOCALHOST],
-      },
-    ],
-  },
+
   {
     name: Routes.domains,
     title: 'Domains',
@@ -335,12 +302,7 @@ export const INTERNAL_ROUTES = {
     },
     empty: (chain: string, domain: string): string => `/${chain}/${domain}/search/no-result-found`,
   },
-  leaderboard: {
-    accounts: 'accounts',
-    farmers: 'farmers',
-    operators: 'operators',
-    nominators: 'nominators',
-  },
+
   transfer: {
     history: 'history',
   },

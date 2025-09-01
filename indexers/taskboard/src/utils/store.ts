@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import Redis from 'ioredis';
 
 interface RedisConnection {
   port: number;
@@ -8,7 +8,7 @@ interface RedisConnection {
 
 export const connection: RedisConnection = {
   port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
-  host: process.env.REDIS_HOST ?? "localhost",
+  host: process.env.REDIS_HOST ?? 'localhost',
   retryStrategy: (times: number): number => {
     const delay = Math.min(times * 50, 2000);
     console.log(`Retrying Redis connection in ${delay}ms...`);
@@ -19,14 +19,14 @@ export const connection: RedisConnection = {
 export const checkRedisConnection = async (): Promise<void> => {
   const redis = new Redis(connection);
   return new Promise<void>((resolve, reject) => {
-    redis.on("ready", () => {
-      console.log("Connected to Redis successfully!");
+    redis.on('ready', () => {
+      console.log('Connected to Redis successfully!');
       redis.disconnect();
       resolve();
     });
 
-    redis.on("error", (err: Error) => {
-      console.error("Redis connection error:", err);
+    redis.on('error', (err: Error) => {
+      console.error('Redis connection error:', err);
       redis.disconnect();
       reject(err);
     });
@@ -44,10 +44,7 @@ export const getStoredValue = async (key: string): Promise<string | null> => {
   });
 };
 
-export const setRedisValue = async (
-  key: string,
-  value: string
-): Promise<void> => {
+export const setRedisValue = async (key: string, value: string): Promise<void> => {
   const redis = new Redis(connection);
   return new Promise((resolve, reject) => {
     redis.set(key, value, (err) => {

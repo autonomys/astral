@@ -1,6 +1,6 @@
-import { EventRecord } from "@autonomys/auto-utils";
-import * as db from "./db";
-import { Cache } from "./db";
+import { EventRecord } from '@autonomys/auto-utils';
+import * as db from './db';
+import { Cache } from './db';
 
 type ExtrinsicHandler = (params: {
   extrinsicEvents: EventRecord[];
@@ -21,11 +21,9 @@ const handleRemark: ExtrinsicHandler = ({
   extrinsicSigner,
 }) => {
   const eventRemarked = extrinsicEvents.find(
-    (e) => e.event.section === "system" && e.event.method === "Remarked"
+    (e) => e.event.section === 'system' && e.event.method === 'Remarked',
   );
-  const eventRemarkedId = eventRemarked
-    ? height + "-" + eventRemarked.event.index.toString()
-    : "";
+  const eventRemarkedId = eventRemarked ? height + '-' + eventRemarked.event.index.toString() : '';
   cache.accountRemarkCountHistory.push(
     db.createAccountRemarkCount(
       extrinsicSigner,
@@ -33,12 +31,12 @@ const handleRemark: ExtrinsicHandler = ({
       height,
       extrinsicId,
       eventRemarkedId,
-      timestamp
-    )
+      timestamp,
+    ),
   );
 };
 
 export const EXTRINSIC_HANDLERS: Record<string, ExtrinsicHandler> = {
-  "system.remark": handleRemark,
-  "system.remarkWithEvent": handleRemark,
+  'system.remark': handleRemark,
+  'system.remarkWithEvent': handleRemark,
 };

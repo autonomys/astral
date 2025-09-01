@@ -6,7 +6,6 @@
 
 type RuntimeCreation @entity {
   id: ID!
-  sortId: String!
   name: String!
   type: String!
   createdBy: String!
@@ -17,7 +16,6 @@ type RuntimeCreation @entity {
 
 type DomainInstantiation @entity {
   id: ID!
-  sortId: String!
   name: String!
   runtimeId: Int!
   runtime: String!
@@ -30,7 +28,6 @@ type DomainInstantiation @entity {
 
 type OperatorRegistration @entity {
   id: ID!
-  sortId: String!
   owner: String!
   domainId: String!
   signingKey: String!
@@ -39,40 +36,7 @@ type OperatorRegistration @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
-}
-
-type DepositEvent @entity {
-  id: ID!
-  sortId: String!
-  accountId: String!
-  domainId: String!
-  operatorId: String!
-  nominatorId: String!
-  amount: BigInt!
-  storageFeeDeposit: BigInt!
-  totalAmount: BigInt!
-  estimatedShares: BigInt!
-  timestamp: Date!
-  blockHeight: BigInt!
-  extrinsicId: String!
-  eventId: String!
-}
-
-type WithdrawEvent @entity {
-  id: ID!
-  sortId: String!
-  accountId: String!
-  domainId: String!
-  operatorId: String!
-  nominatorId: String!
-  toWithdraw: String!
-  shares: BigInt!
-  storageFeeRefund: BigInt!
-  estimatedAmount: BigInt!
-  timestamp: Date!
-  blockHeight: BigInt!
-  extrinsicId: String!
-  eventId: String!
+  processed: Boolean! @index
 }
 
 type OperatorReward @entity {
@@ -84,6 +48,7 @@ type OperatorReward @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 type OperatorTaxCollection @entity {
@@ -94,43 +59,29 @@ type OperatorTaxCollection @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 type BundleSubmission @entity {
   id: ID!
-  accountId: String!
+  proposer: String!
   bundleId: String!
   domainId: String!
-  domainBlockId: String!
   operatorId: String!
   domainBlockNumber: BigInt!
-  domainBlockHash: String!
-  domainBlockExtrinsicRoot: String!
   epoch: BigInt!
   consensusBlockNumber: BigInt!
-  consensusBlockHash: String!
-  totalTransfersIn: BigInt!
-  transfersInCount: BigInt!
-  totalTransfersOut: BigInt!
-  transfersOutCount: BigInt!
-  totalRejectedTransfersClaimed: BigInt!
-  rejectedTransfersClaimedCount: BigInt!
-  totalTransfersRejected: BigInt!
-  transfersRejectedCount: BigInt!
-  totalVolume: BigInt!
-  consensusStorageFee: BigInt!
-  domainExecutionFee: BigInt!
-  burnedBalance: BigInt!
-  blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  blockHeight: BigInt!
+  processed: Boolean! @index
 }
 
 type UnlockedEvent @entity {
   id: ID!
   domainId: String!
   operatorId: String!
-  accountId: String!
+  address: String!
   nominatorId: String!
   amount: BigInt!
   storageFee: BigInt!
@@ -138,15 +89,18 @@ type UnlockedEvent @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 type NominatorsUnlockedEvent @entity {
   id: ID!
   domainId: String!
   operatorId: String!
+  address: String! @index
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
 type OperatorDeregistration @entity {
@@ -156,42 +110,67 @@ type OperatorDeregistration @entity {
   blockHeight: BigInt!
   extrinsicId: String!
   eventId: String!
+  processed: Boolean! @index
 }
 
-# Chain states entities
 
-type DomainBlockHistory @entity {
-  id: ID!
-  domainId: String!
-  domainBlockNumber: BigInt!
+type OperatorEpochSharePrice @entity {
+  id: ID! # Format: operatorId-domainId-epochIndex
+  operatorId: String! @index
+  domainId: String! @index
+  epochIndex: Int! @index
+  sharePrice: BigInt!
+  totalStake: BigInt!
+  totalShares: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
 }
 
-type DomainStakingHistory @entity {
+type NominatorDeposit @entity {
   id: ID!
-  domainId: String!
-  currentEpochIndex: Int!
-  currentTotalStake: BigInt!
-  currentTotalShares: BigInt!
-  sharePrice: BigInt!
+  address: String! @index
+  operatorId: String! @index
+  domainId: String! @index
+  knownShares: BigInt!
+  knownStorageFeeDeposit: BigInt!
+  pendingAmount: BigInt!
+  pendingStorageFeeDeposit: BigInt!
+  pendingEffectiveDomainEpoch: BigInt!
+  extrinsicIds: String!
+  eventIds: String!
   timestamp: Date!
+  blockHeights: String!
   blockHeight: BigInt!
+  processed: Boolean! @index
 }
 
-type OperatorStakingHistory @entity {
+type NominatorWithdrawal @entity {
   id: ID!
-  operatorId: String!
-  operatorOwner: String!
-  signingKey: String!
-  currentDomainId: String!
-  currentTotalStake: BigInt!
-  currentTotalShares: BigInt!
-  depositsInEpoch: BigInt!
-  withdrawalsInEpoch: BigInt!
-  totalStorageFeeDeposit: BigInt!
-  sharePrice: BigInt!
-  partialStatus: String!
+  address: String! @index
+  operatorId: String! @index
+  domainId: String! @index
+  withdrawalInSharesAmount: BigInt!
+  withdrawalInSharesStorageFeeRefund: BigInt!
+  withdrawalInSharesDomainEpoch: String!
+  withdrawalInSharesUnlockBlock: BigInt!
+  totalWithdrawalAmount: BigInt!
+  totalStorageFeeWithdrawal: BigInt!
+  withdrawalsJson: String!
+  totalPendingWithdrawals: BigInt!
+  extrinsicIds: String!
+  eventIds: String!
+  timestamp: Date!
+  blockHeight: BigInt!
+  blockHeights: String!
+  processed: Boolean! @index
+
+}
+
+type StorageFundAccount @entity {
+  id: ID!
+  operatorId: String! @index
+  address: String!
+  balance: BigInt!
   timestamp: Date!
   blockHeight: BigInt!
 }

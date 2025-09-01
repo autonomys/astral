@@ -1,5 +1,5 @@
-import { capitalizeFirstLetter } from "@autonomys/auto-utils";
-import { PAD_ZEROS } from "./constants";
+import { capitalizeFirstLetter } from '@autonomys/auto-utils';
+import { PAD_ZEROS } from './constants';
 
 export const decodeLog = (value: null | Uint8Array | Uint8Array[]) => {
   if (!value) return null;
@@ -17,12 +17,9 @@ export const decodeLog = (value: null | Uint8Array | Uint8Array[]) => {
 export const moduleName = (section: string, method: string) =>
   `${capitalizeFirstLetter(section)}.${capitalizeFirstLetter(method)}`;
 
-export const getSortId = (
-  blockHeight: bigint | string,
-  indexInBlock?: bigint | string
-): string => {
+export const getSortId = (blockHeight: bigint | string, indexInBlock?: bigint | string): string => {
   const str1 = blockHeight.toString().padStart(32, PAD_ZEROS);
   if (indexInBlock === undefined) return str1;
   const str2 = indexInBlock.toString().padStart(32, PAD_ZEROS);
-  return str1 + "-" + str2;
+  return str1 + '-' + str2;
 };

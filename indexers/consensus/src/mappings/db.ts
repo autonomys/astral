@@ -1,6 +1,6 @@
-import { Entity } from "@subql/types-core";
-import { ZERO_BIGINT } from "./constants";
-import { getSortId, moduleName } from "./utils";
+import { Entity } from '@subql/types-core';
+import { ZERO_BIGINT } from './constants';
+import { getSortId, moduleName } from './utils';
 
 export type Cache = {
   rewards: Entity[];
@@ -51,7 +51,7 @@ export function createBlock(
   rewardValue: bigint,
   blockRewardValue: bigint,
   voteRewardValue: bigint,
-  authorId: string
+  authorId: string,
 ) {
   return {
     id: height.toString(),
@@ -84,10 +84,10 @@ export function createLog(
   indexInBlock: number,
   kind: string,
   value: string,
-  timestamp: Date
+  timestamp: Date,
 ) {
   return {
-    id: blockHeight + "-" + indexInBlock,
+    id: blockHeight + '-' + indexInBlock,
     sortId: getSortId(blockHeight, BigInt(indexInBlock)),
     blockHeight,
     blockHash,
@@ -116,10 +116,10 @@ export function createExtrinsic(
   tip: bigint,
   fee: bigint,
   pos: number,
-  cid?: string
+  cid?: string,
 ) {
   return {
-    id: blockHeight + "-" + indexInBlock,
+    id: blockHeight + '-' + indexInBlock,
     sortId: getSortId(blockHeight, BigInt(indexInBlock)),
     hash,
     blockHeight,
@@ -155,10 +155,10 @@ export function createEvent(
   phase: string,
   pos: number,
   args: string,
-  cid?: string
+  cid?: string,
 ) {
   return {
-    id: blockHeight + "-" + indexInBlock.toString(),
+    id: blockHeight + '-' + indexInBlock.toString(),
     sortId: getSortId(blockHeight, indexInBlock),
     blockHeight,
     blockHash,
@@ -184,7 +184,7 @@ export function createAccountHistory(
   nonce: bigint,
   free: bigint,
   reserved: bigint,
-  total: bigint
+  total: bigint,
 ) {
   return {
     id,
@@ -211,10 +211,10 @@ export function createTransfer(
   type: string,
   success: boolean,
   isFinalized: boolean,
-  timestamp: Date
+  timestamp: Date,
 ) {
   return {
-    id: extrinsicId + "-" + eventId,
+    id: extrinsicId + '-' + eventId,
     blockHeight,
     blockHash,
     extrinsicId,
@@ -240,10 +240,10 @@ export function createReward(
   accountId: string,
   rewardType: string,
   amount: bigint,
-  timestamp: Date
+  timestamp: Date,
 ) {
   return {
-    id: accountId + "-" + eventId,
+    id: accountId + '-' + eventId,
     blockHeight,
     blockHash,
     extrinsicId,

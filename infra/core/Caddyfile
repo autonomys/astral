@@ -1,0 +1,47 @@
+# Caddy configuration for Astral Core infrastructure
+# Provides reverse proxy for the core services
+{
+	# Global options
+	admin off
+}
+
+# Main site configuration
+:80 {
+	# Health check endpoint for Caddy itself
+	handle /health {
+		respond "OK" 200
+	}
+
+	# Health check endpoints for various services
+	handle /consensus {
+		reverse_proxy consensus_indexer:3000/ready {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	handle /files {
+		reverse_proxy files_indexer:3000/ready {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	# Default route - proxy to Hasura
+	handle {
+		reverse_proxy hasura:8080 {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+
+			# WebSocket support
+			header_up Connection {>Connection}
+			header_up Upgrade {>Upgrade}
+		}
+	}
+
+	# Logging
+	log {
+		output file /var/log/caddy/access.log
+		level INFO
+	}
+}
