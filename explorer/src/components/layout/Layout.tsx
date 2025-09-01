@@ -11,6 +11,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import ReactGA from 'react-ga4'
 import { logError } from 'utils/log'
 import { DeprecatingBanner } from '../common/DeprecatingBanner'
+import { UnsupportedNetworkBanner } from '../common/UnsupportedNetworkBanner'
 
 type Props = {
   children?: ReactNode
@@ -27,6 +28,7 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
     <div className='relative flex min-h-screen w-full flex-col bg-gradient-to-b from-backgroundLight to-backgroundDark dark:bg-boxDark dark:from-backgroundDarker dark:to-backgroundDarkest'>
       <div className='relative flex min-h-screen w-full flex-col'>
         <DeprecatingBanner />
+        <UnsupportedNetworkBanner />
         <SectionHeader />
         {subHeader}
         <ErrorBoundary
