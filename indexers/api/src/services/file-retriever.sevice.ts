@@ -58,6 +58,8 @@ export class FileRetrieverService {
       ).then((children) => children.flat());
     }
 
-    return Buffer.concat(chunks.map((chunk) => Buffer.from(chunk.data)));
+    return Buffer.concat(
+      chunks.map((chunk) => Buffer.from(Object.values(JSON.parse(chunk.data)))),
+    );
   }
 }
