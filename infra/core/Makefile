@@ -69,7 +69,7 @@ build:
 	@echo "🔨 Building core infrastructure services..."
 	@if [ -f .env ]; then \
 		echo "📋 Loading environment variables from .env"; \
-		export $$(grep -v '^#' .env | xargs); \
+		set -a; . ./.env; set +a; \
 	fi
 	@echo "🧹 Clearing build caches to ensure fresh builds..."
 	@cd ../../indexers && yarn cache clean --all || true
@@ -93,7 +93,7 @@ force-build:
 	@echo "🔨 Force building all services (clearing all caches)..."
 	@if [ -f .env ]; then \
 		echo "📋 Loading environment variables from .env"; \
-		export $$(grep -v '^#' .env | xargs); \
+		set -a; . ./.env; set +a; \
 	fi
 	@echo "🧹 Clearing all build caches..."
 	@cd ../../indexers && yarn cache clean --all || true

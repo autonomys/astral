@@ -32,8 +32,6 @@
   "license": "MIT",
   "devDependencies": {
     "@apollo/client": "^3.13.5",
-    "@autonomys/auto-dag-data": "^1.4.31",
-    "@autonomys/auto-utils": "^1.4.31",
     "@polkadot/api": "^15.8.1",
     "@polkadot/types": "^15.8.1",
     "@polkadot/util": "^13.4.3",
@@ -55,6 +53,11 @@
     "ipfs-unixfs": "6.0.9"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.5",
+    "@autonomys/auto-dag-data": "^1.4.31",
+    "@autonomys/auto-utils": "^1.4.31",
+    "@polkadot/api-augment": "^15.8.1",
+    "buffer": "^6.0.3",
     "ioredis": "^5.6.0"
   }
 }

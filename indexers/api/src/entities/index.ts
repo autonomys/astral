@@ -27,7 +27,7 @@ export * from './leaderboard/metadata.entity';
 
 // Files Entities
 export * from './files/chunks.entity';
-export * from './files/file-cids.entity';
+export * from './files/cids.entity';
 export * from './files/files.entity';
 export * from './files/metadata.entity';
 
